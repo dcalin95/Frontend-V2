@@ -1,0 +1,84 @@
+.video-analyzer {
+  background: #2a2a2a;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+}
+
+.video-container {
+  position: relative;
+  margin: 1rem 0;
+}
+
+.video-preview {
+  width: 100%;
+  max-width: 640px;
+  border-radius: 8px;
+  background: #1a1a1a;
+}
+
+.video-controls {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.record-btn {
+  background: #00ff9d;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.record-btn.recording {
+  background: #ff3366;
+  animation: pulse 1.5s infinite;
+}
+
+.expression-metrics {
+  margin-top: 1.5rem;
+}
+
+.metric {
+  margin: 1rem 0;
+}
+
+.metric-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #888;
+}
+
+.metric-bar {
+  height: 8px;
+  background: #1a1a1a;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.metric-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00ff9d, #00a3ff);
+  transition: width 0.3s ease;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+
+
+
+
+
+
+
+
+
+

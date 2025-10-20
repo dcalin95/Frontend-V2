@@ -1,0 +1,17 @@
+.ai-overlay {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    z-index: 1;
+  }
+  
+  .floating-coin {
+    width: 40px;
+    animation: float 4s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  

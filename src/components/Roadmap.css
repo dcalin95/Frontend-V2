@@ -1,0 +1,465 @@
+/* Containerul transparent */
+.roadmap-container {
+    text-align: center;
+    margin: 4rem auto;
+    max-width: 1200px;
+    padding: 2rem 0;
+    background: transparent;
+    overflow: visible;
+}
+
+/* Titlul principal */
+.roadmap-title {
+    font-size: 2.5rem;
+    color: #00ffe0;
+    text-shadow: 0 0 10px #00ffe0, 0 0 20px #9c27ff;
+    margin-bottom: 3rem;
+}
+
+/* Layout pe două coloane */
+.roadmap-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+}
+
+.roadmap-column {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Stil pentru carduri */
+.roadmap-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    padding: 1.5rem;
+    width: 90%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+/* Hover pe card individual */
+.roadmap-card:hover {
+    transform: scale(1.3);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.9), 0 0 50px rgba(0, 255, 255, 1);
+    z-index: 10;
+}
+
+/* Efect de mărire pentru întreaga fereastră */
+.roadmap-hover .roadmap-card {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+
+/* Titlurile cardurilor */
+.roadmap-card h3 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 10px currentColor;
+    transition: all 0.3s ease;
+}
+
+/* Subtitlurile (textul din paranteze) */
+.phase-subtitle {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 1rem;
+    font-style: italic;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+/* Detaliile cardurilor */
+.roadmap-card li {
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    line-height: 1.6;
+}
+
+/* Efectul de aprindere și tremur pe hover */
+.roadmap-card:hover h3 {
+    color: #ffea00;
+    animation: shake-text 0.2s infinite;
+}
+
+/* Animație pentru tremur */
+@keyframes shake-text {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-2px);
+    }
+    50% {
+        transform: translateX(2px);
+    }
+    75% {
+        transform: translateX(-1px);
+    }
+}
+
+/* Animație plutire cosmică */
+.card-float-0 {
+    animation: float-left 6s ease-in-out infinite;
+}
+
+.card-float-1 {
+    animation: float-right 6s ease-in-out infinite;
+}
+
+@keyframes float-left {
+    0%, 100% {
+        transform: translateY(0) rotate(-2deg);
+    }
+    50% {
+        transform: translateY(-15px) rotate(2deg);
+    }
+}
+
+@keyframes float-right {
+    0%, 100% {
+        transform: translateY(0) rotate(2deg);
+    }
+    50% {
+        transform: translateY(-15px) rotate(-2deg);
+    }
+}
+
+/* Stil pentru icoanele rețelelor */
+.network-icon {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    margin: 0 4px;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.7));
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+
+/* Animație pe hover pentru icoane */
+.network-icon:hover {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 15px rgba(0, 255, 255, 1));
+}
+
+/* Stil pentru alinierea textului cu iconițele */
+.roadmap-card li {
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    line-height: 1.6;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Stil pentru textul din listă pentru a se alinia cu iconițele */
+.roadmap-card li span,
+.roadmap-card li strong {
+    display: inline-flex;
+    align-items: center;
+    margin: 0 2px;
+}
+
+/* Stil pentru bullet point AI */
+.ai-bullet {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 8px;
+    background: linear-gradient(45deg, #00ffe0, #9c27ff);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.7), 0 0 20px rgba(156, 39, 255, 0.7);
+    animation: glow-pulse 1.5s infinite;
+    flex-shrink: 0;
+}
+
+/* Animație de pulsare pentru bullet */
+@keyframes glow-pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.7), 0 0 20px rgba(156, 39, 255, 0.7);
+    }
+    50% {
+        transform: scale(1.2);
+        box-shadow: 0 0 20px rgba(0, 255, 255, 1), 0 0 40px rgba(156, 39, 255, 1);
+    }
+}
+
+/* ===== Responsive Design ===== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .roadmap-container {
+        margin: 3rem auto;
+        padding: 1.5rem 0;
+    }
+    
+    .roadmap-title {
+        font-size: 2.2rem;
+        margin-bottom: 2.5rem;
+    }
+    
+    .roadmap-grid {
+        gap: 1.5rem;
+    }
+    
+    .roadmap-column {
+        gap: 1.5rem;
+    }
+    
+    .roadmap-card {
+        padding: 1.2rem;
+        width: 95%;
+    }
+    
+    .roadmap-card h3 {
+        font-size: 1.8rem;
+    }
+    
+    .phase-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .roadmap-card li {
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+}
+
+/* Mobile Large */
+@media (max-width: 768px) {
+    .roadmap-container {
+        margin: 1.5rem auto;
+        padding: 0.5rem 1rem;
+        max-width: 100%;
+    }
+    
+    .roadmap-title {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        line-height: 1.3;
+        padding: 0 10px;
+    }
+    
+    .roadmap-grid {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+    }
+    
+    .roadmap-column {
+        gap: 1rem;
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .roadmap-card {
+        width: 100%;
+        padding: 1rem;
+        border-radius: 12px;
+        margin: 0;
+    }
+    
+    .roadmap-card:hover {
+        transform: scale(1.05);
+    }
+    
+    .roadmap-card h3 {
+        font-size: 1.4rem;
+        margin-bottom: 0.5rem;
+        line-height: 1.2;
+    }
+    
+    .phase-subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 0.8rem;
+        font-weight: 600;
+    }
+    
+    .roadmap-card li {
+        font-size: 0.85rem;
+        line-height: 1.4;
+        display: flex;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        margin-bottom: 0.8rem;
+        padding: 0.5rem 0;
+    }
+    
+    .network-icon {
+        width: 18px;
+        height: 18px;
+        margin: 0 3px;
+    }
+    
+    .ai-bullet {
+        width: 8px;
+        height: 8px;
+        margin-right: 8px;
+        margin-top: 2px;
+    }
+}
+
+/* Mobile Small */
+@media (max-width: 480px) {
+    .roadmap-container {
+        margin: 1rem auto;
+        padding: 0.5rem 0.5rem;
+    }
+    
+    .roadmap-title {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+        padding: 0 5px;
+    }
+    
+    .roadmap-grid {
+        gap: 0.8rem;
+    }
+    
+    .roadmap-column {
+        gap: 0.8rem;
+    }
+    
+    .roadmap-card {
+        padding: 0.8rem;
+        border-radius: 10px;
+    }
+    
+    .roadmap-card:hover {
+        transform: scale(1.02);
+    }
+    
+    .roadmap-card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.4rem;
+        line-height: 1.1;
+    }
+    
+    .phase-subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 0.6rem;
+        font-weight: 600;
+    }
+    
+    .roadmap-card li {
+        font-size: 0.8rem;
+        line-height: 1.3;
+        display: flex;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        margin-bottom: 0.6rem;
+        padding: 0.3rem 0;
+    }
+    
+    .network-icon {
+        width: 16px;
+        height: 16px;
+        margin: 0 2px;
+    }
+    
+    .ai-bullet {
+        width: 6px;
+        height: 6px;
+        margin-right: 6px;
+        margin-top: 3px;
+    }
+}
+
+/* Mobile Extra Small */
+@media (max-width: 360px) {
+    .roadmap-container {
+        margin: 1rem auto;
+        padding: 0.25rem 0;
+    }
+    
+    .roadmap-title {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+    
+    .roadmap-card {
+        padding: 0.8rem;
+        border-radius: 6px;
+    }
+    
+    .roadmap-card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.2rem;
+    }
+    
+    .phase-subtitle {
+        font-size: 0.8rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .roadmap-card li {
+        font-size: 0.8rem;
+        line-height: 1.3;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    .network-icon {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .ai-bullet {
+        width: 7px;
+        height: 7px;
+        margin-right: 4px;
+    }
+}
+
+/* Landscape orientation for mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .roadmap-container {
+        margin: 1rem auto;
+        padding: 0.5rem 0;
+    }
+    
+    .roadmap-title {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .roadmap-grid {
+        flex-direction: row;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .roadmap-column {
+        flex: 1;
+        min-width: 300px;
+        gap: 1rem;
+    }
+    
+    .roadmap-card {
+        padding: 1rem;
+    }
+    
+    .roadmap-card h3 {
+        font-size: 1.4rem;
+    }
+    
+    .phase-subtitle {
+        font-size: 0.9rem;
+    }
+    
+    .roadmap-card li {
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+}

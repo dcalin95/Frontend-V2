@@ -1,0 +1,79 @@
+/* Fade In */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scale In */
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Slide In */
+@keyframes slideIn {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* Pulse */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Glow */
+@keyframes glow {
+  0% { box-shadow: 0 0 5px rgba(0, 255, 157, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(0, 255, 157, 0.6); }
+  100% { box-shadow: 0 0 5px rgba(0, 255, 157, 0.2); }
+}
+
+/* Apply animations */
+.mind-input { animation: fadeIn 0.5s ease-out; }
+.analyze-btn { transition: all 0.3s ease; }
+.analyze-btn:hover { transform: translateY(-2px); }
+.results-section { animation: scaleIn 0.5s ease-out; }
+.nft-preview { animation: fadeIn 0.7s ease-out; }
+.voice-analyzer { animation: slideIn 0.5s ease-out; }
+.video-analyzer { animation: slideIn 0.5s ease-out; }
+.smart-ring { animation: scaleIn 0.7s ease-out; }
+
+/* Smooth transitions */
+.metric-bar { transition: width 0.5s ease-in-out; }
+.emotion-fill { transition: width 0.5s ease-in-out; }
+.progress-fill { transition: width 0.5s ease-in-out; }
+
+/* Interactive elements */
+.record-btn:hover { transform: translateY(-2px); }
+.mint-btn:hover { animation: pulse 1s infinite; }
+.waitlist-btn:hover { animation: glow 1.5s infinite; }
+
+/* State transitions */
+.analyzing-state { 
+  animation: pulse 1.5s infinite;
+  transition: all 0.3s ease;
+}
+
+/* Tier transitions */
+.tier-content {
+  animation: fadeIn 0.5s ease-out;
+  transition: all 0.3s ease;
+}
+
+.tier-locked {
+  animation: scaleIn 0.5s ease-out;
+  transition: all 0.3s ease;
+}
+
+
+
+
+
+
+
+
+
+
+

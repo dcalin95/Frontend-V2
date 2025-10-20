@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap');
+
+.themeContainer {
+  --font-ui: 'IBM Plex Sans', sans-serif;
+  --color-primary: #f0b90b;
+  --color-text-light: #ffffff;
+  --color-text-muted: #b3b3b3;
+  --color-highlight: #00f0ff;
+  --bg-deep: #1f1f2d;
+  --radius-card: 12px;
+  --shadow-glow: 0 0 20px rgba(0, 255, 255, 0.1);
+}

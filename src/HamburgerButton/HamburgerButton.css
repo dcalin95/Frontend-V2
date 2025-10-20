@@ -1,0 +1,92 @@
+/* ===== BUTON HAMBURGER (Sidebar) ===== */
+.ai-animated-hamburger {
+  position: fixed;
+  top: 90px; /* ✅ Sub Header, nu suprapune */
+  left: 15px;
+  width: 60px;
+  height: 60px;
+  border: none;
+  background: radial-gradient(circle, rgba(0, 255, 255, 0.4), rgba(0, 255, 255, 0));
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.4);
+  animation: ai-pulse 2s infinite ease-in-out;
+  z-index: 999; /* ✅ Corectat */
+}
+
+.ai-animated-hamburger:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.7), inset 0 0 15px rgba(255, 255, 255, 0.6);
+}
+
+.ai-hamburger-icon {
+  font-size: 3.5rem;
+  color: rgb(82, 226, 87);
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+@keyframes ai-pulse {
+  0% {
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+  }
+}
+
+.ai-animated-hamburger.open .ai-hamburger-icon {
+  transform: rotate(90deg);
+  transition: transform 0.3s ease-in-out;
+}
+
+/* ===== VIZIBIL PE MOBIL + TABLETA ===== */
+@media (max-width: 992px) {
+  .ai-animated-hamburger {
+    display: flex !important;
+    top: 90px; /* ✅ Sub Header */
+    left: 15px;
+    z-index: 999;
+  }
+}
+
+/* ===== ASCUNS PE DESKTOP MARE ===== */
+@media (min-width: 993px) {
+  .ai-animated-hamburger {
+    display: none !important;
+  }
+}
+
+/* ===== RESPONSIVE PENTRU MOBIL ===== */
+@media (max-width: 768px) {
+  .ai-animated-hamburger {
+    top: 70px; /* Redus de la 80px la 70px pentru a fi mai aproape de header */
+    left: 10px; /* Redus pentru mobil */
+    width: 50px; /* Redus pentru mobil */
+    height: 50px; /* Redus pentru mobil */
+  }
+
+  .ai-hamburger-icon {
+    font-size: 3rem; /* Redus pentru mobil */
+  }
+}
+
+/* ===== RESPONSIVE PENTRU ECRANE FOARTE MICI ===== */
+@media (max-width: 480px) {
+  .ai-animated-hamburger {
+    top: 75px; /* Redus și mai mult */
+    left: 8px; /* Redus și mai mult */
+    width: 45px; /* Redus și mai mult */
+    height: 45px; /* Redus și mai mult */
+  }
+
+  .ai-hamburger-icon {
+    font-size: 2.5rem; /* Redus și mai mult */
+  }
+}

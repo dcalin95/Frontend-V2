@@ -1,0 +1,120 @@
+/* === Container Token Selector === */
+.token-selector {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+  text-align: center;
+  color: #00ffff;
+}
+
+/* Floating + Pulse animations (local) */
+@keyframes floatSoftSM {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes solanaPulseSM {
+  0% { color: #9333EA; text-shadow: 0 0 10px rgba(147, 51, 234, 0.6); }
+  50% { color: #14F195; text-shadow: 0 0 20px rgba(20, 241, 149, 0.8); }
+  100% { color: #9333EA; text-shadow: 0 0 10px rgba(147, 51, 234, 0.6); }
+}
+
+/* === Titlu === */
+.token-selector h2 {
+  margin-bottom: 12px;
+  font-size: 1.4rem;
+  animation: solanaPulseSM 3s ease-in-out infinite, floatSoftSM 9s ease-in-out infinite;
+}
+
+/* === Grid de butoane === */
+.token-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+/* === Buton Token === */
+.token-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 12px 16px;
+  font-weight: bold;
+  font-size: 0.95rem;
+
+  background: #111;
+  color: #fff;
+  border: 2px solid #00ffff;
+
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+/* === Active & Hover === */
+.token-button.active,
+.token-button:hover {
+  background: linear-gradient(145deg, #00ffe0, #9c27ff);
+  color: #000;
+  transform: scale(1.05);
+  box-shadow: 0 0 8px #00ffe0aa;
+  border-color: transparent;
+}
+
+@media (max-width: 768px) {
+  .token-grid {
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .token-button {
+    width: 30%;
+    min-width: 80px;
+    max-width: 100px;
+    font-size: 0.75rem;
+    padding: 10px;
+    flex-direction: column; /* Icon deasupra textului */
+  }
+
+  .token-icon {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 6px;
+  }
+}
+
+.chain-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.chain-tab {
+  background: #111;
+  color: #00ffff;
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: 2px solid #00ffff;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.chain-tab.active,
+.chain-tab:hover {
+  background: linear-gradient(90deg, #00d1ff, #a200ff);
+  color: #fff;
+  box-shadow: 0 0 8px #00ffff99;
+}
+.chain-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.5));
+}

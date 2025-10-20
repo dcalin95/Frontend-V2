@@ -1,0 +1,214 @@
+/* ✅ Badge sus-dreapta */
+.status-badge {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  z-index: 10000;
+  box-shadow: 0 0 8px currentColor;
+}
+
+/* ✅ Login button */
+.login-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 0.5rem 1rem;
+  background: #00ffc8;
+  color: #000;
+  font-weight: bold;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 0 12px #00ffc8;
+  transition: transform 0.2s ease-in-out;
+  z-index: 9999;
+  font-size: 0.9rem;
+}
+
+.login-btn:hover {
+  transform: scale(1.05);
+}
+
+/* ✅ Admin Panel */
+.admin-panel {
+  position: fixed;
+  top: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1rem;
+  background: #000;
+  color: #0ff;
+  border: 1px solid #0ff;
+  border-radius: 8px;
+  z-index: 9999;
+  width: 45%;
+  max-width: 500px;
+  font-family: monospace;
+  box-shadow: 0 0 15px #0ff;
+  max-height: 82vh;
+  overflow-y: auto;
+}
+
+/* ✅ Sections */
+.section {
+  margin-bottom: 0.6rem;
+  padding: 0.5rem;
+  background: rgba(0, 255, 255, 0.05);
+  border-radius: 6px;
+  border: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.section h3 {
+  margin: 0 0 0.3rem 0;
+  color: #0ff;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* ✅ Inputs */
+.section input {
+  width: 100%;
+  margin: 0.2rem 0;
+  padding: 0.3rem;
+  background-color: #111;
+  color: #0ff;
+  border: 1px solid #0ff;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  box-shadow: inset 0 0 6px #0ff;
+}
+
+/* ✅ Buttons */
+.section button {
+  width: 100%;
+  margin: 0.2rem 0;
+  padding: 0.4rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.85rem;
+  background: #00ffc8;
+  color: #000;
+  box-shadow: 0 0 10px #00ffc8;
+}
+
+.section button:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 15px #00ffc8;
+}
+
+/* ✅ Info Section */
+.info-section {
+  margin-top: 0.6rem;
+  padding: 0.5rem;
+  background: rgba(0, 255, 255, 0.05);
+  border-radius: 6px;
+  border: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.info-section h3 {
+  margin: 0 0 0.3rem 0;
+  color: #0ff;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.info-section p {
+  margin: 0.2rem 0;
+  font-size: 0.85rem;
+  color: #0ff;
+}
+
+/* ✅ Logout Button */
+.logout-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  padding: 0.4rem 0.75rem;
+  background: #ff0033;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 0 10px #ff0033;
+  font-size: 0.9rem;
+}
+
+.logout-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #ff0033;
+}
+
+/* ✅ Tab Navigation */
+.tab-navigation {
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+  padding-bottom: 6px;
+}
+
+.tab-active, .tab-inactive {
+  transition: all 0.3s ease;
+}
+
+.tab-active {
+  background: #14F195 !important;
+  color: #000 !important;
+  box-shadow: 0 0 10px rgba(20, 241, 149, 0.5);
+}
+
+.tab-inactive {
+  background: #444 !important;
+  color: #fff !important;
+}
+
+.tab-inactive:hover {
+  background: #666 !important;
+  transform: translateY(-2px);
+}
+
+/* ✅ Responsive */
+@media (max-width: 600px) {
+  .admin-panel {
+    width: 90%;
+    padding: 0.8rem;
+    top: 10%;
+    max-height: 85vh;
+    max-width: 400px;
+  }
+  
+  .tab-navigation {
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  
+  .tab-active, .tab-inactive {
+    padding: 10px !important;
+    text-align: center;
+    font-size: 0.8rem !important;
+  }
+  
+  .section {
+    margin-bottom: 0.4rem;
+    padding: 0.4rem;
+  }
+  
+  .section h3 {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .admin-panel {
+    width: 95%;
+    max-width: 350px;
+    top: 8%;
+    max-height: 88vh;
+  }
+}

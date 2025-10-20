@@ -1,0 +1,104 @@
+/* 🔧 CHROME COMPATIBILITY FIXES pentru BitSwapDEX */
+
+/* === HEADER FIXES === */
+.header {
+  /* Chrome specifc backdrop filter */
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  
+  /* Higher z-index for Chrome */
+  z-index: 1000 !important;
+  
+  /* Better positioning */
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 80px !important;
+}
+
+/* === BODY SPACING === */
+body {
+  padding-top: 80px !important; /* Space for fixed header */
+  margin: 0 !important;
+}
+
+.app-container,
+main {
+  padding-top: 20px !important; /* Additional spacing */
+  margin-top: 0 !important;
+}
+
+/* === CHROME BUTTON FIXES === */
+.navigation a,
+.navigation button {
+  /* Better text rendering in Chrome */
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  
+  /* Fix gradient text in Chrome */
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  
+  /* Better positioning */
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  white-space: nowrap !important;
+}
+
+/* === CHROME SPECIFIC OVERRIDES === */
+@supports (-webkit-appearance: none) {
+  /* Chrome-specific styles */
+  .header {
+    background: rgba(0, 0, 0, 0.9) !important;
+  }
+  
+  .navigation a,
+  .navigation button {
+    font-size: 1.1rem !important; /* Slightly smaller in Chrome */
+    padding: 6px 12px !important; /* Adjusted padding */
+  }
+}
+
+/* === Z-INDEX HIERARCHY === */
+.header { z-index: 1000 !important; }
+.mobile-nav-menu { z-index: 1001 !important; }
+.navigation.open { z-index: 1002 !important; }
+
+/* === CHROME RENDERING FIXES === */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+}
+
+/* === DEBUG INFO === */
+.chrome-debug {
+  position: fixed;
+  top: 90px;
+  right: 10px;
+  background: rgba(255, 0, 0, 0.8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  z-index: 9999;
+  font-family: monospace;
+}
+
+.chrome-debug::before {
+  content: "🔧 Chrome Fixes Active";
+}
+
+/* === RESPONSIVE FIXES === */
+@media (max-width: 768px) {
+  body {
+    padding-top: 70px !important; /* Smaller on mobile */
+  }
+  
+  .header {
+    height: 70px !important;
+  }
+}

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🚀 Chrome Development Setup Guide</title>
+    <style>
+        body { 
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff; 
+            font-family: 'Segoe UI', sans-serif; 
+            padding: 20px; 
+            margin: 0;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        .section { 
+            background: rgba(255, 255, 255, 0.1); 
+            padding: 20px; 
+            margin: 20px 0; 
+            border-radius: 10px; 
+            border-left: 4px solid #00bcd4;
+        }
+        .tip { 
+            background: rgba(76, 175, 80, 0.1); 
+            border-left: 4px solid #4CAF50; 
+        }
+        .warning { 
+            background: rgba(255, 152, 0, 0.1); 
+            border-left: 4px solid #ff9800; 
+        }
+        .shortcut { 
+            background: #333; 
+            padding: 5px 10px; 
+            border-radius: 5px; 
+            font-family: monospace; 
+            color: #00ff00;
+        }
+        h1, h2 { color: #00bcd4; text-shadow: 0 0 10px #00bcd4; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        button { 
+            background: linear-gradient(135deg, #00bcd4, #0097a7); 
+            color: white; 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin: 5px;
+            font-weight: bold;
+        }
+        button:hover { transform: scale(1.05); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Chrome Development Setup pentru BitSwapDEX</h1>
+
+        <div class="section tip">
+            <h2>✅ De ce Chrome este mai bun pentru development:</h2>
+            <ul>
+                <li>🔧 <strong>DevTools superiori</strong> - React Developer Tools, Network tab avanced</li>
+                <li>⚡ <strong>Performance mai bună</strong> - V8 engine optimizat</li>
+                <li>🔄 <strong>Hot reload mai rapid</strong> - Sincronizare instantanee</li>
+                <li>📱 <strong>Mobile simulation</strong> - Device toolbar perfect</li>
+                <li>🐛 <strong>Debugging avansat</strong> - Breakpoints, console mai bun</li>
+                <li>🔒 <strong>Securitate</strong> - CORS și security warnings mai clare</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>🛠️ Setup Optim pentru Development:</h2>
+            
+            <h3>1. 🔧 Chrome Extensions Recomandate:</h3>
+            <button onclick="openExtension('React Developer Tools')">React Developer Tools</button>
+            <button onclick="openExtension('Redux DevTools')">Redux DevTools</button>
+            <button onclick="openExtension('Lighthouse')">Lighthouse</button>
+            
+            <h3>2. ⌨️ Keyboard Shortcuts Esențiale:</h3>
+            <div class="grid">
+                <div>
+                    <p><span class="shortcut">F12</span> - Open DevTools</p>
+                    <p><span class="shortcut">Ctrl+Shift+I</span> - Inspector</p>
+                    <p><span class="shortcut">Ctrl+Shift+J</span> - Console</p>
+                    <p><span class="shortcut">Ctrl+Shift+C</span> - Element picker</p>
+                </div>
+                <div>
+                    <p><span class="shortcut">Ctrl+R</span> - Normal reload</p>
+                    <p><span class="shortcut">Ctrl+Shift+R</span> - Hard reload</p>
+                    <p><span class="shortcut">F5</span> - Refresh</p>
+                    <p><span class="shortcut">Ctrl+Shift+Delete</span> - Clear data</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section warning">
+            <h2>⚠️ Optimizări pentru Rate Limiting:</h2>
+            <h3>Chrome Settings pentru Development:</h3>
+            <ol>
+                <li>🔧 <strong>Disable cache</strong> în DevTools → Network → "Disable cache"</li>
+                <li>⚡ <strong>Throttling OFF</strong> în DevTools → Network → "No throttling"</li>
+                <li>🔄 <strong>Un singur tab</strong> pentru app development</li>
+                <li>🧹 <strong>Închide tab-urile nefolosite</strong> regulat</li>
+                <li>📱 <strong>Incognito mode</strong> pentru testing clean</li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>🚀 Launch Commands:</h2>
+            <button onclick="openLocalhost()">🌐 Open localhost:3000</button>
+            <button onclick="openIncognito()">🕵️ Open Incognito Mode</button>
+            <button onclick="openDevTools()">🔧 Open with DevTools</button>
+            
+            <h3>📱 Development URLs:</h3>
+            <p>🏠 <strong>Main App:</strong> <a href="http://localhost:3000" target="_blank">http://localhost:3000</a></p>
+            <p>🧪 <strong>Backend Test:</strong> <a href="debug-backend-connectivity.html" target="_blank">Backend Tests</a></p>
+            <p>📡 <strong>Telegram Test:</strong> <a href="test-telegram-simple.html" target="_blank">Telegram API</a></p>
+        </div>
+
+        <div class="section tip">
+            <h2>🎯 Pro Tips pentru BitSwapDEX Development:</h2>
+            <ul>
+                <li>🔍 <strong>Console filtering:</strong> Use <code>console.log("🔍 TELEGRAM:")</code> și filtrează cu "🔍"</li>
+                <li>📊 <strong>Network tab:</strong> Urmărește API calls la backend-server-f82y.onrender.com</li>
+                <li>⚡ <strong>React DevTools:</strong> Inspectează state-ul usePresaleState și Telegram components</li>
+                <li>🐛 <strong>Breakpoints:</strong> Set breakpoints în fetchTelegram și fetchPresaleData</li>
+                <li>📱 <strong>Mobile testing:</strong> Toggle device toolbar pentru responsive design</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function openLocalhost() {
+            window.open('http://localhost:3000', '_blank');
+        }
+        
+        function openIncognito() {
+            alert('💡 Manual step: Ctrl+Shift+N pentru Incognito, apoi navighează la localhost:3000');
+        }
+        
+        function openDevTools() {
+            window.open('http://localhost:3000', '_blank');
+            setTimeout(() => {
+                alert('💡 Press F12 în noul tab pentru DevTools');
+            }, 1000);
+        }
+        
+        function openExtension(name) {
+            const urls = {
+                'React Developer Tools': 'https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi',
+                'Redux DevTools': 'https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd',
+                'Lighthouse': 'https://chrome.google.com/webstore/detail/lighthouse/blipmdconlkpinefehnmjammfjpmpbjk'
+            };
+            window.open(urls[name], '_blank');
+        }
+        
+        // Auto-check if localhost:3000 is running
+        fetch('http://localhost:3000')
+            .then(() => {
+                document.body.style.borderTop = '5px solid #4CAF50';
+                console.log('✅ localhost:3000 is running!');
+            })
+            .catch(() => {
+                document.body.style.borderTop = '5px solid #f44336';
+                console.log('❌ localhost:3000 not running - start with npm start');
+            });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+

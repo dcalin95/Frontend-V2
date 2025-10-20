@@ -1,0 +1,113 @@
+/* ====== Pagină generală ====== */
+.whitepaper-container {
+  background: transparent; /* Complet transparent */
+  padding: 40px;
+  border-radius: 12px;
+  text-align: center;
+  color: #ffffff;
+  margin: 1rem auto;
+  width: 90%;
+  max-width: 900px;
+}
+
+/* ====== Soarele stilizat ====== */
+.whitepaper-sun {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  background: none; /* Eliminare cerc galben */
+  margin: 0 auto 30px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.whitepaper-sun::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80px;
+  height: 80px;
+  background: url('../assets/logo.png') no-repeat center; /* Asigură-te că logo-ul e vizibil */
+  background-size: contain;
+  transform: translate(-50%, -50%);
+}
+
+/* ====== Titlu și subtitlu ====== */
+.whitepaper-title {
+  color: #ffa726; /* Portocaliu pentru evidențiere */
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.whitepaper-subtitle {
+  color: #fbc02d; /* Galben subtil */
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+/* ====== Text explicativ ====== */
+.whitepaper-text {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  color: rgba(255, 255, 255, 0.85); /* Alb translucid */
+}
+
+/* Evidențiere pentru $BITS */
+.highlight-bits,
+.highlight-bitcoin,
+.whitepaper-text span {
+  color: #d2691e; /* Maro asemănător culorii logoului */
+  font-weight: bold;
+  text-shadow: 0 1px 3px rgba(210, 105, 30, 0.8); /* Efect subtil */
+}
+
+/* ====== Buton ====== */
+.whitepaper-button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: black;
+  background: linear-gradient(90deg, #ffa726, #ff8c00); /* Gradient portocaliu */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255, 167, 38, 0.5);
+  transition: all 0.3s ease;
+}
+
+.whitepaper-button:hover {
+  background: linear-gradient(90deg, #ffc56c, #ffa726); /* Gradient mai luminos */
+  box-shadow: 0 8px 20px rgba(255, 197, 108, 0.6);
+  transform: translateY(-3px);
+}
+
+/* ====== Responsivitate ====== */
+@media (max-width: 768px) {
+  .whitepaper-container {
+    padding: 20px;
+    width: 95%;
+  }
+
+  .whitepaper-title {
+    font-size: 1.5rem;
+  }
+
+  .whitepaper-subtitle {
+    font-size: 1rem;
+  }
+
+  .whitepaper-text {
+    font-size: 0.9rem;
+  }
+
+  .whitepaper-sun {
+    width: 70px;
+    height: 70px;
+  }
+}

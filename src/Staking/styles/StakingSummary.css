@@ -1,0 +1,195 @@
+.stakingCard {
+  background: transparent;
+  padding: 0;
+  border: none;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  margin: 0;
+}
+
+/* AI Summary Title - Calm */
+.ai-summary-title {
+  font-size: 1.6rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.5px;
+}
+
+/* AI Stats Container - Discrete */
+.ai-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.ai-stat-item {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.ai-stat-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.ai-stat-label {
+  font-size: 1.05rem; /* improved readability */
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.3px;
+}
+
+.ai-stat-value {
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 0 10px rgba(0, 255, 200, 0.35);
+}
+
+/* Clean - No aggressive animations */
+
+/* Cooldown progress SVG */
+.cooldownProgress {
+  margin: 20px auto;
+  width: 120px;
+  height: 120px;
+  position: relative;
+}
+
+.cooldownProgress svg {
+  transform: rotate(-90deg);
+}
+
+.cooldownProgress text {
+  transform: rotate(90deg);
+  font-size: 14px;
+  fill: white;
+}
+
+/* Detalii staking */
+.stakingDetails {
+  margin-top: 20px;
+  font-size: 1rem;
+  color: #eee;
+  text-align: left;
+}
+
+.stakingDetails p {
+  margin: 0.5rem 0;
+}
+
+/* Butonul de Claim */
+.claimButton {
+  background: linear-gradient(90deg, #00ffff, #ff00ff);
+  border: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+  margin-top: 20px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: black;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.7);
+  animation: pulseButton 1.5s infinite alternate;
+}
+
+.claimButton:hover {
+  background: linear-gradient(90deg, #00ff99, #ff00ff);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 1);
+}
+
+.claimButton:disabled {
+  background: gray;
+  color: #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
+  animation: none;
+}
+
+/* Feedback text */
+.feedback {
+  margin-top: 12px;
+  font-size: 0.95rem;
+  color: #00ff99;
+  text-align: center;
+  animation: pulseText 1s infinite alternate;
+}
+
+/* Animations */
+@keyframes pulseText {
+  from { opacity: 1; }
+  to { opacity: 0.6; }
+}
+
+@keyframes pulseButton {
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
+}
+
+/* Responsive pentru telefoane */
+@media (max-width: 600px) {
+  .stakingCard {
+    padding: 1.5rem;
+    max-width: 90%;
+  }
+
+  .stakingDetails {
+    font-size: 0.95rem;
+  }
+
+  .claimButton {
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+}
+
+/* AI-style number formatting */
+.ai-number {
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
+  background: linear-gradient(135deg, 
+    rgba(0, 255, 136, 0.9) 0%, 
+    rgba(255, 255, 255, 0.8) 50%, 
+    rgba(0, 255, 136, 0.9) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+}
+
+.ai-number:hover {
+  transform: scale(1.1);
+  text-shadow: 0 0 15px rgba(0, 255, 136, 0.6);
+}
+
+/* Number animation on value change */
+.ai-number {
+  animation: numberPulse 0.6s ease-out;
+}
+
+@keyframes numberPulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

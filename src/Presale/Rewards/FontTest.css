@@ -1,0 +1,213 @@
+/**
+ * 🔤 FONT TEST STYLES
+ */
+
+.font-test-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+.font-test-toggle {
+  padding: 10px 15px;
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 8px;
+  color: #00D4FF;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.font-test-toggle:hover {
+  background: rgba(0, 212, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.font-test-panel {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  width: 600px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.95);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 15px;
+  padding: 20px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.font-test-title {
+  margin: 0 0 20px 0;
+  color: #00D4FF;
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.font-samples {
+  margin-bottom: 25px;
+}
+
+.font-sample-row {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.font-label {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.font-sample {
+  padding: 8px 0;
+  font-size: 1.1rem;
+  color: #ffffff;
+  margin-bottom: 10px;
+  word-break: break-all;
+}
+
+/* ROG Font (Crystal/Kristal) */
+.rog-font {
+  font-family: 'ROG Fonts', 'Arial Black', sans-serif;
+  font-weight: normal;
+  text-shadow: 
+    0 0 5px rgba(0, 212, 255, 0.5),
+    0 0 10px rgba(0, 212, 255, 0.3),
+    0 0 15px rgba(0, 212, 255, 0.2);
+  letter-spacing: 1px;
+  background: linear-gradient(90deg, #00D4FF, #7B68EE, #FF6B9D);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Default Font for comparison */
+.default-font {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.font-info {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(0, 212, 255, 0.05);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 10px;
+}
+
+.font-info h3 {
+  margin: 0 0 10px 0;
+  color: #00D4FF;
+  font-size: 1.1rem;
+}
+
+.font-info ul {
+  margin: 0;
+  padding-left: 20px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.font-info li {
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+.font-usage {
+  padding: 15px;
+  background: rgba(255, 215, 0, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 10px;
+}
+
+.font-usage h3 {
+  margin: 0 0 10px 0;
+  color: #FFD700;
+  font-size: 1.1rem;
+}
+
+.code-block {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: #00FF88;
+  overflow-x: auto;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .font-test-container {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin: 20px 0;
+  }
+
+  .font-test-panel {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
+    max-width: none;
+  }
+
+  .font-sample {
+    font-size: 1rem;
+  }
+
+  .code-block {
+    font-size: 0.8rem;
+  }
+}
+
+/* Special effects for ROG font */
+@keyframes crystal-glow {
+  0%, 100% {
+    text-shadow: 
+      0 0 5px rgba(0, 212, 255, 0.5),
+      0 0 10px rgba(0, 212, 255, 0.3),
+      0 0 15px rgba(0, 212, 255, 0.2);
+  }
+  50% {
+    text-shadow: 
+      0 0 10px rgba(0, 212, 255, 0.8),
+      0 0 20px rgba(0, 212, 255, 0.5),
+      0 0 30px rgba(0, 212, 255, 0.3);
+  }
+}
+
+.rog-font:hover {
+  animation: crystal-glow 2s ease-in-out infinite;
+}
+
+/* Crystal-cut effect */
+.rog-font::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.font-sample-row:hover .rog-font::before {
+  opacity: 1;
+}

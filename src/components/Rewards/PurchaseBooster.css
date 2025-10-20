@@ -1,0 +1,170 @@
+/* Import fonturile Google */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap');
+
+/* Cardul principal */
+.purchase-booster {
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(145deg, rgba(25, 25, 50, 0.9), rgba(10, 10, 30, 0.9));
+  padding: 20px;
+  border: 2px solid #08fdd8;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(8, 253, 216, 0.3);
+  text-align: center;
+  color: #ffffff;
+  margin: 15px auto;
+  max-width: 360px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* La hover: animație pentru întregul card */
+.purchase-booster:hover {
+  transform: scale(1.05);
+  box-shadow: 0 15px 30px rgba(8, 253, 216, 0.6);
+}
+
+/* Titlul principal */
+.purchase-booster h2 {
+  font-size: 18px;
+  font-family: 'Roboto Mono', monospace;
+  color: #08fdd8;
+  margin-bottom: 12px;
+  /* text-shadow removed for crisp text */: 0 0 8px rgba(8, 253, 216, 0.7);
+}
+
+/* Mesaj de încurajare */
+.booster-message {
+  font-size: 14px;
+  font-family: 'Roboto', sans-serif;
+  color: #08fdd8;
+  margin-bottom: 15px;
+  /* text-shadow removed for crisp text */: 0 0 8px rgba(8, 253, 216, 0.5);
+  opacity: 0.9;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Hover pentru mesaj */
+.booster-message:hover {
+  /* text-shadow removed for crisp text */: 0 0 15px rgba(8, 253, 216, 0.9), 0 0 30px rgba(8, 253, 216, 0.6);
+  transform: scale(1.1);
+  color: #6affd7;
+}
+
+/* Linie sub text */
+.booster-message::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -5px;
+  height: 2px;
+  background: rgba(8, 253, 216, 0.6);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+}
+
+.booster-message:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Efect pentru suma totală în $BITS */
+.bits-amount {
+  font-size: 20px;
+  font-family: 'Roboto Mono', monospace;
+  color: #08fdd8;
+  font-weight: bold;
+  /* text-shadow removed for crisp text */: 0 0 10px rgba(8, 253, 216, 0.8), 0 0 20px rgba(8, 253, 216, 0.5);
+  display: inline-block;
+  position: relative;
+  transition: transform 0.5s ease-in-out, /* text-shadow removed for crisp text */ 0.3s ease-in-out;
+}
+
+/* Glow și rotație când suma se schimbă */
+.bits-amount.updated {
+  transform: rotateY(360deg) scale(1.2); /* Rotație și mărire */
+  /* text-shadow removed for crisp text */: 0 0 20px #08fdd8, 0 0 40px #00ffcc;
+}
+
+/* Particule stelate */
+@keyframes sparkle {
+  0% {
+    opacity: 1;
+    transform: scale(0.8) translateY(0);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1) translateY(-10px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.2) translateY(-20px);
+  }
+}
+
+.sparkle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle, #08fdd8 30%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0;
+  animation: sparkle 0.6s ease-out forwards;
+}
+
+/* Poziții aleatorii pentru steluțe */
+.sparkle:nth-child(1) {
+  left: -10px;
+  top: -5px;
+  animation-delay: 0s;
+}
+.sparkle:nth-child(2) {
+  right: -10px;
+  top: -5px;
+  animation-delay: 0.1s;
+}
+.sparkle:nth-child(3) {
+  left: -5px;
+  bottom: -10px;
+  animation-delay: 0.2s;
+}
+.sparkle:nth-child(4) {
+  right: -5px;
+  bottom: -10px;
+  animation-delay: 0.3s;
+}
+.sparkle:nth-child(5) {
+  left: 0;
+  top: -15px;
+  animation-delay: 0.4s;
+}
+.sparkle:nth-child(6) {
+  right: 0;
+  top: -15px;
+  animation-delay: 0.5s;
+}
+
+/* Lista de beneficii */
+.reward-info ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.reward-info li {
+  margin: 6px 0;
+  color: #ffffff;
+  font-size: 14px;
+  padding: 8px;
+  border: 1px solid #08fdd8;
+  border-radius: 8px;
+  background: rgba(25, 25, 50, 0.8);
+  transition: all 0.3s ease;
+}
+
+.reward-info li:hover {
+  background: rgba(8, 253, 216, 0.2);
+  border-color: #08fdd8;
+  box-shadow: 0 0 8px rgba(8, 253, 216, 0.3);
+}

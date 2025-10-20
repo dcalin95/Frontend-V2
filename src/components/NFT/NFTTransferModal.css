@@ -1,0 +1,309 @@
+/* NFT Transfer Modal Styles */
+
+.nft-transfer-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+}
+
+.nft-transfer-modal {
+  background: linear-gradient(145deg, #1a1a2e, #16213e);
+  border-radius: 20px;
+  border: 2px solid rgba(0, 163, 255, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  border-bottom: 1px solid rgba(0, 163, 255, 0.2);
+  background: linear-gradient(90deg, rgba(0, 163, 255, 0.1), rgba(255, 51, 102, 0.1));
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.4em;
+  background: linear-gradient(90deg, #00a3ff, #ff3366);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.8em;
+  color: #888;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background: rgba(255, 51, 102, 0.2);
+  color: #ff3366;
+  transform: rotate(90deg);
+}
+
+.modal-content {
+  padding: 25px;
+}
+
+.nft-preview-section {
+  background: linear-gradient(135deg, rgba(0, 163, 255, 0.05), rgba(255, 51, 102, 0.05));
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 25px;
+  border: 1px solid rgba(0, 163, 255, 0.2);
+}
+
+.nft-info h4 {
+  margin: 0 0 15px 0;
+  color: #00a3ff;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.nft-info p {
+  margin: 8px 0;
+  color: #ccc;
+  font-size: 0.95em;
+}
+
+.nft-info strong {
+  color: #fff;
+}
+
+.transfer-form {
+  margin-bottom: 25px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #00a3ff;
+  font-weight: bold;
+  font-size: 0.95em;
+}
+
+.address-input {
+  width: 100%;
+  padding: 12px 15px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(0, 163, 255, 0.3);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 0.9em;
+  font-family: 'Courier New', monospace;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.address-input:focus {
+  outline: none;
+  border-color: #00a3ff;
+  box-shadow: 0 0 15px rgba(0, 163, 255, 0.3);
+  background: rgba(0, 163, 255, 0.05);
+}
+
+.address-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.address-input::placeholder {
+  color: #666;
+}
+
+.address-info {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 15px;
+  margin-top: 15px;
+}
+
+.address-info p {
+  margin: 5px 0;
+  color: #ccc;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+.address-info strong {
+  color: #00a3ff;
+}
+
+.transfer-status {
+  padding: 12px 15px;
+  border-radius: 10px;
+  margin-top: 15px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.transfer-status.loading {
+  background: linear-gradient(90deg, rgba(0, 163, 255, 0.2), rgba(0, 255, 255, 0.2));
+  color: #00ffff;
+  border: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+.transfer-status.success {
+  background: linear-gradient(90deg, rgba(0, 255, 0, 0.2), rgba(0, 200, 100, 0.2));
+  color: #00ff88;
+  border: 1px solid rgba(0, 255, 0, 0.3);
+}
+
+.transfer-status.error {
+  background: linear-gradient(90deg, rgba(255, 0, 0, 0.2), rgba(255, 51, 102, 0.2));
+  color: #ff3366;
+  border: 1px solid rgba(255, 0, 0, 0.3);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  margin-top: 25px;
+}
+
+.cancel-btn {
+  padding: 12px 24px;
+  background: transparent;
+  border: 2px solid #666;
+  border-radius: 10px;
+  color: #ccc;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn:hover:not(:disabled) {
+  background: rgba(102, 102, 102, 0.2);
+  border-color: #999;
+  color: #fff;
+}
+
+.cancel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.transfer-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #00a3ff, #0080ff);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.95em;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 163, 255, 0.3);
+}
+
+.transfer-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0080ff, #00a3ff);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 163, 255, 0.4);
+}
+
+.transfer-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.transfer-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.transfer-warning {
+  background: rgba(255, 165, 0, 0.1);
+  border-top: 1px solid rgba(255, 165, 0, 0.3);
+  padding: 15px 25px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border-radius: 0 0 20px 20px;
+}
+
+.warning-icon {
+  font-size: 1.2em;
+  color: #ffa500;
+  margin-top: 2px;
+}
+
+.warning-text {
+  color: #ffa500;
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+.warning-text strong {
+  color: #ffb84d;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .nft-transfer-modal {
+    width: 95%;
+    margin: 10px;
+  }
+  
+  .modal-header {
+    padding: 15px 20px;
+  }
+  
+  .modal-content {
+    padding: 20px;
+  }
+  
+  .modal-actions {
+    flex-direction: column-reverse;
+  }
+  
+  .cancel-btn,
+  .transfer-btn {
+    width: 100%;
+    margin: 0;
+  }
+}
+

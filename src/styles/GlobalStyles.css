@@ -1,0 +1,462 @@
+/* ===============================
+   🔥 CRISP GLOBAL FONT RENDERING
+=============================== */
+* {
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: optimizeLegibility !important;
+}
+
+/* Remove legacy experimental class */
+.laser-sharp {
+  text-shadow: none !important;
+  filter: none !important;
+  -webkit-font-smoothing: antialiased !important;
+  text-rendering: optimizeLegibility !important;
+}
+
+/* Global text clarity hard override */
+html, body, #root,
+.content-container,
+div, p, a, button, input, label, span,
+h1, h2, h3, h4, h5, h6 {
+  text-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: optimizeLegibility !important;
+}
+
+/* ===== Browser UA classes applied in App.js ===== */
+body.opera *, body.opera { text-size-adjust: 100% !important; -webkit-text-size-adjust: 100% !important; }
+/* Opera rendering fixes: avoid heavy fonts and color shifts */
+body.opera *,
+body.opera .navigation a,
+body.opera .navigation button { -webkit-font-smoothing: antialiased !important; -moz-osx-font-smoothing: grayscale !important; text-rendering: optimizeLegibility !important; }
+body.opera img, body.opera .logo, body.opera .bits-logo-mini { image-rendering: auto !important; filter: none !important; -webkit-filter: none !important; }
+body.opera .laser-sharp { filter: none !important; text-shadow: none !important; }
+body.opera .navigation a, body.opera .navigation button { font-weight: 600 !important; letter-spacing: 0.01em !important; }
+/* Opera-only layout correction: avoid unexpected shrink to ~75% width */
+@media (min-width: 769px) {
+  /* Keep app/root full width */
+  body.opera #root,
+  body.opera .app-container { width: 100% !important; }
+
+  /* Sidebar-aware content width using viewport width to avoid Opera shrink */
+  body.opera .content-container {
+    width: calc(100vw - 250px) !important;
+    margin-left: 250px !important;
+    max-width: none !important;
+  }
+
+  /* Inner containers can expand normally */
+  body.opera .ai-container { max-width: 1280px !important; width: 100% !important; margin: 0 auto !important; }
+}
+
+/* Opera: ensure logos/icons render without filters */
+body.opera .orbit-node.no-spin img,
+body.opera .bits-core img,
+body.opera .bits-logo-mini { filter: none !important; image-rendering: auto !important; }
+body.opera .orbit-node.no-spin img { mix-blend-mode: normal !important; }
+body.opera .orbit-node, body.opera .bits-core { box-shadow: none !important; filter: none !important; background: rgba(0,0,0,0.9) !important; isolation: isolate !important; contain: paint !important; }
+body.safari * { -webkit-text-size-adjust: 100% !important; }
+body.firefox * { text-size-adjust: 100% !important; }
+
+/* ===============================
+   ✅ GLOBAL RESET + BOX-SIZING
+=============================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===============================
+   🎨 FONT LOADING OPTIMIZATION
+=============================== */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Orbitron font removed - using system fonts for better clarity */
+
+/* Orbitron font removed - using system fonts for better clarity */
+
+/* ===============================
+   🎨 VARIABLES (THEME ROOT)
+=============================== */
+:root {
+  --font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font-heading: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --background-dark: #121212;
+  --background-glass: rgba(0, 0, 0, 0.6);
+  --text-light: #ffffff;
+  --accent: #00ffff;
+
+  --gradient-button: linear-gradient(145deg, #3c3c5a, #2e2e44);
+  --gradient-button-hover: linear-gradient(145deg, #4a4a6c, #3c3c5a);
+  --button-hover-color: #ff007f;
+
+  --font-size-base: 1.2rem;
+  --font-size-mobile: 1rem;
+  --font-size-small-mobile: 0.9rem;
+}
+
+/* ===============================
+   🧱 LAYOUT STRUCTURE
+=============================== */
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  font-family: var(--font-family);
+  background-color: transparent !important;
+  color: var(--text-light);
+  line-height: 1.5;
+  font-display: swap;
+}
+
+html, body {
+  scroll-padding-top: 80px;
+}
+
+/* Mobile menu open state - no content manipulation needed */
+@media (max-width: 768px) {
+  body.mobile-menu-open {
+    /* Menu is positioned fixed, no content pushing needed */
+  }
+}
+
+/* ===============================
+   ✍️ TYPOGRAPHY
+=============================== */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  font-family: var(--font-heading);
+  color: #ffffff;
+  line-height: 1.25;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+p, a, button, input, label, span {
+  font-weight: 400;
+  font-family: var(--font-family);
+}
+
+/* ===============================
+   🧭 LINKS, LISTS, BUTTONS
+=============================== */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+ul {
+  list-style: none;
+}
+button {
+  border: none;
+  background: none;
+  outline: none;
+  cursor: pointer;
+  font-family: var(--font-family);
+}
+
+/* ===============================
+   ✨ BACKGROUND (canvas/starfield)
+=============================== */
+#three-background,
+canvas#starfield-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0 !important;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  background-color: black !important;
+}
+
+/* ===============================
+   🎛 GLOBAL COMPONENTS
+=============================== */
+.global-button {
+  background: var(--gradient-button);
+  color: var(--text-light);
+  padding: 12px 24px;
+  font-size: var(--font-size-base);
+  font-weight: bold;
+  border-radius: 10px;
+  transition: all 0.3s ease-in-out;
+}
+.global-button:hover {
+  background: var(--gradient-button-hover);
+  color: var(--button-hover-color);
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+}
+
+.global-input {
+  background: #000;
+  color: var(--text-light);
+  border: 1px solid var(--accent);
+  padding: 10px;
+  border-radius: 8px;
+  font-size: var(--font-size-base);
+  width: 100%;
+}
+
+/* ===============================
+   🔊 SOUND TOGGLE BUTTON
+=============================== */
+.sound-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0, 255, 255, 0.1);
+  border: 2px solid var(--accent);
+  color: var(--text-light);
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 10px;
+  z-index: 9999;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.sound-toggle:hover {
+  background: rgba(0, 255, 255, 0.2);
+  box-shadow: 0 0 10px var(--accent);
+}
+
+/* ===============================
+   🌀 LOADER SHIMMER
+=============================== */
+.shimmer-loader {
+  display: inline-block;
+  background: linear-gradient(
+    135deg,
+    #ff4081 10%,
+    #ffd700 40%,
+    #00ffcc 70%,
+    #ff4081 100%
+  );
+  background-size: 400% 100%;
+  animation: shimmerCosmic 1.2s ease-in-out infinite;
+  height: 1.4rem;
+  width: 140px;
+  border-radius: 8px;
+  color: transparent;
+}
+@keyframes shimmerCosmic {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* ===============================
+   📱 RESPONSIVE — MOBILE FIRST
+=============================== */
+@media (max-width: 768px) {
+  body {
+    font-size: 90%;
+  }
+
+  .global-button {
+    font-size: var(--font-size-mobile);
+    padding: 10px 20px;
+  }
+
+  .global-input {
+    font-size: var(--font-size-mobile);
+  }
+
+  /* 🔧 Boosted Banner */
+  .total-boosted-banner {
+    top: 120px !important; /* Mărit de la 70px la 120px pentru a fi sub wallet */
+    left: 60% !important; /* Schimbat de la 75% la 60% pentru a fi mai spre stânga */
+    transform: translateX(-50%) !important;
+    width: 92vw !important;
+    max-width: 180px !important; /* Redus pentru a fi mai compact */
+    padding: 10px 16px !important;
+    font-size: 1rem !important;
+    flex-direction: column !important;
+    text-align: center !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    z-index: 9998 !important; /* Redus pentru a fi sub wallet */
+    background: transparent !important; /* Eliminat fundalul */
+    box-shadow: none !important; /* Eliminat umbra */
+  }
+
+  .boosted-label {
+    font-size: 0.95rem !important;
+    /* text-shadow removed for crisp text */
+    text-align: center !important;
+  }
+
+  .boosted-amount {
+    font-size: 1.5rem !important;
+    text-align: center !important;
+  }
+
+  .bits-logo-floating {
+    width: 30px !important;
+    height: 30px !important;
+    margin: 0 !important;
+    animation: floatX 3s ease-in-out infinite !important;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 85%;
+  }
+
+  .global-button {
+    font-size: var(--font-size-small-mobile);
+    padding: 8px 15px;
+  }
+
+  .global-input {
+    font-size: var(--font-size-small-mobile);
+  }
+}
+/* Header spacer responsive fix */
+.header-spacer {
+  height: 80px;
+}
+
+@media (max-width: 768px) {
+  .header-spacer {
+    height: 90px; /* Ajustat pentru header + timer pe mobil */
+  }
+  
+  /* Asigură spațiu pentru toate elementele pe mobil */
+  body {
+    padding-top: 90px;
+  }
+  
+  .app-container {
+    min-height: calc(100vh - 90px);
+  }
+  
+  /* Asigură spațiu pentru toate paginile și componentele pe mobil */
+  main, .main-content, .page-container, .component-container {
+    padding-top: 20px !important;
+    margin-top: 20px !important;
+  }
+  
+  /* Specific pentru toate rutele/paginile */
+  [class*="page"], [class*="container"], [class*="section"] {
+    margin-top: 20px !important;
+  }
+  
+  /* Pentru componente specifice care pot fi afectate */
+  .how-it-works, .about-page, .staking-page, .rewards-page, .presale-page {
+    padding-top: 30px !important;
+    margin-top: 20px !important;
+  }
+  
+  /* Toate componentele identificate din proiect */
+  .how-to-buy-container, .invite-page-container, .rewards-dashboard, 
+  .container, .hero, .info-section, .dashboard-container {
+    padding-top: 30px !important;
+    margin-top: 20px !important;
+  }
+  
+  /* Selectoare universale pentru orice component React */
+  div[class*="-container"], div[class*="-page"], div[class*="-section"],
+  div[class*="Container"], div[class*="Page"], div[class*="Section"] {
+    padding-top: 20px !important;
+    margin-top: 15px !important;
+  }
+}
+.content-container {
+  padding: 20px;
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (min-width: 769px) {
+  .content-container {
+    margin-left: 250px; /* Compensează spațiul pentru sidebar-ul fix */
+    width: calc(100% - 250px); /* Ajustează lățimea pentru a compensa sidebar-ul */
+  }
+}
+
+@media (max-width: 768px) {
+  .content-container {
+    padding: 16px;
+    padding-top: 90px; /* Space extra pentru timer-ul din header care se suprapune */
+    margin-left: 0; /* Pe mobil nu avem sidebar fix */
+    width: 100%;
+  }
+}
+
+/* Pentru ecrane foarte mici */
+@media (max-width: 480px) {
+  body {
+    padding-top: 80px; /* Puțin mai mic pentru ecrane foarte mici */
+  }
+  
+  .content-container {
+    padding-top: 80px;
+  }
+  
+  .header-spacer {
+    height: 80px;
+  }
+  
+  /* Asigură spațiu pentru toate componentele pe ecrane foarte mici */
+  main, .main-content, .page-container, .component-container {
+    padding-top: 15px !important;
+    margin-top: 15px !important;
+  }
+  
+  .how-it-works, .about-page, .staking-page, .rewards-page, .presale-page {
+    padding-top: 25px !important;
+    margin-top: 15px !important;
+  }
+  
+  /* Toate componentele identificate din proiect pentru ecrane mici */
+  .how-to-buy-container, .invite-page-container, .rewards-dashboard, 
+  .container, .hero, .info-section, .dashboard-container {
+    padding-top: 25px !important;
+    margin-top: 15px !important;
+  }
+  
+  /* Selectoare universale pentru orice component React pe ecrane mici */
+  div[class*="-container"], div[class*="-page"], div[class*="-section"],
+  div[class*="Container"], div[class*="Page"], div[class*="Section"] {
+    padding-top: 15px !important;
+    margin-top: 10px !important;
+  }
+}

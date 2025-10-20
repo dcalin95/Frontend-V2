@@ -1,0 +1,298 @@
+@import url('https://fonts.googleapis.com/css2?family=system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif:wght@600&family=Fira+Code&display=swap');
+
+.ai-box {
+  background: radial-gradient(circle at top left, #0f0f0f 0%, #050505 100%);
+  padding: 2.5rem;
+  border-radius: 16px;
+  max-width: 900px;
+  margin: 4rem auto;
+  border: 1px solid #2bdcff55;
+  box-shadow: 0 0 35px rgba(0, 255, 255, 0.3), 0 0 10px rgba(43, 220, 255, 0.2) inset;
+  color: #ffffff;
+  font-family: 'system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif', sans-serif;
+  transition: all 0.3s ease-in-out;
+}
+
+.ai-box:hover {
+  box-shadow: 0 0 50px #2bdcff55, 0 0 20px #1a75ff66 inset;
+}
+
+.neon-text {
+  color: #2bdcff;
+  font-size: 2rem;
+  text-shadow: 0 0 8px #2bdcff, 0 0 15px #2bdcffaa;
+}
+
+.ai-input {
+  width: 100%;
+  padding: 1.2rem;
+  font-size: 1.2rem;
+  border: 1px solid #2bdcff55;
+  border-radius: 10px;
+  background-color: #0c0c0c;
+  color: #ffffff;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  font-family: 'Fira Code', monospace;
+  transition: 0.2s ease;
+}
+
+.ai-input:focus {
+  outline: none;
+  border-color: #2bdcff;
+  box-shadow: 0 0 8px #2bdcff;
+}
+
+.ai-button {
+  padding: 0.9rem 1.8rem;
+  background: linear-gradient(to right, #2bdcff, #1a75ff);
+  color: #000;
+  font-size: 1.1rem;
+  font-weight: bold;
+  font-family: 'system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif', sans-serif;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ai-button::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, #2bdcff44, #1a75ff11);
+  animation: pulseGlow 2s linear infinite;
+  z-index: 0;
+}
+
+.ai-button span {
+  position: relative;
+  z-index: 1;
+}
+
+.ai-button:hover {
+  background: linear-gradient(to right, #1a75ff, #2bdcff);
+  box-shadow: 0 0 16px #2bdcffcc;
+  transform: scale(1.05);
+}
+
+.ai-response {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-top: 1.8rem;
+  border: 1px solid #2bdcff22;
+  color: #d1f2ff;
+  font-family: 'Fira Code', monospace;
+  font-size: 1.2rem;
+  white-space: pre-wrap;
+}
+
+.typing {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-style: italic;
+  color: #2bdcff;
+  font-family: 'Fira Code', monospace;
+  font-size: 1.1rem;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(0, 255, 255, 0.2);
+  border-top-color: #2bdcff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+/* 🔄 ANIMATIONS */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+}
+
+/* 📱 RESPONSIVE */
+@media screen and (max-width: 768px) {
+  .ai-box {
+    padding: 1.5rem;
+    margin: 2rem 1rem;
+  }
+
+  .neon-text {
+    font-size: 1.5rem;
+  }
+
+  .ai-input,
+  .ai-button,
+  .ai-response {
+    font-size: 1rem;
+  }
+
+  .ai-button {
+    padding: 0.7rem 1.4rem;
+  }
+}
+.ai-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.ai-avatar {
+  width: 40px;
+  height: 40px;
+  background: radial-gradient(circle at center, #2bdcff 0%, #0f0f0f 90%);
+  border-radius: 50%;
+  border: 2px solid #2bdcff88;
+  box-shadow: 0 0 15px #2bdcffaa;
+  position: relative;
+}
+
+/* 🌀 Animation effect */
+.animated-avatar::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #2bdcff44;
+  animation: aiPulse 2s infinite ease-in-out;
+}
+
+@keyframes aiPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+}
+.ai-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.ai-avatar-container {
+  width: 48px;
+  height: 48px;
+  position: relative;
+}
+
+.ai-avatar-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.ai-avatar-glow {
+  fill: #2bdcff33;
+  animation: pulseGlow 2s infinite ease-in-out;
+}
+
+@keyframes pulseGlow {
+  0% {
+    r: 30;
+    opacity: 0.6;
+  }
+  50% {
+    r: 33;
+    opacity: 0.1;
+  }
+  100% {
+    r: 30;
+    opacity: 0.6;
+  }
+}
+.ai-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.ai-button.clear {
+  background-color: #444;
+  color: #fff;
+}
+
+.ai-history {
+  margin-top: 20px;
+  background: #111;
+  padding: 15px;
+  border-radius: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.history-title {
+  margin-bottom: 10px;
+  color: #2bdcff;
+}
+
+.history-item {
+  font-size: 0.9rem;
+  color: #ccc;
+}
+.video-preview {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.video-preview video {
+  border: 2px solid #2bdcff;
+  border-radius: 10px;
+}
+
+.camera-label {
+  color: #2bdcff;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}

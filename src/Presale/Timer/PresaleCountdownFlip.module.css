@@ -1,0 +1,487 @@
+/* Orbitron font import removed - using system fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@600&family=Poppins:wght@400;600&display=swap');
+
+/* ✅ STRUCTURA GENERALĂ */
+.countdownFlip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1.5rem auto;
+  gap: 1.5rem;
+}
+
+/* ✅ HEADER */
+.cardHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0.055rem;
+}
+
+.bitsLogo {
+  width: 42px;
+  height: 42px;
+  filter: drop-shadow(0 0 8px #00f0ffcc);
+  animation: logoPulse 3s infinite ease-in-out;
+}
+
+/* ✅ TEXTE DE PREȚ */
+.priceInfo {
+  text-align: center;
+  width: 100%;
+  color: #ffc107;
+  font-size: 1.2rem;
+  font-family: 'system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif', sans-serif;
+}
+
+.priceLine {
+  margin: 8px 0;
+  font-size: 1.3rem;
+  font-family: 'system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif', sans-serif;
+  color: #ffffff;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.priceLogo {
+  width: 24px;
+  height: 24px;
+  filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.8));
+  animation: logoSpin 3s linear infinite;
+}
+
+.currentPriceDisplay {
+  font-size: 2.2rem;
+  font-weight: 900;
+  background: linear-gradient(45deg, #ff0080, #ff6b6b, #ffd700, #00ff88, #00f0ff, #7f00ff);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbowFlow 3s linear infinite;
+  display: inline-block;
+  position: relative;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+  letter-spacing: 1px;
+}
+
+.unavailablePrice {
+  font-size: 1.5rem;
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+.currentPriceValue {
+  font-size: 1.8rem;
+  font-weight: bold;
+  background: linear-gradient(45deg, #ff0080, #ff6b6b, #ffd700, #00ff88, #00f0ff, #7f00ff);
+  background-size: 300% 300%;
+  /* background-clip removed for crisp text */
+  /* webkit-text-fill-color removed for crisp text */
+  /* background-clip removed for crisp text */
+  animation: priceSpectacular 4s ease-in-out infinite, rainbowFlow 3s linear infinite;
+  display: inline-block;
+  margin-left: 8px;
+  position: relative;
+  text-shadow: none;
+}
+
+.currentPriceValue::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #ff0080, #ff6b6b, #ffd700, #00ff88, #00f0ff, #7f00ff);
+  background-size: 300% 300%;
+  z-index: -1;
+  border-radius: 8px;
+  animation: rainbowFlow 3s linear infinite;
+  opacity: 0.3;
+  filter: blur(4px);
+}
+
+
+
+.roundText {
+  font-size: 1.8rem;
+  font-family: 'system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif', sans-serif;
+  color: #00f0ff;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
+  margin-bottom: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.currentRound {
+  color: #ff6b6b;
+  text-shadow: 0 0 8px rgba(255, 107, 107, 0.8);
+}
+
+.totalRounds {
+  color: #00ff88;
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.8);
+}
+
+/* ✅ TIMER BOXES */
+.timeBoxes {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.timeBox {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 1rem;
+  min-width: 80px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 0 0.5rem;
+}
+
+.timeValue {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #00f0ff;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+  font-family: 'system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif', sans-serif;
+}
+
+.timeLabel {
+  font-size: 0.9rem;
+  color: #ffffff;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif', sans-serif;
+}
+
+/* ✅ ANIMAȚII */
+@keyframes logoPulse {
+  0% {
+    filter: drop-shadow(0 0 4px #00f0ff33);
+  }
+  50% {
+    filter: drop-shadow(0 0 14px #00f0ffff);
+  }
+  100% {
+    filter: drop-shadow(0 0 4px #00f0ff33);
+  }
+}
+
+@keyframes logoSpin {
+  0% {
+    transform: rotate(0deg);
+    filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.8));
+  }
+  50% {
+    transform: rotate(180deg);
+    filter: drop-shadow(0 0 12px rgba(0, 240, 255, 1));
+  }
+  100% {
+    transform: rotate(360deg);
+    filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.8));
+  }
+}
+
+@keyframes rainbowFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes priceSpectacular {
+  0%, 70% {
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1) contrast(1);
+  }
+  75% {
+    transform: scale(1.3) rotate(2deg);
+    filter: brightness(1.2) contrast(1.2);
+  }
+  80% {
+    transform: scale(1.6) rotate(-2deg);
+    filter: brightness(1.4) contrast(1.4);
+  }
+  85% {
+    transform: scale(2) rotate(3deg);
+    filter: brightness(1.6) contrast(1.6);
+  }
+  90% {
+    transform: scale(2.5) rotate(-3deg);
+    filter: brightness(1.8) contrast(1.8);
+  }
+  95% {
+    transform: scale(3) rotate(5deg);
+    filter: brightness(2) contrast(2);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1) contrast(1);
+  }
+}
+
+/* ✅ RESPONSIVE */
+@media (max-width: 480px) {
+  .countdownFlip {
+    margin: 1rem auto;
+    gap: 1rem;
+  }
+
+  .timeBoxes {
+    margin-bottom: 0.3rem;
+  }
+
+  .timeBox {
+    min-width: 50px; /* Redus de la 60px la 50px */
+    padding: 0.4rem; /* Redus de la 0.5rem la 0.4rem */
+    margin: 0 0.2rem; /* Redus de la 0.5rem la 0.2rem */
+  }
+
+  .timeValue {
+    font-size: 1.5rem; /* Redus de la 1.8rem la 1.5rem */
+  }
+
+  .timeLabel {
+    font-size: 0.6rem; /* Redus de la 0.65rem la 0.6rem */
+  }
+
+  .roundText {
+    font-size: 1.4rem; /* Redus pentru a se potrivi pe mobil */
+    margin-bottom: 0.6rem;
+    line-height: 1.1;
+  }
+  
+  .currentRound {
+    color: #ff6b6b;
+    text-shadow: 0 0 6px rgba(255, 107, 107, 0.8);
+  }
+  
+  .totalRounds {
+    color: #00ff88;
+    text-shadow: 0 0 6px rgba(0, 255, 136, 0.8);
+  }
+
+  .priceInfo {
+    font-size: 1rem; /* Redus de la 1.2rem la 1rem */
+  }
+  
+  .priceLine {
+    font-size: 1.1rem;
+  }
+  
+  .priceLogo {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .currentPriceDisplay {
+    font-size: 1.8rem;
+  }
+  
+  .currentPriceValue {
+    font-size: 1.5rem;
+  }
+
+
+
+  .bitsLogo {
+    width: 35px; /* Redus de la 42px la 35px */
+    height: 35px; /* Redus de la 42px la 35px */
+  }
+}
+
+/* ✅ Responsive pentru ecrane foarte mici */
+@media (max-width: 360px) {
+  .countdownFlip {
+    margin: 0.8rem auto;
+    gap: 0.8rem;
+  }
+
+  .timeBoxes {
+    margin-bottom: 0.2rem;
+  }
+
+  .timeBox {
+    min-width: 40px; /* Redus și mai mult */
+    padding: 0.3rem; /* Redus și mai mult */
+    margin: 0 0.1rem; /* Redus și mai mult */
+  }
+
+  .timeValue {
+    font-size: 1.2rem; /* Redus și mai mult */
+  }
+
+  .timeLabel {
+    font-size: 0.5rem; /* Redus și mai mult */
+  }
+
+  .roundText {
+    font-size: 1.2rem; /* Redus pentru ecrane foarte mici */
+    margin-bottom: 0.5rem;
+    line-height: 1.1;
+  }
+  
+  .currentRound {
+    color: #ff6b6b;
+    text-shadow: 0 0 5px rgba(255, 107, 107, 0.8);
+  }
+  
+  .totalRounds {
+    color: #00ff88;
+    text-shadow: 0 0 5px rgba(0, 255, 136, 0.8);
+  }
+
+  .priceInfo {
+    font-size: 0.9rem; /* Redus și mai mult */
+  }
+  
+  .priceLine {
+    font-size: 1rem;
+  }
+  
+  .priceLogo {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .currentPriceDisplay {
+    font-size: 1.6rem;
+  }
+  
+  .currentPriceValue {
+    font-size: 1.3rem;
+  }
+
+
+
+  .bitsLogo {
+    width: 30px; /* Redus și mai mult */
+    height: 30px; /* Redus și mai mult */
+  }
+}
+
+/* ✅ Responsive pentru ecrane ultra mici */
+@media (max-width: 320px) {
+  .countdownFlip {
+    margin: 0.6rem auto;
+    gap: 0.6rem;
+  }
+
+  .timeBoxes {
+    margin-bottom: 0.1rem;
+  }
+
+  .timeBox {
+    min-width: 35px; /* Redus și mai mult */
+    padding: 0.2rem; /* Redus și mai mult */
+    margin: 0 0.05rem; /* Redus și mai mult */
+  }
+
+  .timeValue {
+    font-size: 1rem; /* Redus și mai mult */
+  }
+
+  .timeLabel {
+    font-size: 0.45rem; /* Redus și mai mult */
+  }
+
+  .roundText {
+    font-size: 1rem; /* Redus pentru ecrane ultra mici */
+    margin-bottom: 0.4rem;
+    line-height: 1.1;
+  }
+  
+  .currentRound {
+    color: #ff6b6b;
+    text-shadow: 0 0 4px rgba(255, 107, 107, 0.8);
+  }
+  
+  .totalRounds {
+    color: #00ff88;
+    text-shadow: 0 0 4px rgba(0, 255, 136, 0.8);
+  }
+
+  .priceInfo {
+    font-size: 0.8rem; /* Redus și mai mult */
+  }
+  
+  .priceLine {
+    font-size: 0.9rem;
+  }
+  
+  .priceLogo {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .currentPriceDisplay {
+    font-size: 1.4rem;
+  }
+  
+  .currentPriceValue {
+    font-size: 1.1rem;
+  }
+
+
+
+  .bitsLogo {
+    width: 25px; /* Redus și mai mult */
+    height: 25px; /* Redus și mai mult */
+  }
+}
+
+.remainingText {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #ffd700;
+}
+
+.finalRound {
+  font-size: 1rem;
+  color: #ff6b6b;
+  margin-bottom: 0.5rem;
+}
+
+/* Animations */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.timeValue {
+  animation: pulse 2s infinite;
+}
+
+.digitChange {
+  animation: digitGlow 0.35s ease-in-out;
+}
+
+@keyframes digitGlow {
+  0% {
+    transform: scale(1);
+    text-shadow: 0 0 0px #00f0ff;
+  }
+  50% {
+    transform: scale(1.3);
+    text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+  }
+  100% {
+    transform: scale(1);
+    text-shadow: 0 0 0px #00f0ff;
+  }
+}

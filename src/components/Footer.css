@@ -1,0 +1,80 @@
+/* Stilizare principală pentru footer */
+.footer-container {
+    padding: 1rem 0.5rem;
+    text-align: center;
+    background: Transparent;
+    color: #d1d1d1;
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(12, 36, 135, 0.2);
+  }
+  
+  .footer-text {
+    margin: 0 0 1rem;
+    line-height: 1.5;
+    font-size: 0.9rem;
+  }
+  
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .footer-button {
+    text-decoration: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid #1e90ff;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    background: rgba(30, 144, 255, 0.1);
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+  
+  .footer-button:hover {
+    background: rgba(30, 144, 255, 0.3);
+    transform: scale(1.05);
+  }
+  
+  .footer-icon {
+    font-size: 1.2rem;
+  }
+  
+  .footer-icon.blue {
+    color: #1e90ff;
+  }
+  
+  .footer-icon.green {
+    color: #28a745;
+  }
+  
+  .footer-icon.red {
+    color: #ff6347;
+  }
+  
+  /* Responsivitate pentru mobil */
+  @media (max-width: 768px) {
+    .footer-container {
+      font-size: 0.8rem;
+      padding: 1rem;
+    }
+  
+    .footer-links {
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8rem;
+    }
+  
+    .footer-button {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+    }
+  
+    .footer-icon {
+      font-size: 1rem;
+    }
+  }
+  

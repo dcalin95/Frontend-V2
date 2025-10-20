@@ -1,0 +1,416 @@
+/* iOS/Safari/Opera mobile header visibility fix */
+@supports (-webkit-touch-callout: none) {
+  .header img { image-rendering: -webkit-optimize-contrast; }
+  .header { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+}
+
+/* Force header background to non-transparent to avoid white flash */
+.header { background: rgba(10,12,24,0.85); backdrop-filter: blur(0px); }
+/* === HEADER === */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 1rem 2rem;
+  height: 80px;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000; /* 🔧 CHROME FIX - Increased z-index */
+  border-bottom: 1px solid rgba(0, 255, 200, 0.2);
+  backdrop-filter: blur(10px); /* 🔧 CHROME FIX - Better rendering */
+  -webkit-backdrop-filter: blur(10px); /* 🔧 CHROME FIX - Webkit support */
+  gap: 2rem; /* Adaugă spațiu între elemente */
+}
+
+/* === LOGO === */
+.logo-container {
+  flex: 0 0 auto; /* Nu se comprimă și nu crește */
+  min-width: 80px; /* Spațiu minim garantat */
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.logo-container .logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 30px rgba(0, 255, 0, 0.7);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 40px rgba(0, 255, 0, 1);
+}
+
+/* === NAVIGATION === */
+.navigation {
+  display: flex;
+  gap: 0.5rem; /* Gap mai mic între butoane */
+  flex-wrap: wrap;
+  align-items: center;
+  flex: 1; /* Ocupă spațiul disponibil */
+  justify-content: center; /* Centrează butoanele */
+  margin: 0 1rem; /* Spațiu de siguranță pe ambele părți */
+  max-width: calc(100% - 400px); /* Lasă spațiu pentru logo și right-section */
+}
+
+/* Desktop navigation open styles - only apply above mobile breakpoint */
+@media (min-width: 769px) {
+  .navigation.open {
+    flex-direction: column;
+    position: absolute;
+    top: 80px;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.95);
+    padding: 1rem;
+    z-index: 200;
+  }
+}
+
+/* === BUTTONS === */
+.navigation a,
+.navigation button {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 10px; /* Padding mai mic */
+  font-size: 1rem; /* Font mai mic */
+  font-weight: 700;
+  border-radius: 30px;
+  background: transparent;
+  border: 2px solid transparent;
+  position: relative;
+  text-decoration: none;
+  white-space: nowrap;
+  color: transparent;
+  background-image: linear-gradient(90deg, #00ffff, #ff00ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: all 0.6s ease;
+  box-shadow: 0 0 6px rgba(0, 255, 255, 0.12);
+  background-size: 200% auto;
+  animation: shine 14s linear infinite;
+
+}
+
+.navigation a::before,
+.navigation button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 30px;
+  padding: 1px;
+  background: linear-gradient(90deg, #00ffff, #8a2be2);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: -1;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+
+}
+
+.navigation a:hover,
+.navigation button:hover {
+  transform: translateY(-2px) scale(1.03);
+  background-image: linear-gradient(90deg, #ffe066, #ff66cc);
+  -webkit-text-fill-color: transparent;
+  box-shadow: 0 0 20px rgba(255, 224, 102, 0.4);
+  background-color: #111;
+}
+
+.navigation a:hover i,
+.navigation button:hover i {
+  color: #ffe066;
+  transform: scale(1.2) rotate(10deg);
+}
+
+/* === ICON COLORS === */
+.navigation .btn-home i        { color: #69db7c; }
+.navigation .btn-buy i         { color: #ffd43b; }
+.navigation .btn-tokenomics i  { color: #4dabf7; }
+.navigation .btn-smart-staking i { color: #ff3366; }
+.navigation .btn-paper-trading i { color: #ff6b35; }
+.navigation .btn-audit i       { color: #9775fa; }
+.navigation .btn-leaderboard i { color: #74c0fc; }
+.navigation .btn-bitcoin-academy i { color: #f7931e; }
+.navigation .btn-education i   { color: #4ecdc4; }
+.navigation .btn-pox i         { color: #00ff88; }
+.navigation .btn-how-it-works i { color: #38d9a9; }
+.navigation .btn-invite i      { color: #f783ac; }
+.navigation .btn-go-main i     { color: #f3722c; }
+.navigation .btn-claude4-ai i  { color: #00D4FF; }
+
+/* === BORDERS TO MATCH === */
+.btn-home        { border-color: #69db7c; }
+.btn-buy         { border-color: #ffd43b; }
+.btn-tokenomics  { border-color: #4dabf7; }
+.btn-smart-staking { border-color: #ff3366; }
+.btn-paper-trading { border-color: #ff6b35; }
+.btn-audit       { border-color: #9775fa; }
+.btn-leaderboard { border-color: #74c0fc; }
+.btn-bitcoin-academy { border-color: #f7931e; }
+.btn-education   { border-color: #4ecdc4; }
+.btn-pox         { border-color: #00ff88; }
+.btn-how-it-works{ border-color: #38d9a9; }
+.btn-invite      { border-color: #f783ac; }
+.btn-go-main     { border-color: #f3722c; color: #00ffff; }
+.btn-claude4-ai  { border-color: #00D4FF; color: #00D4FF; }
+
+/* === CLAUDE 4 AI BUTTON SPECIAL NEURAL EFFECTS === */
+.btn-claude4-ai {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+  animation: claude4-neural-pulse 3s infinite;
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+}
+
+.btn-claude4-ai::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.2), transparent);
+  animation: claude4-neural-scan 4s infinite linear;
+  z-index: -1;
+}
+
+.btn-claude4-ai:hover {
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.6);
+  transform: translateY(-3px) scale(1.05);
+}
+
+@keyframes claude4-neural-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 25px rgba(0, 212, 255, 0.6), 0 0 35px rgba(0, 212, 255, 0.3);
+  }
+}
+
+@keyframes claude4-neural-scan {
+  0% { transform: translateX(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) rotate(45deg); }
+}
+
+/* === POX BUTTON SPECIAL EFFECTS === */
+.btn-pox {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+  animation: pox-glow 2s ease-in-out infinite alternate;
+}
+
+.btn-pox::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.3), transparent);
+  transition: all 0.5s ease;
+}
+
+.btn-pox:hover::before {
+  left: 100%;
+}
+
+.btn-pox:hover {
+  box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
+  transform: translateY(-2px);
+}
+
+@keyframes pox-glow {
+  0% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.3); }
+  100% { box-shadow: 0 0 25px rgba(0, 255, 136, 0.5); }
+}
+
+/* === AI BUTTON === */
+.ai-button {
+  font-size: 0.9rem;
+  padding: 8px 14px;
+  background-color: #5a20ff;
+  color: white;
+  border-radius: 18px;
+  font-weight: bold;
+  margin-left: 10px;
+  border: 2px solid #7a40ff;
+  box-shadow: 0 0 8px rgba(90, 32, 255, 0.4);
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.ai-button:hover {
+  background-color: #7a40ff;
+  transform: scale(1.05);
+}
+
+/* === TIMER === */
+.header-mini-timer {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #00ffff;
+  animation: glow 2.5s infinite ease-in-out;
+  text-align: center;
+}
+
+@keyframes glow {
+  0% { text-shadow: 0 0 5px #00ffff; }
+  50% { text-shadow: 0 0 15px #00ffff, 0 0 30px #00ffff; }
+  100% { text-shadow: 0 0 5px #00ffff; }
+}
+
+/* === SOCIAL === */
+.right-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 0 0 auto; /* Nu se comprimă */
+  min-width: 200px; /* Spațiu minim garantat */
+  justify-content: flex-end; /* Aliniază la dreapta */
+}
+
+.social {
+  display: flex;
+  gap: 12px;
+}
+
+.social-link {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.social-link img {
+  width: 24px;
+  height: 24px;
+}
+
+.social-link:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+}
+
+/* === MOBILE HAMBURGER - ASCUNDE PE DESKTOP === */
+.mobile-hamburger-container {
+  display: none;
+}
+
+/* === HAMBURGER === */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  width: 30px;
+  height: 25px;
+  cursor: pointer;
+  z-index: 1100;
+  background: linear-gradient(135deg, #00ffff, #ff00ff, #00ff88);
+  border: none;
+  border-radius: 6px;
+  padding: 8px 6px;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+  transition: all 0.3s ease;
+}
+
+.hamburger:hover {
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.7);
+  transform: scale(1.05);
+}
+
+.hamburger-line {
+  height: 3px;
+  background: linear-gradient(90deg, #ffffff, #00ffff);
+  border-radius: 2px;
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+/* === RESPONSIVE === */
+/* Mobile styles moved to Header.mobile.css */
+
+/* === CLASE UTILE === */
+.desktop-only {
+  display: flex;
+}
+.mobile-only {
+  display: none;
+}
+
+/* === HEADER SPACER === */
+.header-spacer {
+  height: 80px;
+  width: 100%;
+}
+
+@keyframes shine {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+/* === DEVICE VISIBILITY CLASSES === */
+.desktop-only {
+  display: flex;
+}
+
+.mobile-only {
+  display: none;
+}
+
+/* Mobile visibility handled in Header.mobile.css */
+
+/* === RESPONSIVE ADJUSTMENTS FOR DESKTOP === */
+@media (max-width: 1400px) {
+  .navigation {
+    gap: 0.4rem; /* Gap și mai mic pe ecrane mai mici */
+    max-width: calc(100% - 350px); /* Spațiu mai mic pentru logo și right-section */
+  }
+  
+  .navigation a,
+  .navigation button {
+    padding: 3px 8px; /* Padding și mai mic */
+    font-size: 0.9rem; /* Font și mai mic */
+  }
+}
+
+@media (max-width: 1300px) {
+  .navigation {
+    gap: 0.3rem;
+    max-width: calc(100% - 300px);
+  }
+  
+  .navigation a,
+  .navigation button {
+    padding: 2px 6px;
+    font-size: 0.8rem;
+  }
+  
+  .right-section {
+    min-width: 150px; /* Spațiu mai mic pentru right-section */
+  }
+}
+
+/* Opera desktop: reduce padding și font ca să încapă primul rând de butoane */
+body.opera .navigation { max-width: calc(100% - 320px) !important; gap: 0.35rem !important; }
+body.opera .navigation a,
+body.opera .navigation button { padding: 2px 6px !important; font-size: 0.85rem !important; }
+body.opera .right-section { min-width: 160px !important; }

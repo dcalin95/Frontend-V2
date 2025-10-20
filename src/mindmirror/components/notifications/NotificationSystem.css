@@ -1,0 +1,86 @@
+.notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.notification {
+  background: rgba(42, 42, 42, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 15px 20px;
+  border-radius: 12px;
+  color: white;
+  min-width: 300px;
+  max-width: 400px;
+  pointer-events: auto;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  animation: slideIn 0.3s ease-out;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.notification p {
+  margin: 0;
+}
+
+.notification.success {
+  border-left: 4px solid #00ff9d;
+}
+
+.notification.warning {
+  border-left: 4px solid #ffd700;
+}
+
+.notification.info {
+  border-left: 4px solid #00a3ff;
+}
+
+.notification.achievement {
+  border-left: 4px solid #ff3366;
+  background: linear-gradient(135deg, rgba(42, 42, 42, 0.95), rgba(26, 26, 26, 0.95));
+}
+
+.notification-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  animation: progress 5s linear;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes progress {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+.notification:hover .notification-progress {
+  animation-play-state: paused;
+}
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,428 @@
+/* Smart Staking + NFT Pre-Orders Styles */
+
+.stake-preorder-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border-radius: 20px;
+  border: 2px solid rgba(0, 163, 255, 0.3);
+  color: #fff;
+}
+
+.stake-preorder-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.stake-preorder-header h2 {
+  margin: 0 0 10px 0;
+  font-size: 2em;
+  background: linear-gradient(90deg, #00a3ff, #ff3366);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+}
+
+.stake-preorder-header p {
+  color: #ccc;
+  font-size: 1.1em;
+  margin: 0;
+}
+
+/* Toggle Button */
+.preorder-toggle {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.toggle-btn {
+  background: linear-gradient(135deg, #00a3ff, #0080ff);
+  border: none;
+  border-radius: 15px;
+  padding: 15px 30px;
+  color: white;
+  font-weight: bold;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(0, 163, 255, 0.3);
+}
+
+.toggle-btn:hover {
+  background: linear-gradient(135deg, #0080ff, #00a3ff);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 163, 255, 0.4);
+}
+
+.toggle-btn.active {
+  background: linear-gradient(135deg, #ff3366, #ff1a4d);
+  box-shadow: 0 6px 20px rgba(255, 51, 102, 0.3);
+}
+
+.toggle-btn.active:hover {
+  background: linear-gradient(135deg, #ff1a4d, #ff3366);
+  box-shadow: 0 8px 25px rgba(255, 51, 102, 0.4);
+}
+
+/* Pre-Order Form Section */
+.preorder-form-section {
+  background: linear-gradient(135deg, rgba(0, 163, 255, 0.05), rgba(255, 51, 102, 0.05));
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 40px;
+  border: 1px solid rgba(0, 163, 255, 0.2);
+}
+
+.preorder-form-section h3 {
+  margin: 0 0 25px 0;
+  color: #00a3ff;
+  font-size: 1.5em;
+  text-align: center;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 25px;
+}
+
+.form-section {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  padding: 25px;
+  border: 1px solid rgba(0, 163, 255, 0.1);
+}
+
+.form-section h4 {
+  margin: 0 0 20px 0;
+  color: #ff3366;
+  font-size: 1.2em;
+  border-bottom: 2px solid rgba(255, 51, 102, 0.3);
+  padding-bottom: 10px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #00a3ff;
+  font-weight: bold;
+  font-size: 0.95em;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px 15px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(0, 163, 255, 0.3);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 0.95em;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #00a3ff;
+  box-shadow: 0 0 15px rgba(0, 163, 255, 0.3);
+  background: rgba(0, 163, 255, 0.05);
+}
+
+.form-group input::placeholder {
+  color: #666;
+}
+
+.form-group select option {
+  background: #1a1a2e;
+  color: #fff;
+}
+
+/* Form Actions */
+.form-actions {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.create-preorder-btn {
+  background: linear-gradient(135deg, #00ff88, #00cc70);
+  border: none;
+  border-radius: 15px;
+  padding: 18px 40px;
+  color: white;
+  font-weight: bold;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(0, 255, 136, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.create-preorder-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #00cc70, #00ff88);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
+}
+
+.create-preorder-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Pre-Order Info */
+.preorder-info {
+  background: linear-gradient(135deg, rgba(255, 165, 0, 0.1), rgba(255, 140, 0, 0.1));
+  border-radius: 15px;
+  padding: 20px;
+  border: 1px solid rgba(255, 165, 0, 0.3);
+}
+
+.preorder-info h4 {
+  margin: 0 0 15px 0;
+  color: #ffa500;
+  font-size: 1.1em;
+}
+
+.preorder-info ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.preorder-info li {
+  color: #ffb84d;
+  margin: 8px 0;
+  line-height: 1.4;
+}
+
+/* Pre-Orders List Section */
+.preorders-list-section {
+  margin-top: 40px;
+}
+
+.preorders-list-section h3 {
+  margin: 0 0 25px 0;
+  color: #00a3ff;
+  font-size: 1.5em;
+  text-align: center;
+}
+
+.loading-state,
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  border: 2px dashed rgba(0, 163, 255, 0.3);
+}
+
+.loading-state {
+  color: #00ffff;
+}
+
+.empty-state {
+  color: #ccc;
+}
+
+.empty-state p:first-child {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+
+/* Pre-Orders Grid */
+.preorders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 25px;
+}
+
+.preorder-card {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1));
+  border-radius: 20px;
+  padding: 25px;
+  border: 2px solid rgba(0, 163, 255, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.preorder-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #00a3ff, #ff3366);
+}
+
+.preorder-card.active {
+  border-color: rgba(0, 255, 136, 0.4);
+  box-shadow: 0 5px 20px rgba(0, 255, 136, 0.2);
+}
+
+.preorder-card.executed {
+  border-color: rgba(0, 255, 136, 0.4);
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 200, 100, 0.05));
+}
+
+.preorder-card.cancelled {
+  border-color: rgba(255, 51, 102, 0.4);
+  background: linear-gradient(135deg, rgba(255, 51, 102, 0.1), rgba(255, 0, 0, 0.05));
+  opacity: 0.8;
+}
+
+.preorder-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 163, 255, 0.3);
+}
+
+.preorder-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.preorder-header h4 {
+  margin: 0;
+  color: #00a3ff;
+  font-size: 1.3em;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85em;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.status-badge.pending {
+  background: linear-gradient(90deg, rgba(255, 165, 0, 0.2), rgba(255, 140, 0, 0.2));
+  color: #ffa500;
+  border: 1px solid rgba(255, 165, 0, 0.4);
+}
+
+.status-badge.executed {
+  background: linear-gradient(90deg, rgba(0, 255, 136, 0.2), rgba(0, 200, 100, 0.2));
+  color: #00ff88;
+  border: 1px solid rgba(0, 255, 136, 0.4);
+}
+
+.status-badge.cancelled {
+  background: linear-gradient(90deg, rgba(255, 51, 102, 0.2), rgba(255, 0, 0, 0.2));
+  color: #ff3366;
+  border: 1px solid rgba(255, 51, 102, 0.4);
+}
+
+.preorder-details {
+  margin-bottom: 20px;
+}
+
+.preorder-details p {
+  margin: 8px 0;
+  color: #ccc;
+  font-size: 0.95em;
+}
+
+.preorder-details strong {
+  color: #fff;
+}
+
+.preorder-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.execute-btn,
+.cancel-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9em;
+}
+
+.execute-btn {
+  background: linear-gradient(135deg, #00ff88, #00cc70);
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+}
+
+.execute-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #00cc70, #00ff88);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
+}
+
+.execute-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.cancel-btn {
+  background: linear-gradient(135deg, #ff3366, #ff1a4d);
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 51, 102, 0.3);
+}
+
+.cancel-btn:hover {
+  background: linear-gradient(135deg, #ff1a4d, #ff3366);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 51, 102, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .stake-preorder-container {
+    padding: 15px;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .preorders-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stake-preorder-header h2 {
+    font-size: 1.6em;
+  }
+  
+  .create-preorder-btn {
+    padding: 15px 25px;
+    font-size: 1em;
+  }
+  
+  .preorder-actions {
+    flex-direction: column;
+  }
+}
+

@@ -1,0 +1,27 @@
+.adjust-font-buttons {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 9999;
+    display: flex;
+    gap: 10px;
+  }
+  
+  .adjust-btn {
+    background: linear-gradient(90deg, #00ffff, #ff00ff);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    color: black;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
+    transition: all 0.3s ease;
+  }
+  
+  .adjust-btn:hover {
+    background: linear-gradient(90deg, #00ff99, #ff00ff);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 1);
+  }
+  

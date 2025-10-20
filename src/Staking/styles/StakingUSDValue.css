@@ -1,0 +1,277 @@
+/* USD Value Container - Same styling as other components */
+.staking-usd-container {
+  background: transparent;
+  padding: 0;
+  border: none;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  margin: 0;
+}
+
+.usd-title {
+  font-size: 1.4rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.5px;
+}
+
+/* USD Grid Layout - Same as other grids */
+.usd-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.usd-item {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.usd-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.usd-label {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.3px;
+}
+
+.usd-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.96);
+  text-shadow: 0 0 10px rgba(0, 255, 200, 0.35);
+}
+
+/* AI-style number formatting */
+.ai-number {
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.2);
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.9) 0%, 
+    rgba(0, 255, 136, 0.8) 50%, 
+    rgba(255, 255, 255, 0.9) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.ai-number:hover {
+  transform: scale(1.05);
+  text-shadow: 0 0 12px rgba(0, 255, 136, 0.4);
+}
+
+/* Old glow effect removed - replaced with spectacular rainbow effect */
+
+/* Number animation on value change */
+.ai-number {
+  animation: numberUpdate 0.5s ease-out;
+}
+
+@keyframes numberUpdate {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Total Value Spectacular Animations */
+@keyframes totalBoxPulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 20px rgba(255, 0, 128, 0.3),
+      0 0 40px rgba(0, 255, 255, 0.2),
+      0 0 60px rgba(255, 215, 0, 0.1);
+  }
+  50% {
+    box-shadow: 
+      0 0 30px rgba(255, 0, 128, 0.5),
+      0 0 60px rgba(0, 255, 255, 0.4),
+      0 0 90px rgba(255, 215, 0, 0.3);
+  }
+}
+
+@keyframes totalValuePulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes rainbowShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Special styling for total value */
+/* Removed full-width total card to keep 4-card symmetry */
+
+.usd-total:hover {
+  background: linear-gradient(135deg, 
+    rgba(255, 0, 128, 0.15) 0%,
+    rgba(0, 255, 255, 0.15) 50%,
+    rgba(255, 215, 0, 0.15) 100%);
+  transform: scale(1.02);
+}
+
+/* Special label styling for Total Value */
+.usd-total .usd-label {
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, 
+    #ff0080 0%,
+    #00ffff 50%,
+    #ffd700 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% 200%;
+  animation: rainbowShift 3s ease-in-out infinite;
+  text-shadow: 
+    0 0 10px rgba(255, 0, 128, 0.4),
+    0 0 20px rgba(0, 255, 255, 0.3);
+  margin-bottom: 0;
+}
+
+/* Keep strong styling for positive/negative P/L */
+.usd-pl-positive {
+  color: #00ff88;
+  text-shadow: 0 0 12px rgba(0, 255, 136, 0.5);
+}
+
+.usd-pl-negative {
+  color: #ff6b6b;
+  text-shadow: 0 0 12px rgba(255, 107, 107, 0.5);
+}
+
+/* Loading state */
+.usd-loading {
+  padding: 2rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+  .usd-title {
+    font-size: 1.2rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .usd-total {
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .usd-title {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .usd-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+  }
+  
+  .usd-item {
+    padding: 1rem;
+  }
+  
+  .usd-value {
+    font-size: 1.3rem;
+  }
+  
+  .usd-total-value {
+    font-size: 2rem;
+  }
+  
+  .usd-total {
+    padding: 0.6rem 1rem;
+    max-width: 240px;
+  }
+  
+  .usd-total .usd-label {
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+  }
+  
+  .usd-label {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .usd-title {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .usd-grid {
+    gap: 0.6rem;
+  }
+  
+  .usd-item {
+    padding: 0.8rem;
+  }
+  
+  .usd-value {
+    font-size: 1.1rem;
+  }
+  
+  .usd-total-value {
+    font-size: 1.8rem;
+  }
+  
+  .usd-total {
+    padding: 0.5rem 0.8rem;
+    max-width: 200px;
+  }
+  
+  .usd-total .usd-label {
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+  }
+  
+  .usd-label {
+    font-size: 0.7rem;
+  }
+}

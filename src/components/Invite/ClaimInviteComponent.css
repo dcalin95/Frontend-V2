@@ -1,0 +1,255 @@
+.claim-invite-container {
+  margin: 2rem auto;
+  padding: 2rem;
+  width: 100%;
+  max-width: 500px;
+  background: radial-gradient(circle at center, rgba(0, 0, 0, 0.8), rgba(20, 20, 50, 0.9));
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 255, 255, 0.5);
+  color: white;
+  animation: fadeIn 1.2s ease-in-out, starryBackground 10s infinite linear;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle fill='%2300ffe0' r='1' cy='5' cx='10'/%3E%3Ccircle fill='%23ffffff' r='1' cy='20' cx='50'/%3E%3Ccircle fill='%23ffffff' r='1' cy='70' cx='70'/%3E%3Ccircle fill='%239c27ff' r='1' cy='50' cx='80'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+@keyframes starryBackground {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 100% 100%;
+  }
+}
+
+.claim-invite-container h2 {
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  text-align: center;
+  background: linear-gradient(90deg, #00ffe0, #9c27ff, #3498db);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 4s ease-in-out infinite;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 1rem;
+  border-radius: 25px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 1rem;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #00ffe0;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.6), 0 0 5px rgba(156, 39, 255, 0.5);
+}
+
+.input-field:hover {
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.4), 0 0 3px rgba(156, 39, 255, 0.3);
+}
+
+.claim-button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(90deg, #00ffe0, #9c27ff);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.4), 0 0 5px rgba(156, 39, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.claim-button::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(0, 255, 255, 0.4), transparent);
+  opacity: 0;
+  animation: orbit 2.5s infinite;
+  border-radius: 50%;
+}
+
+@keyframes orbit {
+  0% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(25%, 25%);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(50%, 50%);
+    opacity: 0;
+  }
+}
+
+.claim-button:hover {
+  background: linear-gradient(90deg, #9c27ff, #00ffe0);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.8), 0 0 10px rgba(156, 39, 255, 0.5);
+  transform: scale(1.05);
+}
+
+.message {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 1rem;
+  color: #ff6b6b;
+}
+
+/* ===== Responsive Design ===== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .claim-invite-container {
+    margin: 1.5rem auto;
+    padding: 1.5rem;
+    max-width: 450px;
+  }
+  
+  .claim-invite-container h2 {
+    font-size: 1.8rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .input-field {
+    padding: 10px;
+    font-size: 0.95rem;
+  }
+  
+  .claim-button {
+    padding: 10px;
+    font-size: 1.1rem;
+  }
+  
+  .message {
+    font-size: 0.95rem;
+  }
+}
+
+/* Mobile Large */
+@media (max-width: 768px) {
+  .claim-invite-container {
+    margin: 1rem auto;
+    margin-top: 100px !important; /* Spațiu extra pentru timer pe mobil */
+    padding: 1.2rem;
+    max-width: 100%;
+    border-radius: 12px;
+  }
+  
+  .claim-invite-container h2 {
+    font-size: 1.6rem;
+    margin-bottom: 0.6rem;
+  }
+  
+  .input-field {
+    padding: 10px;
+    font-size: 0.9rem;
+    border-radius: 20px;
+  }
+  
+  .claim-button {
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 20px;
+  }
+  
+  .message {
+    font-size: 0.9rem;
+  }
+}
+
+/* Mobile Small */
+@media (max-width: 480px) {
+  .claim-invite-container {
+    margin: 0.8rem auto;
+    padding: 1rem;
+    border-radius: 10px;
+  }
+  
+  .claim-invite-container h2 {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .input-field {
+    padding: 8px;
+    font-size: 0.85rem;
+    border-radius: 15px;
+    margin-bottom: 0.8rem;
+  }
+  
+  .claim-button {
+    padding: 8px;
+    font-size: 0.9rem;
+    border-radius: 15px;
+    letter-spacing: 0.5px;
+  }
+  
+  .message {
+    font-size: 0.85rem;
+    margin-top: 0.8rem;
+  }
+}
+
+/* Mobile Extra Small */
+@media (max-width: 360px) {
+  .claim-invite-container {
+    margin: 0.5rem auto;
+    padding: 0.8rem;
+    border-radius: 8px;
+  }
+  
+  .claim-invite-container h2 {
+    font-size: 1.2rem;
+    margin-bottom: 0.4rem;
+  }
+  
+  .input-field {
+    padding: 6px;
+    font-size: 0.8rem;
+    border-radius: 12px;
+    margin-bottom: 0.6rem;
+  }
+  
+  .claim-button {
+    padding: 6px;
+    font-size: 0.8rem;
+    border-radius: 12px;
+    letter-spacing: 0.3px;
+  }
+  
+  .message {
+    font-size: 0.8rem;
+    margin-top: 0.6rem;
+  }
+}

@@ -1,0 +1,249 @@
+/* 🎉 THANK YOU PAGE - MODERN CRYPTO DESIGN */
+.thank-you-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 50%, #16213e 100%);
+  padding: 20px;
+  font-family: 'Exo 2', 'Inter', sans-serif;
+}
+
+.thank-you-card {
+  background: linear-gradient(145deg, 
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  border: 2px solid rgba(0, 212, 255, 0.3);
+  border-radius: 24px;
+  padding: 40px;
+  max-width: 600px;
+  width: 100%;
+  backdrop-filter: blur(20px);
+  box-shadow: 
+    0 20px 60px rgba(0, 212, 255, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.thank-you-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #00d4ff, #00ff88, #ff6b9d, #ffd700);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
+}
+
+/* 🎉 SUCCESS HEADER */
+.success-header {
+  margin-bottom: 30px;
+}
+
+.success-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+.success-header h1 {
+  color: #00ff88;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+}
+
+.success-subtitle {
+  color: #a0aec0;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+/* 📊 TRANSACTION DETAILS */
+.transaction-details {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 30px 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  color: #a0aec0;
+  font-weight: 500;
+}
+
+.detail-value {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.detail-value.highlight {
+  color: #00d4ff;
+  font-size: 1.1rem;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+.detail-value.hash {
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: #ffd700;
+  word-break: break-all;
+}
+
+.detail-value.success {
+  color: #00ff88;
+}
+
+/* 🚀 NEXT STEPS */
+.next-steps {
+  margin: 30px 0;
+  text-align: left;
+}
+
+.next-steps h3 {
+  color: #00d4ff;
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.next-steps ul {
+  list-style: none;
+  padding: 0;
+}
+
+.next-steps li {
+  color: #e2e8f0;
+  padding: 8px 0;
+  font-size: 1.1rem;
+  line-height: 1.4;
+}
+
+.next-steps strong {
+  color: #00ff88;
+}
+
+/* 🔄 ACTION BUTTONS */
+.action-buttons {
+  display: flex;
+  gap: 16px;
+  margin: 30px 0;
+  flex-wrap: wrap;
+}
+
+.btn-primary, .btn-secondary, .btn-outline {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  min-width: 140px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #00ff88, #00d4ff);
+  color: #000;
+  border: none;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #ff6b9d, #ffd700);
+  color: #000;
+  border: none;
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+}
+
+.btn-outline {
+  background: transparent;
+  color: #00d4ff;
+  border: 2px solid #00d4ff;
+}
+
+.btn-outline:hover {
+  background: rgba(0, 212, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+/* ⏰ AUTO REDIRECT */
+.auto-redirect {
+  margin-top: 20px;
+  color: #718096;
+  font-size: 0.9rem;
+}
+
+/* 📱 MOBILE RESPONSIVE */
+@media (max-width: 768px) {
+  .thank-you-card {
+    padding: 24px;
+    margin: 10px;
+  }
+  
+  .success-header h1 {
+    font-size: 2rem;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .btn-primary, .btn-secondary, .btn-outline {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+  
+  .detail-value.hash {
+    font-size: 0.8rem;
+  }
+}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,89 @@
+.voice-visualizer {
+  width: 100%;
+  border-radius: 8px;
+  margin: 1rem 0;
+  background: #1a1a1a;
+}
+
+.voice-analyzer {
+  background: #2a2a2a;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+}
+
+.voice-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.record-btn {
+  background: #00ff9d;
+  border: none;
+  padding: 1rem;
+  border-radius: 8px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.record-btn.recording {
+  background: #ff3366;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.audio-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.audio-preview audio {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.analyze-voice-btn {
+  background: linear-gradient(45deg, #00ff9d, #00a3ff);
+  border: none;
+  padding: 0.8rem;
+  border-radius: 8px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.voice-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.metric {
+  background: #1a1a1a;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.metric h4 {
+  color: #888;
+  margin-bottom: 0.5rem;
+}
+
+.metric-value {
+  color: #00ff9d;
+  font-size: 1.2rem;
+  font-weight: bold;
+}

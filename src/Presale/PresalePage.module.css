@@ -1,0 +1,113 @@
+/* ===== ROOT STRUCTURE ===== */
+.presalePage {
+  display: flex;
+  min-height: 100vh;
+  min-height: 100svh; /* Mobile-friendly viewport */
+  background: transparent;
+  position: relative;
+}
+
+.presaleWrapper {
+  flex: 1;
+  padding: 40px 2rem;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: calc(100vh - 80px);
+  min-height: calc(100svh - 80px);
+}
+
+.presaleGrid {
+  display: grid;
+  grid-template-areas:
+    "select select"
+    "payment panel"
+    "referral summary";
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1280px;
+}
+
+.gridSelect   { grid-area: select; }
+.gridPayment  { composes: cardBox from './PresalePage.module.css'; grid-area: payment; }
+.gridPanel    { composes: cardBox from './PresalePage.module.css'; grid-area: panel; }
+.gridClaim    { composes: cardBox from './PresalePage.module.css'; grid-area: referral; }
+.gridSummary  { composes: cardBox from './PresalePage.module.css'; grid-area: summary; }
+
+.cardBox {
+  padding: 1.5rem;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.cardBox::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  border-radius: inherit;
+  background: linear-gradient(120deg, #00ffff, #8a2be2, #00ff88);
+  background-size: 600% 600%;
+  animation: borderGlow 6s ease infinite;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  z-index: -1;
+  opacity: 0.6;
+}
+
+.cardBox:hover::before {
+  opacity: 1;
+  box-shadow: 0 0 24px rgba(0, 255, 255, 0.25);
+}
+
+@media (min-width: 993px) {
+  .gridPanel {
+    position: sticky;
+    top: 100px;
+    align-self: start;
+    z-index: 10;
+  }
+}
+
+@media (max-width: 992px) {
+  .presaleGrid {
+    grid-template-areas:
+      "select"
+      "payment"
+      "panel"
+      "referral"
+      "summary";
+    grid-template-columns: 1fr;
+  }
+
+  .cardBox {
+    padding: 1rem;
+    border-radius: 14px;
+  }
+
+  .cardBox::before {
+    border-radius: 14px;
+  }
+}
+
+.presaleGrid h3 {
+  font-family: 'system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif', sans-serif;
+  color: #00ffc8;
+  text-shadow: 0 0 6px #00ffc8, 0 0 12px #7f00ff;
+  text-align: center;
+}
+
+@keyframes borderGlow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}

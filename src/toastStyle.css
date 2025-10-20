@@ -1,0 +1,17 @@
+.bits-toast-container {
+    z-index: 9999;
+  }
+  
+  .bits-toast {
+    background: #0a0a0a !important;
+    color: #00ff99 !important;
+    border-left: 6px solid #ffaa00;
+    font-weight: bold;
+    font-family: 'Arial', sans-serif;
+    box-shadow: 0 0 12px #00ff99aa;
+  }
+  
+  .bits-toast svg {
+    fill: #ffaa00 !important;
+  }
+  

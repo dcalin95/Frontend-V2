@@ -1,0 +1,72 @@
+.pdf-toggle-group {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: transparent;
+}
+
+.pdf-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 22px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 30px;
+  border: 2px solid #00ffff;
+  background: transparent;
+  color: transparent;
+  background-image: linear-gradient(90deg, #00ffff, #ff00ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 6px rgba(0, 255, 255, 0.5);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  animation: shine 12s linear infinite;
+  cursor: pointer;
+}
+
+.pdf-toggle-btn:hover {
+  background-image: linear-gradient(90deg, #ffe066, #ff66cc);
+  -webkit-text-fill-color: transparent;
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 224, 102, 0.6);
+}
+
+.pdf-toggle-btn.active {
+  border-color: #ffe066;
+  color: #ffe066;
+  text-shadow: 0 0 10px rgba(255, 224, 102, 0.9);
+}
+
+@keyframes shine {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+/* 🧨 Elimină complet orice fundal alb din PDF Viewer */
+.rpv-core__viewer,
+.rpv-core__canvas-layer,
+.rpv-core__canvas,
+.rpv-core__page-layer,
+.rpv-core__inner-page,
+.rpv-core__inner-pages {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+/* 🧱 Fix pentru dimensiune completă și poziționare corectă */
+.rpv-core__page-layer {
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+}
+
+/* 💥 Canvas în sine (paginile PDF propriu-zise) */
+.rpv-core__canvas {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}

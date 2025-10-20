@@ -1,0 +1,210 @@
+.wallet-toggle-wrapper {
+  position: fixed;
+  top: 80px; /* Schimbat de la 80px la 80px pentru a fi imediat sub header */
+  right: 20px;
+  z-index: 1000;
+}
+
+/* Vizibilitate wallet */
+.wallet-header-info {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid #00ffff;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
+  padding: 3px 9px; /* padding mai mic */
+  border-radius: 10px;
+  width: 200px; /* Cutia mai îngustă */
+  
+  color: #e90984;
+  font-size: 1.4rem; /* Font puțin mai mic */
+  font-family: 'system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif', sans-serif;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* Spațiu mai mic între linii */
+  animation: slideIn 0.3s ease forwards;
+  transform: translateX(30px);
+  opacity: 0;
+}
+
+
+
+@keyframes slideIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Token balances */
+.token-balance {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.token-balance img {
+  width: 22px;
+  height: 22px;
+}
+
+/* Butoane principale */
+.disconnect-button,
+.connect-wallet-button {
+  background: linear-gradient(135deg, #ffcc00, #ff9900);
+  color: #000;
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.disconnect-button:hover,
+.connect-wallet-button:hover {
+  background: linear-gradient(135deg, #ff9900, #ffcc00);
+  box-shadow: 0 0 10px #ffcc00aa;
+}
+
+/* Buton închidere ✖ */
+.wallet-close-btn {
+  align-self: flex-end;
+  font-size: 2.4rem; /* ✖ MARE */
+  padding: 0px 2px; /* 📏 padding mic ➔ cutie îngustă */
+  background: none;
+  border: none;
+  color: #ff6666;
+  cursor: pointer;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, color 0.2s;
+  animation: pulseGlow 1.5s infinite;
+  line-height: 1; /* ✨ foarte important: să nu se lungească în jos */
+}
+
+.wallet-close-btn:hover {
+  color: #ff0000;
+  transform: scale(1.2);
+}
+
+/* Animație pulse glow ✖ */
+@keyframes pulseGlow {
+  0% {
+    text-shadow: 0 0 5px rgba(255, 102, 102, 0.6), 0 0 10px rgba(255, 0, 0, 0.4);
+  }
+  50% {
+    text-shadow: 0 0 15px rgba(255, 0, 0, 0.8), 0 0 25px rgba(255, 0, 0, 0.6);
+  }
+  100% {
+    text-shadow: 0 0 5px rgba(255, 102, 102, 0.6), 0 0 10px rgba(255, 0, 0, 0.4);
+  }
+}
+
+
+/* Dropdown opțiuni wallet */
+.wallet-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.wallet-options {
+  position: absolute;
+  top: 42px;
+  right: 0;
+  background: #111;
+  border: 1px solid #00ffff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #00ffff88;
+  padding: 10px;
+  z-index: 1100;
+  width: 100%;
+}
+
+.wallet-options div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  cursor: pointer;
+  color: white;
+  transition: background 0.2s ease;
+}
+
+.wallet-options div:hover {
+  background: rgba(0, 255, 255, 0.1);
+}
+
+.wallet-options img {
+  width: 22px;
+  height: 22px;
+}
+
+/* Buton Wallet ➡ */
+.wallet-toggle-btn {
+  background: linear-gradient(90deg, #00ffe0, #9c27ff);
+  border: 1px solid #00ffff;
+  color: white;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: 'system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif', sans-serif;
+  transition: background 0.3s ease, transform 0.2s ease;
+  min-width: 140px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+}
+
+.wallet-toggle-btn:hover {
+  background: linear-gradient(90deg, #9c27ff, #00ffe0);
+  transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .wallet-toggle-wrapper {
+    top: 70px; /* Redus de la 80px la 70px pentru a fi mai aproape de header */
+    right: 10px;
+    z-index: 10000; /* Mărit pentru a fi deasupra BoostedBanner */
+  }
+
+  .wallet-header-info {
+    top: 70px; /* Redus de la 80px la 70px */
+    right: 10px;
+    width: 250px;
+    font-size: 1.2rem;
+    padding: 10px 14px;
+    z-index: 10000; /* Mărit pentru a fi deasupra BoostedBanner */
+  }
+
+  .wallet-toggle-btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    min-width: 120px;
+    height: 45px;
+  }
+
+  .disconnect-button,
+  .connect-wallet-button {
+    font-size: 0.85rem;
+    padding: 8px 14px;
+  }
+}
+@keyframes pulseGlow {
+  0% {
+    text-shadow: 0 0 5px rgba(255, 102, 102, 0.6), 0 0 10px rgba(255, 0, 0, 0.4);
+  }
+  50% {
+    text-shadow: 0 0 15px rgba(255, 0, 0, 0.8), 0 0 25px rgba(255, 0, 0, 0.6);
+  }
+  100% {
+    text-shadow: 0 0 5px rgba(255, 102, 102, 0.6), 0 0 10px rgba(255, 0, 0, 0.4);
+  }
+}

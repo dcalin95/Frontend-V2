@@ -1,0 +1,238 @@
+.chartWrapper {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  margin: 2rem auto;
+  background: radial-gradient(ellipse at center, #0d0d1f 0%, #000 100%);
+  border-radius: 50%;
+  box-shadow:
+    0 0 25px rgba(0, 255, 255, 0.3),
+    0 0 40px rgba(0, 255, 255, 0.15),
+    inset 0 0 30px rgba(0, 255, 255, 0.05);
+  padding: 1.5rem;
+  animation: fadeIn 0.6s ease, pulseGlow 3s ease-in-out infinite;
+  transition: transform 0.4s ease;
+}
+
+.chartWrapper:hover {
+  transform: scale(1.03);
+}
+
+.chartWrapper::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 270px;
+  height: 270px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 255, 255, 0.08);
+  z-index: -1;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.06);
+}
+
+.centerText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -10px;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.25);
+  box-shadow: inset 0 0 8px rgba(0, 255, 255, 0.05);
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(0 0 6px #00f0ff88);
+  transition: transform 0.3s ease;
+}
+
+.centerText:hover .logo {
+  transform: scale(1.1);
+}
+
+.percent {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #00f0ff;
+  text-shadow: 0 0 8px #00f0ffaa;
+}
+
+.label {
+  font-size: 1rem;
+  color: #00eaff;
+  margin-top: 4px;
+  text-shadow: 0 0 4px #00eaffaa;
+}
+
+.subLabel {
+  font-size: 0.8rem;
+  color: #cccccc;
+  margin-top: 6px;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulseGlow {
+  0% {
+    box-shadow:
+      0 0 25px rgba(0, 255, 255, 0.2),
+      inset 0 0 15px rgba(0, 255, 255, 0.05);
+  }
+  50% {
+    box-shadow:
+      0 0 40px rgba(0, 255, 255, 0.4),
+      inset 0 0 25px rgba(0, 255, 255, 0.08);
+  }
+  100% {
+    box-shadow:
+      0 0 25px rgba(0, 255, 255, 0.2),
+      inset 0 0 15px rgba(0, 255, 255, 0.05);
+  }
+}
+.subLabelGroup {
+  margin-top: 6px;
+  text-align: center;
+}
+
+.soldAmount {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #00f0ff;
+  text-shadow: 0 0 6px #00eaffaa;
+}
+
+.totalLabel {
+  font-size: 0.85rem;
+  margin-top: 2px;
+  color: #cccccc;
+  letter-spacing: 0.4px;
+  text-shadow: 0 0 4px #00ffff44;
+}
+
+/* ✅ Responsive pentru tablet */
+@media (max-width: 768px) {
+  .chartWrapper {
+    width: 200px; /* Redus de la 240px */
+    height: 200px; /* Redus de la 240px */
+    margin: 1.5rem auto; /* Redus de la 2rem */
+    padding: 1.2rem; /* Redus de la 1.5rem */
+  }
+
+  .chartWrapper::before {
+    width: 220px; /* Redus de la 270px */
+    height: 220px; /* Redus de la 270px */
+  }
+
+  .percent {
+    font-size: 2rem; /* Redus de la 2.5rem */
+  }
+
+  .label {
+    font-size: 0.9rem; /* Redus de la 1rem */
+  }
+
+  .soldAmount {
+    font-size: 1.1rem; /* Redus de la 1.25rem */
+  }
+
+  .totalLabel {
+    font-size: 0.8rem; /* Redus de la 0.85rem */
+  }
+}
+
+/* ✅ Responsive pentru mobil */
+@media (max-width: 480px) {
+  .chartWrapper {
+    width: 160px; /* Redus și mai mult */
+    height: 160px; /* Redus și mai mult */
+    margin: 1rem auto; /* Redus și mai mult */
+    padding: 1rem; /* Redus și mai mult */
+  }
+
+  .chartWrapper::before {
+    width: 175px; /* Redus și mai mult */
+    height: 175px; /* Redus și mai mult */
+  }
+
+  .logo {
+    width: 30px; /* Redus de la 40px */
+    height: 30px; /* Redus de la 40px */
+  }
+
+  .percent {
+    font-size: 1.6rem; /* Redus și mai mult */
+  }
+
+  .label {
+    font-size: 0.8rem; /* Redus și mai mult */
+  }
+
+  .subLabel {
+    font-size: 0.7rem; /* Redus de la 0.8rem */
+  }
+
+  .soldAmount {
+    font-size: 1rem; /* Redus și mai mult */
+  }
+
+  .totalLabel {
+    font-size: 0.75rem; /* Redus și mai mult */
+  }
+}
+
+/* ✅ Responsive pentru ecrane foarte mici */
+@media (max-width: 360px) {
+  .chartWrapper {
+    width: 140px; /* Redus și mai mult */
+    height: 140px; /* Redus și mai mult */
+    margin: 0.8rem auto; /* Redus și mai mult */
+    padding: 0.8rem; /* Redus și mai mult */
+  }
+
+  .chartWrapper::before {
+    width: 150px; /* Redus și mai mult */
+    height: 150px; /* Redus și mai mult */
+  }
+
+  .logo {
+    width: 25px; /* Redus și mai mult */
+    height: 25px; /* Redus și mai mult */
+  }
+
+  .percent {
+    font-size: 1.4rem; /* Redus și mai mult */
+  }
+
+  .label {
+    font-size: 0.7rem; /* Redus și mai mult */
+  }
+
+  .subLabel {
+    font-size: 0.6rem; /* Redus și mai mult */
+  }
+
+  .soldAmount {
+    font-size: 0.9rem; /* Redus și mai mult */
+  }
+
+  .totalLabel {
+    font-size: 0.7rem; /* Redus și mai mult */
+  }
+}

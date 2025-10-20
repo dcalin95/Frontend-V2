@@ -1,0 +1,113 @@
+/* ===== DirectPay.css ===== */
+
+/* Container principal */
+.direct-pay-container {
+    background: linear-gradient(145deg, rgba(25, 25, 50, 0.9), rgba(10, 10, 30, 0.9));
+    border-radius: 15px;
+    padding: 20px;
+    color: #ffffff;
+    box-shadow: 0 10px 20px rgba(8, 253, 216, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: 400px;
+    margin: 20px auto;
+    text-align: center;
+    font-family: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif", sans-serif;
+}
+
+/* Efect de hover */
+.direct-pay-container:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 30px rgba(8, 253, 216, 0.5);
+}
+
+/* Titlul cardului */
+.direct-pay-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    color: #08fdd8;
+    text-shadow: 0 0 15px rgba(8, 253, 216, 0.8);
+}
+
+/* Input fields */
+.direct-pay-input,
+.direct-pay-select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+/* Input focus */
+.direct-pay-input:focus,
+.direct-pay-select:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(8, 253, 216, 0.6);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Buton tranzacție */
+.direct-pay-button {
+    background: linear-gradient(145deg, #4caf50, #66bb6a);
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    color: #ffffff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.4);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+}
+
+/* Hover efect buton */
+.direct-pay-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(76, 175, 80, 0.6);
+}
+
+/* Buton apăsat */
+.direct-pay-button:active {
+    transform: scale(0.95);
+}
+
+/* Mesaj succes / eroare */
+.message {
+    font-size: 1.1rem;
+    margin-top: 15px;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+.success-message {
+    color: #66ff99;
+}
+
+.error-message {
+    color: #ff4d4d;
+}
+
+/* Responsivitate */
+@media (max-width: 768px) {
+    .direct-pay-container {
+        max-width: 90%;
+        padding: 15px;
+    }
+
+    .direct-pay-title {
+        font-size: 1.5rem;
+    }
+
+    .direct-pay-button {
+        font-size: 1rem;
+        padding: 10px 15px;
+    }
+}

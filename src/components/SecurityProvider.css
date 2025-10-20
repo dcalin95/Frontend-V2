@@ -1,0 +1,423 @@
+/* 🔒 Security Provider Styles */
+
+.security-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0d0d1f 0%, #1a1a2e 50%, #16213e 100%);
+  color: #00f0ff;
+  font-family: 'Arial', sans-serif;
+}
+
+.security-loading .loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(0, 240, 255, 0.3);
+  border-top: 3px solid #00f0ff;
+  border-radius: 50%;
+  animation: securitySpin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+.security-loading p {
+  font-size: 16px;
+  color: #cccccc;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
+@keyframes securitySpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 🔒 Access Denied Styles */
+.access-denied {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  color: #ff4757;
+  text-align: center;
+  padding: 20px;
+}
+
+.access-denied h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #ff4757;
+  text-shadow: 0 0 20px rgba(255, 71, 87, 0.5);
+  font-weight: bold;
+}
+
+.access-denied p {
+  font-size: 1.2rem;
+  color: #cccccc;
+  margin-bottom: 30px;
+  max-width: 500px;
+  line-height: 1.6;
+}
+
+.access-denied .security-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  animation: securityPulse 2s ease-in-out infinite;
+}
+
+@keyframes securityPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+/* 🔒 Security Alert Styles */
+.security-alert {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #ff4757 0%, #ff3742 100%);
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(255, 71, 87, 0.3);
+  z-index: 10000;
+  max-width: 400px;
+  animation: securitySlideIn 0.3s ease-out;
+}
+
+.security-alert.success {
+  background: linear-gradient(135deg, #2ed573 0%, #1e90ff 100%);
+  box-shadow: 0 4px 20px rgba(46, 213, 115, 0.3);
+}
+
+.security-alert.warning {
+  background: linear-gradient(135deg, #ffa502 0%, #ff6348 100%);
+  box-shadow: 0 4px 20px rgba(255, 165, 2, 0.3);
+}
+
+.security-alert .alert-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.security-alert .alert-title {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.security-alert .alert-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.security-alert .alert-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.security-alert .alert-message {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+@keyframes securitySlideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* 🔒 Security Form Styles */
+.security-form {
+  background: rgba(26, 26, 46, 0.9);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 400px;
+  margin: 0 auto;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 240, 255, 0.1);
+}
+
+.security-form h3 {
+  color: #00f0ff;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 1.5rem;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
+.security-form .form-group {
+  margin-bottom: 20px;
+}
+
+.security-form label {
+  display: block;
+  color: #cccccc;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.security-form input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(13, 13, 31, 0.8);
+  color: #ffffff;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.security-form input:focus {
+  outline: none;
+  border-color: #00f0ff;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+}
+
+.security-form input.error {
+  border-color: #ff4757;
+  box-shadow: 0 0 15px rgba(255, 71, 87, 0.3);
+}
+
+.security-form .error-message {
+  color: #ff4757;
+  font-size: 14px;
+  margin-top: 5px;
+  text-shadow: 0 0 5px rgba(255, 71, 87, 0.5);
+}
+
+.security-form button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #00f0ff 0%, #0099cc 100%);
+  color: #000000;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.security-form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 240, 255, 0.4);
+}
+
+.security-form button:disabled {
+  background: #666666;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* 🔒 Security Status Indicator */
+.security-status {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: rgba(26, 26, 46, 0.9);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 8px;
+  padding: 10px 15px;
+  color: #00f0ff;
+  font-size: 12px;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.security-status .status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00f0ff;
+  animation: statusPulse 2s ease-in-out infinite;
+}
+
+.security-status.authenticated .status-indicator {
+  background: #2ed573;
+}
+
+.security-status.unauthenticated .status-indicator {
+  background: #ff4757;
+}
+
+@keyframes statusPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
+}
+
+/* 🔒 Security Modal Styles */
+.security-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(5px);
+}
+
+.security-modal .modal-content {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 240, 255, 0.2);
+}
+
+.security-modal h3 {
+  color: #00f0ff;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.security-modal p {
+  color: #cccccc;
+  margin-bottom: 25px;
+  line-height: 1.6;
+}
+
+.security-modal .modal-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.security-modal button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.security-modal .btn-primary {
+  background: linear-gradient(135deg, #00f0ff 0%, #0099cc 100%);
+  color: #000000;
+}
+
+.security-modal .btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #cccccc;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.security-modal button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* 🔒 Responsive Design */
+@media (max-width: 768px) {
+  .security-alert {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+  
+  .security-status {
+    top: 10px;
+    left: 10px;
+    font-size: 11px;
+    padding: 8px 12px;
+  }
+  
+  .security-form {
+    margin: 20px;
+    padding: 20px;
+  }
+  
+  .security-modal .modal-content {
+    margin: 20px;
+    padding: 20px;
+  }
+  
+  .security-modal .modal-buttons {
+    flex-direction: column;
+  }
+}
+
+/* 🔒 Dark Mode Enhancements */
+@media (prefers-color-scheme: dark) {
+  .security-form {
+    background: rgba(13, 13, 31, 0.95);
+  }
+  
+  .security-modal .modal-content {
+    background: linear-gradient(135deg, #0d0d1f 0%, #1a1a2e 100%);
+  }
+}
+
+/* 🔒 High Contrast Mode */
+@media (prefers-contrast: high) {
+  .security-form input {
+    border-width: 2px;
+  }
+  
+  .security-form button {
+    border: 2px solid #00f0ff;
+  }
+  
+  .security-alert {
+    border: 2px solid currentColor;
+  }
+}
+
+/* 🔒 Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .security-loading .loading-spinner,
+  .access-denied .security-icon,
+  .security-status .status-indicator {
+    animation: none;
+  }
+  
+  .security-form button:hover,
+  .security-modal button:hover {
+    transform: none;
+  }
+} 

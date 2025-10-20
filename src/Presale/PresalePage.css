@@ -1,0 +1,247 @@
+.presale-page {
+  display: flex;
+  min-height: 100vh;
+  min-height: 100svh; /* Better mobile viewport height on Android/Huawei */
+  background: transparent;
+  position: relative;
+}
+
+/* Global AI text particle field */
+.ai-text-field {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+.ai-text-field .ai-bit {
+  position: absolute;
+  font-family: 'SFMono-Regular', ui-monospace, monospace;
+  font-size: 11px; /* slightly larger for clarity */
+  letter-spacing: 0.4px; /* crisper numeric look */
+  color: rgba(0, 255, 195, 0.82); /* brighter */
+  text-shadow: 0 0 8px rgba(0,255,195,0.6), 0 0 1px rgba(0,255,195,0.9);
+  transform: translateY(0) translateX(0) rotate(0deg);
+  animation: aiFloat var(--dur, 20s) cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+  will-change: transform, opacity;
+  opacity: .92;
+}
+/* Mobile light: fewer particles feel + smaller font/glow */
+@media (max-width: 600px) {
+  .ai-text-field .ai-bit {
+    font-size: 10px;
+    letter-spacing: 0.3px;
+    color: rgba(0, 255, 195, 0.75);
+    text-shadow: 0 0 6px rgba(0,255,195,0.45), 0 0 1px rgba(0,255,195,0.7);
+  }
+}
+
+/* Respectă preferința utilizatorului pentru mișcare redusă */
+@media (prefers-reduced-motion: reduce) {
+  .ai-text-field .ai-bit {
+    animation: none;
+    opacity: 0.4;
+  }
+}
+@keyframes aiFloat {
+  0% { transform: translateY(110vh) translateX(0) rotate(0deg); opacity:.0 }
+  10% { opacity:.85 }
+  85% { opacity:.85 }
+  100% { transform: translateY(-10vh) translateX(var(--dx, 30vw)) rotate(10deg); opacity:0 }
+}
+
+.presale-wrapper {
+  flex: 1;
+  padding: 2px 2rem;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: calc(100vh - 80px);
+  min-height: calc(100svh - 80px); /* Use dynamic viewport height when available */
+}
+
+.presale-grid {
+  display: grid;
+  grid-template-areas:
+    "select select"
+    "payment panel"
+    "referral summary";
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1280px;
+  position: relative;
+  overflow-x: hidden;
+  align-items: stretch;
+}
+
+.presale-grid > * {
+  height: 100%;
+}
+
+.grid-select   { grid-area: select; }
+.grid-payment  { grid-area: payment; }
+.grid-panel    { grid-area: panel; }
+.grid-claim    { grid-area: referral; }
+.grid-summary  { grid-area: summary; }
+
+.presale-grid > .grid-payment,
+.presale-grid > .grid-panel,
+.presale-grid > .grid-claim,
+.presale-grid > .grid-summary {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card-box,
+.grid-payment,
+.grid-panel,
+.grid-claim,
+.grid-summary {
+  padding: 1.5rem;
+  border-radius: 16px;
+  background: transparent;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+
+
+.sticky-wrapper {
+  position: sticky;
+  top: 0px;
+  z-index: 2;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+@media (max-width: 992px) {
+  .presale-wrapper {
+    padding: 20px 1rem;
+  }
+
+  .presale-grid {
+    grid-template-areas:
+      "select"
+      "payment"
+      "panel"
+      "referral"
+      "summary";
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .grid-payment,
+  .grid-panel,
+  .grid-claim,
+  .grid-summary {
+    padding: 1rem;
+    border-radius: 14px;
+  }
+
+  .card-box::before,
+  .grid-payment::before,
+  .grid-panel::before,
+  .grid-claim::before,
+  .grid-summary::before {
+    border-radius: 14px;
+  }
+
+  .sticky-wrapper {
+    position: relative;
+    top: auto;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+/* ✅ Responsive pentru mobil */
+@media (max-width: 768px) {
+  .presale-wrapper {
+    padding: 15px 0.5rem; /* Redus padding-ul pe mobil */
+    margin-top: 80px; /* Adăugat margin-top pentru a evita suprapunerea cu BoostedBanner */
+  }
+
+  .presale-grid {
+    gap: 1rem; /* Redus gap-ul pe mobil */
+    width: 100%; /* Asigură că ocupă toată lățimea */
+  }
+
+  .grid-payment,
+  .grid-panel,
+  .grid-claim,
+  .grid-summary {
+    padding: 0.8rem; /* Redus padding-ul pe mobil */
+    border-radius: 12px; /* Redus border-radius pe mobil */
+    width: 100%; /* Asigură că ocupă toată lățimea */
+    margin: 0 auto; /* Centrează componentele */
+  }
+
+  /* Adăugat spațiu extra pentru PaymentBox pentru a evita suprapunerea */
+  .grid-payment {
+    margin-top: 60px; /* Spațiu extra pentru a evita suprapunerea cu BoostedBanner */
+  }
+
+  .card-box::before,
+  .grid-payment::before,
+  .grid-panel::before,
+  .grid-claim::before,
+  .grid-summary::before {
+    border-radius: 12px; /* Redus border-radius pe mobil */
+  }
+}
+
+/* ✅ Responsive pentru ecrane foarte mici */
+@media (max-width: 480px) {
+  .presale-wrapper {
+    padding: 10px 0.3rem; /* Redus și mai mult padding-ul */
+    margin-top: 70px; /* Redus margin-top pentru ecrane foarte mici */
+  }
+
+  .presale-grid {
+    gap: 0.8rem; /* Redus și mai mult gap-ul */
+  }
+
+  .grid-payment,
+  .grid-panel,
+  .grid-claim,
+  .grid-summary {
+    padding: 0.6rem; /* Redus și mai mult padding-ul */
+    border-radius: 10px; /* Redus și mai mult border-radius */
+  }
+
+  /* Spațiu extra pentru PaymentBox pe ecrane foarte mici */
+  .grid-payment {
+    margin-top: 50px; /* Redus spațiul pentru ecrane foarte mici */
+  }
+
+  .card-box::before,
+  .grid-payment::before,
+  .grid-panel::before,
+  .grid-claim::before,
+  .grid-summary::before {
+    border-radius: 10px; /* Redus și mai mult border-radius */
+  }
+}
+
+.presale-grid h3 {
+  font-family: 'system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif', sans-serif;
+  color: #00ffc8;
+  text-shadow: 0 0 6px #00ffc8, 0 0 12px #7f00ff;
+  text-align: center;
+}

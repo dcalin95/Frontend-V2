@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🔍 Telegram Simple API Test</title>
+    <style>
+        body { background: #111; color: #0ff; font-family: monospace; padding: 20px; }
+        .result { background: #222; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { border-left: 4px solid #4CAF50; }
+        .error { border-left: 4px solid #f44336; }
+        button { background: #00bcd4; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Telegram Simple API Test</h1>
+    
+    <button onclick="testSimpleAPI()">Test Simple Telegram API</button>
+    <button onclick="testComplexAPI()">Test Complex Telegram API</button>
+    
+    <div id="results"></div>
+
+    <script>
+        const BACKEND_URL = "https://backend-server-f82y.onrender.com";
+        const TEST_WALLET = "0x4CCA7bf2aeF7A432d06513f7b02c2F316E21f408";
+        
+        async function testSimpleAPI() {
+            const results = document.getElementById('results');
+            results.innerHTML += '<div class="result">🔄 Testing simple endpoint...</div>';
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/telegram/reward/${TEST_WALLET}`);
+                const data = await response.json();
+                
+                const resultClass = response.ok ? 'success' : 'error';
+                results.innerHTML += `<div class="result ${resultClass}">
+                    <h3>Simple API (/api/telegram/reward/)</h3>
+                    <p>Status: ${response.status}</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>`;
+            } catch (error) {
+                results.innerHTML += `<div class="result error">
+                    <h3>Simple API - ERROR</h3>
+                    <p>${error.message}</p>
+                </div>`;
+            }
+        }
+        
+        async function testComplexAPI() {
+            const results = document.getElementById('results');
+            results.innerHTML += '<div class="result">🔄 Testing complex endpoint...</div>';
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/telegram-rewards/status/${TEST_WALLET}`);
+                const data = await response.json();
+                
+                const resultClass = response.ok ? 'success' : 'error';
+                results.innerHTML += `<div class="result ${resultClass}">
+                    <h3>Complex API (/api/telegram-rewards/status/)</h3>
+                    <p>Status: ${response.status}</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>`;
+            } catch (error) {
+                results.innerHTML += `<div class="result error">
+                    <h3>Complex API - ERROR</h3>
+                    <p>${error.message}</p>
+                </div>`;
+            }
+        }
+        
+        // Auto-test on load
+        window.onload = () => {
+            setTimeout(testSimpleAPI, 1000);
+            setTimeout(testComplexAPI, 2000);
+        };
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+

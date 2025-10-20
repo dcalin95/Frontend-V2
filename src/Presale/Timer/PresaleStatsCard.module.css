@@ -1,0 +1,132 @@
+.card {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  padding: 1.5rem;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 255, 255, 0.1);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.05),
+              inset 0 0 10px rgba(0, 255, 255, 0.04);
+  color: #ffffff;
+  width: 100%;
+  max-width: 400px;
+  margin: 2rem auto;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.title {
+  font-size: 1.5rem;
+  color: #ffc400;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 8px #ffc40099;
+  letter-spacing: 0.8px;
+}
+
+.statLine {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  opacity: 0;
+  transform: translateY(10px);
+  animation: slideFadeIn 0.5s ease forwards;
+  flex-wrap: wrap;
+}
+
+.statLine:last-child {
+  border-bottom: none;
+}
+
+.labelGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  filter: drop-shadow(0 0 4px rgba(0, 255, 255, 0.5));
+}
+
+.value {
+  font-weight: 700;
+  color: #00eaff;
+  text-shadow: 0 0 5px #00f0ffaa;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 1.2rem;
+  text-align: right;
+  max-width: 100%;
+  word-break: break-word;
+}
+
+.priceDisplay {
+  font-size: 1.5rem;
+  font-weight: 900;
+  background: linear-gradient(45deg, #ff0080, #ff6b6b, #ffd700, #00ff88, #00f0ff, #7f00ff);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbowFlow 3s linear infinite;
+  letter-spacing: 1px;
+}
+
+.unit {
+  font-size: 1rem;
+  margin-left: 0.25rem;
+  color: #00ffc6;
+  font-weight: 500;
+}
+
+/* Animations */
+.delay1 { animation-delay: 0.3s; }
+.delay2 { animation-delay: 0.6s; }
+.delay3 { animation-delay: 0.9s; }
+
+@keyframes slideFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rainbowFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 1rem;
+    max-width: 92%;
+  }
+
+  .labelGroup span {
+    font-size: 0.85rem;
+  }
+
+  .value {
+    font-size: 1.05rem;
+    text-align: left;
+  }
+
+  .unit {
+    font-size: 0.9rem;
+  }
+
+  .statLine {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

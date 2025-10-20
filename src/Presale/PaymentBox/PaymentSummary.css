@@ -1,0 +1,240 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@600&display=swap');
+
+.payment-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: transparent;
+  border: 1px solid rgba(0, 241, 255, 0.1);
+  border-radius: 12px;
+  font-family: 'Roboto Mono', monospace;
+  /* Previne traducerea automată a Chrome */
+  -webkit-translate: no;
+  translate: no;
+}
+
+.summary-line {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2px 0;  
+  gap: 16px;
+  flex-wrap: nowrap; /* Previne wrap-ul pe mobil */
+  white-space: nowrap; /* Forțează textul să rămână pe o singură linie */
+  -webkit-translate: no;
+  translate: no;
+}
+
+.summary-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 1.1rem;
+  color: #00f1ff;
+  font-weight: 500;
+  flex-shrink: 0; /* Previne comprimarea label-ului */
+  min-width: fit-content; /* Asigură că label-ul nu se comprimă */
+}
+
+.summary-value {
+  font-size: 1.3rem;
+  font-weight: bold;
+  background: linear-gradient(90deg, #00ffcc, #ff4081);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: left;
+  flex-shrink: 1; /* Permite comprimarea valorii dacă e necesar */
+  min-width: 0; /* Permite comprimarea */
+  overflow: hidden; /* Ascunde textul care nu se încadrează */
+  text-overflow: ellipsis; /* Adaugă "..." pentru textul trunchiat */
+}
+
+.icon {
+  font-size: 1.2rem;
+  margin-right: 4px;
+}
+
+.icon-pay { color: #00ffcc; }
+.icon-receive { color: #ffd700; }
+.icon-tokens { color: #ff8a00; }
+.icon-total-now { color: #00ffcc; }
+.icon-total-including { color: #ffd700; }
+.icon-claim { color: #ff8a00; }
+
+.legal-disclaimer-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 16px;
+  background: rgba(53, 53, 78, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(100, 100, 100, 0.3);
+  border-radius: 8px;
+  margin-top: 16px;
+  transition: all 0.3s ease;
+}
+
+.legal-disclaimer-container:hover {
+  border-color: rgba(100, 100, 100, 0.5);
+  background: rgba(53, 53, 78, 0.3);
+}
+
+.legal-disclaimer-text {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: #888;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+}
+
+.legal-link {
+  color: #00f1ff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  margin: 0 2px;
+}
+
+.legal-link:hover {
+  color: #00ff88;
+  text-decoration: underline;
+  text-shadow: 0px 0px 8px rgba(0, 241, 255, 0.5);
+}
+
+/* Legal disclaimer styles already defined above */
+
+/* Legal disclaimer styles already defined above */
+
+.pulse {
+  animation: pulseEffect 1.5s infinite;
+}
+
+@keyframes pulseEffect {
+  0%, 100% { text-shadow: 0px 0px 8px rgba(255, 255, 255, 0.6); }
+  50% { text-shadow: 0px 0px 16px rgba(255, 255, 255, 0.9); }
+}
+.bits-logo {
+  width: 30px;
+  height: 30px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+.claimable-bonus-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #2a2a2a;
+  border-radius: 10px;
+  margin-top: 16px;
+  font-size: 1.1rem;
+  color: #ff8a00;
+}
+
+.claimable-bonus-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #00ffcc;
+  display: flex;
+  align-items: center;
+}
+
+.summary-value {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.bonus-gradient {
+  background: linear-gradient(90deg, #ffd700, #ff4081);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 1.6rem;  /* Mai mare */
+  font-weight: bold;
+}
+
+/* ✅ Responsive pentru mobil */
+@media (max-width: 768px) {
+  .payment-summary {
+    padding: 10px;
+    gap: 6px;
+  }
+
+  .summary-line {
+    gap: 6px; /* Reduce gap-ul pe mobil */
+    padding: 1px 0;
+  }
+
+  .summary-label {
+    font-size: 0.9rem; /* Reduce font-ul pentru a se încadra */
+    gap: 3px; /* Reduce gap-ul între icon și text */
+    min-width: auto; /* Permite comprimarea pe mobil */
+  }
+
+  .summary-value {
+    font-size: 1rem; /* Reduce font-ul valorii */
+    max-width: 65%; /* Limitează lățimea valorii */
+  }
+
+  .icon {
+    font-size: 0.9rem; /* Reduce dimensiunea icon-urilor */
+  }
+
+  .claimable-bonus-container {
+    padding: 8px;
+    margin-top: 10px;
+    font-size: 0.8rem;
+  }
+
+  .claimable-bonus-value {
+    font-size: 1.2rem;
+  }
+
+  .claimable-bits-label {
+    font-size: 1rem;
+  }
+}
+
+/* ✅ Responsive pentru ecrane foarte mici */
+@media (max-width: 480px) {
+  .payment-summary {
+    padding: 8px;
+    gap: 4px;
+  }
+
+  .summary-line {
+    gap: 4px; /* Reduce și mai mult gap-ul pe ecrane foarte mici */
+    padding: 1px 0;
+  }
+
+  .summary-label {
+    font-size: 0.8rem; /* Reduce și mai mult font-ul */
+    gap: 2px; /* Reduce gap-ul între icon și text */
+    min-width: auto;
+  }
+
+  .summary-value {
+    font-size: 0.9rem; /* Reduce font-ul valorii */
+    max-width: 60%; /* Limitează și mai mult lățimea */
+  }
+
+  .icon {
+    font-size: 0.8rem; /* Reduce dimensiunea icon-urilor */
+  }
+
+  .claimable-bonus-container {
+    padding: 6px;
+    margin-top: 8px;
+    font-size: 0.7rem;
+  }
+
+  .claimable-bonus-value {
+    font-size: 1rem;
+  }
+
+  .claimable-bits-label {
+    font-size: 0.9rem;
+  }
+}

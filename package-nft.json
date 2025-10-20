@@ -1,0 +1,22 @@
+{
+  "name": "mindmirror-nft-deployment",
+  "version": "1.0.0",
+  "description": "Mind Mirror NFT Smart Contract Deployment",
+  "scripts": {
+    "deploy:testnet": "npx hardhat run scripts/deploy-mind-nft.js --network bscTestnet",
+    "deploy:mainnet": "npx hardhat run scripts/deploy-mind-nft.js --network bscMainnet",
+    "test": "npx hardhat test",
+    "compile": "npx hardhat compile",
+    "verify": "npx hardhat verify --network bscTestnet"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^3.0.2",
+    "@openzeppelin/contracts": "^4.9.3",
+    "hardhat": "^2.17.1",
+    "dotenv": "^16.3.1"
+  },
+  "keywords": ["nft", "blockchain", "bsc", "mind-mirror", "erc721"],
+  "author": "BitSwapDEX",
+  "license": "MIT"
+}
+

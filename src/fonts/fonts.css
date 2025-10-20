@@ -1,0 +1,1036 @@
+/**
+ * 🔤 ROG CRYSTAL FONT IMPLEMENTATION
+ * 
+ * Complete @font-face implementation for ROG Crystal font
+ * with fallbacks and performance optimizations
+ */
+
+/* ========== ROG Crystal Font Family ========== */
+
+/* ROG Crystal Fonts - COMMENTED OUT (Files not available) */
+/*
+@font-face {
+    font-family: 'ROG Crystal';
+    src: url('./rog-crystal/rog-crystal-regular.eot');
+    src: url('./rog-crystal/rog-crystal-regular.eot?#iefix') format('embedded-opentype'),
+         url('./rog-crystal/rog-crystal-regular.woff2') format('woff2'),
+         url('./rog-crystal/rog-crystal-regular.woff') format('woff'),
+         url('./rog-crystal/rog-crystal-regular.ttf') format('truetype'),
+         url('./rog-crystal/rog-crystal-regular.svg#ROGCrystal') format('svg');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    unicode-range: U+0020-007F, U+00A0-00FF;
+}
+
+@font-face {
+    font-family: 'ROG Crystal';
+    src: url('./rog-crystal/rog-crystal-bold.woff2') format('woff2'),
+         url('./rog-crystal/rog-crystal-bold.woff') format('woff'),
+         url('./rog-crystal/rog-crystal-bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+    unicode-range: U+0020-007F, U+00A0-00FF;
+}
+
+@font-face {
+    font-family: 'ROG Crystal';
+    src: url('./rog-crystal/rog-crystal-light.woff2') format('woff2'),
+         url('./rog-crystal/rog-crystal-light.woff') format('woff'),
+         url('./rog-crystal/rog-crystal-light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+    unicode-range: U+0020-007F, U+00A0-00FF;
+}
+*/
+
+/* ========== PRIMARY FONT: EXO 2 - AI/TECH TYPOGRAPHY ========== */
+
+/* Exo 2 - PRIMARY SITE FONT - Complete Weight Range for AI/Tech Look */
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@100;200;300;400;500;600;700&display=swap');
+
+/* Space Mono - Monospace for Code/Technical Elements */
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+
+/* Backup Fonts (Commented - Exo 2 is primary) */
+/*
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;600;700&display=swap');
+*/
+
+/* ========== EXO 2 GLOBAL TYPOGRAPHY SYSTEM ========== */
+
+/* GLOBAL FONT FAMILY - Apply Exo 2 to everything */
+* {
+    font-family: 'Exo 2', 'Helvetica Neue', Arial, sans-serif;
+}
+
+html, body {
+    font-family: 'Exo 2', 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    line-height: 1.6;
+}
+
+/* ========== LOGO & BRAND ========== */
+.logo, .brand, h1.main-title, .site-title {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 200; /* Extra Light - Ultra modern */
+    font-size: clamp(2rem, 5vw, 4rem);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    line-height: 1.1;
+}
+
+/* ========== HEADINGS HIERARCHY ========== */
+h1 {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 200; /* Extra Light - Futuristic */
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    letter-spacing: 3px;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+h2 {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 300; /* Light - Clean & Technical */
+    font-size: clamp(2rem, 3vw, 2.5rem);
+    letter-spacing: 2px;
+    line-height: 1.3;
+}
+
+h3 {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 300; /* Light - Readable */
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    letter-spacing: 1.5px;
+    line-height: 1.4;
+}
+
+h4, h5, h6 {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 400; /* Regular - Standard */
+    letter-spacing: 1px;
+    line-height: 1.5;
+}
+
+/* ========== BODY TEXT ========== */
+p, div, span, li, td, th, article, section {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 400; /* Regular - Optimal readability */
+    letter-spacing: 0.5px;
+    line-height: 1.7;
+}
+
+/* ========== BUTTONS & CTA ========== */
+button, .btn, .cta, a.button, input[type="submit"], input[type="button"] {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 500; /* Medium - Strong presence */
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+    line-height: 1.2;
+}
+
+/* ========== NAVIGATION ========== */
+nav, .menu, .navbar, .navigation {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 300; /* Light - Clean navigation */
+    letter-spacing: 1px;
+}
+
+nav a, .menu a, .nav-link, .navbar a {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 300; /* Light - Elegant */
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+/* ========== FORMS ========== */
+input, textarea, select, .form-control {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 400; /* Regular - Clear input */
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+}
+
+input::placeholder, textarea::placeholder {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 300; /* Light - Subtle placeholder */
+    letter-spacing: 0.5px;
+}
+
+/* ========== CODE & TECHNICAL ========== */
+code, pre, .code, .technical {
+    font-family: 'Space Mono', 'Exo 2', monospace;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    line-height: 1.6;
+}
+
+/* ========== CAPTIONS & SMALL TEXT ========== */
+small, .caption, .footnote, .meta, .subtitle {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 300; /* Light - Unobtrusive */
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+}
+
+/* ========== AI/TECH SPECIFIC CLASSES ========== */
+.tech-text, .ai-content, .futuristic {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 300;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+.data-display, .metrics, .stats, .numbers {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 200; /* Extra Light - Clean data */
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+}
+
+.highlight, .accent, .important {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 600; /* Semi Bold - Emphasis */
+    letter-spacing: 1px;
+}
+
+.ultra-light {
+    font-weight: 100; /* Ultra Light - Special cases */
+    letter-spacing: 3px;
+}
+
+/* ========== RESPONSIVE FONT SIZING ========== */
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+    html, body {
+        font-size: 16px;
+        letter-spacing: 0.3px;
+    }
+    
+    h1 {
+        font-weight: 300; /* Slightly heavier on mobile for readability */
+        letter-spacing: 2px;
+    }
+    
+    .logo, .brand {
+        letter-spacing: 2px;
+        font-size: clamp(1.5rem, 8vw, 2.5rem);
+    }
+    
+    .tech-text, .ai-content {
+        letter-spacing: 0.8px;
+    }
+    
+    .data-display, .metrics {
+        letter-spacing: 1.5px;
+    }
+    
+    button, .btn {
+        letter-spacing: 1px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Tablet Optimization */
+@media (min-width: 769px) and (max-width: 1199px) {
+    html, body {
+        font-size: 17px;
+        letter-spacing: 0.4px;
+    }
+}
+
+/* Desktop Large Screens */
+@media (min-width: 1200px) {
+    html, body {
+        font-size: 18px;
+        letter-spacing: 0.7px;
+    }
+    
+    .logo, .brand {
+        letter-spacing: 5px;
+    }
+    
+    h1 {
+        letter-spacing: 4px;
+    }
+    
+    .tech-text, .ai-content {
+        letter-spacing: 1.5px;
+    }
+}
+
+/* Ultra-wide screens */
+@media (min-width: 1600px) {
+    html, body {
+        font-size: 19px;
+        letter-spacing: 0.8px;
+    }
+    
+    .logo, .brand {
+        letter-spacing: 6px;
+    }
+}
+
+/* ========== PERFORMANCE OPTIMIZATIONS ========== */
+
+/* Font Loading Strategy */
+.font-loading * {
+    font-family: 'Helvetica Neue', Arial, sans-serif; /* Fallback during loading */
+}
+
+.font-loaded * {
+    font-family: 'Exo 2', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Preload hint for critical fonts */
+/*
+Add to HTML <head>:
+<link rel="preload" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;200;300;400;500;600;700&display=swap" as="style">
+*/
+
+/* ========== Font Classes ========== */
+
+/* ROG-Style Text (Now using Exo 2 - AI/Tech optimized) */
+.rog-text {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 300; /* Light - Technical look */
+    letter-spacing: 1.2px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-transform: uppercase;
+}
+
+/* ROG-Style Bold (Exo 2 Semi Bold) */
+.rog-text-bold {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 600; /* Semi Bold - Strong presence */
+    letter-spacing: 1.8px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-transform: uppercase;
+}
+
+/* ROG-Style Light (Exo 2 Extra Light) */
+.rog-text-light {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 200; /* Extra Light - Ultra modern */
+    letter-spacing: 0.8px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========== SPACE MONO - CRYSTAL CLEAR CLASSES ========== */
+
+/* Space Mono Regular - Crystal Clear */
+.space-mono {
+    font-family: 'Space Mono', 'Courier New', monospace;
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Space Mono Bold - Crystal Clear */
+.space-mono-bold {
+    font-family: 'Space Mono', 'Courier New', monospace;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Exo 2 Titles (Previously Space Mono) - AI/Tech Headers */
+.space-mono-title, .exo-title {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 200; /* Extra Light - Futuristic */
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Exo 2 Subtitle (Previously Space Mono) */
+.space-mono-subtitle, .exo-subtitle {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 300; /* Light - Clean */
+    letter-spacing: 2px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Exo 2 Body Text (Previously Space Mono) */
+.space-mono-body, .exo-body {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 400; /* Regular - Readable */
+    letter-spacing: 0.5px;
+    line-height: 1.7;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Exo 2 Accent/Highlight (Previously Space Mono) */
+.space-mono-accent, .exo-accent {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 600; /* Semi Bold - Strong */
+    letter-spacing: 1.5px;
+    color: #00ffff; /* Keep the accent color */
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========== ROG-Style Effects ========== */
+
+/* Crystal Glow Effect */
+.rog-glow {
+    text-shadow: 
+        0 0 5px rgba(0, 212, 255, 0.5),
+        0 0 10px rgba(0, 212, 255, 0.3),
+        0 0 15px rgba(0, 212, 255, 0.2),
+        0 0 20px rgba(0, 212, 255, 0.1);
+}
+
+/* Gaming Gradient Text */
+.rog-gradient {
+    background: linear-gradient(90deg, #00D4FF, #7B68EE, #FF6B9D, #FFD700);
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: rog-gradient-shift 3s ease-in-out infinite;
+}
+
+@keyframes rog-gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Crystal Cut Effect */
+.rog-crystal-cut {
+    position: relative;
+    overflow: hidden;
+}
+
+.rog-crystal-cut::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent 30%, 
+        rgba(255, 255, 255, 0.1) 49%, 
+        rgba(255, 255, 255, 0.2) 50%, 
+        rgba(255, 255, 255, 0.1) 51%, 
+        transparent 70%);
+    transform: rotate(45deg);
+    animation: rog-crystal-sweep 2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes rog-crystal-sweep {
+    0% { transform: translateX(-100%) rotate(45deg); }
+    50% { transform: translateX(0%) rotate(45deg); }
+    100% { transform: translateX(100%) rotate(45deg); }
+}
+
+/* ROG Neon Effect */
+.rog-neon {
+    color: #00D4FF;
+    text-shadow: 
+        0 0 5px #00D4FF,
+        0 0 10px #00D4FF,
+        0 0 15px #00D4FF,
+        0 0 20px #00D4FF,
+        0 0 35px #00D4FF,
+        0 0 40px #00D4FF;
+    animation: rog-neon-flicker 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes rog-neon-flicker {
+    0%, 18%, 22%, 25%, 53%, 57%, 100% {
+        text-shadow: 
+            0 0 5px #00D4FF,
+            0 0 10px #00D4FF,
+            0 0 15px #00D4FF,
+            0 0 20px #00D4FF,
+            0 0 35px #00D4FF,
+            0 0 40px #00D4FF;
+    }
+    20%, 24%, 55% {
+        text-shadow: none;
+    }
+}
+
+/* ========== SPACE MONO CRYSTAL CLEAR EFFECTS ========== */
+
+/* Space Mono Crystal Glow */
+.space-mono-glow {
+    text-shadow: 
+        0 0 3px rgba(0, 255, 255, 0.6),
+        0 0 6px rgba(0, 255, 255, 0.4),
+        0 0 9px rgba(0, 255, 255, 0.3),
+        0 0 12px rgba(0, 255, 255, 0.2),
+        0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Space Mono Laser Cut Effect */
+.space-mono-laser {
+    position: relative;
+    color: #ffffff;
+    text-shadow: 
+        0 0 1px #00ffff,
+        0 0 2px #00ffff,
+        0 0 4px #00ffff,
+        1px 1px 0 rgba(0, 255, 255, 0.3);
+}
+
+.space-mono-laser::before {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #00ffff;
+    z-index: -1;
+    text-shadow: 
+        0 0 10px #00ffff,
+        0 0 20px #00ffff,
+        0 0 30px #00ffff;
+    opacity: 0.7;
+}
+
+/* Space Mono Neon Cyan */
+.space-mono-neon {
+    color: #00ffff;
+    text-shadow: 
+        0 0 2px #00ffff,
+        0 0 4px #00ffff,
+        0 0 6px #00ffff,
+        0 0 8px #00ffff,
+        0 0 12px #00ffff,
+        0 0 16px #00ffff;
+    animation: space-mono-pulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes space-mono-pulse {
+    0% {
+        text-shadow: 
+            0 0 2px #00ffff,
+            0 0 4px #00ffff,
+            0 0 6px #00ffff,
+            0 0 8px #00ffff,
+            0 0 12px #00ffff,
+            0 0 16px #00ffff;
+    }
+    100% {
+        text-shadow: 
+            0 0 4px #00ffff,
+            0 0 8px #00ffff,
+            0 0 12px #00ffff,
+            0 0 16px #00ffff,
+            0 0 24px #00ffff,
+            0 0 32px #00ffff;
+    }
+}
+
+/* Space Mono Green Matrix */
+.space-mono-matrix {
+    color: #00ff88;
+    text-shadow: 
+        0 0 3px #00ff88,
+        0 0 6px #00ff88,
+        0 0 9px #00ff88,
+        0 0 12px #00ff88;
+    animation: space-mono-matrix-flicker 3s linear infinite;
+}
+
+@keyframes space-mono-matrix-flicker {
+    0%, 95%, 100% {
+        opacity: 1;
+        text-shadow: 
+            0 0 3px #00ff88,
+            0 0 6px #00ff88,
+            0 0 9px #00ff88,
+            0 0 12px #00ff88;
+    }
+    96%, 99% {
+        opacity: 0.8;
+        text-shadow: 
+            0 0 1px #00ff88,
+            0 0 2px #00ff88;
+    }
+}
+
+/* Space Mono Hologram Effect */
+.space-mono-hologram {
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(0, 255, 255, 0.1) 25%, 
+        rgba(0, 255, 255, 0.3) 50%, 
+        rgba(0, 255, 255, 0.1) 75%, 
+        transparent 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: space-mono-hologram-scan 2s linear infinite;
+    position: relative;
+}
+
+.space-mono-hologram::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(0, 255, 255, 0.05) 48%, 
+        rgba(0, 255, 255, 0.1) 50%, 
+        rgba(0, 255, 255, 0.05) 52%, 
+        transparent 100%);
+    animation: space-mono-scan-line 1.5s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes space-mono-hologram-scan {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes space-mono-scan-line {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Space Mono Digital Glitch */
+.space-mono-glitch {
+    position: relative;
+    color: #ffffff;
+}
+
+.space-mono-glitch::before,
+.space-mono-glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.space-mono-glitch::before {
+    animation: space-mono-glitch-1 0.5s infinite linear alternate-reverse;
+    color: #ff0040;
+    z-index: -1;
+}
+
+.space-mono-glitch::after {
+    animation: space-mono-glitch-2 0.5s infinite linear alternate-reverse;
+    color: #00ffff;
+    z-index: -2;
+}
+
+@keyframes space-mono-glitch-1 {
+    0% { transform: translate(0); }
+    20% { transform: translate(-1px, 1px); }
+    40% { transform: translate(-1px, -1px); }
+    60% { transform: translate(1px, 1px); }
+    80% { transform: translate(1px, -1px); }
+    100% { transform: translate(0); }
+}
+
+@keyframes space-mono-glitch-2 {
+    0% { transform: translate(0); }
+    20% { transform: translate(1px, -1px); }
+    40% { transform: translate(1px, 1px); }
+    60% { transform: translate(-1px, -1px); }
+    80% { transform: translate(-1px, 1px); }
+    100% { transform: translate(0); }
+}
+
+/* ========== Responsive Font Sizes ========== */
+
+/* Mobile First */
+.rog-title {
+    font-size: 1.8rem;
+    line-height: 1.2;
+}
+
+.rog-subtitle {
+    font-size: 1.1rem;
+    line-height: 1.4;
+}
+
+.rog-body {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+    .rog-title {
+        font-size: 2.5rem;
+    }
+    
+    .rog-subtitle {
+        font-size: 1.3rem;
+    }
+    
+    .rog-body {
+        font-size: 1.1rem;
+    }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+    .rog-title {
+        font-size: 3.5rem;
+    }
+    
+    .rog-subtitle {
+        font-size: 1.5rem;
+    }
+    
+    .rog-body {
+        font-size: 1.2rem;
+    }
+}
+
+/* Large Desktop */
+@media (min-width: 1440px) {
+    .rog-title {
+        font-size: 4rem;
+    }
+    
+    .rog-subtitle {
+        font-size: 1.8rem;
+    }
+}
+
+/* ========== SPACE MONO RESPONSIVE SIZES ========== */
+
+/* Mobile First - Space Mono */
+.space-mono-title {
+    font-size: 1.5rem;
+    line-height: 1.2;
+    letter-spacing: 2px;
+}
+
+.space-mono-subtitle {
+    font-size: 1rem;
+    line-height: 1.4;
+    letter-spacing: 1.5px;
+}
+
+.space-mono-body {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    letter-spacing: 0.5px;
+}
+
+.space-mono-accent {
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+}
+
+/* Tablet - Space Mono */
+@media (min-width: 768px) {
+    .space-mono-title {
+        font-size: 2rem;
+        letter-spacing: 3px;
+    }
+    
+    .space-mono-subtitle {
+        font-size: 1.2rem;
+        letter-spacing: 2px;
+    }
+    
+    .space-mono-body {
+        font-size: 1rem;
+        letter-spacing: 1px;
+    }
+    
+    .space-mono-accent {
+        font-size: 1.3rem;
+        letter-spacing: 1.5px;
+    }
+}
+
+/* Desktop - Space Mono */
+@media (min-width: 1024px) {
+    .space-mono-title {
+        font-size: 3rem;
+        letter-spacing: 4px;
+    }
+    
+    .space-mono-subtitle {
+        font-size: 1.5rem;
+        letter-spacing: 3px;
+    }
+    
+    .space-mono-body {
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+    }
+    
+    .space-mono-accent {
+        font-size: 1.5rem;
+        letter-spacing: 2px;
+    }
+}
+
+/* Large Desktop - Space Mono */
+@media (min-width: 1440px) {
+    .space-mono-title {
+        font-size: 4rem;
+        letter-spacing: 5px;
+    }
+    
+    .space-mono-subtitle {
+        font-size: 1.8rem;
+        letter-spacing: 3px;
+    }
+    
+    .space-mono-body {
+        font-size: 1.3rem;
+    }
+    
+    .space-mono-accent {
+        font-size: 1.8rem;
+        letter-spacing: 2px;
+    }
+}
+
+/* ========== Performance Optimizations ========== */
+
+/* Preload Critical Fonts */
+/*
+ROG Crystal fonts not available - using Google Fonts instead:
+- Orbitron (ROG-style alternative)
+- Space Mono (Crystal clear monospace)
+- Exo 2 (Gaming alternative)
+- Rajdhani (Sharp tech alternative)
+
+Google Fonts are automatically optimized and don't need manual preloading.
+*/
+
+/* Font Loading Strategy - Updated for Exo 2 */
+.font-loading .rog-text {
+    font-family: 'Helvetica Neue', Arial, sans-serif; /* Fallback during loading */
+}
+
+.font-loaded .rog-text {
+    font-family: 'Exo 2', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* ========== Accessibility ========== */
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .rog-text,
+    .space-mono,
+    .space-mono-bold,
+    .space-mono-title,
+    .space-mono-subtitle,
+    .space-mono-body {
+        text-shadow: none;
+        color: #ffffff;
+    }
+    
+    .rog-gradient,
+    .space-mono-hologram {
+        background: none;
+        -webkit-text-fill-color: #ffffff;
+        color: #ffffff;
+    }
+    
+    .space-mono-accent,
+    .space-mono-neon,
+    .space-mono-matrix {
+        color: #ffffff;
+        text-shadow: none;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    .rog-gradient,
+    .rog-crystal-cut::before,
+    .rog-neon,
+    .space-mono-pulse,
+    .space-mono-matrix,
+    .space-mono-hologram,
+    .space-mono-glitch::before,
+    .space-mono-glitch::after {
+        animation: none;
+    }
+    
+    .rog-text,
+    .space-mono-glow {
+        text-shadow: 0 0 5px rgba(0, 212, 255, 0.3);
+    }
+    
+    .space-mono-neon {
+        text-shadow: 0 0 3px #00ffff;
+    }
+    
+    .space-mono-matrix {
+        text-shadow: 0 0 3px #00ff88;
+    }
+}
+
+/* ========== Print Styles ========== */
+
+@media print {
+    * {
+        font-family: 'Arial', sans-serif !important;
+        color: #000000 !important;
+        text-shadow: none !important;
+        background: none !important;
+        -webkit-text-fill-color: #000000 !important;
+        animation: none !important;
+    }
+    
+    .space-mono, .code-mono, .technical-mono {
+        font-family: 'Courier New', monospace !important;
+    }
+}
+
+/* ========== AI/TECH BRAND OPTIMIZATIONS ========== */
+
+/* BITS-AI.IO Specific Typography */
+.bits-ai-brand {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 100; /* Ultra Light - Ultra futuristic */
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    font-size: clamp(2rem, 6vw, 4rem);
+    background: linear-gradient(45deg, #00ffff, #0080ff, #8000ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* AI Content Specific */
+.ai-powered, .ai-analytics, .ai-rewards {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 200;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    position: relative;
+}
+
+.ai-powered::before {
+    content: "AI";
+    font-weight: 100;
+    font-size: 0.7em;
+    letter-spacing: 3px;
+    opacity: 0.7;
+    margin-right: 8px;
+}
+
+/* Cryptocurrency/Financial Data */
+.crypto-amount, .financial-data, .price-display {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 200;
+    letter-spacing: 1.5px;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+/* Technical Specifications */
+.tech-specs, .system-info, .blockchain-data {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 300;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* Status Indicators */
+.status-active, .status-online, .status-connected {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+/* Futuristic Numbers/Metrics */
+.metric-display, .counter, .progress-text {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 200;
+    letter-spacing: 2px;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+}
+
+/* Terminal/Console Style */
+.terminal-text, .console-output {
+    font-family: 'Space Mono', 'Exo 2', monospace;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #00ff00;
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+/* ========== PERFORMANCE ENHANCEMENTS ========== */
+
+/* Optimize font rendering for AI/Tech content */
+.ai-content, .tech-content, .futuristic-text {
+    text-rendering: optimizeSpeed; /* Faster rendering for dynamic content */
+    -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: auto;
+}
+
+/* GPU acceleration for animated text */
+.animated-text, .glitch-text, .matrix-text {
+    will-change: transform, opacity;
+    transform: translateZ(0); /* Force GPU layer */
+}
+
+/* ========== ACCESSIBILITY IMPROVEMENTS ========== */
+
+/* Ensure readability for AI/Tech content */
+@media (prefers-reduced-motion: reduce) {
+    .animated-text, .glitch-text {
+        animation: none !important;
+        transform: none !important;
+    }
+}
+
+/* High contrast mode for tech interfaces */
+@media (prefers-contrast: high) {
+    .tech-text, .ai-content {
+        font-weight: 500; /* Heavier weight for better contrast */
+        letter-spacing: 1px; /* Reduced spacing for clarity */
+    }
+    
+    .data-display, .metrics {
+        font-weight: 400; /* More readable in high contrast */
+    }
+}

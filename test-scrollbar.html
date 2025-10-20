@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrollbar Hide Test</title>
+    <link rel="stylesheet" href="scrollbar-hide.css">
+    <style>
+        /* Test content to force scrolling */
+        .test-content {
+            background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460);
+            color: white;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        
+        .tall-content {
+            height: 200vh; /* Force vertical scrolling */
+            background: linear-gradient(to bottom, 
+                #1a1a2e 0%, 
+                #16213e 25%, 
+                #0f3460 50%, 
+                #e94560 75%, 
+                #f27121 100%
+            );
+        }
+        
+        .wide-content {
+            width: 150vw; /* Force horizontal scrolling */
+            background: rgba(255, 255, 255, 0.1);
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .info-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #e94560;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-content">
+        <h1>🚀 Scrollbar Hide Test - Chrome</h1>
+        
+        <div class="info-box">
+            <h2>✅ Test Instructions:</h2>
+            <p>1. This page has content that extends beyond the viewport</p>
+            <p>2. You should be able to scroll vertically and horizontally</p>
+            <p>3. <strong>NO SCROLLBARS should be visible</strong> in Chrome, Firefox, Safari, or any browser</p>
+            <p>4. Scrolling should work with mouse wheel, touch, and keyboard</p>
+        </div>
+
+        <div class="wide-content">
+            <h3>🔄 Horizontal Scroll Test</h3>
+            <p>This content is wider than the viewport to test horizontal scrolling. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        </div>
+
+        <div class="tall-content">
+            <h3>⬇️ Vertical Scroll Test</h3>
+            <p>Scroll down to see more content...</p>
+            
+            <div style="margin-top: 50vh;">
+                <h3>🎯 Middle Section</h3>
+                <p>You're halfway through the vertical scroll test!</p>
+            </div>
+            
+            <div style="margin-top: 50vh;">
+                <h3>🏁 Bottom Section</h3>
+                <p>You've reached the bottom! If you can see this without any visible scrollbars, the CSS is working perfectly.</p>
+                
+                <div class="info-box">
+                    <h4>✨ Success Criteria:</h4>
+                    <ul>
+                        <li>No visible scrollbars anywhere</li>
+                        <li>Smooth scrolling functionality preserved</li>
+                        <li>Full viewport width/height utilized</li>
+                        <li>Works in all browsers including Web3 wallets</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

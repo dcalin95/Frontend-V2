@@ -1,0 +1,123 @@
+User-agent: *
+Allow: /
+
+# Ensure SPA 404s do not get indexed as errors pages
+Noindex: /404.html
+Noindex: /_error.html
+
+# 🚀 BitSwapDEX AI - Robots.txt
+# Optimized for Google SEO and Crypto Investment Platform
+
+User-agent: *
+Allow: /
+
+# 🎯 CRYPTO/INVESTMENT CONTENT - HIGH PRIORITY
+Allow: /presale
+Allow: /trading
+Allow: /analytics
+Allow: /portfolio
+Allow: /wallet
+Allow: /about
+Allow: /contact
+Allow: /blog
+Allow: /news
+Allow: /market-analysis
+Allow: /investment-guide
+Allow: /crypto-education
+
+# 📊 ANALYTICS & TRACKING
+Allow: /api/analytics
+Allow: /api/performance
+Allow: /api/market-data
+
+# 🔒 SECURITY & PRIVATE AREAS
+Disallow: /admin/
+Disallow: /private/
+Disallow: /internal/
+Disallow: /api/private/
+Disallow: /user/settings
+Disallow: /wallet/private
+Disallow: /trading/history
+
+# 🚫 TECHNICAL FILES
+Disallow: /src/
+Disallow: /node_modules/
+Disallow: /.env
+Disallow: /config/
+Disallow: /build/
+Disallow: /static/js/
+Disallow: /static/css/
+Disallow: /*.json$
+Disallow: /*.xml$
+Disallow: /*.txt$
+
+# 🎯 SITEMAP LOCATION
+Sitemap: https://bits-ai.io/sitemap.xml
+
+# 🚀 CRAWL DELAY (optional - for high-traffic sites)
+Crawl-delay: 1
+
+# 📱 MOBILE OPTIMIZATION
+User-agent: Googlebot-Mobile
+Allow: /
+
+# 🤖 AI BOTS
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+# 🔍 SEARCH ENGINES
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Slurp
+Allow: /
+Crawl-delay: 1
+
+# 📊 ANALYTICS BOTS
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-Video
+Allow: /
+
+User-agent: Mediapartners-Google
+Allow: /
+
+# 🚫 BLOCK HARMFUL BOTS
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+# 🎯 CRYPTO-SPECIFIC CONTENT PRIORITIES
+# High-value pages for crypto investors
+Allow: /bitcoin-investment
+Allow: /ethereum-trading
+Allow: /altcoin-presale
+Allow: /defi-protocols
+Allow: /blockchain-technology
+Allow: /crypto-portfolio
+Allow: /investment-strategy
+Allow: /bear-market-guide
+Allow: /bull-market-opportunities
+Allow: /crypto-tax-guide
+Allow: /security-best-practices
+Allow: /wallet-setup-guide

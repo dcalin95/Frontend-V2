@@ -1,0 +1,229 @@
+/* === GLOBAL STYLES === */
+body {
+  font-family: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif", sans-serif; /* Font futurist */
+  background: radial-gradient(circle at center, #0b0d15, #000); /* Fundal cosmic */
+  color: #d4d4d8;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  animation: cosmic-background 10s infinite alternate ease-in-out; /* Animație fundal */
+}
+
+@keyframes cosmic-background {
+  0% {
+    background: radial-gradient(circle at center, #0b0d15, #000);
+  }
+  50% {
+    background: radial-gradient(circle at center, #0f1120, #020202);
+  }
+  100% {
+    background: radial-gradient(circle at center, #0b0d15, #000);
+  }
+}
+
+/* === NETWORK SELECTOR === */
+.network-selector {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.network-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 25px;
+  border-radius: 15px;
+  background: linear-gradient(145deg, #1b1e24, #15181d);
+  color: #e0e0e0;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Semitransparent */
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.2); /* Mai subtil */
+}
+
+.network-button:hover {
+  background: linear-gradient(145deg, #21252b, #191d22);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4); /* Intensificat */
+  transform: scale(1.1);
+}
+
+.network-button.active {
+  background: linear-gradient(145deg, #00ffff, #0077ff);
+  color: white;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+  border-color: rgba(0, 255, 255, 0.6);
+}
+
+.network-icon {
+  width: 25px;
+  height: 25px;
+  object-fit: contain;
+}
+
+/* === WALLET BUTTONS === */
+.wallet-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  align-items: center;
+  padding: 0;
+}
+
+.wallet-button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 15px 20px;
+  border: 2px solid rgba(255, 255, 255, 0.1); /* Semitransparent */
+  border-radius: 15px;
+  background: linear-gradient(90deg, #121212, #1c1f26, #121212);
+  background-size: 300%;
+  color: #e0e0e0;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 280px;
+  height: 70px;
+  position: relative;
+  transition: background-position 1.5s ease-in-out, color 0.4s ease, border 0.4s ease; /* Ajustare */
+}
+
+.wallet-button:hover,
+.wallet-button:focus {
+  border: 2px solid rgba(0, 255, 255, 0.3); /* Semitransparent albastru */
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.4); /* Lumină subtilă */
+}
+
+.wallet-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 12px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+  transition: transform 0.3s ease-in-out, filter 0.3s;
+}
+
+.wallet-button:hover .wallet-icon {
+  transform: rotate(15deg) scale(1.1);
+  filter: drop-shadow(0 0 15px rgba(0, 255, 255, 0.8));
+}
+
+/* === BACKDROP MODAL === */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* === MODAL === */
+.modal {
+  background: linear-gradient(145deg, #101214, #181b1f);
+  border-radius: 15px;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 255, 255, 0.2);
+  color: #e0e0e0;
+  animation: modal-fade-in 0.5s ease-in-out;
+}
+
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #00ffff;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+
+.modal p {
+  font-size: 14px;
+  color: #d4d4d8;
+  margin-bottom: 20px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-around;
+  gap: 15px;
+}
+
+.modal-button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.modal-button.install {
+  background-color: #007bff;
+  color: white;
+}
+
+.modal-button.install:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.modal-button.cancel {
+  background-color: #444;
+  color: white;
+}
+
+.modal-button.cancel:hover {
+  background-color: #666;
+  transform: translateY(-2px);
+}
+
+/* === CONNECTED WALLET STYLING === */
+.connected-wallet {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: linear-gradient(145deg, #121820, #0d1015);
+  padding: 15px;
+  border-radius: 15px;
+  margin: 20px auto;
+  max-width: 400px;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+}
+
+.connected-wallet-icon {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.5));
+}
+
+.connected-wallet p {
+  color: #00ff99;
+  font-size: 12px;
+  font-weight: italic;
+}

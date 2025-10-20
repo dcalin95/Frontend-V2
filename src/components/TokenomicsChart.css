@@ -1,0 +1,512 @@
+/* Containerul principal */
+.tokenomics-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    padding: 2rem 0;
+    background: transparent;
+    min-height: 80vh;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Titlul */
+.tokenomics-title {
+    font-size: 3.5rem;
+    color: #00ffe0;
+    text-shadow: 0 0 15px #00ffe0, 0 0 30px #9c27ff, 0 0 45px #e040fb;
+    margin-bottom: 3rem;
+    text-align: center;
+    font-weight: bold;
+    background: transparent;
+    position: relative;
+    z-index: 10;
+}
+
+/* Wrapper pentru grafic și carduri */
+.chart-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1400px;
+    min-height: 600px;
+    padding: 2rem 0;
+    gap: 3rem;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    position: relative;
+    z-index: 5;
+}
+
+/* Centrul graficului cu efecte */
+.chart-center {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 600px;
+    height: 500px;
+}
+
+/* Efect de glow pentru grafic */
+.chart-glow-effect {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 255, 224, 0.1) 0%, transparent 70%);
+    animation: pulse 3s ease-in-out infinite;
+    z-index: 1;
+}
+
+/* Efect de energie în centru */
+.energy-core {
+    position: absolute;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: transparent; /* eliminăm gradientul care putea deforma vizual */
+    box-shadow: none;        /* fără glow agresiv în centru */
+    animation: none;         /* oprim efectul de "dans" */
+    z-index: 3;
+}
+
+/* Carduri din stânga */
+.left-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    flex: 0 0 auto;
+    max-width: 350px;
+    align-items: center;
+    background: transparent;
+    z-index: 10;
+}
+
+/* Carduri din dreapta */
+.right-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    flex: 0 0 auto;
+    max-width: 350px;
+    align-items: center;
+    background: transparent;
+    z-index: 10;
+}
+
+/* Stiluri card cu efecte îmbunătățite */
+.floating-card {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 2.5rem 2rem;
+    border-radius: 25px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    width: 320px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: float 6s ease-in-out infinite;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+    z-index: 10;
+}
+
+/* Efect de glow pentru carduri */
+.card-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 25px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.floating-card:hover .card-glow {
+    opacity: 0.1;
+}
+
+.floating-card.exploded .card-glow {
+    opacity: 0.2;
+    animation: glowPulse 1s ease-in-out infinite;
+}
+
+.floating-card:nth-child(1) { animation-delay: 0s; }
+.floating-card:nth-child(2) { animation-delay: 1s; }
+.floating-card:nth-child(3) { animation-delay: 2s; }
+
+.floating-card.active {
+    background: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 50px rgba(255, 255, 255, 0.8), 0 0 100px rgba(0, 255, 224, 0.4);
+    transform: scale(1.1);
+    z-index: 40;
+    border-color: rgba(0, 255, 224, 0.6);
+}
+
+.floating-card.exploded {
+    background: rgba(0, 0, 0, 0.9);
+    box-shadow: 0 0 60px rgba(255, 255, 255, 1), 0 0 120px rgba(0, 255, 224, 0.6);
+    transform: scale(1.15);
+    z-index: 50;
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Text din card */
+.floating-card h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+    position: relative;
+    z-index: 2;
+}
+
+.floating-card .amount {
+    font-size: 1.5rem;
+    color: rgb(255, 255, 255);
+    font-weight: 600;
+    position: relative;
+    z-index: 2;
+    margin-bottom: 0.5rem;
+}
+
+.floating-card .percentage {
+    font-size: 1.8rem;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    position: relative;
+    z-index: 2;
+    margin-bottom: 1rem;
+}
+
+.floating-card .description {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-style: italic;
+    position: relative;
+    z-index: 2;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+/* Graficul principal */
+.recharts-wrapper {
+    width: 100%;
+    max-width: 600px;
+    height: 500px;
+    margin: 0 auto;
+    background: transparent;
+    position: relative;
+    z-index: 5;
+}
+
+/* Celulele graficului cu efecte */
+.chart-cell {
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 0 5px currentColor);
+}
+
+.chart-cell.active {
+    filter: drop-shadow(0 0 20px currentColor);
+    transform: scale(1.05);
+}
+
+.chart-cell.exploded {
+    filter: drop-shadow(0 0 30px currentColor);
+    transform: scale(1.1);
+}
+
+/* Label pentru segmentul explodat */
+.exploded-label {
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+/* Highlight pe hover */
+.floating-card:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 255, 255, 0.3);
+    z-index: 20;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Animații */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.6;
+    }
+}
+
+@keyframes energyPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 30px #00ffe0, 0 0 60px #9c27ff;
+    }
+    50% {
+        transform: scale(1.2);
+        box-shadow: 0 0 50px #00ffe0, 0 0 100px #9c27ff;
+    }
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 0.4;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .chart-wrapper {
+        gap: 2rem;
+        padding: 1rem 0;
+    }
+    
+    .floating-card {
+        width: 280px;
+        padding: 2rem 1.5rem;
+    }
+    
+    .floating-card h3 {
+        font-size: 1.6rem;
+    }
+    
+    .floating-card .amount {
+        font-size: 1.3rem;
+    }
+    
+    .floating-card .percentage {
+        font-size: 1.6rem;
+    }
+    
+    .recharts-wrapper {
+        max-width: 500px;
+        height: 450px;
+    }
+    
+    .chart-glow-effect {
+        width: 350px;
+        height: 350px;
+    }
+}
+
+@media (max-width: 768px) {
+    .tokenomics-container {
+        padding: 1rem 0;
+    }
+
+    .tokenomics-title {
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .chart-wrapper {
+        flex-direction: column;
+        align-items: center;
+        padding: 0;
+        gap: 2rem;
+        height: auto;
+    }
+
+    .left-cards,
+    .right-cards {
+        flex: none;
+        width: 100%;
+        max-width: 400px;
+        align-items: center;
+        margin-bottom: 0;
+    }
+
+    .floating-card {
+        background: rgba(0, 0, 0, 0.7);
+        width: 100%;
+        max-width: 350px;
+        padding: 1.5rem;
+        margin: 0.5rem 0;
+    }
+
+    .floating-card h3 {
+        font-size: 1.4rem;
+    }
+
+    .floating-card .amount {
+        font-size: 1.2rem;
+    }
+
+    .floating-card .percentage {
+        font-size: 1.4rem;
+    }
+
+    .recharts-wrapper {
+        width: 100%;
+        max-width: 400px;
+        height: 350px;
+        margin-top: 1rem;
+    }
+
+    .chart-glow-effect {
+        width: 300px;
+        height: 300px;
+    }
+
+    .energy-core {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    .tokenomics-title {
+        font-size: 2rem;
+    }
+    
+    .floating-card {
+        padding: 1rem;
+        width: 90%;
+    }
+    
+    .floating-card h3 {
+        font-size: 1.2rem;
+    }
+    
+    .floating-card .amount {
+        font-size: 1rem;
+    }
+    
+    .floating-card .percentage {
+        font-size: 1.2rem;
+    }
+    
+    .recharts-wrapper {
+        height: 300px;
+    }
+    
+    .chart-glow-effect {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .energy-core {
+        width: 30px;
+        height: 30px;
+    }
+}
+/* ——— centru: text peste miezul de energie ——— */
+.energy-core {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.energy-core-inner {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(4px);
+  transform: translateY(0); /* păstrăm centrul perfect */
+}
+
+/* faviconul din centru – scalare responsive */
+.bits-core-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;   /* prevenim deformarea */
+  display: block;
+}
+
+.energy-core-inner .core-line1 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.energy-core-inner .core-line2 {
+  margin-top: 2px;
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+/* info bar deasupra graficului (linie cu Total Supply / Price / Coverage) */
+.tokenomics-info {
+  text-align: center;
+  margin-bottom: 1rem;
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+
+/* dacă vrei un highlight când suma procentelor ≠ 100% */
+.coverage-warning {
+  color: #ffb300;
+  text-shadow: 0 0 8px rgba(255,179,0,0.5);
+}
+
+/* ușoare ajustări pentru centru */
+.chart-center {
+  max-width: 640px; /* puțin mai generos */
+  height: 520px;    /* potrivit pentru label-uri */
+}
+
+/* etichete explodate – vizibilitate mai bună */
+.exploded-label {
+  font-size: 1.1rem;
+  font-weight: 700;
+  paint-order: stroke;
+  -webkit-text-stroke: 3px rgba(0,0,0,0.35);
+  text-shadow: 0 0 8px rgba(0,0,0,0.4);
+}
+
+/* accesibilitate: reduce animațiile dacă utilizatorul preferă asta */
+@media (prefers-reduced-motion: reduce) {
+  .floating-card,
+  .chart-glow-effect,
+  .energy-core,
+  .floating-card.exploded .card-glow {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+@media (max-width: 768px) {
+  .energy-core-inner .core-line1 { font-size: 0.85rem; }
+  .energy-core-inner .core-line2 { font-size: 0.75rem; }
+  .chart-center { height: 460px; }
+  .energy-core { width: 56px; height: 56px; }
+}
+
+@media (max-width: 480px) {
+  .energy-core-inner .core-line1 { font-size: 0.8rem; }
+  .energy-core-inner .core-line2 { font-size: 0.7rem; }
+  .chart-center { height: 420px; }
+  .energy-core { width: 44px; height: 44px; }
+}

@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@600&display=swap');
+
+.totalRaised {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 0.5rem;
+  width: 100%;
+}
+
+.totalRaisedLabel {
+  font-size: 1.2rem;
+  color: #fff;
+  font-weight: 500;
+}
+
+.totalRaisedAmount {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #00ff00;
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+.analyticsBox {
+  margin-top: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+  color: #fff8dc;
+  font-size: 0.9rem;
+}
+
+.analyticsTitle {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+  text-align: center;
+  color: #ffe97f;
+  text-shadow: 0 0 3px rgba(255, 215, 0, 0.5);
+}
+
+.roundList {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.roundList li {
+  margin-bottom: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+  color: #fff;
+}

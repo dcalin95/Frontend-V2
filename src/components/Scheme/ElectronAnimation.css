@@ -1,0 +1,53 @@
+.electron-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  .electron {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    animation: move-electron 8s linear infinite;
+  }
+  
+  .electron.blue {
+    background: linear-gradient(90deg, #1e90ff, #87cefa);
+    box-shadow: 0 0 10px rgba(30, 144, 255, 0.8), 0 0 20px rgba(135, 206, 250, 0.5);
+  }
+  
+  .electron.green {
+    background: linear-gradient(90deg, #32cd32, #7fff00);
+    box-shadow: 0 0 10px rgba(50, 205, 50, 0.8), 0 0 20px rgba(127, 255, 0, 0.5);
+  }
+  
+  .electron.orange {
+    background: linear-gradient(90deg, #ffa500, #ff4500);
+    box-shadow: 0 0 10px rgba(255, 165, 0, 0.8), 0 0 20px rgba(255, 69, 0, 0.5);
+  }
+  
+  .electron.purple {
+    background: linear-gradient(90deg, #8a2be2, #da70d6);
+    box-shadow: 0 0 10px rgba(138, 43, 226, 0.8), 0 0 20px rgba(218, 112, 214, 0.5);
+  }
+  
+  @keyframes move-electron {
+    0% {
+      transform: translate3d(0, 0, 0);
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
+    100% {
+      transform: translate3d(
+        calc(100vw * var(--direction-x)),
+        calc(100vh * var(--direction-y)),
+        0
+      );
+      opacity: 0;
+    }
+  }
+  

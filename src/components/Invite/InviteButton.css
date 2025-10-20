@@ -1,0 +1,328 @@
+.invite-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.invite-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.invite-description {
+  font-size: 1.2rem;
+  color: #e0e0e0;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.highlight {
+  color: #00ffff;
+  font-weight: bold;
+}
+
+.highlight-big {
+  color: #ffcc00;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.invite-button-container {
+  text-align: center;
+  background: linear-gradient(145deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.9));
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+.wallet-input {
+  width: 300px;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.generate-button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.generate-button:hover {
+  transform: scale(1.05);
+}
+
+.generate-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.message {
+  margin-top: 20px;
+  font-size: 1rem;
+  color: #f0f0f0;
+}
+
+.code-section {
+  margin-top: 20px;
+}
+
+.invite-code {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #00ffff;
+}
+
+.copy-button {
+  background-color: #28a745;
+  color: #fff;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.copy-button:hover {
+  transform: scale(1.1);
+}
+
+.invite-card {
+  max-width: 700px;
+  text-align: center;
+  padding: 30px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+  transition: transform 0.3s;
+}
+
+.invite-card:hover {
+  transform: scale(1.05);
+}
+
+.invite-card-title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.invite-card-text {
+  font-size: 1.4rem;
+  color: #e0e0e0;
+  line-height: 1.8;
+  margin-bottom: 30px;
+}
+
+.rewards-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 20px;
+}
+
+.reward-box {
+  width: 150px;
+  height: 150px;
+  background: linear-gradient(145deg, #000000, #222222);
+  border: 2px solid #00ffff;
+  border-radius: 15px;
+  text-align: center;
+  padding: 10px;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.reward-box:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+}
+
+.reward-title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #00ffff;
+  margin-bottom: 5px;
+}
+
+.reward-desc {
+  font-size: 1.1rem;
+  color: #ffffff;
+}
+
+.invite-card-footer {
+  font-size: 1rem;
+  color: #c0c0c0;
+  margin-top: 10px;
+}
+/* Efect de tremurat și glow pentru casetele de recompensă */
+.reward-box {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  background: linear-gradient(145deg, #000000, #111111);
+  border: 2px solid #00ffff;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+  transition: transform 0.3s, box-shadow 0.3s;
+  overflow: hidden;
+}
+
+.reward-box:hover {
+  transform: scale(1.1) rotate(1deg);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+  animation: shake 0.3s infinite;
+}
+
+/* Animație de tremurat */
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-5px);
+  }
+}
+
+/* Animație de confetti */
+@keyframes confetti {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100px) rotate(360deg);
+  }
+}
+
+/* Efect de confetti */
+.reward-box::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background: #ffcc00;
+  border-radius: 50%;
+  animation: confetti 1s ease-out infinite;
+}
+
+/* Stiluri text "10%" și "5%" */
+.reward-title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #00ffff;
+  margin: 0;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reward-desc {
+  font-size: 1.1rem;
+  color: #ffffff;
+  text-align: center;
+  margin-top: 10px;
+}
+/* REGULA GENERALĂ PENTRU ECRANE MICI */
+@media (max-width: 768px) {
+  .invite-section {
+    gap: 20px; /* Reduce spațiul între secțiuni */
+    padding: 10px; /* Adaugă spațiu în jur */
+  }
+
+  .invite-title {
+    font-size: 1.8rem; /* Redu dimensiunea fontului */
+  }
+
+  .invite-description {
+    font-size: 1rem; /* Ajustează descrierea */
+    padding: 0 15px; /* Adaugă margini pentru lizibilitate */
+  }
+
+  .invite-button-container {
+    padding: 15px; /* Reduce padding-ul general */
+  }
+
+  .wallet-input {
+    width: 100%; /* Asigură că input-ul ocupă întreaga lățime */
+    font-size: 14px; /* Redu dimensiunea fontului */
+  }
+
+  .generate-button {
+    padding: 8px 15px; /* Redu dimensiunea butonului */
+    font-size: 14px; /* Ajustează dimensiunea textului */
+  }
+
+  .message {
+    font-size: 0.9rem; /* Dimensiune mai mică pentru mesaj */
+  }
+
+  .invite-code {
+    font-size: 1rem; /* Ajustează codul invitației */
+  }
+
+  .copy-button {
+    padding: 6px 10px; /* Dimensiune mai compactă pentru buton */
+    font-size: 14px; /* Ajustează textul butonului */
+  }
+
+  .invite-card {
+    max-width: 90%; /* Cardul să ocupe o proporție mai mare din ecran */
+    padding: 20px; /* Ajustează padding-ul */
+  }
+
+  .invite-card-title {
+    font-size: 2rem; /* Ajustează dimensiunea fontului titlului */
+  }
+
+  .invite-card-text {
+    font-size: 1.2rem; /* Ajustează textul explicativ */
+    line-height: 1.5; /* Mai mult spațiu între linii */
+  }
+
+  .rewards-container {
+    flex-direction: column; /* Stivuiește casetele una peste alta */
+    gap: 20px; /* Spațiu între ele */
+  }
+
+  .reward-box {
+    width: 100%; /* Casetele să ocupe întreaga lățime */
+    height: auto; /* Ajustează înălțimea automat */
+    padding: 15px; /* Adaugă padding pentru text */
+    font-size: 1.5rem; /* Dimensiune mai mare pentru text */
+  }
+
+  .reward-title {
+    font-size: 2rem; /* Ajustează textul titlului */
+  }
+
+  .reward-desc {
+    font-size: 1rem; /* Ajustează textul descrierii */
+  }
+
+  .invite-card-footer {
+    font-size: 0.9rem; /* Ajustează textul de sub card */
+  }
+}

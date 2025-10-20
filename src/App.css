@@ -1,0 +1,227 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@600&display=swap');
+
+/* 🔥 LASER-SHARP FONT RENDERING - GLOBAL */
+* {
+  -webkit-font-smoothing: never !important;
+  -moz-osx-font-smoothing: unset !important;
+  text-rendering: geometricPrecision !important;
+}
+
+.laser-sharp {
+  text-shadow: 0.5px 0.5px 0px rgba(0, 0, 0, 0.1);
+  filter: contrast(2.2) brightness(1.3);
+  -webkit-font-smoothing: never;
+  text-rendering: geometricPrecision;
+}
+
+:root {
+  --background-dark: #0d0d0d;
+  --background-light: #1a1a1a;
+  --text-light: #ffffff;
+  --primary-glow: #00ffcc;
+  --secondary-glow: #ff4081;
+  --highlight-color: #ffd700; /* Auriu */
+  --accent-color: #ff4500;   /* Portocaliu */
+  --input-bg: #222222;
+}
+
+body, html, .app-container {
+  margin: 0;
+  padding: 0;
+  font-family: 'Exo 2', sans-serif;
+  /* 🧨 COMENTEAZĂ SAU ȘTERGE FUNDALUL DE MAI JOS */
+  /* background: linear-gradient(135deg, var(--background-dark), var(--background-light)); */
+  background: transparent !important;
+  color: var(--text-light);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background 0.5s, color 0.5s;
+  padding-top: 80px; /* 🔧 CHROME FIX - Space for fixed header */
+}
+
+
+/* ==========================
+   === Header Styling ===
+   ========================== */
+.App-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 2rem;
+  background: #121212;
+  box-shadow: 0 4px 15px rgba(0, 255, 255, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+.App-header:hover {
+  background: #1c1c1c;
+  box-shadow: 0 6px 20px rgba(0, 255, 255, 0.2);
+}
+
+.App-logo {
+  height: 42px;
+  animation: App-logo-spin infinite 15s linear;
+  transition: height 0.3s;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================
+   === Link Styling ===
+   ========================== */
+.App-link {
+  color: var(--primary-glow);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.App-link:hover {
+  color: var(--secondary-glow);
+  /* text-shadow removed for crisp text */
+}
+
+/* ==========================
+   === Sidebar + Main ===
+   ========================== */
+.main-content {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #1a1a1a;
+  padding: 1rem;
+  min-height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 998;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar:hover {
+  background-color: #222222;
+}
+
+.page-content {
+  margin-left: 250px;
+  padding: 2rem;
+  width: 100%;
+}
+
+@media (max-width: 992px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .page-content {
+    margin-left: 0;
+  }
+}
+
+/* ==========================
+   === Cosmic Input Box ===
+   ========================== */
+.cosmic-input-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.cosmic-input-wrapper {
+  width: 180px;
+  background-color: var(--input-bg);
+  border-radius: 12px;
+  box-shadow: 0px 0px 12px rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: center;
+}
+
+.cosmic-input {
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: var(--highlight-color);
+  font-size: 2.8rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* text-shadow removed for crisp text */
+}
+
+.cosmic-input:focus {
+  color: var(--accent-color);
+  /* text-shadow removed for crisp text */
+}
+
+/* ==========================
+   === Button Styles ===
+   ========================== */
+.action-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+/* ==========================
+   === Animations ===
+   ========================== */
+@keyframes buttonGlow {
+  0%, 100% {
+    box-shadow: 0px 0px 8px rgba(0, 255, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0px 0px 16px rgba(0, 255, 255, 0.8);
+  }
+}
+.page-content {
+  background: transparent !important;
+}
+
+.rpv-core__viewer,
+.rpv-core__canvas-layer,
+.rpv-core__canvas,
+.rpv-core__inner-pages,
+.rpv-core__page-layer,
+.rpv-core__inner-page {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.total-boosted-banner {
+  position: fixed;
+  top: 80px; /* sub header */
+  left: 30px;
+  z-index: 999;
+  background: var(--secondary-glow);
+  color: #0d0d0d;
+  font-size: 1.5rem;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(255, 64, 129, 0.8);
+  opacity: 0;
+  animation: appearBoosted 1s ease-out 3s forwards;
+  /* text-shadow removed for crisp text */
+}
+
+@keyframes appearBoosted {
+  to {
+    opacity: 1;
+  }
+}

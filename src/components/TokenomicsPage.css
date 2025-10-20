@@ -1,0 +1,190 @@
+:root {
+  --c-accent: #00ffe0;
+  --c-accent-2: #9c27ff;
+  --c-text-dim: #cccccc;
+}
+
+/* Pagina tokenomics */
+.tokenomics-page {
+  min-height: 100vh;
+  background: transparent; /* Fundal complet transparent */
+  padding: 2rem 0;
+  position: relative;
+  z-index: 1;
+}
+
+.tokenomics-page-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  background: transparent;
+}
+
+/* Secțiunea info */
+.tokenomics-info {
+  margin-top: 2rem;
+  text-align: center;
+  color: #ffffff;
+  background: transparent;
+}
+
+.tokenomics-info h2 {
+  font-size: 2.5rem;
+  color: var(--c-accent);
+  margin-bottom: 1rem;
+  text-shadow: 0 0 10px var(--c-accent), 0 0 20px var(--c-accent-2);
+  font-weight: bold;
+  background: transparent;
+}
+
+.tokenomics-info p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  color: var(--c-text-dim);
+  background: transparent;
+}
+
+/* Grid pentru detalii */
+.tokenomics-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+  background: transparent;
+}
+
+/* Cardurile cu detalii */
+.detail-item {
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(0, 255, 224, 0.4);
+  border-radius: 20px;
+  padding: 2rem;
+  backdrop-filter: blur(5px);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.detail-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 224, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.detail-item:hover::before {
+  left: 100%;
+}
+
+.detail-item:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: var(--c-accent);
+  box-shadow: 0 15px 40px rgba(0, 255, 224, 0.3), 0 0 20px rgba(0, 255, 224, 0.2);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.detail-item h3 {
+  color: var(--c-accent);
+  font-size: 1.4rem;
+  margin-bottom: 0.8rem;
+  font-weight: bold;
+  text-shadow: 0 0 8px rgba(0, 255, 224, 0.5);
+  position: relative;
+  z-index: 2;
+}
+
+.detail-item p {
+  color: #ffffff;
+  font-size: 1.2rem;
+  margin: 0;
+  font-weight: 500;
+  position: relative;
+  z-index: 2;
+}
+
+/* Animație fade-in pentru carduri */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.detail-item:nth-child(1) { animation-delay: 0.1s; }
+.detail-item:nth-child(2) { animation-delay: 0.2s; }
+.detail-item:nth-child(3) { animation-delay: 0.3s; }
+
+/* Highlight coverage warning (când ≠ 100%) */
+.coverage-warning {
+  color: #ffb300;
+  text-shadow: 0 0 8px rgba(255,179,0,0.5);
+  font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .tokenomics-page {
+    padding: 1rem 0;
+  }
+  
+  .tokenomics-page-container {
+    padding: 0 1rem;
+  }
+  
+  .tokenomics-info h2 {
+    font-size: 2rem;
+  }
+  
+  .tokenomics-info p {
+    font-size: 1rem;
+  }
+  
+  .tokenomics-details {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .detail-item {
+    padding: 1.5rem;
+  }
+  
+  .detail-item h3 {
+    font-size: 1.2rem;
+  }
+  
+  .detail-item p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tokenomics-page-container {
+    padding: 0 0.5rem;
+  }
+  
+  .tokenomics-info h2 {
+    font-size: 1.8rem;
+  }
+  
+  .detail-item {
+    padding: 1rem;
+  }
+  
+  .detail-item h3 {
+    font-size: 1.1rem;
+  }
+  
+  .detail-item p {
+    font-size: 0.9rem;
+  }
+}

@@ -1,0 +1,212 @@
+/* ========================================
+   PRODUCTION-GRADE SCROLLBAR HIDING CSS
+   Compatible with all browsers including Web3 wallets
+   ======================================== */
+
+/* 1. WEBKIT BROWSERS (Chrome, Safari, Edge, most mobile browsers, Web3 wallets) */
+/* Hide scrollbars but maintain scrolling functionality */
+::-webkit-scrollbar {
+    width: 0px;           /* Remove horizontal scrollbar width */
+    height: 0px;          /* Remove vertical scrollbar height */
+    background: transparent; /* Make scrollbar track transparent */
+    display: none;        /* Completely hide scrollbar */
+}
+
+/* Additional webkit scrollbar components (belt and suspenders approach) */
+::-webkit-scrollbar-track {
+    background: transparent;
+    width: 0px;
+    height: 0px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: transparent;
+    width: 0px;
+    height: 0px;
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+/* 2. FIREFOX */
+/* Use scrollbar-width property (Firefox 64+) */
+html {
+    scrollbar-width: none; /* Hide scrollbars */
+}
+
+/* Fallback for older Firefox versions */
+html {
+    overflow: -moz-scrollbars-none;
+}
+
+/* 3. INTERNET EXPLORER / EDGE LEGACY */
+/* Hide scrollbars in IE/Edge legacy */
+html {
+    -ms-overflow-style: none;
+}
+
+/* 4. UNIVERSAL BODY/HTML SETUP */
+/* Ensure full viewport usage without scrollbar space reservation */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;    /* Hide horizontal scrollbar if content overflows */
+    overflow-y: auto;      /* Allow vertical scrolling but hide scrollbar */
+}
+
+/* 5. CONTAINER ELEMENTS */
+/* Apply to any scrollable containers in your dApp */
+.scrollable-container,
+.modal-content,
+.sidebar,
+.content-area {
+    /* Webkit browsers */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    
+    /* Maintain scrolling functionality */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.scrollable-container::-webkit-scrollbar,
+.modal-content::-webkit-scrollbar,
+.sidebar::-webkit-scrollbar,
+.content-area::-webkit-scrollbar {
+    display: none;
+    width: 0px;
+    height: 0px;
+    background: transparent;
+}
+
+/* 6. MOBILE TOUCH SCROLLING */
+/* Ensure smooth touch scrolling on mobile devices */
+html, body, 
+.scrollable-container,
+.modal-content,
+.sidebar,
+.content-area {
+    -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
+    overscroll-behavior: contain;      /* Prevent scroll chaining */
+}
+
+/* 7. WEB3 WALLET SPECIFIC FIXES */
+/* Additional rules for embedded browsers in crypto wallets */
+* {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+*::-webkit-scrollbar {
+    display: none !important;
+    width: 0px !important;
+    height: 0px !important;
+    background: transparent !important;
+}
+
+/* 7.1. AGGRESSIVE CHROME SCROLLBAR HIDING */
+/* Force hide scrollbars in Chrome with maximum specificity */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+div::-webkit-scrollbar,
+main::-webkit-scrollbar,
+section::-webkit-scrollbar,
+article::-webkit-scrollbar,
+aside::-webkit-scrollbar,
+nav::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+}
+
+/* Force hide all scrollbar components */
+*::-webkit-scrollbar-track,
+*::-webkit-scrollbar-thumb,
+*::-webkit-scrollbar-corner,
+*::-webkit-scrollbar-track-piece,
+*::-webkit-scrollbar-button {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+}
+
+/* 8. PREVENT LAYOUT SHIFT */
+/* Ensure consistent layout regardless of scrollbar presence */
+.full-width {
+    width: 100vw;
+    max-width: 100vw;
+}
+
+.full-height {
+    height: 100vh;
+    max-height: 100vh;
+}
+
+/* 9. ACCESSIBILITY CONSIDERATIONS */
+/* Maintain focus indicators for keyboard navigation */
+:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+/* Ensure content is still accessible via keyboard */
+.scrollable-container:focus,
+.modal-content:focus,
+.sidebar:focus,
+.content-area:focus {
+    outline: 1px solid rgba(0, 123, 255, 0.5);
+}
+
+/* 10. RESPONSIVE DESIGN */
+/* Ensure scrollbar hiding works on all screen sizes */
+@media screen and (max-width: 768px) {
+    html, body {
+        overflow-x: hidden;
+        width: 100%;
+        position: relative;
+    }
+}
+
+/* 11. PRINT STYLES */
+/* Hide scrollbars in print media */
+@media print {
+    html, body, * {
+        overflow: visible !important;
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+    }
+    
+    *::-webkit-scrollbar {
+        display: none !important;
+    }
+}
+
+/* 12. HIGH CONTRAST MODE COMPATIBILITY */
+/* Ensure scrollbar hiding works in high contrast mode */
+@media (prefers-contrast: high) {
+    ::-webkit-scrollbar {
+        display: none !important;
+        width: 0px !important;
+        height: 0px !important;
+    }
+}
+
+/* 13. REDUCED MOTION COMPATIBILITY */
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    html, body, 
+    .scrollable-container,
+    .modal-content,
+    .sidebar,
+    .content-area {
+        -webkit-overflow-scrolling: auto;
+    }
+}

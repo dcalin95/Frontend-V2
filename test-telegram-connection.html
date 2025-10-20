@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🔍 Test Telegram Connection</title>
+    <style>
+        body { 
+            background: #111; 
+            color: #0ff; 
+            font-family: monospace; 
+            padding: 20px; 
+            line-height: 1.6;
+        }
+        .result { 
+            background: #222; 
+            padding: 15px; 
+            margin: 15px 0; 
+            border-radius: 8px; 
+            border-left: 4px solid #00ff00;
+        }
+        .error { border-left-color: #ff4444; }
+        .warning { border-left-color: #ffaa00; }
+        button { 
+            background: #00bcd4; 
+            color: white; 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover { background: #0097a7; }
+        .wallet-input {
+            background: #333;
+            color: #0ff;
+            border: 1px solid #00bcd4;
+            padding: 10px;
+            border-radius: 4px;
+            width: 400px;
+            font-family: monospace;
+        }
+        .status { font-weight: bold; }
+        .success { color: #4CAF50; }
+        .error { color: #f44336; }
+        .warning { color: #ff9800; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test Telegram Connection</h1>
+    <p>Testing connection to Telegram rewards API for wallet: <strong>0x4CCA7bf2aeF7A432d06513f7b02c2F316E21f408</strong></p>
+    
+    <div>
+        <input type="text" id="walletInput" class="wallet-input" value="0x4CCA7bf2aeF7A432d06513f7b02c2F316E21f408" placeholder="Enter wallet address">
+        <button onclick="testWallet()">Test Wallet</button>
+        <button onclick="testAllEndpoints()">Test All Endpoints</button>
+        <button onclick="clearResults()">Clear Results</button>
+    </div>
+    
+    <div id="results"></div>
+
+    <script>
+        const BACKEND_URL = "https://backend-server-f82y.onrender.com";
+        const TEST_WALLET = "0x4CCA7bf2aeF7A432d06513f7b02c2F316E21f408";
+        
+        function addResult(title, content, type = 'result') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.innerHTML = `
+                <h3>${title}</h3>
+                <pre>${JSON.stringify(content, null, 2)}</pre>
+            `;
+            results.appendChild(div);
+        }
+        
+        async function testWallet() {
+            const wallet = document.getElementById('walletInput').value.trim();
+            if (!wallet) {
+                addResult("❌ Error", "Please enter a wallet address", "error");
+                return;
+            }
+            
+            addResult("🔄 Testing", `Testing wallet: ${wallet}`, "warning");
+            
+            try {
+                // Test main reward endpoint
+                const response = await fetch(`${BACKEND_URL}/api/telegram-rewards/reward/${wallet}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addResult("✅ Main Endpoint Success", {
+                        status: response.status,
+                        wallet: wallet,
+                        data: data
+                    });
+                } else {
+                    addResult("❌ Main Endpoint Error", {
+                        status: response.status,
+                        error: data
+                    }, "error");
+                }
+            } catch (error) {
+                addResult("❌ Fetch Error", {
+                    message: error.message,
+                    wallet: wallet
+                }, "error");
+            }
+        }
+        
+        async function testAllEndpoints() {
+            addResult("🔄 Testing All Endpoints", "Starting comprehensive test...", "warning");
+            
+            const endpoints = [
+                { name: "Main Reward", url: `${BACKEND_URL}/api/telegram-rewards/reward/${TEST_WALLET}` },
+                { name: "Status", url: `${BACKEND_URL}/api/telegram-rewards/status/${TEST_WALLET}` },
+                { name: "Debug", url: `${BACKEND_URL}/api/telegram-rewards/debug/${TEST_WALLET}` },
+                { name: "All Users", url: `${BACKEND_URL}/api/telegram-rewards/debug/all-users` }
+            ];
+            
+            for (const endpoint of endpoints) {
+                try {
+                    addResult(`🔄 Testing ${endpoint.name}`, `URL: ${endpoint.url}`, "warning");
+                    
+                    const response = await fetch(endpoint.url);
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        addResult(`✅ ${endpoint.name} Success`, {
+                            status: response.status,
+                            url: endpoint.url,
+                            data: data
+                        });
+                    } else {
+                        addResult(`❌ ${endpoint.name} Error`, {
+                            status: response.status,
+                            url: endpoint.url,
+                            error: data
+                        }, "error");
+                    }
+                } catch (error) {
+                    addResult(`❌ ${endpoint.name} Fetch Error`, {
+                        message: error.message,
+                        url: endpoint.url
+                    }, "error");
+                }
+                
+                // Small delay between requests
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+        }
+        
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+        
+        // Auto-test on load
+        window.onload = () => {
+            addResult("🚀 Ready", "Test page loaded. Click 'Test Wallet' to start testing.", "result");
+        };
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,228 @@
+.roundEndContainer {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 255, 255, 0.1);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  color: #ffffff;
+  font-family: 'Arial', sans-serif;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+}
+
+.title {
+  font-size: 2.5rem;
+  margin: 0 0 1rem 0;
+  background: linear-gradient(45deg, #00ffc8, #00d4ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #cccccc;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.statCard {
+  background: rgba(0, 255, 255, 0.05);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 15px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 255, 255, 0.15);
+}
+
+.statIcon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.statValue {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #00ffc8;
+  margin-bottom: 0.5rem;
+}
+
+.statLabel {
+  font-size: 0.9rem;
+  color: #aaaaaa;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.timeline {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.timelineTitle {
+  color: #00ffc8;
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+}
+
+.timelineItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.timelineItem:last-child {
+  border-bottom: none;
+}
+
+.timelineLabel {
+  color: #cccccc;
+  font-weight: 500;
+}
+
+.timelineValue {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.highlight {
+  background: linear-gradient(45deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.1));
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.highlightTitle {
+  color: #ffd700;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+}
+
+.highlightText {
+  color: #ffffff;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.message {
+  background: rgba(0, 255, 255, 0.05);
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.messageTitle {
+  color: #00ffc8;
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+}
+
+.messageText {
+  color: #cccccc;
+  margin: 0 0 1rem 0;
+  line-height: 1.6;
+}
+
+.instructions {
+  color: #ffffff;
+  padding-left: 1.5rem;
+  margin: 0;
+}
+
+.instructions li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.actions {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.newRoundButton {
+  background: linear-gradient(45deg, #00ffc8, #00d4ff);
+  color: #000000;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 255, 200, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.newRoundButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 255, 200, 0.4);
+  background: linear-gradient(45deg, #00d4ff, #00ffc8);
+}
+
+.footer {
+  text-align: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footerText {
+  color: #aaaaaa;
+  margin: 0;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .roundEndContainer {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .statCard {
+    padding: 1rem;
+  }
+  
+  .statValue {
+    font-size: 1.4rem;
+  }
+}
+
+
+

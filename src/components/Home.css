@@ -1,0 +1,285 @@
+/* ===== Root Variables ===== */
+:root {
+  --font-primary: 'Roboto', sans-serif;
+  --font-secondary: 'Inter', sans-serif;
+  --color-bg: #1b1b2f;
+  --color-text: #ffffff;
+  --color-accent: #3498db;
+  --color-accent-hover: #2980b9;
+  --color-highlight: #f39c12;
+  --color-card-bg: #29293d;
+  --gradient-text: linear-gradient(90deg, #3498db, #9b59b6);
+  --shadow-card: 0 4px 10px rgba(0, 0, 0, 0.5);
+  --shadow-card-hover: 0 6px 15px rgba(0, 0, 0, 0.5);
+  --radius-card: 8px;
+}
+
+/* ===== Reset Global + CRISP TEXT RULES ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* FORCE CRISP TEXT ON HOME PAGE */
+.home-container *,
+.hero *,
+.welcome-section * {
+  /* ELIMINATE ALL BLUR SOURCES */
+  filter: none !important;
+  backdrop-filter: none !important;
+  text-shadow: none !important;
+  /* FORCE PIXEL-PERFECT TEXT */
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: optimizeLegibility !important;
+}
+
+/* Opera/Chromium specific fixes to prevent page-level zoom blur */
+@supports (-webkit-touch-callout: none) {
+  /* Avoid text inflation on some Android browsers */
+  html { text-size-adjust: 100%; -webkit-text-size-adjust: 100%; }
+}
+@media (min-resolution: 2dppx) {
+  /* Force crisper rendering on high-dpi (Opera often applies additional scaling) */
+  body { image-rendering: -webkit-optimize-contrast; }
+}
+/* Disable automatic font boosting in some Opera builds */
+@-moz-document url-prefix() { html { text-size-adjust: 100%; } }
+
+/* Trust Wallet mobile fixes */
+.home-container {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden; /* prevent horizontal scroll */
+}
+
+.home-section {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Mobile layout spacing tweaks */
+.home-section.hero { padding-top: 3rem; padding-bottom: 2rem; }
+.home-section tokenomics-section { padding-top: 2rem; }
+
+/* Ensure Home orbit centers and scales on mobile */
+.home-section .laser-orbit { margin-top: 8px; }
+
+body {
+  font-family: var(--font-primary);
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* ===== Typography ===== */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-primary);
+  font-weight: 700;
+}
+
+p, a, button, input, label, span {
+  font-family: var(--font-secondary);
+  font-weight: 400;
+}
+
+/* ===== General Utilities ===== */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.button {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button-primary {
+  background-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+.button-primary:hover {
+  background-color: var(--color-accent-hover);
+}
+
+/* ===== Section: Hero ===== */
+.hero {
+  padding: 4rem 1rem;
+  text-align: center;
+  margin-top: 120px;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    margin-top: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    margin-top: 180px;
+  }
+}
+
+.hero h1 {
+  font-size: 4rem;
+  /* SOLID COLOR - NO GRADIENT BLUR */
+  color: var(--color-accent);
+  /* FORCE CRISP TEXT */
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: optimizeLegibility !important;
+  filter: none !important;
+  text-shadow: none !important;
+}
+
+.hero p {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.explore-button {
+  background-color: var(--color-accent);
+  color: var(--color-text);
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.explore-button:hover {
+  background-color: var(--color-accent-hover);
+}
+
+/* ===== Section: Features ===== */
+.key-features {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.section-title {
+  font-size: 2rem;
+  color: var(--color-highlight);
+  margin-bottom: 20px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  justify-items: center;
+}
+
+.feature-card {
+  background-color: var(--color-card-bg);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  max-width: 300px;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.feature-card h3 {
+  color: var(--color-highlight);
+}
+
+.feature-card p {
+  color: var(--color-text);
+}
+
+/* ===== Section: Tokenomics ===== */
+.tokenomics-section {
+  padding: 4rem 2rem;
+  text-align: center;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.tokenomics-chart {
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Media Queries ===== */
+@media (max-width: 768px) {
+  .hero {
+    padding: 2rem 1rem;
+  }
+
+  .hero h1 {
+    font-size: 2.5rem;
+    line-height: 1.3;
+  }
+
+  .hero p {
+    font-size: 1.1rem;
+  }
+
+  .features-grid { grid-template-columns: 1fr; }
+
+  .feature-card {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .tokenomics-chart {
+    width: 90%;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 1.5rem 1rem;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  .hero p {
+    font-size: 0.9rem;
+  }
+
+  .feature-card {
+    padding: 15px;
+    margin: 0 auto;
+  }
+
+  .tokenomics-chart {
+    width: 100%;
+  }
+}

@@ -1,0 +1,86 @@
+.legal-container {
+    max-width: 900px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background: rgba(33, 35, 41, 0.9); /* Fundal întunecat și semi-transparent */
+    border: 1px solid rgba(0, 255, 255, 0.2); /* Bordură neon discretă */
+    border-radius: 12px;
+    box-shadow: 0px 0px 20px rgba(0, 255, 255, 0.3), 
+                inset 0px 0px 10px rgba(0, 255, 255, 0.2); /* Efect de lumină */
+    color: #d1d1d1; /* Text alb-gri futurist */
+    font-family: "Roboto", Arial, sans-serif; /* Font modern */
+    line-height: 1.8;
+  }
+  
+  .legal-title {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #00ffff; /* Culoare neon cyan pentru titlu */
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff; /* Efect de lumină pentru text */
+  }
+  
+  section {
+    margin-bottom: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #1e90ff; /* Albastru neon pentru subtitluri */
+    text-shadow: 0px 0px 10px #1e90ff; /* Efect de neon */
+  }
+  
+  ol {
+    margin-left: 1.5rem;
+  }
+  
+  p,
+  li {
+    font-size: 1rem;
+    margin-bottom: 0.7rem;
+    color: #b0b0b0; /* Text alb-gri deschis */
+  }
+  
+  p.legal-highlight {
+    color: #00ffcc; /* Verde deschis neon pentru secțiuni importante */
+    font-weight: bold;
+    text-shadow: 0px 0px 8px #00ffcc;
+  }
+  
+  a {
+    color: #1e90ff; /* Albastru neon pentru link-uri */
+    text-decoration: none;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+  }
+  
+  a:hover {
+    color: #00ffff; /* Schimbă culoarea în cyan neon la hover */
+    text-shadow: 0px 0px 10px #00ffff;
+  }
+  @media only screen and (max-width: 768px) {
+    .legal-container {
+      padding: 1rem;
+      margin: 1.5rem auto;
+      font-size: 0.9rem; /* Dimensiuni mai mici pentru font */
+    }
+  
+    .legal-title {
+      font-size: 1.8rem; /* Ajustare titlu pentru mobile */
+      margin-bottom: 1rem;
+    }
+  
+    section {
+      margin-bottom: 1.5rem;
+    }
+  
+    h2 {
+      font-size: 1.4rem; /* Ajustare subtitluri */
+    }
+  
+    p,
+    li {
+      font-size: 0.9rem; /* Dimensiuni mai mici pentru text */
+    }
+  }
+  

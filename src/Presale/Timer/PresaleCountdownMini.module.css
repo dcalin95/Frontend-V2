@@ -1,0 +1,39 @@
+.miniTimer {
+  display: flex;
+  gap: 0px; /* separatori controlați separat pentru spacing uniform */
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.95rem;
+  padding: 0.4rem 0.6rem;
+  background: rgba(0, 255, 255, 0.05);
+  color: #00f0ff;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 255, 255, 0.15);
+  box-shadow: 0 0 6px rgba(0, 255, 255, 0.15);
+  text-shadow: 0 0 3px #00f0ff88;
+  align-items: center;
+  justify-content: center;
+}
+
+.miniTimer span {
+  text-align: center;
+}
+
+.block {
+  min-width: 30px;
+  padding: 0 2px;
+}
+
+.sep {
+  display: inline-block;
+  width: 10px; /* fix width so colon spacing is consistent */
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .miniTimer {
+    font-size: 0.85rem; /* puțin mai mic pe mobile */
+    padding: 0.3rem 0.5rem;
+  }
+  .block { min-width: 24px; }
+  .sep { width: 8px; }
+}

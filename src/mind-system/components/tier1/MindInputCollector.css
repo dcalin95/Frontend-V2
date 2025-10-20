@@ -1,0 +1,41 @@
+.mind-input {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mind-textarea {
+  min-height: 200px;
+  padding: 1rem;
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  color: #fff;
+  resize: vertical;
+}
+
+.mind-submit {
+  padding: 1rem 2rem;
+  background: #00ff9d;
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.mind-submit:hover {
+  opacity: 0.9;
+}
+
+
+
+
+
+
+
+
+
+
+

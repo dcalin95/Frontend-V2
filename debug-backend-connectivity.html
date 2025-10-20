@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🔍 Backend Connectivity Debug</title>
+    <style>
+        body { 
+            background: #111; 
+            color: #0ff; 
+            font-family: 'Courier New', monospace; 
+            padding: 20px; 
+        }
+        .test-section { 
+            background: #1a1a1a; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 8px; 
+            border: 1px solid #333; 
+        }
+        .success { color: #4CAF50; }
+        .error { color: #ff6666; }
+        .warning { color: #ff9800; }
+        .test-button { 
+            background: linear-gradient(135deg, #00bcd4, #0097a7); 
+            color: white; 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin: 5px; 
+        }
+        .result { 
+            background: #222; 
+            padding: 10px; 
+            border-radius: 4px; 
+            margin: 10px 0; 
+            white-space: pre-wrap; 
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 BitSwapDEX Backend Connectivity Debug</h1>
+
+    <div class="test-section">
+        <h2>🏥 Health Check</h2>
+        <button class="test-button" onclick="testHealth()">Test Health Endpoint</button>
+        <div id="health-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>⏱️ Presale Data</h2>
+        <button class="test-button" onclick="testPresale()">Test Presale API</button>
+        <div id="presale-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎁 Telegram Rewards</h2>
+        <button class="test-button" onclick="testTelegram()">Test Telegram API</button>
+        <div id="telegram-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🤖 AI Portfolio</h2>
+        <button class="test-button" onclick="testAIPortfolio()">Test AI Portfolio API</button>
+        <div id="ai-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎯 All Tests</h2>
+        <button class="test-button" onclick="runAllTests()">Run All Tests</button>
+    </div>
+
+    <script>
+        const BACKEND_URL = "https://backend-server-f82y.onrender.com";
+        
+        async function testHealth() {
+            const result = document.getElementById('health-result');
+            result.innerHTML = "🔄 Testing health endpoint...";
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/health`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    result.innerHTML = `✅ SUCCESS: ${JSON.stringify(data, null, 2)}`;
+                    result.className = "result success";
+                } else {
+                    result.innerHTML = `❌ ERROR: ${response.status} - ${JSON.stringify(data, null, 2)}`;
+                    result.className = "result error";
+                }
+            } catch (error) {
+                result.innerHTML = `❌ FETCH ERROR: ${error.message}`;
+                result.className = "result error";
+            }
+        }
+
+        async function testPresale() {
+            const result = document.getElementById('presale-result');
+            result.innerHTML = "🔄 Testing presale endpoint...";
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/presale/current`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    result.innerHTML = `✅ SUCCESS: 
+Status: ${response.status}
+Data: ${JSON.stringify(data, null, 2)}`;
+                    result.className = "result success";
+                } else {
+                    result.innerHTML = `❌ ERROR: ${response.status} - ${JSON.stringify(data, null, 2)}`;
+                    result.className = "result error";
+                }
+            } catch (error) {
+                result.innerHTML = `❌ FETCH ERROR: ${error.message}`;
+                result.className = "result error";
+            }
+        }
+
+        async function testTelegram() {
+            const result = document.getElementById('telegram-result');
+            result.innerHTML = "🔄 Testing telegram endpoint...";
+            
+            // Test with a sample wallet address
+            const testWallet = "0x1234567890123456789012345678901234567890";
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/telegram/reward/${testWallet}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    result.innerHTML = `✅ SUCCESS: 
+Status: ${response.status}
+Data: ${JSON.stringify(data, null, 2)}`;
+                    result.className = "result success";
+                } else {
+                    result.innerHTML = `❌ ERROR: ${response.status} - ${JSON.stringify(data, null, 2)}`;
+                    result.className = "result error";
+                }
+            } catch (error) {
+                result.innerHTML = `❌ FETCH ERROR: ${error.message}`;
+                result.className = "result error";
+            }
+        }
+
+        async function testAIPortfolio() {
+            const result = document.getElementById('ai-result');
+            result.innerHTML = "🔄 Testing AI portfolio endpoint...";
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/generate-portfolio`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        budget: 1000,
+                        horizon: "6-12 months",
+                        risk: "moderate",
+                        objectives: ["growth"],
+                        tokenPreferences: ["STX"],
+                        useBITS: true
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    result.innerHTML = `✅ SUCCESS: 
+Status: ${response.status}
+Data: ${JSON.stringify(data, null, 2)}`;
+                    result.className = "result success";
+                } else {
+                    result.innerHTML = `❌ ERROR: ${response.status} - ${JSON.stringify(data, null, 2)}`;
+                    result.className = "result error";
+                }
+            } catch (error) {
+                result.innerHTML = `❌ FETCH ERROR: ${error.message}`;
+                result.className = "result error";
+            }
+        }
+
+        async function runAllTests() {
+            await testHealth();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await testPresale();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await testTelegram();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await testAIPortfolio();
+        }
+
+        // Auto-run tests on page load
+        window.onload = () => {
+            console.log("🚀 Starting backend connectivity tests...");
+            setTimeout(runAllTests, 1000);
+        };
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+

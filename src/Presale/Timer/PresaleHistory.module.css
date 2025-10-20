@@ -1,0 +1,76 @@
+PresaleHistory.module.css
+.wrapper {
+  margin: 0;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  width: 100%;
+  height: auto; /* Allow natural height */
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: visible; /* Let parent handle scroll */
+}
+
+.title {
+  display: none;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  background: #2a2a2a;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  border: 1px solid #555;
+  table-layout: fixed; /* Fixed layout for consistent columns */
+}
+
+.table th, .table td {
+  padding: 8px 6px;
+  text-align: center;
+  border: 1px solid #555;
+  color: #cccccc;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.table th {
+  background-color: #333333;
+  font-weight: 600;
+  color: #ffffff;
+  font-size: 12px;
+  padding: 10px 6px;
+}
+
+.table tbody {
+  display: table-row-group;
+}
+
+.table thead {
+  display: table-header-group;
+}
+
+.table tbody tr, .table thead tr {
+  display: table-row;
+}
+
+.table th, .table td {
+  display: table-cell;
+}
+
+/* Column widths for proper alignment - flexible for different table sizes */
+.table th:nth-child(1), .table td:nth-child(1) { width: 10%; } /* # or Round */
+.table th:nth-child(2), .table td:nth-child(2) { width: 15%; } /* Start or Price */
+.table th:nth-child(3), .table td:nth-child(3) { width: 15%; } /* End or Sold */
+.table th:nth-child(4), .table td:nth-child(4) { width: 15%; } /* Price or Raised */
+.table th:nth-child(5), .table td:nth-child(5) { width: 15%; } /* Sold or Available */
+.table th:nth-child(6), .table td:nth-child(6) { width: 15%; } /* Raised or Status */
+.table th:nth-child(7), .table td:nth-child(7) { width: 15%; } /* Available (if exists) */
+.table th:nth-child(8), .table td:nth-child(8) { width: 15%; } /* Theoretical (if exists) */
+
+.error {
+  color: red;
+  margin-bottom: 1rem;
+}
