@@ -14,7 +14,7 @@
   align-items: center;
   box-shadow: 0 0 20px rgba(0, 255, 255, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.4);
   animation: ai-pulse 2s infinite ease-in-out;
-  z-index: 999; /* ✅ Corectat */
+  z-index: 12000; /* ridicat peste sidebar */
 }
 
 .ai-animated-hamburger:hover {
@@ -52,7 +52,7 @@
     display: flex !important;
     top: 90px; /* ✅ Sub Header */
     left: 15px;
-    z-index: 999;
+    z-index: 12000;
   }
 }
 
@@ -66,27 +66,27 @@
 /* ===== RESPONSIVE PENTRU MOBIL ===== */
 @media (max-width: 768px) {
   .ai-animated-hamburger {
-    top: 70px; /* Redus de la 80px la 70px pentru a fi mai aproape de header */
-    left: 10px; /* Redus pentru mobil */
-    width: 50px; /* Redus pentru mobil */
-    height: 50px; /* Redus pentru mobil */
+    top: 100px; /* coborât pentru a nu se suprapune peste butonul de închidere al sidebarului */
+    left: 12px;
+    width: 50px;
+    height: 50px;
   }
 
   .ai-hamburger-icon {
-    font-size: 3rem; /* Redus pentru mobil */
+    font-size: 3rem;
   }
 }
 
 /* ===== RESPONSIVE PENTRU ECRANE FOARTE MICI ===== */
 @media (max-width: 480px) {
   .ai-animated-hamburger {
-    top: 75px; /* Redus și mai mult */
-    left: 8px; /* Redus și mai mult */
-    width: 45px; /* Redus și mai mult */
-    height: 45px; /* Redus și mai mult */
+    top: 108px; /* și mai jos pe ecrane foarte mici */
+    left: 10px;
+    width: 45px;
+    height: 45px;
   }
 
   .ai-hamburger-icon {
-    font-size: 2.5rem; /* Redus și mai mult */
+    font-size: 2.5rem;
   }
 }

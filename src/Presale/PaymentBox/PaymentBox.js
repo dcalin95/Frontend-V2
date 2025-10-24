@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { trackTikTokEvent } from "../../utils/tiktok";
 import usePaymentState from "./hooks/usePaymentState";
 import useHandleTransaction from "./useHandleTransaction";
 import PaymentSummary from "./PaymentSummary";
@@ -42,6 +43,7 @@ const PaymentBox = ({
   
   // 🎯 Referral Code State
   const [referralCode, setReferralCode] = useState("");
+  // const tikTokTrackedRef = React.useRef(false);
 
   // 🔍 Auto-detect referral code from URL
   React.useEffect(() => {
@@ -96,7 +98,10 @@ const PaymentBox = ({
     setTransactionHash(null);
     setConfirmedBits(null);
     setIsConfirmed(false);
+    // if (tikTokTrackedRef.current) tikTokTrackedRef.current = false;
   };
+
+  // TikTok payment tracking intentionally removed (privacy & business readiness)
 
   // 💳 Check if we need to show payment method selector
   const isFiatToken = ['NOWPAY', 'MOONPAY', 'TRANSAK'].includes(selectedToken);
@@ -251,7 +256,10 @@ const PaymentBox = ({
       ) : (
         <>
           <button 
-            onClick={handleBuy} 
+            onClick={() => {
+              try { trackTikTokEvent('InitiateCheckout', { context: 'presale_buy_click' }); } catch(_) {}
+              handleBuy();
+            }} 
             className="buy-button"
             disabled={!paymentState.canProceed || !termsAccepted}
           >

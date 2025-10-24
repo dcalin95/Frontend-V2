@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1280" viewBox="0 0 1080 1280">
+  <defs>
+    <linearGradient id="solanaGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00FFA3"/>
+      <stop offset="40%" stop-color="#07F2FF"/>
+      <stop offset="65%" stop-color="#14F195"/>
+      <stop offset="100%" stop-color="#9945FF"/>
+    </linearGradient>
+    <linearGradient id="bgGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#05070A"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="30" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1080" height="1280" fill="url(#bgGlow)"/>
+
+  <!-- Orbital rings -->
+  <g opacity="0.2" stroke="#0ff" fill="none">
+    <circle cx="540" cy="620" r="430" stroke="url(#solanaGrad)" stroke-width="2"/>
+    <circle cx="540" cy="620" r="330" stroke="url(#solanaGrad)" stroke-width="2"/>
+    <circle cx="540" cy="620" r="230" stroke="url(#solanaGrad)" stroke-width="2"/>
+  </g>
+
+  <!-- Center BITS core -->
+  <g filter="url(#softGlow)">
+    <circle cx="540" cy="620" r="110" fill="#030a08" stroke="url(#solanaGrad)" stroke-width="3"/>
+    <text x="540" y="628" text-anchor="middle" font-family="Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif" font-size="52" font-weight="900" fill="url(#solanaGrad)">BITS</text>
+  </g>
+
+  <!-- Top title -->
+  <text x="540" y="160" text-anchor="middle" font-family="Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif" font-size="58" font-weight="900" fill="url(#solanaGrad)">
+    BitPulse Orbit Dashboard
+  </text>
+  <text x="540" y="214" text-anchor="middle" font-family="Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif" font-size="28" font-weight="800" fill="#b7ffef" opacity="0.9">
+    BITS Education • Bitcoin • BitSwapDEX • AI
+  </text>
+
+  <!-- Feature chips -->
+  <g font-family="Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif" font-size="24" font-weight="700">
+    <g>
+      <rect x="160" y="270" rx="10" ry="10" width="240" height="56" fill="#0b1114" stroke="rgba(0,255,163,0.5)"/>
+      <text x="280" y="307" text-anchor="middle" fill="#9fffe3">Education</text>
+    </g>
+    <g>
+      <rect x="420" y="270" rx="10" ry="10" width="240" height="56" fill="#0b1114" stroke="rgba(7,242,255,0.5)"/>
+      <text x="540" y="307" text-anchor="middle" fill="#b6f0ff">Bitcoin</text>
+    </g>
+    <g>
+      <rect x="680" y="270" rx="10" ry="10" width="240" height="56" fill="#0b1114" stroke="rgba(153,69,255,0.5)"/>
+      <text x="800" y="307" text-anchor="middle" fill="#e0c7ff">BitSwapDEX</text>
+    </g>
+  </g>
+
+  <!-- Bottom CTA bar -->
+  <g>
+    <rect x="120" y="1050" width="840" height="90" rx="16" ry="16" fill="#0b1114" stroke="url(#solanaGrad)" stroke-width="2"/>
+    <text x="540" y="1107" text-anchor="middle" font-family="Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif" font-size="34" font-weight="900" fill="url(#solanaGrad)">bits-ai.io</text>
+    <text x="540" y="1138" text-anchor="middle" font-family="Inter,Segoe UI,Roboto,Helvetica,Arial,sans-serif" font-size="18" font-weight="700" fill="#b7ffef" opacity="0.9">Explore • Learn • Trade • Build</text>
+  </g>
+
+  <!-- Decorative shards -->
+  <g opacity="0.16" fill="url(#solanaGrad)">
+    <circle cx="180" cy="980" r="6"/>
+    <circle cx="940" cy="960" r="5"/>
+    <circle cx="920" cy="360" r="4"/>
+    <circle cx="180" cy="420" r="3"/>
+  </g>
+</svg>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

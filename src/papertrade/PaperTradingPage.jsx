@@ -27,7 +27,7 @@ const PaperTradingPage = () => {
   };
 
   return (
-    <div className="paper-trading-container">
+    <div className="paper-trading-container" data-page="paper-trading">
       <div className="paper-trading-header">
         <h1>
           <i className="fas fa-rocket"></i>

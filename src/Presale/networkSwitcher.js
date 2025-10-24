@@ -12,11 +12,11 @@ const NETWORKS = {
     blockExplorerUrls: ["https://testnet.bscscan.com"],
   },
   BNB_MAIN: {
-    chainId: "0x61", // BSC Testnet
-    chainName: "Binance Smart Chain Testnet",
-    rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545"],
+    chainId: "0x38", // BSC Mainnet
+    chainName: "BSC Mainnet",
+    rpcUrls: ["https://bsc-dataseed.binance.org"],
     nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
-    blockExplorerUrls: ["https://testnet.bscscan.com"],
+    blockExplorerUrls: ["https://bscscan.com"],
   },
   ETH: {
     chainId: "0xaa36a7", // Sepolia

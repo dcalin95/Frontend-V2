@@ -440,7 +440,7 @@ const SolanaRewardsManager = ({ onBack }) => {
 
   return (
     <div className="solana-rewards-manager">
-      <div className="header">
+      <div className="srm-header">
         {onBack && (
           <button onClick={onBack} className="back-btn">
             ← Back

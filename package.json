@@ -47,7 +47,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "prestart": "node scripts/check-env.js",
     "start": "react-app-rewired start",
+    "prebuild": "node scripts/check-env.js",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"

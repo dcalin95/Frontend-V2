@@ -8,6 +8,7 @@
   position: relative;
   overflow-x: hidden;
   padding: 20px 0;
+  width: 100%; /* ocupă toată lățimea paginii fără a provoca overflow */
 }
 
 .education-modern *,
@@ -320,6 +321,15 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
+}
+
+/* Education page: forțează full-width pentru containerul de conținut */
+.education-modern .ai-container {
+  max-width: 100%;
+  width: 100%;
+  margin: 0 auto;
+  padding-left: 24px;
+  padding-right: 24px;
 }
 
 .ai-section-header {
@@ -1792,7 +1802,7 @@
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-.timer-label {
+.education-modern .timer-label {
   display: block;
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.8);
@@ -1894,7 +1904,7 @@
     font-size: 1.4rem;
   }
   
-  .timer-label {
+  .education-modern .timer-label {
     font-size: 0.7rem;
   }
 }
@@ -2532,29 +2542,29 @@
   }
 }
 
-/* ========== Inline LaserOrbit styles (ensure visible even if separate CSS is skipped) ========== */
-.laser-orbit { position: relative; width: 320px; height: 320px; margin: 0 auto; }
-.laser-orbit .orbit-core { position: absolute; inset: 50% auto auto 50%; transform: translate(-50%, -50%); width: 120px; height: 120px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(45deg, rgba(255,215,0,0.3), rgba(255,107,157,0.3)); border: 3px solid rgba(255,215,0,0.5); animation: orbit-core-pulse 2s ease-in-out infinite; }
-.laser-orbit .orbit-ring { position:absolute; border-radius:50%; border:2px solid rgba(255,215,0,0.3); }
-.laser-orbit .orbit-ring.ring-1 { width: 160px; height:160px; animation: orbit-ring-expand 3s ease-in-out infinite; }
-.laser-orbit .orbit-ring.ring-2 { width: 200px; height:200px; animation: orbit-ring-expand 3s ease-in-out infinite 1s; }
-.laser-orbit .core-label { font-size: 2rem; font-weight: 900; color:#FFD700; text-shadow:0 0 25px rgba(255,215,0,0.8); }
-.laser-orbit .orbit-nodes { position:absolute; inset:0; }
-.laser-orbit .orbit-node { position:absolute; width:52px; height:52px; border-radius:50%; display:grid; place-items:center; font-size:1.25rem; background: rgba(0,0,0,0.8); border: 2px solid rgba(123,104,238,0.6); box-shadow: 0 0 16px rgba(123,104,238,0.3); animation: orbit-spin 7s linear infinite; }
-.laser-orbit .node-1 { top: 5%; left:50%; transform: translateX(-50%); animation-delay:0s; }
-.laser-orbit .node-2 { top: 25%; right:6%; animation-delay:1s; }
-.laser-orbit .node-3 { top: 50%; right:3%; transform: translateY(-50%); animation-delay:2s; }
-.laser-orbit .node-4 { bottom: 25%; right:6%; animation-delay:3s; }
-.laser-orbit .node-5 { bottom: 5%; left:50%; transform: translateX(-50%); animation-delay:4s; }
-.laser-orbit .node-6 { top: 50%; left:3%; transform: translateY(-50%); animation-delay:5s; }
-.laser-orbit .orbit-connections { position:absolute; inset:0; pointer-events:none; }
-.laser-orbit .orbit-line { position:absolute; height:2px; background:linear-gradient(90deg, transparent, rgba(255,215,0,0.7), transparent); animation: orbit-line-pulse 4s ease-in-out infinite; }
-.laser-orbit .line-1 { width:140px; top:20%; left:25%; transform: rotate(30deg); animation-delay:0s; }
-.laser-orbit .line-2 { width:120px; top:35%; right:20%; transform: rotate(-45deg); animation-delay:0.7s; }
-.laser-orbit .line-3 { width:130px; bottom:35%; right:25%; transform: rotate(45deg); animation-delay:1.4s; }
-.laser-orbit .line-4 { width:140px; bottom:20%; left:25%; transform: rotate(-30deg); animation-delay:2.1s; }
-.laser-orbit .line-5 { width:120px; top:40%; left:20%; transform: rotate(60deg); animation-delay:2.8s; }
-.laser-orbit .line-6 { width:110px; top:45%; right:30%; transform: rotate(-75deg); animation-delay:3.5s; }
+/* ========== Inline LaserOrbit styles (scoped to education page to avoid global overrides) ========== */
+.education-modern .laser-orbit { position: relative; width: 320px; height: 320px; margin: 0 auto; display:block; }
+.education-modern .laser-orbit .orbit-core { position: absolute; inset: 50% auto auto 50%; transform: translate(-50%, -50%); width: 120px; height: 120px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(45deg, rgba(255,215,0,0.3), rgba(255,107,157,0.3)); border: 3px solid rgba(255,215,0,0.5); animation: orbit-core-pulse 2s ease-in-out infinite; }
+.education-modern .laser-orbit .orbit-ring { position:absolute; border-radius:50%; border:2px solid rgba(255,215,0,0.3); }
+.education-modern .laser-orbit .orbit-ring.ring-1 { width: 160px; height:160px; animation: orbit-ring-expand 3s ease-in-out infinite; }
+.education-modern .laser-orbit .orbit-ring.ring-2 { width: 200px; height:200px; animation: orbit-ring-expand 3s ease-in-out infinite 1s; }
+.education-modern .laser-orbit .core-label { font-size: 2rem; font-weight: 900; color:#FFD700; text-shadow:0 0 25px rgba(255,215,0,0.8); }
+.education-modern .laser-orbit .orbit-nodes { position:absolute; inset:0; }
+.education-modern .laser-orbit .orbit-node { position:absolute; width:52px; height:52px; border-radius:50%; display:grid; place-items:center; font-size:1.25rem; background: rgba(0,0,0,0.8); border: 2px solid rgba(123,104,238,0.6); box-shadow: 0 0 16px rgba(123,104,238,0.3); animation: orbit-spin 7s linear infinite; }
+.education-modern .laser-orbit .node-1 { top: 5%; left:50%; transform: translateX(-50%); animation-delay:0s; }
+.education-modern .laser-orbit .node-2 { top: 25%; right:6%; animation-delay:1s; }
+.education-modern .laser-orbit .node-3 { top: 50%; right:3%; transform: translateY(-50%); animation-delay:2s; }
+.education-modern .laser-orbit .node-4 { bottom: 25%; right:6%; animation-delay:3s; }
+.education-modern .laser-orbit .node-5 { bottom: 5%; left:50%; transform: translateX(-50%); animation-delay:4s; }
+.education-modern .laser-orbit .node-6 { top: 50%; left:3%; transform: translateY(-50%); animation-delay:5s; }
+.education-modern .laser-orbit .orbit-connections { position:absolute; inset:0; pointer-events:none; }
+.education-modern .laser-orbit .orbit-line { position:absolute; height:2px; background:linear-gradient(90deg, transparent, rgba(255,215,0,0.7), transparent); animation: orbit-line-pulse 4s ease-in-out infinite; }
+.education-modern .laser-orbit .line-1 { width:140px; top:20%; left:25%; transform: rotate(30deg); animation-delay:0s; }
+.education-modern .laser-orbit .line-2 { width:120px; top:35%; right:20%; transform: rotate(-45deg); animation-delay:0.7s; }
+.education-modern .laser-orbit .line-3 { width:130px; bottom:35%; right:25%; transform: rotate(45deg); animation-delay:1.4s; }
+.education-modern .laser-orbit .line-4 { width:140px; bottom:20%; left:25%; transform: rotate(-30deg); animation-delay:2.1s; }
+.education-modern .laser-orbit .line-5 { width:120px; top:40%; left:20%; transform: rotate(60deg); animation-delay:2.8s; }
+.education-modern .laser-orbit .line-6 { width:110px; top:45%; right:30%; transform: rotate(-75deg); animation-delay:3.5s; }
 @keyframes orbit-core-pulse { 0%,100%{ box-shadow:0 0 30px rgba(255,215,0,0.4); transform:translate(-50%,-50%) scale(1);} 50%{ box-shadow:0 0 60px rgba(255,107,157,0.6); transform:translate(-50%,-50%) scale(1.08);} }
 @keyframes orbit-ring-expand { 0%{ transform:scale(1); opacity:0.8;} 50%{ transform:scale(1.1); opacity:0.4;} 100%{ transform:scale(1.2); opacity:0; } }
 @keyframes orbit-spin { 0%{ transform: rotate(0deg);} 100%{ transform: rotate(360deg);} }

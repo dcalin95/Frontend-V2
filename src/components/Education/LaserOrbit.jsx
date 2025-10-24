@@ -533,6 +533,7 @@ export default function LaserOrbit({
       <div className={`orbit-wrapper ${variant}`}>
         <div className="orbit-header">
           <div className="orbit-title" aria-label="BitPulse Orbit Dashboard">BitPulse Orbit Dashboard</div>
+          <div className="orbit-subtitle" aria-hidden="true">LaserOrbit</div>
           <div className="orbit-brand top">
             <span className="brand-line" title="AI data pipeline">
               <img src={BITS_LOGO} alt="BITS" className="bits-logo-mini" />
@@ -540,8 +541,12 @@ export default function LaserOrbit({
             </span>
           </div>
         </div>
-        <div className={`laser-orbit ${variant} ${mega.active ? 'is-mega-open' : ''}`} ref={containerRef} style={{ position: 'relative' }}>
-        <div className="orbit-core" title="BTC">
+        <div
+          className={`laser-orbit ${variant} ${mega.active ? 'is-mega-open' : ''}`}
+          ref={containerRef}
+          style={{ position: 'relative', margin: '0 auto' }}
+        >
+        <div className="orbit-core" title="BTC" style={{ width: 140, height: 140 }}>
           <div className="orbit-ring ring-1" />
           <div className="orbit-ring ring-2" />
           {/* Official BTC inline SVG */}
@@ -576,7 +581,7 @@ export default function LaserOrbit({
         </div>
 
         {/* Revolving layers (inner + outer) for orbiting effect */}
-        <div className="revolve-layer inner">
+        <div className="revolve-layer inner" style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%, -50%)', width: 270, height: 270 }}>
           {coinItems.slice(0, innerCount).map((c, idx) => {
             const angleDeg = (idx / innerCount) * 360;
             return (
@@ -588,6 +593,7 @@ export default function LaserOrbit({
               >
                 <div
                   className="orbit-node no-spin upright"
+                  style={{ width: 62, height: 62, borderRadius: '50%', display:'grid', placeItems:'center' }}
                   onMouseEnter={(e) => handleHover(e, c.symbol)}
                   onMouseLeave={() => handleLeave(c.symbol, 'inner')}
                 onClick={(e) => handleClick(e, c.symbol)}
@@ -597,6 +603,7 @@ export default function LaserOrbit({
                       src={getLogoPair(c.symbol).local}
                       alt={c.symbol}
                       referrerPolicy="no-referrer"
+                      style={{ width: '100%', height: '100%', objectFit: 'contain', display:'block', padding: 8 }}
                       onError={(e) => {
                         if (!e.currentTarget.dataset.fallback) {
                           e.currentTarget.dataset.fallback = 'cdn';
@@ -616,7 +623,7 @@ export default function LaserOrbit({
           {/* removed inner BITS node to avoid duplication */}
         </div>
 
-        <div className="revolve-layer outer">
+        <div className="revolve-layer outer" style={{ position:'absolute', top:'50%', left:'50%', transform:'translate(-50%, -50%)', width: 360, height: 360 }}>
           {coinItems.slice(innerCount, count).map((c, jdx) => {
             const angleDeg = (jdx / outerCount) * 360;
             return (
@@ -628,6 +635,7 @@ export default function LaserOrbit({
               >
                 <div
                   className="orbit-node no-spin upright"
+                  style={{ width: 62, height: 62, borderRadius: '50%', display:'grid', placeItems:'center' }}
                   onMouseEnter={(e) => handleHover(e, c.symbol)}
                   onMouseLeave={() => handleLeave(c.symbol, 'outer')}
                 onClick={(e) => handleClick(e, c.symbol)}
@@ -637,6 +645,7 @@ export default function LaserOrbit({
                       src={getLogoPair(c.symbol).local}
                       alt={c.symbol}
                       referrerPolicy="no-referrer"
+                      style={{ width: '100%', height: '100%', objectFit: 'contain', display:'block', padding: 8 }}
                       onError={(e) => {
                         if (!e.currentTarget.dataset.fallback) {
                           e.currentTarget.dataset.fallback = 'cdn';
@@ -665,8 +674,8 @@ export default function LaserOrbit({
           onMouseLeave={() => handleLeave('BITS', 'bits')}
           onClick={(e) => handleClick(e, 'BITS')}
         >
-          <div className="bits-core">
-            <img src={BITS_LOGO} alt="BITS" />
+          <div className="bits-core" style={{ width: 52, height: 52 }}>
+            <img src={BITS_LOGO} alt="BITS" style={{ width: '100%', height: '100%', objectFit: 'contain', display:'block' }} />
           </div>
           <div className="bits-trail"></div>
         </div>
@@ -679,11 +688,12 @@ export default function LaserOrbit({
           onMouseLeave={() => handleLeave('STK', 'partner')}
           onClick={(e) => handleClick(e, 'STK')}
         >
-          <div className="partner-core">
+          <div className="partner-core" style={{ width: 42, height: 42 }}>
             <img
               src={getLogoPair('stx').local}
               alt="STK"
               referrerPolicy="no-referrer"
+              style={{ width: '100%', height: '100%', objectFit: 'contain', display:'block', padding: 2 }}
               onError={(e) => {
                 if (!e.currentTarget.dataset.fallback) {
                   e.currentTarget.dataset.fallback = 'cdn';
@@ -704,11 +714,12 @@ export default function LaserOrbit({
           onMouseLeave={() => handleLeave('ARB', 'l2')}
           onClick={(e) => handleClick(e, 'ARB')}
         >
-          <div className="l2-core">
+          <div className="l2-core" style={{ width: 44, height: 44 }}>
             <img
               src={`${process.env.PUBLIC_URL || ''}/l2/arb.svg`}
               alt="ARB"
               referrerPolicy="no-referrer"
+              style={{ width: '100%', height: '100%', objectFit: 'contain', display:'block', padding: 2 }}
               onError={(e) => {
                 if (!e.currentTarget.dataset.fallback) {
                   e.currentTarget.dataset.fallback = 'cdn';
@@ -729,11 +740,12 @@ export default function LaserOrbit({
           onMouseLeave={() => handleLeave('OP', 'l2')}
           onClick={(e) => handleClick(e, 'OP')}
         >
-          <div className="op-core">
+          <div className="op-core" style={{ width: 40, height: 40 }}>
             <img
               src={`${process.env.PUBLIC_URL || ''}/l2/op.svg`}
               alt="OP"
               referrerPolicy="no-referrer"
+              style={{ width: '100%', height: '100%', objectFit: 'contain', display:'block', padding: 2 }}
               onError={(e) => {
                 if (!e.currentTarget.dataset.fallback) {
                   e.currentTarget.dataset.fallback = 'cdn';
@@ -754,11 +766,12 @@ export default function LaserOrbit({
           onMouseLeave={() => handleLeave('STRK', 'l2')}
           onClick={(e) => handleClick(e, 'STRK')}
         >
-          <div className="zkp-core">
+          <div className="zkp-core" style={{ width: 38, height: 38 }}>
             <img
               src={`${process.env.PUBLIC_URL || ''}/l2/strk.svg`}
               alt="STRK"
               referrerPolicy="no-referrer"
+              style={{ width: '100%', height: '100%', objectFit: 'contain', display:'block', padding: 2 }}
               onError={(e) => {
                 if (!e.currentTarget.dataset.fallback) {
                   e.currentTarget.dataset.fallback = 'cdn';
@@ -991,17 +1004,25 @@ export default function LaserOrbit({
                     </div>
                   )}
                   {(typeof tooltip.stacksSource === 'string' && tooltip.stacksSource) || tooltip.sourceLink ? (
-                    <div style={{ marginTop: 10 }}>
-                      <div className="mega-section-title">PoX-4 Source (excerpt)</div>
-                      {tooltip.stacksSource && (
-                        <div className="mega-code" aria-label="PoX-4 Source Code">
-                          {tooltip.stacksSource}
-                        </div>
-                      )}
-                      {tooltip.sourceLink ? (
-                        <a className="mega-action" href={tooltip.sourceLink} target="_blank" rel="noopener noreferrer">View full source</a>
-                      ) : null}
-                    </div>
+                  <div style={{ marginTop: 10 }}>
+                    <div className="mega-section-title">PoX-4 source constants (not runtime errors)</div>
+                    {tooltip.stacksSource && (() => {
+                      const src = String(tooltip.stacksSource || '');
+                      const lines = src.split(/\r?\n/);
+                      const preview = lines.slice(0, 3).join('\n');
+                      return (
+                        <details>
+                          <summary className="mega-action" style={{cursor:'pointer'}}>Show more</summary>
+                          <div className="mega-code" aria-label="PoX-4 Source Code" style={{marginTop:6}}>
+                            {src}
+                          </div>
+                        </details>
+                      );
+                    })()}
+                    {!tooltip.stacksSource && tooltip.sourceLink ? (
+                      <a className="mega-action" href={tooltip.sourceLink} target="_blank" rel="noopener noreferrer">View full source</a>
+                    ) : null}
+                  </div>
                   ) : null}
                 </>
               )}

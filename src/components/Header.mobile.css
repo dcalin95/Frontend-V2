@@ -31,489 +31,108 @@
     box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
   }
 
-  .mobile-hamburger.open span:nth-child(1) {
-    transform: rotate(45deg) translate(6px, 6px);
-  }
+  .mobile-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+  .mobile-hamburger.open span:nth-child(2) { opacity: 0; }
+  .mobile-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
 
-  .mobile-hamburger.open span:nth-child(2) {
-    opacity: 0;
-  }
-
-  .mobile-hamburger.open span:nth-child(3) {
-    transform: rotate(-45deg) translate(6px, -6px);
-  }
-
-  /* Mobile Navigation Menu – fără container/card; butoane flotante, 2 coloane, cu wrap */
+  /* Mobile Navigation Menu – overlay full-screen, coborât sub Launch Power Raised */
   .mobile-nav-menu {
-    position: relative; /* în fluxul paginii → împinge conținutul în jos */
-    top: 0;
+    position: fixed;
+    top: calc(120px + env(safe-area-inset-top, 0px));
     left: 0;
     right: 0;
-    width: 100%;
-    background: transparent; /* fără container/card */
-    padding: 8px 10px 12px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    bottom: 0;
+    width: 100vw;
+    background: rgba(0, 0, 0, 0.96);
+    backdrop-filter: blur(12px);
+    padding: 8px 10px 14px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2 coloane implicite */
     gap: 8px;
+    row-gap: 8px;
+    column-gap: 8px;
     border: none;
     border-radius: 0;
     box-sizing: border-box;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    z-index: 2000;
   }
+
+  @media (max-width: 360px) { .mobile-nav-menu { grid-template-columns: 1fr; } }
 
   .mobile-nav-menu a,
   .mobile-nav-menu button {
     display: inline-flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     gap: 6px;
     padding: 6px 8px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    border-radius: 14px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    border-radius: 12px;
     background: rgba(0, 0, 0, 0.85);
     border: 1px solid rgba(0, 255, 255, 0.5);
     position: relative;
     text-decoration: none;
     white-space: nowrap;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
     cursor: pointer;
     height: 26px;
-    width: calc(50% - 8px); /* două coloane reale */
+    width: 100%;
     max-width: 100%;
-    flex: 0 0 auto;
     margin: 0;
+    line-height: 1.1;
   }
+
+  .mobile-nav-menu a i,
+  .mobile-nav-menu button i { font-size: 0.7rem; }
 
   .mobile-nav-menu a:hover,
-  .mobile-nav-menu button:hover {
-    transform: translateY(-1px);
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-  }
+  .mobile-nav-menu button:hover { transform: translateY(-1px); background: rgba(255, 255, 255, 0.08); box-shadow: 0 0 8px rgba(0, 255, 255, 0.25); }
 
+  .mobile-nav-menu a[href="/"] { border-color: #69db7c !important; color: #69db7c !important; }
+  .mobile-nav-menu a[href="/presale"] { border-color: #ffd43b !important; color: #ffd43b !important; }
+  .mobile-nav-menu a[href="/staking"] { border-color: #4dabf7 !important; color: #4dabf7 !important; }
+  .mobile-nav-menu a[href="/paper-trading"] { border-color: #ff6b35 !important; color: #ff6b35 !important; }
+  .mobile-nav-menu a[href="/whitepaper"] { border-color: #9775fa !important; color: #9775fa !important; }
+  .mobile-nav-menu a[href="/bitcoin-academy"] { border-color: #f7931e !important; color: #f7931e !important; }
+  .mobile-nav-menu a[href="/education"] { border-color: #4ecdc4 !important; color: #4ecdc4 !important; }
+  .mobile-nav-menu a[href="/proof-of-transfer"] { border-color: #00ff88 !important; color: #00ff88 !important; }
+  .mobile-nav-menu a[href="/rewards-hub"] { border-color: #f783ac !important; color: #f783ac !important; }
+  .mobile-nav-menu button { border-color: #f3722c !important; color: #f3722c !important; }
 
+  .header { display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; padding: 0.5rem 1rem; height: 70px; background: rgba(0, 0, 0, 0.85); gap: 0.5rem; }
+  .logo-container { flex: 0 0 auto; order: 1; }
+  .logo-container .logo { width: 40px; height: 40px; }
 
-  /* Remove conflicting hover color - keep original colors */
+  .hamburger { display: flex; flex-direction: column; justify-content: space-between; order: 4; flex: 0 0 auto; width: 35px; height: 30px; background: linear-gradient(135deg, #00ffff, #ff00ff, #00ff88); border: none; border-radius: 8px; padding: 6px 4px; box-shadow: 0 0 15px rgba(0, 255, 255, 0.5); transition: all 0.3s ease; cursor: pointer; z-index: 1001; }
+  .hamburger:hover { box-shadow: 0 0 25px rgba(0, 255, 255, 0.8); transform: scale(1.05); }
+  .hamburger-line { width: 100%; height: 2px; background: linear-gradient(90deg, #ffffff, #00ffff); border-radius: 1px; box-shadow: 0 0 3px rgba(0, 255, 255, 0.6); transition: all 0.3s ease; display: block; }
+  .hamburger.open .hamburger-line:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+  .hamburger.open .hamburger-line:nth-child(2) { opacity: 0; }
+  .hamburger.open .hamburger-line:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
 
-  /* Button-specific styling to match desktop header exactly */
-  .mobile-nav-menu a[href="/"] { 
-    border-color: #69db7c !important; 
-    color: #69db7c !important;
-    text-shadow: 0 0 4px rgba(105, 219, 124, 0.3);
-  }
-  .mobile-nav-menu a[href="/"] i { color: #69db7c !important; font-size: 0.7rem; }
-  
-  .mobile-nav-menu a[href="/presale"] { 
-    border-color: #ffd43b !important; 
-    color: #ffd43b !important;
-    text-shadow: 0 0 4px rgba(255, 212, 59, 0.3);
-  }
-  .mobile-nav-menu a[href="/presale"] i { color: #ffd43b !important; font-size: 0.7rem; }
-  
-  .mobile-nav-menu a[href="/staking"] { 
-    border-color: #4dabf7 !important; 
-    color: #4dabf7 !important;
-    text-shadow: 0 0 4px rgba(77, 171, 247, 0.3);
-  }
-  .mobile-nav-menu a[href="/staking"] i { color: #4dabf7 !important; font-size: 0.7rem; }
-  
-  
-  .mobile-nav-menu a[href="/paper-trading"] { 
-    border-color: #ff6b35 !important; 
-    color: #ff6b35 !important;
-    text-shadow: 0 0 4px rgba(255, 107, 53, 0.3);
-  }
-  .mobile-nav-menu a[href="/paper-trading"] i { color: #ff6b35 !important; font-size: 0.7rem; }
-  
-  .mobile-nav-menu a[href="/whitepaper"] { 
-    border-color: #9775fa !important; 
-    color: #9775fa !important;
-    text-shadow: 0 0 4px rgba(151, 117, 250, 0.3);
-  }
-  .mobile-nav-menu a[href="/whitepaper"] i { color: #9775fa !important; font-size: 0.7rem; }
-  
-  /* removed reward-dashboard styling */
-  
-  .mobile-nav-menu a[href="/bitcoin-academy"] { 
-    border-color: #f7931e !important; 
-    color: #f7931e !important;
-    text-shadow: 0 0 4px rgba(247, 147, 30, 0.3);
-  }
-  .mobile-nav-menu a[href="/bitcoin-academy"] i { color: #f7931e !important; font-size: 0.7rem; }
-  
-  .mobile-nav-menu a[href="/education"] { 
-    border-color: #4ecdc4 !important; 
-    color: #4ecdc4 !important;
-    text-shadow: 0 0 4px rgba(78, 205, 196, 0.3);
-  }
-  .mobile-nav-menu a[href="/education"] i { color: #4ecdc4 !important; font-size: 0.7rem; }
-  
-  .mobile-nav-menu a[href="/proof-of-transfer"] { 
-    border-color: #00ff88 !important; 
-    color: #00ff88 !important;
-    text-shadow: 0 0 4px rgba(0, 255, 136, 0.3);
-  }
-  .mobile-nav-menu a[href="/proof-of-transfer"] i { color: #00ff88 !important; font-size: 0.7rem; }
-  
-  .mobile-nav-menu a[href="/rewards-hub"] { 
-    border-color: #f783ac !important; 
-    color: #f783ac !important;
-    text-shadow: 0 0 4px rgba(247, 131, 172, 0.3);
-  }
-  .mobile-nav-menu a[href="/rewards-hub"] i { color: #f783ac !important; font-size: 0.7rem; }
-  
-  /* AI BitSwapDEX button styling */
-  .mobile-nav-menu button {
-    border-color: #f3722c !important; 
-    color: #f3722c !important;
-    text-shadow: 0 0 4px rgba(243, 114, 44, 0.3);
-  }
-  .mobile-nav-menu button i { color: #f3722c !important; font-size: 0.7rem; }
-
-  .header {
-    display: flex;
-    flex-wrap: nowrap; /* Nu permite afișarea pe 2 rânduri */
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem 1rem;
-    height: 70px; /* Înălțime fixă mai mică */
-    background: rgba(0, 0, 0, 0.85);
-    gap: 0.5rem; /* Spațiu între elemente */
-  }
-
-  .logo-container {
-    flex: 0 0 auto;
-    order: 1; /* Logo primul */
-  }
-
-  .logo-container .logo {
-    width: 40px; /* Logo mai mic */
-    height: 40px;
-  }
-
-  .hamburger {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    order: 4; /* Hamburger ultimul */
-    flex: 0 0 auto;
-    width: 35px;
-    height: 30px;
-    background: linear-gradient(135deg, #00ffff, #ff00ff, #00ff88);
-    border: none;
-    border-radius: 8px;
-    padding: 6px 4px;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
-    transition: all 0.3s ease;
-    cursor: pointer;
-    z-index: 1001;
-  }
-
-  .hamburger:hover {
-    box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
-    transform: scale(1.05);
-  }
-
-  .hamburger-line {
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, #ffffff, #00ffff);
-    border-radius: 1px;
-    box-shadow: 0 0 3px rgba(0, 255, 255, 0.6);
-    transition: all 0.3s ease;
-    display: block;
-  }
-
-  .hamburger.open .hamburger-line:nth-child(1) {
-    transform: rotate(45deg) translate(6px, 6px);
-  }
-
-  .hamburger.open .hamburger-line:nth-child(2) {
-    opacity: 0;
-  }
-
-  .hamburger.open .hamburger-line:nth-child(3) {
-    transform: rotate(-45deg) translate(6px, -6px);
-  }
-
-  .navigation {
-    display: none;
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .navigation.open {
-    display: flex !important;
-    position: fixed !important;
-    top: 70px !important;
-    left: 0 !important;
-    right: 0 !important;
-    background: rgba(0, 0, 0, 0.98) !important;
-    backdrop-filter: blur(15px) !important;
-    z-index: 1500 !important;
-    padding: 1rem 0.5rem !important;
-    max-height: calc(100vh - 70px) !important;
-    overflow-y: auto !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 0.5rem !important;
-    /* Îmbunătățește vizibilitatea meniului */
-    border-bottom: 2px solid rgba(0, 255, 255, 0.3) !important;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.8) !important;
-    /* Împiedică orice interferențe */
-    width: 100vw !important;
-    pointer-events: auto !important;
-  }
+  .navigation { display: none; flex-direction: column; width: 100%; }
+  .navigation.open { display: flex !important; position: fixed !important; top: 70px !important; left: 0 !important; right: 0 !important; background: rgba(0, 0, 0, 0.98) !important; backdrop-filter: blur(15px) !important; z-index: 1500 !important; padding: 1rem 0.5rem !important; max-height: calc(100vh - 70px) !important; overflow-y: auto !important; flex-direction: column !important; align-items: flex-start !important; gap: 0.5rem !important; border-bottom: 2px solid rgba(0, 255, 255, 0.3) !important; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.8) !important; width: 100vw !important; pointer-events: auto !important; }
 
   .navigation a,
-  .navigation button {
-    font-size: 0.8rem !important;
-    padding: 6px 12px;
-    width: auto;
-    min-width: fit-content;
-    max-width: 200px;
-    text-align: left;
-    border-radius: 6px;
-    background: rgba(0, 0, 0, 0.95) !important;
-    border: 1px solid rgba(0, 255, 255, 0.5);
-    color: #ffffff !important;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    /* Asigură vizibilitatea textului */
-    font-weight: 500 !important;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8) !important;
-    line-height: 1.2 !important;
-    letter-spacing: 0.5px !important;
-  }
+  .navigation button { font-size: 0.8rem !important; padding: 6px 12px; width: auto; min-width: fit-content; max-width: 200px; text-align: left; border-radius: 6px; background: rgba(0, 0, 0, 0.95) !important; border: 1px solid rgba(0, 255, 255, 0.5); color: #ffffff !important; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500 !important; text-shadow: 0 0 5px rgba(255, 255, 255, 0.8) !important; line-height: 1.2 !important; letter-spacing: 0.5px !important; }
 
-  .navigation a:hover,
-  .navigation button:hover {
-    background: rgba(0, 255, 255, 0.2) !important;
-    border-color: rgba(0, 255, 255, 0.8) !important;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5) !important;
-    transform: translateX(5px);
-    color: #00ffff !important;
-    text-shadow: 0 0 8px rgba(0, 255, 255, 0.9) !important;
-  }
-
-  .navigation a i,
-  .navigation button i {
-    font-size: 0.7rem !important;
-    flex-shrink: 0;
-    color: #ffffff !important;
-    text-shadow: 0 0 3px rgba(255, 255, 255, 0.6) !important;
-  }
-
-  /* Asigură că toate elementele text din navigație sunt vizibile */
-  .navigation * {
-    color: #ffffff !important;
-    text-shadow: 0 0 3px rgba(255, 255, 255, 0.5) !important;
-  }
-
-  /* Suprascrie culorile specifice din SidebarMenu.css pentru mobile */
-  .navigation .btn-tokenomics,
-  .navigation .btn-audit,
-  .navigation .btn-invite,
-  .navigation .btn-how-it-works,
-  .navigation .btn-leaderboard,
-  .navigation .btn-go-main {
-    color: #ffffff !important;
-    background: rgba(0, 0, 0, 0.95) !important;
-    border-color: rgba(0, 255, 255, 0.5) !important;
-  }
-
-  /* Iconițele din butoane să fie albe pe mobil */
-  .navigation .btn-tokenomics i,
-  .navigation .btn-audit i,
-  .navigation .btn-invite i,
-  .navigation .btn-how-it-works i,
-  .navigation .btn-leaderboard i,
-  .navigation .btn-go-main i {
-    color: #ffffff !important;
-    text-shadow: 0 0 3px rgba(255, 255, 255, 0.6) !important;
-  }
-
-  /* Hover effects pentru butoanele mobile */
-  .navigation .btn-tokenomics:hover,
-  .navigation .btn-audit:hover,
-  .navigation .btn-invite:hover,
-  .navigation .btn-how-it-works:hover,
-  .navigation .btn-leaderboard:hover,
-  .navigation .btn-go-main:hover {
-    color: #00ffff !important;
-    background: rgba(0, 255, 255, 0.2) !important;
-    border-color: rgba(0, 255, 255, 0.8) !important;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5) !important;
-    text-shadow: 0 0 8px rgba(0, 255, 255, 0.9) !important;
-  }
-
-  /* Hover pentru iconițe */
-  .navigation .btn-tokenomics:hover i,
-  .navigation .btn-audit:hover i,
-  .navigation .btn-invite:hover i,
-  .navigation .btn-how-it-works:hover i,
-  .navigation .btn-leaderboard:hover i,
-  .navigation .btn-go-main:hover i {
-    color: #00ffff !important;
-    text-shadow: 0 0 8px rgba(0, 255, 255, 0.9) !important;
-  }
-
-  .right-section.desktop-only {
-    display: none !important;
-  }
-
-  .right-section.mobile-only {
-    display: flex !important;
-    flex-direction: row; /* Elemente pe același rând */
-    align-items: center;
-    justify-content: center;
-    flex: 1; /* Ocupă spațiul disponibil */
-    gap: 0.5rem;
-    order: 2; /* După logo */
-    min-width: 0; /* Permite shrink */
-  }
-
-  .header-mini-timer {
-    font-size: 0.65rem; /* Text și mai mic */
-    text-align: center;
-    line-height: 1.1;
-    color: #00ffff;
-    animation: glow 2.5s infinite ease-in-out;
-    flex: 0 0 auto; /* NU mai întinde containerul pe toată lățimea */
-    min-width: auto; /* dimensiune după conținut */
-    white-space: nowrap; /* Nu permite wrap */
-    overflow: hidden; /* Ascunde textul care nu încap */
-    text-overflow: ellipsis; /* Adaugă ... pentru text trunchiat */
-  }
-
-  .header-mini-timer .timer-label {
-    display: block;
-    font-size: 0.6rem;
-    margin-bottom: 2px;
-  }
-
-  .social {
-    display: flex;
-    justify-content: center;
-    gap: 6px; /* Gap și mai mic */
-    flex: 0 0 auto;
-    order: 3; /* Înainte de hamburger */
-  }
-
-  .social-link {
-    width: 22px; /* Iconițe și mai mici */
-    height: 22px;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
-
-  .social-link img {
-    width: 14px; /* Imagini și mai mici */
-    height: 14px;
-  }
-
-  .social-link:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-  }
-
-  .ai-button {
-    display: none;
-  }
-
-  .header-spacer {
-    height: 70px; /* Ajustat la înălțimea header-ului */
-  }
-
-  /* Clase de vizibilitate pentru mobil */
-  .desktop-only {
-    display: none !important;
-  }
-
-  .mobile-only {
-    display: flex !important;
-  }
-
-  /* Optimizări pentru ecrane foarte mici */
-  @media (max-width: 480px) {
-    .header {
-      padding: 0.4rem 0.8rem;
-      gap: 0.3rem;
-    }
-
-    .logo-container .logo {
-      width: 35px;
-      height: 35px;
-    }
-
-    .header-mini-timer {
-      font-size: 0.6rem;
-      max-width: 70%; /* asigură că pe ecrane foarte mici nu depășește zona */
-    }
-
-    .header-mini-timer .timer-label {
-      font-size: 0.55rem;
-    }
-
-    .social-link {
-      width: 20px;
-      height: 20px;
-    }
-
-    .social-link img {
-      width: 12px;
-      height: 12px;
-    }
-
-    .navigation a,
-    .navigation button {
-      font-size: 0.7rem;
-      padding: 5px 10px;
-      max-width: 180px;
-    }
-
-    .navigation a i,
-    .navigation button i {
-      font-size: 0.6rem;
-    }
-
-    .hamburger {
-      width: 32px;
-      height: 28px;
-      padding: 5px 3px;
-    }
-
-    .hamburger-line {
-      height: 2px;
-    }
-  }
-  /* Două coloane pe ecrane normale, una pe foarte îngust */
-  @media (max-width: 360px) {
-    .mobile-nav-menu a,
-    .mobile-nav-menu button {
-      width: 100%;
-    }
-  }
+  .right-section.desktop-only { display: none !important; }
+  .right-section.mobile-only { display: flex !important; flex-direction: row; align-items: center; justify-content: center; flex: 1; gap: 0.5rem; order: 2; min-width: 0; }
+  .header-mini-timer { font-size: 0.65rem; text-align: center; line-height: 1.1; color: #00ffff; animation: glow 2.5s infinite ease-in-out; flex: 0 0 auto; min-width: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .header-mini-timer .timer-label { display: block; font-size: 0.6rem; margin-bottom: 2px; }
+  .social { display: flex; justify-content: center; gap: 6px; flex: 0 0 auto; order: 3; }
+  .social-link { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; box-shadow: 0 0 10px rgba(0, 255, 255, 0.3); transition: transform 0.3s, box-shadow 0.3s; }
+  .social-link img { width: 14px; height: 14px; }
+  .social-link:hover { transform: scale(1.1); box-shadow: 0 0 20px rgba(0, 255, 255, 0.5); }
+  .ai-button { display: none; }
+  .header-spacer { height: 70px; }
 }
 
-@keyframes glow {
-  0% {
-    text-shadow: 0 0 5px #00ffff;
-  }
-  50% {
-    text-shadow: 0 0 15px #00ffff, 0 0 30px #00ffff;
-  }
-  100% {
-    text-shadow: 0 0 5px #00ffff;
-  }
-}
+/* Fallback global: forțează 2 coloane peste tot, ca să se vadă efectul imediat */
+.mobile-nav-menu { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 8px !important; }
+.mobile-nav-menu a, .mobile-nav-menu button { width: 100% !important; }
+
+@keyframes glow { 0% { text-shadow: 0 0 5px #00ffff; } 50% { text-shadow: 0 0 15px #00ffff, 0 0 30px #00ffff; } 100% { text-shadow: 0 0 5px #00ffff; } }

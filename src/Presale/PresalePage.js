@@ -5,6 +5,7 @@ import "./PaymentBox/InputBox.css";
 import "./PaymentBox/PaymentSummary.css";
 
 import React, { useState, useEffect, Suspense, lazy, useMemo } from "react";
+import { trackTikTokEvent } from "../utils/tiktok";
 import { ethers } from "ethers";
 import SelectPaymentMethod from "./SelectPaymentMethod";
 import { useSelectedToken } from "./hooks/useSelectedToken";
@@ -46,6 +47,7 @@ const PresalePage = () => {
   const { prices: tokenPrices } = useTokenPrices();
   const [amountPay, setAmountPay] = useState(0);
   const [walletAddress, setWalletAddress] = useState(null);
+  const [showTikTokDebug, setShowTikTokDebug] = useState(false);
 
   useEffect(() => {
     const detectWallet = async () => {
@@ -61,6 +63,35 @@ const PresalePage = () => {
 
     detectWallet();
   }, []);
+
+  // 🔎 TikTok ViewContent (non-sensibil): doar semnal că utilizatorul a vizitat Presale
+  useEffect(() => {
+    try {
+      trackTikTokEvent('ViewContent', { content_type: 'presale_page' });
+    } catch (_) {}
+  }, []);
+
+  // 🧪 Dev-only badge pentru a confirma că pixelul este disponibil
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'development') return;
+    try {
+      const check = () => {
+        if (typeof window !== 'undefined' && window.ttq && typeof window.ttq.track === 'function') {
+          setShowTikTokDebug(true);
+        }
+      };
+      check();
+      const id = setTimeout(check, 1000);
+      return () => clearTimeout(id);
+    } catch {}
+  }, []);
+
+  // Auto-hide TikTok debug badge după 10s
+  useEffect(() => {
+    if (!showTikTokDebug) return;
+    const hideId = setTimeout(() => setShowTikTokDebug(false), 10000);
+    return () => clearTimeout(hideId);
+  }, [showTikTokDebug]);
 
   useEffect(() => {
     const header = document.querySelector(".header");
@@ -85,6 +116,18 @@ const PresalePage = () => {
 
   return (
     <div className="presale-page">
+      {showTikTokDebug && (
+        <div style={{
+          position: 'fixed', top: 8, right: 8, zIndex: 99999,
+          background: 'rgba(0, 240, 255, 0.12)',
+          border: '1px solid rgba(0, 240, 255, 0.45)',
+          color: '#00e0ff', padding: '6px 10px', borderRadius: 8,
+          fontSize: 12, boxShadow: '0 6px 20px rgba(0,0,0,0.25)',
+          backdropFilter: 'blur(4px)'
+        }}>
+          TikTok Pixel: OK
+        </div>
+      )}
       {/* AI Text Particle Field */}
       <div className="ai-text-field" aria-hidden>
         {useMemo(() => {

@@ -2,6 +2,17 @@
 
 Advanced Web3 application with AI-powered portfolio analytics and enhanced rewards system.
 
+## Environment variables (required)
+
+Create a `.env.local` file in the project root before running:
+
+```
+REACT_APP_BACKEND_URL=https://backend-server-f82y.onrender.com
+REACT_APP_ADMIN_PASS=your_strong_password
+```
+
+The dev/build scripts run a preflight check and will fail fast if these vars are missing.
+
 ## Available Scripts
 
 In the project directory, you can run:

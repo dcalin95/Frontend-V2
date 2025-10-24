@@ -2,7 +2,7 @@
 
 .bits-trading-simulator {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0b0e11 0%, #1a1d29 100%);
+  background: transparent; /* transparent background as requested */
   color: #eaecef;
   font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
@@ -10,20 +10,8 @@
 }
 
 /* Logo Background */
-.bits-trading-simulator::before {
-  content: '';
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 400px;
-  height: 400px;
-  background: url('../assets/logo.png') no-repeat center;
-  background-size: contain;
-  opacity: 0.03;
-  z-index: 0;
-  pointer-events: none;
-}
+/* Remove faint giant BITS logo background on paper-trading */
+.bits-trading-simulator::before { content: none; }
 
 .bits-trading-simulator > * {
   position: relative;
@@ -36,10 +24,10 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background: rgba(30, 35, 41, 0.95);
-  backdrop-filter: blur(20px);
+  background: transparent; /* transparent as requested */
+  backdrop-filter: none;
   border-bottom: 1px solid rgba(240, 185, 11, 0.2);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: none;
 }
 
 .header-left h1 {
@@ -185,6 +173,8 @@
   background: rgba(0, 0, 0, 0.3);
   border-radius: 8px;
   border: 1px solid rgba(0, 255, 255, 0.2);
+  gap: 0.75rem; /* prevent label/value overlap on narrow widths */
+  flex-wrap: wrap; /* allow wrapping to next line at small widths */
 }
 
 .stat-label {
@@ -197,6 +187,7 @@
   font-size: 0.9rem;
   font-weight: bold;
   color: #00ffff;
+  white-space: nowrap;
 }
 
 .stat-value.success {
@@ -393,8 +384,8 @@
 /* Portfolio Summary */
 .portfolio-summary {
   padding: 1.5rem 2rem;
-  background: #1e2329;
-  border-bottom: 1px solid #2b3139;
+  background: transparent;
+  border-bottom: 1px solid rgba(43,49,57,0.35);
 }
 
 .portfolio-card {
@@ -602,9 +593,9 @@
   max-height: 600px;
   overflow-y: auto;
   padding: 1rem;
-  background: rgba(30, 35, 41, 0.5);
+  background: transparent;
   border-radius: 12px;
-  border: 1px solid #2b3139;
+  border: 1px solid rgba(43, 49, 57, 0.35);
 }
 
 .market-grid::-webkit-scrollbar {
@@ -627,14 +618,14 @@
 
 .market-card {
   background: linear-gradient(135deg, #1e2329, #252930);
-  border: 1px solid #2b3139;
+  border: 1px solid rgba(43, 49, 57, 0.35);
   border-radius: 12px;
   padding: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  backdrop-filter: none;
+  box-shadow: none;
   min-height: 120px;
   display: flex;
   flex-direction: column;
@@ -696,18 +687,18 @@
 /* Trading Panel */
 .trading-panel {
   background: #1e2329;
-  border: 1px solid #2b3139;
+  border: 1px solid rgba(43,49,57,0.35);
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 2rem;
 }
 
 .price-display {
-  background: linear-gradient(135deg, #2b3139, #1e2329);
+  background: transparent;
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1.5rem;
-  border: 1px solid #2b3139;
+  border: 1px solid rgba(43,49,57,0.35);
 }
 
 .current-price {
@@ -751,7 +742,7 @@
 .order-type,
 .order-side {
   display: flex;
-  background: #2b3139;
+  background: rgba(43,49,57,0.2);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -802,8 +793,8 @@
 }
 
 .input-group input {
-  background: #2b3139;
-  border: 1px solid #2b3139;
+  background: rgba(43,49,57,0.2);
+  border: 1px solid rgba(43,49,57,0.35);
   border-radius: 6px;
   padding: 0.75rem;
   color: #eaecef;
@@ -818,7 +809,7 @@
 }
 
 .order-summary {
-  background: #2b3139;
+  background: transparent;
   border-radius: 6px;
   padding: 1rem;
   margin: 1rem 0;
@@ -878,8 +869,8 @@
 
 /* Holdings Section */
 .holdings-section {
-  background: #1e2329;
-  border: 1px solid #2b3139;
+  background: transparent;
+  border: 1px solid rgba(43,49,57,0.35);
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 2rem;
@@ -976,14 +967,14 @@
 
 /* Trade History */
 .history-section {
-  background: #1e2329;
-  border: 1px solid #2b3139;
+  background: transparent;
+  border: 1px solid rgba(43,49,57,0.35);
   border-radius: 12px;
   padding: 1.5rem;
 }
 
 .trades-table {
-  background: #2b3139;
+  background: transparent;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -993,13 +984,13 @@
   grid-template-columns: 1.5fr 1fr 0.7fr 1fr 1fr 1fr;
   gap: 1rem;
   padding: 1rem;
-  background: #1e2329;
+  background: transparent;
   color: #848e9c;
   font-weight: 600;
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border-bottom: 1px solid #2b3139;
+  border-bottom: 1px solid rgba(43,49,57,0.35);
 }
 
 .table-body {
@@ -1014,7 +1005,7 @@
   padding: 1rem;
   color: #eaecef;
   font-size: 0.9rem;
-  border-bottom: 1px solid rgba(43, 49, 57, 0.5);
+  border-bottom: 1px solid rgba(43, 49, 57, 0.35);
   transition: all 0.3s ease;
 }
 

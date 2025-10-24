@@ -56,7 +56,7 @@ const Header = () => {
       <header className="header">
         {/* Logo */}
         <div className="logo-container">
-          <img src={logo} alt="BIT Logo" className="logo" />
+          <img src={logo} alt="BIT Logo" className="logo" width={60} height={60} />
         </div>
 
         {/* ✅ Mobile: Timer + Social compact */}
@@ -74,7 +74,7 @@ const Header = () => {
               rel="noopener noreferrer"
               className="social-link"
             >
-              <img src={telegramLogo} alt="Telegram" />
+              <img src={telegramLogo} alt="Telegram" width={24} height={24} />
             </a>
             <a
               href="https://x.com/BitSwapDEX_AI"
@@ -82,7 +82,7 @@ const Header = () => {
               rel="noopener noreferrer"
               className="social-link"
             >
-              <img src={xLogo} alt="X (Twitter)" />
+              <img src={xLogo} alt="X (Twitter)" width={24} height={24} />
             </a>
             <a
               href="https://youtu.be/gvDHYZfwPTI?si=jvd9IoDfuivU-KBZ"
@@ -90,7 +90,7 @@ const Header = () => {
               rel="noopener noreferrer"
               className="social-link"
             >
-              <img src={youtubeLogo} alt="YouTube" />
+              <img src={youtubeLogo} alt="YouTube" width={24} height={24} />
             </a>
           </div>
         </div>
@@ -110,7 +110,7 @@ const Header = () => {
 
         {/* ✅ Desktop Navigation - DOAR PE DESKTOP */}
         <nav className="navigation desktop-only">
-        <Link to="/" className="btn-home laser-sharp">
+        <Link to="/orbit" className="btn-home laser-sharp">
           <i className="fas fa-bullseye"></i> Orbit
         </Link>
         <Link to="/home" className="btn-home laser-sharp">
@@ -178,7 +178,7 @@ const Header = () => {
               rel="noopener noreferrer"
               className="social-link"
             >
-              <img src={telegramLogo} alt="Telegram" />
+              <img src={telegramLogo} alt="Telegram" width={24} height={24} />
             </a>
             <a
               href="https://x.com/BitSwapDEX_AI"
@@ -186,7 +186,7 @@ const Header = () => {
               rel="noopener noreferrer"
               className="social-link"
             >
-              <img src={xLogo} alt="X (Twitter)" />
+              <img src={xLogo} alt="X (Twitter)" width={24} height={24} />
             </a>
             <a
               href="https://youtu.be/gvDHYZfwPTI?si=jvd9IoDfuivU-KBZ"
@@ -194,7 +194,7 @@ const Header = () => {
               rel="noopener noreferrer"
               className="social-link"
             >
-              <img src={youtubeLogo} alt="YouTube" />
+              <img src={youtubeLogo} alt="YouTube" width={24} height={24} />
             </a>
           </div>
         </div>
@@ -203,8 +203,8 @@ const Header = () => {
 
       {/* Mobile Navigation Menu - în fluxul paginii pentru a împinge conținutul */}
       {isMenuOpen && (
-        <nav className="mobile-nav-menu">
-          <Link to="/" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
+        <nav className="mobile-nav-menu" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '8px' }}>
+          <Link to="/orbit" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
             <i className="fas fa-bullseye"></i> Orbit
           </Link>
           <Link to="/home" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>

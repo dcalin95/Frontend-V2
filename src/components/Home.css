@@ -35,17 +35,7 @@
   text-rendering: optimizeLegibility !important;
 }
 
-/* Opera/Chromium specific fixes to prevent page-level zoom blur */
-@supports (-webkit-touch-callout: none) {
-  /* Avoid text inflation on some Android browsers */
-  html { text-size-adjust: 100%; -webkit-text-size-adjust: 100%; }
-}
-@media (min-resolution: 2dppx) {
-  /* Force crisper rendering on high-dpi (Opera often applies additional scaling) */
-  body { image-rendering: -webkit-optimize-contrast; }
-}
-/* Disable automatic font boosting in some Opera builds */
-@-moz-document url-prefix() { html { text-size-adjust: 100%; } }
+/* Remove per-browser overrides; rely on global baseline */
 
 /* Trust Wallet mobile fixes */
 .home-container {

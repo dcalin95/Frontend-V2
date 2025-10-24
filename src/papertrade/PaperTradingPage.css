@@ -1,8 +1,11 @@
 .paper-trading-container {
   max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
   padding: 2rem;
   color: #ffffff;
+  background: transparent;
+  overflow-x: hidden;
 }
 
 .paper-trading-header {
@@ -13,10 +16,7 @@
 .paper-trading-header h1 {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, #00d4ff, #ff00ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ffffff; /* avoid gradient text affecting global header */
 }
 
 .paper-trading-header h1 i {
@@ -140,10 +140,10 @@
   padding: 0.5rem 1rem;
   border-radius: 20px;
   letter-spacing: 0.5px;
-  animation: glow 2s infinite alternate;
+  animation: tradingBadgeGlow 2s infinite alternate; /* renamed to avoid global keyframe collision */
 }
 
-@keyframes glow {
+@keyframes tradingBadgeGlow {
   0% { box-shadow: 0 0 10px rgba(240, 185, 11, 0.5); }
   100% { box-shadow: 0 0 20px rgba(240, 185, 11, 0.8); }
 }
@@ -283,7 +283,7 @@
 
 .bits-simulator-section {
   padding: 0; /* Remove padding since BITSTradingSimulator has its own */
-  margin: -2rem; /* Negative margin to make it full-width */
+  margin: 0; /* Avoid negative margins that can cause horizontal overflow */
 }
 
 .trading-header-controls {

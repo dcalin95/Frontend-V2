@@ -49,9 +49,10 @@ const AdminPanel = () => {
 
   const handleLogin = () => {
     const input = prompt("🔐 Enter Admin Password:");
-    if (input === ADMIN_PASS) {
+    const normalized = (input || "").trim();
+    if (normalized === ADMIN_PASS) {
       setIsAuthorized(true);
-      localStorage.setItem("admin_token", input);
+      localStorage.setItem("admin_token", normalized);
       toast.success("✅ Autentificare reușită");
     } else {
       alert("❌ Wrong password!");

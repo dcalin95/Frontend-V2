@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback, useContext, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useContext, useRef, useMemo } from 'react';
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { toast } from 'react-toastify';
 import WalletContext from '../context/WalletContext';
 import './BITSTradingSimulator.css';
@@ -65,6 +66,18 @@ const BITSTradingSimulator = () => {
     'DOTUSDT': { symbol: 'DOTUSDT', price: 7.89, change24h: 1.56, volume24h: 300000, high24h: 8.00, low24h: 7.80, lastUpdate: Date.now() }
   };
 
+  // Small helper: fetch with timeout (browser-safe)
+  const fetchWithTimeout = useCallback(async (url, options = {}, timeoutMs = 10000) => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const res = await fetch(url, { ...options, signal: controller.signal });
+      return res;
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }, []);
+
   // Fetch real-time prices from Binance API with retry logic
   const fetchMarketData = useCallback(async (isRetry = false) => {
     try {
@@ -72,15 +85,12 @@ const BITSTradingSimulator = () => {
       setMarketDataError(null);
       
       // Fetch 24hr ticker statistics for all pairs
-      const response = await fetch('https://api.binance.com/api/v3/ticker/24hr', {
+      const response = await fetchWithTimeout('https://api.binance.com/api/v3/ticker/24hr', {
         method: 'GET',
         headers: {
-          'Accept': 'application/json',
-          'User-Agent': 'BitSwapDEX-TradingSimulator/1.0'
-        },
-        // Add timeout to prevent hanging requests
-        signal: AbortSignal.timeout(10000) // 10 second timeout
-      });
+          'Accept': 'application/json'
+        }
+      }, 10000);
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -139,7 +149,9 @@ const BITSTradingSimulator = () => {
         setMarketDataError('Using fallback data - API temporarily unavailable');
         
         // Show a less aggressive error message
-        if (!isRetry) {
+        // Show a single toast at first occurrence only
+        if (!window.__paper_trading_fallback_toast_shown) {
+          window.__paper_trading_fallback_toast_shown = true;
           toast.info('Market data temporarily unavailable - using fallback prices');
         }
       } else {
@@ -157,7 +169,13 @@ const BITSTradingSimulator = () => {
     } finally {
       if (!isRetry) setLoading(false);
     }
-  }, [retryCount]);
+  }, [retryCount, fetchWithTimeout]);
+
+  // Build chart data for selected pair
+  const chartData = useMemo(() => {
+    const series = priceHistory[selectedPair] || [];
+    return series.map(p => ({ time: new Date(p.time).toLocaleTimeString(), price: Number(p.price) }));
+  }, [priceHistory, selectedPair]);
 
   // Calculate portfolio value based on current prices
   const calculatePortfolioValue = useCallback(() => {
@@ -642,34 +660,17 @@ const BITSTradingSimulator = () => {
               )}
             </div>
             
-            {/* Temporary Chart Placeholder */}
-            <div className="chart-container">
-              <div className="chart-placeholder">
-                <div className="chart-header">
-                  <h3>📈 {selectedPair.replace('USDT', '/USDT')} Chart</h3>
-                  <div className="price-info">
-                    {marketData[selectedPair] && (
-                      <>
-                        <span className="current-price">
-                          ${marketData[selectedPair].price.toLocaleString()}
-                        </span>
-                        <span className={`price-change ${marketData[selectedPair].change24h >= 0 ? 'positive' : 'negative'}`}>
-                          {marketData[selectedPair].change24h >= 0 ? '+' : ''}
-                          {marketData[selectedPair].change24h.toFixed(2)}%
-                        </span>
-                      </>
-                    )}
-                  </div>
-                </div>
-                <div className="chart-placeholder-content">
-                  <div className="chart-message">
-                    <i className="fas fa-chart-area"></i>
-                    <h4>Chart Temporarily Disabled</h4>
-                    <p>Professional charts will be restored soon</p>
-                    <div className="data-source">Data: Binance API • Real-time</div>
-                  </div>
-                </div>
-              </div>
+            {/* Lightweight line chart (Recharts) */}
+            <div className="chart-container" style={{ background: 'transparent', border: '1px solid rgba(43,49,57,0.35)', borderRadius: 12, height: 360 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData} margin={{ top: 20, right: 20, left: 10, bottom: 10 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#2b3139" />
+                  <XAxis dataKey="time" tick={{ fill: '#848e9c', fontSize: 12 }} tickLine={false} axisLine={{ stroke: '#2b3139' }} minTickGap={20} />
+                  <YAxis tick={{ fill: '#848e9c', fontSize: 12 }} tickLine={false} axisLine={{ stroke: '#2b3139' }} domain={['auto', 'auto']} />
+                  <Tooltip contentStyle={{ background: '#1e2329', border: '1px solid #2b3139', color: '#eaecef' }} />
+                  <Line type="monotone" dataKey="price" stroke="#f0b90b" strokeWidth={2} dot={false} isAnimationActive={false} />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </div>
 

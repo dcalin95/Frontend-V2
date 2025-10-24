@@ -1,0 +1,33 @@
+.start-page-container {
+  display: grid;
+  place-items: center; /* centrează pe ambele axe */
+  min-height: calc(100vh - 160px); /* lasă spațiu pentru header/footer */
+}
+
+.start-layout-center {
+  transform: translate(-10vw, 10vh); /* deplasare relativă la viewport: stânga 10%, jos 10% */
+}
+
+/* Asigură centrare stabilă a orbitului în container */
+.start-page-container .orbit-wrapper { justify-items: center !important; }
+.start-page-container .laser-orbit { margin-left: auto !important; margin-right: auto !important; }
+
+@media (max-width: 1024px) {
+  .start-layout-center { transform: none; } /* pe ecrane mici: fix centrat */
+}
+
+/* Namespace fix to block any lazy CSS overrides */
+.start-page-container .laser-orbit { max-width: 420px !important; height: 420px !important; }
+.start-page-container .orbit-core { width: 140px !important; height: 140px !important; }
+.start-page-container .revolve-layer.inner { width: 270px !important; height: 270px !important; }
+.start-page-container .revolve-layer.outer { width: 360px !important; height: 360px !important; }
+.start-page-container .orbit-node { width: 62px !important; height: 62px !important; }
+.start-page-container .orbit-node img { width: 100% !important; height: 100% !important; object-fit: contain !important; padding: 8px !important; display: block !important; }
+.start-page-container .bits-core { width: 52px !important; height: 52px !important; }
+.start-page-container .partner-core { width: 42px !important; height: 42px !important; }
+.start-page-container .l2-core { width: 44px !important; height: 44px !important; }
+.start-page-container .op-core { width: 40px !important; height: 40px !important; }
+.start-page-container .zkp-core { width: 38px !important; height: 38px !important; }
+
+
+

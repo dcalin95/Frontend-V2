@@ -11,12 +11,12 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 
 // 🧩 Wrapping App
 import AppWrapper from './AppWrapper';
+import reportWebVitals from './reportWebVitals';
 
 // 🔧 Wallet Browser Optimization - DISABLED for desktop
 // import './utils/walletBrowserDetection';
 
 // 📊 Măsurare performanță
-import reportWebVitals from './reportWebVitals';
 
 // 🔗 Montare aplicație în DOM
 const root = ReactDOM.createRoot(document.getElementById('root'));

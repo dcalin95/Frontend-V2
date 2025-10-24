@@ -9,7 +9,7 @@
   min-height: 75vh;
 }
 
-.header {
+.srm-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -39,7 +39,7 @@
   box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
 }
 
-.header h2 {
+.srm-header h2 {
   color: #14F195;
   margin: 0;
   font-size: 1.3rem;

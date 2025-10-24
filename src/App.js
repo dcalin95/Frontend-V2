@@ -2,7 +2,7 @@
 import "react-toastify/dist/ReactToastify.css";
 import "./styles/GlobalStyles.css";
 import "./toastStyle.css";
-import "./chrome-compatibility-fix.css"; // 🔧 CHROME FIXES
+ 
 
 // 🧠 Core React
 import React, { useEffect, useState, Suspense, lazy } from "react";
@@ -64,7 +64,6 @@ const lazyWithRetry = (importer) => lazy(() => new Promise((resolve, reject) => 
 }));
 
 const Home = lazyWithRetry(() => import("./components/Home"));
-const StartPage = lazyWithRetry(() => import("./components/StartPage"));
 const Whitepaper = lazy(() => import("./components/Whitepaper"));
 const About = lazy(() => import("./components/About"));
 const HowToBuy = lazy(() => import("./components/HowToBuy"));
@@ -90,6 +89,8 @@ const InvitePage = lazy(() => import("./components/Invite/InvitePage"));
 const BitcoinAcademy = lazy(() => import("./components/BitcoinAcademy"));
 const ProofOfTransferPage = lazy(() => import("./components/BitcoinAcademy/pages/ProofOfTransferPage"));
 const EducationPage = lazyWithRetry(() => import("./components/EducationPageModern"));
+const WelcomePage = lazy(() => import("./components/WelcomePage"));
+const OrbitPage = lazy(() => import("./components/OrbitPage"));
 const AIPortfolioPage = lazy(() => import("./components/AIPortfolioPage"));
 const AIPortfolioPageRefactored = lazy(() => import("./components/AIPortfolioPageRefactored"));
 const Claude4AIPortfolioDemo = lazy(() => import("./ai-portfolio/Claude4AIPortfolioDemo"));
@@ -112,23 +113,9 @@ const App = () => {
   const [amountPay, setAmountPay] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [currentSection, setCurrentSection] = useState("home");
-  const [uaClass, setUaClass] = useState("");
+  
 
-  // UA detection to tweak CSS per browser (Opera blurry zoom issue)
-  useEffect(() => {
-    try {
-      const ua = navigator.userAgent.toLowerCase();
-      let cls = "";
-      if (ua.includes("opr/") || ua.includes("opera")) cls = "opera";
-      else if (ua.includes("safari") && !ua.includes("chrome")) cls = "safari";
-      else if (ua.includes("firefox")) cls = "firefox";
-      else if (ua.includes("edg/")) cls = "edge";
-      if (cls) {
-        document.body.classList.add(cls);
-        setUaClass(cls);
-      }
-    } catch (_) {}
-  }, []);
+  
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
 
@@ -189,7 +176,7 @@ const App = () => {
 
                         <div className="content-container">
                           <Routes>
-                      <Route path="/" element={<StartPage />} />
+                      <Route path="/" element={<Home />} />
                       <Route path="/home" element={<Home />} />
                       <Route path="/whitepaper" element={<Whitepaper />} />
                       <Route path="/how-to-buy" element={<HowToBuy />} />
@@ -214,6 +201,8 @@ const App = () => {
                       <Route path="/bitcoin-academy" element={<BitcoinAcademy />} />
                       <Route path="/proof-of-transfer" element={<ProofOfTransferPage />} />
                       <Route path="/education" element={<EducationPage />} />
+                      <Route path="/orbit" element={<OrbitPage />} />
+                      <Route path="/welcome" element={<WelcomePage />} />
                       <Route path="/admin-test" element={<AdminPanel />} />
                       <Route path="/test-dashboard" element={<PresaleDashboard />} />
                       <Route path="/dashboard" element={<SidebarDashboard />} />

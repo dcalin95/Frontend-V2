@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from "react";
 
 // Componenta principală a dashboard-ului
 import LaserOrbit from "./Education/LaserOrbit";
+import "./StartPage.css";
 
 const StartPage = () => {
   const containerRef = useRef(null);
@@ -29,7 +30,9 @@ const StartPage = () => {
 
   return (
     <div className="start-page-container" ref={containerRef}>
-      <LaserOrbit variant="ecosystem" />
+      <div className="start-layout-center">
+        <LaserOrbit variant="ecosystem" />
+      </div>
     </div>
   );
 };

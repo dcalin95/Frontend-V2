@@ -1,0 +1,13 @@
+.orbit-page-wrapper { display: grid; place-items: center; padding: 24px 0; }
+
+@media (max-width: 768px) {
+	/* extra space under header and banners */
+	.orbit-page-wrapper { padding-top: 72px; }
+}
+
+@media (max-width: 480px) {
+	.orbit-page-wrapper { padding-top: 88px; }
+}
+
+
+

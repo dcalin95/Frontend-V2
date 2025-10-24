@@ -11,7 +11,7 @@
     <!-- Apple iOS -->
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="BitSwapDEX AI - Crypto Investment Platform" />
+    <meta name="apple-mobile-web-app-title" content="BitSwapDEXDEX AI - Crypto Investment Platform" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
     <!-- Android / PWA -->
@@ -209,6 +209,10 @@
 
     <!-- 📱 MOBILE OPTIMIZATION -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+    <!-- Prevent caching of HTML to avoid chunk mismatches after deploy -->
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <!-- Prevent font boosting/auto zoom on mobile (iOS/Opera) -->
     <meta name="HandheldFriendly" content="true" />
     <meta name="MobileOptimized" content="320" />
@@ -218,9 +222,7 @@
 
     <!-- 🔒 SECURITY HEADERS -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:; font-src 'self' https: data:;" />
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-    <meta http-equiv="X-Frame-Options" content="DENY" />
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
 
     <!-- 🚀 PERFORMANCE OPTIMIZATION -->
@@ -270,6 +272,52 @@
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
 
+    <!-- TikTok Pixel Code Start -->
+    <script>
+      !function(w,d,t){
+        w.TiktokAnalyticsObject=t;
+        var ttq=w[t]=w[t]||[];
+        ttq.methods=['page','track','identify','instances','debug','on','off','once','ready','alias','group','enableCookie','disableCookie'];
+        ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};
+        for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);
+        ttq.instance=function(t){var e=ttq._i[t]||[];for(var n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e};
+        ttq.load=function(e,n){var i='https://analytics.tiktok.com/i18n/pixel/events.js';ttq._i=ttq._i||{};ttq._i[e]=[];ttq._i[e]._u=i;ttq._t=ttq._t||{};ttq._t[e]=+new Date;ttq._o=ttq._o||{};ttq._o[e]=n||{};var s=d.createElement('script');s.type='text/javascript';s.async=!0;s.src=i;var c=d.getElementsByTagName('script')[0];c.parentNode.insertBefore(s,c)};
+        ttq.load('D3RH23RC77U1STIOO1T0');
+        ttq.page();
+      }(window,document,'ttq');
+    </script>
+    <!-- TikTok Pixel Code End -->
+
+    <script>
+      // Guard împotriva erorilor de tip ChunkLoadError (mismatch bundle după deploy)
+      (function () {
+        var RETRY_KEY = '__chunk_retry_once__';
+        function shouldRetry() {
+          try { return !sessionStorage.getItem(RETRY_KEY); } catch (_) { return true; }
+        }
+        function markRetried() {
+          try { sessionStorage.setItem(RETRY_KEY, '1'); } catch (_) {}
+        }
+        function clearCachesAndReload() {
+          markRetried();
+          if ('caches' in window) {
+            caches.keys().then(function(keys){ keys.forEach(function(k){ caches.delete(k); }); });
+          }
+          setTimeout(function(){ location.reload(true); }, 30);
+        }
+        function maybeHandle(msg){
+          if (/ChunkLoadError|Loading chunk|chunk .* failed/i.test(String(msg)) && shouldRetry()) {
+            clearCachesAndReload();
+          }
+        }
+        window.addEventListener('error', function (e) {
+          maybeHandle((e && e.message) || '');
+        }, true);
+        window.addEventListener('unhandledrejection', function (e) {
+          maybeHandle((e && e.reason && e.reason.message) || '');
+        });
+      })();
+    </script>
   </head>
   <body>
     <!-- 📊 GOOGLE TAG MANAGER (noscript) -->

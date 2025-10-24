@@ -35,8 +35,7 @@ main {
   /* Better text rendering in Chrome */
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale !important;
-  
-  /* Fix gradient text in Chrome */
+  /* Restore gradient text to match global header style */
   background-clip: text !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
@@ -68,11 +67,7 @@ main {
 .navigation.open { z-index: 1002 !important; }
 
 /* === CHROME RENDERING FIXES === */
-* {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  box-sizing: border-box;
-}
+/* Removed universal smoothing override to prevent blur/distortion */
 
 /* === DEBUG INFO === */
 .chrome-debug {
