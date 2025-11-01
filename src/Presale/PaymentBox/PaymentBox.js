@@ -147,6 +147,24 @@ const PaymentBox = ({
     );
   }
 
+  // 🔢 Dynamic minimum in token for $10
+  const minUsd = 10;
+  const price = Number(paymentState.selectedTokenPrice) || 0;
+  let minTokenNumber = null;
+  let minTokenDecimals = 2;
+  let minTokenExtraNumber = null;
+  if (price > 0) {
+    const raw = minUsd / price;
+    if (raw < 1) minTokenDecimals = 3;
+    if (raw < 0.1) minTokenDecimals = 4;
+    if (raw < 0.01) minTokenDecimals = 5;
+    if (raw < 0.001) minTokenDecimals = 6;
+    const factor = Math.pow(10, minTokenDecimals);
+    const roundedUp = Math.ceil(raw * factor) / factor;
+    minTokenNumber = roundedUp;
+    minTokenExtraNumber = roundedUp;
+  }
+
   return (
     <div className="payment-box">
       {/* 🎯 Transaction Popup */}
@@ -156,6 +174,7 @@ const PaymentBox = ({
         bits={confirmedBits}
         token={selectedToken}
         amount={paymentState.safeAmountPay}
+        walletAddress={paymentState.walletAddress}
         isConfirmed={isConfirmed}
         onClose={handleClosePopup}
       />
@@ -188,7 +207,18 @@ const PaymentBox = ({
         setAmountPay={setAmountPay}
         userBalance={paymentState.balances[selectedToken] || 0}
         selectedToken={selectedToken}
+        minAmountToken={minTokenNumber}
+        minAmountDecimals={minTokenDecimals}
       />
+      <div className="min-purchase-note">
+        <span className="min-note-icon" aria-hidden>ℹ️</span>
+        <span>{`Minimum purchase is $${minUsd}.`}</span>
+        {minTokenNumber != null && (
+          <span className="min-note-extra"> {`For ${selectedToken}, minimum is `}
+            <span className="min-token-amount">{minTokenExtraNumber.toFixed(minTokenDecimals)} {selectedToken}</span>{`.`}
+          </span>
+        )}
+      </div>
 
       {/* 🎯 Referral Code Input */}
       <div className="referral-code-container">

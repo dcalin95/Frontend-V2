@@ -162,7 +162,7 @@ const useHandleTransaction = ({
 
       console.log("🚀 Transaction Parameters:");
       console.log("Token:", selectedToken);
-      console.log("Amount in WEI:", amountToSendInWei.toString());
+      console.log("Amount (BNB):", payableAmount);
       console.log("BITS to Receive (WEI):", bitsBigNumber.toString());
       console.log("USD Value:", usdValue);
 
@@ -188,6 +188,7 @@ const useHandleTransaction = ({
           txResult = await handler({
             amount: usdValue || amountPay, // USD amount for fiat
             bitsToReceive: totalBits,
+            bitsHuman: totalBits,
             walletAddress,
             usdInvested: Math.floor(usdValue),
             bonusAmount: validBonusAmount,
@@ -203,6 +204,7 @@ const useHandleTransaction = ({
           txResult = await handler({
             amount: amountPay, // SOL amount (not in Wei)
             bitsToReceive: totalBits, // BITS amount (not in Wei)
+            bitsHuman: totalBits,
             walletAddress,
             selectedChain,
             usdInvested: Math.floor(usdValue),
@@ -217,8 +219,9 @@ const useHandleTransaction = ({
           const paymentTokenAddress = t?.address || "0x0000000000000000000000000000000000000000";
           const decimals = Number.isFinite(t?.decimals) ? t.decimals : 18;
           txResult = await handler({
-            amount: amountToSendInWei.toString(),
+            amount: payableAmount, // pass BNB in ether units; handler converts to WEI
             bitsToReceive: bitsBigNumber.toString(),
+            bitsHuman: totalBits,
             walletAddress,
             selectedChain,
             usdInvested: Math.floor(usdValue),
@@ -238,6 +241,9 @@ const useHandleTransaction = ({
 
           if (typeof setPopupVisible === "function") setPopupVisible(true);
 
+          // Show hash immediately so explorer link is available even while waiting confirmation
+          if (typeof setTransactionHash === "function") setTransactionHash(txHash);
+
           // 🌟 Different confirmation logic for Solana vs ETH/BSC
           if (selectedToken === "SOL" || selectedToken === "USDC-Solana") {
             // For Solana tokens, the transaction is already confirmed in handler
@@ -254,14 +260,14 @@ const useHandleTransaction = ({
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             const receipt = await provider.waitForTransaction(txHash);
 
-            if (receipt.status === 1 && !confirmedOnce.current) {
+            const ok = receipt && (receipt.status === 1 || receipt.status === '0x1');
+            if (ok && !confirmedOnce.current) {
               confirmedOnce.current = true;
               console.log("✅ Transaction Confirmed:", txHash);
 
-              if (typeof setTransactionHash === "function") setTransactionHash(txHash);
               if (typeof setConfirmedBits === "function") setConfirmedBits(totalBits);
               if (typeof setIsConfirmed === "function") setIsConfirmed(true);
-            } else {
+            } else if (receipt && (receipt.status === 0 || receipt.status === '0x0')) {
               console.warn("❌ Transaction Failed on-chain:", txHash);
               alert("Transaction failed on blockchain.");
             }

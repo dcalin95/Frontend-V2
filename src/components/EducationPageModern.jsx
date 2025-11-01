@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import useGoogleAnalytics from '../hooks/useGoogleAnalytics';
 import { Link } from 'react-router-dom';
 // import { useWalletOptimization } from '../utils/walletBrowserDetection'; // DISABLED - causing issues in wallet browsers
 import './EducationPageModern.css';
@@ -7,6 +8,7 @@ import './Education/LaserOrbit.css';
 import MiniQuizGPT from './Education/MiniQuizGPT';
 
 const EducationPageModern = () => {
+  const { trackEducationEvent, trackPageView } = useGoogleAnalytics();
   const [activeSection, setActiveSection] = useState('hero');
   const [animationPhase, setAnimationPhase] = useState(0);
   const [isVisible, setIsVisible] = useState({});
@@ -24,6 +26,14 @@ const EducationPageModern = () => {
       console.log('🎯 Google Ads conversion tracked - Education Page Visit');
     }
   }, []);
+
+  // 📊 Analytics: page view + education view
+  useEffect(() => {
+    try {
+      trackPageView('Education', { section: 'education' });
+      trackEducationEvent('view', { category: 'education' });
+    } catch (_) {}
+  }, [trackPageView, trackEducationEvent]);
   const [bitcoinPrice, setBitcoinPrice] = useState({
     price: 67542.31,
     change: 2.34,

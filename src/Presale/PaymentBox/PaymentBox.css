@@ -358,6 +358,29 @@ a:hover ~ .custom-cursor,
   transform: scale(1.05);
 }
 
+.min-purchase-note {
+  margin-top: 6px;
+  font-size: 0.9rem;
+  color: rgba(224, 224, 224, 0.8);
+  text-align: center;
+  opacity: 0.9;
+}
+
+.min-note-icon {
+  margin-right: 6px;
+  filter: drop-shadow(0 0 6px rgba(0, 241, 255, 0.4));
+}
+
+.min-note-extra {
+  margin-left: 4px;
+}
+
+.min-token-amount {
+  color: #00ffff;
+  font-weight: 700;
+  text-shadow: 0px 0px 8px rgba(0, 255, 255, 0.6);
+}
+
 .bonus-line {
   display: flex;
   align-items: center;

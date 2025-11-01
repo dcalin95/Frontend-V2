@@ -120,8 +120,19 @@
 }
 
 .currentRound {
-  color: #ff6b6b;
-  text-shadow: 0 0 8px rgba(255, 107, 107, 0.8);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 9999px;
+  border: 2px solid #14F195; /* Solana green */
+  color: #14F195;
+  text-shadow: 0 0 10px rgba(20, 241, 149, 0.9);
+  background: radial-gradient(100% 100% at 50% 0%, rgba(99, 102, 241, 0.25) 0%, rgba(20, 241, 149, 0.12) 100%);
+  box-shadow: 0 0 14px rgba(20, 241, 149, 0.5), 0 0 24px rgba(99, 102, 241, 0.35);
+  font-size: 110%; /* +10% */
 }
 
 .totalRounds {

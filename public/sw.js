@@ -1,8 +1,7 @@
-const CACHE_NAME = 'bitswapdex-v1.0.0';
+const CACHE_NAME = 'bitswapdex-v1.0.1';
+// Keep cache minimal and avoid precaching hashed bundles to prevent white-screen after deploys
 const urlsToCache = [
-  '/',
-  '/static/js/main.e8efda31.js',
-  '/static/css/main.css',
+  '/offline.html',
   '/web-app-manifest-192x192.png',
   '/web-app-manifest-512x512.png',
   '/apple-touch-icon.png',
@@ -18,23 +17,35 @@ self.addEventListener('install', (event) => {
         return cache.addAll(urlsToCache);
       })
   );
+  self.skipWaiting();
 });
 
 // Fetch event - serve from cache when offline
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Return cached version or fetch from network
-        return response || fetch(event.request);
+  const req = event.request;
+
+  // Network-first for navigation requests (HTML documents) to avoid stale index.html
+  if (req.mode === 'navigate') {
+    event.respondWith(
+      fetch(req).catch(() => caches.match('/offline.html'))
+    );
+    return;
+  }
+
+  // Cache-first for static assets; update cache in background
+  if (['style', 'script', 'image', 'font'].includes(req.destination)) {
+    event.respondWith(
+      caches.match(req).then((cached) => {
+        const fetchPromise = fetch(req).then((networkRes) => {
+          const copy = networkRes.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+          return networkRes;
+        }).catch(() => cached);
+        return cached || fetchPromise;
       })
-      .catch(() => {
-        // Return offline page if both cache and network fail
-        if (event.request.destination === 'document') {
-          return caches.match('/offline.html');
-        }
-      })
-  );
+    );
+    return;
+  }
 });
 
 // Activate event - clean up old caches
@@ -51,6 +62,7 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
+  self.clients.claim();
 });
 
 // Background sync for offline actions

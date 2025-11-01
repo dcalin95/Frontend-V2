@@ -5,17 +5,19 @@ import "./InputBox.css";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { GiBroom, GiWallet } from "react-icons/gi";
 
-const InputBox = ({ amountPay, setAmountPay, userBalance, selectedToken }) => {
+const InputBox = ({ amountPay, setAmountPay, userBalance, selectedToken, minAmountToken, minAmountDecimals }) => {
   // 🌟 Different minimum amounts and steps by token
-  const MIN_AMOUNT = (selectedToken === "SOL") ? 0.001 :
-                     (selectedToken === "USDC-Solana") ? 0.01 :
-                     (selectedToken === "BTCB") ? 0.0001 : 0.01;
+  const DEFAULT_MIN = (selectedToken === "SOL") ? 0.001 :
+                      (selectedToken === "USDC-Solana") ? 0.01 :
+                      (selectedToken === "BTCB") ? 0.0001 : 0.01;
+  const MIN_AMOUNT = typeof minAmountToken === 'number' && minAmountToken > 0 ? minAmountToken : DEFAULT_MIN;
   const STEP = (selectedToken === "SOL") ? 0.001 :
                (selectedToken === "USDC-Solana") ? 0.01 :
                (selectedToken === "BTCB") ? 0.0001 : 0.01;
-  const DECIMALS = (selectedToken === "SOL") ? 3 :
-                   (selectedToken === "BTCB") ? 4 :
-                   (selectedToken === "USDC-Solana") ? 2 : 2;
+  const DEFAULT_DECIMALS = (selectedToken === "SOL") ? 3 :
+                           (selectedToken === "BTCB") ? 4 :
+                           (selectedToken === "USDC-Solana") ? 2 : 2;
+  const DECIMALS = typeof minAmountDecimals === 'number' ? Math.max(minAmountDecimals, DEFAULT_DECIMALS) : DEFAULT_DECIMALS;
 
   const [internalValue, setInternalValue] = useState(
     typeof amountPay === "number" && !isNaN(amountPay) ? amountPay : MIN_AMOUNT
@@ -72,7 +74,7 @@ const InputBox = ({ amountPay, setAmountPay, userBalance, selectedToken }) => {
     setAmountPay(maxValue);
   };
 
-  const defaultValue = selectedToken === "SOL" ? "0.001" : (selectedToken === "BTCB" ? "0.0001" : "0.01");
+  const defaultValue = MIN_AMOUNT.toFixed(DECIMALS);
   const safeValue = isNaN(internalValue) || internalValue <= 0 ? defaultValue : internalValue.toFixed(DECIMALS);
 
   return (

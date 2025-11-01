@@ -4,6 +4,7 @@ import avatarGif from "../assets/popup/popup-avatar.gif";
 import backgroundGif from "../assets/popup/popupback.gif";
 import voiceMp3 from "../assets/popup/popup-sound.mp3";
 import successWav from "../assets/sounds/success.wav";
+import { getExplorerLink as getExplorerLinkUtil } from "../utils/getExplorerLink";
 
 const aiIntro = (bits, token, amount) =>
   `Congratulations! You've just bought ${bits} BITS tokens using ${amount} ${token}.`;
@@ -15,10 +16,21 @@ const aiDescriptions = [
   "The roadmap for BitSwapDEX AI outlines a strategic plan for development, innovation, and growth, emphasizing the integration of Artificial Intelligence (AI), robust smart contracts, and Bitcoin-backed security through Stacks blockchain. This phased approach ensures that the platform delivers cutting-edge solutions, while adapting to community needs and technological advancements.",
 ];
 
-const getExplorerLink = (txHash) => {
+const getExplorerLink = (txHash, token) => {
   if (!txHash) return null;
-  // Exemplu: Dacă vrei să folosești o rețea specifică (BSC, Ethereum, etc.)
-  return `https://etherscan.io/tx/${txHash}`;
+  try {
+    // Detect chain id from wallet if available; fallback by token
+    const chainIdHex = window?.ethereum && window.ethereum.chainId;
+    let chain;
+    if (chainIdHex) {
+      const id = parseInt(chainIdHex, 16);
+      chain = (id === 56 || id === 1 || id === 137) ? 'mainnet' : 'testnet';
+    }
+    // Prefer BscScan for BNB token, otherwise delegate to util
+    return getExplorerLinkUtil(txHash, token || 'BNB', chain);
+  } catch (_) {
+    return `https://bscscan.com/tx/${txHash}`;
+  }
 };
 
 const TransactionPopup = ({
@@ -27,6 +39,7 @@ const TransactionPopup = ({
   token,
   amount,
   bits,
+  walletAddress,
   onClose,
   demoMode = false,
 }) => {
@@ -71,7 +84,67 @@ const TransactionPopup = ({
 
   if (!visible && !demoMode) return null;
 
-  const explorerLink = getExplorerLink(txHash);
+  const explorerLink = getExplorerLink(txHash, token);
+
+  const downloadReceipt = () => {
+    try {
+      const receipt = {
+        title: 'BITS Purchase Receipt',
+        txHash,
+        token,
+        amount,
+        bits,
+        wallet: walletAddress || 'unknown',
+        explorer: explorerLink,
+        timestamp: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(receipt, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `bits-receipt-${txHash?.slice(0,10) || 'tx'}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (_) {}
+  };
+
+  const printReceipt = () => {
+    try {
+      const win = window.open('', '_blank');
+      if (!win) return;
+      const html = `<!doctype html><html><head><title>BITS Receipt</title></head><body style="font-family:Arial;padding:20px;">
+        <h2>BITS Purchase Receipt</h2>
+        <p><strong>Wallet:</strong> ${walletAddress || 'unknown'}</p>
+        <p><strong>Amount:</strong> ${amount} ${token}</p>
+        <p><strong>BITS:</strong> ${bits}</p>
+        <p><strong>Tx Hash:</strong> ${txHash}</p>
+        ${explorerLink ? `<p><a href="${explorerLink}" target="_blank">View on Explorer</a></p>` : ''}
+        <p><small>${new Date().toLocaleString()}</small></p>
+      </body></html>`;
+      win.document.write(html);
+      win.document.close();
+      win.focus();
+      win.print();
+    } catch (_) {}
+  };
+
+  const emailReceipt = () => {
+    try {
+      const subject = encodeURIComponent('BITS Purchase Receipt');
+      const body = encodeURIComponent([
+        'BITS Purchase Receipt',
+        `Wallet: ${walletAddress || 'unknown'}`,
+        `Amount: ${amount} ${token}`,
+        `BITS: ${bits}`,
+        `Tx Hash: ${txHash}`,
+        explorerLink ? `Explorer: ${explorerLink}` : '',
+        `Date: ${new Date().toLocaleString()}`
+      ].filter(Boolean).join('\n'));
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    } catch (_) {}
+  };
 
   return (
     <div className={`popup-overlay ${theme}`}>
@@ -115,6 +188,14 @@ const TransactionPopup = ({
         </div>
 
         <div className="popup-actions">
+          {explorerLink && (
+            <a className="btn" href={explorerLink} target="_blank" rel="noreferrer">
+              🔗 Open on BscScan
+            </a>
+          )}
+          <button className="btn" onClick={downloadReceipt}>💾 Save Receipt</button>
+          <button className="btn" onClick={printReceipt}>🖨️ Print</button>
+          <button className="btn" onClick={emailReceipt}>✉️ Email Receipt</button>
           <button className="btn learn-btn" onClick={handleLearnMore}>
             🔊 Learn More About BITS
           </button>

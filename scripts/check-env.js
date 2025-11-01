@@ -57,3 +57,14 @@ console.log('\x1b[32m[ENV CHECK] All required environment variables are present.
 
 
 
+
+
+
+
+
+
+
+
+
+
+

@@ -72,7 +72,7 @@ const PresaleCountdownFlip = () => {
         <div className={styles.roundText} translate="no">
           {roundNumber ? (
             <>
-              $BITS Presale Round <span className={styles.currentRound}>{roundNumber}</span>
+              $BITS Presale Round: <span className={styles.currentRound}>{roundNumber}</span>
             </>
           ) : (
             "No round active"

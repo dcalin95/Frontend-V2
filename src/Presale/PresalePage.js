@@ -5,6 +5,7 @@ import "./PaymentBox/InputBox.css";
 import "./PaymentBox/PaymentSummary.css";
 
 import React, { useState, useEffect, Suspense, lazy, useMemo } from "react";
+import useGoogleAnalytics from "../hooks/useGoogleAnalytics";
 import { trackTikTokEvent } from "../utils/tiktok";
 import { ethers } from "ethers";
 import SelectPaymentMethod from "./SelectPaymentMethod";
@@ -37,6 +38,7 @@ const PresaleLoading = () => (
 );
 
 const PresalePage = () => {
+  const { trackPresaleEvent, trackPageView } = useGoogleAnalytics();
   const {
     selectedToken,
     selectedChain,
@@ -113,6 +115,14 @@ const PresalePage = () => {
       setParticleCount(isMobile ? 22 : 40);
     } catch {}
   }, []);
+
+  // 📊 Analytics: page view + presale view
+  useEffect(() => {
+    try {
+      trackPageView('Presale', { section: 'presale' });
+      trackPresaleEvent('view', {});
+    } catch (_) {}
+  }, [trackPageView, trackPresaleEvent]);
 
   return (
     <div className="presale-page">
