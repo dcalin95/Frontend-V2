@@ -237,12 +237,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- 🎯 GOOGLE ANALYTICS 4 SETUP -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2MSY4FWP4G"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-2MSY4FWP4G', {
+      gtag('config', 'GA_MEASUREMENT_ID', {
         page_title: 'BitSwapDEX AI - Crypto Investment Platform',
         page_location: window.location.href,
         custom_map: {
@@ -284,66 +284,6 @@
     </script>
     <!-- TikTok Pixel Code End -->
 
-    <!-- 🔧 TikTok Delegated Tracking + UTM capture/propagation + GA4 user_properties -->
-    <script>
-      (function(){
-        var params = new URLSearchParams(location.search || '');
-        var U = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'];
-        var anyUtm = false;
-        U.forEach(function(k){ if(params.get(k)) { try { sessionStorage.setItem(k, params.get(k)); } catch(_){} anyUtm = true; } });
-        if(anyUtm) { try { sessionStorage.setItem('utm_ts', String(Date.now())); } catch(_){} }
-
-        function getStoredUtm(){
-          var o = {}; U.forEach(function(k){ try { var v = sessionStorage.getItem(k); if(v) o[k]=v; } catch(_){} }); return o;
-        }
-        function buildUtmQuery(){
-          var u = getStoredUtm(); var qs = new URLSearchParams();
-          Object.keys(u).forEach(function(k){ qs.set(k, u[k]); });
-          return qs.toString();
-        }
-
-        function setGaUserProps(){
-          try { var utm = getStoredUtm(); if(window.gtag && Object.keys(utm).length){ window.gtag('set', 'user_properties', utm); } } catch(_){}
-        }
-        setTimeout(setGaUserProps, 0);
-
-        function ttqTrack(name, payload){
-          try { var utm = getStoredUtm(); var pl = Object.assign({}, payload || {}, utm); if (window.ttq && window.ttq.track) { window.ttq.track(name, pl); } } catch(_){}
-        }
-
-        document.addEventListener('click', function(e){
-          var a = e.target && e.target.closest && e.target.closest('a[href]');
-          if(a){
-            try {
-              var href = a.getAttribute('href');
-              if(href && href.indexOf('http') !== 0 && href.indexOf('#') !== 0){
-                var url = new URL(href, location.origin);
-                if(!url.searchParams.get('utm_source')){
-                  var utmStr = buildUtmQuery();
-                  if(utmStr){ url.search = url.search ? url.search + '&' + utmStr : '?' + utmStr; a.setAttribute('href', url.pathname + url.search + url.hash); }
-                }
-              }
-            } catch(_){}
-          }
-
-          var el = e.target && e.target.closest && e.target.closest('[data-ttq]');
-          if(!el) return;
-          var spec = el.getAttribute('data-ttq') || '';
-          var parts = spec.split(':');
-          var eventName = parts[0] || 'ClickButton';
-          var label = parts.slice(1).join(':') || (el.textContent || '').trim().slice(0,64);
-          ttqTrack(eventName, {
-            label: label,
-            href: el.getAttribute('href') || null,
-            id: el.id || null,
-            cls: el.className || null,
-            path: location.pathname
-          });
-        }, true);
-
-        ttqTrack('ViewContent', { path: location.pathname, host: location.host });
-      })();
-    </script>
     <script>
       // Guard împotriva erorilor de tip ChunkLoadError (mismatch bundle după deploy)
       (function () {
