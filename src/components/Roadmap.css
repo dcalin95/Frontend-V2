@@ -8,15 +8,20 @@
     overflow: visible;
 }
 
-/* Titlul principal */
+/* Titlul principal - SOLANA/AI STYLE */
 .roadmap-title {
     font-size: 2.5rem;
-    color: #00ffe0;
-    text-shadow: 0 0 10px #00ffe0, 0 0 20px #9c27ff;
+    font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 20px rgba(0, 255, 163, 0.4));
     margin-bottom: 3rem;
 }
 
-/* Layout pe două coloane */
+/* Layout pe două coloane - SIMETRIC */
 .roadmap-grid {
     display: flex;
     justify-content: space-between;
@@ -28,24 +33,30 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    flex: 1; /* Coloane egale - simetrice */
+    max-width: 50%; /* Fiecare coloană 50% */
 }
 
-/* Stil pentru carduri */
+/* Stil pentru carduri - SOLANA/AI STYLE */
 .roadmap-card {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
     padding: 1.5rem;
-    width: 90%;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    backdrop-filter: blur(10px);
+    width: 100%; /* FULL WIDTH pentru simetrie */
+    transition: all 0.3s ease;
+    backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+    -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+    font-family: 'Inter', sans-serif;
 }
 
-/* Hover pe card individual */
+/* Hover pe card individual - SOLANA/AI STYLE */
 .roadmap-card:hover {
-    transform: scale(1.3);
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.9), 0 0 50px rgba(0, 255, 255, 1);
+    transform: scale(1.05) translateY(-5px);
+    box-shadow: 0 8px 32px rgba(0, 255, 163, 0.3), 0 0 50px rgba(220, 31, 255, 0.2);
+    border-color: rgba(0, 255, 163, 0.3);
+    background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
     z-index: 10;
 }
 
@@ -56,11 +67,17 @@
     transition: transform 0.5s ease, box-shadow 0.5s ease;
 }
 
-/* Titlurile cardurilor */
+/* Titlurile cardurilor - SOLANA/AI STYLE */
 .roadmap-card h3 {
     font-size: 2rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 15px rgba(0, 255, 163, 0.3));
     margin-bottom: 0.5rem;
-    text-shadow: 0 0 10px currentColor;
     transition: all 0.3s ease;
 }
 
@@ -75,15 +92,18 @@
 
 /* Detaliile cardurilor */
 .roadmap-card li {
-    font-size: 1rem;
+    font-size: 0.95rem;
     transition: all 0.3s ease;
-    line-height: 1.6;
+    line-height: 1.5;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
 }
 
-/* Efectul de aprindere și tremur pe hover */
+/* Efectul de aprindere și tremur pe hover - SOLANA/AI STYLE */
 .roadmap-card:hover h3 {
-    color: #ffea00;
-    animation: shake-text 0.2s infinite;
+    filter: drop-shadow(0 0 20px rgba(0, 255, 163, 0.5));
 }
 
 /* Animație pentru tremur */
@@ -177,15 +197,22 @@
     flex-shrink: 0;
 }
 
-/* Animație de pulsare pentru bullet */
+/* Animație de pulsare pentru bullet - SOLANA/AI STYLE */
 @keyframes glow-pulse {
     0%, 100% {
         transform: scale(1);
         box-shadow: 0 0 10px rgba(0, 255, 255, 0.7), 0 0 20px rgba(156, 39, 255, 0.7);
     }
+}
+
+@keyframes glow-pulse-solana {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 10px rgba(0, 255, 163, 0.6), 0 0 20px rgba(220, 31, 255, 0.4);
+    }
     50% {
         transform: scale(1.2);
-        box-shadow: 0 0 20px rgba(0, 255, 255, 1), 0 0 40px rgba(156, 39, 255, 1);
+        box-shadow: 0 0 20px rgba(0, 255, 163, 0.9), 0 0 40px rgba(220, 31, 255, 0.6);
     }
 }
 

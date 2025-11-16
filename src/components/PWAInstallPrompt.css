@@ -22,8 +22,15 @@
 }
 
 .pwa-install-icon {
-  font-size: 2.5rem;
-  animation: bounce 2s infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pwa-brand .brand-logo__image {
+  width: 36px;
+  height: 36px;
+  animation: none;
 }
 
 .pwa-install-text {

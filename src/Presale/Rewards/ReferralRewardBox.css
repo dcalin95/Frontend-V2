@@ -28,27 +28,41 @@
 
 @keyframes solanaPulse {
   0% {
-    color: #9333EA;
-    text-shadow: 0 0 10px rgba(147, 51, 234, 0.6), 0 0 20px rgba(20, 241, 149, 0.4);
+    background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.4));
     transform: scale(1);
   }
   50% {
-    color: #14F195;
-    text-shadow: 0 0 20px rgba(20, 241, 149, 0.8), 0 0 30px rgba(147, 51, 234, 0.5);
+    background: linear-gradient(135deg, #DC1FFF, #00FFA3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 20px rgba(220, 31, 255, 0.6));
     transform: scale(1.02);
   }
   100% {
-    color: #9333EA;
-    text-shadow: 0 0 10px rgba(147, 51, 234, 0.6), 0 0 20px rgba(20, 241, 149, 0.4);
+    background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.4));
     transform: scale(1);
   }
 }
 
-/* === Heading === */
+/* === Heading === SOLANA/AI STYLE */
 .referral-reward-box h3 {
   font-size: 1.35rem;
-  color: #e6f5ff;
-  text-shadow: none;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.3));
   margin: 8px 0 10px;
   animation: none;
 }
@@ -63,22 +77,44 @@
 }
 
 .referral-reward-box strong {
-  color: #00ffc8;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 163, 0.3));
 }
 
-/* === 🎁 UNIFIED REWARDS SECTION === */
+/* === 🎁 UNIFIED REWARDS SECTION === SOLANA/AI STYLE */
 .unified-rewards-section {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 10px;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 1.5rem;
   padding: 16px;
   margin-bottom: 16px;
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.unified-rewards-section:hover {
+  border-color: rgba(0, 255, 163, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 255, 163, 0.2);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
 }
 
 .unified-rewards-section h4 {
-  color: #00ffc3;
-  text-shadow: none;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
   font-size: 1.1rem;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 163, 0.3));
   margin-bottom: 10px;
 }
 
@@ -87,10 +123,15 @@
 }
 
 .rewards-summary {
-  background: rgba(255,255,255,0.02);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border: 1px solid rgba(255,255,255,0.1);
   padding: 12px;
-  border-radius: 8px;
+  border-radius: 12px;
   margin-bottom: 12px;
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 2px 12px rgba(0, 255, 163, 0.05);
+  font-family: 'Inter', sans-serif;
 }
 
 .rewards-summary p {
@@ -106,23 +147,74 @@
 }
 
 .reward-type-box {
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 8px;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
   padding: 12px;
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 2px 12px rgba(0, 255, 163, 0.05);
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
 }
 
-.reward-type-box h5 { color: #00aaff; margin-bottom: 6px; font-size: 1rem; }
+.reward-type-box:hover {
+  border-color: rgba(0, 255, 163, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 255, 163, 0.15);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+}
+
+.reward-type-box h5 { 
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 163, 0.3));
+  margin-bottom: 6px; 
+  font-size: 1rem; 
+}
 
 /* Compact type stats for rewards by type */
 .type-stats { display: grid; gap: 6px; }
 .type-line { display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; gap: 8px; padding: 6px 8px; border-radius: 6px; }
-.type-line.pending { background: rgba(0, 255, 195, 0.06); border: 1px solid rgba(0, 255, 195, 0.15); }
-.type-line.claimed { background: rgba(0, 170, 255, 0.06); border: 1px solid rgba(0, 170, 255, 0.15); }
-.type-label { font-weight: 700; font-size: 0.9rem; opacity: 0.95; }
-.type-value { font-weight: 700; color: #00ffc3; text-shadow: 0 0 6px rgba(0,255,195,0.4); }
-.type-value .unit { opacity: 0.85; font-weight: 600; color: #c8fff0; }
-.type-count { font-size: 0.85rem; opacity: 0.85; color: #b3d9ff; }
+.type-line.pending { 
+  background: rgba(0, 255, 163, 0.06); 
+  border: 1px solid rgba(0, 255, 163, 0.2); 
+  font-family: 'Inter', sans-serif;
+}
+.type-line.claimed { 
+  background: rgba(220, 31, 255, 0.06); 
+  border: 1px solid rgba(220, 31, 255, 0.2); 
+  font-family: 'Inter', sans-serif;
+}
+.type-label { 
+  font-family: 'Inter', sans-serif;
+  font-weight: 700; 
+  font-size: 0.9rem; 
+  opacity: 0.95; 
+}
+.type-value { 
+  font-family: 'Inter', sans-serif;
+  font-weight: 700; 
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 6px rgba(0, 255, 163, 0.4)); 
+}
+.type-value .unit { 
+  opacity: 0.85; 
+  font-weight: 600; 
+  color: rgba(255, 255, 255, 0.8); 
+}
+.type-count { 
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem; 
+  opacity: 0.85; 
+  color: rgba(255, 255, 255, 0.7); 
+}
 
 .reward-type-box p {
   margin: 4px 0;
@@ -160,17 +252,20 @@
 }
 
 .claim-btn-small {
-  background: rgba(0,255,195,0.18);
-  color: #e6f5ff;
-  border: 1px solid rgba(0,255,195,0.35);
-  border-radius: 6px;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  color: #000000;
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  border-radius: 12px;
   padding: 6px 12px;
   font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 0 8px rgba(0, 255, 163, 0.15);
+  transition: all 0.3s ease;
 }
 
 .claim-btn-small:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 0 15px rgba(0, 255, 163, 0.4), 0 0 30px rgba(220, 31, 255, 0.2);
 }
 
 .claim-btn-small:disabled {
@@ -191,16 +286,23 @@
 .claim-hybrid-btn,
 .generate-invite-btn,
 .copy-code-btn {
-  background: rgba(0,170,255,0.18) !important;
-  color: #e6f5ff !important;
-  border: 1px solid rgba(0,170,255,0.35) !important;
-  border-radius: 8px !important;
-  box-shadow: none !important;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF) !important;
+  color: #000000 !important;
+  border: 1px solid rgba(0, 255, 163, 0.3) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 0 8px rgba(0, 255, 163, 0.15) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 700 !important;
+  transition: all 0.3s ease !important;
 }
 
-.claim-all-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+.claim-all-btn:hover,
+.refresh-rewards-btn:hover,
+.claim-hybrid-btn:hover,
+.generate-invite-btn:hover,
+.copy-code-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 0 15px rgba(0, 255, 163, 0.4), 0 0 30px rgba(220, 31, 255, 0.2) !important;
 }
 
 .claim-all-btn:disabled {
@@ -230,39 +332,44 @@
   }
 }
 
-/* === Reward Highlight === */
+/* === Reward Highlight === SOLANA/AI STYLE */
 .reward-amount {
   font-size: 1.5rem;
-  font-weight: bold;
-  color: #00ffc8;
-  text-shadow: 0 0 10px #00ffc8, 0 0 20px #00ffc8;
-  animation: neon-pulse 2s infinite ease-in-out;
+  font-weight: 800;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.4));
+  animation: solana-pulse 2s infinite ease-in-out;
 }
 
-@keyframes neon-pulse {
+@keyframes solana-pulse {
   0%, 100% {
-    text-shadow: 0 0 10px #00ffc8, 0 0 20px #00ffc8;
+    filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.4));
   }
   50% {
-    text-shadow: 0 0 16px #00ffc8, 0 0 30px #00ffc8;
+    filter: drop-shadow(0 0 20px rgba(220, 31, 255, 0.6));
   }
 }
 
-/* === CTA Buttons === */
+/* === CTA Buttons === SOLANA/AI STYLE */
 .claim-button,
 .copy-button,
 .share-button {
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
   text-transform: uppercase;
   padding: 12px 24px;
-  border: none;
-  border-radius: 10px;
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  border-radius: 12px;
   cursor: pointer;
   margin-top: 14px;
-  color: #000;
-  background: linear-gradient(90deg, #00ffc8, #7f00ff);
-  box-shadow: 0 0 12px #00ffc8, 0 0 24px #7f00ff;
+  color: #000000;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  box-shadow: 0 0 12px rgba(0, 255, 163, 0.2);
   transition: all 0.3s ease;
   z-index: 1;
   position: relative;
@@ -271,9 +378,8 @@
 .claim-button:hover,
 .copy-button:hover,
 .share-button:hover {
-  transform: scale(1.08);
-  background: linear-gradient(90deg, #00ffd1, #9a00ff);
-  box-shadow: 0 0 20px #00ffc8, 0 0 40px #7f00ff;
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 0 0 20px rgba(0, 255, 163, 0.5), 0 0 40px rgba(220, 31, 255, 0.3);
 }
 
 .claim-button:disabled {
@@ -302,16 +408,17 @@
   top: -36px;
   left: 50%;
   transform: translateX(-50%);
-  background: #00ffc8;
-  color: #000;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  color: #000000;
   padding: 6px 14px;
-  border-radius: 6px;
+  border-radius: 12px;
   font-size: 13px;
-  font-weight: bold;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease, transform 0.3s ease;
-  box-shadow: 0 0 12px rgba(0, 255, 200, 0.5);
+  box-shadow: 0 0 12px rgba(0, 255, 163, 0.4);
   z-index: 5;
 }
 
@@ -360,11 +467,22 @@
 
 /* Node.sol Rewards Section */
 .hybrid-rewards-section {
-  background: rgba(255,255,255,0.03);
-  border-radius: 12px;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border-radius: 1.5rem;
   padding: 15px;
   margin: 15px 0;
-  border: 1px solid rgba(0, 255, 255, 0.2);
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.hybrid-rewards-section:hover {
+  border-color: rgba(0, 255, 163, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 255, 163, 0.2);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
 }
 
 .node-rewards-display {
@@ -384,7 +502,12 @@
 }
 
 .reward-tiers-info li {
-  color: #00ffaa;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 6px rgba(0, 255, 163, 0.3));
   margin: 3px 0;
 }
 
@@ -421,24 +544,32 @@
 
 /* Invite Code Section */
 .invite-code-section {
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border-radius: 12px;
   padding: 15px;
   margin: 15px 0;
 }
 
 .code-display {
-  background: rgba(0, 255, 255, 0.1);
-  border: 2px solid #00bcd4;
-  border-radius: 8px;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  border-radius: 12px;
   padding: 12px;
   margin: 10px 0;
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 2px 12px rgba(0, 255, 163, 0.1);
+  font-family: 'Inter', sans-serif;
 }
 
 .code-display code {
   font-family: 'Courier New', monospace;
   font-size: 16px;
-  color: #00ff00;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 163, 0.4));
   font-weight: bold;
 }
 
@@ -480,16 +611,22 @@
 }
 
 .reward-card {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border-radius: 1.5rem;
   padding: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
   transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
 }
 
 .reward-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 255, 255, 0.2);
+  transform: translateY(-2px) scale(1.02);
+  border-color: rgba(0, 255, 163, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 255, 163, 0.3), 0 0 50px rgba(220, 31, 255, 0.2);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
 }
 
 /* Reward Tiers */
@@ -508,12 +645,30 @@
 }
 
 .tier-card {
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 193, 7, 0.1));
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  border-radius: 8px;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  border-radius: 12px;
   padding: 10px;
   text-align: center;
-  color: #ffd700;
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 2px 12px rgba(0, 255, 163, 0.1);
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.tier-card:hover {
+  border-color: rgba(0, 255, 163, 0.5);
+  box-shadow: 0 4px 20px rgba(0, 255, 163, 0.2);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+}
+
+.tier-card strong {
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 163, 0.3));
 }
 
 /* System Status */
@@ -627,7 +782,13 @@
 }
 
 .investigation-main-card h5 {
-  color: #00bcd4;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 163, 0.3));
   margin-bottom: 10px;
   font-size: 1rem;
 }
@@ -639,25 +800,26 @@
 }
 
 .investigate-refresh-btn {
-  background: linear-gradient(135deg, #00bcd4, #0097a7);
-  color: white;
-  border: none;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  color: #000000;
+  border: 1px solid rgba(0, 255, 163, 0.3);
   padding: 12px 24px;
-  border-radius: 25px;
+  border-radius: 1.5rem;
   cursor: pointer;
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
   margin-top: 15px;
   transition: all 0.3s ease;
   display: block;
   margin-left: auto;
   margin-right: auto;
+  box-shadow: 0 0 12px rgba(0, 255, 163, 0.2);
 }
 
 .investigate-refresh-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 188, 212, 0.4);
-  background: linear-gradient(135deg, #00e5ff, #00bcd4);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 0 20px rgba(0, 255, 163, 0.5), 0 0 40px rgba(220, 31, 255, 0.3);
 }
 
 /* Mobile responsiveness for investigation */

@@ -6,7 +6,8 @@ import HomeAISection from "./HomeAISection";
 import TokenomicsChart from "./TokenomicsChart";
 import Roadmap from "./Roadmap";
 import PresaleCountdownMini from "../Presale/Timer/PresaleCountdownMini";
-
+import bits17Video from "../assets/bits17.mp4";
+import BrandLogo from "./BrandLogo";
 
 import "./Home.css";
 import { motion } from "framer-motion";
@@ -25,11 +26,6 @@ const Home = () => {
         <ThreeBackground />
       </section>
 
-      {/* Cardul de staking */}
-      <section className="home-section staking-card-wrapper">
-        
-      </section>
-
       {/* Secțiunea Hero */}
       <motion.section
         className="home-section hero"
@@ -38,7 +34,9 @@ const Home = () => {
         transition={{ duration: 1 }}
       >
         <div className="welcome-section">
-          <h1 className="laser-sharp">Welcome to BitSwapDEX AI</h1>
+          <h1 className="laser-sharp home-hero-title">
+            Welcome to <BrandLogo size="sm" className="home-brand" />
+          </h1>
           <p>
             <br />From Bits to Bitcoin – Powering the Future of Decentralized Exchange!<br />
             <br />Revolutionizing DeFi with Bits, Bitcoin, and Beyond.<br />
@@ -51,6 +49,20 @@ const Home = () => {
           Explore Platform
         </button>
       </motion.section>
+
+      {/* Video BitSwapDEX AI - Rulează mereu - DUPĂ butonul Explore */}
+      <section className="home-section video-section">
+        <div className="video-container">
+          <video
+            className="bits-video"
+            src={bits17Video}
+            autoPlay
+            loop
+            muted
+            playsInline
+          />
+        </div>
+      </section>
 
       {/* Secțiunea AI */}
       <motion.div

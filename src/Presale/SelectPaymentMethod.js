@@ -11,9 +11,34 @@ const SelectPaymentMethod = ({
   selectedChain,
   onSelectChain,
 }) => {
-  const filteredTokens = tokenList.filter(
-    (token) => token.chain === selectedChain
-  );
+  const isStripeSelected = selectedToken === "STRIPE";
+
+  const filteredTokens = tokenList.filter((token) => {
+    if (token.key === "STRIPE") return false;
+    return token.chain === selectedChain;
+  });
+
+  const handleSelectChain = (chain) => {
+    onSelectChain(chain);
+    if (chain !== "fiat") {
+      const firstToken = tokenList.find((token) => token.chain === chain);
+      if (firstToken && selectedToken !== firstToken.key) {
+        onSelectToken(firstToken.key);
+      }
+    } else if (!isStripeSelected && selectedToken === "STRIPE") {
+      const fallback = tokenList.find(
+        (token) => token.chain === "fiat" && token.key !== "STRIPE"
+      );
+      if (fallback) onSelectToken(fallback.key);
+    }
+  };
+
+  const handleSelectStripe = () => {
+    onSelectChain("fiat");
+    if (selectedToken !== "STRIPE") {
+      onSelectToken("STRIPE");
+    }
+  };
 
   return (
     <div className="token-selector">
@@ -23,7 +48,7 @@ const SelectPaymentMethod = ({
       <div className="chain-toggle">
         <button
           className={`chain-tab ${selectedChain === "evm" ? "active" : ""}`}
-          onClick={() => onSelectChain("evm")}
+          onClick={() => handleSelectChain("evm")}
         >
           <img src={evmIcon} alt="EVM" className="chain-icon" />
           EVM
@@ -31,15 +56,27 @@ const SelectPaymentMethod = ({
 
         <button
           className={`chain-tab ${selectedChain === "solana" ? "active" : ""}`}
-          onClick={() => onSelectChain("solana")}
+          onClick={() => handleSelectChain("solana")}
         >
           <img src={solanaIcon} alt="Solana" className="chain-icon" />
           Solana
         </button>
 
         <button
-          className={`chain-tab ${selectedChain === "fiat" ? "active" : ""}`}
-          onClick={() => onSelectChain("fiat")}
+          className={`chain-tab chain-tab--stripe ${
+            isStripeSelected ? "active" : ""
+          }`}
+          onClick={handleSelectStripe}
+        >
+          <img src={cardIcon} alt="Stripe" className="chain-icon" />
+          Stripe Card
+        </button>
+
+        <button
+          className={`chain-tab ${
+            selectedChain === "fiat" && !isStripeSelected ? "active" : ""
+          }`}
+          onClick={() => handleSelectChain("fiat")}
         >
           <img src={cardIcon} alt="Fiat" className="chain-icon" />
           Fiat

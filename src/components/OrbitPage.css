@@ -1,12 +1,24 @@
-.orbit-page-wrapper { display: grid; place-items: center; padding: 24px 0; }
+.orbit-page-wrapper { 
+  display: grid; 
+  place-items: center; 
+  padding: 24px 0; 
+  font-family: 'Inter', sans-serif;
+}
 
 @media (max-width: 768px) {
-	/* extra space under header and banners */
-	.orbit-page-wrapper { padding-top: 72px; }
+	.orbit-page-wrapper { 
+    padding-top: 72px; 
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
 
 @media (max-width: 480px) {
-	.orbit-page-wrapper { padding-top: 88px; }
+	.orbit-page-wrapper { 
+    padding-top: 88px; 
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
+  }
 }
 
 

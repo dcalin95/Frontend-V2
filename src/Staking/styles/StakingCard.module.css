@@ -1,9 +1,10 @@
-/* 🎨 COMPACT STAKING CARD */
+/* 🎨 COMPACT STAKING CARD - SOLANA/AI STYLE */
 .stakingCard {
-  background: linear-gradient(135deg, rgba(0, 255, 200, 0.1), rgba(0, 170, 255, 0.1));
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
   padding: 0.7rem;
   margin: 0.5rem;
   max-width: 320px;
@@ -11,6 +12,8 @@
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
+  font-family: 'Inter', sans-serif;
 }
 
 .stakingCard::before {
@@ -20,8 +23,9 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #00ff88, #00aaff, #ff00aa);
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
   animation: shimmer 2s infinite;
+  box-shadow: 0 0 8px rgba(0, 255, 163, 0.4);
 }
 
 @keyframes shimmer {
@@ -30,9 +34,10 @@
 }
 
 .stakingCard:hover {
-  transform: translateY(-4px);
-  border-color: rgba(0, 255, 200, 0.4);
-  box-shadow: 0 8px 32px rgba(0, 255, 200, 0.3);
+  transform: translateY(-4px) scale(1.02);
+  border-color: rgba(0, 255, 163, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 255, 163, 0.3), 0 0 50px rgba(220, 31, 255, 0.2);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
 }
 
 /* 🚀 HERO SECTION */
@@ -66,8 +71,12 @@
 .dateValue {
   font-size: 0.9rem;
   font-weight: 700;
-  color: rgba(0, 255, 200, 0.9);
-  text-shadow: 0 0 8px rgba(0, 255, 200, 0.3);
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 163, 0.3));
 }
 
 .timeValue {
@@ -117,8 +126,12 @@
 .amountValue {
   font-size: 1.9rem;
   font-weight: 900;
-  color: rgba(0, 255, 200, 0.95);
-  text-shadow: 0 0 12px rgba(0, 255, 200, 0.55);
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 12px rgba(0, 255, 163, 0.4));
 }
 
 .amountUnit {
@@ -219,23 +232,23 @@
 }
 
 .claimButton {
-  background: linear-gradient(135deg, #00ff88, #00aaff);
-  border: none;
-  border-radius: 6px;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  border-radius: 12px;
   padding: 0.5rem;
   font-size: 0.85rem;
   font-weight: 700;
-  color: white;
+  font-family: 'Inter', sans-serif;
+  color: #000000;
   cursor: pointer;
   width: 100%;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+  box-shadow: 0 0 12px rgba(0, 255, 163, 0.2);
 }
 
 .claimButton:hover {
-  background: linear-gradient(135deg, #00ffaa, #00ccff);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
+  box-shadow: 0 0 20px rgba(0, 255, 163, 0.5), 0 0 40px rgba(220, 31, 255, 0.3);
+  transform: translateY(-2px) scale(1.02);
 }
 
 .claimButton:disabled {

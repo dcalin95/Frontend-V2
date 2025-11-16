@@ -1,672 +1,416 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import marketingService from '../services/marketingService';
+import React, { useEffect, useMemo, useState } from 'react';
+import BrandLogo from './BrandLogo';
 import './MarketingDashboard.css';
 
-const MarketingDashboard = ({ standalone = false }) => {
-  const [isVisible, setIsVisible] = useState(standalone); // Dacă e standalone, start ca vizibil
-  const [marketingData, setMarketingData] = useState({});
-  const [activeTab, setActiveTab] = useState('overview');
+const COINGECKO_SIMPLE_PRICE =
+  'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,blockstack&vs_currencies=usd';
+
+const KPI_SEGMENTS = {
+  daily: {
+    budget: 12500,
+    spendChange: 6.2,
+    conversions: 642,
+    conversionDelta: 11.4,
+    revenue: 53400,
+    revenueDelta: 12.4,
+    engagement: 7.4,
+    engagementDelta: 5.1,
+  },
+  weekly: {
+    budget: 86500,
+    spendChange: 8.1,
+    conversions: 4290,
+    conversionDelta: 9.8,
+    revenue: 312400,
+    revenueDelta: 15.2,
+    engagement: 7.1,
+    engagementDelta: 6.7,
+  },
+  monthly: {
+    budget: 342000,
+    spendChange: 11.6,
+    conversions: 17560,
+    conversionDelta: 18.9,
+    revenue: 1275400,
+    revenueDelta: 21.3,
+    engagement: 7.8,
+    engagementDelta: 8.4,
+  },
+};
+
+const CHANNEL_METRICS = [
+  { channel: 'Email automation', icon: '📬', cpa: 8.6, roas: 5.4, trend: 18.4 },
+  { channel: 'Telegram community', icon: '💬', cpa: 6.2, roas: 6.1, trend: 22.0 },
+  { channel: 'Twitter paid', icon: '🐦', cpa: 9.4, roas: 4.2, trend: 12.6 },
+  { channel: 'Influencer pods', icon: '🤝', cpa: 7.8, roas: 4.9, trend: 15.1 },
+];
+
+const PLAYBOOK_STEPS = [
+  {
+    title: 'Detect signal',
+    detail: 'AI monitor identifies whale inflows & social sentiment spikes.',
+    icon: '📡',
+  },
+  {
+    title: 'Segment audience',
+    detail: 'Target power users & high LTV wallets via wallet graph.',
+    icon: '🎯',
+  },
+  {
+    title: 'Launch creatives',
+    detail: 'Generate motion clips + copy; publish to Twitter, Telegram, email.',
+    icon: '🎨',
+  },
+  {
+    title: 'Reinforce',
+    detail: 'Triggered reminders for users who clicked but did not convert.',
+    icon: '🔁',
+  },
+  {
+    title: 'Learn & iterate',
+    detail: 'Retrain model on campaign lift and attribution data.',
+    icon: '🧠',
+  },
+];
+
+const INSIGHTS = [
+  {
+    id: 1,
+    tone: 'positive',
+    title: 'Conversion breakout in EMEA',
+    description: 'AI detected a 14% lift after localized push notifications.',
+    action: 'Allocate +12% budget to localized assets this week.',
+  },
+  {
+    id: 2,
+    tone: 'neutral',
+    title: 'Optimal posting window',
+    description: '2–4 PM UTC drives the largest wallet connect spike.',
+    action: 'Schedule the next Bits giveaway thread for 14:30 UTC.',
+  },
+  {
+    id: 3,
+    tone: 'warning',
+    title: 'Referral fatigue',
+    description: 'Referral velocity slowed 6% compared to last week.',
+    action: 'Refresh refer-a-friend reward copy and rotate creative set.',
+  },
+];
+
+const CAMPAIGNS = [
+  {
+    name: 'Boosted Vault Launch',
+    status: 'running',
+    spend: 18400,
+    revenue: 64200,
+    roas: 3.5,
+    channel: 'Telegram',
+    objective: 'Community growth',
+  },
+  {
+    name: 'AI Trader Waitlist',
+    status: 'running',
+    spend: 12800,
+    revenue: 50800,
+    roas: 4.0,
+    channel: 'Email',
+    objective: 'Early access',
+  },
+  {
+    name: 'DeFi Thought Leadership',
+    status: 'paused',
+    spend: 6200,
+    revenue: 15200,
+    roas: 2.5,
+    channel: 'Twitter',
+    objective: 'Authority',
+  },
+];
+
+const SENTIMENT = {
+  daily: { score: 0.76, label: 'Positive', delta: 4.2 },
+  weekly: { score: 0.82, label: 'Strong positive', delta: 5.8 },
+  monthly: { score: 0.79, label: 'Positive', delta: 6.4 },
+};
+
+const formatCurrency = (value) =>
+  new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value);
+
+const formatPercent = (value) => `${value > 0 ? '+' : ''}${value.toFixed(1)}%`;
+
+const MarketingDashboard = () => {
+  const [timeframe, setTimeframe] = useState('weekly');
+  const [liveMetrics, setLiveMetrics] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [notifications, setNotifications] = useState([]);
-  const [realTimeStats, setRealTimeStats] = useState({
-    activeUsers: 0,
-    conversionRate: 0,
-    revenue: 0,
-    engagement: 0
-  });
-  const intervalRef = useRef(null);
-  const particleRef = useRef(null);
+  const [error, setError] = useState(null);
+
+  const kpis = useMemo(() => KPI_SEGMENTS[timeframe], [timeframe]);
+  const sentiment = useMemo(() => SENTIMENT[timeframe], [timeframe]);
+  const updatedLabel = liveMetrics ? new Date(liveMetrics.updatedAt).toLocaleTimeString() : null;
 
   useEffect(() => {
-    if (isVisible) {
-      initializeDashboard();
-      startRealTimeUpdates();
-      initializeParticles();
-      return () => {
-        if (intervalRef.current) clearInterval(intervalRef.current);
-      };
-    }
-  }, [isVisible]);
+    let active = true;
+    let interval;
 
-  useEffect(() => {
-    const handleToggle = () => setIsVisible(!isVisible);
-    window.addEventListener('toggleMarketingDashboard', handleToggle);
-    return () => window.removeEventListener('toggleMarketingDashboard', handleToggle);
-  }, [isVisible]);
+    const fetchLiveMetrics = async () => {
+      try {
+        if (!active) return;
+        setLoading((prev) => prev === false && liveMetrics ? prev : true);
+        const response = await fetch(COINGECKO_SIMPLE_PRICE);
+        if (!response.ok) {
+          throw new Error(`market fetch ${response.status}`);
+        }
+        const data = await response.json();
+        if (!active) return;
 
-  const startRealTimeUpdates = () => {
-    intervalRef.current = setInterval(() => {
-      updateMarketingData();
-      updateRealTimeStats();
-    }, 3000); // Update every 3 seconds for more real-time feel
-  };
+        const stxPrice = Number(data?.blockstack?.usd) || null;
+        const btcPrice = Number(data?.bitcoin?.usd) || null;
 
-  const updateRealTimeStats = () => {
-    setRealTimeStats(prev => ({
-      activeUsers: Math.floor(Math.random() * 50) + 150,
-      conversionRate: (Math.random() * 2 + 8).toFixed(2),
-      revenue: Math.floor(Math.random() * 1000) + 12000,
-      engagement: (Math.random() * 3 + 6).toFixed(1)
-    }));
-  };
-
-  const initializeParticles = () => {
-    // Initialize AI particle background
-    if (particleRef.current) {
-      createParticleAnimation();
-    }
-  };
-
-  const createParticleAnimation = () => {
-    // Create floating AI particles for background effect
-    const particles = [];
-    for (let i = 0; i < 20; i++) {
-      particles.push({
-        id: i,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        size: Math.random() * 3 + 1,
-        speed: Math.random() * 0.5 + 0.1
-      });
-    }
-    return particles;
-  };
-
-  const initializeDashboard = async () => {
-    setLoading(true);
-    try {
-      await marketingService.init();
-      updateMarketingData();
-      addNotification('Dashboard initialized successfully! 🚀', 'success');
-    } catch (error) {
-      addNotification('Error initializing dashboard', 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const updateMarketingData = () => {
-    const analytics = marketingService.getAnalytics();
-    setMarketingData(analytics);
-  };
-
-  const addNotification = (message, type = 'info') => {
-    const id = Date.now();
-    setNotifications(prev => [...prev, { id, message, type }]);
-    setTimeout(() => {
-      setNotifications(prev => prev.filter(n => n.id !== id));
-    }, 4000);
-  };
-
-  const toggleDashboard = () => {
-    setIsVisible(!isVisible);
-    if (!isVisible) {
-      addNotification('Marketing Dashboard opened', 'info');
-    }
-  };
-
-  const formatNumber = (num) => {
-    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-    return new Intl.NumberFormat().format(num);
-  };
-
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2
-    }).format(amount);
-  };
-
-  const calculateGrowthRate = (current, previous) => {
-    if (!previous) return 0;
-    return ((current - previous) / previous * 100).toFixed(1);
-  };
-
-  const handleAction = async (action, data) => {
-    setLoading(true);
-    try {
-      switch (action) {
-        case 'share':
-          await marketingService.share(data);
-          addNotification(`Shared on ${data}! 📱`, 'success');
-          break;
-        case 'copy':
-          await marketingService.copyLink();
-          addNotification('Referral link copied! 📋', 'success');
-          break;
-        case 'export':
-          await marketingService.exportData();
-          addNotification('Data exported successfully! 📊', 'success');
-          break;
-        case 'optimize':
-          await marketingService.optimizeCampaigns();
-          addNotification('Campaigns optimized! ⚡', 'success');
-          break;
-        default:
-          updateMarketingData();
-          addNotification('Data refreshed! 🔄', 'info');
+        setLiveMetrics({
+          stx: stxPrice,
+          bitcoin: btcPrice,
+          updatedAt: new Date().toISOString(),
+        });
+        setError(null);
+      } catch (err) {
+        if (active) {
+          console.error('Marketing dashboard live data error:', err);
+        setError('Unable to fetch live data right now.');
+        }
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
       }
-    } catch (error) {
-      addNotification(`Error: ${error.message}`, 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  if (!isVisible) {
-    return null; // Nu afișa butonul floating, doar din hamburger
-  }
+    fetchLiveMetrics();
+    interval = setInterval(fetchLiveMetrics, 60_000);
+
+    return () => {
+      active = false;
+      if (interval) clearInterval(interval);
+    };
+  }, [liveMetrics]);
+
+  const summaryCards = useMemo(() => {
+    const bitcoinValue =
+      typeof liveMetrics?.bitcoin === 'number'
+        ? new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+          }).format(liveMetrics.bitcoin)
+        : '—';
+
+    const stxValue =
+      typeof liveMetrics?.stx === 'number'
+        ? new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 3,
+          }).format(liveMetrics.stx)
+        : '—';
+
+    return [
+      {
+        icon: '₿',
+        label: 'Bitcoin price',
+        value: bitcoinValue,
+        footer: updatedLabel ? `Actualizat la ${updatedLabel}` : 'Feed live Coindesk',
+      },
+      {
+        icon: 'Ⓢ',
+        label: 'Stacks (STX)',
+        value: stxValue,
+        footer: 'Proxy backend /api/market/price',
+      },
+      {
+        icon: '🎯',
+        label: 'Conversions',
+        value: kpis.conversions.toLocaleString(),
+        footer: `${formatPercent(kpis.conversionDelta)} vs prev.`,
+      },
+      {
+        icon: '✨',
+        label: 'Engagement score',
+        value: kpis.engagement.toFixed(1),
+        footer: `${formatPercent(kpis.engagementDelta)} vs prev.`,
+      },
+    ];
+  }, [kpis, liveMetrics, updatedLabel]);
 
   return (
-    <AnimatePresence>
-      <motion.div
-        className="marketing-dashboard ai-enhanced"
-        initial={{ opacity: 0, x: 300, scale: 0.8 }}
-        animate={{ opacity: 1, x: 0, scale: 1 }}
-        exit={{ opacity: 0, x: 300, scale: 0.8 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-        ref={particleRef}
-      >
-        {/* AI Particle Background */}
-        <div className="ai-particles">
-          {[...Array(15)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="particle"
-              animate={{
-                y: [0, -20, 0],
-                opacity: [0.3, 0.8, 0.3],
-                scale: [0.8, 1.2, 0.8]
-              }}
-              transition={{
-                duration: 3 + Math.random() * 2,
-                repeat: Infinity,
-                delay: Math.random() * 2
-              }}
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`
-              }}
-            />
-          ))}
+    <div className="marketing-dashboard-page">
+      <header className="marketing-dashboard-page__header">
+        <div>
+          <BrandLogo
+            size="sm"
+            className="marketing-dashboard-brand"
+            textClassName="eyebrow"
+          />
+          <h1 className="title">AI Marketing Suite</h1>
+          <p className="subtitle">
+            Real-time growth analytics, channel orchestration, and campaign recommendations generated by the BitSwap AI
+            engine.
+          </p>
         </div>
-
-        {/* Enhanced Header */}
-        <div className="dashboard-header ai-glass">
-          <div className="header-content">
-            <div className="header-title">
-              <span className="ai-badge">AI</span>
-              <h3>🤖 Marketing Intelligence</h3>
-              <div className="neural-network">
-                <span className="node"></span>
-                <span className="node active"></span>
-                <span className="node"></span>
-              </div>
-            </div>
-            <div className="header-stats">
-              <div className="live-indicator pulsing">
-                <span className="status-dot"></span>
-                <span>Real-time Analytics</span>
-              </div>
-              <div className="real-time-counter">
-                <span className="counter-label">Active Users:</span>
-                <motion.span 
-                  className="counter-value"
-                  key={realTimeStats.activeUsers}
-                  initial={{ scale: 1.2, color: "#00ff88" }}
-                  animate={{ scale: 1, color: "#ffffff" }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {realTimeStats.activeUsers}
-                </motion.span>
-              </div>
-            </div>
-          </div>
-          <motion.button 
-            className="dashboard-close ai-close" 
-            onClick={toggleDashboard}
-            title="Close AI Dashboard"
-            whileHover={{ rotate: 90, scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <span className="close-lines"></span>
-          </motion.button>
-        </div>
-
-        {/* Notifications */}
-        <AnimatePresence>
-          {notifications.map(notification => (
-            <motion.div
-              key={notification.id}
-              className={`notification ${notification.type}`}
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-            >
-              {notification.message}
-            </motion.div>
-          ))}
-        </AnimatePresence>
-
-        {/* AI Navigation Tabs */}
-        <div className="dashboard-tabs ai-tabs">
-          {[
-            { id: 'overview', label: 'Neural Overview', icon: '🧠' },
-            { id: 'referrals', label: 'Growth Vector', icon: '🚀' },
-            { id: 'social', label: 'Network Graph', icon: '🌐' },
-            { id: 'analytics', label: 'Deep Insights', icon: '🔬' }
-          ].map(tab => (
-            <motion.button
-              key={tab.id}
-              className={`tab ai-tab ${activeTab === tab.id ? 'active' : ''}`}
-              onClick={() => setActiveTab(tab.id)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <span className="tab-icon">{tab.icon}</span>
-              <span className="tab-label">{tab.label}</span>
-              {activeTab === tab.id && (
-                <motion.div
-                  className="active-indicator"
-                  layoutId="activeTab"
-                  transition={{ duration: 0.3 }}
-                />
-              )}
-            </motion.button>
-          ))}
-        </div>
-
-        {/* AI Loading Indicator */}
-        {loading && (
-          <motion.div 
-            className="loading-indicator ai-loading"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <div className="ai-brain">
-              <div className="brain-core"></div>
-              <div className="neural-pulse"></div>
-              <div className="neural-pulse delay-1"></div>
-              <div className="neural-pulse delay-2"></div>
-            </div>
-            <div className="loading-text">
-              <motion.span
-                animate={{ opacity: [1, 0.5, 1] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
+        <div className="header-controls">
+          <div className="timeframe-toggle" role="tablist" aria-label="Select timeframe">
+            {['daily', 'weekly', 'monthly'].map((option) => (
+              <button
+                key={option}
+                type="button"
+                role="tab"
+                aria-selected={timeframe === option}
+                className={`timeframe-button ${timeframe === option ? 'is-active' : ''}`}
+                onClick={() => setTimeframe(option)}
               >
-                AI Processing Neural Networks...
-              </motion.span>
-            </div>
-          </motion.div>
-        )}
-
-        {/* Dashboard Content */}
-        <div className="dashboard-content">
-          {activeTab === 'overview' && (
-            <motion.div
-              key="overview"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="tab-content ai-content"
-            >
-              {/* AI Metrics Grid */}
-              <div className="metrics-grid ai-metrics">
-                <motion.div 
-                  className="metric-card ai-card primary"
-                  whileHover={{ scale: 1.02, rotateY: 5 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <div className="metric-header">
-                    <div className="metric-icon">🧬</div>
-                    <h4>Neural Engagement</h4>
-                    <motion.span 
-                      className="trend positive glowing"
-                      animate={{ scale: [1, 1.1, 1] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    >
-                      +{realTimeStats.engagement}%
-                    </motion.span>
-                  </div>
-                  <motion.div 
-                    className="metric-value"
-                    key={realTimeStats.engagement}
-                    initial={{ scale: 1.2 }}
-                    animate={{ scale: 1 }}
-                  >
-                    {realTimeStats.engagement}%
-                  </motion.div>
-                  <div className="metric-footer">
-                    <span>Real-time engagement</span>
-                    <div className="pulse-bar"></div>
-                  </div>
-                </motion.div>
-                
-                <motion.div 
-                  className="metric-card ai-card"
-                  whileHover={{ scale: 1.02, rotateY: 5 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <div className="metric-header">
-                    <div className="metric-icon">🎯</div>
-                    <h4>Conversion Vector</h4>
-                    <span className="trend positive">+{realTimeStats.conversionRate}%</span>
-                  </div>
-                  <motion.div 
-                    className="metric-value"
-                    key={realTimeStats.conversionRate}
-                    initial={{ scale: 1.2 }}
-                    animate={{ scale: 1 }}
-                  >
-                    {realTimeStats.conversionRate}%
-                  </motion.div>
-                  <div className="metric-footer">
-                    <span>Optimal performance</span>
-                    <div className="pulse-bar success"></div>
-                  </div>
-                </motion.div>
-                
-                <motion.div 
-                  className="metric-card ai-card"
-                  whileHover={{ scale: 1.02, rotateY: 5 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <div className="metric-header">
-                    <div className="metric-icon">⚡</div>
-                    <h4>Revenue Stream</h4>
-                    <span className="trend positive">+24.7%</span>
-                  </div>
-                  <motion.div 
-                    className="metric-value"
-                    key={realTimeStats.revenue}
-                    initial={{ scale: 1.2 }}
-                    animate={{ scale: 1 }}
-                  >
-                    ${formatNumber(realTimeStats.revenue)}
-                  </motion.div>
-                  <div className="metric-footer">
-                    <span>Neural prediction</span>
-                    <div className="pulse-bar warning"></div>
-                  </div>
-                </motion.div>
-                
-                <motion.div 
-                  className="metric-card ai-card"
-                  whileHover={{ scale: 1.02, rotateY: 5 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <div className="metric-header">
-                    <div className="metric-icon">🌊</div>
-                    <h4>Network Effect</h4>
-                    <span className="trend positive">+18.3%</span>
-                  </div>
-                  <div className="metric-value">
-                    {formatNumber(marketingData.referralData?.referrals?.length || 347)}
-                  </div>
-                  <div className="metric-footer">
-                    <span>Growth acceleration</span>
-                    <div className="pulse-bar info"></div>
-                  </div>
-                </motion.div>
-              </div>
-
-              {/* AI Neural Performance Chart */}
-              <div className="chart-container ai-chart">
-                <div className="chart-header">
-                  <h4>🧠 Neural Performance Matrix</h4>
-                  <div className="chart-controls">
-                    <span className="matrix-indicator">🔴 Live</span>
-                    <span className="data-flow">Data Flow: Active</span>
-                  </div>
-                </div>
-                <div className="ai-chart-visualization">
-                  <div className="neural-chart">
-                    {[65, 78, 82, 71, 89, 94, 87, 76, 92].map((height, i) => (
-                      <motion.div
-                        key={i}
-                        className="neural-bar"
-                        style={{ height: `${height}%` }}
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ 
-                          height: `${height}%`, 
-                          opacity: 1,
-                          boxShadow: [
-                            `0 0 10px rgba(102, 126, 234, 0.3)`,
-                            `0 0 20px rgba(118, 75, 162, 0.5)`,
-                            `0 0 10px rgba(102, 126, 234, 0.3)`
-                          ]
-                        }}
-                        transition={{ 
-                          delay: i * 0.1,
-                          boxShadow: { duration: 2, repeat: Infinity, delay: i * 0.2 }
-                        }}
-                        whileHover={{ 
-                          scale: 1.1, 
-                          boxShadow: "0 0 30px rgba(102, 126, 234, 0.8)" 
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <div className="chart-neural-network">
-                    {[...Array(6)].map((_, i) => (
-                      <motion.div
-                        key={i}
-                        className="network-node"
-                        animate={{
-                          scale: [1, 1.2, 1],
-                          opacity: [0.5, 1, 0.5]
-                        }}
-                        transition={{
-                          duration: 2,
-                          repeat: Infinity,
-                          delay: i * 0.3
-                        }}
-                        style={{
-                          left: `${15 + i * 12}%`,
-                          top: `${Math.sin(i) * 20 + 50}%`
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <div className="chart-labels ai-labels">
-                    {['M', 'T', 'W', 'T', 'F', 'S', 'S', 'M', 'T'].map((day, i) => (
-                      <span key={i} className="neural-label">{day}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {activeTab === 'referrals' && (
-            <motion.div
-              key="referrals"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="tab-content"
-            >
-              <div className="referral-section">
-                <h4>🎯 Referral Program</h4>
-                <div className="referral-code-container">
-                  <label>Your Referral Code:</label>
-                  <div className="code-input-group">
-                    <input 
-                      type="text" 
-                      value={`${window.location.origin}?ref=${marketingData.referralData?.userCode || 'DEMO123'}`}
-                      readOnly 
-                    />
-                    <button 
-                      className="copy-btn"
-                      onClick={() => handleAction('copy')}
-                      disabled={loading}
-                    >
-                      📋 Copy
-                    </button>
-                  </div>
-                </div>
-                
-                <div className="referral-stats">
-                  <div className="stat-item">
-                    <span className="stat-label">Total Clicks</span>
-                    <span className="stat-value">1,247</span>
-                  </div>
-                  <div className="stat-item">
-                    <span className="stat-label">Conversions</span>
-                    <span className="stat-value">89</span>
-                  </div>
-                  <div className="stat-item">
-                    <span className="stat-label">Earnings</span>
-                    <span className="stat-value">{formatCurrency(2847)}</span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {activeTab === 'social' && (
-            <motion.div
-              key="social"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="tab-content"
-            >
-              <div className="social-section">
-                <h4>📱 Social Media Integration</h4>
-                <div className="social-actions">
-                  <button 
-                    className="social-btn twitter"
-                    onClick={() => handleAction('share', 'twitter')}
-                    disabled={loading}
-                  >
-                    🐦 Share on Twitter
-                  </button>
-                  <button 
-                    className="social-btn facebook"
-                    onClick={() => handleAction('share', 'facebook')}
-                    disabled={loading}
-                  >
-                    📘 Share on Facebook
-                  </button>
-                  <button 
-                    className="social-btn telegram"
-                    onClick={() => handleAction('share', 'telegram')}
-                    disabled={loading}
-                  >
-                    ✈️ Share on Telegram
-                  </button>
-                </div>
-                
-                <div className="social-metrics">
-                  <div className="metric-card social">
-                    <h5>Social Shares</h5>
-                    <div className="metric-value">{formatNumber(1847)}</div>
-                  </div>
-                  <div className="metric-card social">
-                    <h5>Reach</h5>
-                    <div className="metric-value">{formatNumber(45672)}</div>
-                  </div>
-                  <div className="metric-card social">
-                    <h5>Engagement</h5>
-                    <div className="metric-value">7.2%</div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {activeTab === 'analytics' && (
-            <motion.div
-              key="analytics"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="tab-content"
-            >
-              <div className="analytics-section">
-                <h4>🎯 Advanced Analytics</h4>
-                
-                <div className="quick-actions enhanced">
-                  <button 
-                    className="action-btn primary"
-                    onClick={() => handleAction('optimize')}
-                    disabled={loading}
-                  >
-                    ⚡ Optimize Campaigns
-                  </button>
-                  <button 
-                    className="action-btn secondary"
-                    onClick={() => handleAction('export')}
-                    disabled={loading}
-                  >
-                    📊 Export Data
-                  </button>
-                  <button 
-                    className="action-btn tertiary"
-                    onClick={() => handleAction('refresh')}
-                    disabled={loading}
-                  >
-                    🔄 Refresh Data
-                  </button>
-                </div>
-
-                <div className="analytics-insights">
-                  <div className="insight-card">
-                    <h5>💡 Key Insights</h5>
-                    <ul>
-                      <li>Best performing channel: Email Marketing (+18.5%)</li>
-                      <li>Peak activity time: 2-4 PM UTC</li>
-                      <li>Top referral source: Social Media (42%)</li>
-                      <li>Conversion rate above industry average</li>
-                    </ul>
-                  </div>
-                  
-                  <div className="insight-card">
-                    <h5>🎯 Recommendations</h5>
-                    <ul>
-                      <li>Increase social media posting frequency</li>
-                      <li>A/B test email subject lines</li>
-                      <li>Launch retargeting campaign</li>
-                      <li>Optimize landing page conversion</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </div>
-
-        {/* AI Footer */}
-        <div className="dashboard-footer ai-footer">
-          <div className="footer-content">
-            <div className="ai-status">
-              <div className="neural-indicator">
-                <span className="neural-dot"></span>
-                <span className="neural-dot active"></span>
-                <span className="neural-dot"></span>
-              </div>
-              <span className="status-text">
-                {loading ? 'Neural Processing...' : 'AI Systems Online'}
-              </span>
-            </div>
-            <div className="data-source">
-              <span className="ai-badge-mini">AI</span>
-              <span>Marketing Intelligence v3.0</span>
-            </div>
+                {option}
+              </button>
+            ))}
           </div>
-          <div className="footer-metrics">
-            <span className="mini-metric">
-              Uptime: 99.9%
-            </span>
-            <span className="mini-metric">
-              Response: 0.02s
-            </span>
+          <div className="sentiment-meter">
+            <span className="meter-label">Sentiment</span>
+            <div className="meter-value">
+              <span className="meter-score">{Math.round(sentiment.score * 100)}%</span>
+              <span className="meter-tag">{sentiment.label}</span>
+            </div>
+            <span className="meter-delta positive">{formatPercent(sentiment.delta)}</span>
           </div>
         </div>
-      </motion.div>
-    </AnimatePresence>
+      </header>
+
+      {loading && <p className="data-hint" aria-live="polite">Actualizăm datele live…</p>}
+      {error && <p className="alert alert--error" role="alert">{error}</p>}
+
+      <section className="kpi-grid">
+        {summaryCards.map((card) => (
+          <article key={card.label} className="kpi-card">
+            <header>
+              <span className="kpi-icon">{card.icon}</span>
+              <span className="kpi-label">{card.label}</span>
+            </header>
+            <div className="kpi-value">{card.value}</div>
+            <footer className="kpi-footer">{card.footer}</footer>
+          </article>
+        ))}
+      </section>
+
+      <section className="marketing-dashboard-page__columns">
+        <div className="panel ai-surface">
+          <header className="panel__header">
+            <h2>Channel performance</h2>
+            <span className="panel__tag">AI-ranked</span>
+          </header>
+          <ul className="channel-list">
+            {CHANNEL_METRICS.map((channel) => (
+              <li key={channel.channel} className="channel-item">
+                <div className="channel-title">
+                  <span className="channel-icon">{channel.icon}</span>
+                  <div>
+                    <strong>{channel.channel}</strong>
+                    <span>Optimized by AI playbooks</span>
+                  </div>
+                </div>
+                <div className="channel-metric">
+                  <span className="metric-label">CPA</span>
+                  <span className="metric-value">${channel.cpa.toFixed(2)}</span>
+                </div>
+                <div className="channel-metric">
+                  <span className="metric-label">ROAS</span>
+                  <span className="metric-value">{channel.roas.toFixed(1)}x</span>
+                </div>
+                <div className="channel-trend positive">{formatPercent(channel.trend)}</div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="panel ai-surface">
+          <header className="panel__header">
+            <h2>Automation playbook</h2>
+          </header>
+          <ol className="playbook">
+            {PLAYBOOK_STEPS.map((step, index) => (
+              <li key={step.title} className="playbook-step">
+                <div className="playbook-index">{index + 1}</div>
+                <div className="playbook-icon">{step.icon}</div>
+                <div>
+                  <strong>{step.title}</strong>
+                  <p>{step.detail}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="panel ai-surface">
+        <header className="panel__header">
+          <h2>AI highlights</h2>
+          <span className="panel__tag">Updated moments ago</span>
+        </header>
+        <div className="insights-grid">
+          {INSIGHTS.map((insight) => (
+            <article key={insight.id} className={`insight insight--${insight.tone}`}>
+              <header>
+                <h3>{insight.title}</h3>
+              </header>
+              <p>{insight.description}</p>
+              <footer>{insight.action}</footer>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="panel ai-surface">
+        <header className="panel__header">
+          <h2>Campaigns overview</h2>
+          <span className="panel__tag">Live cohorts</span>
+        </header>
+        <div className="campaigns">
+          {CAMPAIGNS.map((campaign) => (
+            <article key={campaign.name} className="campaign-card">
+              <header>
+                <div>
+                  <strong>{campaign.name}</strong>
+                  <span>{campaign.channel} · {campaign.objective}</span>
+                </div>
+                <span className={`status status--${campaign.status}`}>{campaign.status}</span>
+              </header>
+              <dl className="campaign-metrics">
+                <div>
+                  <dt>Spend</dt>
+                  <dd>{formatCurrency(campaign.spend)}</dd>
+                </div>
+                <div>
+                  <dt>Revenue</dt>
+                  <dd>{formatCurrency(campaign.revenue)}</dd>
+                </div>
+                <div>
+                  <dt>ROAS</dt>
+                  <dd>{campaign.roas.toFixed(1)}x</dd>
+                </div>
+              </dl>
+              <footer className="campaign-actions">
+                <button type="button" className="ghost-button">Optimize</button>
+                <button type="button" className="ghost-button">Share</button>
+              </footer>
+            </article>
+          ))}
+        </div>
+      </section>
+    </div>
   );
 };
 
 export default MarketingDashboard;
+

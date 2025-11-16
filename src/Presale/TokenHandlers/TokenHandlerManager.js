@@ -3,6 +3,7 @@
 import { tokenList } from "./tokenData";
 import handleGenericPayment from "./handleGenericPayment";
 import handleNowPayments from "./handleNowPayments";
+import handleStripePayment from "./handleStripePayment";
 
 
 import handleBNBPayment from "./handleBNBPayment";
@@ -42,6 +43,7 @@ export const handlePayment = (tokenSymbol) => {
     // Coming Soon - waiting for Seychelles company registration
     MOONPAY: handleMoonPayPayment,
     TRANSAK: handleTransakPayment,
+    STRIPE: handleStripePayment,
   };
 
   const handler = handlerMap[token.key] || handleGenericPayment;

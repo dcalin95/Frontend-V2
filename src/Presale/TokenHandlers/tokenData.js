@@ -91,6 +91,15 @@ export const tokenList = [
   },
   // Fiat payments - Coming Soon (waiting for Seychelles company registration)
   {
+    name: "Stripe Card Checkout",
+    key: "STRIPE",
+    icon: cardIcon,
+    color: "#635bff",
+    chain: "fiat",
+    address: null,
+    comingSoon: false,
+  },
+  {
     name: "Card Payment (NOWPayments)",
     key: "NOWPAY",
     icon: cardIcon,

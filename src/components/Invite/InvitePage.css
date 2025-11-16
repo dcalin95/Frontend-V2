@@ -9,10 +9,14 @@
 .invite-page-title {
   text-align: center;
   margin-bottom: 40px;
-  color: #00ffe0;
+  font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+  font-weight: 700;
   font-size: 2.5rem;
-  text-shadow: 0 0 10px #00ffe0, 0 0 20px #9c27ff;
-  font-weight: bold;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(0, 255, 163, 0.4));
 }
 
 .invite-button-wrapper {

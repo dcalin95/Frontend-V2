@@ -10,6 +10,8 @@ import PriceInfo from "./components/PriceInfo";
 import PaymentLoading from "./components/PaymentLoading";
 import PaymentError from "./components/PaymentError";
 import PaymentMethodSelector from "./PaymentMethodSelector";
+import StripeAmountSelector from "./components/StripeAmountSelector";
+import { tokenList } from "../TokenHandlers/tokenData";
 import "./PaymentBox.css";
 
 const PaymentBox = ({
@@ -40,6 +42,18 @@ const PaymentBox = ({
   // 💳 Payment Method Selection States
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [showPaymentSelector, setShowPaymentSelector] = useState(false);
+
+  // 💳 Stripe specific state
+  const isStripeToken = selectedToken === "STRIPE";
+  const [stripeAmountEUR, setStripeAmountEUR] = useState(10);
+  const [eurUsdRate, setEurUsdRate] = useState(1);
+  const [isRateLoading, setIsRateLoading] = useState(false);
+  const [rateError, setRateError] = useState(null);
+  const selectedTokenInfo = React.useMemo(
+    () => tokenList.find((token) => token.key === selectedToken),
+    [selectedToken]
+  );
+  const selectedTokenLabel = selectedTokenInfo?.name || selectedToken;
   
   // 🎯 Referral Code State
   const [referralCode, setReferralCode] = useState("");
@@ -72,6 +86,65 @@ const PaymentBox = ({
     }, 100);
   }, [selectedToken]);
 
+  React.useEffect(() => {
+    if (!isStripeToken) return;
+
+    setShowPaymentSelector(false);
+    setSelectedPaymentMethod({
+      id: "stripe_checkout",
+      name: "Stripe Card Checkout",
+      available: true,
+      icon: "💳",
+      fees: "Standard Stripe fees",
+      processingTime: "Instant",
+    });
+  }, [isStripeToken]);
+
+  React.useEffect(() => {
+    if (!isStripeToken) return;
+
+    let ignore = false;
+    const fetchRate = async () => {
+      setIsRateLoading(true);
+      setRateError(null);
+      try {
+        const response = await fetch(
+          "https://api.exchangerate.host/latest?base=EUR&symbols=USD"
+        );
+        if (!response.ok) {
+          throw new Error(`Rate fetch failed with ${response.status}`);
+        }
+        const json = await response.json();
+        if (!ignore) {
+          const rate = json?.rates?.USD || 1;
+          setEurUsdRate(rate);
+        }
+      } catch (err) {
+        console.error("⚠️ Failed to fetch EUR→USD rate:", err);
+        if (!ignore) {
+          setRateError(err.message || "Rate fetch failed");
+          setEurUsdRate(1);
+        }
+      } finally {
+        if (!ignore) setIsRateLoading(false);
+      }
+    };
+
+    fetchRate();
+    return () => {
+      ignore = true;
+    };
+  }, [isStripeToken]);
+
+  React.useEffect(() => {
+    if (!isStripeToken) return;
+    const rate = eurUsdRate || 1;
+    const usdAmount = parseFloat((stripeAmountEUR * rate).toFixed(2));
+    if (Number.isFinite(usdAmount) && usdAmount !== amountPay) {
+      setAmountPay(usdAmount);
+    }
+  }, [isStripeToken, stripeAmountEUR, eurUsdRate, amountPay, setAmountPay]);
+
   // 🚀 Transaction Handler
   const { handleBuy } = useHandleTransaction({
     selectedToken,
@@ -91,6 +164,7 @@ const PaymentBox = ({
     bonusAmount: paymentState.bonusAmount,
     selectedPaymentMethod: selectedPaymentMethod,
     referralCode: referralCode, // 🎯 Pass referral code to handler
+    stripeAmountEUR: isStripeToken ? stripeAmountEUR : undefined,
   });
 
   const handleClosePopup = () => {
@@ -104,7 +178,7 @@ const PaymentBox = ({
   // TikTok payment tracking intentionally removed (privacy & business readiness)
 
   // 💳 Check if we need to show payment method selector
-  const isFiatToken = ['NOWPAY', 'MOONPAY', 'TRANSAK'].includes(selectedToken);
+  const isFiatToken = ['NOWPAY', 'MOONPAY', 'TRANSAK', 'STRIPE'].includes(selectedToken);
   const shouldShowSelector = isFiatToken && paymentState.safeAmountPay > 0;
 
   // 💳 Handle payment method selection
@@ -186,14 +260,16 @@ const PaymentBox = ({
       />
 
       {/* 🎯 Payment Title */}
-      <PaymentTitle 
-        selectedToken={selectedToken}
+      <PaymentTitle
+        selectedTokenKey={selectedToken}
+        selectedTokenLabel={selectedTokenLabel}
         selectedTokenIcon={paymentState.selectedTokenIcon}
       />
 
       {/* 🎯 Price Information */}
       <PriceInfo
-        selectedToken={selectedToken}
+        selectedTokenKey={selectedToken}
+        selectedTokenLabel={selectedTokenLabel}
         selectedTokenIcon={paymentState.selectedTokenIcon}
         pricePerBitsUSD={paymentState.pricePerBitsUSD}
         selectedTokenPrice={paymentState.selectedTokenPrice}
@@ -201,24 +277,49 @@ const PaymentBox = ({
         priceError={paymentState.priceError}
       />
 
-      {/* 🎯 Input Box */}
-      <InputBox
-        amountPay={paymentState.safeAmountPay}
-        setAmountPay={setAmountPay}
-        userBalance={paymentState.balances[selectedToken] || 0}
-        selectedToken={selectedToken}
-        minAmountToken={minTokenNumber}
-        minAmountDecimals={minTokenDecimals}
-      />
-      <div className="min-purchase-note">
-        <span className="min-note-icon" aria-hidden>ℹ️</span>
-        <span>{`Minimum purchase is $${minUsd}.`}</span>
-        {minTokenNumber != null && (
-          <span className="min-note-extra"> {`For ${selectedToken}, minimum is `}
-            <span className="min-token-amount">{minTokenExtraNumber.toFixed(minTokenDecimals)} {selectedToken}</span>{`.`}
-          </span>
-        )}
-      </div>
+      {isStripeToken ? (
+        <>
+          <StripeAmountSelector
+            selectedAmountEUR={stripeAmountEUR}
+            onSelectAmount={setStripeAmountEUR}
+            eurToUsdRate={eurUsdRate}
+            isRateLoading={isRateLoading}
+            rateError={rateError}
+            pricePerBitsUSD={paymentState.pricePerBitsUSD}
+          />
+          <div className="min-purchase-note">
+            <span className="min-note-icon" aria-hidden>ℹ️</span>
+            <span>
+              Choose a fixed Stripe package (minimum €10). We calculate $BITS
+              automatically.
+            </span>
+          </div>
+        </>
+      ) : (
+        <>
+          <InputBox
+            amountPay={paymentState.safeAmountPay}
+            setAmountPay={setAmountPay}
+            userBalance={paymentState.balances[selectedToken] || 0}
+            selectedToken={selectedToken}
+            minAmountToken={minTokenNumber}
+            minAmountDecimals={minTokenDecimals}
+          />
+          <div className="min-purchase-note">
+            <span className="min-note-icon" aria-hidden>ℹ️</span>
+            <span>{`Minimum purchase is $${minUsd}.`}</span>
+            {minTokenNumber != null && (
+              <span className="min-note-extra">
+                {`For ${selectedToken}, minimum is `}
+                <span className="min-token-amount">
+                  {minTokenExtraNumber.toFixed(minTokenDecimals)} {selectedToken}
+                </span>
+                {`.`}
+              </span>
+            )}
+          </div>
+        </>
+      )}
 
       {/* 🎯 Referral Code Input */}
       <div className="referral-code-container">
@@ -259,7 +360,7 @@ const PaymentBox = ({
       </div>
 
       {/* 💳 Payment Method Selector */}
-      {showPaymentSelector && (
+      {showPaymentSelector && !isStripeToken && (
         <PaymentMethodSelector
           onSelectMethod={handlePaymentMethodSelect}
           selectedMethod={selectedPaymentMethod}
@@ -294,7 +395,9 @@ const PaymentBox = ({
             disabled={!paymentState.canProceed || !termsAccepted}
           >
             <img src="/logo.png" alt="BITS Logo" className="button-logo" />
-            <span className="button-text">BUY  $BITS  NOW</span>
+            <span className="button-text">
+              {isStripeToken ? 'Pay Securely with Stripe' : 'BUY  $BITS  NOW'}
+            </span>
           </button>
           
           {/* 🚨 Debug Info - SHOW ONLY when button is disabled */}
@@ -337,6 +440,12 @@ const PaymentBox = ({
         bonus={paymentState.bonus}
         bonusAmount={paymentState.bonusAmount}
         selectedToken={selectedToken}
+        selectedTokenLabel={selectedTokenLabel}
+        fiatDetails={
+          isStripeToken
+            ? { currency: "EUR", amount: stripeAmountEUR }
+            : null
+        }
       />
 
       {/* 🎯 Bonus Information */}

@@ -1,6 +1,6 @@
-/* Container general */
+/* Container general - SOLANA/AI STYLE */
 .about-content {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Inter', sans-serif;
   color: white;
   padding: 2rem;
   display: flex;
@@ -11,33 +11,42 @@
   background: transparent;
 }
 
-/* Carduri complet transparente */
+/* Carduri - SOLANA/AI STYLE */
 .about-intro,
 .about-section,
 .features-section {
-  background: rgba(0, 0, 0, 0.5);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   padding: 2rem;
-  border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
   max-width: 800px;
   width: 100%;
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'Inter', sans-serif;
 }
 
 .about-intro:hover,
 .about-section:hover,
 .features-section:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 8px 32px rgba(0, 255, 163, 0.3);
+  border-color: rgba(0, 255, 163, 0.3);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
 }
 
-/* Titluri */
+/* Titluri - SOLANA/AI STYLE */
 h1, h2 {
-  color: #00ffe0;
-  text-shadow: 0 0 10px #00ffe0, 0 0 20px rgba(0, 255, 255, 0.5);
+  font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 15px rgba(0, 255, 163, 0.3));
   margin-bottom: 1rem;
 }
 
@@ -61,23 +70,34 @@ ul {
 }
 
 ul li {
-  background: rgba(255, 255, 255, 0.1);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 1rem;
-  border-radius: 10px;
+  border-radius: 12px;
   margin-bottom: 0.5rem;
   text-align: left;
-  color: #ddd;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 1.1rem;
+  font-family: 'Inter', sans-serif;
   transition: all 0.3s ease;
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 2px 12px rgba(0, 255, 163, 0.05);
 }
 
 ul li strong {
-  color: #00ffe0;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
 }
 
 ul li:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border-color: rgba(0, 255, 163, 0.3);
   transform: translateX(10px);
+  box-shadow: 0 4px 20px rgba(0, 255, 163, 0.15);
 }
 
 /* Features Section */
@@ -91,29 +111,26 @@ ul li:hover {
 .features-list li {
   flex: 1 1 calc(45% - 1rem);
   max-width: 45%;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 1.5rem;
-  border-radius: 10px;
+  border-radius: 12px;
   text-align: left;
   transition: all 0.3s ease;
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 2px 12px rgba(0, 255, 163, 0.05);
+  font-family: 'Inter', sans-serif;
 }
 
 .features-list li:hover {
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border-color: rgba(0, 255, 163, 0.3);
+  color: rgba(255, 255, 255, 0.95);
   transform: scale(1.05);
+  box-shadow: 0 4px 20px rgba(0, 255, 163, 0.15);
 }
 
-/* Carduri cu hover verde */
-.about-intro:hover,
-.about-section:hover,
-.features-section:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 10px rgba(124, 202, 85, 0.3);
-  background: rgba(45, 64, 207, 0.3);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-}
 
 /* ===== Responsive Design ===== */
 
@@ -164,8 +181,8 @@ ul li:hover {
   .about-intro,
   .about-section,
   .features-section {
-    padding: 1.2rem;
-    border-radius: 12px;
+    padding: 1.5rem;
+    border-radius: 1.2rem;
   }
   
   h1, h2 {
@@ -209,8 +226,8 @@ ul li:hover {
   .about-intro,
   .about-section,
   .features-section {
-    padding: 1rem;
-    border-radius: 10px;
+    padding: 1.2rem;
+    border-radius: 1rem;
   }
   
   h1, h2 {

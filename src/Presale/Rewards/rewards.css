@@ -71,8 +71,8 @@
 .reward-card {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   padding: 1.6rem;
   width: 100%;
   max-width: 420px;
@@ -146,8 +146,8 @@
 .stake-section {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   padding: 1.6rem;
   border-radius: 16px;
   text-align: center;
@@ -192,7 +192,7 @@
 }
 
 .status-column {
-  background: rgba(255,255,255,0.04);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 10px;
   padding: 10px;
@@ -299,7 +299,7 @@
 
 /* Two-card symmetric layout */
 .ai-duo-grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:14px; }
-.ai-card { background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.12); border-radius: 10px; padding:12px; }
+.ai-card { background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */; border:1px solid rgba(255,255,255,0.12); border-radius: 10px; padding:12px; }
 .ai-card-title { font-weight:800; margin-bottom:8px; color:#00ffc3; }
 .ai-analytics-row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:8px; }
 .ai-card .status-indicators span { font-size:.78rem; line-height:1.2; animation: textPulse 2.8s ease-in-out infinite; }
@@ -476,7 +476,7 @@
 }
 
 .reward-source:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border-left-color: rgba(0, 255, 195, 0.5);
 }
 

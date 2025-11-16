@@ -21,6 +21,7 @@ const useHandleTransaction = ({
   bonusAmount,
   selectedPaymentMethod,
   referralCode, // 🎯 Add referral code parameter
+  stripeAmountEUR,
 }) => {
   const confirmedOnce = useRef(false); // ✅ Evită dublarea confirmării
 
@@ -40,9 +41,10 @@ const useHandleTransaction = ({
       
       // 💳 Determine effective token for handler selection first
       const paymentMethodMapping = {
-        'nowpayments': 'NOWPAY',
-        'moonpay_widget': 'MOONPAY', 
-        'transak_widget': 'TRANSAK'
+        nowpayments: 'NOWPAY',
+        moonpay_widget: 'MOONPAY',
+        transak_widget: 'TRANSAK',
+        stripe_checkout: 'STRIPE',
       };
       
       console.log("🎯 [STEP 3] Payment method mapping created");
@@ -52,10 +54,10 @@ const useHandleTransaction = ({
         : selectedToken;
         
       console.log("🎯 [STEP 4] Effective token calculated:", effectiveToken);
-      console.log("🎯 [EARLY DEBUG] Is fiat?:", ['MOONPAY', 'TRANSAK', 'NOWPAY'].includes(effectiveToken));
+      console.log("🎯 [EARLY DEBUG] Is fiat?:", ['MOONPAY', 'TRANSAK', 'NOWPAY', 'STRIPE'].includes(effectiveToken));
 
       // Skip wallet check for fiat payments
-      const isFiatPayment = ['MOONPAY', 'TRANSAK', 'NOWPAY'].includes(effectiveToken);
+      const isFiatPayment = ['MOONPAY', 'TRANSAK', 'NOWPAY', 'STRIPE'].includes(effectiveToken);
       
       if (!walletAddress && !isFiatPayment) {
         const errorMsg = "⚠️ Please connect your wallet.";
@@ -177,27 +179,31 @@ const useHandleTransaction = ({
       console.log("🎯 [HANDLER DEBUG] Handler Info:");
       console.log("- handler function:", handler);
       console.log("- handler name:", handler.name);
-      console.log("- is fiat payment?:", ['MOONPAY', 'TRANSAK', 'NOWPAY'].includes(effectiveToken));
+      console.log("- is fiat payment?:", ['MOONPAY', 'TRANSAK', 'NOWPAY', 'STRIPE'].includes(effectiveToken));
       
       let txResult;
       let txHash;
 
       try {
         // 🌟 Special handling for fiat payment methods
-        if (['MOONPAY', 'TRANSAK', 'NOWPAY'].includes(effectiveToken)) {
+        if (['MOONPAY', 'TRANSAK', 'NOWPAY', 'STRIPE'].includes(effectiveToken)) {
           txResult = await handler({
-            amount: usdValue || amountPay, // USD amount for fiat
+            amount: usdValue || amountPay,
+            amountUSD: usdValue || amountPay,
+            amountEUR: effectiveToken === 'STRIPE' ? stripeAmountEUR : undefined,
             bitsToReceive: totalBits,
             bitsHuman: totalBits,
             walletAddress,
             usdInvested: Math.floor(usdValue),
             bonusAmount: validBonusAmount,
             bonusPercentage: validBonusAmount > 0 ? 5 : 0,
-            referralCode: referralCode, // 🎯 Add referral code
+            referralCode: referralCode,
             onStatusUpdate: (status) => {
               console.log(`💳 Payment status update: ${status}`);
             }
           });
+          console.groupEnd();
+          return txResult;
         }
         // 🌟 Special handling for SOL payments
         else if (selectedToken === "SOL") {

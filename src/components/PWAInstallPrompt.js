@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { usePWA } from '../hooks/usePWA';
+import BrandLogo from './BrandLogo';
 import './PWAInstallPrompt.css';
 
 const PWAInstallPrompt = () => {
@@ -13,7 +14,9 @@ const PWAInstallPrompt = () => {
   return (
     <div className="pwa-install-prompt">
       <div className="pwa-install-content">
-        <div className="pwa-install-icon">📱</div>
+        <div className="pwa-install-icon">
+          <BrandLogo size="xs" showText={false} className="pwa-brand" />
+        </div>
         <div className="pwa-install-text">
           <h3>Install BitSwapDEX AI</h3>
           <p>Get the full app experience with offline access and notifications</p>

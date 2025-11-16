@@ -1,43 +1,51 @@
-/* ===== BUTON HAMBURGER (Sidebar) ===== */
+/* ===== BUTON HAMBURGER (Sidebar) - SOLANA/AI STYLE ===== */
 .ai-animated-hamburger {
   position: fixed;
   top: 90px; /* ✅ Sub Header, nu suprapune */
   left: 15px;
   width: 60px;
   height: 60px;
-  border: none;
-  background: radial-gradient(circle, rgba(0, 255, 255, 0.4), rgba(0, 255, 255, 0));
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.4);
-  animation: ai-pulse 2s infinite ease-in-out;
+  box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
+  animation: ai-pulse-solana 2s infinite ease-in-out;
   z-index: 12000; /* ridicat peste sidebar */
+  transition: all 0.3s ease;
 }
 
 .ai-animated-hamburger:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 30px rgba(0, 255, 255, 0.7), inset 0 0 15px rgba(255, 255, 255, 0.6);
+  transform: scale(1.1) translateY(-2px);
+  border-color: rgba(0, 255, 163, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 255, 163, 0.3), 0 0 50px rgba(220, 31, 255, 0.2);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
 }
 
 .ai-hamburger-icon {
   font-size: 3.5rem;
-  color: rgb(82, 226, 87);
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.4));
   font-weight: bold;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
 }
 
-@keyframes ai-pulse {
+@keyframes ai-pulse-solana {
   0% {
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+    box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
   }
   50% {
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+    box-shadow: 0 8px 32px rgba(0, 255, 163, 0.3), 0 0 50px rgba(220, 31, 255, 0.2);
   }
   100% {
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+    box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
   }
 }
 

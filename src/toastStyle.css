@@ -1,17 +1,31 @@
+/* SOLANA/AI STYLE */
 .bits-toast-container {
     z-index: 9999;
   }
   
   .bits-toast {
-    background: #0a0a0a !important;
-    color: #00ff99 !important;
-    border-left: 6px solid #ffaa00;
-    font-weight: bold;
-    font-family: 'Arial', sans-serif;
-    box-shadow: 0 0 12px #00ff99aa;
+    background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */ !important;
+    backdrop-filter: none /* 🔙 REVERTED FROM BLUR */ !important;
+    -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */ !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-left: 4px solid rgba(0, 255, 163, 0.5) !important;
+    border-radius: 12px !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 4px 24px rgba(0, 255, 163, 0.2) !important;
+    padding: 12px 16px !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .bits-toast:hover {
+    border-color: rgba(0, 255, 163, 0.3) !important;
+    box-shadow: 0 8px 32px rgba(0, 255, 163, 0.3), 0 0 50px rgba(220, 31, 255, 0.2) !important;
+    background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */ !important;
   }
   
   .bits-toast svg {
-    fill: #ffaa00 !important;
+    fill: rgba(0, 255, 163, 0.8) !important;
+    filter: drop-shadow(0 0 8px rgba(0, 255, 163, 0.4)) !important;
   }
   

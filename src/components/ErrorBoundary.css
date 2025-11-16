@@ -11,7 +11,7 @@
 
 .error-content {
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   border-radius: 20px;
   padding: 3rem;
   text-align: center;
@@ -118,7 +118,7 @@
   cursor: pointer;
   font-weight: 600;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border-radius: 10px;
   margin-bottom: 1rem;
 }
@@ -151,7 +151,7 @@
 .error-help {
   margin-top: 2rem;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border-radius: 10px;
   border-left: 4px solid #4facfe;
 }

@@ -14,177 +14,223 @@ import bitsLogo from "../assets/logo.png"; // Importăm icoana pentru $BITS
 
 const phases = [
   {
-    title: "Phase 1: Conceptualization & Strategic Planning",
-    subtitle: "(Q3 2025)",
+    title: "🧱 Phase 1: Foundation & Strategic Setup",
+    subtitle: "(Q2–Q3 2025)",
     details: [
       <>
-        <span className="ai-bullet"></span> Project Inception: Form the core development team including blockchain developers, AI specialists, and strategic advisors
+        <span className="ai-bullet"></span> Core team assembled: blockchain, AI & DeFi experts
       </>,
       <>
-        <span className="ai-bullet"></span> Whitepaper & Documentation: Develop comprehensive whitepaper detailing BitSwapDEX AI's architecture, tokenomics, and strategic vision
+        <span className="ai-bullet"></span> Smart contract suite drafted (Node, Cell, Referral)
       </>,
       <>
-        <span className="ai-bullet"></span> Community Engagement & Branding: Launch official communication channels (Website, Telegram, Twitter, LinkedIn)
+        <span className="ai-bullet"></span> Whitepaper v1.0: tokenomics, vesting, AI governance
       </>,
       <>
-        <span className="ai-bullet"></span> AI Research & Initial Prototyping: Develop foundational AI models for predictive market analytics and liquidity optimization
+        <span className="ai-bullet"></span> Official brand & website launched
+      </>,
+      <>
+        <span className="ai-bullet"></span> Social channels: Telegram, X, LinkedIn, Medium
+      </>,
+      <>
+        <span className="ai-bullet"></span> AI prototypes: liquidity optimization & routing
       </>,
     ],
     titleColor: "#00ffe0",
     font: "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
   },
   {
-    title: "Phase 2: Development & Testing",
-    subtitle: "(Q3-Q4 2025)",
+    title: "🪙 Phase 2: Presale Campaign",
+    subtitle: "(Q1–Q3 2026)",
     details: [
       <>
-        <span className="ai-bullet"></span> Smart Contract Development: Develop and audit Clarity smart contracts for liquidity pools, swap mechanisms, and AI-powered governance
+        <span className="ai-bullet"></span> ERC20 $BITS already deployed on{" "}
+        <img src={bscIcon} alt="BSC" className="network-icon" />
+        <strong> BSC</strong>
       </>,
       <>
-        <span className="ai-bullet"></span> Security Audits: Engage reputable third-party security firms to audit all smart contracts
+        <span className="ai-bullet"></span> Modular presale spans 8–9 months, with dynamic round lengths
       </>,
       <>
-        <span className="ai-bullet"></span> Testnet Launch on Stacks: Deploy smart contracts on Stacks Testnet for user testing
+        <span className="ai-bullet"></span> Early supporters receive discounted allocations
       </>,
       <>
-        <span className="ai-bullet"></span> AI Model Calibration: Implement Machine Learning models to analyze market trends and optimize trade execution
+        <span className="ai-bullet"></span> Referral logic live; KYC/AML compliant
+      </>,
+      <>
+        <span className="ai-bullet"></span> Strategic pauses for outreach, education, and infrastructure
+      </>,
+      <>
+        <span className="ai-bullet"></span> Closure: snapshot, report & vesting deployed
       </>,
     ],
     titleColor: "#ff9800",
     font: "'Roboto Mono', monospace",
   },
   {
-    title: "Phase 3: Presale & Initial Exchange Offering",
-    subtitle: "(Q1 2026)",
+    title: "🧪 Phase 3: TestNet & Security Validation",
+    subtitle: "(Q4 2026)",
     details: [
       <>
-        <span className="ai-bullet"></span> Multi-Stage Presale: Conduct multi-round presale with tiered pricing structure for early investors
+        <span className="ai-bullet"></span> Contracts deployed:{" "}
+        <img src={stxIcon} alt="Stacks" className="network-icon" />
+        <strong>Stacks</strong> &{" "}
+        <img src={bscIcon} alt="BSC" className="network-icon" />
+        <strong>BSC</strong> TestNets
       </>,
       <>
-        <span className="ai-bullet"></span> Token Generation Event (TGE): Launch $BITS on 
-        <img src={bscIcon} alt="Binance Smart Chain" className="network-icon" />
-        <strong> Binance Smart Chain (BSC)</strong> for liquidity and trading
+        <span className="ai-bullet"></span> Testing: swaps, staking, rewards, governance
       </>,
       <>
-        <span className="ai-bullet"></span> Exchange Listing Strategy: Initiate negotiations with top-tier exchanges including 
-        <img src={binanceIcon} alt="Binance" className="network-icon" />
-        <strong> Binance</strong>,
-        <img src={gateIcon} alt="Gate.io" className="network-icon" />
-        <strong> Gate.io</strong>, and
-        <img src={pancakeIcon} alt="PancakeSwap" className="network-icon" />
-        <strong> PancakeSwap</strong>
+        <span className="ai-bullet"></span> AI integration: routing & liquidity rebalancing
       </>,
       <>
-        <span className="ai-bullet"></span> AI-Driven Tokenomics Optimization: Deploy AI models to monitor presale activity and adjust pricing models in real-time
+        <span className="ai-bullet"></span> Stress testing & load simulation
+      </>,
+      <>
+        <span className="ai-bullet"></span> Audits: CertiK, Trail of Bits, Hacken
       </>,
     ],
     titleColor: "#2196f3",
     font: "'Montserrat', sans-serif",
   },
   {
-    title: "Phase 4: Mainnet Launch & Liquidity Provision",
-    subtitle: "(Q1 2026)",
+    title: "🌐 Phase 4: Initial DEX Launch on BSC",
+    subtitle: "(Q1 2027)",
     details: [
       <>
-        <span className="ai-bullet"></span> Mainnet Deployment on Stacks: Deploy smart contracts and launch BitSwapDEX AI on Stacks Mainnet
+        <span className="ai-bullet"></span> $BITS live on{" "}
+        <img src={pancakeIcon} alt="PancakeSwap" className="network-icon" />
+        <strong>PancakeSwap</strong> with presale liquidity
       </>,
       <>
-        <span className="ai-bullet"></span> Initial Liquidity Pools (ILP): Establish liquidity pools for BTC-STX, BITS-BTC, and BITS-USDT trading pairs
+        <span className="ai-bullet"></span> Vesting enforced for investor allocations
       </>,
       <>
-        <span className="ai-bullet"></span> AI-Optimized Trading Features: Activate AI-enhanced trading tools including predictive market analysis and automated liquidity rebalancing
+        <span className="ai-bullet"></span> Anti-whale & MEV protection activated
       </>,
       <>
-        <span className="ai-bullet"></span> Monitoring & Security Enhancements: Deploy AI-driven security protocols for transaction monitoring and fraud detection
+        <span className="ai-bullet"></span> AI swap monitoring & liquidity analytics live
+      </>,
+      <>
+        <span className="ai-bullet"></span> Governance v0 via Snapshot (off-chain)
       </>,
     ],
     titleColor: "#4caf50",
     font: "'Bebas Neue', cursive",
   },
   {
-    title: "Phase 5: Ecosystem Expansion & Cross-Chain Integration",
-    subtitle: "(Q2-Q3 2026)",
+    title: "🔁 Phase 5: Stacks Mainnet Migration",
+    subtitle: "(Q2 2027)",
     details: [
       <>
-        <span className="ai-bullet"></span> Cross-Chain Functionality: Integrate multi-chain swap capabilities with 
-        <img src={ethIcon} alt="Ethereum" className="network-icon" />
-        <strong> Ethereum</strong>,
-        <img src={bscIcon} alt="Binance Smart Chain" className="network-icon" />
-        <strong> Binance Smart Chain</strong>, and
-        <img src={stxIcon} alt="Solana" className="network-icon" />
-        <strong> Solana</strong>
+        <span className="ai-bullet"></span> $BITS as native Clarity contract on{" "}
+        <img src={stxIcon} alt="Stacks" className="network-icon" />
+        <strong>Stacks</strong>
       </>,
       <>
-        <span className="ai-bullet"></span> AI-Driven Governance Activation: Enable AI-enhanced governance module with predictive insights on proposal outcomes
+        <span className="ai-bullet"></span> 1:1 bridge: ERC20 ↔ Stacks-native $BITS
       </>,
       <>
-        <span className="ai-bullet"></span> Community Grants & Development Program: Launch development grant program to fund community-driven initiatives
+        <span className="ai-bullet"></span> Pools: BITS/BTC, BITS/STX, BITS/USDT
       </>,
       <>
-        <span className="ai-bullet"></span> Partnership Integration: Establish strategic partnerships with leading DeFi platforms to expand user base and liquidity
+        <span className="ai-bullet"></span> On-chain supply parity proof
+      </>,
+      <>
+        <span className="ai-bullet"></span> Migration dashboard: 1-click conversion
       </>,
     ],
     titleColor: "#ffd700",
     font: "'Lobster', cursive",
   },
   {
-    title: "Phase 6: Strategic Partnerships & Advanced Trading",
-    subtitle: "(Q3-Q4 2026)",
+    title: "🧠 Phase 6: Bitcoin-Native DEX Expansion",
+    subtitle: "(Q3 2027)",
     details: [
       <>
-        <span className="ai-bullet"></span> Institutional Onboarding: Develop institutional-grade trading features including AI-optimized limit orders and risk management
+        <span className="ai-bullet"></span> Full DEX on{" "}
+        <img src={stxIcon} alt="Stacks" className="network-icon" />
+        <strong>Stacks Mainnet</strong>, secured via PoX
       </>,
       <>
-        <span className="ai-bullet"></span> Advanced Trading Features: Launch margin trading and leveraged swaps with AI models for position management
+        <span className="ai-bullet"></span> Direct BITS/BTC with AI rebalancing
       </>,
       <>
-        <span className="ai-bullet"></span> Global Community Expansion: Host global events, hackathons, and webinars to onboard developers and traders
+        <span className="ai-bullet"></span> On-chain governance v1 with AI simulations
       </>,
       <>
-        <span className="ai-bullet"></span> Targeted CEX Listings: Apply for listings on 
-        <img src={binanceIcon} alt="Binance" className="network-icon" />
-        <strong> Binance</strong>,
-        <img src={mexcIcon} alt="Crypto.com" className="network-icon" />
-        <strong> Crypto.com</strong>, and
-        <img src={gateIcon} alt="Coinbase" className="network-icon" />
-        <strong> Coinbase</strong>
+        <span className="ai-bullet"></span> Cross-chain:{" "}
+        <img src={ethIcon} alt="ETH" className="network-icon" />
+        <strong>ETH</strong>,{" "}
+        <img src={bscIcon} alt="BSC" className="network-icon" />
+        <strong>BSC</strong> ↔ Stacks
+      </>,
+      <>
+        <span className="ai-bullet"></span> Community grants: AI bots & analytics tools
       </>,
     ],
     titleColor: "#ff5722",
     font: "'Anton', sans-serif",
   },
   {
-    title: "Phase 7: Continuous Improvement & Global Expansion",
-    subtitle: "(2027 and Beyond)",
+    title: "🏦 Phase 7: Institutional Onboarding & CEX Listings",
+    subtitle: "(Q4 2027 – Q1 2028)",
     details: [
       <>
-        <span className="ai-bullet"></span> Protocol Upgrades: Integrate new AI models based on community feedback and advanced market analysis
+        <span className="ai-bullet"></span> Institutional tools: AI limits, risk mgmt, reporting
       </>,
       <>
-        <span className="ai-bullet"></span> AI-Enhanced Sustainability Initiatives: Deploy eco-friendly incentive programs to offset carbon emissions
+        <span className="ai-bullet"></span> Margin & leverage trading (jurisdiction dependent)
       </>,
       <>
-        <span className="ai-bullet"></span> Research & Development: Invest in AI tools for predictive trading analytics and real-time liquidity optimization
+        <span className="ai-bullet"></span> Global expansion: hackathons & summits
       </>,
       <>
-        <span className="ai-bullet"></span> Global Exchange Listings: Focus on maintaining dedicated liquidity pools for 
+        <span className="ai-bullet"></span> Q4 2027:{" "}
+        <img src={gateIcon} alt="Gate" className="network-icon" />
+        <strong>Gate</strong>,{" "}
+        <img src={mexcIcon} alt="KuCoin" className="network-icon" />
+        <strong>KuCoin</strong>, OKX
+      </>,
+      <>
+        <span className="ai-bullet"></span> Q1 2028:{" "}
         <img src={binanceIcon} alt="Binance" className="network-icon" />
-        <strong> Binance</strong>,
-        <img src={mexcIcon} alt="Crypto.com" className="network-icon" />
-        <strong> Crypto.com</strong>, and
-        <img src={gateIcon} alt="Coinbase" className="network-icon" />
-        <strong> Coinbase</strong> to support trading volume
+        <strong>Binance</strong>, Coinbase, Crypto.com, Kraken
+      </>,
+    ],
+    titleColor: "#e91e63",
+    font: "'Pacifico', cursive",
+  },
+  {
+    title: "🌱 Phase 8: Continuous Evolution",
+    subtitle: "(Q2 2028+)",
+    details: [
+      <>
+        <span className="ai-bullet"></span> Deep-learning: AI routing, LP optimization, risk
+      </>,
+      <>
+        <span className="ai-bullet"></span> Stacks L2/rollup exploration for scalability
+      </>,
+      <>
+        <span className="ai-bullet"></span> Sustainability pools with AI incentives
+      </>,
+      <>
+        <span className="ai-bullet"></span> Tier-1 CEX listings as liquidity scales
+      </>,
+      <>
+        <span className="ai-bullet"></span> Cross-chain AI trading algorithm research
       </>,
     ],
     titleColor: "#673ab7",
-    font: "'Pacifico', cursive",
+    font: "'Anton', sans-serif",
   },
 ];
 
 const Roadmap = () => {
   return (
     <div className="roadmap-container">
-      <h2 className="roadmap-title">🚀 BitSwapDEX AI - Strategic Development Roadmap 2025-2027 🚀</h2>
+      <h2 className="roadmap-title">🚀 BitSwapDEX AI — Roadmap (2025–2028+) 🚀</h2>
       <div className="roadmap-grid">
         <div className="roadmap-column">
           {phases.slice(0, 4).map((phase, index) => (

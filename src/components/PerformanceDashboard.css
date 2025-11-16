@@ -64,7 +64,7 @@
   max-width: 800px;
   max-height: 90vh;
   background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   overflow: hidden;

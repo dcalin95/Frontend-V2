@@ -2,7 +2,7 @@
   max-width: 800px;
   margin: 2rem auto;
   padding: 2rem;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  background: transparent; /* 🚫 NO GREY - SOLANA STYLE */
   border-radius: 20px;
   box-shadow: 0 20px 40px rgba(0, 255, 255, 0.1);
   border: 1px solid rgba(0, 255, 255, 0.2);

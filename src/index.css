@@ -47,7 +47,7 @@ body {
   min-height: 100vh;
   padding: 1.25rem;
   background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(12px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   transition: transform 300ms ease;
 }
 

@@ -15,7 +15,7 @@
   color: #ffffff;
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 20, 40, 0.95) 100%);
   border-radius: 20px;
-  backdrop-filter: blur(20px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   border: 1px solid rgba(255, 255, 255, 0.1);
   min-height: 600px;
 }
@@ -24,7 +24,7 @@
 .ai-rewards-hub-enhanced {
   background: rgba(10,12,20,0.9);
   border: 1px solid rgba(255,255,255,0.12);
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .rewards-title {
@@ -53,7 +53,7 @@
 .claim-all-btn { background: rgba(0,255,136,0.2); color: #e6f5ff; border: 1px solid rgba(0,255,136,0.35); }
 .stake-btn { background: rgba(255,215,0,0.12); color: #ffe28a; border: 1px solid rgba(255,215,0,0.35); }
 
-.breakdown-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); }
+.breakdown-item { background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */; border: 1px solid rgba(255,255,255,0.1); }
 
 .amount-value { background: none; -webkit-text-fill-color: inherit; color: #00ffc3; text-shadow: none; }
 .amount-currency { color: #bde7ff; }
@@ -107,7 +107,7 @@
   border-radius: 12px;
   font-weight: 600;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(15px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .notification-content.reward {
@@ -202,7 +202,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   font-size: 0.95rem;
 }
 
@@ -245,7 +245,7 @@
   display: flex;
   gap: 5px;
   margin-bottom: 30px;
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   padding: 8px;
   border-radius: 15px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -389,14 +389,14 @@
   align-items: center;
   gap: 10px;
   padding: 15px;
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
 }
 
 .breakdown-item:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   transform: translateY(-2px);
 }
 
@@ -473,7 +473,7 @@
 }
 
 .chart-container {
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border-radius: 12px;
   padding: 20px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -487,7 +487,7 @@
 }
 
 .metrics-container {
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border-radius: 12px;
   padding: 20px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -511,7 +511,7 @@
   align-items: center;
   gap: 12px;
   padding: 15px;
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -557,7 +557,7 @@
 }
 
 .overview-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 20px;
@@ -565,7 +565,7 @@
 }
 
 .overview-card:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   transform: translateY(-2px);
 }
 
@@ -644,7 +644,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border-radius: 8px;
 }
 
@@ -671,7 +671,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 20px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   z-index: 100;
 }
 

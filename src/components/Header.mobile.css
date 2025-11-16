@@ -43,20 +43,22 @@
     right: 0;
     bottom: 0;
     width: 100vw;
-    background: rgba(0, 0, 0, 0.96);
-    backdrop-filter: blur(12px);
-    padding: 8px 10px 14px;
+    background: #000000 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    padding: 6px 10px 10px;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2 coloane implicite */
-    gap: 8px;
-    row-gap: 8px;
-    column-gap: 8px;
+    gap: 5px;
+    row-gap: 5px;
+    column-gap: 5px;
     border: none;
     border-radius: 0;
     box-sizing: border-box;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     z-index: 2000;
+    align-content: start;
   }
 
   @media (max-width: 360px) { .mobile-nav-menu { grid-template-columns: 1fr; } }
@@ -66,12 +68,12 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    padding: 6px 8px;
-    font-size: 0.76rem;
+    gap: 4px;
+    padding: 5px 7px;
+    font-size: 0.75rem;
     font-weight: 700;
-    border-radius: 12px;
-    background: rgba(0, 0, 0, 0.85);
+    border-radius: 8px;
+    background: #000000 !important;
     border: 1px solid rgba(0, 255, 255, 0.5);
     position: relative;
     text-decoration: none;
@@ -82,14 +84,15 @@
     width: 100%;
     max-width: 100%;
     margin: 0;
-    line-height: 1.1;
+    line-height: 1;
+    box-sizing: border-box;
   }
 
   .mobile-nav-menu a i,
   .mobile-nav-menu button i { font-size: 0.7rem; }
 
   .mobile-nav-menu a:hover,
-  .mobile-nav-menu button:hover { transform: translateY(-1px); background: rgba(255, 255, 255, 0.08); box-shadow: 0 0 8px rgba(0, 255, 255, 0.25); }
+  .mobile-nav-menu button:hover { transform: translateY(-1px); background: #000000 !important; box-shadow: 0 0 8px rgba(0, 255, 255, 0.25); }
 
   .mobile-nav-menu a[href="/"] { border-color: #69db7c !important; color: #69db7c !important; }
   .mobile-nav-menu a[href="/presale"] { border-color: #ffd43b !important; color: #ffd43b !important; }
@@ -104,7 +107,7 @@
 
   .header { display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; padding: 0.5rem 1rem; height: 70px; background: rgba(0, 0, 0, 0.85); gap: 0.5rem; }
   .logo-container { flex: 0 0 auto; order: 1; }
-  .logo-container .logo { width: 40px; height: 40px; }
+  .logo-container .logo { width: 32px !important; height: 32px !important; }
 
   .hamburger { display: flex; flex-direction: column; justify-content: space-between; order: 4; flex: 0 0 auto; width: 35px; height: 30px; background: linear-gradient(135deg, #00ffff, #ff00ff, #00ff88); border: none; border-radius: 8px; padding: 6px 4px; box-shadow: 0 0 15px rgba(0, 255, 255, 0.5); transition: all 0.3s ease; cursor: pointer; z-index: 1001; }
   .hamburger:hover { box-shadow: 0 0 25px rgba(0, 255, 255, 0.8); transform: scale(1.05); }
@@ -114,10 +117,10 @@
   .hamburger.open .hamburger-line:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
 
   .navigation { display: none; flex-direction: column; width: 100%; }
-  .navigation.open { display: flex !important; position: fixed !important; top: 70px !important; left: 0 !important; right: 0 !important; background: rgba(0, 0, 0, 0.98) !important; backdrop-filter: blur(15px) !important; z-index: 1500 !important; padding: 1rem 0.5rem !important; max-height: calc(100vh - 70px) !important; overflow-y: auto !important; flex-direction: column !important; align-items: flex-start !important; gap: 0.5rem !important; border-bottom: 2px solid rgba(0, 255, 255, 0.3) !important; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.8) !important; width: 100vw !important; pointer-events: auto !important; }
+  .navigation.open { display: flex !important; position: fixed !important; top: 70px !important; left: 0 !important; right: 0 !important; background: #000000 !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; z-index: 1500 !important; padding: 1rem 0.5rem !important; max-height: calc(100vh - 70px) !important; overflow-y: auto !important; flex-direction: column !important; align-items: flex-start !important; gap: 0.5rem !important; border-bottom: 2px solid rgba(0, 255, 255, 0.3) !important; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.8) !important; width: 100vw !important; pointer-events: auto !important; }
 
   .navigation a,
-  .navigation button { font-size: 0.8rem !important; padding: 6px 12px; width: auto; min-width: fit-content; max-width: 200px; text-align: left; border-radius: 6px; background: rgba(0, 0, 0, 0.95) !important; border: 1px solid rgba(0, 255, 255, 0.5); color: #ffffff !important; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500 !important; text-shadow: 0 0 5px rgba(255, 255, 255, 0.8) !important; line-height: 1.2 !important; letter-spacing: 0.5px !important; }
+  .navigation button { font-size: 0.8rem !important; padding: 6px 12px; width: auto; min-width: fit-content; max-width: 200px; text-align: left; border-radius: 6px; background: #000000 !important; border: 1px solid rgba(0, 255, 255, 0.5); color: #ffffff !important; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500 !important; text-shadow: 0 0 5px rgba(255, 255, 255, 0.8) !important; line-height: 1.2 !important; letter-spacing: 0.5px !important; }
 
   .right-section.desktop-only { display: none !important; }
   .right-section.mobile-only { display: flex !important; flex-direction: row; align-items: center; justify-content: center; flex: 1; gap: 0.5rem; order: 2; min-width: 0; }
@@ -132,7 +135,7 @@
 }
 
 /* Fallback global: forțează 2 coloane peste tot, ca să se vadă efectul imediat */
-.mobile-nav-menu { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 8px !important; }
-.mobile-nav-menu a, .mobile-nav-menu button { width: 100% !important; }
+.mobile-nav-menu { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 5px !important; align-content: start !important; }
+.mobile-nav-menu a, .mobile-nav-menu button { width: 100% !important; margin: 0 !important; }
 
 @keyframes glow { 0% { text-shadow: 0 0 5px #00ffff; } 50% { text-shadow: 0 0 15px #00ffff, 0 0 30px #00ffff; } 100% { text-shadow: 0 0 5px #00ffff; } }

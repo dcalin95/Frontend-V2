@@ -13,7 +13,7 @@
 .aiContainer {
   background: rgba(0, 0, 0, 0.3);
   border: 2px solid rgba(0, 240, 255, 0.4);
-  backdrop-filter: blur(20px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   box-shadow: 
     0 0 30px rgba(0, 240, 255, 0.2),
     inset 0 0 30px rgba(0, 240, 255, 0.1);
@@ -118,7 +118,7 @@
   display: flex;
   flex-direction: column;
   border: 1px solid rgba(0, 240, 255, 0.3);
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -879,7 +879,7 @@
   display: flex;
   align-items: center;
   gap: 15px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   position: relative;
   overflow: hidden;
 }

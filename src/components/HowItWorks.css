@@ -42,32 +42,43 @@
     margin: 0 auto;
 }
 
-/* Casetă */
+/* Casetă - SOLANA/AI STYLE */
 .how-it-works-card {
-    background: rgba(0, 0, 0, 0.3);
-    padding: 20px;
-    border-radius: 12px;
+    background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+    padding: 24px;
+    border-radius: 1.5rem;
     text-align: center;
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: all 0.3s ease;
     cursor: pointer;
-    border: 1px solid rgba(255, 167, 38, 0.2);
-    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+    -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+    box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
+    font-family: 'Inter', sans-serif;
 }
 
-/* Icon */
+/* Icon - SOLANA/AI STYLE */
 .how-it-works-card .icon {
     font-size: 2.5rem;
-    color: #ffa726;
+    background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     margin-bottom: 15px;
-    text-shadow: 0 0 10px rgba(255, 167, 38, 0.8), 0 0 20px rgba(255, 167, 38, 0.5);
+    filter: drop-shadow(0 0 15px rgba(0, 255, 163, 0.4));
 }
 
-/* Titlu și descriere */
+/* Titlu și descriere - SOLANA/AI STYLE */
 .how-it-works-card h2 {
     font-size: 1.5rem;
     margin-bottom: 10px;
-    color: #ffa726;
-    font-weight: bold;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 12px rgba(0, 255, 163, 0.3));
 }
 
 .how-it-works-card p {
@@ -76,11 +87,12 @@
     color: rgba(255, 255, 255, 0.85);
 }
 
-/* Hover efect */
+/* Hover efect - SOLANA/AI STYLE */
 .how-it-works-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 0 30px rgba(255, 167, 38, 0.8), 0 0 60px rgba(255, 167, 38, 0.5);
-    background: rgba(0, 0, 0, 0.5);
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 8px 32px rgba(0, 255, 163, 0.3), 0 0 50px rgba(220, 31, 255, 0.2);
+    border-color: rgba(0, 255, 163, 0.3);
+    background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
 }
 
 /* ===== Responsive Design ===== */

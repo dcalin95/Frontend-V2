@@ -203,58 +203,73 @@ const Header = () => {
 
       {/* Mobile Navigation Menu - în fluxul paginii pentru a împinge conținutul */}
       {isMenuOpen && (
-        <nav className="mobile-nav-menu" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '8px' }}>
-          <Link to="/orbit" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
-            <i className="fas fa-bullseye"></i> Orbit
-          </Link>
-          <Link to="/home" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
-            <i className="fas fa-home"></i> Home
-          </Link>
-          <Link to="/presale" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
-            <i className="fas fa-dollar-sign"></i> Buy $BITS Presale
-          </Link>
-          <Link to="/staking" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
-            <i className="fas fa-coins"></i> Staking
-          </Link>
-          <Link to="/smart-staking" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
-            <i className="fas fa-rocket"></i> Smart Staking
-          </Link>
-          <Link to="/paper-trading" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
-            <i className="fas fa-gamepad"></i> Paper Trading
-          </Link>
-          <Link to="/whitepaper" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
-            <i className="fas fa-file-alt"></i> Whitepaper
-          </Link>
-          {false && (
-            <Link to="/reward-dashboard" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
-              <i className="fas fa-chart-line"></i> Rewards Dashboard
+        <div style={{ 
+          position: 'fixed',
+          top: '70px',
+          left: 0,
+          right: 0,
+          bottom: 0,
+          width: '100vw',
+          background: '#000000',
+          backgroundColor: '#000000',
+          zIndex: 9999,
+          overflow: 'auto',
+          WebkitOverflowScrolling: 'touch',
+          paddingTop: '50px'
+        }}>
+          <nav className="mobile-nav-menu" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '5px', background: '#000', backgroundColor: '#000', padding: '6px 10px 10px' }}>
+            <Link to="/orbit" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
+              <i className="fas fa-bullseye"></i> Orbit
             </Link>
-          )}
-          <Link to="/bits-analytics" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
-            <i className="fas fa-chart-bar"></i> BITS Analytics
-          </Link>
-          <Link to="/bitcoin-academy" onClick={() => setIsMenuOpen(false)}>
-            <i className="fab fa-bitcoin"></i> Bitcoin Academy
-          </Link>
-          <Link to="/education" onClick={() => setIsMenuOpen(false)}>
-            <i className="fas fa-graduation-cap"></i> Education
-          </Link>
-          <Link to="/contact" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
-            <i className="fas fa-envelope"></i> Contact
-          </Link>
-          <Link to="/proof-of-transfer" onClick={() => setIsMenuOpen(false)}>
-            <i className="fas fa-link"></i> PoX & BitSwapDEX
-          </Link>
-          <Link to="/rewards-hub" onClick={() => setIsMenuOpen(false)}>
-            <i className="fas fa-star"></i> Rewards Hub
-          </Link>
-          <Link to="/ai-portfolio-claude4" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
-            <i className="fas fa-brain"></i> Neural Investment Optimizer
-          </Link>
-          <button onClick={() => { setIsMenuOpen(false); navigate("/ai-assistant"); }}>
-            <i className="fas fa-robot"></i> AI BitSwapDEX
-          </button>
-        </nav>
+            <Link to="/home" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
+              <i className="fas fa-home"></i> Home
+            </Link>
+            <Link to="/presale" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
+              <i className="fas fa-dollar-sign"></i> Buy $BITS Presale
+            </Link>
+            <Link to="/staking" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
+              <i className="fas fa-coins"></i> Staking
+            </Link>
+            <Link to="/smart-staking" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
+              <i className="fas fa-rocket"></i> Smart Staking
+            </Link>
+            <Link to="/paper-trading" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
+              <i className="fas fa-gamepad"></i> Paper Trading
+            </Link>
+            <Link to="/whitepaper" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
+              <i className="fas fa-file-alt"></i> Whitepaper
+            </Link>
+            {false && (
+              <Link to="/reward-dashboard" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
+                <i className="fas fa-chart-line"></i> Rewards Dashboard
+              </Link>
+            )}
+            <Link to="/bits-analytics" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
+              <i className="fas fa-chart-bar"></i> BITS Analytics
+            </Link>
+            <Link to="/bitcoin-academy" onClick={() => setIsMenuOpen(false)}>
+              <i className="fab fa-bitcoin"></i> Bitcoin Academy
+            </Link>
+            <Link to="/education" onClick={() => setIsMenuOpen(false)}>
+              <i className="fas fa-graduation-cap"></i> Education
+            </Link>
+            <Link to="/contact" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
+              <i className="fas fa-envelope"></i> Contact
+            </Link>
+            <Link to="/proof-of-transfer" onClick={() => setIsMenuOpen(false)}>
+              <i className="fas fa-link"></i> PoX & BitSwapDEX
+            </Link>
+            <Link to="/rewards-hub" onClick={() => setIsMenuOpen(false)}>
+              <i className="fas fa-star"></i> Rewards Hub
+            </Link>
+            <Link to="/ai-portfolio-claude4" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
+              <i className="fas fa-brain"></i> Neural Investment Optimizer
+            </Link>
+            <button onClick={() => { setIsMenuOpen(false); navigate("/ai-assistant"); }}>
+              <i className="fas fa-robot"></i> AI BitSwapDEX
+            </button>
+          </nav>
+        </div>
       )}
     </>
   );

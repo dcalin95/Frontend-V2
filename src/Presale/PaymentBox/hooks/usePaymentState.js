@@ -84,7 +84,7 @@ const usePaymentState = ({
   const hasValidAmount = Number.isFinite(safeAmountPay) && safeAmountPay > 0;
   
   // 💳 For fiat tokens, skip balance validation (user pays with card)
-  const isFiatToken = ['TRANSAK', 'MOONPAY', 'NOWPAY'].includes(selectedToken);
+  const isFiatToken = ['TRANSAK', 'MOONPAY', 'NOWPAY', 'STRIPE'].includes(selectedToken);
   const hasValidBalance = isFiatToken ? true : (balances[selectedToken] >= safeAmountPay);
   
   const canProceed = hasValidAmount && hasValidBalance && !isLoading;

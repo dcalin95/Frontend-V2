@@ -5,13 +5,13 @@
 }
 
 /* Force header background to non-transparent to avoid white flash */
-.header { background: rgba(10,12,24,0.85); backdrop-filter: blur(0px); }
-/* === HEADER === */
+.header { background: rgba(15, 20, 25, 0.85); backdrop-filter: none /* 🔙 REVERTED FROM BLUR */; }
+/* === HEADER - SOLANA/AI STYLE === */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(15, 20, 25, 0.85);
   color: white;
   padding: 1rem 2rem;
   height: 80px;
@@ -19,11 +19,13 @@
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1000; /* 🔧 CHROME FIX - Increased z-index */
-  border-bottom: 1px solid rgba(0, 255, 200, 0.2);
-  backdrop-filter: blur(10px); /* 🔧 CHROME FIX - Better rendering */
-  -webkit-backdrop-filter: blur(10px); /* 🔧 CHROME FIX - Webkit support */
-  gap: 2rem; /* Adaugă spațiu între elemente */
+  z-index: 1000;
+  border-bottom: 1px solid rgba(0, 255, 163, 0.2);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
+  gap: 2rem;
+  font-family: 'Inter', sans-serif;
 }
 
 /* === LOGO === */
@@ -40,13 +42,15 @@
   height: 60px !important;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 0 30px rgba(0, 255, 0, 0.7);
-  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 0 30px rgba(0, 255, 163, 0.5), 0 0 60px rgba(220, 31, 255, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  filter: drop-shadow(0 4px 12px rgba(0, 255, 163, 0.4));
 }
 
 .logo:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 40px rgba(0, 255, 0, 1);
+  box-shadow: 0 0 40px rgba(0, 255, 163, 0.8), 0 0 80px rgba(220, 31, 255, 0.5);
+  filter: drop-shadow(0 6px 20px rgba(0, 255, 163, 0.6));
 }
 
 /* === NAVIGATION === */
@@ -75,15 +79,16 @@
   }
 }
 
-/* === BUTTONS === */
+/* === BUTTONS - SOLANA/AI STYLE === */
 .navigation a,
 .navigation button {
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  padding: 4px 10px; /* Padding mai mic */
-  font-size: 1rem; /* Font mai mic */
-  font-weight: 700;
+  padding: 4px 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
   border-radius: 30px;
   background: transparent;
   border: 2px solid transparent;
@@ -91,15 +96,14 @@
   text-decoration: none;
   white-space: nowrap;
   color: transparent;
-  background-image: linear-gradient(90deg, #00ffff, #ff00ff);
+  background-image: linear-gradient(135deg, #00FFA3, #DC1FFF);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  transition: all 0.6s ease;
-  box-shadow: 0 0 6px rgba(0, 255, 255, 0.12);
+  transition: all 0.3s ease;
+  box-shadow: 0 0 8px rgba(0, 255, 163, 0.15);
   background-size: 200% auto;
   animation: shine 14s linear infinite;
-
 }
 
 .navigation a::before,
@@ -109,25 +113,24 @@
   inset: 0;
   border-radius: 30px;
   padding: 1px;
-  background: linear-gradient(90deg, #00ffff, #8a2be2);
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   z-index: -1;
-  opacity: 1;
+  opacity: 0.6;
   transition: opacity 0.3s ease-in-out;
-
 }
 
 .navigation a:hover,
 .navigation button:hover {
   transform: translateY(-2px) scale(1.03);
-  background-image: linear-gradient(90deg, #ffe066, #ff66cc);
+  background-image: linear-gradient(135deg, #00FFA3, #DC1FFF);
   -webkit-text-fill-color: transparent;
-  box-shadow: 0 0 20px rgba(255, 224, 102, 0.4);
-  background-color: #111;
+  box-shadow: 0 0 20px rgba(0, 255, 163, 0.4), 0 0 40px rgba(220, 31, 255, 0.2);
+  background-color: rgba(0, 255, 163, 0.05);
 }
 
 .navigation a:hover i,
@@ -242,31 +245,33 @@
   100% { box-shadow: 0 0 25px rgba(0, 255, 136, 0.5); }
 }
 
-/* === AI BUTTON === */
+/* === AI BUTTON - SOLANA/AI STYLE === */
 .ai-button {
   font-size: 0.9rem;
   padding: 8px 14px;
-  background-color: #5a20ff;
-  color: white;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  color: #000000;
   border-radius: 18px;
-  font-weight: bold;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
   margin-left: 10px;
-  border: 2px solid #7a40ff;
-  box-shadow: 0 0 8px rgba(90, 32, 255, 0.4);
-  transition: background-color 0.3s, transform 0.3s;
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  box-shadow: 0 0 12px rgba(0, 255, 163, 0.3);
+  transition: all 0.3s ease;
 }
 
 .ai-button:hover {
-  background-color: #7a40ff;
+  box-shadow: 0 0 20px rgba(0, 255, 163, 0.5), 0 0 40px rgba(220, 31, 255, 0.3);
   transform: scale(1.05);
 }
 
-/* === TIMER === */
+/* === TIMER - SOLANA/AI STYLE === */
 .header-mini-timer {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #00ffff;
-  animation: glow 2.5s infinite ease-in-out;
+  font-family: 'Inter', sans-serif;
+  color: #00FFA3;
+  animation: glow-solana 2.5s infinite ease-in-out;
   text-align: center;
 }
 
@@ -298,6 +303,12 @@
   100% { text-shadow: 0 0 5px #00ffff; }
 }
 
+@keyframes glow-solana {
+  0% { text-shadow: 0 0 5px rgba(0, 255, 163, 0.6); }
+  50% { text-shadow: 0 0 15px rgba(0, 255, 163, 0.8), 0 0 30px rgba(220, 31, 255, 0.5); }
+  100% { text-shadow: 0 0 5px rgba(0, 255, 163, 0.6); }
+}
+
 /* === SOCIAL === */
 .right-section {
   display: flex;
@@ -319,18 +330,23 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-  transition: transform 0.3s, box-shadow 0.3s;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border: 1px solid rgba(0, 255, 163, 0.2);
+  box-shadow: 0 0 20px rgba(0, 255, 163, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .social-link img {
   width: 24px !important;
   height: 24px !important;
+  filter: drop-shadow(0 2px 8px rgba(0, 255, 163, 0.3));
 }
 
 .social-link:hover {
   transform: scale(1.1);
-  box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+  border-color: rgba(0, 255, 163, 0.5);
+  box-shadow: 0 0 30px rgba(0, 255, 163, 0.5), 0 0 50px rgba(220, 31, 255, 0.3);
 }
 
 /* === MOBILE HAMBURGER - ASCUNDE PE DESKTOP === */
@@ -347,24 +363,24 @@
   height: 25px;
   cursor: pointer;
   z-index: 1100;
-  background: linear-gradient(135deg, #00ffff, #ff00ff, #00ff88);
-  border: none;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  border: 1px solid rgba(0, 255, 163, 0.3);
   border-radius: 6px;
   padding: 8px 6px;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+  box-shadow: 0 0 15px rgba(0, 255, 163, 0.4);
   transition: all 0.3s ease;
 }
 
 .hamburger:hover {
-  box-shadow: 0 0 25px rgba(0, 255, 255, 0.7);
+  box-shadow: 0 0 25px rgba(0, 255, 163, 0.7), 0 0 40px rgba(220, 31, 255, 0.4);
   transform: scale(1.05);
 }
 
 .hamburger-line {
   height: 3px;
-  background: linear-gradient(90deg, #ffffff, #00ffff);
+  background: #000000;
   border-radius: 2px;
-  box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
 }
 

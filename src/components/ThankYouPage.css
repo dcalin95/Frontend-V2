@@ -19,7 +19,7 @@
   padding: 40px;
   max-width: 600px;
   width: 100%;
-  backdrop-filter: blur(20px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   box-shadow: 
     0 20px 60px rgba(0, 212, 255, 0.1),
     0 0 0 1px rgba(255, 255, 255, 0.1) inset;

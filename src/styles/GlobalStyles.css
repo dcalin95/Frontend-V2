@@ -82,21 +82,55 @@ html { text-size-adjust: 100%; -webkit-text-size-adjust: 100%; }
 /* Remove duplicated comment */
 
 /* ===============================
-   🎨 VARIABLES (THEME ROOT)
+   🎨 VARIABLES (THEME ROOT) - SOLANA/AI STYLE
 =============================== */
 :root {
+  /* Fonts - Solana/AI Style */
   --font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  --font-heading: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Orbitron', 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-secondary: 'Space Grotesk', 'Inter', sans-serif;
 
-  --background-dark: #121212;
-  --background-glass: rgba(0, 0, 0, 0.6);
+  /* Colors - Solana Gradient */
+  --solana-green: #00FFA3;
+  --solana-purple: #DC1FFF;
+  --solana-gradient: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  --solana-gradient-reverse: linear-gradient(135deg, #DC1FFF, #00FFA3);
+  
+  /* Backgrounds */
+  --background-dark: #0F1419;
+  --background-glass: rgba(255, 255, 255, 0.04);
+  --background-glass-strong: rgba(255, 255, 255, 0.08);
   --text-light: #ffffff;
-  --accent: #00ffff;
+  --accent: var(--solana-green);
 
-  --gradient-button: linear-gradient(145deg, #3c3c5a, #2e2e44);
-  --gradient-button-hover: linear-gradient(145deg, #4a4a6c, #3c3c5a);
-  --button-hover-color: #ff007f;
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-border-strong: rgba(255, 255, 255, 0.14);
+  --glass-blur: blur(10px);
+  --glass-blur-strong: blur(12px);
 
+  /* Shadows & Glow - Solana Style */
+  --glow-solana: 0 0 24px rgba(0, 255, 163, 0.2);
+  --glow-solana-strong: 0 0 32px rgba(0, 255, 163, 0.4);
+  --glow-purple: 0 0 24px rgba(220, 31, 255, 0.2);
+  --shadow-card: 0 4px 24px rgba(0, 255, 163, 0.1);
+  --shadow-card-hover: 0 8px 32px rgba(0, 255, 163, 0.3);
+
+  /* Buttons - Solana Style */
+  --gradient-button: var(--solana-gradient);
+  --gradient-button-hover: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  --button-hover-color: #000000;
+  --button-text: #000000;
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+  --radius-full: 9999px;
+
+  /* Font Sizes */
   --font-size-base: 1.2rem;
   --font-size-mobile: 1rem;
   --font-size-small-mobile: 0.9rem;

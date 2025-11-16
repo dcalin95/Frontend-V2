@@ -26,18 +26,21 @@
   }
 }
 
-/* Hero Section */
+/* Hero Section - SOLANA/AI STYLE */
 .hero-section {
   padding: 80px 0 60px;
   text-align: center;
-  background: transparent;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   position: relative;
   overflow: hidden;
-  border: 2px solid rgba(0, 240, 255, 0.3);
-  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
   margin: 15px;
   margin-top: 120px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
+  font-family: 'Inter', sans-serif;
 }
 
 .hero-content {
@@ -48,13 +51,13 @@
 .hero-title {
   font-size: 3.5rem;
   font-weight: 900;
+  font-family: 'Orbitron', 'Space Grotesk', sans-serif;
   margin-bottom: 24px;
-  background: linear-gradient(45deg, #00f0ff, #ff0080, #00ff88);
-  background-size: 300% 300%;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: gradientShift 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(0, 255, 163, 0.4));
 }
 
 .hero-title .highlight {
@@ -66,17 +69,18 @@
   font-size: 1.3rem;
   line-height: 1.6;
   margin-bottom: 48px;
-  color: #ffffff;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: 'Inter', sans-serif;
   max-width: 700px;
   margin-left: auto;
   margin-right: auto;
-  background: linear-gradient(135deg, rgba(0, 240, 255, 0.1), rgba(255, 0, 128, 0.1));
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   padding: 20px 30px;
-  border-radius: 15px;
-  border: 1px solid rgba(0, 240, 255, 0.3);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0, 240, 255, 0.2);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
   text-align: center;
 }
 
@@ -134,7 +138,7 @@
   border: 1px solid rgba(0, 240, 255, 0.2);
   border-radius: 15px;
   margin: 15px;
-  backdrop-filter: blur(5px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .content-section.alt-bg {
@@ -142,7 +146,7 @@
   border: 1px solid rgba(255, 0, 128, 0.2);
   border-radius: 15px;
   margin: 20px;
-  backdrop-filter: blur(5px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .section-header {
@@ -363,7 +367,7 @@
 }
 
 .benefit-item {
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   padding: 25px;
   border-radius: 15px;
   border: 1px solid rgba(0, 240, 255, 0.2);
@@ -404,7 +408,7 @@
   border: 2px solid rgba(0, 240, 255, 0.4);
   border-radius: 25px;
   margin: 20px;
-  backdrop-filter: blur(15px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .cta-content h2 {
@@ -446,22 +450,24 @@
 
 .cta-button {
   display: inline-block;
-  background: linear-gradient(45deg, #00f0ff, #ff0080);
-  color: white;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  color: #000000;
   padding: 18px 40px;
   border-radius: 50px;
   text-decoration: none;
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  border: 1px solid rgba(0, 255, 163, 0.3);
   transition: all 0.3s ease;
-  box-shadow: 0 5px 20px rgba(0, 240, 255, 0.3);
+  box-shadow: 0 0 12px rgba(0, 255, 163, 0.2);
 }
 
 .cta-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 240, 255, 0.4);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 20px rgba(0, 255, 163, 0.5), 0 0 40px rgba(220, 31, 255, 0.3);
   text-decoration: none;
-  color: white;
+  color: #000000;
 }
 
 /* Advanced Concepts Styling */
@@ -652,7 +658,7 @@
   color: #ffffff;
   font-size: 0.9rem;
   transition: all 0.3s ease;
-  backdrop-filter: blur(5px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .exchange-logo:hover {

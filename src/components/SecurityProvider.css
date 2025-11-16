@@ -6,9 +6,9 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #0d0d1f 0%, #1a1a2e 50%, #16213e 100%);
-  color: #00f0ff;
-  font-family: 'Arial', sans-serif;
+  background: transparent; /* 🚫 NO GREY BACKGROUND - SOLANA STYLE */
+  color: #00FFA3;
+  font-family: 'Inter', sans-serif;
 }
 
 .security-loading .loading-spinner {
@@ -39,7 +39,7 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  background: transparent; /* 🚫 NO GREY BACKGROUND - SOLANA STYLE */
   color: #ff4757;
   text-align: center;
   padding: 20px;
@@ -159,7 +159,7 @@
   padding: 30px;
   max-width: 400px;
   margin: 0 auto;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   box-shadow: 0 8px 32px rgba(0, 240, 255, 0.1);
 }
 
@@ -249,7 +249,7 @@
   color: #00f0ff;
   font-size: 12px;
   z-index: 1000;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -294,7 +294,7 @@
   align-items: center;
   justify-content: center;
   z-index: 10000;
-  backdrop-filter: blur(5px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .security-modal .modal-content {
@@ -385,11 +385,11 @@
 /* 🔒 Dark Mode Enhancements */
 @media (prefers-color-scheme: dark) {
   .security-form {
-    background: rgba(13, 13, 31, 0.95);
+    background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */; /* CLEAN GLASS - SOLANA STYLE */
   }
   
   .security-modal .modal-content {
-    background: linear-gradient(135deg, #0d0d1f 0%, #1a1a2e 100%);
+    background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */; /* CLEAN GLASS - SOLANA STYLE */
   }
 }
 

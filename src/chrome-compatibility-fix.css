@@ -3,8 +3,8 @@
 /* === HEADER FIXES === */
 .header {
   /* Chrome specifc backdrop filter */
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */ !important;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */ !important;
   
   /* Higher z-index for Chrome */
   z-index: 1000 !important;

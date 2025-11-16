@@ -1,43 +1,48 @@
-/* Import fonturile Google */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap');
-
+/* SOLANA/AI STYLE */
 /* Cardul principal */
 .purchase-booster {
-  font-family: 'Roboto', sans-serif;
-  background: linear-gradient(145deg, rgba(25, 25, 50, 0.9), rgba(10, 10, 30, 0.9));
+  font-family: 'Inter', sans-serif;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   padding: 20px;
-  border: 2px solid #08fdd8;
-  border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(8, 253, 216, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
   text-align: center;
-  color: #ffffff;
+  color: rgba(255, 255, 255, 0.9);
   margin: 15px auto;
   max-width: 360px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 /* La hover: animație pentru întregul card */
 .purchase-booster:hover {
-  transform: scale(1.05);
-  box-shadow: 0 15px 30px rgba(8, 253, 216, 0.6);
+  transform: translateY(-2px) scale(1.02);
+  border-color: rgba(0, 255, 163, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 255, 163, 0.3), 0 0 50px rgba(220, 31, 255, 0.2);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
 }
 
-/* Titlul principal */
+/* Titlul principal - SOLANA/AI STYLE */
 .purchase-booster h2 {
   font-size: 18px;
-  font-family: 'Roboto Mono', monospace;
-  color: #08fdd8;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.3));
   margin-bottom: 12px;
-  /* text-shadow removed for crisp text */: 0 0 8px rgba(8, 253, 216, 0.7);
 }
 
-/* Mesaj de încurajare */
+/* Mesaj de încurajare - SOLANA/AI STYLE */
 .booster-message {
   font-size: 14px;
-  font-family: 'Roboto', sans-serif;
-  color: #08fdd8;
+  font-family: 'Inter', sans-serif;
+  color: rgba(255, 255, 255, 0.8);
   margin-bottom: 15px;
-  /* text-shadow removed for crisp text */: 0 0 8px rgba(8, 253, 216, 0.5);
   opacity: 0.9;
   position: relative;
   transition: all 0.3s ease;
@@ -45,12 +50,11 @@
 
 /* Hover pentru mesaj */
 .booster-message:hover {
-  /* text-shadow removed for crisp text */: 0 0 15px rgba(8, 253, 216, 0.9), 0 0 30px rgba(8, 253, 216, 0.6);
-  transform: scale(1.1);
-  color: #6affd7;
+  color: rgba(255, 255, 255, 0.95);
+  transform: scale(1.05);
 }
 
-/* Linie sub text */
+/* Linie sub text - SOLANA/AI STYLE */
 .booster-message::after {
   content: "";
   position: absolute;
@@ -58,10 +62,11 @@
   right: 0;
   bottom: -5px;
   height: 2px;
-  background: rgba(8, 253, 216, 0.6);
+  background: linear-gradient(90deg, #00FFA3, #DC1FFF);
   transform: scaleX(0);
   transform-origin: right;
   transition: transform 0.3s ease;
+  box-shadow: 0 0 8px rgba(0, 255, 163, 0.4);
 }
 
 .booster-message:hover::after {
@@ -69,22 +74,25 @@
   transform-origin: left;
 }
 
-/* Efect pentru suma totală în $BITS */
+/* Efect pentru suma totală în $BITS - SOLANA/AI STYLE */
 .bits-amount {
   font-size: 20px;
-  font-family: 'Roboto Mono', monospace;
-  color: #08fdd8;
-  font-weight: bold;
-  /* text-shadow removed for crisp text */: 0 0 10px rgba(8, 253, 216, 0.8), 0 0 20px rgba(8, 253, 216, 0.5);
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.4));
   display: inline-block;
   position: relative;
-  transition: transform 0.5s ease-in-out, /* text-shadow removed for crisp text */ 0.3s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
 
 /* Glow și rotație când suma se schimbă */
 .bits-amount.updated {
-  transform: rotateY(360deg) scale(1.2); /* Rotație și mărire */
-  /* text-shadow removed for crisp text */: 0 0 20px #08fdd8, 0 0 40px #00ffcc;
+  transform: rotateY(360deg) scale(1.2);
+  filter: drop-shadow(0 0 20px rgba(0, 255, 163, 0.6)) drop-shadow(0 0 40px rgba(220, 31, 255, 0.4));
 }
 
 /* Particule stelate */
@@ -107,10 +115,11 @@
   position: absolute;
   width: 8px;
   height: 8px;
-  background: radial-gradient(circle, #08fdd8 30%, transparent 70%);
+  background: radial-gradient(circle, #00FFA3 30%, #DC1FFF 70%, transparent 100%);
   border-radius: 50%;
   opacity: 0;
   animation: sparkle 0.6s ease-out forwards;
+  box-shadow: 0 0 8px rgba(0, 255, 163, 0.6);
 }
 
 /* Poziții aleatorii pentru steluțe */
@@ -154,17 +163,64 @@
 
 .reward-info li {
   margin: 6px 0;
-  color: #ffffff;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 14px;
+  font-family: 'Inter', sans-serif;
   padding: 8px;
-  border: 1px solid #08fdd8;
-  border-radius: 8px;
-  background: rgba(25, 25, 50, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 2px 12px rgba(0, 255, 163, 0.05);
   transition: all 0.3s ease;
 }
 
 .reward-info li:hover {
-  background: rgba(8, 253, 216, 0.2);
-  border-color: #08fdd8;
-  box-shadow: 0 0 8px rgba(8, 253, 216, 0.3);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border-color: rgba(0, 255, 163, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 255, 163, 0.15);
+  transform: translateX(4px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .purchase-booster {
+    padding: 16px;
+    border-radius: 1.2rem;
+    max-width: 95%;
+  }
+  .purchase-booster h2 {
+    font-size: 16px;
+  }
+  .booster-message {
+    font-size: 13px;
+  }
+  .bits-amount {
+    font-size: 18px;
+  }
+  .reward-info li {
+    font-size: 13px;
+    padding: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .purchase-booster {
+    padding: 12px;
+    border-radius: 1rem;
+  }
+  .purchase-booster h2 {
+    font-size: 15px;
+  }
+  .booster-message {
+    font-size: 12px;
+  }
+  .bits-amount {
+    font-size: 16px;
+  }
+  .reward-info li {
+    font-size: 12px;
+    padding: 6px;
+  }
 }

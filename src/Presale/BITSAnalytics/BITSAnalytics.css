@@ -52,16 +52,55 @@
   color: white; border-radius: 8px; padding: 6px 8px; font-size: 0.85rem;
 }
 .nw-btn {
-  background: linear-gradient(135deg, #00ff88, #00aaff);
-  color: black; border: none; border-radius: 10px;
-  padding: 6px 10px; font-size: 0.8rem; font-weight: 700;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  color: #000000;
+  font-family: 'Inter', sans-serif;
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  border-radius: 12px;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
   cursor: pointer;
+  box-shadow: 0 0 8px rgba(0, 255, 163, 0.15);
+  transition: all 0.3s ease;
+}
+
+.nw-btn:hover {
+  box-shadow: 0 0 15px rgba(0, 255, 163, 0.4), 0 0 30px rgba(220, 31, 255, 0.2);
+  transform: scale(1.05);
+}
+
+@media (max-width: 480px) {
+  .nw-btn {
+    padding: 5px 8px;
+    font-size: 0.75rem;
+  }
 }
 .nw-wallets { display: flex; gap: 8px; flex-wrap: wrap; }
 .nw-wallet-btn {
-  padding: 6px 10px; border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.25);
-  background: rgba(255,255,255,0.06); color: #fff;
+  padding: 6px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 2px 12px rgba(0, 255, 163, 0.05);
+  color: rgba(255, 255, 255, 0.9);
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.nw-wallet-btn:hover {
+  border-color: rgba(0, 255, 163, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 255, 163, 0.15);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+}
+
+@media (max-width: 480px) {
+  .nw-wallet-btn {
+    padding: 5px 8px;
+    font-size: 0.75rem;
+  }
 }
 
 .nw-badge {
@@ -70,25 +109,32 @@
   gap: 6px;
   padding: 4px 8px;
   border-radius: 999px;
-  background: rgba(0, 255, 136, 0.16);
-  border: 1px solid rgba(0, 255, 136, 0.45);
-  color: #00ff88;
+  background: rgba(0, 255, 163, 0.16);
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  color: #00FFA3;
+  font-family: 'Inter', sans-serif;
   font-weight: 700;
   font-size: 0.8rem;
+  box-shadow: 0 0 8px rgba(0, 255, 163, 0.2);
+}
+
+@media (max-width: 480px) {
+  .nw-badge {
+    padding: 3px 6px;
+    font-size: 0.75rem;
+  }
 }
 
 /* 🌌 COSMIC WIDGET DASHBOARD */
 
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap');
+/* SOLANA/AI STYLE - AI Portfolio Dashboard */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
 body {
-  background: radial-gradient(circle at 20% 20%, rgba(120, 219, 255, 0.08), transparent 60%),
-              radial-gradient(circle at 80% 80%, rgba(255, 119, 198, 0.08), transparent 60%),
-              linear-gradient(135deg, #0a0a0f, #141428 40%, #0a0a0f 100%);
-  font-family: 'Exo 2', 'Orbitron', monospace;
-  color: #fff;
+  background: transparent;
+  font-family: 'Inter', sans-serif;
+  color: rgba(255, 255, 255, 0.9);
   min-height: 100vh;
-  /* FĂRĂ padding pe body - se aplică doar pe widget-grid */
 }
 
 /* ===============================
@@ -98,7 +144,24 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
-  padding: 25px; /* Padding doar pentru grid, NU pe tot body-ul */
+  padding: 25px;
+  font-family: 'Inter', sans-serif;
+}
+
+@media (max-width: 768px) {
+  .widget-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .widget-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 12px;
+  }
 }
 .widget.system.network-wallet {
   grid-column: span 2;
@@ -111,10 +174,22 @@ body {
 }
 
 .network-card, .wallets-card {
-  background: rgba(20, 25, 40, 0.85);
-  border: 1px solid rgba(120, 219, 255, 0.35);
-  border-radius: 12px;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
+  border-radius: 1.5rem;
   padding: 12px;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.network-card:hover, .wallets-card:hover {
+  border-color: rgba(0, 255, 163, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 255, 163, 0.2);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  transform: translateY(-2px) scale(1.02);
 }
 
 .network-actions {
@@ -133,9 +208,12 @@ body {
    WIDGET CARDS
    =============================== */
 .widget {
-  background: rgb(20, 25, 40);
-  border: 1px solid rgba(120, 219, 255, 0.4);
-  border-radius: 14px;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
+  border-radius: 1.5rem;
   padding: 16px 14px;
   text-align: center;
   transition: all 0.3s ease;
@@ -143,22 +221,59 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+  overflow: hidden;
 }
 
 .widget:hover {
   transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 0 20px rgba(120, 219, 255, 0.3);
+  border-color: rgba(0, 255, 163, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 255, 163, 0.3), 0 0 50px rgba(220, 31, 255, 0.2);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
 }
 
-/* Icon - Modern AI Style */
+@media (max-width: 768px) {
+  .widget {
+    padding: 14px 12px;
+    min-height: 100px;
+    border-radius: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .widget {
+    padding: 12px 10px;
+    min-height: 90px;
+    border-radius: 1rem;
+  }
+}
+
+/* Icon - SOLANA/AI STYLE */
 .widget-icon {
   font-size: 1.8rem;
   margin-bottom: 8px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-  display: flex;               /* center both emoji and img icons */
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.3));
+  display: flex;
   align-items: center;
   justify-content: center;
   line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .widget-icon {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .widget-icon {
+    font-size: 1.4rem;
+  }
 }
 
 .widget-icon-img {
@@ -168,49 +283,68 @@ body {
   vertical-align: middle;
 }
 
-/* Title - HEADER-STYLE CRYSTAL CLEAR */
+/* Title - SOLANA/AI STYLE */
 .widget-title {
-  font-family: 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: rgba(255,255,255,0.85);
+  color: rgba(255, 255, 255, 0.9);
   margin-bottom: 4px;
   font-weight: 700;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  font-optical-sizing: auto;
-  transform: scale3d(1, 1, 1);
-  backface-visibility: hidden;
 }
 
-/* Value - HEADER-STYLE CRYSTAL CLEAR */
+@media (max-width: 480px) {
+  .widget-title {
+    font-size: 0.75rem;
+  }
+}
+
+/* Value - SOLANA/AI STYLE */
 .widget-value {
-  font-family: 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 1.25rem;
   font-weight: 800;
-  color: #FFFFFF;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.3));
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  font-optical-sizing: auto;
-  transform: scale3d(1, 1, 1);
-  backface-visibility: hidden;
 }
 
-/* Subtitle - HEADER-STYLE CRYSTAL CLEAR */
+@media (max-width: 768px) {
+  .widget-value {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .widget-value {
+    font-size: 1rem;
+  }
+}
+
+/* Subtitle - SOLANA/AI STYLE */
 .widget-subtitle {
-  font-family: 'SF Pro Display', 'Inter', 'Segoe UI', 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.7rem;
-  color: rgba(255,255,255,0.75);
+  color: rgba(255, 255, 255, 0.8);
   font-weight: 600;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  font-optical-sizing: auto;
-  transform: scale3d(1, 1, 1);
-  backface-visibility: hidden;
+}
+
+@media (max-width: 480px) {
+  .widget-subtitle {
+    font-size: 0.65rem;
+  }
 }
 
 /* === Unified Typography (match Additional Bonus clarity across all cards) === */
@@ -240,12 +374,12 @@ body {
 }
 
 /* ===============================
-   CATEGORY COLOR ACCENTS
+   CATEGORY COLOR ACCENTS - SOLANA/AI STYLE
    =============================== */
-.widget.holdings  { border-color: rgba(120,219,255,0.4); }
-.widget.market    { border-color: rgba(255,119,198,0.4); }
-.widget.rewards   { border-color: rgba(255,215,0,0.5); }
-.widget.system    { border-color: rgba(0,255,179,0.5); }
+.widget.holdings  { border-color: rgba(0, 255, 163, 0.2); }
+.widget.market    { border-color: rgba(220, 31, 255, 0.2); }
+.widget.rewards   { border-color: rgba(0, 255, 163, 0.3); }
+.widget.system    { border-color: rgba(220, 31, 255, 0.3); }
 
 /* ===============================
    INTERACTIVE WIDGET EFFECTS
@@ -259,47 +393,33 @@ body {
   overflow: hidden;
 }
 
-/* HOVER EFFECTS - TRANSPARENT BACKGROUND */
+/* HOVER EFFECTS - SOLANA/AI STYLE */
 .widget:hover {
-  transform: scale(1.12) translateY(-12px);
-  border: 2px solid #14F195;
-  background: transparent;
-  box-shadow: 
-    0 0 0 3px rgba(20, 241, 149, 0.3),
-    0 8px 25px rgba(0, 0, 0, 0.4);
+  transform: translateY(-4px) scale(1.02);
+  border-color: rgba(0, 255, 163, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 255, 163, 0.3), 0 0 50px rgba(220, 31, 255, 0.2);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
 }
 
-/* HOVER: Category-specific accent colors - TRANSPARENT BACKGROUND */
+/* HOVER: Category-specific accent colors - SOLANA/AI STYLE */
 .widget.holdings:hover {
-  border: 2px solid #78DBFF;
-  background: transparent;
-  box-shadow: 
-    0 0 0 3px rgba(120, 219, 255, 0.3),
-    0 8px 25px rgba(0, 0, 0, 0.4);
+  border-color: rgba(0, 255, 163, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 255, 163, 0.3), 0 0 50px rgba(220, 31, 255, 0.2);
 }
 
 .widget.market:hover {
-  border: 2px solid #FF77C6;
-  background: transparent;
-  box-shadow: 
-    0 0 0 3px rgba(255, 119, 198, 0.3),
-    0 8px 25px rgba(0, 0, 0, 0.4);
+  border-color: rgba(220, 31, 255, 0.4);
+  box-shadow: 0 8px 32px rgba(220, 31, 255, 0.3), 0 0 50px rgba(0, 255, 163, 0.2);
 }
 
 .widget.rewards:hover {
-  border: 2px solid #FFD700;
-  background: transparent;
-  box-shadow: 
-    0 0 0 3px rgba(255, 215, 0, 0.3),
-    0 8px 25px rgba(0, 0, 0, 0.4);
+  border-color: rgba(0, 255, 163, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 255, 163, 0.4), 0 0 50px rgba(220, 31, 255, 0.3);
 }
 
 .widget.system:hover {
-  border: 2px solid #00FFB3;
-  background: transparent;
-  box-shadow: 
-    0 0 0 3px rgba(0, 255, 179, 0.3),
-    0 8px 25px rgba(0, 0, 0, 0.4);
+  border-color: rgba(220, 31, 255, 0.5);
+  box-shadow: 0 8px 32px rgba(220, 31, 255, 0.4), 0 0 50px rgba(0, 255, 163, 0.3);
 }
 
 /* CLICK/ACTIVE EFFECTS */
@@ -645,12 +765,16 @@ body {
 }
 
 .portfolio-header-title {
-  font-family: 'Orbitron', monospace;
+  font-family: 'Orbitron', 'Space Grotesk', sans-serif;
   font-size: 1.9rem;
-  font-weight: 900;
+  font-weight: 700;
   margin-bottom: 8px;
-  color: #9333EA;
-  animation: solanaPulse 3s infinite ease-in-out, floatSoft 10s ease-in-out infinite !important;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(0, 255, 163, 0.4));
+  animation: floatSoft 10s ease-in-out infinite !important;
   letter-spacing: 0.02em;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -658,17 +782,50 @@ body {
   transform-origin: center;
 }
 
+@media (max-width: 768px) {
+  .portfolio-header-title {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .portfolio-header-title {
+    font-size: 1.4rem;
+  }
+}
+
 .portfolio-header-subtitle {
+  font-family: 'Inter', sans-serif;
   font-size: 1rem;
-  color: rgba(255,255,255,0.8);
+  color: rgba(255, 255, 255, 0.9);
   margin-bottom: 6px;
   animation: floatSoft 9s ease-in-out infinite;
 }
 
+@media (max-width: 768px) {
+  .portfolio-header-subtitle {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .portfolio-header-subtitle {
+    font-size: 0.85rem;
+  }
+}
+
 .portfolio-header-status {
+  font-family: 'Inter', sans-serif;
   font-size: 0.9rem;
-  color: #00ffb3;
+  color: #00FFA3;
   animation: floatSoft 8s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 163, 0.3));
+}
+
+@media (max-width: 480px) {
+  .portfolio-header-status {
+    font-size: 0.8rem;
+  }
 }
 /* ===============================
    PULSE STATUS DOT
@@ -688,10 +845,22 @@ body {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #00ffb3;
+  background: #00FFA3;
   display: inline-block;
   margin-right: 8px;
+  box-shadow: 0 0 12px rgba(0, 255, 163, 0.5);
   animation: dotPulse 1.5s infinite ease-in-out;
+}
+
+@keyframes dotPulse {
+  0%, 100% {
+    background-color: #00FFA3;
+    box-shadow: 0 0 12px rgba(0, 255, 163, 0.5), 0 0 24px rgba(0, 255, 163, 0.3);
+  }
+  50% {
+    background-color: #DC1FFF;
+    box-shadow: 0 0 20px rgba(220, 31, 255, 0.6), 0 0 40px rgba(220, 31, 255, 0.4);
+  }
 }
 
 /* ===============================
@@ -756,10 +925,24 @@ body {
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(20, 241, 149, 0.25), rgba(139, 92, 246, 0.2));
-  box-shadow: 0 0 20px rgba(20, 241, 149, 0.4), inset 0 0 20px rgba(139, 92, 246, 0.3);
+  background: radial-gradient(circle, rgba(0, 255, 163, 0.25), rgba(220, 31, 255, 0.2));
+  box-shadow: 0 0 20px rgba(0, 255, 163, 0.4), inset 0 0 20px rgba(220, 31, 255, 0.3);
   overflow: hidden;
   animation: orb-breathe 3s ease-in-out infinite;
+}
+
+@media (max-width: 768px) {
+  .ai-orb {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ai-orb {
+    width: 64px;
+    height: 64px;
+  }
 }
 
 .ai-ring {
@@ -788,9 +971,21 @@ body {
 }
 
 .loader-title {
-  font-weight: 800;
+  font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+  font-weight: 700;
   font-size: 1.1rem;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.3));
   letter-spacing: 0.02em;
+}
+
+@media (max-width: 480px) {
+  .loader-title {
+    font-size: 1rem;
+  }
 }
 
 .loader-subtitle {
@@ -824,7 +1019,7 @@ body {
   width: 100%;
   max-width: 520px;
   height: 6px;
-  background: rgba(255,255,255,0.08);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 999px;
   overflow: hidden;
@@ -834,7 +1029,8 @@ body {
 .loader-bar {
   width: 30%;
   height: 100%;
-  background: linear-gradient(90deg, #14F195, #8B5CF6);
+  background: linear-gradient(90deg, #00FFA3, #DC1FFF);
+  box-shadow: 0 0 12px rgba(0, 255, 163, 0.3);
   animation: loader-move 1.6s ease-in-out infinite;
 }
 
@@ -877,10 +1073,21 @@ body {
 }
 
 .skeleton-card {
-  background: rgba(20, 25, 40, 0.7);
-  border: 1px solid rgba(120, 219, 255, 0.25);
-  border-radius: 12px;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
+  border-radius: 1.5rem;
   padding: 14px;
+  font-family: 'Inter', sans-serif;
+}
+
+@media (max-width: 480px) {
+  .skeleton-card {
+    padding: 12px;
+    border-radius: 1.2rem;
+  }
 }
 
 .sk-line {

@@ -85,7 +85,7 @@
   margin-bottom: 40px;
   padding: 30px;
   background: rgba(0, 212, 255, 0.05);
-  backdrop-filter: blur(20px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   border: 1px solid rgba(0, 212, 255, 0.2);
   border-radius: 20px;
   position: relative;
@@ -194,7 +194,7 @@
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(0, 212, 255, 0.3);
   border-radius: 10px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .claude4-status-label {
@@ -260,7 +260,7 @@
   background: rgba(123, 104, 238, 0.05);
   border: 1px solid rgba(123, 104, 238, 0.3);
   border-radius: 20px;
-  backdrop-filter: blur(15px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .claude4-insights-header {
@@ -295,7 +295,7 @@
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(0, 212, 255, 0.2);
   border-radius: 15px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -371,7 +371,7 @@
   background: rgba(0, 255, 136, 0.05);
   border: 1px solid rgba(0, 255, 136, 0.2);
   border-radius: 20px;
-  backdrop-filter: blur(15px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .claude4-blockchain-header {
@@ -396,7 +396,7 @@
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .claude4-refresh-btn:hover:not(:disabled) {
@@ -421,7 +421,7 @@
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(0, 255, 136, 0.3);
   border-radius: 15px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   text-align: center;
   transition: all 0.3s ease;
   position: relative;
@@ -501,7 +501,7 @@
   border: 1px solid rgba(0, 212, 255, 0.2);
   border-radius: 15px;
   padding: 20px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 /* Main Grid */
@@ -514,7 +514,7 @@
 /* Input Panel */
 .claude4-panel {
   background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(20px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   border: 1px solid rgba(0, 212, 255, 0.2);
   border-radius: 20px;
   padding: 30px;
@@ -618,7 +618,7 @@
   font-size: 1rem;
   font-family: inherit;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .claude4-input:focus,
@@ -670,7 +670,7 @@
   color: #ffffff;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .claude4-risk-btn:hover {
@@ -703,7 +703,7 @@
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(156, 136, 255, 0.3);
   border-radius: 15px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .claude4-toggle {
@@ -782,7 +782,7 @@
   cursor: pointer;
   overflow: hidden;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .claude4-generate-btn:hover:not(:disabled) {
@@ -843,7 +843,7 @@
   color: var(--claude4-error);
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .claude4-cancel-btn:hover {
@@ -854,7 +854,7 @@
 /* Thinking Panel */
 .claude4-thinking-panel {
   background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(25px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   border: 1px solid rgba(0, 212, 255, 0.4);
   border-radius: 20px;
   padding: 40px;
@@ -1120,7 +1120,7 @@
   border-radius: 15px;
   padding: 30px;
   text-align: center;
-  backdrop-filter: blur(15px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .claude4-error-icon {
@@ -1228,7 +1228,7 @@
 /* Results Panel */
 .claude4-results-panel {
   background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(20px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   border: 1px solid rgba(0, 255, 136, 0.3);
   border-radius: 20px;
   padding: 30px;
@@ -1329,7 +1329,7 @@
   border: 1px solid rgba(0, 212, 255, 0.2);
   border-radius: 15px;
   padding: 25px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .claude4-chart-title {
@@ -1354,7 +1354,7 @@
   padding: 15px 25px;
   color: var(--claude4-success);
   font-weight: 600;
-  backdrop-filter: blur(15px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   z-index: 1000;
   animation: claude4ToastSlide 0.5s ease-out;
   display: flex;
@@ -1385,7 +1385,7 @@
   padding: 40px;
   text-align: center;
   margin: 30px 0;
-  backdrop-filter: blur(15px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .claude4-wallet-icon {
@@ -1445,7 +1445,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   position: relative;
   overflow: hidden;
 }

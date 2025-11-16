@@ -39,8 +39,8 @@
   padding: 1.5rem;
   border-radius: 16px;
   background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   position: relative;
   overflow: hidden;
   box-shadow: 0 0 12px rgba(0, 255, 255, 0.05);

@@ -100,8 +100,12 @@
 .grid-claim,
 .grid-summary {
   padding: 1.5rem;
-  border-radius: 16px;
-  background: transparent;
+  border-radius: 1.5rem;
+  background: transparent; /* 🔙 REVIN LA ORIGINAL - FĂRĂ FUNDAL */
+  border: none; /* 🔙 FĂRĂ BORDER */
+  backdrop-filter: none; /* 🔙 FĂRĂ BLUR */
+  -webkit-backdrop-filter: none;
+  box-shadow: none; /* 🔙 FĂRĂ SHADOW */
   position: relative;
   overflow: hidden;
   display: flex;
@@ -109,6 +113,16 @@
   height: 100%;
   min-width: 0;
   box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.card-box:hover,
+.grid-payment:hover,
+.grid-panel:hover,
+.grid-claim:hover,
+.grid-summary:hover {
+  /* 🔙 REVIN LA ORIGINAL - FĂRĂ EFECTE HOVER */
 }
 
 

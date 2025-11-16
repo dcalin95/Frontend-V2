@@ -27,11 +27,11 @@ const THEMES = {
       info: '#1e90ff'
     },
     gradients: {
-      primary: 'linear-gradient(135deg, #00f0ff 0%, #0099cc 100%)',
-      secondary: 'linear-gradient(135deg, #ff6b35 0%, #ff4757 100%)',
-      background: 'linear-gradient(135deg, #0d0d1f 0%, #1a1a2e 50%, #16213e 100%)',
-      surface: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
-      glass: 'rgba(26, 26, 46, 0.9)'
+      primary: 'linear-gradient(135deg, #00FFA3 0%, #DC1FFF 100%)',
+      secondary: 'linear-gradient(135deg, #DC1FFF 0%, #00FFA3 100%)',
+      background: 'transparent', /* 🚫 NO GREY BACKGROUND */
+      surface: 'rgba(255, 255, 255, 0.04)', /* CLEAN GLASS */
+      glass: 'rgba(255, 255, 255, 0.04)' /* CLEAN GLASS */
     }
   },
   light: {

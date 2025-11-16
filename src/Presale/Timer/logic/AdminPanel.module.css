@@ -10,139 +10,200 @@
   box-shadow: 0 0 8px currentColor;
 }
 
-/* ✅ Login button */
+/* ✅ Login button - SOLANA/AI STYLE */
 .login-btn {
   position: fixed;
   bottom: 20px;
   right: 20px;
   padding: 0.5rem 1rem;
-  background: #00ffc8;
-  color: #000;
-  font-weight: bold;
-  border: 2px solid #fff;
-  border-radius: 8px;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  color: #000000;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  border-radius: 12px;
   cursor: pointer;
-  box-shadow: 0 0 12px #00ffc8;
-  transition: transform 0.2s ease-in-out;
+  box-shadow: 0 0 12px rgba(0, 255, 163, 0.2);
+  transition: all 0.3s ease;
   z-index: 9999;
   font-size: 0.9rem;
 }
 
 .login-btn:hover {
-  transform: scale(1.05);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 0 20px rgba(0, 255, 163, 0.5), 0 0 40px rgba(220, 31, 255, 0.3);
 }
 
-/* ✅ Admin Panel */
+/* ✅ Admin Panel - SOLANA/AI STYLE */
 .admin-panel {
   position: fixed;
   top: 12%;
   left: 50%;
   transform: translateX(-50%);
   padding: 1rem;
-  background: #000;
-  color: #0ff;
-  border: 1px solid #0ff;
-  border-radius: 8px;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   z-index: 9999;
   width: 45%;
   max-width: 500px;
-  font-family: monospace;
-  box-shadow: 0 0 15px #0ff;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
   max-height: 82vh;
   overflow-y: auto;
+  color: rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
 }
 
-/* ✅ Sections */
+.admin-panel:hover {
+  border-color: rgba(0, 255, 163, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 255, 163, 0.2);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+}
+
+/* ✅ Sections - SOLANA/AI STYLE */
 .section {
   margin-bottom: 0.6rem;
   padding: 0.5rem;
-  background: rgba(0, 255, 255, 0.05);
-  border-radius: 6px;
-  border: 1px solid rgba(0, 255, 255, 0.2);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 2px 12px rgba(0, 255, 163, 0.05);
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.section:hover {
+  border-color: rgba(0, 255, 163, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 255, 163, 0.15);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
 }
 
 .section h3 {
   margin: 0 0 0.3rem 0;
-  color: #0ff;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
   font-size: 0.9rem;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 163, 0.3));
   text-align: center;
 }
 
-/* ✅ Inputs */
+/* ✅ Inputs - SOLANA/AI STYLE */
 .section input {
   width: 100%;
   margin: 0.2rem 0;
   padding: 0.3rem;
-  background-color: #111;
-  color: #0ff;
-  border: 1px solid #0ff;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  box-shadow: inset 0 0 6px #0ff;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  font-size: 16px; /* Prevent iOS zoom */
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 2px 12px rgba(0, 255, 163, 0.05);
+  transition: all 0.3s ease;
 }
 
-/* ✅ Buttons */
+.section input:focus {
+  outline: none;
+  border-color: rgba(0, 255, 163, 0.5);
+  box-shadow: 0 0 0 2px rgba(0, 255, 163, 0.2), 0 4px 20px rgba(0, 255, 163, 0.1);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+}
+
+/* ✅ Buttons - SOLANA/AI STYLE */
 .section button {
   width: 100%;
   margin: 0.2rem 0;
   padding: 0.4rem;
-  font-weight: bold;
-  border: none;
-  border-radius: 4px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
   font-size: 0.85rem;
-  background: #00ffc8;
-  color: #000;
-  box-shadow: 0 0 10px #00ffc8;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  color: #000000;
+  box-shadow: 0 0 8px rgba(0, 255, 163, 0.15);
 }
 
 .section button:hover {
-  transform: scale(1.03);
-  box-shadow: 0 0 15px #00ffc8;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 0 15px rgba(0, 255, 163, 0.4), 0 0 30px rgba(220, 31, 255, 0.2);
 }
 
-/* ✅ Info Section */
+/* ✅ Info Section - SOLANA/AI STYLE */
 .info-section {
   margin-top: 0.6rem;
   padding: 0.5rem;
-  background: rgba(0, 255, 255, 0.05);
-  border-radius: 6px;
-  border: 1px solid rgba(0, 255, 255, 0.2);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 2px 12px rgba(0, 255, 163, 0.05);
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.info-section:hover {
+  border-color: rgba(0, 255, 163, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 255, 163, 0.15);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
 }
 
 .info-section h3 {
   margin: 0 0 0.3rem 0;
-  color: #0ff;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
   font-size: 0.9rem;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 163, 0.3));
   text-align: center;
 }
 
 .info-section p {
   margin: 0.2rem 0;
   font-size: 0.85rem;
-  color: #0ff;
+  font-family: 'Inter', sans-serif;
+  color: rgba(255, 255, 255, 0.8);
 }
 
-/* ✅ Logout Button */
+/* ✅ Logout Button - SOLANA/AI STYLE */
 .logout-btn {
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
   padding: 0.4rem 0.75rem;
-  background: #ff0033;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
+  background: rgba(255, 0, 51, 0.8);
+  color: #ffffff;
+  border: 1px solid rgba(255, 0, 51, 0.5);
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 0 10px #ff0033;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 8px rgba(255, 0, 51, 0.3);
   font-size: 0.9rem;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
 }
 
 .logout-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 15px #ff0033;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 0, 51, 0.5);
+  background: rgba(255, 0, 51, 0.9);
 }
 
 /* ✅ Tab Navigation */
@@ -157,19 +218,28 @@
 }
 
 .tab-active {
-  background: #14F195 !important;
-  color: #000 !important;
-  box-shadow: 0 0 10px rgba(20, 241, 149, 0.5);
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF) !important;
+  color: #000000 !important;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  box-shadow: 0 0 12px rgba(0, 255, 163, 0.3);
 }
 
 .tab-inactive {
-  background: #444 !important;
-  color: #fff !important;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */ !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
 }
 
 .tab-inactive:hover {
-  background: #666 !important;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */ !important;
+  border-color: rgba(0, 255, 163, 0.3);
   transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 255, 163, 0.15);
 }
 
 /* ✅ Responsive */

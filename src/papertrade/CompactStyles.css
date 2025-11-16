@@ -6,7 +6,7 @@
   border-radius: 12px;
   padding: 1rem;
   border: 1px solid rgba(240, 185, 11, 0.2);
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .chart-header {
@@ -137,7 +137,7 @@
   border-radius: 12px;
   padding: 1rem;
   border: 1px solid rgba(240, 185, 11, 0.2);
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .market-header-compact {
@@ -273,7 +273,7 @@
   border: 1px solid rgba(240, 185, 11, 0.2);
   border-radius: 12px;
   padding: 1rem;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .trading-sidebar .trading-panel h3 {
@@ -293,7 +293,7 @@
   border: 1px solid rgba(240, 185, 11, 0.2);
   border-radius: 12px;
   padding: 1rem;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .holdings-section-compact h2,
@@ -315,7 +315,7 @@
   border: 1px solid rgba(240, 185, 11, 0.2);
   border-radius: 12px;
   padding: 1rem;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .trades-list-compact {

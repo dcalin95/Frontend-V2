@@ -30,11 +30,14 @@
 
 .tokenomics-info h2 {
   font-size: 2.5rem;
-  color: var(--c-accent);
+  font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(0, 255, 163, 0.4));
   margin-bottom: 1rem;
-  text-shadow: 0 0 10px var(--c-accent), 0 0 20px var(--c-accent-2);
-  font-weight: bold;
-  background: transparent;
 }
 
 .tokenomics-info p {
@@ -54,17 +57,20 @@
   background: transparent;
 }
 
-/* Cardurile cu detalii */
+/* Cardurile cu detalii - SOLANA/AI STYLE */
 .detail-item {
-  background: rgba(0, 0, 0, 0.3);
-  border: 2px solid rgba(0, 255, 224, 0.4);
-  border-radius: 20px;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
   padding: 2rem;
-  backdrop-filter: blur(5px);
-  transition: all 0.4s ease;
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
   animation: fadeInUp 0.6s ease forwards;
+  font-family: 'Inter', sans-serif;
 }
 
 .detail-item::before {
@@ -84,17 +90,21 @@
 
 .detail-item:hover {
   transform: translateY(-8px) scale(1.02);
-  border-color: var(--c-accent);
-  box-shadow: 0 15px 40px rgba(0, 255, 224, 0.3), 0 0 20px rgba(0, 255, 224, 0.2);
-  background: rgba(0, 0, 0, 0.5);
+  border-color: rgba(0, 255, 163, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 255, 163, 0.3), 0 0 50px rgba(220, 31, 255, 0.2);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
 }
 
 .detail-item h3 {
-  color: var(--c-accent);
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
   font-size: 1.4rem;
   margin-bottom: 0.8rem;
-  font-weight: bold;
-  text-shadow: 0 0 8px rgba(0, 255, 224, 0.5);
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 12px rgba(0, 255, 163, 0.3));
   position: relative;
   z-index: 2;
 }

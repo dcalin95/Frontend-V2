@@ -28,16 +28,33 @@ import PWAInstallPrompt from "./components/PWAInstallPrompt";
 // 📱 Mobile
 import MobileUI from "./components/MobileUI";
 
-// 📊 Analytics - Acum integrate în FloatingMenu Overlay System
-// import CryptoAnalyticsDashboard from "./components/CryptoAnalyticsDashboard";
-// import MarketingDashboard from "./components/MarketingDashboard";
+// 📊 Analytics - Componente separate pentru ferestre popup
+import MarketingDashboard from "./components/MarketingDashboard";
+import CryptoAnalyticsDashboard from "./components/CryptoAnalyticsDashboard";
+import PortfolioManager from "./components/PortfolioManager";
+import AccessibilityPanel from "./components/AccessibilityPanel";
 
 // 🎛 UI/UX Enhancements
 
-import FloatingMenu from "./components/FloatingMenu";
+import AIToolLauncher from "./components/AIToolLauncher";
+import AIStandaloneLayout from "./components/AIStandaloneLayout";
 
 // 📈 Google Analytics
 import GoogleAnalyticsWrapper from "./components/GoogleAnalyticsWrapper";
+
+const STANDALONE_TOOL_PATHS = {
+  "/ai-marketing": "marketing",
+  "/ai-crypto": "crypto",
+  "/ai-portfolio-standalone": "portfolio",
+  "/accessibility": "accessibility",
+};
+
+const STANDALONE_TOOL_COMPONENTS = {
+  marketing: MarketingDashboard,
+  crypto: CryptoAnalyticsDashboard,
+  portfolio: PortfolioManager,
+  accessibility: AccessibilityPanel,
+};
 
 // 📄 Lazy Loaded Pages
 // Resilient lazy loader to handle chunk cache mismatch after S3/CloudFront deploys
@@ -94,6 +111,7 @@ const OrbitPage = lazy(() => import("./components/OrbitPage"));
 const AIPortfolioPage = lazy(() => import("./components/AIPortfolioPage"));
 const AIPortfolioPageRefactored = lazy(() => import("./components/AIPortfolioPageRefactored"));
 const Claude4AIPortfolioDemo = lazy(() => import("./ai-portfolio/Claude4AIPortfolioDemo"));
+const AIPortfolioAnalyticsRefactored = lazy(() => import("./ai-portfolio/AIPortfolioAnalyticsRefactored"));
 const PaperTradingPage = lazy(() => import("./papertrade/PaperTradingPage"));
 const STXPaperTrade = lazy(() => import("./papertrade/STXPaperTrade"));
 const TokenPaperTrade = lazy(() => import("./papertrade/TokenPaperTrade"));
@@ -113,9 +131,48 @@ const App = () => {
   const [amountPay, setAmountPay] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [currentSection, setCurrentSection] = useState("home");
-  
 
-  
+  const renderToastContainer = () => (
+    <ToastContainer
+      position="top-right"
+      autoClose={3000}
+      hideProgressBar={false}
+      newestOnTop
+      closeOnClick
+      pauseOnHover
+      theme="dark"
+      className="bits-toast-container"
+      toastClassName="bits-toast"
+    />
+  );
+
+  const standaloneToolId = (() => {
+    if (typeof window === "undefined") return null;
+    const params = new URLSearchParams(window.location.search);
+    const queryTool = params.get("ai_tool");
+    if (queryTool) return queryTool;
+    const normalizedPath = window.location.pathname.replace(/\/$/, "") || "/";
+    return STANDALONE_TOOL_PATHS[normalizedPath] || null;
+  })();
+
+  if (standaloneToolId && STANDALONE_TOOL_COMPONENTS[standaloneToolId]) {
+    const StandaloneComponent = STANDALONE_TOOL_COMPONENTS[standaloneToolId];
+    return (
+      <>
+        {renderToastContainer()}
+        <div
+          className="dashboard-standalone-override"
+          style={{
+            minHeight: "100vh",
+            background: "#000",
+            padding: "20px",
+          }}
+        >
+          <StandaloneComponent standalone />
+        </div>
+      </>
+    );
+  }
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
 
@@ -133,23 +190,80 @@ const App = () => {
 
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        pauseOnHover
-        theme="dark"
-        className="bits-toast-container"
-        toastClassName="bits-toast"
-      />
+      {renderToastContainer()}
 
       <Router>
         <GoogleAnalyticsWrapper>
           <ErrorBoundary>
             <Suspense fallback={<LoadingSpinner />}>
               <Routes>
+                {/* ===== PAGINI STANDALONE (FĂRĂ HEADER/FOOTER/SIDEBAR) ===== */}
+                <Route
+                  path="/ai-marketing"
+                  element={
+                    <AIStandaloneLayout
+                      title="AI Marketing Suite"
+                      description="Automated campaigns, analytics, and real-time insights for growth teams."
+                    >
+                      <MarketingDashboard standalone />
+                    </AIStandaloneLayout>
+                  }
+                />
+                <Route
+                  path="/ai-crypto"
+                  element={
+                    <AIStandaloneLayout
+                      title="AI Crypto Intelligence"
+                      description="Live market monitoring, predictive analytics, and trading signals."
+                    >
+                      <CryptoAnalyticsDashboard standalone />
+                    </AIStandaloneLayout>
+                  }
+                />
+                <Route
+                  path="/ai-portfolio-analytics"
+                  element={
+                    <AIStandaloneLayout
+                      title="AI Portfolio Analytics"
+                      description="Advanced neural analytics, simulations, and strategy insights."
+                    >
+                      <AIPortfolioAnalyticsRefactored />
+                    </AIStandaloneLayout>
+                  }
+                />
+                <Route
+                  path="/ai-portfolio-standalone"
+                  element={
+                    <AIStandaloneLayout
+                      title="AI Portfolio Manager"
+                      description="Multi-asset optimization, risk controls, and allocation recommendations."
+                    >
+                      <PortfolioManager standalone />
+                    </AIStandaloneLayout>
+                  }
+                />
+                <Route
+                  path="/accessibility"
+                  element={
+                    <AIStandaloneLayout
+                      title="AI Accessibility Hub"
+                      description="Adaptive UI settings, behavior insights, and personalized recommendations."
+                    >
+                      <AccessibilityPanel
+                        isOpen
+                        standalone
+                        onClose={() => {
+                          if (window.history.length > 1) {
+                            window.history.back();
+                          } else {
+                            window.location.href = '/';
+                          }
+                        }}
+                      />
+                    </AIStandaloneLayout>
+                  }
+                />
+
                 {/* ===== TOATE RUTELE CU LAYOUT COMPLET (Header + Sidebar + Overlay System) ===== */}
                 <Route 
                   path="/*" 
@@ -190,6 +304,7 @@ const App = () => {
                       <Route path="/ai-portfolio" element={<AIPortfolioPage />} />
                       <Route path="/ai-portfolio-v2" element={<AIPortfolioPageRefactored />} />
                       <Route path="/ai-portfolio-claude4" element={<Claude4AIPortfolioDemo />} />
+                      
                       <Route path="/paper-trading" element={<PaperTradingPage />} />
                       <Route path="/paper-trade/stx" element={<STXPaperTrade />} />
                       <Route path="/paper-trade/:symbol" element={<TokenPaperTrade />} />
@@ -243,8 +358,8 @@ const App = () => {
                         <PWAInstallPrompt />
                       </div>
                       
-                      {/* Floating UI cu Overlay System Integrat */}
-                      <FloatingMenu />
+                      {/* Launcher AI Tools */}
+                      <AIToolLauncher />
                     </MobileUI>
                   }
                 />

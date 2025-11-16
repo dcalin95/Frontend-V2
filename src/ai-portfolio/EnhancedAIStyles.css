@@ -44,7 +44,7 @@
   border-radius: 20px;
   padding: 40px;
   text-align: center;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .ai-error-boundary .ai-error-icon {
@@ -146,7 +146,7 @@
   background: rgba(0, 212, 255, 0.1);
   border: 1px solid rgba(0, 212, 255, 0.3);
   border-radius: 25px;
-  backdrop-filter: blur(15px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   flex-wrap: wrap;
 }
 
@@ -193,7 +193,7 @@
   border-radius: 20px;
   padding: 25px;
   margin-bottom: 30px;
-  backdrop-filter: blur(15px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   animation: ai-blockchain-appear 0.8s ease-out;
 }
 
@@ -252,14 +252,14 @@
   align-items: center;
   gap: 15px;
   padding: 20px;
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   transition: all 0.3s ease;
 }
 
 .ai-blockchain-card:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border-color: rgba(0, 212, 255, 0.3);
   transform: translateY(-2px);
 }
@@ -326,7 +326,7 @@
 }
 
 .ai-transaction-item:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
 }
 
 .ai-tx-info {
@@ -406,11 +406,11 @@
 /* ========== Enhanced Input Panel ========== */
 
 .ai-panel {
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   padding: 30px;
-  backdrop-filter: blur(20px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
 }
@@ -499,13 +499,13 @@
 .ai-input {
   width: 100%;
   padding: 15px 20px;
-  background: rgba(255, 255, 255, 0.08);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   color: #ffffff;
   font-size: 1rem;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .ai-input:focus {
@@ -559,14 +559,14 @@
 .ai-select {
   width: 100%;
   padding: 15px 20px;
-  background: rgba(255, 255, 255, 0.08);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   color: #ffffff;
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .ai-select:focus {
@@ -596,7 +596,7 @@
   align-items: center;
   gap: 8px;
   padding: 15px 10px;
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   color: #ffffff;
@@ -651,7 +651,7 @@
 }
 
 .ai-toggle:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
 }
 
 .ai-checkbox {
@@ -806,7 +806,7 @@
   background: rgba(0, 212, 255, 0.05);
   border: 2px solid rgba(0, 212, 255, 0.2);
   border-radius: 20px;
-  backdrop-filter: blur(15px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .ai-thinking-animation {
@@ -950,7 +950,7 @@
   background: rgba(255, 71, 87, 0.1);
   border: 2px solid rgba(255, 71, 87, 0.3);
   border-radius: 15px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .ai-error-icon {
@@ -999,7 +999,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   padding: 30px;
-  backdrop-filter: blur(20px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   animation: ai-results-appear 0.8s ease-out;
 }
@@ -1062,7 +1062,7 @@
   align-items: center;
   gap: 5px;
   padding: 15px;
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border-radius: 10px;
 }
 
@@ -1104,7 +1104,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 15px;
   padding: 20px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .ai-chart-title {
@@ -1130,7 +1130,7 @@
 }
 
 .ai-allocation-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 20px;
@@ -1138,7 +1138,7 @@
 }
 
 .ai-allocation-card:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border-color: rgba(0, 212, 255, 0.3);
   transform: translateY(-2px);
 }
@@ -1254,14 +1254,14 @@
   align-items: center;
   gap: 12px;
   padding: 15px;
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   transition: all 0.3s ease;
 }
 
 .ai-meta-card:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   transform: translateY(-2px);
 }
 
@@ -1297,7 +1297,7 @@
   background: rgba(255, 215, 0, 0.05);
   border: 1px solid rgba(255, 215, 0, 0.2);
   border-radius: 15px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .ai-summary-header {
@@ -1384,13 +1384,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 15px;
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border-radius: 8px;
   transition: all 0.3s ease;
 }
 
 .ai-bits-item:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   transform: translateX(5px);
 }
 
@@ -1499,7 +1499,7 @@
   box-shadow: 0 8px 32px rgba(0, 255, 136, 0.4);
   animation: ai-toast-appear 0.5s ease-out;
   z-index: 1000;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 @keyframes ai-toast-appear {

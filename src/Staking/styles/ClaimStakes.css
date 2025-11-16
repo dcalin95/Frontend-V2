@@ -1,25 +1,50 @@
 .claim-stakes {
-    background: rgba(255, 255, 255, 0.03);
+    background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 1rem;
-    border-radius: 10px;
+    border-radius: 1.5rem;
+    backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+    -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+    box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
     color: #fff;
+    font-family: 'Inter', sans-serif;
   }
   
   .stake-item {
     padding: 0.75rem;
     margin-bottom: 1rem;
-    border: 1px solid #333;
-    border-radius: 8px;
+    background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+    -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+    box-shadow: 0 2px 12px rgba(0, 255, 163, 0.05);
+    transition: all 0.3s ease;
+  }
+
+  .stake-item:hover {
+    border-color: rgba(0, 255, 163, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 255, 163, 0.15);
+    background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   }
   
   .stake-item button {
     margin-top: 0.5rem;
-    background: #222;
-    color: #0ff;
-    border: 1px solid #0ff;
+    background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+    color: #000000;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    border: 1px solid rgba(0, 255, 163, 0.3);
     padding: 6px 12px;
-    border-radius: 4px;
+    border-radius: 12px;
     cursor: pointer;
+    box-shadow: 0 0 8px rgba(0, 255, 163, 0.15);
+    transition: all 0.3s ease;
+  }
+
+  .stake-item button:hover {
+    box-shadow: 0 0 15px rgba(0, 255, 163, 0.4), 0 0 30px rgba(220, 31, 255, 0.2);
+    transform: scale(1.05);
   }
   .stake-entry {
     margin-bottom: 16px;
@@ -36,12 +61,23 @@
     margin-top: 4px;
   }
 .stake-entry {
-  background: #111;
-  color: #fff;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: 'Inter', sans-serif;
   padding: 12px;
-  border-radius: 10px;
+  border-radius: 12px;
   margin-bottom: 16px;
-  border: 1px solid #333;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 2px 12px rgba(0, 255, 163, 0.05);
+  transition: all 0.3s ease;
+}
+
+.stake-entry:hover {
+  border-color: rgba(0, 255, 163, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 255, 163, 0.15);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
 }
 
 .countdown {
@@ -53,16 +89,28 @@
 .claim-button {
   margin-top: 10px;
   padding: 6px 12px;
-  background-color: #00f59d;
-  color: #000;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  color: #000000;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  border-radius: 12px;
   cursor: pointer;
+  box-shadow: 0 0 8px rgba(0, 255, 163, 0.15);
+  transition: all 0.3s ease;
+}
+
+.claim-button:hover:not(:disabled) {
+  box-shadow: 0 0 15px rgba(0, 255, 163, 0.4), 0 0 30px rgba(220, 31, 255, 0.2);
+  transform: scale(1.05);
 }
 
 .claim-button:disabled {
-  background-color: #555;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.05);
   cursor: not-allowed;
+  filter: grayscale(0.5);
+  box-shadow: none;
 }
     

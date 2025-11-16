@@ -1,13 +1,16 @@
 import React from "react";
 
-const PriceInfo = ({ 
-  selectedToken, 
-  selectedTokenIcon, 
-  pricePerBitsUSD, 
-  selectedTokenPrice, 
-  bitsLoading, 
-  priceError 
+const PriceInfo = ({
+  selectedTokenKey,
+  selectedTokenLabel,
+  selectedTokenIcon,
+  pricePerBitsUSD,
+  selectedTokenPrice,
+  bitsLoading,
+  priceError,
 }) => {
+  const isStripe = selectedTokenKey === "STRIPE";
+
   return (
     <div className="price-info">
       <div className="price-line">
@@ -25,9 +28,15 @@ const PriceInfo = ({
       </div>
 
       <div className="price-line">
-        <img src={selectedTokenIcon} alt={selectedToken} className="token-title-icon" />
-        <span className="selected-token">1 {selectedToken}</span>
-        <span className="price-value">≈ ${selectedTokenPrice.toFixed(3)}</span>
+        <img src={selectedTokenIcon} alt={selectedTokenLabel} className="token-title-icon" />
+        <span className="selected-token">
+          {isStripe ? selectedTokenLabel : `1 ${selectedTokenLabel}`}
+        </span>
+        <span className="price-value">
+          {isStripe
+            ? "Preset packages of €10 increments"
+            : `≈ $${selectedTokenPrice.toFixed(3)}`}
+        </span>
       </div>
     </div>
   );

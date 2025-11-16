@@ -3,7 +3,7 @@
   width: 240px;
   height: 240px;
   margin: 2rem auto;
-  background: radial-gradient(ellipse at center, #0d0d1f 0%, #000 100%);
+  background: transparent; /* 🚫 NO GREY BACKGROUND - SOLANA STYLE */
   border-radius: 50%;
   box-shadow:
     0 0 25px rgba(0, 255, 255, 0.3),
@@ -39,7 +39,7 @@
   margin-top: -10px;
   padding: 0.5rem 1rem;
   border-radius: 12px;
-  backdrop-filter: blur(6px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   background: rgba(0, 0, 0, 0.25);
   box-shadow: inset 0 0 8px rgba(0, 255, 255, 0.05);
 }

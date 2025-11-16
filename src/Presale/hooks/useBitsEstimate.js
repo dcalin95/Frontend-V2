@@ -34,6 +34,37 @@ const useBitsEstimate = ({ amountPay, selectedToken, tokenPriceUSD, walletAddres
       }
 
       try {
+        // 🌟 Stripe fiat checkout - amountPay already converted to USD
+        if (selectedToken === "STRIPE") {
+          const usdCalculated = parseFloat(amountPay);
+          const effectiveBitsPrice = pricePerBitsUSD && pricePerBitsUSD > 0 ? pricePerBitsUSD : 0.001;
+          const bitsAmount = usdCalculated / effectiveBitsPrice;
+
+          const bonusPercent = usdCalculated >= 100 ? 10 : usdCalculated >= 50 ? 5 : 0;
+          const baseBitsInteger = toBitsInteger(bitsAmount);
+          const bonusAmountCalc = toBitsInteger(baseBitsInteger * (bonusPercent / 100));
+
+          console.log(`🎯 [STRIPE FIAT CHECKOUT]`);
+          console.log("USD Amount:", usdCalculated);
+          console.log("Bits price (USD):", effectiveBitsPrice);
+          console.log("Calculated BITS:", bitsAmount);
+          console.log("Bonus %:", bonusPercent);
+
+          if (isNaN(baseBitsInteger) || baseBitsInteger <= 0) {
+            console.error("❌ Invalid BITS calculation for Stripe");
+            setError("Invalid BITS calculation");
+            console.groupEnd();
+            return;
+          }
+
+          setBits(baseBitsInteger);
+          setUsdValue(usdCalculated);
+          setBonus(bonusPercent);
+          setBonusAmount(bonusAmountCalc);
+          console.groupEnd();
+          return;
+        }
+
         // 🌟 Special handling for Fiat tokens - treat amount as USD directly
         if (selectedToken === "NOWPAY" || selectedToken === "TRANSAK" || selectedToken === "MOONPAY") {
           const usdCalculated = parseFloat(amountPay); // Amount is already in USD for fiat

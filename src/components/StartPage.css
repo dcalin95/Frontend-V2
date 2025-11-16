@@ -1,7 +1,23 @@
 .start-page-container {
   display: grid;
-  place-items: center; /* centrează pe ambele axe */
-  min-height: calc(100vh - 160px); /* lasă spațiu pentru header/footer */
+  place-items: center;
+  min-height: calc(100vh - 160px);
+  padding: 2rem 1rem;
+  font-family: 'Inter', sans-serif;
+}
+
+@media (max-width: 768px) {
+  .start-page-container {
+    padding: 1.5rem 1rem;
+    min-height: calc(100vh - 140px);
+  }
+}
+
+@media (max-width: 480px) {
+  .start-page-container {
+    padding: 1rem 0.8rem;
+    min-height: calc(100vh - 120px);
+  }
 }
 
 .start-layout-center {

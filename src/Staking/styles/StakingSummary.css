@@ -8,11 +8,16 @@
   margin: 0;
 }
 
-/* AI Summary Title - Calm */
+/* AI Summary Title - SOLANA/AI STYLE */
 .ai-summary-title {
   font-size: 1.6rem;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.8);
+  font-weight: 700;
+  font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 12px rgba(0, 255, 163, 0.3));
   margin-bottom: 1.5rem;
   letter-spacing: 0.5px;
 }
@@ -26,17 +31,23 @@
 }
 
 .ai-stat-item {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
   padding: 1.5rem;
   text-align: center;
-  transition: all 0.2s ease;
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  box-shadow: 0 2px 12px rgba(0, 255, 163, 0.05);
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
 }
 
 .ai-stat-item:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.12);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  border-color: rgba(0, 255, 163, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 255, 163, 0.15);
+  transform: translateY(-2px) scale(1.02);
 }
 
 .ai-stat-label {
@@ -48,9 +59,13 @@
 
 .ai-stat-value {
   font-size: 2.4rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.95);
-  text-shadow: 0 0 10px rgba(0, 255, 200, 0.35);
+  font-weight: 800;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.4));
 }
 
 /* Clean - No aggressive animations */
@@ -85,25 +100,25 @@
   margin: 0.5rem 0;
 }
 
-/* Butonul de Claim */
+/* Butonul de Claim - SOLANA/AI STYLE */
 .claimButton {
-  background: linear-gradient(90deg, #00ffff, #ff00ff);
-  border: none;
-  border-radius: 10px;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  border-radius: 12px;
   padding: 12px 24px;
   margin-top: 20px;
   font-size: 1.1rem;
-  font-weight: bold;
-  color: black;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  color: #000000;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.7);
-  animation: pulseButton 1.5s infinite alternate;
+  box-shadow: 0 0 12px rgba(0, 255, 163, 0.2);
 }
 
-.claimButton:hover {
-  background: linear-gradient(90deg, #00ff99, #ff00ff);
-  box-shadow: 0 0 20px rgba(0, 255, 255, 1);
+.claimButton:hover:not(:disabled) {
+  box-shadow: 0 0 20px rgba(0, 255, 163, 0.5), 0 0 40px rgba(220, 31, 255, 0.3);
+  transform: translateY(-2px) scale(1.02);
 }
 
 .claimButton:disabled {
@@ -151,19 +166,16 @@
   }
 }
 
-/* AI-style number formatting */
+/* AI-style number formatting - SOLANA/AI STYLE */
 .ai-number {
-  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
-  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
   letter-spacing: 0.8px;
-  text-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
-  background: linear-gradient(135deg, 
-    rgba(0, 255, 136, 0.9) 0%, 
-    rgba(255, 255, 255, 0.8) 50%, 
-    rgba(0, 255, 136, 0.9) 100%);
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 163, 0.4));
   transition: all 0.3s ease;
   position: relative;
   display: inline-block;
@@ -171,7 +183,7 @@
 
 .ai-number:hover {
   transform: scale(1.1);
-  text-shadow: 0 0 15px rgba(0, 255, 136, 0.6);
+  filter: drop-shadow(0 0 15px rgba(220, 31, 255, 0.6));
 }
 
 /* Number animation on value change */

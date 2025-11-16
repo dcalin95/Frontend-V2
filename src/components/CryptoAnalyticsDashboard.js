@@ -1,752 +1,338 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import cryptoAnalyticsService from '../services/cryptoAnalyticsService';
+import React, { useEffect, useMemo, useState } from 'react';
+import BrandLogo from './BrandLogo';
 import './CryptoAnalyticsDashboard.css';
 
-const CryptoAnalyticsDashboard = ({ standalone = false }) => {
-  const [isVisible, setIsVisible] = useState(standalone); // Dacă e standalone, start ca vizibil
-  const [analyticsData, setAnalyticsData] = useState({});
-  const [userInsights, setUserInsights] = useState({});
-  const [performanceMetrics, setPerformanceMetrics] = useState({});
-  const [cryptoMetrics, setCryptoMetrics] = useState({});
-  const [activeTab, setActiveTab] = useState('overview');
-  const [realTimeData, setRealTimeData] = useState({
-    btcPrice: 45250.32,
-    ethPrice: 3180.45,
-    marketCap: 2.1e12,
-    volume24h: 125.6e9,
-    totalTransactions: 142580,
-    activeWallets: 8247,
-    networkHashrate: 198.5e18,
-    gasPrice: 25.4
-  });
-  const [aiPredictions, setAiPredictions] = useState([]);
-  const [networkStatus, setNetworkStatus] = useState({
-    bitcoin: { status: 'online', blockHeight: 756234, tps: 7.2 },
-    ethereum: { status: 'online', blockHeight: 18156789, tps: 15.8 },
-    polygon: { status: 'online', blockHeight: 47832156, tps: 65.3 }
-  });
+const GLOBAL_MARKET_URL = 'https://api.coingecko.com/api/v3/global';
+const COINGECKO_SIMPLE_PRICE =
+  'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin&vs_currencies=usd';
+
+const MARKET_SNAPSHOTS = {
+  daily: {
+    btc: 65342,
+    eth: 3432,
+    cap: 2.31,
+    dominance: 46.2,
+    volume: 96.2,
+  },
+  weekly: {
+    btc: 62980,
+    eth: 3285,
+    cap: 2.18,
+    dominance: 45.8,
+    volume: 88.5,
+  },
+  monthly: {
+    btc: 61212,
+    eth: 3120,
+    cap: 2.04,
+    dominance: 45.1,
+    volume: 79.1,
+  },
+};
+
+const ASSET_ANALYTICS = [
+  { asset: 'BTC', id: 'bitcoin', icon: '₿', signal: 'Long bias', change: 3.4, support: '61.2k', resistance: '68.0k', confidence: 84 },
+  { asset: 'ETH', id: 'ethereum', icon: 'Ξ', signal: 'Neutral', change: 1.2, support: '3.05k', resistance: '3.45k', confidence: 77 },
+  { asset: 'SOL', id: 'solana', icon: '◎', signal: 'Momentum', change: 5.9, support: '134', resistance: '158', confidence: 81 },
+  { asset: 'BNB', id: 'binancecoin', icon: '🟡', signal: 'Range bound', change: -0.8, support: '572', resistance: '618', confidence: 62 },
+];
+
+const DEFI_TRENDS = [
+  { name: 'Perpetual DEX open interest', value: '3.8B', change: 12.4 },
+  { name: 'Stablecoin net inflows', value: '1.2B', change: 7.1 },
+  { name: 'Staking TVL (L2 focus)', value: '26.7B', change: 4.6 },
+  { name: 'NFT marketplace volume', value: '184M', change: -3.2 },
+];
+
+const RISK_FACTORS = [
+  { label: 'Funding rate extremes', status: 'elevated', notes: 'BTC/ETH perp funding > 0.08%' },
+  { label: 'Exchange reserves', status: 'favorable', notes: 'BTC reserves down 2.1% WoW' },
+  { label: 'Macro calendar', status: 'watch', notes: 'FOMC minutes + CPI later this week' },
+  { label: 'On-chain leverage', status: 'moderate', notes: 'Binance & OKX leverage ratio stable' },
+];
+
+const STRATEGY_CARDS = [
+  {
+    title: 'AI momentum rotation',
+    description: 'Rotate 10% of outperformers into SOL, APT, and RWAs for 7d cycle.',
+    impact: 'High',
+    icon: '🔁',
+  },
+  {
+    title: 'Basis trade alert',
+    description: 'ETH futures basis > 9%. Deploy delta-neutral lend/borrow spread.',
+    impact: 'Medium',
+    icon: '🧮',
+  },
+  {
+    title: 'Stablecoin deployment',
+    description: 'USDC curve on Base at 12% APY. Auto-route treasury idle funds.',
+    impact: 'Medium',
+    icon: '🏦',
+  },
+];
+
+const formatUSD = (value, options = {}) =>
+  new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: options.maxDigits ?? 0,
+  }).format(value);
+
+const CryptoAnalyticsDashboard = () => {
+  const [timeframe, setTimeframe] = useState('daily');
+  const [marketData, setMarketData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const intervalRef = useRef(null);
-  const particleRef = useRef(null);
-
-  // Real-time data updates
-  useEffect(() => {
-    if (isVisible) {
-      updateAnalyticsData();
-      startRealTimeUpdates();
-      initializeAIPredictions();
-      return () => {
-        if (intervalRef.current) clearInterval(intervalRef.current);
-      };
-    }
-  }, [isVisible]);
-
-  const startRealTimeUpdates = () => {
-    intervalRef.current = setInterval(() => {
-      updateRealTimeData();
-      updateNetworkStatus();
-    }, 20000); // 🔧 Reduced from 3s to 20s to prevent rate limiting
-  };
-
-  const updateRealTimeData = () => {
-    setRealTimeData(prev => ({
-      btcPrice: prev.btcPrice + (Math.random() - 0.5) * 500,
-      ethPrice: prev.ethPrice + (Math.random() - 0.5) * 100,
-      marketCap: prev.marketCap + (Math.random() - 0.5) * 1e10,
-      volume24h: prev.volume24h + (Math.random() - 0.5) * 1e9,
-      totalTransactions: prev.totalTransactions + Math.floor(Math.random() * 10),
-      activeWallets: prev.activeWallets + Math.floor(Math.random() * 20) - 10,
-      networkHashrate: prev.networkHashrate + (Math.random() - 0.5) * 1e17,
-      gasPrice: Math.max(15, prev.gasPrice + (Math.random() - 0.5) * 5)
-    }));
-  };
-
-  const updateNetworkStatus = () => {
-    setNetworkStatus(prev => ({
-      bitcoin: {
-        ...prev.bitcoin,
-        blockHeight: prev.bitcoin.blockHeight + Math.floor(Math.random() * 2),
-        tps: Math.max(5, prev.bitcoin.tps + (Math.random() - 0.5) * 2)
-      },
-      ethereum: {
-        ...prev.ethereum,
-        blockHeight: prev.ethereum.blockHeight + Math.floor(Math.random() * 3),
-        tps: Math.max(10, prev.ethereum.tps + (Math.random() - 0.5) * 5)
-      },
-      polygon: {
-        ...prev.polygon,
-        blockHeight: prev.polygon.blockHeight + Math.floor(Math.random() * 10),
-        tps: Math.max(50, prev.polygon.tps + (Math.random() - 0.5) * 15)
-      }
-    }));
-  };
-
-  const initializeAIPredictions = () => {
-    const predictions = [
-      {
-        type: 'price',
-        asset: 'BTC',
-        prediction: 'Bullish momentum detected - potential 8% increase in 24h',
-        confidence: 0.87,
-        timeframe: '24h',
-        icon: '📈'
-      },
-      {
-        type: 'market',
-        asset: 'ETH',
-        prediction: 'Network congestion expected - gas fees may increase',
-        confidence: 0.72,
-        timeframe: '4h',
-        icon: '⛽'
-      },
-      {
-        type: 'risk',
-        asset: 'Overall',
-        prediction: 'Market volatility warning - consider position sizing',
-        confidence: 0.91,
-        timeframe: '12h',
-        icon: '⚠️'
-      },
-      {
-        type: 'opportunity',
-        asset: 'DeFi',
-        prediction: 'Liquidity pool APY optimization detected',
-        confidence: 0.65,
-        timeframe: '6h',
-        icon: '💎'
-      }
-    ];
-    setAiPredictions(predictions);
-  };
-
-  const updateAnalyticsData = () => {
-    const summary = cryptoAnalyticsService.getCryptoAnalyticsSummary();
-    const insights = cryptoAnalyticsService.getUserBehaviorInsights();
-    
-    setAnalyticsData(summary);
-    setUserInsights(insights);
-    setPerformanceMetrics(summary.cryptoMetrics || {});
-    setCryptoMetrics(summary.sessionData || {});
-  };
-
-  const toggleDashboard = () => {
-    setIsVisible(!isVisible);
-    if (!isVisible) {
-      cryptoAnalyticsService.trackCryptoEvent('crypto_analytics_ai_dashboard_open', {
-        timestamp: Date.now(),
-        version: 'ai_enhanced_v3'
-      });
-    }
-  };
+  const [error, setError] = useState(null);
+  const snapshot = useMemo(() => {
+    const defaults = MARKET_SNAPSHOTS[timeframe];
+    if (!marketData?.global) return defaults;
+    const { prices = {}, global } = marketData;
+    return {
+      btc: prices.bitcoin ?? defaults.btc,
+      eth: prices.ethereum ?? defaults.eth,
+      cap: global.marketCap ? global.marketCap / 1_000_000_000_000 : defaults.cap,
+      volume: global.volume ? global.volume / 1_000_000_000 : defaults.volume,
+      dominance: global.btcDominance ?? defaults.dominance,
+    };
+  }, [marketData, timeframe]);
+  const updatedLabel = marketData ? new Date(marketData.updatedAt).toLocaleTimeString() : null;
 
   useEffect(() => {
-    const handleToggle = () => toggleDashboard();
-    window.addEventListener('toggleCryptoDashboard', handleToggle);
-    return () => window.removeEventListener('toggleCryptoDashboard', handleToggle);
-  }, []);
+    let active = true;
+    let interval;
 
-  const handleAIAction = (action) => {
-    setLoading(true);
-    console.log(`🤖 AI Action: ${action}`);
-    
-    setTimeout(() => {
-      switch (action) {
-        case 'analyze_portfolio':
-          console.log('📊 AI Portfolio Analysis complete');
-          break;
-        case 'optimize_gas':
-          console.log('⛽ Gas optimization recommendations generated');
-          break;
-        case 'risk_assessment':
-          console.log('⚠️ Risk assessment updated');
-          break;
-        case 'predict_prices':
-          console.log('🔮 Price predictions refreshed');
-          initializeAIPredictions();
-          break;
-        default:
-          console.log('✅ AI action completed');
+    const fetchMarketData = async () => {
+      try {
+        if (!active) return;
+        setLoading((prev) => prev === false && marketData ? prev : true);
+        const [priceRes, globalRes] = await Promise.all([
+          fetch(COINGECKO_SIMPLE_PRICE),
+          fetch(GLOBAL_MARKET_URL),
+        ]);
+
+        if (!active) return;
+
+        const priceJson = await priceRes.json().catch(() => ({}));
+        const globalJson = await globalRes.json().catch(() => ({}));
+        const globalData = globalJson?.data || {};
+
+        setMarketData({
+          prices: {
+            bitcoin: Number(priceJson?.bitcoin?.usd) || null,
+            ethereum: Number(priceJson?.ethereum?.usd) || null,
+            solana: Number(priceJson?.solana?.usd) || null,
+            binancecoin: Number(priceJson?.binancecoin?.usd) || null,
+          },
+          global: {
+            marketCap: Number(globalData?.total_market_cap?.usd) || null,
+            volume: Number(globalData?.total_volume?.usd) || null,
+            btcDominance: Number(globalData?.market_cap_percentage?.btc) || null,
+          },
+          updatedAt: new Date().toISOString(),
+        });
+        setError(null);
+      } catch (err) {
+        if (active) {
+          console.error('Crypto dashboard live data error:', err);
+          setError('Unable to fetch market data right now.');
+        }
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
       }
-      setLoading(false);
-    }, 2000);
-  };
+    };
 
-  const formatCurrency = (value, decimals = 2) => {
-    if (value >= 1e12) return `$${(value / 1e12).toFixed(decimals)}T`;
-    if (value >= 1e9) return `$${(value / 1e9).toFixed(decimals)}B`;
-    if (value >= 1e6) return `$${(value / 1e6).toFixed(decimals)}M`;
-    if (value >= 1e3) return `$${(value / 1e3).toFixed(decimals)}K`;
-    return `$${value.toFixed(decimals)}`;
-  };
+    fetchMarketData();
+    interval = setInterval(fetchMarketData, 60_000);
 
-  const formatNumber = (num) => {
-    return new Intl.NumberFormat().format(Math.floor(num));
-  };
-
-  const formatHashrate = (hashrate) => {
-    return `${(hashrate / 1e18).toFixed(1)} EH/s`;
-  };
-
-  const getRiskToleranceColor = (risk) => {
-    switch (risk) {
-      case 'high': return '#ef4444';
-      case 'medium': return '#f59e0b';
-      case 'low': return '#10b981';
-      default: return '#6b7280';
-    }
-  };
-
-  const getExperienceLevelColor = (level) => {
-    switch (level) {
-      case 'experienced': return '#10b981';
-      case 'intermediate': return '#f59e0b';
-      case 'beginner': return '#3b82f6';
-      default: return '#6b7280';
-    }
-  };
-
-  const getConfidenceColor = (confidence) => {
-    if (confidence >= 0.8) return '#10b981';
-    if (confidence >= 0.6) return '#f59e0b';
-    return '#ef4444';
-  };
-
-  if (!isVisible) {
-    return null; // Nu afișa butonul floating, doar din hamburger
-  }
+    return () => {
+      active = false;
+      if (interval) clearInterval(interval);
+    };
+  }, [marketData]);
 
   return (
-    <AnimatePresence>
-      <motion.div 
-        className="crypto-analytics-dashboard ai-enhanced"
-        initial={{ opacity: 0, scale: 0.8, x: 100 }}
-        animate={{ opacity: 1, scale: 1, x: 0 }}
-        exit={{ opacity: 0, scale: 0.8, x: 100 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-      >
-        {/* AI Particles Background */}
-        <div className="ai-particles-crypto">
-          {[...Array(15)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="crypto-particle"
-              animate={{
-                y: [0, -20, 0],
-                opacity: [0.3, 0.8, 0.3],
-                scale: [0.8, 1.2, 0.8]
-              }}
-              transition={{
-                duration: 4 + Math.random() * 2,
-                repeat: Infinity,
-                delay: Math.random() * 3
-              }}
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`
-              }}
-            />
-          ))}
+    <div className="crypto-dashboard-page">
+      <header className="crypto-dashboard-page__header">
+        <div>
+          <BrandLogo
+            size="sm"
+            className="crypto-dashboard-brand"
+            textClassName="eyebrow"
+          />
+          <h1 className="title">AI Crypto Intelligence</h1>
+          <p className="subtitle">
+            Macro + on-chain telemetry, market structure, and AI-generated tactics for BitSwap treasury and traders.
+          </p>
         </div>
-
-        {/* Enhanced Header */}
-        <motion.div 
-          className="dashboard-header ai-crypto-header"
-          initial={{ y: -50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
-          <div className="header-content">
-            <div className="header-title">
-              <span className="ai-badge crypto">AI</span>
-              <h3>🚀 Crypto Analytics Intelligence</h3>
-              <div className="live-indicator">
-                <span className="live-dot"></span>
-                <span>LIVE</span>
-              </div>
-            </div>
-            <div className="crypto-metrics-mini">
-              <span className="mini-metric">
-                BTC: {formatCurrency(realTimeData.btcPrice)}
-              </span>
-              <span className="mini-metric">
-                ETH: {formatCurrency(realTimeData.ethPrice)}
-              </span>
-            </div>
-          </div>
-          <motion.button 
-            className="dashboard-close ai-close"
-            onClick={toggleDashboard}
-            whileHover={{ rotate: 90, scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <span className="close-lines"></span>
-          </motion.button>
-        </motion.div>
-
-        {/* AI Predictions Banner */}
-        <motion.div 
-          className="ai-predictions-banner"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <h4>🤖 AI Predictions</h4>
-          <div className="predictions-scroll">
-            {aiPredictions.map((prediction, index) => (
-              <motion.div
-                key={index}
-                className="prediction-card"
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ scale: 1.02, y: -2 }}
+        <div className="header-controls">
+          <div className="timeframe-toggle" role="tablist" aria-label="Select timeframe">
+            {['daily', 'weekly', 'monthly'].map((option) => (
+              <button
+                key={option}
+                type="button"
+                role="tab"
+                aria-selected={timeframe === option}
+                className={`timeframe-button ${timeframe === option ? 'is-active' : ''}`}
+                onClick={() => setTimeframe(option)}
               >
-                <div className="prediction-icon">{prediction.icon}</div>
-                <div className="prediction-content">
-                  <div className="prediction-text">{prediction.prediction}</div>
-                  <div className="prediction-meta">
-                    <span className="confidence" style={{ color: getConfidenceColor(prediction.confidence) }}>
-                      {(prediction.confidence * 100).toFixed(0)}% confidence
-                    </span>
-                    <span className="timeframe">{prediction.timeframe}</span>
-                  </div>
-                </div>
-              </motion.div>
+                {option}
+              </button>
             ))}
           </div>
-        </motion.div>
+          <div className="market-capsule">
+            <span className="market-capsule__label">BTC</span>
+            <span className="market-capsule__value">
+              {typeof snapshot.btc === 'number' ? formatUSD(snapshot.btc, { maxDigits: 0 }) : '—'}
+            </span>
+          </div>
+          <div className="market-capsule">
+            <span className="market-capsule__label">ETH</span>
+            <span className="market-capsule__value">
+              {typeof snapshot.eth === 'number' ? formatUSD(snapshot.eth, { maxDigits: 0 }) : '—'}
+            </span>
+          </div>
+        </div>
+      </header>
 
-        {/* Enhanced Navigation Tabs */}
-        <div className="dashboard-tabs ai-crypto-tabs">
-          {[
-            { id: 'overview', label: 'Overview', icon: '📊' },
-            { id: 'trading', label: 'Trading AI', icon: '🤖' },
-            { id: 'defi', label: 'DeFi Analytics', icon: '🏦' },
-            { id: 'portfolio', label: 'Portfolio', icon: '💼' },
-            { id: 'network', label: 'Network', icon: '🌐' }
-          ].map(tab => (
-            <motion.button
-              key={tab.id}
-              className={`tab ai-tab ${activeTab === tab.id ? 'active' : ''}`}
-              onClick={() => setActiveTab(tab.id)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <span className="tab-icon">{tab.icon}</span>
-              <span className="tab-label">{tab.label}</span>
-              {activeTab === tab.id && (
-                <motion.div
-                  className="tab-indicator"
-                  layoutId="activeCryptoTab"
-                  transition={{ duration: 0.3 }}
-                />
-              )}
-            </motion.button>
+      {loading && <p className="data-hint" aria-live="polite">Actualizăm datele de piață…</p>}
+      {error && <p className="alert alert--error" role="alert">{error}</p>}
+      {updatedLabel && !error && (
+        <p className="data-hint" aria-live="polite">Ultima actualizare: {updatedLabel}</p>
+      )}
+
+      <section className="market-grid">
+        <article className="market-card">
+          <span className="market-card__label">Total market cap</span>
+          <h2>{snapshot.cap.toFixed(2)}T</h2>
+          <p className="market-card__note">Aggregated across top 250 assets.</p>
+        </article>
+        <article className="market-card">
+          <span className="market-card__label">24h volume</span>
+          <h2>{snapshot.volume.toFixed(1)}B</h2>
+          <p className="market-card__note">Perp + spot volume across CEX/L2.</p>
+        </article>
+        <article className="market-card">
+          <span className="market-card__label">BTC dominance</span>
+          <h2>{snapshot.dominance.toFixed(1)}%</h2>
+          <p className="market-card__note">AI trending bias: rotation into AI/DePIN.</p>
+        </article>
+      </section>
+
+      <section className="panel ai-surface">
+        <header className="panel__header">
+          <h2>Asset positioning</h2>
+          <span className="panel__tag">AI outlook</span>
+        </header>
+        <div className="asset-table">
+          {ASSET_ANALYTICS.map((row) => (
+            <article key={row.asset} className="asset-row">
+              <div className="asset-row__title">
+                <span className="asset-row__icon">{row.icon}</span>
+                <div>
+                  <strong>{row.asset}</strong>
+                  <span>{row.signal}</span>
+                  {marketData?.prices?.[row.id] ? (
+                    <span className="asset-price">
+                      {formatUSD(marketData.prices[row.id], { maxDigits: 0 })}
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+              <div className="asset-row__metric">
+                <span>Δ 24h</span>
+                <strong className={row.change >= 0 ? 'positive' : 'negative'}>
+                  {row.change >= 0 ? '+' : ''}
+                  {row.change.toFixed(1)}%
+                </strong>
+              </div>
+              <div className="asset-row__metric">
+                <span>Support</span>
+                <strong>{row.support}</strong>
+              </div>
+              <div className="asset-row__metric">
+                <span>Resistance</span>
+                <strong>{row.resistance}</strong>
+              </div>
+              <div className="asset-row__confidence">
+                <span>Confidence</span>
+                <div className="confidence-bar">
+                  <div className="confidence-fill" style={{ width: `${row.confidence}%` }} />
+                </div>
+                <strong>{row.confidence}%</strong>
+              </div>
+            </article>
           ))}
         </div>
+      </section>
 
-        {/* Enhanced Content */}
-        <div className="dashboard-content ai-crypto-content">
-          <AnimatePresence mode="wait">
-            {activeTab === 'overview' && (
-              <motion.div
-                key="overview"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="tab-content"
-              >
-                {/* Real-time Market Metrics */}
-                <div className="crypto-metrics-grid">
-                  <motion.div 
-                    className="crypto-metric-card major"
-                    whileHover={{ scale: 1.02, y: -4 }}
-                  >
-                    <div className="metric-header">
-                      <span className="metric-icon">₿</span>
-                      <h4>Bitcoin</h4>
-                      <div className="price-trend up">+2.4%</div>
-                    </div>
-                    <div className="metric-value major">
-                      {formatCurrency(realTimeData.btcPrice)}
-                    </div>
-                    <div className="metric-chart">
-                      <svg width="100%" height="40" viewBox="0 0 100 40">
-                        <path
-                          d="M0,30 Q25,20 50,15 T100,10"
-                          stroke="#00ff88"
-                          strokeWidth="2"
-                          fill="none"
-                        />
-                      </svg>
-                    </div>
-                  </motion.div>
-
-                  <motion.div 
-                    className="crypto-metric-card major"
-                    whileHover={{ scale: 1.02, y: -4 }}
-                  >
-                    <div className="metric-header">
-                      <span className="metric-icon">Ξ</span>
-                      <h4>Ethereum</h4>
-                      <div className="price-trend up">+1.8%</div>
-                    </div>
-                    <div className="metric-value major">
-                      {formatCurrency(realTimeData.ethPrice)}
-                    </div>
-                    <div className="metric-chart">
-                      <svg width="100%" height="40" viewBox="0 0 100 40">
-                        <path
-                          d="M0,35 Q25,25 50,20 T100,15"
-                          stroke="#667eea"
-                          strokeWidth="2"
-                          fill="none"
-                        />
-                      </svg>
-                    </div>
-                  </motion.div>
-
-                  <motion.div 
-                    className="crypto-metric-card"
-                    whileHover={{ scale: 1.02, y: -4 }}
-                  >
-                    <h4>Market Cap</h4>
-                    <div className="metric-value">
-                      {formatCurrency(realTimeData.marketCap)}
-                    </div>
-                  </motion.div>
-
-                  <motion.div 
-                    className="crypto-metric-card"
-                    whileHover={{ scale: 1.02, y: -4 }}
-                  >
-                    <h4>24h Volume</h4>
-                    <div className="metric-value">
-                      {formatCurrency(realTimeData.volume24h)}
-                    </div>
-                  </motion.div>
-
-                  <motion.div 
-                    className="crypto-metric-card"
-                    whileHover={{ scale: 1.02, y: -4 }}
-                  >
-                    <h4>Total Transactions</h4>
-                    <div className="metric-value">
-                      {formatNumber(realTimeData.totalTransactions)}
-                    </div>
-                  </motion.div>
-
-                  <motion.div 
-                    className="crypto-metric-card"
-                    whileHover={{ scale: 1.02, y: -4 }}
-                  >
-                    <h4>Active Wallets</h4>
-                    <div className="metric-value">
-                      {formatNumber(realTimeData.activeWallets)}
-                    </div>
-                  </motion.div>
+      <section className="market-grid market-grid--split">
+        <article className="panel ai-surface">
+          <header className="panel__header">
+            <h2>DeFi telemetry</h2>
+          </header>
+          <ul className="trend-list">
+            {DEFI_TRENDS.map((trend) => (
+              <li key={trend.name} className="trend-item">
+                <div>
+                  <strong>{trend.name}</strong>
+                  <span>{trend.value}</span>
                 </div>
-
-                {/* AI Actions */}
-                <div className="ai-crypto-actions">
-                  <h4>🤖 AI-Powered Actions</h4>
-                  <div className="ai-action-grid">
-                    <motion.button
-                      className="ai-action-btn primary"
-                      onClick={() => handleAIAction('analyze_portfolio')}
-                      disabled={loading}
-                      whileHover={{ scale: 1.02, y: -2 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <span className="action-icon">📊</span>
-                      <span>AI Portfolio Analysis</span>
-                      {loading && <div className="loading-spinner"></div>}
-                    </motion.button>
-
-                    <motion.button
-                      className="ai-action-btn secondary"
-                      onClick={() => handleAIAction('optimize_gas')}
-                      disabled={loading}
-                      whileHover={{ scale: 1.02, y: -2 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <span className="action-icon">⛽</span>
-                      <span>Gas Optimization</span>
-                    </motion.button>
-
-                    <motion.button
-                      className="ai-action-btn tertiary"
-                      onClick={() => handleAIAction('risk_assessment')}
-                      disabled={loading}
-                      whileHover={{ scale: 1.02, y: -2 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <span className="action-icon">⚠️</span>
-                      <span>Risk Assessment</span>
-                    </motion.button>
-
-                    <motion.button
-                      className="ai-action-btn quaternary"
-                      onClick={() => handleAIAction('predict_prices')}
-                      disabled={loading}
-                      whileHover={{ scale: 1.02, y: -2 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <span className="action-icon">🔮</span>
-                      <span>Price Predictions</span>
-                    </motion.button>
-                  </div>
+                <span className={trend.change >= 0 ? 'positive' : 'negative'}>
+                  {trend.change >= 0 ? '+' : ''}
+                  {trend.change.toFixed(1)}%
+                </span>
+              </li>
+            ))}
+          </ul>
+        </article>
+        <article className="panel ai-surface">
+          <header className="panel__header">
+            <h2>Risk matrix</h2>
+          </header>
+          <ul className="risk-list">
+            {RISK_FACTORS.map((risk) => (
+              <li key={risk.label} className="risk-item">
+                <div>
+                  <strong>{risk.label}</strong>
+                  <span>{risk.notes}</span>
                 </div>
-              </motion.div>
-            )}
+                <span className={`risk-status risk-status--${risk.status}`}>
+                  {risk.status}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </article>
+      </section>
 
-            {activeTab === 'trading' && (
-              <motion.div
-                key="trading"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="tab-content"
-              >
-                <div className="trading-ai-section">
-                  <h4>🤖 AI Trading Intelligence</h4>
-                  
-                  <div className="trading-signals">
-                    <div className="signal-card strong-buy">
-                      <div className="signal-header">
-                        <span className="signal-icon">📈</span>
-                        <span className="signal-type">STRONG BUY</span>
-                        <span className="signal-confidence">92%</span>
-                      </div>
-                      <div className="signal-content">
-                        <p>AI detected breakout pattern in BTC/USD</p>
-                        <div className="signal-details">
-                          <span>Target: $47,500</span>
-                          <span>Stop Loss: $44,800</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="signal-card hold">
-                      <div className="signal-header">
-                        <span className="signal-icon">⏸️</span>
-                        <span className="signal-type">HOLD</span>
-                        <span className="signal-confidence">76%</span>
-                      </div>
-                      <div className="signal-content">
-                        <p>ETH consolidating before next move</p>
-                        <div className="signal-details">
-                          <span>Support: $3,100</span>
-                          <span>Resistance: $3,250</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="ai-trading-metrics">
-                    <div className="trading-metric">
-                      <h5>AI Success Rate</h5>
-                      <div className="metric-value trading">84.7%</div>
-                    </div>
-                    <div className="trading-metric">
-                      <h5>Total Signals</h5>
-                      <div className="metric-value trading">1,247</div>
-                    </div>
-                    <div className="trading-metric">
-                      <h5>Avg Profit</h5>
-                      <div className="metric-value trading">+3.2%</div>
-                    </div>
-                  </div>
+      <section className="panel ai-surface">
+        <header className="panel__header">
+          <h2>AI strategy board</h2>
+        </header>
+        <div className="strategy-grid">
+          {STRATEGY_CARDS.map((card) => (
+            <article key={card.title} className="strategy-card">
+              <header>
+                <span className="strategy-icon">{card.icon}</span>
+                <div>
+                  <strong>{card.title}</strong>
+                  <span>Impact: {card.impact}</span>
                 </div>
-              </motion.div>
-            )}
-
-            {activeTab === 'defi' && (
-              <motion.div
-                key="defi"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="tab-content"
-              >
-                <div className="defi-section">
-                  <h4>🏦 DeFi Analytics Dashboard</h4>
-                  
-                  <div className="defi-metrics">
-                    <div className="defi-card">
-                      <h5>Total Value Locked</h5>
-                      <div className="metric-value defi">{formatCurrency(85.4e9)}</div>
-                      <div className="change positive">+2.1%</div>
-                    </div>
-                    
-                    <div className="defi-card">
-                      <h5>Average APY</h5>
-                      <div className="metric-value defi">12.7%</div>
-                      <div className="change neutral">±0.0%</div>
-                    </div>
-                    
-                    <div className="defi-card">
-                      <h5>Active Protocols</h5>
-                      <div className="metric-value defi">247</div>
-                      <div className="change positive">+5</div>
-                    </div>
-                  </div>
-
-                  <div className="defi-opportunities">
-                    <h5>🎯 AI-Detected Opportunities</h5>
-                    <div className="opportunity-list">
-                      <div className="opportunity-item">
-                        <span className="opportunity-protocol">Uniswap V3</span>
-                        <span className="opportunity-apy">15.4% APY</span>
-                        <span className="opportunity-risk low">Low Risk</span>
-                      </div>
-                      <div className="opportunity-item">
-                        <span className="opportunity-protocol">Compound</span>
-                        <span className="opportunity-apy">8.9% APY</span>
-                        <span className="opportunity-risk medium">Medium Risk</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {activeTab === 'portfolio' && (
-              <motion.div
-                key="portfolio"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="tab-content"
-              >
-                <div className="portfolio-section">
-                  <h4>💼 Portfolio Intelligence</h4>
-                  
-                  <div className="portfolio-overview">
-                    <div className="portfolio-value">
-                      <h5>Total Portfolio Value</h5>
-                      <div className="metric-value portfolio">{formatCurrency(156780.45)}</div>
-                      <div className="change positive">+5.2% (24h)</div>
-                    </div>
-                  </div>
-
-                  <div className="portfolio-allocation">
-                    <h5>Asset Allocation</h5>
-                    <div className="allocation-chart">
-                      <div className="allocation-item">
-                        <span className="asset-name">Bitcoin</span>
-                        <div className="allocation-bar">
-                          <div className="allocation-fill" style={{ width: '45%' }}></div>
-                        </div>
-                        <span className="allocation-percent">45%</span>
-                      </div>
-                      <div className="allocation-item">
-                        <span className="asset-name">Ethereum</span>
-                        <div className="allocation-bar">
-                          <div className="allocation-fill" style={{ width: '30%' }}></div>
-                        </div>
-                        <span className="allocation-percent">30%</span>
-                      </div>
-                      <div className="allocation-item">
-                        <span className="asset-name">Other</span>
-                        <div className="allocation-bar">
-                          <div className="allocation-fill" style={{ width: '25%' }}></div>
-                        </div>
-                        <span className="allocation-percent">25%</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {activeTab === 'network' && (
-              <motion.div
-                key="network"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="tab-content"
-              >
-                <div className="network-section">
-                  <h4>🌐 Network Status & Analytics</h4>
-                  
-                  <div className="network-status-grid">
-                    {Object.entries(networkStatus).map(([network, status]) => (
-                      <motion.div 
-                        key={network}
-                        className="network-card"
-                        whileHover={{ scale: 1.02, y: -2 }}
-                      >
-                        <div className="network-header">
-                          <h5>{network.charAt(0).toUpperCase() + network.slice(1)}</h5>
-                          <div className={`status-indicator ${status.status}`}>
-                            <span className="status-dot"></span>
-                            {status.status}
-                          </div>
-                        </div>
-                        <div className="network-metrics">
-                          <div className="network-metric">
-                            <span>Block Height:</span>
-                            <span>{formatNumber(status.blockHeight)}</span>
-                          </div>
-                          <div className="network-metric">
-                            <span>TPS:</span>
-                            <span>{status.tps.toFixed(1)}</span>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-
-                  <div className="network-performance">
-                    <h5>Network Performance</h5>
-                    <div className="performance-metrics">
-                      <div className="performance-item">
-                        <span>Network Hashrate:</span>
-                        <span>{formatHashrate(realTimeData.networkHashrate)}</span>
-                      </div>
-                      <div className="performance-item">
-                        <span>Average Gas Price:</span>
-                        <span>{realTimeData.gasPrice.toFixed(1)} gwei</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+              </header>
+              <p>{card.description}</p>
+              <footer>
+                <button type="button" className="ghost-button">Run play</button>
+              </footer>
+            </article>
+          ))}
         </div>
-
-        {/* Enhanced Footer */}
-        <motion.div 
-          className="dashboard-footer ai-crypto-footer"
-          initial={{ y: 50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          <div className="footer-content">
-            <div className="ai-status">
-              <span className="ai-indicator active"></span>
-              <span>AI Engine: Active</span>
-            </div>
-            <div className="data-freshness">
-              <span>Last Update: {new Date().toLocaleTimeString()}</span>
-            </div>
-            <div className="footer-actions">
-              <button onClick={() => updateAnalyticsData()} disabled={loading}>
-                🔄 Refresh
-              </button>
-              <button onClick={() => console.log('📊 Export data')}>
-                📊 Export
-              </button>
-            </div>
-          </div>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
+      </section>
+    </div>
   );
 };
 
 export default CryptoAnalyticsDashboard;
+

@@ -1,0 +1,45 @@
+@keyframes brandLogoPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 0 rgba(0, 255, 163, 0));
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(0, 255, 163, 0.25));
+  }
+}
+
+.brand-logo {
+  --brand-logo-size: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.brand-logo__image {
+  width: var(--brand-logo-size);
+  height: var(--brand-logo-size);
+  object-fit: contain;
+  animation: brandLogoPulse 6s ease-in-out infinite;
+}
+
+.brand-logo__text {
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.brand-logo--xs {
+  --brand-logo-size: 20px;
+  gap: 0.45rem;
+}
+
+.brand-logo--sm {
+  --brand-logo-size: 28px;
+}
+
+.brand-logo--lg {
+  --brand-logo-size: 56px;
+}
+

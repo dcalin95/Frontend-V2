@@ -7,7 +7,16 @@ import WalletContext from "../../context/WalletContext";
 import { CONTRACTS } from "../../contract/contracts";
 import { tokenList } from "../TokenHandlers/tokenData";
 
-const PaymentSummary = ({ amountPay, usdValue, pureBits, bonusAmount, selectedToken, bonus }) => {
+const PaymentSummary = ({
+  amountPay,
+  usdValue,
+  pureBits,
+  bonusAmount,
+  selectedToken,
+  selectedTokenLabel,
+  bonus,
+  fiatDetails,
+}) => {
   const { walletAddress } = useContext(WalletContext);
   const [bonusPercentage, setBonusPercentage] = useState("No Bonus");
   const [totalInvestment, setTotalInvestment] = useState(0);
@@ -54,7 +63,9 @@ const PaymentSummary = ({ amountPay, usdValue, pureBits, bonusAmount, selectedTo
           <FaDollarSign className="icon icon-pay" /> YOU PAY:
         </span>
         <span className="summary-value highlight-bnb">
-          ≈ ${formattedAmountPay} {selectedToken || 'BNB'} ≈ ${formattedUsdValue}
+          {fiatDetails
+            ? `€${parseFloat(fiatDetails.amount || 0).toFixed(2)} • $${formattedUsdValue}`
+            : `≈ $${formattedAmountPay} ${selectedTokenLabel || selectedToken || "BNB"} ≈ $${formattedUsdValue}`}
         </span>
       </div>
 
@@ -114,7 +125,7 @@ const PaymentSummary = ({ amountPay, usdValue, pureBits, bonusAmount, selectedTo
          </span>
        </div>
 
-      {(tokenAddress || nodeAddress) && (
+      {(tokenAddress || nodeAddress) && selectedToken !== "STRIPE" && (
         <div className="payment-transparency" style={{ marginTop: 10, fontSize: '0.9rem', opacity: 0.95 }}>
           {tokenAddress && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>

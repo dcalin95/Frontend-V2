@@ -68,7 +68,7 @@
   padding: 1.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   overflow: hidden;
 }
 
@@ -184,7 +184,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 16px;
-  backdrop-filter: blur(2px);
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
 }
 
 .unavailable-overlay span {

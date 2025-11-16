@@ -1,0 +1,294 @@
+.ai-launcher {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 16px;
+  pointer-events: none;
+}
+
+.ai-launcher__fab {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 190px;
+  padding: 16px 22px;
+  height: 72px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 255, 163, 0.45);
+  background:
+    linear-gradient(115deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0) 68px,
+      rgba(0, 255, 163, 0.92) 68px,
+      rgba(220, 31, 255, 0.92) 100%);
+  color: #050816;
+  font-family: 'Inter', sans-serif;
+  box-shadow:
+    0 20px 42px rgba(220, 31, 255, 0.28),
+    0 0 24px rgba(0, 255, 163, 0.25);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-launcher__fab::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 78% 20%, rgba(255, 255, 255, 0.35), transparent 60%),
+    radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.25), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.ai-launcher__fab:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow:
+    0 24px 50px rgba(220, 31, 255, 0.32),
+    0 0 28px rgba(0, 255, 163, 0.34);
+}
+
+.ai-launcher__fab:hover::after,
+.ai-launcher__fab--open::after {
+  opacity: 1;
+}
+
+.ai-launcher__fab--open,
+.ai-launcher__fab:focus-visible {
+  transform: translateY(0) scale(1);
+  box-shadow:
+    0 26px 56px rgba(220, 31, 255, 0.38),
+    0 0 32px rgba(0, 255, 163, 0.4);
+  outline: none;
+}
+
+.ai-launcher__icon {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+}
+
+.ai-launcher__icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.28));
+}
+
+.ai-launcher__label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  color: inherit;
+}
+
+.ai-launcher__label-main {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  color: #050816;
+}
+
+.ai-launcher__label-sub {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: rgba(5, 8, 22, 0.75);
+}
+
+.ai-launcher__panel {
+  pointer-events: auto;
+  position: absolute;
+  bottom: 84px;
+  right: 0;
+  width: min(360px, calc(100vw - 32px));
+  background:
+    radial-gradient(circle at top right, rgba(220, 31, 255, 0.22), transparent 55%),
+    radial-gradient(circle at 20% 80%, rgba(0, 255, 163, 0.18), transparent 65%),
+    rgba(7, 10, 18, 0.92);
+  border-radius: 20px;
+  border: 1px solid rgba(0, 255, 163, 0.25);
+  box-shadow:
+    0 24px 60px rgba(15, 23, 42, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 0 24px rgba(0, 255, 163, 0.18);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 20px 20px 18px;
+  transform: translateY(18px) scale(0.96);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.24s ease, transform 0.24s ease, visibility 0.24s ease;
+}
+
+.ai-launcher__panel--visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.ai-launcher__panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.ai-launcher__brand {
+  margin-bottom: 8px;
+}
+
+.ai-launcher__brand .brand-logo__text {
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  color: rgba(148, 163, 184, 0.76);
+}
+
+.ai-launcher__eyebrow {
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+}
+
+.ai-launcher__panel-header h3 {
+  margin: 4px 0 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.ai-launcher__close {
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(248, 250, 252, 0.9);
+  border-radius: 999px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.ai-launcher__close:hover {
+  background: rgba(220, 31, 255, 0.4);
+  color: #0f172a;
+}
+
+.ai-launcher__tool-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ai-launcher__tool-button {
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 16px;
+  align-items: center;
+  background: rgba(8, 12, 20, 0.72);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border 0.18s ease;
+  border: 1px solid transparent;
+}
+
+.ai-launcher__tool-button:hover,
+.ai-launcher__tool-button:focus {
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 36px rgba(220, 31, 255, 0.28),
+    0 0 18px rgba(0, 255, 163, 0.25);
+  background: rgba(13, 18, 30, 0.9);
+  border-color: rgba(0, 255, 163, 0.35);
+  outline: none;
+}
+
+.ai-launcher__tool-icon {
+  font-size: 1.85rem;
+  filter: drop-shadow(0 8px 18px rgba(0, 255, 163, 0.28));
+}
+
+.ai-launcher__tool-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ai-launcher__tool-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #f8fafc;
+}
+
+.ai-launcher__tool-description {
+  font-size: 0.8rem;
+  color: rgba(203, 213, 225, 0.85);
+  line-height: 1.45;
+}
+
+.ai-launcher__tool-action {
+  font-size: 1.25rem;
+  color: rgba(148, 163, 184, 0.9);
+  transition: transform 0.2s ease;
+}
+
+.ai-launcher__tool-button:hover .ai-launcher__tool-action,
+.ai-launcher__tool-button:focus .ai-launcher__tool-action {
+  transform: translateX(4px);
+  color: rgba(248, 250, 252, 0.95);
+}
+
+.ai-launcher__backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 10, 18, 0.45);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 1199;
+}
+
+@media (max-width: 768px) {
+  .ai-launcher {
+    right: 16px;
+    bottom: 20px;
+  }
+
+  .ai-launcher__fab {
+    padding: 14px 18px;
+    min-width: 180px;
+    height: 66px;
+    font-size: 0.9rem;
+  }
+
+  .ai-launcher__panel {
+    right: 50%;
+    transform: translate(50%, 18px) scale(0.96);
+    bottom: 76px;
+  }
+
+  .ai-launcher__panel--visible {
+    transform: translate(50%, 0) scale(1);
+  }
+}
+

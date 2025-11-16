@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import BrandLogo from "../components/BrandLogo";
 import "./AIAssistantBox.css";
 
 const AIAssistantBox = () => {
@@ -114,7 +115,12 @@ const AIAssistantBox = () => {
             <path d="M40 60 Q50 70 60 60" stroke="#2bdcff" strokeWidth="2" fill="none" />
           </svg>
         </div>
-        <span className="neon-text">BitSwapDEX AI Assistant</span>
+        <BrandLogo
+          size="sm"
+          className="ai-assistant-brand"
+          text="BitSwapDEX AI Assistant"
+          textClassName="neon-text"
+        />
       </h2>
 
       <input

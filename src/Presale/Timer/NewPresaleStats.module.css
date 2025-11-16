@@ -1,8 +1,8 @@
 /* Orbitron font import removed - using system fonts */
 
 .container {
-  background: rgba(53, 53, 78, 0.2);
-  backdrop-filter: blur(15px);
+  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   border: 1px solid rgba(0, 241, 255, 0.2);
   border-radius: 16px;
   padding: 1.5rem;
