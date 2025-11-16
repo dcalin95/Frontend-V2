@@ -481,6 +481,24 @@ a:hover ~ .custom-cursor,
   max-width: 440px;
 }
 
+.stripe-card-box__link {
+  color: #38bdf8;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.stripe-card-box__link:hover {
+  color: #22d3ee;
+  text-decoration: underline;
+}
+
+.stripe-card-box__disclaimer {
+  margin-top: 10px;
+  font-size: 0.78rem;
+  color: rgba(148, 163, 184, 0.7);
+  line-height: 1.5;
+}
+
 .stripe-card-box__rate {
   font-size: 0.8rem;
   color: rgba(148, 163, 184, 0.85);
@@ -511,6 +529,12 @@ a:hover ~ .custom-cursor,
   gap: 4px;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
+.stripe-card-box__option-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 6px 12px rgba(15, 23, 42, 0.45));
+}
 
 .stripe-card-box__option:hover {
   transform: translateY(-2px);
@@ -539,6 +563,30 @@ a:hover ~ .custom-cursor,
   color: rgba(148, 163, 184, 0.85);
 }
 
+.stripe-card-box__option-amount--10 {
+  color: #4ade80;
+}
+
+.stripe-card-box__option-amount--30 {
+  color: #38bdf8;
+}
+
+.stripe-card-box__option-amount--50 {
+  color: #818cf8;
+}
+
+.stripe-card-box__option-amount--100 {
+  color: #f472b6;
+}
+
+.stripe-card-box__option-amount--500 {
+  color: #f97316;
+}
+
+.stripe-card-box__option-amount--1000 {
+  color: #facc15;
+}
+
 .stripe-card-box__summary {
   border-top: 1px solid rgba(99, 91, 255, 0.25);
   padding-top: 12px;
@@ -548,20 +596,46 @@ a:hover ~ .custom-cursor,
 }
 
 .stripe-card-box__summary-line {
-  display: flex;
-  justify-content: space-between;
-  color: rgba(226, 232, 240, 0.85);
-  gap: 12px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  color: rgba(226, 232, 240, 0.88);
+  gap: 10px;
 }
 
-.stripe-card-box__summary-line span:last-child {
+.stripe-summary__label {
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.78);
+}
+
+.stripe-summary__value {
+  font-size: 1.05rem;
   font-weight: 600;
+  text-align: right;
+}
+
+.stripe-summary__value--price {
+  color: #38bdf8;
+}
+
+.stripe-summary__value--bits {
+  color: #4ade80;
 }
 
 @media (max-width: 520px) {
   .stripe-card-box__options {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stripe-card-box__summary-line {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .stripe-summary__value {
+    text-align: left;
   }
 }
 

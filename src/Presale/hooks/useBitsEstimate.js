@@ -10,6 +10,7 @@ const useBitsEstimate = ({ amountPay, selectedToken, tokenPriceUSD, walletAddres
   const [bonus, setBonus] = useState(0);
   const [bonusAmount, setBonusAmount] = useState(0);
   const [error, setError] = useState(null);
+  const [bitsUnitPriceUSD, setBitsUnitPriceUSD] = useState(pricePerBitsUSD || 0.001);
 
   useEffect(() => {
     const estimate = async () => {
@@ -37,7 +38,7 @@ const useBitsEstimate = ({ amountPay, selectedToken, tokenPriceUSD, walletAddres
         // 🌟 Stripe fiat checkout - amountPay already converted to USD
         if (selectedToken === "STRIPE") {
           const usdCalculated = parseFloat(amountPay);
-          const effectiveBitsPrice = pricePerBitsUSD && pricePerBitsUSD > 0 ? pricePerBitsUSD : 0.001;
+          const effectiveBitsPrice = bitsUnitPriceUSD && bitsUnitPriceUSD > 0 ? bitsUnitPriceUSD : 0.001;
           const bitsAmount = usdCalculated / effectiveBitsPrice;
 
           const bonusPercent = usdCalculated >= 100 ? 10 : usdCalculated >= 50 ? 5 : 0;
@@ -61,6 +62,7 @@ const useBitsEstimate = ({ amountPay, selectedToken, tokenPriceUSD, walletAddres
           setUsdValue(usdCalculated);
           setBonus(bonusPercent);
           setBonusAmount(bonusAmountCalc);
+          setBitsUnitPriceUSD(effectiveBitsPrice);
           console.groupEnd();
           return;
         }
@@ -216,6 +218,7 @@ const useBitsEstimate = ({ amountPay, selectedToken, tokenPriceUSD, walletAddres
         const realBitsPrice = parseFloat(milicentsPrice.toString()) / 1000; // milicents to USD
         console.log("🔥 [PRICE] Milicents from contract:", milicentsPrice.toString());
         console.log("🔥 [PRICE] Real BITS price: $", realBitsPrice);
+        setBitsUnitPriceUSD(realBitsPrice);
 
         // 🧮 CALCULATE USD VALUE AND BASE BITS
         const usdCalculated = parseFloat(amountPay) * tokenPriceUSD;
@@ -323,6 +326,7 @@ const useBitsEstimate = ({ amountPay, selectedToken, tokenPriceUSD, walletAddres
           setBits(baseBitsInteger); // BASE BITS ONLY - UI adds bonus separately! // Already integer
           setBonusAmount(bonusAmountCalc);
           setError(null); // Clear error since fallback worked
+          setBitsUnitPriceUSD(1.0);
           
           console.log("✅ [FALLBACK] Calculation successful");
         } catch (fallbackErr) {
@@ -339,9 +343,9 @@ const useBitsEstimate = ({ amountPay, selectedToken, tokenPriceUSD, walletAddres
     };
 
     estimate();
-  }, [amountPay, selectedToken, tokenPriceUSD, walletAddress]);
+  }, [amountPay, selectedToken, tokenPriceUSD, walletAddress, pricePerBitsUSD]);
 
-  return { bits, usdValue, bonus, bonusAmount, error };
+  return { bits, usdValue, bonus, bonusAmount, error, bitsUnitPriceUSD };
 };
 
 export default useBitsEstimate;

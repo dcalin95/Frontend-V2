@@ -16,6 +16,7 @@ const PaymentSummary = ({
   selectedTokenLabel,
   bonus,
   fiatDetails,
+  bitsPriceUSD,
 }) => {
   const { walletAddress } = useContext(WalletContext);
   const [bonusPercentage, setBonusPercentage] = useState("No Bonus");
@@ -44,12 +45,25 @@ const PaymentSummary = ({
     }
   }, [bonus, bonusAmount, pureBits, walletAddress]);
 
-  const formattedAmountPay = parseFloat(amountPay).toFixed(2);
-  const formattedUsdValue = parseFloat(usdValue).toFixed(2);
-  // 🎯 FIX: Contract sends INTEGER BITS only, no decimals
-  const formattedPureBits = Math.floor(parseFloat(pureBits)).toString();
-  const formattedBonusAmount = Math.floor(parseFloat(bonusAmount)).toString();
-  const formattedTotalBits = (Math.floor(parseFloat(pureBits)) + Math.floor(parseFloat(bonusAmount))).toString();
+  const formatCurrency = (value, currency = "USD", fractionDigits = 2) =>
+    new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency,
+      minimumFractionDigits: fractionDigits,
+      maximumFractionDigits: fractionDigits,
+    }).format(value || 0);
+
+  const formattedAmountPay = formatCurrency(parseFloat(amountPay));
+  const formattedUsdValue = formatCurrency(parseFloat(usdValue));
+  const formattedBitsPrice = bitsPriceUSD
+    ? formatCurrency(bitsPriceUSD, "USD", 4)
+    : "—";
+
+  const formattedPureBits = Math.floor(parseFloat(pureBits)).toLocaleString("en-US");
+  const formattedBonusAmount = Math.floor(parseFloat(bonusAmount)).toLocaleString("en-US");
+  const formattedTotalBits = (
+    Math.floor(parseFloat(pureBits)) + Math.floor(parseFloat(bonusAmount))
+  ).toLocaleString("en-US");
 
   // Token and Node addresses (for transparency)
   const tokenInfo = useMemo(() => tokenList.find(t => t.key === (selectedToken || '')) || null, [selectedToken]);
@@ -64,8 +78,8 @@ const PaymentSummary = ({
         </span>
         <span className="summary-value highlight-bnb">
           {fiatDetails
-            ? `€${parseFloat(fiatDetails.amount || 0).toFixed(2)} • $${formattedUsdValue}`
-            : `≈ $${formattedAmountPay} ${selectedTokenLabel || selectedToken || "BNB"} ≈ $${formattedUsdValue}`}
+            ? `${formatCurrency(parseFloat(fiatDetails.amount || 0), "EUR")} • ${formattedUsdValue}`
+            : `${formattedAmountPay} in ${selectedTokenLabel || selectedToken || "BNB"} • ${formattedUsdValue}`}
         </span>
       </div>
 

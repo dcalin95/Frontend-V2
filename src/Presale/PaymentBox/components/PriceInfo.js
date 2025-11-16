@@ -4,7 +4,7 @@ const PriceInfo = ({
   selectedTokenKey,
   selectedTokenLabel,
   selectedTokenIcon,
-  pricePerBitsUSD,
+  bitsPriceUSD,
   selectedTokenPrice,
   bitsLoading,
   priceError,
@@ -19,8 +19,8 @@ const PriceInfo = ({
         <span className="price-value">
           {bitsLoading
             ? "🔄 Loading..."
-            : pricePerBitsUSD
-            ? `≈ $${pricePerBitsUSD.toFixed(3)}`
+            : bitsPriceUSD
+            ? `≈ $${bitsPriceUSD.toFixed(3)}`
             : priceError
             ? `⚠️ ${priceError}`
             : "⚠️ Unavailable"}

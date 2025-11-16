@@ -12,6 +12,7 @@ import PaymentError from "./components/PaymentError";
 import PaymentMethodSelector from "./PaymentMethodSelector";
 import StripeAmountSelector from "./components/StripeAmountSelector";
 import { tokenList } from "../TokenHandlers/tokenData";
+import useCellManagerData from "../hooks/useCellManagerData";
 import "./PaymentBox.css";
 
 const PaymentBox = ({
@@ -54,6 +55,14 @@ const PaymentBox = ({
     [selectedToken]
   );
   const selectedTokenLabel = selectedTokenInfo?.name || selectedToken;
+  const bitsUnitPriceUSD =
+    paymentState.pricePerBitsUSD && paymentState.pricePerBitsUSD > 0
+      ? paymentState.pricePerBitsUSD
+      : 0.001;
+  const cellManagerData = useCellManagerData();
+  const liveBitsPrice = cellManagerData?.currentPrice;
+  const displayBitsPriceUSD =
+    liveBitsPrice && liveBitsPrice > 0 ? liveBitsPrice : bitsUnitPriceUSD;
   
   // 🎯 Referral Code State
   const [referralCode, setReferralCode] = useState("");
@@ -271,7 +280,7 @@ const PaymentBox = ({
         selectedTokenKey={selectedToken}
         selectedTokenLabel={selectedTokenLabel}
         selectedTokenIcon={paymentState.selectedTokenIcon}
-        pricePerBitsUSD={paymentState.pricePerBitsUSD}
+        bitsPriceUSD={displayBitsPriceUSD}
         selectedTokenPrice={paymentState.selectedTokenPrice}
         bitsLoading={paymentState.isLoading}
         priceError={paymentState.priceError}
@@ -285,7 +294,7 @@ const PaymentBox = ({
             eurToUsdRate={eurUsdRate}
             isRateLoading={isRateLoading}
             rateError={rateError}
-            pricePerBitsUSD={paymentState.pricePerBitsUSD}
+            bitsPriceUSD={displayBitsPriceUSD}
           />
           <div className="min-purchase-note">
             <span className="min-note-icon" aria-hidden>ℹ️</span>
@@ -434,13 +443,13 @@ const PaymentBox = ({
       <PaymentSummary
         amountPay={paymentState.safeAmountPay}
         usdValue={paymentState.usdValue}
-        pricePerBitsUSD={paymentState.pricePerBitsUSD}
         selectedTokenPrice={paymentState.selectedTokenPrice}
         pureBits={paymentState.pureBits}
         bonus={paymentState.bonus}
         bonusAmount={paymentState.bonusAmount}
         selectedToken={selectedToken}
         selectedTokenLabel={selectedTokenLabel}
+        bitsPriceUSD={displayBitsPriceUSD}
         fiatDetails={
           isStripeToken
             ? { currency: "EUR", amount: stripeAmountEUR }

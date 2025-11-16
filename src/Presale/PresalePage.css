@@ -6,6 +6,82 @@
   position: relative;
 }
 
+.stripe-feedback {
+  position: fixed;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  background: rgba(15, 23, 42, 0.92);
+  border-radius: 18px;
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  padding: 18px 22px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.4);
+  max-width: min(540px, 92vw);
+  color: #e2e8f0;
+  backdrop-filter: blur(9px);
+  animation: stripeBannerIn 0.4s ease-out;
+}
+
+.stripe-feedback__icon {
+  font-size: 1.6rem;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.stripe-feedback__body strong {
+  display: block;
+  font-size: 1.05rem;
+  margin-bottom: 4px;
+}
+
+.stripe-feedback__body p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.stripe-feedback__meta {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.85);
+}
+
+.stripe-feedback--success {
+  border-color: rgba(16, 185, 129, 0.45);
+  box-shadow: 0 18px 45px rgba(16, 185, 129, 0.22);
+}
+
+.stripe-feedback--warning {
+  border-color: rgba(234, 179, 8, 0.45);
+  box-shadow: 0 18px 45px rgba(234, 179, 8, 0.2);
+}
+
+@keyframes stripeBannerIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (max-width: 720px) {
+  .stripe-feedback {
+    top: 84px;
+    padding: 16px 18px;
+    gap: 12px;
+  }
+}
+
 /* Global AI text particle field */
 .ai-text-field {
   pointer-events: none;

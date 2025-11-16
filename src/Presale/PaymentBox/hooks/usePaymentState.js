@@ -48,7 +48,7 @@ const usePaymentState = ({
   }, [amountPay, selectedToken]);
 
   // 🧮 BITS Calculation
-  const { bits, usdValue, bonus, bonusAmount } = useBitsEstimate({
+  const { bits, usdValue, bonus, bonusAmount, bitsUnitPriceUSD } = useBitsEstimate({
     amountPay: safeAmountPay,
     selectedToken,
     tokenPriceUSD: selectedTokenPrice,
@@ -116,7 +116,7 @@ const usePaymentState = ({
     // 📊 Data
     balances,
     availableBits,
-    pricePerBitsUSD,
+    pricePerBitsUSD: bitsUnitPriceUSD,
     priceError,
     selectedTokenPrice,
     safeAmountPay,

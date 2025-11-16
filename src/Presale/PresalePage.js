@@ -5,6 +5,8 @@ import "./PaymentBox/InputBox.css";
 import "./PaymentBox/PaymentSummary.css";
 
 import React, { useState, useEffect, Suspense, lazy, useMemo } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import useGoogleAnalytics from "../hooks/useGoogleAnalytics";
 import { trackTikTokEvent } from "../utils/tiktok";
 import { ethers } from "ethers";
@@ -38,6 +40,8 @@ const PresaleLoading = () => (
 );
 
 const PresalePage = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const { trackPresaleEvent, trackPageView } = useGoogleAnalytics();
   const {
     selectedToken,
@@ -50,6 +54,7 @@ const PresalePage = () => {
   const [amountPay, setAmountPay] = useState(0);
   const [walletAddress, setWalletAddress] = useState(null);
   const [showTikTokDebug, setShowTikTokDebug] = useState(false);
+  const [stripeFeedback, setStripeFeedback] = useState(null);
 
   useEffect(() => {
     const detectWallet = async () => {
@@ -124,8 +129,57 @@ const PresalePage = () => {
     } catch (_) {}
   }, [trackPageView, trackPresaleEvent]);
 
+  // 🧾 Handle Stripe redirect feedback
+  useEffect(() => {
+    const search = new URLSearchParams(location.search);
+    const paymentStatus = search.get("payment");
+    if (!paymentStatus) return;
+
+    const sessionId = search.get("session_id");
+    const shortSession = sessionId ? `${sessionId.slice(0, 8)}…${sessionId.slice(-4)}` : null;
+
+    if (paymentStatus === "stripe-success") {
+      setStripeFeedback({
+        type: "success",
+        title: "Stripe payment confirmed",
+        message:
+          "Thank you! Your € purchase via Stripe has been confirmed. The BITS distribution will follow shortly and you can track the details in your email receipt.",
+        sessionId: shortSession,
+      });
+      toast.success("✅ Stripe payment confirmed. Check your inbox for the receipt.");
+      setSelectedChain("fiat");
+      setSelectedToken("STRIPE");
+    } else if (paymentStatus === "stripe-cancel") {
+      setStripeFeedback({
+        type: "warning",
+        title: "Payment cancelled",
+        message: "The Stripe checkout was closed before completion. You can restart whenever you're ready.",
+      });
+      toast.info("ℹ️ Stripe checkout cancelled. No funds were captured.");
+    }
+
+    // Clean query params from URL
+    navigate({ pathname: location.pathname }, { replace: true });
+  }, [location.search, location.pathname, navigate, setSelectedChain, setSelectedToken]);
+
   return (
     <div className="presale-page">
+      {stripeFeedback && (
+        <div className={`stripe-feedback stripe-feedback--${stripeFeedback.type}`}>
+          <div className="stripe-feedback__icon" aria-hidden>
+            {stripeFeedback.type === "success" ? "✅" : "⚠️"}
+          </div>
+          <div className="stripe-feedback__body">
+            <strong>{stripeFeedback.title}</strong>
+            <p>{stripeFeedback.message}</p>
+            {stripeFeedback.sessionId && (
+              <span className="stripe-feedback__meta">
+                Session ID: {stripeFeedback.sessionId}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
       {showTikTokDebug && (
         <div style={{
           position: 'fixed', top: 8, right: 8, zIndex: 99999,

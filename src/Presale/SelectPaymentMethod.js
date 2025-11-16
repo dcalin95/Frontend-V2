@@ -67,6 +67,7 @@ const SelectPaymentMethod = ({
             isStripeSelected ? "active" : ""
           }`}
           onClick={handleSelectStripe}
+          data-tooltip="Secure Stripe checkout for BitSwapDEX AI Education access + $BITS tokens"
         >
           <img src={cardIcon} alt="Stripe" className="chain-icon" />
           Stripe Card
