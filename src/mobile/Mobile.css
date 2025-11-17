@@ -278,6 +278,19 @@
 
 .mobile-payment-icon {
   flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(20, 241, 149, 0.1);
+}
+
+.mobile-payment-icon svg {
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(0 0 8px rgba(20, 241, 149, 0.6));
 }
 
 .mobile-payment-content {
@@ -929,6 +942,76 @@ button[class*="wallet"]:active {
 /* ================================
    STAKING BOX
    ================================ */
+
+/* ========================================
+   🎨 MOBILE WRAPPERS FOR DESKTOP COMPONENTS
+   ======================================== */
+
+.mobile-staking-wrapper,
+.mobile-rewards-wrapper {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* Override desktop styles for mobile viewport */
+@media (max-width: 768px) {
+  .mobile-staking-wrapper .staking-wrapper,
+  .mobile-rewards-wrapper .rewards-hub {
+    padding: 0;
+    margin: 0;
+  }
+
+  .mobile-staking-wrapper .staking-top-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .mobile-staking-wrapper .ai-container,
+  .mobile-rewards-wrapper .hub-container {
+    padding: 12px;
+    border-radius: 12px;
+    max-width: 100%;
+  }
+
+  .mobile-staking-wrapper .ai-box,
+  .mobile-rewards-wrapper .rewards-summary-card {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .mobile-staking-wrapper .staking-card,
+  .mobile-rewards-wrapper .rewards-card {
+    margin-bottom: 12px;
+  }
+
+  /* Adjust button sizes */
+  .mobile-staking-wrapper button,
+  .mobile-rewards-wrapper button {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+
+  /* Adjust titles */
+  .mobile-staking-wrapper h1,
+  .mobile-staking-wrapper h2,
+  .mobile-rewards-wrapper h1,
+  .mobile-rewards-wrapper h2 {
+    font-size: 20px;
+  }
+
+  .mobile-staking-wrapper h3,
+  .mobile-rewards-wrapper h3 {
+    font-size: 16px;
+  }
+
+  /* Adjust grid layouts */
+  .mobile-staking-wrapper .staking-grid,
+  .mobile-rewards-wrapper .rewards-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
 
 .mobile-staking-box {
   max-width: 100%;
