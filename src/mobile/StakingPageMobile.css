@@ -1,0 +1,31 @@
+/* Mobile Staking Page Wrapper */
+.mobile-staking-page-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  padding: 80px 10px 20px 10px;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+/* Override desktop styles for mobile */
+@media (max-width: 768px) {
+  .mobile-staking-page-wrapper .staking-wrapper {
+    padding: 0;
+    margin: 0;
+  }
+
+  .mobile-staking-page-wrapper .staking-top-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .mobile-staking-page-wrapper .ai-container {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .mobile-staking-page-wrapper .ai-box {
+    padding: 10px;
+  }
+}
+

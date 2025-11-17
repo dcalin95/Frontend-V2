@@ -27,6 +27,7 @@ import PWAInstallPrompt from "./components/PWAInstallPrompt";
 
 // 📱 Mobile
 import MobileUI from "./components/MobileUI";
+import useDeviceDetect from "./hooks/useDeviceDetect";
 
 // 📊 Analytics - Componente separate pentru ferestre popup
 import MarketingDashboard from "./components/MarketingDashboard";
@@ -99,6 +100,11 @@ const PresaleHistory = lazy(() => import("./Presale/Timer/PresaleHistory"));
 const PresalePage = lazy(() => import("./Presale/PresalePage"));
 const PaymentBox = lazy(() => import("./Presale/PaymentBox/PaymentBox"));
 
+// 📱 Mobile versions
+const PresaleMobile = lazy(() => import("./mobile/PresaleMobile"));
+const StakingPageMobile = lazy(() => import("./mobile/StakingPageMobile"));
+const RewardsHubMobile = lazy(() => import("./mobile/RewardsHubMobile"));
+
 const RewardsHub = lazy(() => import("./components/RewardsHub"));
 // const RewardDashboard = lazy(() => import("./components/RewardsDashboard/RewardsDashboard"));
 const BITSAnalytics = lazy(() => import("./Presale/BITSAnalytics/BITSAnalytics"));
@@ -131,6 +137,7 @@ const App = () => {
   const [amountPay, setAmountPay] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [currentSection, setCurrentSection] = useState("home");
+  const isMobile = useDeviceDetect();
 
   const renderToastContainer = () => (
     <ToastContainer
@@ -294,7 +301,7 @@ const App = () => {
                       <Route path="/home" element={<Home />} />
                       <Route path="/whitepaper" element={<Whitepaper />} />
                       <Route path="/how-to-buy" element={<HowToBuy />} />
-                      <Route path="/staking" element={<StakingPage />} />
+                      <Route path="/staking-old" element={<StakingPage />} />
                       <Route path="/smart-staking" element={<StakeWithNFTPreOrder />} />
                       <Route path="/about" element={<About />} />
                       <Route path="/tokenomics" element={<TokenomicsPage />} />
@@ -309,8 +316,9 @@ const App = () => {
                       <Route path="/paper-trade/stx" element={<STXPaperTrade />} />
                       <Route path="/paper-trade/:symbol" element={<TokenPaperTrade />} />
                       <Route path="/ai-assistant" element={<AIBitSwapDEXAssistant />} />
-                      <Route path="/presale" element={<PresalePage />} />
-                      <Route path="/rewards-hub" element={<RewardsHub />} />
+                      <Route path="/presale" element={isMobile ? <PresaleMobile /> : <PresalePage />} />
+                      <Route path="/staking" element={isMobile ? <StakingPageMobile /> : <StakingPage />} />
+                      <Route path="/rewards-hub" element={isMobile ? <RewardsHubMobile /> : <RewardsHub />} />
                       {/* <Route path="/reward-dashboard" element={<RewardDashboard />} /> */}
                       <Route path="/bits-analytics" element={<BITSAnalytics />} />
                       <Route path="/bitcoin-academy" element={<BitcoinAcademy />} />
