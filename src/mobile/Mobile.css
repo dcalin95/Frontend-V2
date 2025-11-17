@@ -335,6 +335,26 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mobile-title-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.mobile-title-icon path,
+.mobile-title-icon circle {
+  fill: url(#cardGrad);
+}
+
+.mobile-label-icon {
+  width: 16px;
+  height: 16px;
+  stroke: var(--solana-green);
 }
 
 .mobile-box-desc {
@@ -413,6 +433,180 @@
   font-size: 14px;
   font-weight: bold;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* 🎨 NEW: Stripe Packages with SVG Icons */
+.mobile-stripe-packages {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.mobile-stripe-package {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.mobile-stripe-package::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  background: inherit;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+.mobile-stripe-package.mobile-stripe-selected::before {
+  opacity: 0.15;
+}
+
+.mobile-stripe-package:active {
+  transform: scale(0.98);
+}
+
+.mobile-package-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.mobile-package-icon-wrapper svg {
+  width: 28px;
+  height: 28px;
+}
+
+.mobile-package-content {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.mobile-package-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.mobile-package-amount {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.mobile-package-bits {
+  font-size: 14px;
+  color: var(--solana-green);
+  font-weight: 600;
+}
+
+.mobile-package-bonus {
+  font-size: 11px;
+  color: var(--solana-purple);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.mobile-package-loading {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.mobile-spinner {
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Referral Section */
+.mobile-referral-section {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: rgba(20, 241, 149, 0.05);
+  border: 1px solid rgba(20, 241, 149, 0.2);
+  border-radius: 12px;
+}
+
+.mobile-referral-section .mobile-input-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.mobile-referral-active {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--solana-green);
+  padding: 6px 10px;
+  background: rgba(20, 241, 149, 0.1);
+  border-radius: 6px;
+}
+
+.mobile-stripe-info {
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
+
+.mobile-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.mobile-info-value {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.mobile-info-disclaimer {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.mobile-info-disclaimer a {
+  color: var(--solana-green);
+  text-decoration: underline;
 }
 
 .mobile-stripe-summary,
