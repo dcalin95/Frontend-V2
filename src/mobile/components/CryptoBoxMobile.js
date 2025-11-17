@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import useCellManagerData from "../../Presale/hooks/useCellManagerData";
-import { handlePayment } from "../../Presale/TokenHandlers/TokenHandlerManager";
+import usePaymentState from "../../Presale/PaymentBox/hooks/usePaymentState";
+import useHandleTransaction from "../../Presale/PaymentBox/useHandleTransaction";
+import { tokenList } from "../../Presale/TokenHandlers/tokenData";
 
 const CRYPTO_TOKENS = [
   { key: "ETH", name: "Ethereum", icon: "Ξ", color: "#627eea" },
@@ -24,15 +25,45 @@ const CryptoBoxMobile = ({
   walletAddress,
   onBack,
 }) => {
-  const [isProcessing, setIsProcessing] = useState(false);
-  const { liveBitsPrice } = useCellManagerData(walletAddress);
+  const [transactionHash, setTransactionHash] = useState(null);
+  const [confirmedBits, setConfirmedBits] = useState(null);
+  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  const [referralCode, setReferralCode] = useState("");
 
-  const bitsPriceUSD = liveBitsPrice && liveBitsPrice > 0 ? liveBitsPrice : 0.001;
-  const tokenPrice = tokenPrices[selectedToken] || 1;
-  const usdValue = amountPay * tokenPrice;
-  const bitsToReceive = usdValue > 0 ? Math.floor(usdValue / bitsPriceUSD) : 0;
+  // 🎯 USE DESKTOP LOGIC - usePaymentState hook
+  const paymentState = usePaymentState({
+    selectedToken,
+    selectedChain,
+    amountPay,
+    setAmountPay,
+    tokenPrices,
+    pricesLoading: false,
+  });
 
-  const handleBuy = async () => {
+  // 🚀 USE DESKTOP LOGIC - useHandleTransaction hook
+  const { handleBuy } = useHandleTransaction({
+    selectedToken,
+    selectedChain,
+    amountPay: paymentState.safeAmountPay,
+    pureBits: paymentState.pureBits,
+    usdValue: paymentState.usdValue,
+    pricePerBitsUSD: paymentState.pricePerBitsUSD,
+    selectedTokenPrice: paymentState.selectedTokenPrice,
+    walletAddress: paymentState.walletAddress,
+    balances: paymentState.balances,
+    availableBits: paymentState.availableBits,
+    setTransactionHash,
+    setConfirmedBits,
+    setPopupVisible,
+    setIsConfirmed,
+    bonusAmount: paymentState.bonusAmount,
+    selectedPaymentMethod: null,
+    referralCode: referralCode,
+    stripeAmountEUR: undefined,
+  });
+
+  const handleBuyClick = async () => {
     if (!walletAddress) {
       toast.error("Please connect your wallet first");
       return;
@@ -43,39 +74,39 @@ const CryptoBoxMobile = ({
       return;
     }
 
-    if (bitsToReceive <= 0) {
+    // Minimum amount check ($10 USD)
+    if (paymentState.usdValue < 10) {
+      toast.error("Minimum purchase is $10 USD");
+      return;
+    }
+
+    if (paymentState.pureBits <= 0) {
       toast.error("Amount too small to receive BITS");
       return;
     }
 
-    setIsProcessing(true);
+    // Balance check (unless it's a fiat payment)
+    const isFiatToken = ['NOWPAY', 'MOONPAY', 'TRANSAK', 'STRIPE'].includes(selectedToken);
+    if (!isFiatToken && paymentState.balances[selectedToken] < amountPay) {
+      toast.error(`Insufficient ${selectedToken} balance`);
+      return;
+    }
 
     try {
-      const paymentHandler = handlePayment(selectedToken);
-
-      const result = await paymentHandler({
-        amount: amountPay,
-        bitsToReceive: bitsToReceive,
-        walletAddress: walletAddress,
-        selectedChain: selectedChain,
-        usdInvested: usdValue,
-        bonusAmount: 0,
-        bonusPercentage: 0,
-        fallbackBitsPrice: bitsPriceUSD,
-        referralCode: "",
-      });
-
-      if (result) {
-        toast.success(`🎉 Payment successful! TX: ${result.slice(0, 10)}...`);
-        setAmountPay(0);
-      }
+      await handleBuy();
+      toast.success(`🎉 Payment successful!`);
+      setAmountPay(0);
     } catch (error) {
       console.error("Payment error:", error);
       toast.error(`Payment failed: ${error.message}`);
-    } finally {
-      setIsProcessing(false);
     }
   };
+
+  const tokenPrice = tokenPrices[selectedToken] || 1;
+  const usdValue = paymentState.usdValue || 0;
+  const bitsToReceive = paymentState.pureBits || 0;
+  const bonusAmount = paymentState.bonusAmount || 0;
+  const totalBits = bitsToReceive + bonusAmount;
 
   return (
     <div className="mobile-crypto-box">
@@ -148,6 +179,26 @@ const CryptoBoxMobile = ({
           min="0"
           step="0.01"
         />
+        {paymentState.balances[selectedToken] > 0 && (
+          <div className="mobile-balance-info">
+            Balance: {paymentState.balances[selectedToken].toFixed(4)} {selectedToken}
+          </div>
+        )}
+      </div>
+
+      {/* Referral Code Input */}
+      <div className="mobile-input-section">
+        <label className="mobile-input-label">
+          🎯 Referral Code (Optional)
+        </label>
+        <input
+          type="text"
+          className="mobile-input"
+          placeholder="CODE-XXXXX"
+          value={referralCode}
+          onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+          maxLength={20}
+        />
       </div>
 
       {/* Summary */}
@@ -162,13 +213,27 @@ const CryptoBoxMobile = ({
           <div className="mobile-summary-row">
             <span>$BITS Price:</span>
             <span className="mobile-summary-value">
-              ${bitsPriceUSD < 1 ? bitsPriceUSD.toFixed(4) : bitsPriceUSD.toFixed(2)}
+              ${paymentState.pricePerBitsUSD < 1 ? paymentState.pricePerBitsUSD.toFixed(4) : paymentState.pricePerBitsUSD.toFixed(2)}
             </span>
           </div>
-          <div className="mobile-summary-row mobile-summary-highlight">
-            <span>You Receive:</span>
+          <div className="mobile-summary-row">
+            <span>Base $BITS:</span>
             <span className="mobile-summary-value">
               {bitsToReceive.toLocaleString()} $BITS
+            </span>
+          </div>
+          {bonusAmount > 0 && (
+            <div className="mobile-summary-row mobile-summary-bonus">
+              <span>Bonus:</span>
+              <span className="mobile-summary-value">
+                +{bonusAmount.toLocaleString()} $BITS
+              </span>
+            </div>
+          )}
+          <div className="mobile-summary-row mobile-summary-highlight">
+            <span>Total Receive:</span>
+            <span className="mobile-summary-value">
+              {totalBits.toLocaleString()} $BITS
             </span>
           </div>
         </div>
@@ -177,15 +242,26 @@ const CryptoBoxMobile = ({
       {/* Buy Button */}
       <button
         className="mobile-buy-btn"
-        onClick={handleBuy}
-        disabled={!walletAddress || !amountPay || isProcessing || bitsToReceive <= 0}
+        onClick={handleBuyClick}
+        disabled={!paymentState.canProceed || paymentState.isLoading}
       >
-        {isProcessing ? "Processing..." : `Buy ${bitsToReceive.toLocaleString()} $BITS`}
+        {paymentState.isLoading ? "Processing..." : `Buy ${totalBits.toLocaleString()} $BITS`}
       </button>
 
+      {/* Error/Warning Messages */}
       {!walletAddress && (
         <div className="mobile-wallet-warning">
           ⚠️ Please connect your wallet to continue
+        </div>
+      )}
+      {usdValue > 0 && usdValue < 10 && (
+        <div className="mobile-wallet-warning">
+          ⚠️ Minimum purchase is $10 USD
+        </div>
+      )}
+      {paymentState.transactionError && (
+        <div className="mobile-wallet-warning">
+          ❌ {paymentState.transactionError}
         </div>
       )}
     </div>
