@@ -283,83 +283,180 @@ const ClaimStakes = ({ signer }) => {
   };
 
   return (
-    <div className="claim-stakes">
-      <h3>📊 My Staked Positions</h3>
-      <p><strong>💰 Total Claimable:</strong> {Math.floor(parseFloat(totalClaimable))} $BITS</p>
-      {stakes.length === 0 && <p>No stakes found.</p>}
+    <>
+      {/* Title Card */}
+      <div className="mobile-payment-option" style={{borderColor: 'rgba(123, 104, 238, 0.5)', background: 'rgba(123, 104, 238, 0.05)'}}>
+        <h3 style={{margin: 0, fontSize: '20px', fontWeight: 'bold'}}>📊 My Staked Positions</h3>
+      </div>
+
+      {/* Total Claimable Card */}
+      <div className="mobile-payment-option">
+        <div className="mobile-payment-content" style={{flex: 1}}>
+          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+            <span style={{fontSize: '16px'}}>💰 Total Claimable:</span>
+            <strong style={{fontSize: '18px', background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'}}>
+              {Math.floor(parseFloat(totalClaimable))} $BITS
+            </strong>
+          </div>
+        </div>
+      </div>
+
+      {/* No Stakes Message */}
+      {stakes.length === 0 && (
+        <div className="mobile-payment-option" style={{textAlign: 'center', color: 'var(--text-secondary)'}}>
+          No stakes found.
+        </div>
+      )}
+
+      {/* Each Stake = Multiple Cards */}
       {stakes.map((s, i) => {
         const eligible = canWithdraw(s);
         const dynamicReward = dynamicRewards[i] || 0;
+        const unlockTime = s.startTime.toNumber() + cooldown;
+        const secondsLeft = Math.max(tgeDate, unlockTime) - now;
         
         return (
-          <div key={i} className="stake-entry">
-            <p><strong>Amount:</strong> {Math.floor(parseFloat(formatUnits(s.locked, 18)))} $BITS</p>
-            <p><strong>APR:</strong> {formatAprPercentFrom1e18(s.apr)}</p>
-            {!s.withdrawn && (<p><strong>Reward:</strong> {clampBits(dynamicReward)} $BITS</p>)}
-            {s.withdrawn ? (
-              <>
-                <p><strong>Status:</strong> ✅ Claimed</p>
-                <p><strong>Duration:</strong> {formatDuration(Math.max(0, Math.min(now, (s.startTime?.toNumber?.() || Number(s.startTime)) + ((s.lockPeriod?.toNumber?.() || 0) > 0 ? s.lockPeriod.toNumber() : cooldown)) - (s.startTime?.toNumber?.() || Number(s.startTime))))}</p>
-                {!!unstakeFeePct && <p style={{ color:'#ffd27f' }}><strong>Penalty (est.):</strong> {(parseFloat(formatUnits(s.locked, 18)) * (unstakeFeePct/100)).toFixed(4)} $BITS</p>}
-              </>
-            ) : (
-              <p><strong>Status:</strong> 🔒 Locked</p>
-            )}
+          <React.Fragment key={i}>
+            {/* Position Info Card */}
+            <div className="mobile-payment-option" style={{borderColor: s.withdrawn ? 'rgba(0, 255, 163, 0.5)' : 'rgba(153, 69, 255, 0.5)'}}>
+              <div className="mobile-payment-content" style={{flex: 1}}>
+                <div style={{marginBottom: '12px', paddingBottom: '12px', borderBottom: '1px solid rgba(255,255,255,0.1)'}}>
+                  <h4 style={{margin: '0 0 8px 0', fontSize: '16px', color: 'var(--text-primary)'}}>
+                    Position #{i + 1}
+                  </h4>
+                </div>
+                
+                <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
+                  <span>Amount:</span>
+                  <strong>{Math.floor(parseFloat(formatUnits(s.locked, 18)))} $BITS</strong>
+                </div>
+                
+                <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
+                  <span>APR:</span>
+                  <strong style={{color: 'var(--solana-green)'}}>{formatAprPercentFrom1e18(s.apr)}</strong>
+                </div>
+                
+                {!s.withdrawn && (
+                  <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
+                    <span>Reward:</span>
+                    <strong style={{color: 'var(--solana-purple)'}}>{clampBits(dynamicReward)} $BITS</strong>
+                  </div>
+                )}
+                
+                <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
+                  <span>Status:</span>
+                  <strong style={{color: s.withdrawn ? 'var(--solana-green)' : '#f39c12'}}>
+                    {s.withdrawn ? '✅ Claimed' : '🔒 Locked'}
+                  </strong>
+                </div>
+                
+                {s.withdrawn && (
+                  <>
+                    <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
+                      <span>Duration:</span>
+                      <strong>{formatDuration(Math.max(0, Math.min(now, (s.startTime?.toNumber?.() || Number(s.startTime)) + ((s.lockPeriod?.toNumber?.() || 0) > 0 ? s.lockPeriod.toNumber() : cooldown)) - (s.startTime?.toNumber?.() || Number(s.startTime))))}</strong>
+                    </div>
+                    {!!unstakeFeePct && (
+                      <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
+                        <span style={{color: '#ffd27f'}}>Penalty (est.):</span>
+                        <strong style={{color: '#ffd27f'}}>{(parseFloat(formatUnits(s.locked, 18)) * (unstakeFeePct/100)).toFixed(4)} $BITS</strong>
+                      </div>
+                    )}
+                  </>
+                )}
 
-            {!eligible && !s.withdrawn && renderCountdown(s)}
+                {/* Countdown */}
+                {!eligible && !s.withdrawn && (
+                  <div style={{marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.1)', color: '#f39c12', fontSize: '14px'}}>
+                    ⏳ Available in: {formatTimeLeft(secondsLeft)}
+                  </div>
+                )}
+              </div>
+            </div>
 
-            {/* Withdraw stake (+rewards) */}
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              <button
-                className="claim-button"
-                onClick={() => handleClaim(i)}
-                disabled={!eligible || s.withdrawn || loadingIndex === i}
-              >
-                {loadingIndex === i
-                  ? "Processing..."
-                  : s.withdrawn
-                  ? "✅ Withdrawn"
-                  : eligible
-                  ? `⬇️ Withdraw ${Math.floor(parseFloat(formatUnits(s.locked, 18)))} $BITS`
-                  : "⬇️ Withdraw"}
-              </button>
- 
-               {/* Early Unstake with penalty - always visible when not withdrawn */}
-              {!s.withdrawn && (
-                <button
-                  className="claim-button"
-                  onClick={() => handleEarlyUnstake(i)}
-                  disabled={loadingIndex === i}
-                  style={{ background: 'transparent', borderColor: '#f39c12', color: '#f39c12' }}
-                  title="Unstake early with penalty"
-                >
-                  {loadingIndex === i ? 'Processing...' : '⚠️ Unstake early (−fee)'}
-                </button>
-              )}
- 
-               {hasClaimReward && !s.withdrawn && (
-                 <button
-                   className="claim-button"
-                   onClick={() => handleClaimRewardOnly(i)}
-                   disabled={loadingIndex === i}
-                   style={{ background: 'transparent', borderColor: '#4ecdc4' }}
-                 >
-                   {loadingIndex === i ? "Processing..." : `💰 Claim Rewards`}
-                 </button>
-               )}
-             </div>
- 
-             {/* Explicație dacă butonul e dezactivat */}
+            {/* Withdraw Button - Separate Card */}
+            <button
+              className="mobile-payment-option"
+              onClick={() => handleClaim(i)}
+              disabled={!eligible || s.withdrawn || loadingIndex === i}
+              style={{
+                background: s.withdrawn ? 'rgba(0, 255, 163, 0.1)' : eligible ? 'var(--gradient-primary)' : 'transparent',
+                borderColor: s.withdrawn ? 'rgba(0, 255, 163, 0.5)' : eligible ? 'transparent' : 'rgba(255, 255, 255, 0.2)',
+                color: s.withdrawn ? 'var(--solana-green)' : 'white',
+                cursor: (!eligible || s.withdrawn || loadingIndex === i) ? 'not-allowed' : 'pointer',
+                opacity: (!eligible || s.withdrawn || loadingIndex === i) ? 0.5 : 1,
+                fontWeight: 'bold',
+                justifyContent: 'center'
+              }}
+            >
+              {loadingIndex === i
+                ? "⏳ Processing..."
+                : s.withdrawn
+                ? "✅ Withdrawn"
+                : eligible
+                ? `⬇️ Withdraw ${Math.floor(parseFloat(formatUnits(s.locked, 18)))} $BITS`
+                : "⬇️ Withdraw (Locked)"}
+            </button>
+
+            {/* Early Unstake Button - Separate Card */}
             {!s.withdrawn && (
-              <p className="claim-info" style={{ fontSize: "0.85em", color: "#bbb", marginTop: "4px" }}>
-                ⚠️ Unstake early: applies a protocol fee if the position is still locked; if READY, fee is 0%.
-              </p>
+              <button
+                className="mobile-payment-option"
+                onClick={() => handleEarlyUnstake(i)}
+                disabled={loadingIndex === i}
+                style={{
+                  background: 'transparent',
+                  borderColor: '#f39c12',
+                  color: '#f39c12',
+                  cursor: loadingIndex === i ? 'not-allowed' : 'pointer',
+                  opacity: loadingIndex === i ? 0.5 : 1,
+                  fontWeight: 'bold',
+                  justifyContent: 'center'
+                }}
+                title="Unstake early with penalty"
+              >
+                {loadingIndex === i ? '⏳ Processing...' : '⚠️ Unstake early (−fee)'}
+              </button>
             )}
-          </div>
+
+            {/* Claim Rewards Button - Separate Card */}
+            {hasClaimReward && !s.withdrawn && (
+              <button
+                className="mobile-payment-option"
+                onClick={() => handleClaimRewardOnly(i)}
+                disabled={loadingIndex === i}
+                style={{
+                  background: 'transparent',
+                  borderColor: '#4ecdc4',
+                  color: '#4ecdc4',
+                  cursor: loadingIndex === i ? 'not-allowed' : 'pointer',
+                  opacity: loadingIndex === i ? 0.5 : 1,
+                  fontWeight: 'bold',
+                  justifyContent: 'center'
+                }}
+              >
+                {loadingIndex === i ? "⏳ Processing..." : `💰 Claim Rewards`}
+              </button>
+            )}
+
+            {/* Warning Info - Separate Card */}
+            {!s.withdrawn && (
+              <div className="mobile-payment-option" style={{
+                background: 'rgba(243, 156, 18, 0.1)',
+                borderColor: 'rgba(243, 156, 18, 0.3)',
+                fontSize: '13px',
+                color: '#f39c12',
+                padding: '15px'
+              }}>
+                ⚠️ Unstake early: applies a protocol fee if the position is still locked; if READY, fee is 0%.
+              </div>
+            )}
+          </React.Fragment>
         );
       })}
+      
       <ToastContainer position="top-right" autoClose={4000} pauseOnHover />
-    </div>
+    </>
   );
 };
 
