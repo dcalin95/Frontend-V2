@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="genericTokenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00FFA3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9945FF;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="24" stroke="url(#genericTokenGradient)" stroke-width="2.5" fill="none"/>
+  <circle cx="32" cy="32" r="16" stroke="url(#genericTokenGradient)" stroke-width="2" fill="none"/>
+  <circle cx="32" cy="32" r="8" stroke="url(#genericTokenGradient)" stroke-width="2" fill="none"/>
+  <circle cx="32" cy="32" r="2" fill="url(#genericTokenGradient)"/>
+</svg>
+

@@ -1,0 +1,133 @@
+/* =============================================================================
+   Icon Component Styles - Solana AI Design System
+   ============================================================================= */
+
+.solana-icon {
+  position: relative;
+  flex-shrink: 0;
+  user-select: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.solana-icon svg {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none;
+}
+
+/* Clickable state */
+.solana-icon--clickable {
+  cursor: pointer;
+}
+
+.solana-icon--clickable:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 8px rgba(0, 255, 163, 0.6));
+}
+
+.solana-icon--clickable:active {
+  transform: scale(0.95);
+}
+
+/* =============================================================================
+   ANIMATIONS
+   ============================================================================= */
+
+/* Pulse Animation */
+@keyframes iconPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+.solana-icon--animate-pulse {
+  animation: iconPulse 2s ease-in-out infinite;
+}
+
+/* Spin Animation */
+@keyframes iconSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.solana-icon--animate-spin {
+  animation: iconSpin 2s linear infinite;
+}
+
+/* Glow Animation */
+@keyframes iconGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 4px rgba(0, 255, 163, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(153, 69, 255, 0.8));
+  }
+}
+
+.solana-icon--animate-glow {
+  animation: iconGlow 2s ease-in-out infinite;
+}
+
+/* Float Animation */
+@keyframes iconFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.solana-icon--animate-float {
+  animation: iconFloat 3s ease-in-out infinite;
+}
+
+/* =============================================================================
+   RESPONSIVE SIZES
+   ============================================================================= */
+
+@media (max-width: 768px) {
+  .solana-icon--clickable:hover {
+    transform: scale(1.05);
+  }
+}
+
+/* =============================================================================
+   ACCESSIBILITY
+   ============================================================================= */
+
+.solana-icon[role="button"] {
+  outline: none;
+}
+
+.solana-icon[role="button"]:focus-visible {
+  outline: 2px solid var(--solana-green, #00FFA3);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .solana-icon,
+  .solana-icon--animate-pulse,
+  .solana-icon--animate-spin,
+  .solana-icon--animate-glow,
+  .solana-icon--animate-float {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+

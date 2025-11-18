@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="discordGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00FFA3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9945FF;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="24" stroke="url(#discordGradient)" stroke-width="2.5" fill="none"/>
+  <path d="M 20 24 C 22 22 26 20 30 20 L 31 22 C 33 22 35 22 37 22 L 38 20 C 42 20 46 22 48 24 C 48 24 50 32 50 36 C 48 38 44 40 40 40 L 38 37 C 36 38 32 38 30 37 L 28 40 C 24 40 20 38 18 36 C 18 32 20 24 20 24 Z" stroke="url(#discordGradient)" stroke-width="2" fill="none" stroke-linejoin="round"/>
+  <circle cx="26" cy="30" r="2" fill="url(#discordGradient)"/>
+  <circle cx="42" cy="30" r="2" fill="url(#discordGradient)"/>
+</svg>
+
