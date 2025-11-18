@@ -140,17 +140,41 @@
 
 @media (max-width: 768px) {
   .staking-main {
-    padding: 3rem 0.8rem 2rem 0.8rem; /* Ajustat pentru mobile */
-    gap: 1.5rem;
+    padding: 0;
+    gap: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
+  /* ELIMINĂM LEFT/RIGHT - TOTUL VERTICAL! */
   .staking-top-row {
-    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 90%;
+    margin: 0 auto;
+    padding: 0;
   }
 
+  /* LEFT/RIGHT DEVIN INVIZIBILE - DOAR STACK VERTICAL! */
   .left-side,
   .right-side {
-    gap: 1rem;
+    display: contents !important; /* Elimină wrapper-ul, copiii devin direct în parent */
+  }
+  
+  .staking-bottom {
+    width: 90%;
+    margin: 0 auto;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .ai-staking-header {
+    width: 90%;
+    margin: 0 auto 20px auto;
   }
 
   .ai-staking-title {
@@ -162,25 +186,48 @@
     font-size: 0.9rem;
   }
 
+  /* FIECARE AI-CONTAINER = UN CARD SEPARAT, VERTICAL */
   .ai-container {
-    padding: 1rem;
-    border-radius: 8px;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    min-height: 80px;
+    background: transparent !important;
+    border: 1px solid rgba(0, 255, 163, 0.3) !important;
+    border-radius: 16px !important;
+    box-sizing: border-box;
+  }
+  
+  .ai-container:hover {
+    transform: none;
+    box-shadow: 0 0 15px rgba(0, 255, 163, 0.2);
   }
 }
 
 @media (max-width: 480px) {
   .staking-main {
-    padding: 2.5rem 0.5rem 1.5rem 0.5rem; /* Extra compact pentru telefoane mici */
-    gap: 1rem;
+    padding: 0;
+    gap: 0;
   }
 
   .staking-top-row {
-    gap: 0.8rem;
+    gap: 15px;
+    width: 90%;
   }
 
+  /* ELIMINĂ COMPLET LEFT/RIGHT PE MOBILE MIC */
   .left-side,
   .right-side {
-    gap: 0.8rem;
+    display: contents !important;
+  }
+  
+  .staking-bottom {
+    width: 90%;
+    gap: 15px;
+  }
+  
+  .ai-staking-header {
+    width: 90%;
   }
 
   .ai-staking-title {
@@ -192,7 +239,11 @@
   }
 
   .ai-container {
-    padding: 0.8rem;
-    border-radius: 6px;
+    width: 100%;
+    padding: 20px;
+    min-height: 80px;
+    background: transparent !important;
+    border: 1px solid rgba(0, 255, 163, 0.3) !important;
+    border-radius: 16px !important;
   }
 }
