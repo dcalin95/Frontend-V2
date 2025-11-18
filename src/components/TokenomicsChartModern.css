@@ -1,0 +1,1090 @@
+/* ============================================================================
+   TOKENOMICS MODERN - AI VISUALIZATION
+   ============================================================================ */
+
+.tokenomics-modern-container {
+  min-height: 100vh;
+  padding: 4rem 2rem;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================================
+   HEADER
+   ============================================================================ */
+
+.tokenomics-modern-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.tokenomics-modern-title {
+  font-size: 3.5rem;
+  font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(0, 255, 163, 0.4));
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.title-logo-bits {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 20px rgba(0, 255, 163, 0.6));
+  animation: logoFloat 3s ease-in-out infinite;
+}
+
+@keyframes logoFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.title-icon {
+  filter: drop-shadow(0 0 15px rgba(0, 255, 163, 0.6));
+}
+
+.tokenomics-modern-subtitle {
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem;
+}
+
+.tokenomics-modern-description {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.65);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.8;
+  max-width: 1000px;
+  margin: 0 auto 2rem;
+  text-align: center;
+}
+
+/* GitBook Link */
+.gitbook-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.75rem;
+  background: linear-gradient(135deg, rgba(0, 255, 163, 0.15), rgba(220, 31, 255, 0.15));
+  border: 1px solid rgba(0, 255, 163, 0.4);
+  border-radius: 1rem;
+  color: #00FFA3;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 255, 163, 0.2);
+  margin-top: 1.5rem;
+  cursor: pointer;
+}
+
+.gitbook-link:hover {
+  background: linear-gradient(135deg, rgba(0, 255, 163, 0.25), rgba(220, 31, 255, 0.25));
+  border-color: rgba(0, 255, 163, 0.6);
+  box-shadow: 0 6px 24px rgba(0, 255, 163, 0.4);
+  transform: translateY(-2px);
+}
+
+.gitbook-icon {
+  filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.6));
+}
+
+.gitbook-arrow {
+  filter: drop-shadow(0 0 8px rgba(220, 31, 255, 0.6));
+  transition: transform 0.3s ease;
+}
+
+.gitbook-link:hover .gitbook-arrow {
+  transform: translateX(5px);
+}
+
+/* ============================================================================
+   BASIC INFORMATION
+   ============================================================================ */
+
+.tokenomics-basic-info {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  border-radius: 1.5rem;
+  padding: 2rem 3rem;
+  box-shadow: 0 8px 32px rgba(0, 255, 163, 0.2);
+  backdrop-filter: blur(10px);
+  max-width: 1200px;
+  width: 100%;
+}
+
+.basic-info-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.info-icon {
+  filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.5));
+}
+
+.basic-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.info-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.info-value {
+  font-size: 1.2rem;
+  color: #00FFA3;
+  font-weight: 700;
+  font-family: 'Orbitron', monospace;
+}
+
+/* ============================================================================
+   STATS BAR
+   ============================================================================ */
+
+.tokenomics-stats-bar {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem 3rem;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 255, 163, 0.2);
+  backdrop-filter: blur(10px);
+  max-width: 1200px;
+  width: 100%;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.stat-icon {
+  filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.5));
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.stat-value {
+  font-size: 1.3rem;
+  color: #00FFA3;
+  font-weight: 700;
+  font-family: 'Orbitron', monospace;
+}
+
+.stat-value.warning {
+  color: #FFB300;
+  text-shadow: 0 0 10px rgba(255, 179, 0, 0.6);
+}
+
+.stat-divider {
+  width: 1px;
+  height: 50px;
+  background: linear-gradient(to bottom, transparent, rgba(0, 255, 163, 0.3), transparent);
+}
+
+/* ============================================================================
+   VISUALIZATION CONTAINER
+   ============================================================================ */
+
+.tokenomics-visualization {
+  display: grid;
+  grid-template-columns: 1fr 600px 1fr;
+  gap: 4rem;
+  width: 100%;
+  max-width: 1600px;
+  align-items: start;
+}
+
+/* ============================================================================
+   AI RING CHART
+   ============================================================================ */
+
+.ai-ring-container {
+  position: relative;
+  width: 600px;
+  height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-ring-svg {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 0 30px rgba(0, 255, 163, 0.3));
+}
+
+.ring-segment {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.ring-segment:hover {
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 20px currentColor) !important;
+}
+
+.ring-segment.active {
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 30px currentColor) !important;
+}
+
+/* Rotation Controls */
+.rotate-btn {
+  position: absolute;
+  z-index: 10;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(0, 255, 163, 0.1);
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.rotate-btn:hover {
+  background: rgba(0, 255, 163, 0.2);
+  border-color: rgba(0, 255, 163, 0.6);
+  box-shadow: 0 0 20px rgba(0, 255, 163, 0.4);
+  transform: scale(1.1);
+}
+
+.rotate-left {
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.rotate-right {
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Center Core */
+.ai-ring-core {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
+  border: 2px solid rgba(0, 255, 163, 0.4);
+  box-shadow: 
+    0 0 40px rgba(0, 255, 163, 0.3),
+    inset 0 0 40px rgba(0, 255, 163, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  z-index: 5;
+}
+
+.core-glow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 255, 163, 0.2), transparent);
+  animation: coreGlowPulse 3s ease-in-out infinite;
+}
+
+@keyframes coreGlowPulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.2); opacity: 0.8; }
+}
+
+.core-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 15px rgba(0, 255, 163, 0.6));
+  z-index: 2;
+}
+
+.core-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  z-index: 2;
+}
+
+.core-label {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: 'Orbitron', monospace;
+}
+
+.core-sublabel {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Segment Labels */
+.segment-label {
+  position: absolute;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.label-percent {
+  font-size: 1.2rem;
+  font-weight: 700;
+  font-family: 'Orbitron', monospace;
+  text-shadow: 0 0 10px currentColor, 0 2px 4px rgba(0, 0, 0, 0.8);
+  filter: drop-shadow(0 0 8px currentColor);
+}
+
+.segment-label.active .label-percent {
+  font-size: 1.5rem;
+  text-shadow: 0 0 20px currentColor, 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+/* ============================================================================
+   INFO CARDS
+   ============================================================================ */
+
+.tokenomics-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tokenomics-card {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.tokenomics-card:hover {
+  border-color: rgba(0, 255, 163, 0.4);
+  box-shadow: 0 6px 24px rgba(0, 255, 163, 0.2);
+  transform: translateY(-3px);
+}
+
+.tokenomics-card.active {
+  border-color: rgba(0, 255, 163, 0.6);
+  box-shadow: 0 8px 32px rgba(0, 255, 163, 0.4);
+  transform: scale(1.02);
+}
+
+.card-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 1rem 1rem 0 0;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.card-icon {
+  filter: drop-shadow(0 0 8px currentColor);
+  flex-shrink: 0;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.card-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.card-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.card-stat-label {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.card-stat-value {
+  font-size: 0.95rem;
+  color: #ffffff;
+  font-weight: 700;
+  font-family: 'Orbitron', monospace;
+}
+
+.card-description {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+}
+
+/* ============================================================================
+   VESTING INFO
+   ============================================================================ */
+
+.tokenomics-vesting {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem 3rem;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(156, 39, 255, 0.3);
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px rgba(156, 39, 255, 0.2);
+  backdrop-filter: blur(10px);
+  max-width: 1200px;
+  width: 100%;
+}
+
+.vesting-icon {
+  filter: drop-shadow(0 0 15px rgba(156, 39, 255, 0.6));
+  color: #9c27ff;
+}
+
+.vesting-content {
+  flex: 1;
+}
+
+.vesting-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #9c27ff, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.vesting-description {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ============================================================================
+   TOKEN UTILITY SECTION
+   ============================================================================ */
+
+.tokenomics-utility-section {
+  max-width: 1400px;
+  width: 100%;
+  padding: 3rem 0;
+}
+
+.utility-section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.utility-title-icon {
+  filter: drop-shadow(0 0 15px rgba(0, 255, 163, 0.6));
+}
+
+.utility-section-description {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  line-height: 1.8;
+  max-width: 900px;
+  margin: 0 auto 3rem;
+}
+
+.utility-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.utility-card {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 255, 163, 0.2);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.utility-card:hover {
+  border-color: rgba(0, 255, 163, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 255, 163, 0.3);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.utility-card-featured {
+  grid-column: 1 / -1;
+  border-color: rgba(220, 31, 255, 0.3);
+  background: rgba(220, 31, 255, 0.05);
+}
+
+.utility-card-featured:hover {
+  border-color: rgba(220, 31, 255, 0.6);
+  box-shadow: 0 8px 32px rgba(220, 31, 255, 0.4);
+}
+
+.utility-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.utility-icon {
+  filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.5));
+  flex-shrink: 0;
+}
+
+.utility-card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.utility-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.utility-list li {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+  padding-left: 1.2rem;
+  position: relative;
+}
+
+.utility-list li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: #00FFA3;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.utility-list li strong {
+  color: #DC1FFF;
+  font-weight: 700;
+}
+
+/* ============================================================================
+   KEY INNOVATIONS
+   ============================================================================ */
+
+.tokenomics-innovations {
+  max-width: 1200px;
+  width: 100%;
+  padding: 3rem 0;
+}
+
+.innovations-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #FF6B35, #FFD700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.innovations-icon {
+  filter: drop-shadow(0 0 15px rgba(255, 107, 53, 0.6));
+}
+
+.innovations-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.innovation-item {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 107, 53, 0.2);
+  border-radius: 1.2rem;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.innovation-item:hover {
+  border-color: rgba(255, 107, 53, 0.5);
+  box-shadow: 0 8px 32px rgba(255, 107, 53, 0.3);
+  transform: translateY(-5px);
+}
+
+.innovation-icon {
+  filter: drop-shadow(0 0 12px rgba(255, 107, 53, 0.5));
+  margin-bottom: 1rem;
+}
+
+.innovation-item h4 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #FFD700;
+  margin-bottom: 1rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.innovation-item p {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ============================================================================
+   CONCLUSION
+   ============================================================================ */
+
+.tokenomics-conclusion {
+  max-width: 1200px;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  border-radius: 1.5rem;
+  padding: 3rem;
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 255, 163, 0.2);
+}
+
+.conclusion-icon {
+  filter: drop-shadow(0 0 20px rgba(0, 255, 163, 0.6));
+  flex-shrink: 0;
+}
+
+.conclusion-content {
+  flex: 1;
+}
+
+.conclusion-title {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1.5rem;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.conclusion-text {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+
+.conclusion-tagline {
+  font-size: 1.1rem;
+  color: #00FFA3;
+  font-weight: 600;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.conclusion-tagline strong {
+  color: #DC1FFF;
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+@media (max-width: 1400px) {
+  .tokenomics-visualization {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    justify-items: center;
+  }
+
+  .ai-ring-container {
+    width: 500px;
+    height: 500px;
+  }
+
+  .tokenomics-cards {
+    grid-template-columns: repeat(2, 1fr);
+    display: grid;
+    max-width: 900px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 1024px) {
+  .tokenomics-stats-bar {
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding: 1.5rem 2rem;
+  }
+
+  .stat-divider {
+    display: none;
+  }
+
+  .stat-item {
+    flex: 0 0 calc(50% - 0.75rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .tokenomics-modern-container {
+    padding: 2rem 1rem;
+    gap: 2rem;
+  }
+
+  .tokenomics-modern-title {
+    font-size: 2.5rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .title-logo-bits {
+    width: 60px;
+    height: 60px;
+  }
+
+  .tokenomics-modern-subtitle {
+    font-size: 1rem;
+  }
+
+  .tokenomics-modern-description {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .gitbook-link {
+    padding: 0.7rem 1.4rem;
+    font-size: 0.9rem;
+    gap: 0.5rem;
+  }
+
+  .tokenomics-basic-info {
+    padding: 1.5rem;
+  }
+
+  .basic-info-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .tokenomics-stats-bar {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+
+  .stat-item {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .ai-ring-container {
+    width: 400px;
+    height: 400px;
+  }
+
+  .ai-ring-core {
+    width: 140px;
+    height: 140px;
+  }
+
+  .core-logo {
+    width: 50px;
+    height: 50px;
+  }
+
+  .core-label {
+    font-size: 1.2rem;
+  }
+
+  .rotate-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .tokenomics-cards {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+  }
+
+  .tokenomics-vesting {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem;
+  }
+
+  .utility-section-title {
+    font-size: 2rem;
+    flex-direction: column;
+  }
+
+  .utility-section-description {
+    font-size: 0.95rem;
+  }
+
+  .utility-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .utility-card {
+    padding: 1.5rem;
+  }
+
+  .utility-card-featured {
+    grid-column: 1;
+  }
+
+  .utility-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .utility-card-title {
+    font-size: 1.3rem;
+  }
+
+  .innovations-title {
+    font-size: 1.8rem;
+    flex-direction: column;
+  }
+
+  .innovations-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .tokenomics-conclusion {
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem 1.5rem;
+    align-items: center;
+  }
+
+  .conclusion-title {
+    font-size: 1.6rem;
+  }
+
+  .conclusion-text {
+    font-size: 0.95rem;
+  }
+
+  .conclusion-tagline {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tokenomics-modern-title {
+    font-size: 1.8rem;
+  }
+
+  .ai-ring-container {
+    width: 320px;
+    height: 320px;
+  }
+
+  .ai-ring-core {
+    width: 100px;
+    height: 100px;
+  }
+
+  .core-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .core-label {
+    font-size: 1rem;
+  }
+
+  .core-sublabel {
+    font-size: 0.7rem;
+  }
+
+  .label-percent {
+    font-size: 1rem;
+  }
+
+  .segment-label.active .label-percent {
+    font-size: 1.2rem;
+  }
+
+  .rotate-btn {
+    width: 35px;
+    height: 35px;
+  }
+
+  .rotate-left {
+    left: 10px;
+  }
+
+  .rotate-right {
+    right: 10px;
+  }
+
+  .tokenomics-card {
+    padding: 1rem;
+  }
+
+  .card-title {
+    font-size: 1rem;
+  }
+
+  .card-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-value {
+    font-size: 1.1rem;
+  }
+
+  .vesting-title {
+    font-size: 1.2rem;
+  }
+
+  .vesting-description {
+    font-size: 0.9rem;
+  }
+}
+
+/* ============================================================================
+   ANIMATIONS
+   ============================================================================ */
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+

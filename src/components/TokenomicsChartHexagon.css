@@ -1,0 +1,468 @@
+/* ============================================================================
+   TOKENOMICS HEXAGON - AI VISUALIZATION (ALTERNATIVE)
+   ============================================================================ */
+
+.tokenomics-hexagon-container {
+  min-height: 100vh;
+  padding: 3rem 2rem;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================================
+   HEADER
+   ============================================================================ */
+
+.tokenomics-hexagon-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  max-width: 1000px;
+}
+
+.tokenomics-hexagon-title {
+  font-size: 3.2rem;
+  font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(0, 255, 163, 0.4));
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.title-logo-bits-hex {
+  width: 75px;
+  height: 75px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 20px rgba(0, 255, 163, 0.6));
+  animation: logoFloat 3s ease-in-out infinite;
+}
+
+@keyframes logoFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.tokenomics-hexagon-subtitle {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem;
+}
+
+.tokenomics-hexagon-description {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.65);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.7;
+  margin: 0 auto 2rem;
+}
+
+/* GitBook Link */
+.gitbook-link-hex {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.75rem;
+  background: linear-gradient(135deg, rgba(0, 255, 163, 0.15), rgba(220, 31, 255, 0.15));
+  border: 1px solid rgba(0, 255, 163, 0.4);
+  border-radius: 1rem;
+  color: #00FFA3;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 255, 163, 0.2);
+  margin-top: 1.5rem;
+  cursor: pointer;
+}
+
+.gitbook-link-hex:hover {
+  background: linear-gradient(135deg, rgba(0, 255, 163, 0.25), rgba(220, 31, 255, 0.25));
+  border-color: rgba(0, 255, 163, 0.6);
+  box-shadow: 0 6px 24px rgba(0, 255, 163, 0.4);
+  transform: translateY(-2px);
+}
+
+.gitbook-icon-hex {
+  filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.6));
+}
+
+.gitbook-arrow-hex {
+  filter: drop-shadow(0 0 8px rgba(220, 31, 255, 0.6));
+  transition: transform 0.3s ease;
+}
+
+.gitbook-link-hex:hover .gitbook-arrow-hex {
+  transform: translateX(5px);
+}
+
+/* ============================================================================
+   BASIC INFORMATION - COMPACT
+   ============================================================================ */
+
+.tokenomics-basic-info-hex {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  border-radius: 1.2rem;
+  padding: 1.5rem 2.5rem;
+  box-shadow: 0 6px 24px rgba(0, 255, 163, 0.2);
+  backdrop-filter: blur(10px);
+  max-width: 1100px;
+  width: 100%;
+}
+
+.basic-info-title-hex {
+  font-size: 1.3rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.basic-info-grid-hex {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.info-item-hex {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.info-label-hex {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.info-value-hex {
+  font-size: 1.1rem;
+  color: #00FFA3;
+  font-weight: 700;
+  font-family: 'Orbitron', monospace;
+}
+
+/* ============================================================================
+   STATS BAR - COMPACT
+   ============================================================================ */
+
+.tokenomics-stats-bar-hex {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem 2.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  border-radius: 1.2rem;
+  box-shadow: 0 6px 24px rgba(0, 255, 163, 0.2);
+  backdrop-filter: blur(10px);
+  max-width: 1100px;
+  width: 100%;
+}
+
+.stat-item-hex {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex: 1;
+}
+
+.stat-icon-hex {
+  filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.5));
+}
+
+.stat-content-hex {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.stat-label-hex {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.stat-value-hex {
+  font-size: 1.15rem;
+  color: #00FFA3;
+  font-weight: 700;
+  font-family: 'Orbitron', monospace;
+}
+
+.stat-value-hex.warning {
+  color: #FFB300;
+  text-shadow: 0 0 10px rgba(255, 179, 0, 0.6);
+}
+
+.stat-divider-hex {
+  width: 1px;
+  height: 45px;
+  background: linear-gradient(to bottom, transparent, rgba(0, 255, 163, 0.3), transparent);
+}
+
+/* ============================================================================
+   HEXAGON GRID VISUALIZATION
+   ============================================================================ */
+
+.hexagon-visualization {
+  width: 100%;
+  max-width: 1400px;
+  padding: 2rem 0;
+}
+
+.hexagon-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hexagon-item {
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(0, 255, 163, 0.3);
+  border-radius: 1.2rem;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.hexagon-item::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, currentColor 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.hexagon-item:hover::before {
+  opacity: 0.1;
+}
+
+.hexagon-item.active::before {
+  opacity: 0.15;
+}
+
+.hexagon-item:hover {
+  transform: translateY(-8px);
+  border-width: 3px;
+}
+
+.hexagon-item.active {
+  background: rgba(0, 0, 0, 0.7);
+  border-width: 3px;
+}
+
+.hexagon-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid currentColor;
+  box-shadow: 0 0 20px currentColor;
+}
+
+.hexagon-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.3;
+}
+
+.hexagon-percent {
+  font-size: 2.5rem;
+  font-weight: 700;
+  font-family: 'Orbitron', monospace;
+  text-shadow: 0 0 20px currentColor;
+}
+
+.hexagon-amount {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  text-align: center;
+}
+
+.hexagon-description {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  line-height: 1.5;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ============================================================================
+   CONTENT AREA
+   ============================================================================ */
+
+.tokenomics-hexagon-content {
+  max-width: 1200px;
+  width: 100%;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.hex-note {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+  margin: 2rem 0;
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+@media (max-width: 1024px) {
+  .hexagon-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .tokenomics-hexagon-container {
+    padding: 2rem 1rem;
+    gap: 2rem;
+  }
+
+  .tokenomics-hexagon-title {
+    font-size: 2.2rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .title-logo-bits-hex {
+    width: 55px;
+    height: 55px;
+  }
+
+  .tokenomics-hexagon-subtitle {
+    font-size: 1rem;
+  }
+
+  .tokenomics-hexagon-description {
+    font-size: 0.9rem;
+  }
+
+  .gitbook-link-hex {
+    padding: 0.7rem 1.4rem;
+    font-size: 0.9rem;
+    gap: 0.5rem;
+  }
+
+  .tokenomics-basic-info-hex {
+    padding: 1.2rem 1.5rem;
+  }
+
+  .basic-info-grid-hex {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .tokenomics-stats-bar-hex {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.2rem 1.5rem;
+  }
+
+  .stat-item-hex {
+    width: 100%;
+  }
+
+  .stat-divider-hex {
+    display: none;
+  }
+
+  .hexagon-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .hexagon-item {
+    padding: 1.5rem 1rem;
+  }
+
+  .hexagon-icon-wrapper {
+    width: 70px;
+    height: 70px;
+  }
+
+  .hexagon-percent {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tokenomics-hexagon-title {
+    font-size: 1.8rem;
+  }
+
+  .basic-info-grid-hex {
+    grid-template-columns: 1fr;
+  }
+
+  .hexagon-icon-wrapper {
+    width: 60px;
+    height: 60px;
+  }
+
+  .hexagon-title {
+    font-size: 1rem;
+  }
+
+  .hexagon-percent {
+    font-size: 1.8rem;
+  }
+
+  .hexagon-amount {
+    font-size: 0.8rem;
+  }
+}
+
