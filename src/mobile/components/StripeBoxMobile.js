@@ -219,12 +219,14 @@ const StripeBoxMobile = ({ walletAddress, onBack }) => {
   };
 
   return (
-    <div className="mobile-stripe-box">
-      <button className="mobile-back-btn" onClick={onBack}>
-        ← Back
+    <>
+      {/* Back Button - Separate card */}
+      <button className="mobile-back-btn mobile-payment-option" onClick={onBack}>
+        ← Back to Payment Methods
       </button>
 
-      <h3 className="mobile-box-title">
+      {/* Title Card - Separate */}
+      <div className="mobile-payment-option">
         <svg className="mobile-title-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M21 4H3C2.46957 4 1.96086 4.21071 1.58579 4.58579C1.21071 4.96086 1 5.46957 1 6V18C1 18.5304 1.21071 19.0391 1.58579 19.4142C1.96086 19.7893 2.46957 20 3 20H21C21.5304 20 22.0391 19.7893 22.4142 19.4142C22.7893 19.0391 23 18.5304 23 18V6C23 5.46957 22.7893 4.96086 22.4142 4.58579C22.0391 4.21071 21.5304 4 21 4ZM3 18V6H21V18H3Z" fill="url(#cardGrad)"/>
           <path d="M1 10H23" stroke="url(#cardGrad)" strokeWidth="2"/>
@@ -235,116 +237,118 @@ const StripeBoxMobile = ({ walletAddress, onBack }) => {
             </linearGradient>
           </defs>
         </svg>
-        Select Package
-      </h3>
-      <p className="mobile-box-desc">
-        Choose your investment • Instant delivery
-      </p>
+        <div className="mobile-payment-content">
+          <h3 className="mobile-payment-title">Select Package</h3>
+          <p className="mobile-payment-desc">Choose your investment • Instant delivery</p>
+        </div>
+      </div>
 
-      {/* Referral Code Input */}
-      <div className="mobile-input-section mobile-referral-section">
-        <label className="mobile-input-label">
-          <svg className="mobile-label-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H6C4.93913 15 3.92172 15.4214 3.17157 16.1716C2.42143 16.9217 2 17.9391 2 19V21M22 21V19C21.9993 18.1137 21.7044 17.2528 21.1614 16.5523C20.6184 15.8519 19.8581 15.3516 19 15.13M16 3.13C16.8604 3.3503 17.623 3.8507 18.1676 4.55231C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89317 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          Referral Code (Optional)
-        </label>
-        <input
-          type="text"
-          className="mobile-input"
-          placeholder="CODE-XXXXX"
-          value={referralCode}
-          onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
-          maxLength={20}
-        />
-        {referralCode && (
-          <div className="mobile-referral-active">
-            ✅ Referral code active: <strong>{referralCode}</strong>
+      {/* Referral Code - ONE card */}
+      <div className="mobile-payment-option">
+        <svg className="mobile-label-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H6C4.93913 15 3.92172 15.4214 3.17157 16.1716C2.42143 16.9217 2 17.9391 2 19V21M22 21V19C21.9993 18.1137 21.7044 17.2528 21.1614 16.5523C20.6184 15.8519 19.8581 15.3516 19 15.13M16 3.13C16.8604 3.3503 17.623 3.8507 18.1676 4.55231C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89317 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <div className="mobile-payment-content" style={{flex: 1}}>
+          <label className="mobile-payment-title" style={{display: 'block', marginBottom: '8px'}}>Referral Code (Optional)</label>
+          <input
+            type="text"
+            className="mobile-input"
+            placeholder="CODE-XXXXX"
+            value={referralCode}
+            onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+            maxLength={20}
+            style={{width: '100%'}}
+          />
+          {referralCode && (
+            <div style={{marginTop: '8px', fontSize: '12px', color: 'var(--solana-green)'}}>
+              ✅ <strong>{referralCode}</strong>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Each Package = ONE card */}
+      {STRIPE_PRESETS.map((preset) => {
+        const amountUSD = parseFloat((preset.amount * eurUsdRate).toFixed(2));
+        const pureBits = Math.floor(amountUSD / bitsPriceUSD);
+        const bonusPercentage = amountUSD >= 1000 ? 20 : amountUSD >= 500 ? 15 : amountUSD >= 100 ? 10 : 5;
+        const bonusAmount = Math.floor((pureBits * bonusPercentage) / 100);
+        const totalBits = pureBits + bonusAmount;
+        const isSelected = selectedAmount === preset.amount;
+
+        return (
+          <button
+            key={preset.amount}
+            className="mobile-payment-option"
+            onClick={() => handleStripeCheckout(preset.amount)}
+            disabled={isProcessing}
+            style={{
+              borderColor: isSelected ? 'rgba(0, 255, 163, 0.6)' : 'rgba(0, 255, 163, 0.3)',
+              position: 'relative'
+            }}
+          >
+            <div style={{ 
+              width: '48px', 
+              height: '48px', 
+              borderRadius: '12px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              background: preset.gradient,
+              flexShrink: 0
+            }}>
+              {preset.icon}
+            </div>
+            <div className="mobile-payment-content">
+              <div className="mobile-payment-title">{preset.name} • €{preset.amount}</div>
+              <div className="mobile-payment-desc">
+                {totalBits.toLocaleString()} $BITS
+                {bonusAmount > 0 && <span style={{color: 'var(--solana-purple)'}}> (+{bonusPercentage}%)</span>}
+              </div>
+            </div>
+            {isProcessing && isSelected && (
+              <div style={{position: 'absolute', right: '16px'}}>
+                <svg className="mobile-spinner" viewBox="0 0 24 24" style={{width: '24px', height: '24px'}}>
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" strokeDasharray="31.415 31.415" />
+                </svg>
+              </div>
+            )}
+            <div className="mobile-payment-arrow">→</div>
+          </button>
+        );
+      })}
+
+      {/* Info Card - ONE card */}
+      <div className="mobile-payment-option">
+        <div className="mobile-payment-content" style={{flex: 1}}>
+          <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
+            <span>Current $BITS price:</span>
+            <strong>${bitsPriceUSD < 1 ? bitsPriceUSD.toFixed(4) : bitsPriceUSD.toFixed(2)}</strong>
           </div>
-        )}
-      </div>
-
-      <div className="mobile-stripe-packages">
-        {STRIPE_PRESETS.map((preset) => {
-          const amountUSD = parseFloat((preset.amount * eurUsdRate).toFixed(2));
-          const pureBits = Math.floor(amountUSD / bitsPriceUSD);
-          const bonusPercentage = amountUSD >= 1000 ? 20 : amountUSD >= 500 ? 15 : amountUSD >= 100 ? 10 : 5;
-          const bonusAmount = Math.floor((pureBits * bonusPercentage) / 100);
-          const totalBits = pureBits + bonusAmount;
-          const isSelected = selectedAmount === preset.amount;
-
-          return (
-            <button
-              key={preset.amount}
-              className={`mobile-stripe-package ${isSelected ? 'mobile-stripe-selected' : ''}`}
-              onClick={() => handleStripeCheckout(preset.amount)}
-              disabled={isProcessing}
-              style={{
-                background: isSelected ? preset.gradient : 'var(--card-bg)',
-                borderColor: isSelected ? 'transparent' : 'var(--border-color)',
-              }}
-            >
-              <div className="mobile-package-icon-wrapper" style={{ background: preset.gradient }}>
-                {preset.icon}
-              </div>
-              <div className="mobile-package-content">
-                <div className="mobile-package-name">{preset.name}</div>
-                <div className="mobile-package-amount">€{preset.amount}</div>
-                <div className="mobile-package-bits">
-                  {totalBits.toLocaleString()} $BITS
-                </div>
-                {bonusAmount > 0 && (
-                  <div className="mobile-package-bonus">
-                    +{bonusPercentage}% Bonus
-                  </div>
-                )}
-              </div>
-              {isProcessing && isSelected && (
-                <div className="mobile-package-loading">
-                  <svg className="mobile-spinner" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" strokeDasharray="31.415 31.415" />
-                  </svg>
-                </div>
-              )}
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="mobile-stripe-info">
-        <div className="mobile-info-row">
-          <span>Current $BITS price:</span>
-          <span className="mobile-info-value">
-            ${bitsPriceUSD < 1 ? bitsPriceUSD.toFixed(4) : bitsPriceUSD.toFixed(2)}
-          </span>
-        </div>
-        <div className="mobile-info-row">
-          <span>EUR → USD rate:</span>
-          <span className="mobile-info-value">
-            {isRateLoading ? "Loading..." : `${eurUsdRate.toFixed(4)}`}
-          </span>
-        </div>
-        <div className="mobile-info-disclaimer">
-          <p>
+          <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '12px'}}>
+            <span>EUR → USD rate:</span>
+            <strong>{isRateLoading ? "Loading..." : `${eurUsdRate.toFixed(4)}`}</strong>
+          </div>
+          <div style={{fontSize: '12px', color: 'var(--text-secondary)', lineHeight: '1.5', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '12px'}}>
             <strong>🎓 Educational Access:</strong> $BITS grants access to{" "}
-            <a href="https://edu.bits-ai.io/" target="_blank" rel="noopener noreferrer">
+            <a href="https://edu.bits-ai.io/" target="_blank" rel="noopener noreferrer" style={{color: 'var(--solana-green)', textDecoration: 'underline'}}>
               BitSwapDEX AI Education
             </a>
             {" "}and{" "}
-            <a href="/mind-mirror" target="_blank" rel="noopener noreferrer">
+            <a href="/mind-mirror" target="_blank" rel="noopener noreferrer" style={{color: 'var(--solana-green)', textDecoration: 'underline'}}>
               Mind Mirror AI
-            </a>
-            .
-          </p>
+            </a>.
+          </div>
         </div>
       </div>
 
+      {/* Warning - ONE card */}
       {!walletAddress && (
-        <div className="mobile-wallet-warning">
+        <div className="mobile-payment-option" style={{borderColor: '#ff9800', color: '#ff9800'}}>
           ⚠️ Please connect your wallet to continue
         </div>
       )}
-    </div>
+    </>
   );
 };
 

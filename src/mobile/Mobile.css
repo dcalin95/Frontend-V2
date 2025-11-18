@@ -183,48 +183,12 @@
   font-size: 20px;
 }
 
-/* ================================
-   SECTIONS
-   ================================ */
-
-.mobile-section {
-  padding: 40px 20px;
-  border-top: 1px solid var(--border-color);
-}
-
-.mobile-section-title {
-  font-size: 24px;
-  font-weight: bold;
-  text-align: center;
-  margin: 0 0 30px;
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-}
-
-/* SVG Icons for Section Titles */
+/* SVG Icons for Titles */
 .mobile-section-icon {
   width: 32px;
   height: 32px;
   flex-shrink: 0;
   filter: drop-shadow(0 0 8px rgba(20, 241, 149, 0.5));
-  animation: icon-pulse 3s ease-in-out infinite;
-}
-
-@keyframes icon-pulse {
-  0%, 100% {
-    transform: scale(1);
-    filter: drop-shadow(0 0 8px rgba(20, 241, 149, 0.5));
-  }
-  50% {
-    transform: scale(1.1);
-    filter: drop-shadow(0 0 12px rgba(153, 69, 255, 0.7));
-  }
 }
 
 /* ================================
@@ -257,6 +221,8 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+  width: 90%;
+  margin: 0 auto;
 }
 
 .mobile-payment-option {
@@ -264,16 +230,25 @@
   align-items: center;
   gap: 15px;
   padding: 20px;
-  background: var(--card-bg);
-  border: 2px solid var(--border-color);
+  width: 100%;
+  background: transparent;
+  border: 1px solid rgba(0, 255, 163, 0.3);
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: left;
+  box-sizing: border-box;
+  min-height: 80px;
+  margin: 0 auto;
+}
+
+.mobile-payment-option:not(.mobile-back-btn) {
+  width: 90%;
 }
 
 .mobile-payment-option:active {
   transform: scale(0.98);
+  border-color: rgba(0, 255, 163, 0.6);
 }
 
 .mobile-payment-icon {
@@ -321,7 +296,14 @@
 
 .mobile-stripe-box,
 .mobile-crypto-box {
-  max-width: 100%;
+  width: 90%;
+  margin: 0 auto;
+  background: transparent;
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  border-radius: 16px;
+  padding: 20px;
+  box-sizing: border-box;
+  min-height: 80px;
 }
 
 .mobile-back-btn {
@@ -382,6 +364,7 @@
   flex-direction: column;
   gap: 12px;
   margin-bottom: 25px;
+  width: 100%;
 }
 
 .mobile-stripe-card {
@@ -389,15 +372,19 @@
   align-items: center;
   gap: 15px;
   padding: 18px;
-  background: var(--card-bg);
-  border: 2px solid var(--border-color);
+  background: transparent;
+  border: 1px solid rgba(0, 255, 163, 0.3);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 80px;
 }
 
 .mobile-stripe-card-selected {
+  border-color: rgba(0, 255, 163, 0.6);
   border-width: 2px;
   box-shadow: 0 0 20px rgba(153, 69, 255, 0.3);
 }
@@ -454,6 +441,7 @@
   flex-direction: column;
   gap: 12px;
   margin: 20px 0;
+  width: 100%;
 }
 
 .mobile-stripe-package {
@@ -461,13 +449,16 @@
   align-items: center;
   gap: 12px;
   padding: 16px;
-  background: var(--card-bg);
-  border: 2px solid var(--border-color);
+  background: transparent;
+  border: 1px solid rgba(0, 255, 163, 0.3);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 80px;
 }
 
 .mobile-stripe-package::before {
@@ -478,13 +469,14 @@
   right: 0;
   bottom: 0;
   opacity: 0;
-  background: inherit;
+  background: rgba(0, 255, 163, 0.05);
   transition: opacity 0.3s ease;
   z-index: 0;
 }
 
 .mobile-stripe-package.mobile-stripe-selected::before {
-  opacity: 0.15;
+  opacity: 1;
+  border: 2px solid rgba(0, 255, 163, 0.6);
 }
 
 .mobile-stripe-package:active {
@@ -565,9 +557,12 @@
 .mobile-referral-section {
   margin-bottom: 20px;
   padding: 16px;
-  background: rgba(20, 241, 149, 0.05);
-  border: 1px solid rgba(20, 241, 149, 0.2);
+  background: transparent;
+  border: 1px solid rgba(0, 255, 163, 0.3);
   border-radius: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 80px;
 }
 
 .mobile-referral-section .mobile-input-label {
@@ -589,9 +584,11 @@
 .mobile-stripe-info {
   margin-top: 20px;
   padding: 16px;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background: transparent;
+  border: 1px solid rgba(0, 255, 163, 0.3);
   border-radius: 12px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .mobile-info-row {
@@ -624,11 +621,14 @@
 
 .mobile-stripe-summary,
 .mobile-crypto-summary {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background: transparent;
+  border: 1px solid rgba(0, 255, 163, 0.3);
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 80px;
 }
 
 .mobile-summary-row {
@@ -739,6 +739,7 @@
   flex-direction: column;
   gap: 10px;
   margin-bottom: 25px;
+  width: 100%;
 }
 
 .mobile-token-option {
@@ -746,15 +747,19 @@
   align-items: center;
   gap: 12px;
   padding: 15px;
-  background: var(--card-bg);
-  border: 2px solid var(--border-color);
+  background: transparent;
+  border: 1px solid rgba(0, 255, 163, 0.3);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 80px;
 }
 
 .mobile-token-selected {
+  border-color: rgba(0, 255, 163, 0.6);
   border-width: 2px;
   box-shadow: 0 0 15px rgba(153, 69, 255, 0.3);
 }
@@ -823,8 +828,8 @@
 .mobile-input {
   width: 100%;
   padding: 15px;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background: transparent;
+  border: 1px solid rgba(0, 255, 163, 0.3);
   border-radius: 12px;
   color: var(--text-primary);
   font-size: 16px;
@@ -833,7 +838,7 @@
 
 .mobile-input:focus {
   outline: none;
-  border-color: var(--solana-purple);
+  border-color: rgba(153, 69, 255, 0.6);
   box-shadow: 0 0 10px rgba(153, 69, 255, 0.2);
 }
 
@@ -949,8 +954,9 @@ button[class*="wallet"]:active {
 
 .mobile-staking-wrapper,
 .mobile-rewards-wrapper {
-  width: 100%;
-  padding: 10px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 0;
   box-sizing: border-box;
 }
 
@@ -1014,20 +1020,24 @@ button[class*="wallet"]:active {
 }
 
 .mobile-staking-box {
-  max-width: 100%;
+  width: 90%;
+  margin: 0 auto;
 }
 
 .mobile-staking-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background: transparent;
+  border: 1px solid rgba(0, 255, 163, 0.3);
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 15px;
   text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 80px;
 }
 
 .mobile-staking-card-highlight {
-  border-color: var(--solana-green);
+  border-color: rgba(0, 255, 163, 0.6);
   box-shadow: 0 0 20px rgba(20, 241, 149, 0.2);
 }
 
@@ -1063,8 +1073,8 @@ button[class*="wallet"]:active {
 .mobile-staking-input {
   width: 100%;
   padding: 15px;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background: transparent;
+  border: 1px solid rgba(0, 255, 163, 0.3);
   border-radius: 12px;
   color: var(--text-primary);
   font-size: 16px;
@@ -1074,7 +1084,7 @@ button[class*="wallet"]:active {
 
 .mobile-staking-input:focus {
   outline: none;
-  border-color: var(--solana-purple);
+  border-color: rgba(153, 69, 255, 0.6);
   box-shadow: 0 0 10px rgba(153, 69, 255, 0.2);
 }
 
@@ -1114,10 +1124,12 @@ button[class*="wallet"]:active {
 
 .mobile-stakes-list {
   margin-top: 30px;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background: transparent;
+  border: 1px solid rgba(0, 255, 163, 0.3);
   border-radius: 12px;
   padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .mobile-stakes-list-title {
@@ -1166,20 +1178,24 @@ button[class*="wallet"]:active {
    ================================ */
 
 .mobile-rewards-box {
-  max-width: 100%;
+  width: 90%;
+  margin: 0 auto;
 }
 
 .mobile-rewards-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background: transparent;
+  border: 1px solid rgba(0, 255, 163, 0.3);
   border-radius: 12px;
   padding: 25px;
   margin-bottom: 15px;
   text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 80px;
 }
 
 .mobile-rewards-card-highlight {
-  border-color: var(--solana-green);
+  border-color: rgba(0, 255, 163, 0.6);
   box-shadow: 0 0 25px rgba(20, 241, 149, 0.2);
 }
 
@@ -1201,11 +1217,13 @@ button[class*="wallet"]:active {
 }
 
 .mobile-rewards-breakdown {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background: transparent;
+  border: 1px solid rgba(0, 255, 163, 0.3);
   border-radius: 12px;
   padding: 15px;
   margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .mobile-rewards-item {
@@ -1256,11 +1274,14 @@ button[class*="wallet"]:active {
 }
 
 .mobile-referral-section {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
+  background: transparent;
+  border: 1px solid rgba(0, 255, 163, 0.3);
   border-radius: 12px;
   padding: 20px;
   margin-top: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 80px;
 }
 
 .mobile-referral-title {
