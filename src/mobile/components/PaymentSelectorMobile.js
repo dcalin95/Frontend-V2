@@ -2,54 +2,125 @@ import React from "react";
 
 const PaymentSelectorMobile = ({ onSelectMethod }) => {
   return (
-    <div className="mobile-payment-selector">
-      <button
-        className="mobile-payment-option mobile-payment-card"
-        onClick={() => onSelectMethod('stripe')}
-      >
-        <div className="mobile-payment-icon">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#14f195" />
-                <stop offset="100%" stopColor="#9945ff" />
-              </linearGradient>
-            </defs>
-            <rect x="2" y="4" width="20" height="16" rx="2" stroke="url(#cardGradient)" strokeWidth="2" fill="none"/>
-            <path d="M2 10H22" stroke="url(#cardGradient)" strokeWidth="2"/>
-            <rect x="5" y="14" width="6" height="2" rx="1" fill="url(#cardGradient)"/>
-            <rect x="13" y="14" width="4" height="2" rx="1" fill="url(#cardGradient)"/>
-          </svg>
-        </div>
-        <div className="mobile-payment-content">
-          <h3 className="mobile-payment-title">Pay with Card</h3>
-          <p className="mobile-payment-desc">Credit/Debit • Instant</p>
-        </div>
-        <div className="mobile-payment-arrow">→</div>
-      </button>
+    <div className="payment-selector-mobile">
+      <h3 style={{
+        textAlign: 'center',
+        fontSize: '18px',
+        fontWeight: 'bold',
+        marginBottom: '20px',
+        color: 'rgba(255,255,255,0.9)'
+      }}>
+        Select Payment Method
+      </h3>
 
-      <button
-        className="mobile-payment-option mobile-payment-crypto"
-        onClick={() => onSelectMethod('crypto')}
-      >
-        <div className="mobile-payment-icon">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="cryptoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#14f195" />
-                <stop offset="100%" stopColor="#9945ff" />
-              </linearGradient>
-            </defs>
-            <circle cx="12" cy="12" r="9" stroke="url(#cryptoGradient)" strokeWidth="2" fill="none"/>
-            <path d="M12 6V18M9 9H13.5C14.328 9 15 9.672 15 10.5C15 11.328 14.328 12 13.5 12H9M9 12H14C14.828 12 15.5 12.672 15.5 13.5C15.5 14.328 14.828 15 14 15H9M9 9V15" stroke="url(#cryptoGradient)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </div>
-        <div className="mobile-payment-content">
-          <h3 className="mobile-payment-title">Pay with Crypto</h3>
-          <p className="mobile-payment-desc">ETH, BNB, USDT, SOL & more</p>
-        </div>
-        <div className="mobile-payment-arrow">→</div>
-      </button>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '15px',
+        width: '100%',
+        margin: '0 auto'
+      }}>
+        {/* Card Payment Option */}
+        <button
+          onClick={() => onSelectMethod('stripe')}
+          style={{
+            background: 'linear-gradient(180deg, rgba(99, 91, 255, 0.1) 0%, rgba(99, 91, 255, 0.05) 100%)',
+            border: '1px solid rgba(99, 91, 255, 0.3)',
+            borderRadius: '20px',
+            padding: '20px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            minHeight: '140px',
+            transition: 'all 0.3s ease',
+            position: 'relative',
+            overflow: 'hidden',
+            boxShadow: '0 4px 15px rgba(99, 91, 255, 0.1)'
+          }}
+        >
+          <div style={{
+            marginBottom: '15px',
+            filter: 'drop-shadow(0 0 15px rgba(99, 91, 255, 0.6))',
+            width: '48px',
+            height: '48px'
+          }}>
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 7h20v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7zm0 4h20M6 15h4" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M2 7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2" stroke="#818cf8" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+          </div>
+          <div style={{fontSize: '16px', fontWeight: 'bold', color: '#fff', marginBottom: '4px'}}>
+            Card
+          </div>
+          <div style={{fontSize: '11px', color: '#a5b4fc'}}>
+            Stripe / Bank
+          </div>
+          {/* Decorative glow */}
+          <div style={{
+            position: 'absolute',
+            top: '-50%',
+            left: '-50%',
+            width: '200%',
+            height: '200%',
+            background: 'radial-gradient(circle, rgba(99,91,255,0.15) 0%, transparent 70%)',
+            pointerEvents: 'none'
+          }} />
+        </button>
+
+        {/* Crypto Payment Option */}
+        <button
+          onClick={() => onSelectMethod('crypto')}
+          style={{
+            background: 'linear-gradient(180deg, rgba(20, 241, 149, 0.1) 0%, rgba(20, 241, 149, 0.05) 100%)',
+            border: '1px solid rgba(20, 241, 149, 0.3)',
+            borderRadius: '20px',
+            padding: '20px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            minHeight: '140px',
+            transition: 'all 0.3s ease',
+            position: 'relative',
+            overflow: 'hidden',
+            boxShadow: '0 4px 15px rgba(20, 241, 149, 0.1)'
+          }}
+        >
+          <div style={{
+            marginBottom: '15px',
+            filter: 'drop-shadow(0 0 15px rgba(20, 241, 149, 0.6))',
+            width: '48px',
+            height: '48px'
+          }}>
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#14f195" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <div style={{fontSize: '16px', fontWeight: 'bold', color: '#fff', marginBottom: '4px'}}>
+            Crypto
+          </div>
+          <div style={{fontSize: '11px', color: '#86efac'}}>
+            ETH, BNB, SOL...
+          </div>
+          {/* Decorative glow */}
+          <div style={{
+            position: 'absolute',
+            top: '-50%',
+            left: '-50%',
+            width: '200%',
+            height: '200%',
+            background: 'radial-gradient(circle, rgba(20,241,149,0.15) 0%, transparent 70%)',
+            pointerEvents: 'none'
+          }} />
+        </button>
+      </div>
+      
+      <div style={{marginTop: '20px', textAlign: 'center', fontSize: '12px', color: 'rgba(255,255,255,0.4)'}}>
+        Secure payments powered by Web3 & Stripe
+      </div>
     </div>
   );
 };

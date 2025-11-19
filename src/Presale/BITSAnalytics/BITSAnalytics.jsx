@@ -19,24 +19,56 @@ import {
   shortenAddress,
 } from "./utils/dataFormatters";
 
+// --- SVG ICONS COMPONENTS (Gemini 3 King Style) ---
+const IconWallet = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="gemini-icon"><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /><line x1="7" y1="15" x2="7.01" y2="15" /><line x1="11" y1="15" x2="13" y2="15" /></svg>
+);
+const IconStaking = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="gemini-icon"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>
+);
+const IconPortfolio = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="gemini-icon"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" /></svg>
+);
+const IconBits = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="gemini-icon"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>
+);
+const IconPrice = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="gemini-icon"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+);
+const IconTotalValue = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="gemini-icon"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
+);
+const IconPerformance = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="gemini-icon"><path d="M18 20V10" /><path d="M12 20V4" /><path d="M6 20v-6" /></svg>
+);
+const IconPnL = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="gemini-icon"><rect x="2" y="7" width="20" height="14" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg>
+);
+const IconTransactions = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="gemini-icon"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg>
+);
+const IconReferral = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="gemini-icon"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="8.5" cy="7" r="4" /><line x1="20" y1="8" x2="20" y2="14" /><line x1="23" y1="11" x2="17" y2="11" /></svg>
+);
+const IconBonus = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="gemini-icon"><polyline points="20 12 20 22 4 22 4 12" /><rect x="2" y="7" width="20" height="5" /><line x1="12" y1="22" x2="12" y2="7" /><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" /><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" /></svg>
+);
+const IconSize = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="gemini-icon"><rect x="4" y="4" width="16" height="16" rx="2" /><rect x="9" y="9" width="6" height="6" /><line x1="9" y1="1" x2="9" y2="4" /><line x1="15" y1="1" x2="15" y2="4" /><line x1="9" y1="20" x2="9" y2="23" /><line x1="15" y1="20" x2="15" y2="23" /><line x1="20" y1="9" x2="23" y2="9" /><line x1="20" y1="14" x2="23" y2="14" /><line x1="1" y1="9" x2="4" y2="9" /><line x1="1" y1="14" x2="4" y2="14" /></svg>
+);
+const IconStatus = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="gemini-icon"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>
+);
+
 const BITSAnalytics = () => {
   const walletContextValue = useContext(WalletContext);
   const { walletAddress } = walletContextValue || {};
   const { loading, data } = useBoosterSummary();
   const { stakes: stakingStakes, totalReward: stakingTotalRewardBN } = useStakingData(walletContextValue?.signer, walletAddress);
-  console.log("🔎 [STAKING DEBUG] useStakingData:", {
-    stakesLen: Array.isArray(stakingStakes) ? stakingStakes.length : 'n/a',
-    firstStake: Array.isArray(stakingStakes) && stakingStakes[0] ? {
-      locked: stakingStakes[0]?.locked?.toString?.(),
-      apr: stakingStakes[0]?.apr?.toString?.(),
-      startTime: stakingStakes[0]?.startTime?.toString?.(),
-      withdrawn: stakingStakes[0]?.withdrawn
-    } : null,
-    totalRewardBN: stakingTotalRewardBN?._isBigNumber ? stakingTotalRewardBN.toString() : stakingTotalRewardBN
-  });
+  
+  // ... (LOGICA RĂMÂNE INTACTĂ) ...
   const stakingPendingFromStakingPage = (() => {
     try {
-      // Prefer totalReward; fallback to summing stake.reward
       if (stakingTotalRewardBN && stakingTotalRewardBN._isBigNumber) {
         return parseFloat(ethers.utils.formatUnits(stakingTotalRewardBN, 18));
       }
@@ -50,9 +82,7 @@ const BITSAnalytics = () => {
       return 0;
     } catch { return 0; }
   })();
-  console.log("🔎 [STAKING DEBUG] from useStakingData -> pending:", stakingPendingFromStakingPage);
 
-  // Local live fallback (direct on-chain reads) – sums current earnings per stake
   const [stakingProfitLive, setStakingProfitLive] = useState(0);
   useEffect(() => {
     let cancelled = false;
@@ -60,11 +90,9 @@ const BITSAnalytics = () => {
       try {
         if (!walletAddress) return;
         let total = 0;
-        // Robust wrapper with multi-RPC fallback
         try {
           const raw = await executeStakingCall(async (contract) => contract.getTotalCurrentEarnings(walletAddress));
           total = parseFloat(ethers.utils.formatUnits(raw || 0, 18));
-          console.log("🔎 [STAKING DEBUG] getTotalCurrentEarnings:", raw?.toString?.(), "→", total);
         } catch {
           try {
             const stakes = await executeStakingCall(async (contract) => contract.getStakeByUser(walletAddress));
@@ -75,7 +103,6 @@ const BITSAnalytics = () => {
               const currentRaw = info?.[2] ?? info?.currentEarnings;
               try { return s + parseFloat(ethers.utils.formatUnits(currentRaw || 0, 18)); } catch { return s; }
             }, 0);
-            console.log("🔎 [STAKING DEBUG] sum(getStakeCompleteInfo.currentEarnings) =", total);
           } catch {}
         }
         if (!cancelled) setStakingProfitLive(total || 0);
@@ -86,7 +113,6 @@ const BITSAnalytics = () => {
     return () => { cancelled = true; clearInterval(t); };
   }, [walletAddress]);
 
-  // UI-level dynamic replica of staking page calculation (per-second, float math)
   const [stakingProfitPerSecondCalc, setStakingProfitPerSecondCalc] = useState(0);
   useEffect(() => {
     if (!Array.isArray(stakingStakes) || stakingStakes.length === 0) {
@@ -101,8 +127,8 @@ const BITSAnalytics = () => {
         for (const s of stakingStakes) {
           if (!s || s.withdrawn) continue;
           const secondsPassed = Math.max(0, now - (s.startTime?.toNumber?.() ?? 0));
-          const aprPercentage = aprPercentFromRaw(s.apr); // align with staking page
-          const aprDecimal = aprPercentage / 100;         // 22.00% -> 0.22
+          const aprPercentage = aprPercentFromRaw(s.apr);
+          const aprDecimal = aprPercentage / 100;
           const aprPerSecond = aprDecimal / SECONDS_IN_YEAR;
           const stakedAmount = parseFloat(ethers.utils.formatEther(s.locked || 0));
           total += stakedAmount * aprPerSecond * secondsPassed;
@@ -112,15 +138,7 @@ const BITSAnalytics = () => {
     }, 1000);
     return () => clearInterval(timer);
   }, [stakingStakes]);
-  console.log("🔎 [STAKING DEBUG] live totals:", {
-    fromHook: stakingPendingFromStakingPage,
-    fromOnChain: stakingProfitLive,
-    fromPerSecondCalc: stakingProfitPerSecondCalc,
-    fromSafeData: data?.stakingProfit,
-    breakdown: Array.isArray(data?.stakingBreakdown) ? data.stakingBreakdown.map(b => b?.pending) : null
-  });
-  
-  // SAFE DATA FIRST - pentru a evita hoisting errors
+
   const safeData = data || {
     totalBits: 0,
     currentPrice: 0,
@@ -134,87 +152,43 @@ const BITSAnalytics = () => {
     investedUSDOnSolana: 0,
   };
 
-  // Debug: Log what we get from WalletContext and data
-  console.log("🔍 [BITSAnalytics] WalletContext value:", walletContextValue);
-  console.log("🔍 [BITSAnalytics] Wallet address from context:", walletAddress);
-  console.log("🔍 [BITSAnalytics] Provider from context:", !!walletContextValue?.provider);
-  console.log("🔍 [BITSAnalytics] Signer from context:", !!walletContextValue?.signer);
-  console.log("🔍 [BITSAnalytics] Loading state:", loading);
-  console.log("🔍 [BITSAnalytics] Raw data from useBoosterSummary:", data);
-  console.log("🔍 [BITSAnalytics] realInvestedUSD from data:", data?.realInvestedUSD);
-  
-  // 🚨 DEBUGGING BITS HOLDINGS ISSUE
-  console.log("🚨 [BITS HOLDINGS DEBUG] ==================");
-  console.log("🚨 [BITS HOLDINGS] totalBits from data:", data?.totalBits);
-  console.log("🚨 [BITS HOLDINGS] totalBits type:", typeof data?.totalBits);
-  console.log("🚨 [BITS HOLDINGS] totalBits > 0:", data?.totalBits > 0);
-  console.log("🚨 [BITS HOLDINGS] safeData.totalBits:", safeData.totalBits);
-  console.log("🚨 [BITS HOLDINGS] safeData.totalBits > 0:", safeData.totalBits > 0);
-  console.log("🚨 [BITS HOLDINGS] formatBITS(safeData.totalBits):", formatBITS(safeData.totalBits));
-  console.log("🚨 [BITS HOLDINGS DEBUG] ==================");
-
-  // 🎯 SPECTACULAR WIDGET EXPANSION EFFECT - MANUAL CONTROL
+  // Manual widget expansion effect
   useEffect(() => {
     const handleWidgetClick = (event) => {
       const widget = event.currentTarget;
-      
-      // Toggle between expanded and normal state
       if (widget.classList.contains('expanding')) {
-        // If already expanded, start the return animation
         widget.classList.remove('expanding');
         widget.classList.add('returning');
-        
-        // Remove returning class after animation completes
         setTimeout(() => {
           widget.classList.remove('returning');
         }, 600);
       } else {
-        // If not expanded, expand it and keep it expanded
         widget.classList.add('expanding');
       }
     };
-
-    // Add click listeners to all widgets
     const widgets = document.querySelectorAll('.widget');
     widgets.forEach(widget => {
       widget.addEventListener('click', handleWidgetClick);
     });
-
-    // Cleanup function
     return () => {
       widgets.forEach(widget => {
         widget.removeEventListener('click', handleWidgetClick);
       });
     };
-  }, [data]); // Re-run when data changes (when widgets re-render)
+  }, [data]);
 
-  // Check if WalletContext is properly provided
   const walletContextUnavailable = !walletContextValue;
-  // Do not early-return; render-time message shown later
   
-  // Additional check for critical context values
-  if (!walletContextUnavailable && !walletContextValue.provider && walletAddress) {
-    console.error("❌ [BITSAnalytics] Wallet connected but NO PROVIDER in context!");
-    console.log("🚨 [BITSAnalytics] This means WalletContext is not working properly");
-  }
-  
-  if (!walletContextUnavailable && !walletContextValue.signer && walletAddress) {
-    console.error("❌ [BITSAnalytics] Wallet connected but NO SIGNER in context!");
-    console.log("🚨 [BITSAnalytics] This means WalletContext is not working properly");
-  }
-
-  // Ensure numeric types before calculations (support BigNumber/string)
+  // Numeric conversions & ROI logic (KEPT INTACT)
   const toNumber = (value, decimals = 18) => {
     if (value === null || value === undefined) return 0;
     if (typeof value === 'number' && Number.isFinite(value)) return value;
     if (typeof value === 'string') {
       const cleaned = value.replace(/[^0-9.\-eE]/g, '');
-      // Dacă este deja cu punct zecimal sau notație științifică, parsează direct
       if (cleaned.includes('.') || /e/i.test(cleaned)) {
         const parsed = parseFloat(cleaned);
         return Number.isFinite(parsed) ? parsed : 0;
       }
-      // Heuristic: string întreg scalat (ex: wei). Aplică decimalele dacă sunt specificate
       const asInt = Number(cleaned);
       if (Number.isFinite(asInt) && decimals > 0) {
         return asInt / Math.pow(10, decimals);
@@ -236,23 +210,20 @@ const BITSAnalytics = () => {
     return n.toFixed(4).replace(/\.0+$/, '');
   };
 
-  // APR parser identical cu pagina de Staking (detectează formatele 1e18 vs *100)
   const aprPercentFromRaw = (raw) => {
     try {
       const n = Number(raw?.toString ? raw.toString() : raw);
       if (!Number.isFinite(n)) return 0;
       if (n > 1e10) {
-        return parseFloat(ethers.utils.formatUnits(raw, 16)); // 1e18 -> % cu 2 zecimale
+        return parseFloat(ethers.utils.formatUnits(raw, 16));
       }
-      return n / 100; // ex: 2200 => 22.00
+      return n / 100;
     } catch (_) {
       return 0;
     }
   };
 
-  
-
-  // === Network selector (compact) – reused from Staking page ===
+  // Network Logic
   const [networkInfo, setNetworkInfo] = useState({ name: null, chainId: null });
   const [targetChainId, setTargetChainId] = useState(56);
   const [isSwitchingNet, setIsSwitchingNet] = useState(false);
@@ -306,7 +277,6 @@ const BITSAnalytics = () => {
       const hexId = '0x' + Number(target).toString(16);
       await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: hexId }] });
     } catch (err) {
-      // If network not added, try to add minimal chain params from SUPPORTED_NETWORKS
       if (err?.code === 4902) {
         const cfg = SUPPORTED_NETWORKS[Number(target)];
         if (cfg) {
@@ -328,7 +298,6 @@ const BITSAnalytics = () => {
     }
   };
 
-  // RSK native balance (RBTC) when RSK selected
   const [rskNativeBalance, setRskNativeBalance] = useState("");
   useEffect(() => {
     const tid = Number(targetChainId);
@@ -348,6 +317,7 @@ const BITSAnalytics = () => {
     }
   }, [walletAddress, targetChainId]);
 
+  // --- Data Calculations (KEPT INTACT) ---
   const numericTotalBits = toNumber(safeData.totalBits, 18);
   const numericReferralBonus = toNumber(safeData.referralBonus, 18);
   const numericTelegramBonus = toNumber(safeData.telegramBonus, 18);
@@ -365,13 +335,11 @@ const BITSAnalytics = () => {
       ? totalBitsWithBonuses * numericPrice
       : 0;
 
-  // Fallback: if bits and price are positive but product is ~0 due to wrong scale, try price without decimals
   if (totalValueUSD < 0.000001 && numericTotalBits > 0 && numericPrice > 0 && numericPrice < 0.000001) {
     const priceNoScale = toNumber(safeData.currentPrice, 0);
     if (priceNoScale > numericPrice) totalValueUSD = totalBitsWithBonuses * priceNoScale;
   }
 
-  // Use value precomputed in hook if available, otherwise take the best fallback
   const hookValue = Number(data?.currentInvestmentValue ?? 0);
   const directFallback = (parseFloat(String(safeData.totalBits)) || 0) * (parseFloat(String(safeData.currentPrice)) || 0);
   const finalValueUSD = Math.max(
@@ -381,39 +349,21 @@ const BITSAnalytics = () => {
     Number.isFinite(directFallback) ? directFallback : 0
   );
   
-  // 🔍 DEBUG PORTFOLIO VALUE:
-  console.log("🔍 [Portfolio Value DEBUG]:");
-  console.log("🔍 safeData.totalBits:", safeData.totalBits, "→ numeric:", numericTotalBits);
-  console.log("🔍 safeData.currentPrice:", safeData.currentPrice, "→ numeric:", numericPrice);
-  console.log("🔍 totalBitsWithBonuses:", totalBitsWithBonuses);
-  console.log("🔍 totalValueUSD(calc):", totalValueUSD);
-  console.log("🔍 hook currentInvestmentValue:", hookValue);
-  console.log("🔍 directFallback bits*price:", directFallback);
-  console.log("🔍 Portfolio Value (final): $", finalValueUSD);
-  // Compute ROI locally; normalize invested USD scale if necessary (15d vs 18d)
   const bitsForRoi = Number(safeData.totalBits) || 0;
   const priceForRoi = Number(safeData.currentPrice) || 0;
-  const rawInvested =
-    Number(
-      (safeData.investedUsdFromPurchases ??
-        safeData.realInvestedUSD ??
-        safeData.investedUSD ??
-        0)
-    ) || 0;
+  const rawInvested = Number((safeData.investedUsdFromPurchases ?? safeData.realInvestedUSD ?? safeData.investedUSD ?? 0)) || 0;
 
   const expectedValue = bitsForRoi * priceForRoi;
   let investedUsdForRoi = rawInvested;
   if (bitsForRoi > 0 && priceForRoi > 0 && rawInvested > expectedValue * 10) {
     const c15 = rawInvested / 1e15;
     const c18 = rawInvested / 1e18;
-    // choose the closest candidate to expectedValue
     const d15 = Math.abs(c15 - expectedValue);
     const d18 = Math.abs(c18 - expectedValue);
     const candidate = d15 <= d18 ? c15 : c18;
     if (candidate > 0 && candidate < rawInvested) investedUsdForRoi = candidate;
   }
 
-  // ROI: protect against division by ~0 and unrealistic spikes from bad scale
   let computedROI = 0;
   if (bitsForRoi > 0 && investedUsdForRoi > 0.01 && priceForRoi > 0) {
     const avgEntry = investedUsdForRoi / bitsForRoi;
@@ -421,20 +371,17 @@ const BITSAnalytics = () => {
       computedROI = ((priceForRoi - avgEntry) / avgEntry) * 100;
     }
   }
-  // Clamp absurd values that usually come from mis-scaled inputs
   if (!Number.isFinite(computedROI) || Math.abs(computedROI) > 10000) {
     computedROI = 0;
   }
   const roiData = formatROI(computedROI);
 
-  // === PnL (USD) Card Calculations ===
   const investedUsdPreferred = Number(investedUsdForRoi || 0);
   const currentValueUsdForPnl = (Number(safeData.totalBits) || 0) * (Number(safeData.currentPrice) || 0);
   const profitUsd = currentValueUsdForPnl - investedUsdPreferred;
   const profitDisplay = formatUSD(Math.abs(profitUsd));
   const pnlSign = profitUsd >= 0 ? '+' : '-';
 
-  // Holdings-only value (exclude pending rewards): totalBits × currentPrice
   const holdingsOnlyUSD = (Number(safeData.totalBits) || 0) * (Number(safeData.currentPrice) || 0);
   const holdingsOnlyDisplay = formatUSD(holdingsOnlyUSD);
   const portfolioLevel =
@@ -445,7 +392,6 @@ const BITSAnalytics = () => {
       : "Small Holder";
   const portfolioTierHint = "Tiers: Small ≤ 100 $BITS • Medium 101–1000 $BITS • Large > 1000 $BITS";
 
-  // Dynamic Status & Strategy based on ROI and portfolio state
   const roiPercentValue = Number(safeData.roiPercent) || 0;
   const totalRewardsPending =
     (Number(safeData.additionalBonus) || 0) +
@@ -486,8 +432,6 @@ const BITSAnalytics = () => {
     strategyText = "Retry";
   }
 
-  // If no wallet, continue to render analytics with zeros + show a banner notice
-  // Formatting with safety fallback in case formatter mis-detects units
   const formattedUSD = formatUSD(finalValueUSD);
   const displayUSD =
     finalValueUSD > 0 && formattedUSD === "$0.00"
@@ -498,40 +442,42 @@ const BITSAnalytics = () => {
         })}`.replace(/\n\s+/g, '')
       : formattedUSD;
 
-  console.log("🧮 displayUSD:", displayUSD, "formattedUSD:", formattedUSD);
-
-
   if (loading && walletAddress) {
     const networkLabel = walletContextValue?.walletType === 'Solana' ? 'Solana Devnet' : 'BSC Mainnet';
     return (
       <div className="ai-analytics-loader">
-        <div className="ai-orb">
-          <div className="ai-ring"></div>
-          <div className="ai-scan"></div>
-          <div className="ai-core">🤖</div>
+        <div className="ai-gemini-loader">
+          <svg viewBox="0 0 100 100" className="ai-spinner-svg">
+             <defs>
+               <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                 <stop offset="0%" style={{stopColor:'#00FFA3', stopOpacity:1}} />
+                 <stop offset="100%" style={{stopColor:'#DC1FFF', stopOpacity:1}} />
+               </linearGradient>
+             </defs>
+             <circle cx="50" cy="50" r="45" stroke="url(#grad1)" strokeWidth="2" fill="none" className="spinner-circle" />
+             <circle cx="50" cy="50" r="30" stroke="#00FFA3" strokeWidth="2" fill="none" className="spinner-inner-circle" />
+             <path d="M50 20 L50 80 M20 50 L80 50" stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
+          </svg>
+          <div className="ai-core-pulse">AI</div>
         </div>
-        <div className="loader-title">Initializing BITS Analytics</div>
+        <div className="loader-title">Initializing BITS Intelligence</div>
         <div className="loader-subtitle">
-          Secure sync on {networkLabel}. Aggregating wallet, staking, Telegram rewards, and market data.
+          Secure sync on {networkLabel}. Neural aggregation active...
         </div>
         <div className="loader-steps">
-          <div className="loader-step">Connecting wallet<span className="loader-dot"></span></div>
-          <div className="loader-step">Fetching on-chain balances<span className="loader-dot"></span></div>
-          <div className="loader-step">Loading staking + rewards<span className="loader-dot"></span></div>
-          <div className="loader-step">Syncing $BITS price<span className="loader-dot"></span></div>
-          <div className="loader-step">Preparing dashboard<span className="loader-dot"></span></div>
+          <div className="loader-step">Connecting neural wallet<span className="loader-dot"></span></div>
+          <div className="loader-step">Analyzing on-chain vectors<span className="loader-dot"></span></div>
+          <div className="loader-step">Syncing market data<span className="loader-dot"></span></div>
         </div>
-        <div className="loader-progress"><div className="loader-bar"></div></div>
-        <div className="loader-note">On-chain remains live; this is a read-only analytics load.</div>
-
-        {/* Skeleton grid for widgets */}
+        
+        {/* Improved Skeleton Grid */}
         <div className="skeleton-grid">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="skeleton-card">
-              <div className="sk-icon sk-line"></div>
-              <div className="sk-title sk-line"></div>
-              <div className="sk-value sk-line"></div>
-              <div className="sk-subtitle sk-line"></div>
+              <div className="sk-icon-pulse"></div>
+              <div className="sk-line title"></div>
+              <div className="sk-line value"></div>
+              <div className="sk-line subtitle"></div>
             </div>
           ))}
         </div>
@@ -554,7 +500,7 @@ const BITSAnalytics = () => {
       {!walletAddress && (
         <div className="ai-analytics-loader" style={{ paddingTop: 0, paddingBottom: 12 }}>
           <div className="loader-subtitle">
-            For full analytics, please connect a wallet. Until then, values are shown as 0.
+             Connect wallet to activate BITS AI Portfolio.
           </div>
           <div>
             <button 
@@ -590,7 +536,7 @@ const BITSAnalytics = () => {
         </div>
       )}
 
-      {/* Inline Network & Wallet controls (no card) */}
+      {/* Inline Network & Wallet controls */}
       <div className="network-wallet-inline">
         <div className="nw-group">
           <span className="nw-label">Network:</span>
@@ -635,7 +581,7 @@ const BITSAnalytics = () => {
       <div className="widget-grid">
         {/* Wallet */}
         <div className="widget holdings">
-          <div className="widget-icon">💳</div>
+          <div className="widget-icon"><IconWallet /></div>
           <div className="widget-title">Wallet Address</div>
           <div className="widget-value">
             {walletAddress ? (
@@ -658,11 +604,10 @@ const BITSAnalytics = () => {
 
         {/* STAKING PROFIT (Dedicated Live) */}
         <div className="widget rewards">
-          <div className="widget-icon">💹</div>
+          <div className="widget-icon"><IconStaking /></div>
           <div className="widget-title">Staking Profit (Live)</div>
           <div className="widget-value">
             {(() => {
-              // Folosim DOAR calc dynamic și on-chain; ignorăm safeData care poate fi scalat greșit
               const ordered = [
                 Number(stakingProfitPerSecondCalc) || 0,
                 Number(stakingProfitLive) || 0,
@@ -679,7 +624,7 @@ const BITSAnalytics = () => {
 
         {/* BITS Portfolio Value */}
         <div className="widget holdings">
-          <div className="widget-icon">💎</div>
+          <div className="widget-icon"><IconPortfolio /></div>
           <div className="widget-title">Portfolio Value</div>
           <div className="widget-value">
             {walletAddress ? 
@@ -697,7 +642,7 @@ const BITSAnalytics = () => {
 
         {/* $BITS Holdings */}
         <div className="widget holdings">
-          <div className="widget-icon">⚡</div>
+          <div className="widget-icon"><IconBits /></div>
           <div className="widget-title">$BITS Holdings</div>
           <div className="widget-value">
             {numericTotalBits > 0
@@ -708,13 +653,11 @@ const BITSAnalytics = () => {
             {safeData.totalBits > 0 ? "Current Balance" : 
              walletAddress ? "No $BITS Holdings" : "Connect to View"}
           </div>
-          
-          {/* debug removed */}
         </div>
 
         {/* $BITS Price */}
         <div className="widget market">
-          <div className="widget-icon">🔮</div>
+          <div className="widget-icon"><IconPrice /></div>
           <div className="widget-title">$BITS Price (Current)</div>
           <div className="widget-value">
             {safeData.currentPrice > 0
@@ -739,9 +682,9 @@ const BITSAnalytics = () => {
           </div>
         </div>
 
-        {/* Total Value (Holdings × Price) */}
+        {/* Total Value */}
         <div className="widget market">
-          <div className="widget-icon">🌐</div>
+          <div className="widget-icon"><IconTotalValue /></div>
           <div className="widget-title">Total Value</div>
           <div className="widget-value">{holdingsOnlyDisplay}</div>
           <div className="widget-subtitle">Holdings × Price</div>
@@ -754,7 +697,7 @@ const BITSAnalytics = () => {
           const lines = bd.map((b, i) => `#${i+1}: ${b.pending?.toFixed?.(4) || b.pending} $BITS pending • ${b.aprPercent?.toFixed?.(2) || b.aprPercent}% APR • ${Math.floor(b.locked || 0).toLocaleString('en-US')} staked`).join('\n');
           return `Staking breakdown:\n${lines}`;
         })()}>
-          <div className="widget-icon">🟣</div>
+          <div className="widget-icon"><IconStaking /></div>
           <div className="widget-title">Staking</div>
           <div className="widget-value">
             {(safeData.stakingBits || 0) > 0 ? `${Math.floor(Number(safeData.stakingBits) || 0).toLocaleString('en-US')} $BITS` : '0 $BITS'}
@@ -774,7 +717,7 @@ const BITSAnalytics = () => {
 
         {/* Performance */}
         <div className="widget market">
-          <div className="widget-icon">🚀</div>
+          <div className="widget-icon"><IconPerformance /></div>
           <div className="widget-title">Performance</div>
           <div className="widget-value">
             {`${roiData.arrow} ${roiData.raw.toFixed(1)}%`}
@@ -784,7 +727,7 @@ const BITSAnalytics = () => {
 
         {/* PnL (USD) */}
         <div className="widget market">
-          <div className="widget-icon">💼</div>
+          <div className="widget-icon"><IconPnL /></div>
           <div className="widget-title">PnL (USD)</div>
           <div className="widget-value" style={{ color: profitUsd >= 0 ? '#14F195' : '#ff6b6b' }}>
             {pnlSign}{profitDisplay}
@@ -796,7 +739,7 @@ const BITSAnalytics = () => {
 
         {/* Transactions */}
         <div className="widget market">
-          <div className="widget-icon">⚙️</div>
+          <div className="widget-icon"><IconTransactions /></div>
           <div className="widget-title">Transactions</div>
           <div className="widget-value">
             {formatTransactions(safeData.txCount)}
@@ -806,7 +749,7 @@ const BITSAnalytics = () => {
 
         {/* Rewards */}
         <div className="widget rewards">
-          <div className="widget-icon">🔗</div>
+          <div className="widget-icon"><IconReferral /></div>
           <div className="widget-title">Referral Rewards</div>
           <div className="widget-value">
             {formatBITS(safeData.referralBonus)}
@@ -834,9 +777,9 @@ const BITSAnalytics = () => {
           </div>
         </div>
 
-        {/* Additional Bonus - STRUCTURĂ IDENTICĂ CU CELELALTE WIDGET-URI */}
+        {/* Additional Bonus */}
         <div className="widget rewards">
-          <div className="widget-icon">🎁</div>
+          <div className="widget-icon"><IconBonus /></div>
           <div className="widget-title">Additional Bonus</div>
           <div className="widget-value">
             {safeData.additionalBonus > 0 ? (
@@ -890,7 +833,7 @@ const BITSAnalytics = () => {
         </div>
 
         <div className="widget system" title={portfolioTierHint}>
-          <div className="widget-icon">🎛️</div>
+          <div className="widget-icon"><IconSize /></div>
           <div className="widget-title">Portfolio Size</div>
           <div className="widget-value">{portfolioLevel}</div>
           <div className="widget-subtitle">
@@ -899,7 +842,7 @@ const BITSAnalytics = () => {
         </div>
 
         <div className="widget system">
-          <div className="widget-icon">🔄</div>
+          <div className="widget-icon"><IconStatus /></div>
           <div className="widget-title">Status</div>
           <div className="widget-value">{statusLabel}</div>
           <div className="widget-subtitle">{strategyText}</div>

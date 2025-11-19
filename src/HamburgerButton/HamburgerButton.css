@@ -1,100 +1,114 @@
-/* ===== BUTON HAMBURGER (Sidebar) - SOLANA/AI STYLE ===== */
+/* ===== BUTON HAMBURGER (Sidebar) - GEMINI 3 KING STYLE ===== */
 .ai-animated-hamburger {
   position: fixed;
-  top: 90px; /* ✅ Sub Header, nu suprapune */
+  top: 90px; /* Ajustat pentru a nu se suprapune cu header-ul */
   left: 15px;
-  width: 60px;
-  height: 60px;
-  border: 1px solid rgba(0, 255, 163, 0.3);
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
-  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
-  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
-  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  background: rgba(10, 10, 20, 0.6); /* Dark glass */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(20, 241, 149, 0.3);
+  border-radius: 12px; /* Modern soft square */
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
-  animation: ai-pulse-solana 2s infinite ease-in-out;
-  z-index: 12000; /* ridicat peste sidebar */
-  transition: all 0.3s ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  z-index: 12000; /* Peste Sidebar */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+  overflow: hidden;
 }
 
+/* Glow effect on hover */
 .ai-animated-hamburger:hover {
-  transform: scale(1.1) translateY(-2px);
-  border-color: rgba(0, 255, 163, 0.5);
-  box-shadow: 0 8px 32px rgba(0, 255, 163, 0.3), 0 0 50px rgba(220, 31, 255, 0.2);
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  background: rgba(20, 241, 149, 0.15);
+  border-color: #14f195;
+  box-shadow: 
+    0 0 15px rgba(20, 241, 149, 0.4),
+    inset 0 0 10px rgba(20, 241, 149, 0.1);
+  transform: scale(1.05);
 }
 
-.ai-hamburger-icon {
-  font-size: 3.5rem;
-  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.4));
-  font-weight: bold;
+/* Active/Open State */
+.ai-animated-hamburger.open {
+  background: rgba(153, 69, 255, 0.2);
+  border-color: #9945ff;
+  box-shadow: 
+    0 0 15px rgba(153, 69, 255, 0.4),
+    inset 0 0 10px rgba(153, 69, 255, 0.1);
 }
 
-@keyframes ai-pulse-solana {
-  0% {
-    box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
-  }
-  50% {
-    box-shadow: 0 8px 32px rgba(0, 255, 163, 0.3), 0 0 50px rgba(220, 31, 255, 0.2);
-  }
-  100% {
-    box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
-  }
+/* Container pentru linii */
+.hamburger-lines {
+  width: 24px;
+  height: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.ai-animated-hamburger.open .ai-hamburger-icon {
-  transform: rotate(90deg);
-  transition: transform 0.3s ease-in-out;
+/* Liniile individuale */
+.line {
+  display: block;
+  height: 3px;
+  width: 100%;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #14f195, #9945ff);
+  transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.4s ease;
 }
 
-/* ===== VIZIBIL PE MOBIL + TABLETA ===== */
-@media (max-width: 992px) {
-  .ai-animated-hamburger {
-    display: flex !important;
-    top: 90px; /* ✅ Sub Header */
-    left: 15px;
-    z-index: 12000;
-  }
+/* Animație Hamburger -> X */
+.ai-animated-hamburger.open .line1 {
+  transform: rotate(45deg) translate(5px, 6px);
+  background: #ff4d4d; /* Roșu neon la închidere */
+  box-shadow: 0 0 8px #ff4d4d;
 }
 
-/* ===== ASCUNS PE DESKTOP MARE ===== */
+.ai-animated-hamburger.open .line2 {
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.ai-animated-hamburger.open .line3 {
+  transform: rotate(-45deg) translate(5px, -7px);
+  background: #ff4d4d; /* Roșu neon la închidere */
+  box-shadow: 0 0 8px #ff4d4d;
+}
+
+/* Hide on large screens if not needed */
 @media (min-width: 993px) {
   .ai-animated-hamburger {
     display: none !important;
   }
 }
 
-/* ===== RESPONSIVE PENTRU MOBIL ===== */
+/* Mobile adjustments */
 @media (max-width: 768px) {
   .ai-animated-hamburger {
-    top: 100px; /* coborât pentru a nu se suprapune peste butonul de închidere al sidebarului */
-    left: 12px;
-    width: 50px;
-    height: 50px;
-  }
-
-  .ai-hamburger-icon {
-    font-size: 3rem;
-  }
-}
-
-/* ===== RESPONSIVE PENTRU ECRANE FOARTE MICI ===== */
-@media (max-width: 480px) {
-  .ai-animated-hamburger {
-    top: 108px; /* și mai jos pe ecrane foarte mici */
+    top: 85px;
     left: 10px;
-    width: 45px;
-    height: 45px;
+    width: 42px;
+    height: 42px;
   }
-
-  .ai-hamburger-icon {
-    font-size: 2.5rem;
+  
+  .hamburger-lines {
+    width: 20px;
+    height: 16px;
+  }
+  
+  .line {
+    height: 2px;
+  }
+  
+  /* Ajustare fină a poziției X pe mobil */
+  .ai-animated-hamburger.open .line1 {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+  
+  .ai-animated-hamburger.open .line3 {
+    transform: rotate(-45deg) translate(5px, -5px);
   }
 }

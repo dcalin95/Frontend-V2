@@ -200,7 +200,7 @@ const StakingSummary = ({ signer, stakes: stakesFromPage }) => {
 
   return (
     <div className="stakingCard">
-      <h2 className="ai-summary-title">Analytics</h2>
+      {/* Title removed to avoid duplication in mobile view */}
       
       <div className="ai-stats-grid">
         <div className="ai-stat-item">

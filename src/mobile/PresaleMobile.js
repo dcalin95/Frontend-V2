@@ -5,6 +5,7 @@ import useGoogleAnalytics from "../hooks/useGoogleAnalytics";
 import { trackTikTokEvent } from "../utils/tiktok";
 import { useSelectedToken } from "../Presale/hooks/useSelectedToken";
 import useTokenPrices from "../Presale/prices/useTokenPrices";
+import useCellManagerData from "../Presale/hooks/useCellManagerData"; // ✅ Import data hook
 import bitsLogo from "../assets/logo.png";
 import "./Mobile.css";
 
@@ -33,11 +34,18 @@ const PresaleMobile = () => {
     setSelectedChain,
   } = useSelectedToken();
 
+  // ✅ Fetch Real Presale Data
+  const { currentPrice, roundNumber, soldBits, availableBits } = useCellManagerData();
+
   const { prices: tokenPrices } = useTokenPrices();
   const [amountPay, setAmountPay] = useState(0);
   const [walletAddress, setWalletAddress] = useState(null);
   const [stripeFeedback, setStripeFeedback] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
+
+  // Calculate progress percentage safely
+  const totalRoundSupply = (soldBits || 0) + (availableBits || 0);
+  const progressPercent = totalRoundSupply > 0 ? ((soldBits || 0) / totalRoundSupply) * 100 : 0;
 
   // Detect wallet
   useEffect(() => {
@@ -86,27 +94,108 @@ const PresaleMobile = () => {
 
   return (
     <div className="mobile-presale-wrapper">
-      {/* Hero Section */}
-      <section className="mobile-hero">
+      {/* Hero Section - REFACTORED GEMINI STYLE */}
+      <section className="mobile-hero" style={{minHeight: 'auto', paddingBottom: '40px'}}>
         <div className="mobile-hero-content">
-          <div className="mobile-logo-container">
+          <div className="mobile-logo-container" style={{marginBottom: '20px'}}>
             <div className="mobile-logo-glow"></div>
             <img src={bitsLogo} alt="BITS Logo" className="mobile-logo-image" />
           </div>
-          <h1 className="mobile-title">AI-Powered Crypto Presale</h1>
-          <p className="mobile-subtitle">
-            Join the future of decentralized AI trading
-          </p>
-          <div className="mobile-presale-stats">
-            <div className="mobile-stat">
-              <span className="mobile-stat-label">Price</span>
-              <span className="mobile-stat-value">$0.001</span>
+          
+          <h1 className="mobile-title" style={{fontSize: '28px', marginBottom: '8px'}}>
+            BitSwapDEX <span style={{color: '#14f195'}}>AI</span>
+          </h1>
+          
+          <div style={{
+            display: 'inline-block',
+            padding: '6px 16px',
+            background: 'rgba(20, 241, 149, 0.1)',
+            border: '1px solid rgba(20, 241, 149, 0.3)',
+            borderRadius: '20px',
+            color: '#14f195',
+            fontSize: '12px',
+            fontWeight: 'bold',
+            marginBottom: '30px',
+            letterSpacing: '1px',
+            boxShadow: '0 0 15px rgba(20, 241, 149, 0.2)'
+          }}>
+            ✨ NEXT-GEN AI DEX
+          </div>
+
+          {/* Dynamic Stats Grid */}
+          <div className="mobile-presale-stats" style={{
+            display: 'grid', 
+            gridTemplateColumns: '1fr 1fr', 
+            gap: '15px',
+            width: '100%',
+            marginBottom: '25px'
+          }}>
+            {/* Price Card */}
+            <div className="mobile-stat" style={{
+              background: 'rgba(255, 255, 255, 0.03)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              backdropFilter: 'blur(10px)',
+              padding: '15px'
+            }}>
+              <div style={{display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center', marginBottom: '8px'}}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14f195" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                  <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                </svg>
+                <span className="mobile-stat-label" style={{fontSize: '11px', color: '#aaa'}}>CURRENT PRICE</span>
+              </div>
+              <div className="mobile-stat-value" style={{color: '#fff', fontSize: '22px', textShadow: '0 0 10px rgba(20, 241, 149, 0.5)'}}>
+                ${currentPrice ? currentPrice : "0.001"}
+              </div>
             </div>
-            <div className="mobile-stat">
-              <span className="mobile-stat-label">Round</span>
-              <span className="mobile-stat-value">1</span>
+
+            {/* Round Card */}
+            <div className="mobile-stat" style={{
+              background: 'rgba(255, 255, 255, 0.03)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              backdropFilter: 'blur(10px)',
+              padding: '15px'
+            }}>
+              <div style={{display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center', marginBottom: '8px'}}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9945ff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                </svg>
+                <span className="mobile-stat-label" style={{fontSize: '11px', color: '#aaa'}}>STAGE</span>
+              </div>
+              <div className="mobile-stat-value" style={{color: '#fff', fontSize: '22px', textShadow: '0 0 10px rgba(153, 69, 255, 0.5)'}}>
+                Round {roundNumber ? roundNumber : "1"}
+              </div>
             </div>
           </div>
+
+          {/* Live Progress Bar */}
+          {totalRoundSupply > 0 && (
+            <div style={{width: '100%', padding: '0 5px'}}>
+               <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px'}}>
+                  <span>Sold: {(soldBits/1000000).toFixed(2)}M</span>
+                  <span style={{color: '#14f195'}}>Target: {(totalRoundSupply/1000000).toFixed(2)}M</span>
+               </div>
+               <div style={{
+                 height: '6px',
+                 width: '100%',
+                 background: 'rgba(255,255,255,0.05)',
+                 borderRadius: '10px',
+                 overflow: 'hidden',
+                 border: '1px solid rgba(255,255,255,0.1)'
+               }}>
+                 <div style={{
+                   height: '100%',
+                   width: `${progressPercent}%`,
+                   background: 'linear-gradient(90deg, #14f195, #9945ff)',
+                   borderRadius: '10px',
+                   boxShadow: '0 0 10px rgba(20, 241, 149, 0.5)',
+                   transition: 'width 1s cubic-bezier(0.4, 0, 0.2, 1)'
+                 }} />
+               </div>
+            </div>
+          )}
+
         </div>
       </section>
 
@@ -127,21 +216,23 @@ const PresaleMobile = () => {
         </div>
       )}
 
-      {/* Payment Section Title */}
-      <div className="mobile-payment-option" style={{borderColor: 'rgba(20, 241, 149, 0.5)', background: 'rgba(20, 241, 149, 0.05)'}}>
-        <svg className="mobile-section-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="buyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#14f195" />
-              <stop offset="100%" stopColor="#9945ff" />
-            </linearGradient>
-          </defs>
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z" fill="url(#buyGradient)"/>
-        </svg>
-        <h2 className="mobile-payment-title" style={{margin: 0, fontSize: '24px', fontWeight: 'bold', background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'}}>
-          Buy $BITS
-        </h2>
-      </div>
+      {/* Payment Section Title - Only show if selecting method */}
+      {!paymentMethod && (
+        <div className="mobile-payment-option" style={{borderColor: 'rgba(20, 241, 149, 0.5)', background: 'rgba(20, 241, 149, 0.05)'}}>
+          <svg className="mobile-section-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="buyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#14f195" />
+                <stop offset="100%" stopColor="#9945ff" />
+              </linearGradient>
+            </defs>
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z" fill="url(#buyGradient)"/>
+          </svg>
+          <h2 className="mobile-payment-title" style={{margin: 0, fontSize: '24px', fontWeight: 'bold', background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'}}>
+            Buy $BITS
+          </h2>
+        </div>
+      )}
         
       <Suspense fallback={<MobileLoading />}>
         {!paymentMethod && (
@@ -172,46 +263,21 @@ const PresaleMobile = () => {
         )}
       </Suspense>
 
-      {/* Staking Section Title */}
-      <div className="mobile-payment-option" style={{borderColor: 'rgba(20, 241, 149, 0.5)', background: 'rgba(20, 241, 149, 0.05)', marginTop: '30px'}}>
-        <svg className="mobile-section-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="stakeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#14f195" />
-              <stop offset="100%" stopColor="#9945ff" />
-            </linearGradient>
-          </defs>
-          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="url(#stakeGradient)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-        <h2 className="mobile-payment-title" style={{margin: 0, fontSize: '24px', fontWeight: 'bold', background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'}}>
-          Stake & Earn
-        </h2>
+      {/* Staking Section - Header is inside StakingMobile */}
+      <div style={{marginTop: '30px'}}>
+        <Suspense fallback={<MobileLoading />}>
+          <StakingMobile walletAddress={walletAddress} />
+        </Suspense>
       </div>
-      <Suspense fallback={<MobileLoading />}>
-        <StakingMobile walletAddress={walletAddress} />
-      </Suspense>
 
-      {/* Rewards Section Title */}
-      <div className="mobile-payment-option" style={{borderColor: 'rgba(249, 115, 22, 0.5)', background: 'rgba(249, 115, 22, 0.05)', marginTop: '30px'}}>
-        <svg className="mobile-section-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="rewardsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#facc15" />
-              <stop offset="100%" stopColor="#f97316" />
-            </linearGradient>
-          </defs>
-          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="url(#rewardsGradient)" stroke="url(#rewardsGradient)" strokeWidth="1"/>
-        </svg>
-        <h2 className="mobile-payment-title" style={{margin: 0, fontSize: '24px', fontWeight: 'bold', background: 'linear-gradient(135deg, #facc15, #f97316)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text'}}>
-          Referral Rewards
-        </h2>
+      {/* Rewards Section - Header is inside RewardsMobile */}
+      <div style={{marginTop: '30px'}}>
+        <Suspense fallback={<MobileLoading />}>
+          <RewardsMobile walletAddress={walletAddress} />
+        </Suspense>
       </div>
-      <Suspense fallback={<MobileLoading />}>
-        <RewardsMobile walletAddress={walletAddress} />
-      </Suspense>
     </div>
   );
 };
 
 export default PresaleMobile;
-

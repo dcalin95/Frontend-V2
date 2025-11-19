@@ -6,11 +6,13 @@ const HamburgerButton = ({ isMenuOpen, toggleMenu }) => {
     <button
       className={`ai-animated-hamburger ${isMenuOpen ? "open" : ""}`}
       onClick={toggleMenu}
-      aria-label="Toggle Sidebar"
+      aria-label={isMenuOpen ? "Close Menu" : "Open Menu"}
     >
-      <span className="ai-hamburger-icon">
-        {isMenuOpen ? "✕" : "≡"}
-      </span>
+      <div className="hamburger-lines">
+        <span className="line line1"></span>
+        <span className="line line2"></span>
+        <span className="line line3"></span>
+      </div>
     </button>
   );
 };

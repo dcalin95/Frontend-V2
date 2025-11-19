@@ -1,351 +1,238 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import axios from "axios";
-import useCellManagerData from "../../Presale/hooks/useCellManagerData";
-import { useBitsEstimate } from "../../Presale/hooks/useBitsEstimate";
+import handleStripePaymentService from "../../Presale/TokenHandlers/handleStripePayment";
 
+// ✅ PRESETS EXACT CA PE DESKTOP (10, 30, 50, 100, 500, 1000)
+// Acestea sunt valori in EUR conform backend-ului Stripe
 const STRIPE_PRESETS = [
-  { 
-    amount: 10, 
-    name: "Starter",
-    gradient: "linear-gradient(135deg, #14f195 0%, #00d4aa 100%)",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="url(#grad1)" stroke="currentColor" strokeWidth="1"/>
-        <defs>
-          <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#14f195"/>
-            <stop offset="100%" stopColor="#00d4aa"/>
-          </linearGradient>
-        </defs>
-      </svg>
-    )
-  },
-  { 
-    amount: 30, 
-    name: "Builder",
-    gradient: "linear-gradient(135deg, #9945ff 0%, #7d2ae8 100%)",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="url(#grad2)" stroke="currentColor" strokeWidth="1"/>
-        <path d="M2 17L12 22L22 17M2 12L12 17L22 12" stroke="url(#grad2)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        <defs>
-          <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#9945ff"/>
-            <stop offset="100%" stopColor="#7d2ae8"/>
-          </linearGradient>
-        </defs>
-      </svg>
-    )
-  },
-  { 
-    amount: 50, 
-    name: "Pro",
-    gradient: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" fill="url(#grad3)" stroke="currentColor" strokeWidth="1"/>
-        <defs>
-          <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#3b82f6"/>
-            <stop offset="100%" stopColor="#2563eb"/>
-          </linearGradient>
-        </defs>
-      </svg>
-    )
-  },
-  { 
-    amount: 100, 
-    name: "Advanced",
-    gradient: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2C12 2 8 6 8 12C8 15.31 9.79 18.17 12 19.5C14.21 18.17 16 15.31 16 12C16 6 12 2 12 2Z" fill="url(#grad4)" stroke="currentColor" strokeWidth="1"/>
-        <path d="M12 19.5C9.79 18.17 8 15.31 8 12H16C16 15.31 14.21 18.17 12 19.5Z" fill="url(#grad4)" opacity="0.5"/>
-        <defs>
-          <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#ef4444"/>
-            <stop offset="100%" stopColor="#dc2626"/>
-          </linearGradient>
-        </defs>
-      </svg>
-    )
-  },
-  { 
-    amount: 500, 
-    name: "Elite",
-    gradient: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2L4 7V12C4 16.5 7.5 20.7 12 22C16.5 20.7 20 16.5 20 12V7L12 2Z" fill="url(#grad5)" stroke="currentColor" strokeWidth="1"/>
-        <path d="M12 8V14M9 11L12 14L15 11" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        <defs>
-          <linearGradient id="grad5" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#f59e0b"/>
-            <stop offset="100%" stopColor="#d97706"/>
-          </linearGradient>
-        </defs>
-      </svg>
-    )
-  },
-  { 
-    amount: 1000, 
-    name: "Legend",
-    gradient: "linear-gradient(135deg, #facc15 0%, #eab308 100%)",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="url(#grad6)" stroke="currentColor" strokeWidth="1.5"/>
-        <circle cx="12" cy="12" r="3" fill="#000" opacity="0.3"/>
-        <defs>
-          <linearGradient id="grad6" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#facc15"/>
-            <stop offset="100%" stopColor="#eab308"/>
-          </linearGradient>
-        </defs>
-      </svg>
-    )
-  },
+  { amount: 10, label: "Entry", icon: "🌱" },
+  { amount: 30, label: "Basic", icon: "🌿" },
+  { amount: 50, label: "Starter", icon: "🚀" },
+  { amount: 100, label: "Trader", icon: "⭐" },
+  { amount: 500, label: "Pro", icon: "💎" },
+  { amount: 1000, label: "Whale", icon: "🐋" },
 ];
 
 const StripeBoxMobile = ({ walletAddress, onBack }) => {
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [selectedAmount, setSelectedAmount] = useState(null);
+  // State-ul principal este in EUR pentru ca asta cere Stripe Backend
+  const [amountEUR, setAmountEUR] = useState(50);
   const [referralCode, setReferralCode] = useState("");
-  const [eurUsdRate, setEurUsdRate] = useState(1);
-  const [isRateLoading, setIsRateLoading] = useState(false);
-  
-  const { liveBitsPrice } = useCellManagerData(walletAddress);
-  const bitsPriceUSD = liveBitsPrice && liveBitsPrice > 0 ? liveBitsPrice : 0.001;
+  const [isLoading, setIsLoading] = useState(false);
+  const [eurToUsdRate, setEurToUsdRate] = useState(1.08); // Fallback default rate
 
-  // 🔍 Auto-detect referral code from URL
+  // Încercăm să luăm rata de schimb reală, dar nu blocăm UI-ul dacă eșuează
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const codeFromURL = urlParams.get("ref");
-    if (codeFromURL) {
-      setReferralCode(codeFromURL);
-    }
-  }, []);
-
-  // 💱 Fetch EUR to USD conversion rate
-  useEffect(() => {
-    let ignore = false;
     const fetchRate = async () => {
-      setIsRateLoading(true);
       try {
-        const response = await fetch(
-          "https://api.exchangerate.host/latest?base=EUR&symbols=USD"
-        );
-        if (!response.ok) {
-          throw new Error(`Rate fetch failed with ${response.status}`);
+        const response = await fetch("https://api.exchangerate-api.com/v4/latest/EUR");
+        const data = await response.json();
+        if (data && data.rates && data.rates.USD) {
+          setEurToUsdRate(data.rates.USD);
         }
-        const json = await response.json();
-        if (!ignore) {
-          const rate = json?.rates?.USD || 1.08;
-          setEurUsdRate(rate);
-        }
-      } catch (err) {
-        console.error("⚠️ Failed to fetch EUR→USD rate:", err);
-        if (!ignore) {
-          setEurUsdRate(1.08); // Fallback rate
-        }
-      } finally {
-        if (!ignore) setIsRateLoading(false);
+      } catch (e) {
+        console.warn("Failed to fetch EUR rate, using fallback 1.08");
       }
     };
-
     fetchRate();
-    return () => {
-      ignore = true;
-    };
   }, []);
-
-  const handleStripeCheckout = async (amountEUR) => {
+  
+  const onBuyClick = async () => {
     if (!walletAddress) {
-      toast.error("Please connect your wallet first");
+      toast.error("Please connect wallet first");
+      return;
+    }
+    if (amountEUR < 10) {
+      toast.error("Minimum is €10");
       return;
     }
 
-    setIsProcessing(true);
-    setSelectedAmount(amountEUR);
-
+    setIsLoading(true);
     try {
-      // 💱 Convert EUR to USD using real exchange rate
-      const amountUSD = parseFloat((amountEUR * eurUsdRate).toFixed(2));
+      // Calculăm USD real bazat pe rată
+      const amountUSD = amountEUR * eurToUsdRate;
       
-      // 🧮 Calculate BITS using desktop logic (with bonus)
-      const pureBits = Math.floor(amountUSD / bitsPriceUSD);
-      
-      // 🎁 Calculate bonus (same as desktop)
-      const bonusPercentage = amountUSD >= 1000 ? 20 : amountUSD >= 500 ? 15 : amountUSD >= 100 ? 10 : 5;
-      const bonusAmount = Math.floor((pureBits * bonusPercentage) / 100);
-      const totalBits = pureBits + bonusAmount;
+      // BITS calculation: 1 BITS = $0.001 (approx)
+      // Backend-ul va face validarea finală
+      const bitsToReceive = Math.floor(amountUSD / 0.001); 
 
-      console.log("💳 [Stripe Mobile] Payment details:", {
-        amountEUR,
+      await handleStripePaymentService({
         amountUSD,
-        pureBits,
-        bonusPercentage,
-        bonusAmount,
-        totalBits,
-        referralCode,
-        bitsPriceUSD
-      });
-
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:4000";
-      const response = await axios.post(`${backendUrl}/api/stripe/create-checkout`, {
-        amountEUR,
-        amountUSD,
-        bitsToReceive: totalBits,
+        amountEUR, // Trimitem EUR explicit
+        bitsToReceive,
         walletAddress,
-        bonusAmount,
-        bonusPercentage,
-        referralCode: referralCode || "",
-        successUrl: `${window.location.origin}/presale?payment=stripe-success&session_id={CHECKOUT_SESSION_ID}`,
-        cancelUrl: `${window.location.origin}/presale?payment=stripe-cancel`,
+        referralCode,
+        bonusAmount: 0,
+        bonusPercentage: 0
       });
-
-      if (response.data.url) {
-        window.location.href = response.data.url;
-      } else {
-        throw new Error("No checkout URL received");
-      }
-    } catch (error) {
-      console.error("Stripe checkout error:", error);
-      toast.error(`Payment failed: ${error.message}`);
+      
+    } catch (err) {
+      console.error("Stripe payment error:", err);
+      toast.error(err.message || "Payment initialization failed");
     } finally {
-      setIsProcessing(false);
-      setSelectedAmount(null);
+      setIsLoading(false);
     }
   };
 
+  // Calcule pentru UI
+  const amountUSD = amountEUR * eurToUsdRate;
+  const estimatedBits = amountUSD / 0.001; 
+
   return (
     <>
-      {/* Back Button - Separate card */}
-      <button className="mobile-back-btn mobile-payment-option" onClick={onBack}>
-        ← Back to Payment Methods
-      </button>
-
-      {/* Title Card - Separate */}
-      <div className="mobile-payment-option">
-        <svg className="mobile-title-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M21 4H3C2.46957 4 1.96086 4.21071 1.58579 4.58579C1.21071 4.96086 1 5.46957 1 6V18C1 18.5304 1.21071 19.0391 1.58579 19.4142C1.96086 19.7893 2.46957 20 3 20H21C21.5304 20 22.0391 19.7893 22.4142 19.4142C22.7893 19.0391 23 18.5304 23 18V6C23 5.46957 22.7893 4.96086 22.4142 4.58579C22.0391 4.21071 21.5304 4 21 4ZM3 18V6H21V18H3Z" fill="url(#cardGrad)"/>
-          <path d="M1 10H23" stroke="url(#cardGrad)" strokeWidth="2"/>
-          <defs>
-            <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#14f195"/>
-              <stop offset="100%" stopColor="#9945ff"/>
-            </linearGradient>
-          </defs>
-        </svg>
-        <div className="mobile-payment-content">
-          <h3 className="mobile-payment-title">Select Package</h3>
-          <p className="mobile-payment-desc">Choose your investment • Instant delivery</p>
-        </div>
+      {/* Header */}
+      <div style={{display: 'flex', alignItems: 'center', marginBottom: '20px'}}>
+        <button 
+          onClick={onBack}
+          style={{
+            background: 'transparent',
+            border: 'none',
+            color: 'var(--text-secondary)',
+            fontSize: '24px',
+            padding: '0 10px 0 0',
+            cursor: 'pointer'
+          }}
+        >
+          ←
+        </button>
+        <h3 style={{
+          margin: 0, 
+          fontSize: '20px', 
+          fontWeight: 'bold', 
+          background: 'linear-gradient(135deg, #14f195, #00C2FF)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
+        }}>
+          Pay with Card
+        </h3>
       </div>
 
-      {/* Referral Code - ONE card */}
-      <div className="mobile-payment-option">
-        <svg className="mobile-label-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H6C4.93913 15 3.92172 15.4214 3.17157 16.1716C2.42143 16.9217 2 17.9391 2 19V21M22 21V19C21.9993 18.1137 21.7044 17.2528 21.1614 16.5523C20.6184 15.8519 19.8581 15.3516 19 15.13M16 3.13C16.8604 3.3503 17.623 3.8507 18.1676 4.55231C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89317 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
+      {/* Custom Amount Input (EUR) */}
+      <div className="mobile-payment-option" style={{
+        background: 'linear-gradient(180deg, rgba(20, 241, 149, 0.05) 0%, rgba(20, 241, 149, 0.02) 100%)',
+        border: '1px solid rgba(20, 241, 149, 0.3)',
+        marginBottom: '20px'
+      }}>
         <div className="mobile-payment-content" style={{flex: 1}}>
-          <label className="mobile-payment-title" style={{display: 'block', marginBottom: '8px'}}>Referral Code (Optional)</label>
-          <input
-            type="text"
-            className="mobile-input"
-            placeholder="CODE-XXXXX"
-            value={referralCode}
-            onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
-            maxLength={20}
-            style={{width: '100%'}}
-          />
-          {referralCode && (
-            <div style={{marginTop: '8px', fontSize: '12px', color: 'var(--solana-green)'}}>
-              ✅ <strong>{referralCode}</strong>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Each Package = ONE card */}
-      {STRIPE_PRESETS.map((preset) => {
-        const amountUSD = parseFloat((preset.amount * eurUsdRate).toFixed(2));
-        const pureBits = Math.floor(amountUSD / bitsPriceUSD);
-        const bonusPercentage = amountUSD >= 1000 ? 20 : amountUSD >= 500 ? 15 : amountUSD >= 100 ? 10 : 5;
-        const bonusAmount = Math.floor((pureBits * bonusPercentage) / 100);
-        const totalBits = pureBits + bonusAmount;
-        const isSelected = selectedAmount === preset.amount;
-
-        return (
-          <button
-            key={preset.amount}
-            className="mobile-payment-option"
-            onClick={() => handleStripeCheckout(preset.amount)}
-            disabled={isProcessing}
-            style={{
-              borderColor: isSelected ? 'rgba(0, 255, 163, 0.6)' : 'rgba(0, 255, 163, 0.3)',
-              position: 'relative'
-            }}
-          >
-            <div style={{ 
-              width: '48px', 
-              height: '48px', 
-              borderRadius: '12px', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              background: preset.gradient,
-              flexShrink: 0
-            }}>
-              {preset.icon}
-            </div>
-            <div className="mobile-payment-content">
-              <div className="mobile-payment-title">{preset.name} • €{preset.amount}</div>
-              <div className="mobile-payment-desc">
-                {totalBits.toLocaleString()} $BITS
-                {bonusAmount > 0 && <span style={{color: 'var(--solana-purple)'}}> (+{bonusPercentage}%)</span>}
-              </div>
-            </div>
-            {isProcessing && isSelected && (
-              <div style={{position: 'absolute', right: '16px'}}>
-                <svg className="mobile-spinner" viewBox="0 0 24 24" style={{width: '24px', height: '24px'}}>
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" strokeDasharray="31.415 31.415" />
-                </svg>
-              </div>
-            )}
-            <div className="mobile-payment-arrow">→</div>
-          </button>
-        );
-      })}
-
-      {/* Info Card - ONE card */}
-      <div className="mobile-payment-option">
-        <div className="mobile-payment-content" style={{flex: 1}}>
-          <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
-            <span>Current $BITS price:</span>
-            <strong>${bitsPriceUSD < 1 ? bitsPriceUSD.toFixed(4) : bitsPriceUSD.toFixed(2)}</strong>
+          <label className="mobile-payment-title" style={{display: 'flex', justifyContent: 'space-between', marginBottom: '12px', color: '#a5b4fc'}}>
+            <span>Amount (EUR)</span>
+            <span style={{fontSize: '12px', color: '#14f195'}}>Rate: 1 EUR ≈ ${eurToUsdRate.toFixed(2)}</span>
+          </label>
+          <div style={{position: 'relative'}}>
+            <span style={{position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', fontSize: '20px', color: '#fff'}}>€</span>
+            <input
+              type="number"
+              className="mobile-input"
+              value={amountEUR}
+              onChange={(e) => setAmountEUR(parseFloat(e.target.value) || 0)}
+              style={{
+                width: '100%', 
+                fontSize: '24px', 
+                padding: '15px 15px 15px 35px',
+                background: 'rgba(0,0,0,0.3)',
+                border: '1px solid rgba(20, 241, 149, 0.2)',
+                color: '#fff',
+                borderRadius: '12px'
+              }}
+            />
           </div>
-          <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '12px'}}>
-            <span>EUR → USD rate:</span>
-            <strong>{isRateLoading ? "Loading..." : `${eurUsdRate.toFixed(4)}`}</strong>
-          </div>
-          <div style={{fontSize: '12px', color: 'var(--text-secondary)', lineHeight: '1.5', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '12px'}}>
-            <strong>🎓 Educational Access:</strong> $BITS grants access to{" "}
-            <a href="https://edu.bits-ai.io/" target="_blank" rel="noopener noreferrer" style={{color: 'var(--solana-green)', textDecoration: 'underline'}}>
-              BitSwapDEX AI Education
-            </a>
-            {" "}and{" "}
-            <a href="/mind-mirror" target="_blank" rel="noopener noreferrer" style={{color: 'var(--solana-green)', textDecoration: 'underline'}}>
-              Mind Mirror AI
-            </a>.
+          <div style={{textAlign: 'right', marginTop: '5px', fontSize: '13px', color: '#aaa'}}>
+            ≈ ${amountUSD.toFixed(2)} USD
           </div>
         </div>
       </div>
 
-      {/* Warning - ONE card */}
+      {/* Packages Grid (EUR Presets) */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '12px',
+        marginBottom: '25px'
+      }}>
+        {STRIPE_PRESETS.map((preset) => {
+          const isSelected = parseFloat(amountEUR) === preset.amount;
+          return (
+            <button
+              key={preset.amount}
+              onClick={() => setAmountEUR(preset.amount)}
+              style={{
+                background: isSelected ? `rgba(20, 241, 149, 0.1)` : 'rgba(255, 255, 255, 0.03)',
+                border: `1px solid ${isSelected ? '#14f195' : 'rgba(255, 255, 255, 0.1)'}`,
+                borderRadius: '16px',
+                padding: '15px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                boxShadow: isSelected ? `0 0 15px rgba(20, 241, 149, 0.3)` : 'none'
+              }}
+            >
+              <div style={{fontSize: '24px', marginBottom: '5px'}}>{preset.icon}</div>
+              <div style={{fontWeight: 'bold', color: '#fff'}}>€{preset.amount}</div>
+              <div style={{fontSize: '11px', color: '#14f195', opacity: 0.8}}>{preset.label}</div>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Referral (Optional) */}
+      <div style={{marginBottom: '20px'}}>
+        <input
+          type="text"
+          className="mobile-input"
+          placeholder="Referral Code (Optional)"
+          value={referralCode}
+          onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+          style={{
+            width: '100%',
+            background: 'transparent',
+            border: '1px solid rgba(255,255,255,0.1)',
+            fontSize: '14px',
+            padding: '12px',
+            borderRadius: '12px',
+            color: '#fff'
+          }}
+        />
+      </div>
+
+      {/* Summary & Action */}
+      <div style={{
+        padding: '15px',
+        background: 'rgba(20, 241, 149, 0.05)',
+        border: '1px solid rgba(20, 241, 149, 0.2)',
+        borderRadius: '16px',
+        textAlign: 'center'
+      }}>
+        <div style={{fontSize: '14px', color: '#a5b4fc', marginBottom: '5px'}}>You receive approx.</div>
+        <div style={{fontSize: '24px', fontWeight: 'bold', color: '#fff', marginBottom: '15px'}}>
+          {estimatedBits.toLocaleString(undefined, {maximumFractionDigits: 0})} $BITS
+        </div>
+        
+        <button
+          onClick={onBuyClick}
+          disabled={isLoading}
+          style={{
+            width: '100%',
+            padding: '16px',
+            background: 'linear-gradient(90deg, #14f195, #00C2FF)',
+            border: 'none',
+            borderRadius: '12px',
+            color: '#000',
+            fontWeight: 'bold',
+            fontSize: '18px',
+            cursor: isLoading ? 'not-allowed' : 'pointer',
+            opacity: isLoading ? 0.7 : 1,
+            boxShadow: '0 4px 15px rgba(20, 241, 149, 0.4)'
+          }}
+        >
+          {isLoading ? "Processing..." : `Pay €${amountEUR}`}
+        </button>
+      </div>
+
       {!walletAddress && (
-        <div className="mobile-payment-option" style={{borderColor: '#ff9800', color: '#ff9800'}}>
-          ⚠️ Please connect your wallet to continue
+        <div style={{marginTop: '15px', textAlign: 'center', color: '#ff9800', fontSize: '13px'}}>
+          ⚠️ Connect wallet to receive tokens
         </div>
       )}
     </>

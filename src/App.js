@@ -135,7 +135,8 @@ const ThankYouPage = lazy(() => import("./components/ThankYouPage"));
 
 const App = () => {
   const [amountPay, setAmountPay] = useState(0);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false); // Sidebar menu
+  const [headerMenuOpen, setHeaderMenuOpen] = useState(false); // Header mobile menu
   const [currentSection, setCurrentSection] = useState("home");
   const isMobile = useDeviceDetect();
 
@@ -181,7 +182,16 @@ const App = () => {
     );
   }
 
-  const toggleMenu = () => setMenuOpen((prev) => !prev);
+  // Mutually exclusive toggle logic
+  const toggleSidebarMenu = () => {
+    setMenuOpen((prev) => !prev);
+    setHeaderMenuOpen(false); // Ensure header menu is closed
+  };
+
+  const toggleHeaderMenu = () => {
+    setHeaderMenuOpen((prev) => !prev);
+    setMenuOpen(false); // Ensure sidebar menu is closed
+  };
 
   const handleSidebarSelect = (section) => {
     setCurrentSection(section);
@@ -279,7 +289,10 @@ const App = () => {
                       <div className="app-container">
                         {/* <CustomCursor /> */} {/* 🚫 DISABLED - Caused slow mouse movement */}
                         <StarfieldBackground />
-                        <Header />
+                        <Header 
+                          isMenuOpen={headerMenuOpen} 
+                          toggleMenu={toggleHeaderMenu} 
+                        />
                         <BoostedBanner />
                         <div className="header-spacer"></div>
                         <HeaderWalletInfo />
@@ -292,7 +305,7 @@ const App = () => {
                         />
                         <HamburgerButton
                           isMenuOpen={menuOpen}
-                          toggleMenu={toggleMenu}
+                          toggleMenu={toggleSidebarMenu}
                         />
 
                         <div className="content-container">

@@ -13,13 +13,13 @@ const DashboardHeader = ({ pulseEffect, isVisible }) => {
       
       {/* Main Title */}
      <h1 className="portfolio-header-title">
-  BITS Analytics Dashboard
+  BITS AI Portfolio
 </h1>
 
       
       {/* Subtitle */}
       <p className="portfolio-header-subtitle">
-        Real-Time BITS Holdings & Performance Analytics
+        Real-Time BITS Holdings & Wealth Intelligence
       </p>
       
       {/* Status Indicator */}

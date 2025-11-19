@@ -12,6 +12,94 @@
 
 /* Override desktop styles for mobile - TOTUL VERTICAL, 90% WIDTH */
 @media (max-width: 768px) {
+  /* STAKING SUMMARY (ANALYTICS) - REFACTOR */
+  .stakingCard {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .ai-summary-title {
+    font-size: 1.4rem !important;
+    text-align: center !important;
+    margin-bottom: 15px !important;
+    width: 100% !important;
+  }
+
+  /* AI STATS GRID - UNA SUB ALTA PE MOBIL! */
+  .ai-stats-grid,
+  .mobile-staking-page-wrapper .ai-stats-grid,
+  .stakingCard .ai-stats-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px !important;
+    grid-template-columns: none !important;
+    width: 100% !important;
+    margin: 0 0 1rem 0 !important;
+    row-gap: 15px !important;
+  }
+  
+  /* PROTEJEAZĂ LOGO-URILE ȘI IMAGINILE MICI */
+  .bits-logo-mini, img[alt="BITS"], img.bits-logo-mini {
+    width: 24px !important;
+    height: 24px !important;
+    max-width: 24px !important;
+    flex: none !important;
+  }
+  
+  .mobile-section-icon {
+    width: 24px !important;
+    height: 24px !important;
+  }
+  
+  .ai-stat-item,
+  .mobile-staking-page-wrapper .ai-stat-item,
+  .stakingCard .ai-stat-item {
+    width: 100% !important;
+    padding: 20px !important;
+    background: transparent !important;
+    border: 1px solid rgba(0, 255, 163, 0.3) !important;
+    border-radius: 16px !important;
+    box-sizing: border-box !important;
+    min-height: 80px !important;
+    margin: 0 !important;
+  }
+  
+  /* LOCK PERIODS - UNA SUB ALTA! */
+  .lock-periods {
+    width: 100% !important;
+  }
+  
+  .lock-periods > div {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px !important;
+    grid-template-columns: none !important;
+    grid-template-rows: none !important;
+  }
+  
+  .lock-periods > div > div {
+    width: 100% !important;
+    margin: 0 !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    flex: none !important;
+  }
+  
+  /* OVERRIDE INLINE STYLES! */
+  .stake-form [style*="grid"] {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  .stake-form [style*="gridTemplateColumns"] {
+    grid-template-columns: none !important;
+  }
+  
   .mobile-staking-page-wrapper .staking-layout {
     width: 100%;
   }
@@ -78,6 +166,21 @@
   .mobile-staking-page-wrapper .ai-staking-header {
     width: 90%;
     margin: 0 auto 20px auto;
+  }
+  
+  /* TOATE INPUT-URILE SI BUTOANELE - FULL WIDTH */
+  .mobile-staking-page-wrapper .stake-form input,
+  .mobile-staking-page-wrapper .stake-form button,
+  .mobile-staking-page-wrapper .ai-input-group {
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+  
+  /* ELIMINĂ GRID-URI NESTED PE MOBIL */
+  .mobile-staking-page-wrapper .stake-form > div[style*="grid"] {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px !important;
   }
 }
 
