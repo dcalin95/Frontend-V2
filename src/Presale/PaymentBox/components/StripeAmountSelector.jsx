@@ -1,5 +1,6 @@
 import React from "react";
-import "../PaymentBox.css";
+import "../PaymentBox.desktop.css";
+import "../PaymentBox.mobile.css";
 
 const STRIPE_PRESETS = [10, 30, 50, 100, 500, 1000];
 

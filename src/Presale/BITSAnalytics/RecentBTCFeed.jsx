@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import bitsLogo from "../../assets/logo.png";
-import "./BITSAnalytics.css";
+import "./BITSAnalytics.desktop.css";
+import "./BITSAnalytics.mobile.css";
 
 const ESPLORA_PRIMARY = "https://mempool.space/api/mempool/recent";
 const ESPLORA_FALLBACK = "https://blockstream.info/api/mempool/recent";

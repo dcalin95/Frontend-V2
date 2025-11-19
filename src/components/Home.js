@@ -9,7 +9,8 @@ import PresaleCountdownMini from "../Presale/Timer/PresaleCountdownMini";
 import bits17Video from "../assets/bits17.mp4";
 import BrandLogo from "./BrandLogo";
 
-import "./Home.css";
+import "./Home.desktop.css";
+import "./Home.mobile.css";
 import { motion } from "framer-motion";
 
 const Home = () => {

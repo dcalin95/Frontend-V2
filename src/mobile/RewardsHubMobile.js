@@ -1,6 +1,7 @@
 import React from "react";
 import RewardsHub from "../components/RewardsHub";
-import "./RewardsHubMobile.css";
+import "../components/RewardsHub.desktop.css";
+import "../components/RewardsHub.mobile.css";
 
 const RewardsHubMobile = () => {
   return (

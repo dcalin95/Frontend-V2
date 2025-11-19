@@ -1,9 +1,57 @@
 import React from "react";
-import styles from "./PresaleDashboard.module.css";
-
 import PresaleCountdownFlip from "./PresaleCountdownFlip";
 import NewPresaleStats from "./NewPresaleStats";
 import { useHybridPresaleState } from "./useHybridPresaleState";
+
+// Import CSS modules
+import "./PresaleDashboard.desktop.css";
+import "./PresaleDashboard.mobile.css";
+
+// Import styles as object for class usage (simulated from CSS modules)
+// Since we switched to standard CSS files, we use standard classes
+// but keeping the 'styles' object pattern for minimal code changes
+const styles = {
+  dashboard: "dashboard",
+  column: "column",
+  error: "error",
+  dualDataContainer: "dualDataContainer",
+  blockchainSection: "blockchainSection",
+  databaseSection: "databaseSection",
+  sectionHeader: "sectionHeader",
+  chainIcon: "chainIcon",
+  statusDot: "statusDot",
+  online: "online",
+  offline: "offline",
+  dataGrid: "dataGrid",
+  dataCard: "dataCard",
+  cardIcon: "cardIcon",
+  cardContent: "cardContent",
+  cardLabel: "cardLabel",
+  cardValue: "cardValue",
+  dbIcon: "dbIcon",
+  errorMessage: "errorMessage",
+  errorIcon: "errorIcon",
+  errorText: "errorText",
+  errorDetails: "errorDetails",
+  fallbackData: "fallbackData",
+  fallbackCard: "fallbackCard",
+  reconnectionStatus: "reconnectionStatus",
+  statusIndicator: "statusIndicator",
+  pulsingDot: "pulsingDot",
+  statusNote: "statusNote",
+  loading: "loading",
+  aiLoadingContainer: "aiLoadingContainer",
+  neuralNetwork: "neuralNetwork",
+  node: "node",
+  connection: "connection",
+  loadingText: "loadingText",
+  info: "info",
+  infoContainer: "infoContainer",
+  hologram: "hologram",
+  infoIcon: "infoIcon",
+  debugInfo: "debugInfo",
+  debugSection: "debugSection"
+};
 
 const PresaleDashboard = () => {
   const hybridState = useHybridPresaleState();
@@ -29,7 +77,7 @@ const PresaleDashboard = () => {
             <div className={styles.sectionHeader}>
               <span className={styles.chainIcon}>⛓️</span>
               <h3>Blockchain Data</h3>
-              <span className={styles.statusDot + ' ' + styles.online}></span>
+              <span className={`${styles.statusDot} ${styles.online}`}></span>
             </div>
             
             <div className={styles.dataGrid}>
@@ -70,7 +118,7 @@ const PresaleDashboard = () => {
             <div className={styles.sectionHeader}>
               <span className={styles.dbIcon}>💾</span>
               <h3>Presale Data Service</h3>
-              <span className={styles.statusDot + ' ' + styles.offline}></span>
+              <span className={`${styles.statusDot} ${styles.offline}`}></span>
             </div>
             
             <div className={styles.errorMessage}>

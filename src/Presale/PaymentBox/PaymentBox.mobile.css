@@ -1,0 +1,144 @@
+/* PaymentBox Mobile Styles - Gemini 3 King */
+
+@media (max-width: 768px) {
+  .payment-box {
+    max-width: 95vw;
+    padding: 1rem;
+    border-radius: 1rem;
+    margin: 0 auto;
+    background: transparent;
+    border: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+  }
+
+  .payment-title {
+    font-size: 1.4rem;
+    gap: 0.2rem;
+    flex-direction: column;
+  }
+
+  .token-title-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .price-info {
+    font-size: 1.1rem;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .price-line {
+    font-size: 1rem;
+    padding: 0.4rem 0.8rem;
+    min-width: 140px;
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .bonus-line {
+    font-size: 1rem;
+    padding: 0.4rem 0.8rem;
+    min-width: 140px;
+    max-width: 100%;
+  }
+
+  .bonus-note {
+    font-size: 0.8rem;
+  }
+
+  .buy-button {
+    font-size: 1.2rem;
+    padding: 0.6rem;
+  }
+  
+  /* Custom cursor hidden on mobile */
+  .custom-cursor {
+    display: none !important;
+  }
+  
+  /* Terms Checkbox Mobile */
+  .terms-checkbox-container {
+    margin: 0.8rem 0;
+    padding: 0.4rem 0.6rem;
+  }
+  
+  .terms-text {
+    font-size: 0.75rem;
+  }
+  
+  .checkbox-custom {
+    height: 14px;
+    width: 14px;
+  }
+
+  /* Stripe card box mobile override */
+  .stripe-card-box__options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .payment-box {
+    max-width: 98vw;
+    padding: 0.8rem;
+    border-radius: 0.8rem;
+  }
+
+  .payment-title {
+    font-size: 1.2rem;
+    gap: 0.5rem;
+  }
+
+  .token-flow {
+    justify-content: center;
+  }
+
+  .price-info {
+    font-size: 1rem;
+  }
+
+  .price-line {
+    font-size: 0.9rem;
+    padding: 0.3rem 0.6rem;
+    min-width: 120px;
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .bonus-line {
+    font-size: 0.9rem;
+    padding: 0.3rem 0.6rem;
+    min-width: 120px;
+    max-width: 100%;
+  }
+
+  .bonus-note {
+    font-size: 0.7rem;
+  }
+
+  .terms-checkbox-container {
+    margin: 0.6rem 0;
+    padding: 0.3rem 0.5rem;
+  }
+  
+  .terms-text {
+    font-size: 0.7rem;
+  }
+  
+  .checkbox-custom {
+    height: 12px;
+    width: 12px;
+  }
+  
+  .stripe-card-box__summary-line {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .stripe-summary__value {
+    text-align: left;
+  }
+}

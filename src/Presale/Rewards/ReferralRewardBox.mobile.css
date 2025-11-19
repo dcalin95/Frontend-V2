@@ -1,0 +1,205 @@
+/* 🌙 GEMINI 3 KING MOBILE - REFERRAL REWARDS */
+
+@media (max-width: 768px) {
+  .referral-reward-box {
+    padding: 16px 12px;
+  }
+
+  .referral-reward-box h3 {
+    font-size: 1.4rem;
+  }
+
+  .referral-reward-box p {
+    font-size: 1rem;
+  }
+
+  .reward-amount {
+    font-size: 1.2rem;
+  }
+
+  /* Unified rewards section - dark glass mobile */
+  .unified-rewards-section {
+    background: rgba(10, 10, 20, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 255, 163, 0.2);
+    padding: 14px;
+  }
+
+  .unified-rewards-section:hover {
+    background: rgba(10, 10, 20, 0.7);
+  }
+
+  /* Rewards by type - single column on mobile */
+  .rewards-by-type {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .reward-type-box {
+    background: rgba(10, 10, 20, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 255, 163, 0.2);
+    min-width: unset;
+    padding: 14px;
+  }
+
+  .reward-type-box:hover {
+    background: rgba(10, 10, 20, 0.6);
+  }
+  
+  /* Unified actions - vertical stack */
+  .unified-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .claim-all-btn,
+  .refresh-rewards-btn,
+  .claim-hybrid-btn,
+  .generate-invite-btn,
+  .copy-code-btn {
+    width: 100%;
+    padding: 14px 18px;
+  }
+  
+  /* Pending reward items - vertical layout */
+  .pending-reward-item {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+    background: rgba(10, 10, 20, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  /* Share buttons - full width */
+  .share-buttons {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .copy-button,
+  .share-button {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+  }
+
+  .tooltip {
+    top: -40px;
+    font-size: 14px;
+  }
+
+  /* Hybrid rewards section */
+  .hybrid-rewards-section {
+    background: rgba(10, 10, 20, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 255, 163, 0.2);
+    padding: 14px;
+  }
+
+  .hybrid-rewards-section:hover {
+    background: rgba(10, 10, 20, 0.7);
+  }
+  
+  .reward-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .reward-card {
+    background: rgba(10, 10, 20, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 255, 163, 0.2);
+  }
+
+  .reward-card:hover {
+    background: rgba(10, 10, 20, 0.6);
+  }
+  
+  .tiers-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .tier-card {
+    background: rgba(10, 10, 20, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .tier-card:hover {
+    background: rgba(10, 10, 20, 0.6);
+  }
+  
+  .status-indicators {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .generate-invite-btn {
+    width: 100%;
+  }
+
+  /* Telegram investigation - mobile optimized */
+  .telegram-investigation-section {
+    padding: 14px;
+    background: rgba(0, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  
+  .investigation-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .investigation-main-card {
+    padding: 12px;
+    background: rgba(10, 10, 20, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  
+  .investigation-main-card h5 {
+    font-size: 0.95rem;
+  }
+  
+  .investigation-main-card p {
+    font-size: 0.85rem;
+  }
+
+  /* Rewards summary - mobile glass */
+  .rewards-summary {
+    background: rgba(10, 10, 20, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Code display - mobile neon */
+  .code-display {
+    background: rgba(10, 10, 20, 0.6);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  /* Disable hover effects on touch devices */
+  @media (hover: none) {
+    .reward-type-box:hover,
+    .unified-rewards-section:hover,
+    .hybrid-rewards-section:hover,
+    .reward-card:hover,
+    .tier-card:hover,
+    .investigation-main-card:hover {
+      transform: none;
+      box-shadow: inherit;
+    }
+  }
+}
+

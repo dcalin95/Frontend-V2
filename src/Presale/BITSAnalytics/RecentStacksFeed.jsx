@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import bitsLogo from "../../assets/logo.png";
-import "./BITSAnalytics.css";
+import "./BITSAnalytics.desktop.css";
+import "./BITSAnalytics.mobile.css";
 
 const STX_MEMPOOL = "https://api.hiro.so/extended/v1/tx/mempool?limit=6";
 

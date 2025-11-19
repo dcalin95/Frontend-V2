@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import TokenomicsChartModern from "./TokenomicsChartModern";
 import TokenomicsChartHexagon from "./TokenomicsChartHexagon";
-import "./TokenomicsPage.css";
+import "./TokenomicsPage.desktop.css";
+import "./TokenomicsPage.mobile.css";
 
 const TokenomicsPage = () => {
   const [viewMode, setViewMode] = useState("ring"); // "ring" or "hexagon"

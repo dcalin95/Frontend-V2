@@ -1,7 +1,7 @@
 .presale-page {
   display: flex;
   min-height: 100vh;
-  min-height: 100svh; /* Better mobile viewport height on Android/Huawei */
+  min-height: 100svh;
   background: transparent;
   position: relative;
 }
@@ -74,14 +74,6 @@
   }
 }
 
-@media (max-width: 720px) {
-  .stripe-feedback {
-    top: 84px;
-    padding: 16px 18px;
-    gap: 12px;
-  }
-}
-
 /* Global AI text particle field */
 .ai-text-field {
   pointer-events: none;
@@ -90,26 +82,52 @@
   z-index: 1;
   overflow: hidden;
 }
+
 .ai-text-field .ai-bit {
   position: absolute;
   font-family: 'SFMono-Regular', ui-monospace, monospace;
-  font-size: 11px; /* slightly larger for clarity */
-  letter-spacing: 0.4px; /* crisper numeric look */
-  color: rgba(0, 255, 195, 0.82); /* brighter */
+  font-size: 11px;
+  letter-spacing: 0.4px;
+  color: rgba(0, 255, 195, 0.82);
   text-shadow: 0 0 8px rgba(0,255,195,0.6), 0 0 1px rgba(0,255,195,0.9);
   transform: translateY(0) translateX(0) rotate(0deg);
   animation: aiFloat var(--dur, 20s) cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
   will-change: transform, opacity;
   opacity: .92;
+  pointer-events: none;
 }
-/* Mobile light: fewer particles feel + smaller font/glow */
-@media (max-width: 600px) {
-  .ai-text-field .ai-bit {
-    font-size: 10px;
-    letter-spacing: 0.3px;
-    color: rgba(0, 255, 195, 0.75);
-    text-shadow: 0 0 6px rgba(0,255,195,0.45), 0 0 1px rgba(0,255,195,0.7);
-  }
+
+/* FORCE: Orice SVG, canvas sau element decorativ să nu blocheze mouse-ul */
+svg[class*="decorative"],
+svg[class*="background"],
+canvas[class*="decorative"],
+canvas[class*="background"],
+.presale-grid svg:not(.payment-icon):not(.token-icon),
+.presale-grid canvas,
+.presale-grid [class*="decorat"],
+.presale-grid [class*="border-glow"],
+.presale-grid [class*="circle-effect"],
+.presale-grid [class*="glow-effect"],
+.presale-grid [style*="border-radius"][style*="position: absolute"],
+.presale-grid [style*="border-radius"][style*="position: fixed"] {
+  pointer-events: none !important;
+}
+
+/* FORCE: Dezactivează orice border circular mare care poate bloca interacțiunea */
+*[style*="border-radius: 50%"],
+*[class*="circle"],
+*[class*="circular"] {
+  pointer-events: none !important;
+}
+
+/* 🚨 FORCE: Elimină orice outline sau box-shadow uriaș care poate bloca */
+.presale-grid *:focus {
+  outline: none !important;
+}
+
+.presale-grid *:focus-visible {
+  outline: 2px solid rgba(0, 255, 163, 0.5) !important;
+  outline-offset: 2px !important;
 }
 
 /* Respectă preferința utilizatorului pentru mișcare redusă */
@@ -119,6 +137,7 @@
     opacity: 0.4;
   }
 }
+
 @keyframes aiFloat {
   0% { transform: translateY(110vh) translateX(0) rotate(0deg); opacity:.0 }
   10% { opacity:.85 }
@@ -133,7 +152,7 @@
   justify-content: center;
   box-sizing: border-box;
   min-height: calc(100vh - 80px);
-  min-height: calc(100svh - 80px); /* Use dynamic viewport height when available */
+  min-height: calc(100svh - 80px);
 }
 
 .presale-grid {
@@ -149,6 +168,14 @@
   position: relative;
   overflow-x: hidden;
   align-items: stretch;
+}
+
+/* 🚨 FIX NUCLEAR: Toate elementele absolute/fixed din grid = pointer-events none */
+.presale-grid *[style*="position: absolute"],
+.presale-grid *[style*="position: fixed"],
+.presale-grid > *::before,
+.presale-grid > *::after {
+  pointer-events: none !important;
 }
 
 .presale-grid > * {
@@ -177,11 +204,11 @@
 .grid-summary {
   padding: 1.5rem;
   border-radius: 1.5rem;
-  background: transparent; /* 🔙 REVIN LA ORIGINAL - FĂRĂ FUNDAL */
-  border: none; /* 🔙 FĂRĂ BORDER */
-  backdrop-filter: none; /* 🔙 FĂRĂ BLUR */
+  background: transparent;
+  border: none;
+  backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  box-shadow: none; /* 🔙 FĂRĂ SHADOW */
+  box-shadow: none;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -193,15 +220,19 @@
   transition: all 0.3s ease;
 }
 
-.card-box:hover,
-.grid-payment:hover,
-.grid-panel:hover,
-.grid-claim:hover,
-.grid-summary:hover {
-  /* 🔙 REVIN LA ORIGINAL - FĂRĂ EFECTE HOVER */
+/* Asigură că toate pseudo-elementele decorative nu blochează mouse-ul */
+.card-box::before,
+.card-box::after,
+.grid-payment::before,
+.grid-payment::after,
+.grid-panel::before,
+.grid-panel::after,
+.grid-claim::before,
+.grid-claim::after,
+.grid-summary::before,
+.grid-summary::after {
+  pointer-events: none;
 }
-
-
 
 .sticky-wrapper {
   position: sticky;
@@ -220,118 +251,10 @@
   overflow: hidden;
 }
 
-@media (max-width: 992px) {
-  .presale-wrapper {
-    padding: 20px 1rem;
-  }
-
-  .presale-grid {
-    grid-template-areas:
-      "select"
-      "payment"
-      "panel"
-      "referral"
-      "summary";
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
-  }
-
-  .grid-payment,
-  .grid-panel,
-  .grid-claim,
-  .grid-summary {
-    padding: 1rem;
-    border-radius: 14px;
-  }
-
-  .card-box::before,
-  .grid-payment::before,
-  .grid-panel::before,
-  .grid-claim::before,
-  .grid-summary::before {
-    border-radius: 14px;
-  }
-
-  .sticky-wrapper {
-    position: relative;
-    top: auto;
-    max-height: none;
-    overflow: visible;
-  }
-}
-
-/* ✅ Responsive pentru mobil */
-@media (max-width: 768px) {
-  .presale-wrapper {
-    padding: 15px 0.5rem; /* Redus padding-ul pe mobil */
-    margin-top: 80px; /* Adăugat margin-top pentru a evita suprapunerea cu BoostedBanner */
-  }
-
-  .presale-grid {
-    gap: 1rem; /* Redus gap-ul pe mobil */
-    width: 100%; /* Asigură că ocupă toată lățimea */
-  }
-
-  .grid-payment,
-  .grid-panel,
-  .grid-claim,
-  .grid-summary {
-    padding: 0.8rem; /* Redus padding-ul pe mobil */
-    border-radius: 12px; /* Redus border-radius pe mobil */
-    width: 100%; /* Asigură că ocupă toată lățimea */
-    margin: 0 auto; /* Centrează componentele */
-  }
-
-  /* Adăugat spațiu extra pentru PaymentBox pentru a evita suprapunerea */
-  .grid-payment {
-    margin-top: 60px; /* Spațiu extra pentru a evita suprapunerea cu BoostedBanner */
-  }
-
-  .card-box::before,
-  .grid-payment::before,
-  .grid-panel::before,
-  .grid-claim::before,
-  .grid-summary::before {
-    border-radius: 12px; /* Redus border-radius pe mobil */
-  }
-}
-
-/* ✅ Responsive pentru ecrane foarte mici */
-@media (max-width: 480px) {
-  .presale-wrapper {
-    padding: 10px 0.3rem; /* Redus și mai mult padding-ul */
-    margin-top: 70px; /* Redus margin-top pentru ecrane foarte mici */
-  }
-
-  .presale-grid {
-    gap: 0.8rem; /* Redus și mai mult gap-ul */
-  }
-
-  .grid-payment,
-  .grid-panel,
-  .grid-claim,
-  .grid-summary {
-    padding: 0.6rem; /* Redus și mai mult padding-ul */
-    border-radius: 10px; /* Redus și mai mult border-radius */
-  }
-
-  /* Spațiu extra pentru PaymentBox pe ecrane foarte mici */
-  .grid-payment {
-    margin-top: 50px; /* Redus spațiul pentru ecrane foarte mici */
-  }
-
-  .card-box::before,
-  .grid-payment::before,
-  .grid-panel::before,
-  .grid-claim::before,
-  .grid-summary::before {
-    border-radius: 10px; /* Redus și mai mult border-radius */
-  }
-}
-
 .presale-grid h3 {
   font-family: 'system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif', sans-serif;
   color: #00ffc8;
   text-shadow: 0 0 6px #00ffc8, 0 0 12px #7f00ff;
   text-align: center;
 }
+

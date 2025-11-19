@@ -4,7 +4,8 @@ import unifiedRewardsService from "../services/unifiedRewardsService";
 import { ethers } from "ethers";
 import { CONTRACT_MAP as CONTRACTS } from "../contract/contractMap";
 import { toBitsInteger, formatBITS, logBITSConversion } from "../utils/bitsUtils";
-import "./RewardsHub.css";
+import "./RewardsHub.desktop.css";
+import "./RewardsHub.mobile.css";
 
 const RewardsHub = () => {
   const { signer, walletAddress } = useContext(WalletContext);

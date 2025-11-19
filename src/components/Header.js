@@ -9,8 +9,8 @@ import logo from "../assets/logo.png";
 import telegramLogo from "../assets/TLogo.png";
 import xLogo from "../assets/XLogo.png";
 import youtubeLogo from "../assets/YLogo.png";
-import "./Header.css";
-import "./Header.mobile.css"; // ✅ stiluri speciale pt mobil
+import "./Header.desktop.css";
+import "./Header.mobile.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu }) => {

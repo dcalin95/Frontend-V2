@@ -10,7 +10,8 @@ import StakingBox from "./components/StakingBox";
 import ClaimStakes from "./components/ClaimStakes";
 import StakingUSDValue from "./components/StakingUSDValue";
 
-import "./StakingPage.css";
+import "./StakingPage.desktop.css";
+import "./StakingPage.mobile.css";
 
 const StakingPage = () => {
   const { signer, walletAddress } = useContext(WalletContext);

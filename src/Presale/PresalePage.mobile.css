@@ -1,0 +1,178 @@
+/* 🌙 GEMINI 3 KING MOBILE - PRESALE PAGE */
+
+@media (max-width: 992px) {
+  .presale-wrapper {
+    padding: 20px 1rem;
+  }
+
+  .presale-grid {
+    grid-template-areas:
+      "select"
+      "payment"
+      "panel"
+      "referral"
+      "summary";
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .grid-payment,
+  .grid-panel,
+  .grid-claim,
+  .grid-summary {
+    padding: 1rem;
+    border-radius: 14px;
+  }
+
+  .card-box::before,
+  .grid-payment::before,
+  .grid-panel::before,
+  .grid-claim::before,
+  .grid-summary::before {
+    border-radius: 14px;
+  }
+
+  .sticky-wrapper {
+    position: relative;
+    top: auto;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Stripe feedback - mobile adjustments */
+  .stripe-feedback {
+    top: 84px;
+    padding: 16px 18px;
+    gap: 12px;
+    background: rgba(10, 10, 20, 0.9);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 255, 163, 0.25);
+  }
+
+  .stripe-feedback--success {
+    border-color: rgba(0, 255, 163, 0.4);
+    box-shadow: 0 8px 24px rgba(0, 255, 163, 0.2);
+  }
+
+  .stripe-feedback--warning {
+    border-color: rgba(234, 179, 8, 0.4);
+    box-shadow: 0 8px 24px rgba(234, 179, 8, 0.2);
+  }
+
+  /* AI text particles - mobile light */
+  .ai-text-field .ai-bit {
+    font-size: 10px;
+    letter-spacing: 0.3px;
+    color: rgba(0, 255, 195, 0.75);
+    text-shadow: 0 0 6px rgba(0,255,195,0.45), 0 0 1px rgba(0,255,195,0.7);
+  }
+
+  .presale-wrapper {
+    padding: 15px 0.5rem;
+    margin-top: 80px;
+  }
+
+  .presale-grid {
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .grid-payment,
+  .grid-panel,
+  .grid-claim,
+  .grid-summary {
+    padding: 0.8rem;
+    border-radius: 12px;
+    width: 100%;
+    margin: 0 auto;
+    background: rgba(10, 10, 20, 0.4);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(0, 255, 163, 0.15);
+  }
+
+  /* PaymentBox extra space */
+  .grid-payment {
+    margin-top: 60px;
+  }
+
+  .card-box::before,
+  .grid-payment::before,
+  .grid-panel::before,
+  .grid-claim::before,
+  .grid-summary::before {
+    border-radius: 12px;
+  }
+
+  .presale-grid h3 {
+    font-size: 1.3rem;
+    text-shadow: 0 0 8px rgba(0, 255, 163, 0.6), 0 0 16px rgba(220, 31, 255, 0.4);
+  }
+}
+
+@media (max-width: 480px) {
+  .presale-wrapper {
+    padding: 10px 0.3rem;
+    margin-top: 70px;
+  }
+
+  .presale-grid {
+    gap: 0.8rem;
+  }
+
+  .grid-payment,
+  .grid-panel,
+  .grid-claim,
+  .grid-summary {
+    padding: 0.6rem;
+    border-radius: 10px;
+    background: rgba(10, 10, 20, 0.5);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .grid-payment {
+    margin-top: 50px;
+  }
+
+  .card-box::before,
+  .grid-payment::before,
+  .grid-panel::before,
+  .grid-claim::before,
+  .grid-summary::before {
+    border-radius: 10px;
+  }
+
+  .presale-grid h3 {
+    font-size: 1.2rem;
+  }
+
+  .stripe-feedback {
+    padding: 14px 16px;
+    gap: 10px;
+    max-width: 95vw;
+  }
+
+  .stripe-feedback__body strong {
+    font-size: 1rem;
+  }
+
+  .stripe-feedback__body p {
+    font-size: 0.88rem;
+  }
+}
+
+/* Disable hover effects on touch devices */
+@media (hover: none) {
+  .card-box:hover,
+  .grid-payment:hover,
+  .grid-panel:hover,
+  .grid-claim:hover,
+  .grid-summary:hover {
+    transform: none;
+    box-shadow: inherit;
+  }
+}
+

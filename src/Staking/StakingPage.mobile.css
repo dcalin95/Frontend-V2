@@ -1,0 +1,142 @@
+/* Gemini 3 King Mobile Styles */
+
+@media (max-width: 1024px) {
+  .staking-main {
+    padding: 5rem 1.5rem 2rem 1.5rem; /* Ajustat pentru tablet */
+  }
+
+  .staking-top-row {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .left-side,
+  .right-side {
+    width: 100%;
+  }
+
+  .staking-bottom {
+    padding: 0 1rem;
+  }
+
+  .ai-staking-title {
+    font-size: 1.8rem;
+  }
+
+  .ai-container {
+    padding: 1.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .staking-main {
+    padding: 0;
+    gap: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ELIMINĂM LEFT/RIGHT - TOTUL VERTICAL! */
+  .staking-top-row {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 90%;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  /* LEFT/RIGHT DEVIN INVIZIBILE - DOAR STACK VERTICAL! */
+  .left-side,
+  .right-side {
+    display: contents !important; /* Elimină wrapper-ul, copiii devin direct în parent */
+  }
+  
+  .staking-bottom {
+    width: 90%;
+    margin: 0 auto;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .ai-staking-header {
+    width: 90%;
+    margin: 0 auto 20px auto;
+  }
+
+  .ai-staking-title {
+    font-size: 1.6rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .ai-staking-subtitle {
+    font-size: 0.9rem;
+  }
+
+  /* FIECARE AI-CONTAINER = UN CARD SEPARAT, VERTICAL - GEMINI KING STYLE */
+  .ai-container {
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    min-height: 80px;
+    background: transparent !important;
+    border: 1px solid rgba(0, 255, 163, 0.3) !important;
+    border-radius: 16px !important;
+    box-sizing: border-box;
+    /* Add Gemini Glow */
+    box-shadow: 0 0 15px rgba(0, 255, 163, 0.1);
+  }
+  
+  .ai-container:hover {
+    transform: none;
+    box-shadow: 0 0 20px rgba(0, 255, 163, 0.25);
+    border-color: #00FFA3 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .staking-main {
+    padding: 0;
+    gap: 0;
+  }
+
+  .staking-top-row {
+    gap: 15px;
+    width: 90%;
+  }
+
+  /* ELIMINĂ COMPLET LEFT/RIGHT PE MOBILE MIC */
+  .left-side,
+  .right-side {
+    display: contents !important;
+  }
+  
+  .staking-bottom {
+    width: 90%;
+    gap: 15px;
+  }
+  
+  .ai-staking-header {
+    width: 90%;
+  }
+
+  .ai-staking-title {
+    font-size: 1.4rem;
+  }
+
+  .ai-staking-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .ai-container {
+    width: 100%;
+    padding: 20px;
+    min-height: 80px;
+    background: transparent !important;
+    border: 1px solid rgba(0, 255, 163, 0.3) !important;
+    border-radius: 16px !important;
+  }
+}

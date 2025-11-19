@@ -1,22 +1,6 @@
-/* 🚫 REMOVED - Global body styles should not be in component CSS files */
-/* This was causing a greyish background to appear site-wide */
-/* body styles are handled in GlobalStyles.css and index.css */
+/* PaymentBox Desktop Styles */
 
-/* 🎯 CUSTOM CURSOR - OPTIMIZAT */
-/* 🚫 DISABLED - Custom cursor caused slow mouse movement
-.custom-cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 16px;
-  height: 16px;
-  pointer-events: none;
-  z-index: 9999;
-  transition: transform 0.05s ease-out;
-  will-change: transform;
-}
-*/
-
+/* 🎯 CUSTOM CURSOR */
 .cursor-icon {
   width: 100%;
   height: 100%;
@@ -41,17 +25,7 @@
   opacity: 0.8;
 }
 
-.cursor-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 40px;
-  height: 40px;
-  background: radial-gradient(circle, rgba(0, 241, 255, 0.2) 0%, transparent 70%);
-  border-radius: 50%;
-  animation: cursorPulse 1s ease-in-out infinite;
-}
+/* Cursor glow removed */
 
 @keyframes cursorPulse {
   0%, 100% {
@@ -63,23 +37,6 @@
     opacity: 0.2;
   }
 }
-
-/* 🎯 CURSOR EFFECTS FOR INTERACTIVE ELEMENTS - OPTIMIZAT */
-/* 🚫 DISABLED - Custom cursor hover effects
-button:hover ~ .custom-cursor,
-a:hover ~ .custom-cursor,
-.clickable:hover ~ .custom-cursor {
-  transform: scale(1.3) !important;
-}
-
-.buy-button:hover ~ .custom-cursor .cursor-icon {
-  filter: drop-shadow(0px 0px 10px rgba(255, 69, 0, 0.8)) !important;
-}
-
-.price-line:hover ~ .custom-cursor .cursor-icon {
-  filter: drop-shadow(0px 0px 12px rgba(255, 69, 0, 0.8)) !important;
-}
-*/
 
 .payment-box {
   /* 🔙 REVIN LA ORIGINAL - TRANSPARENT */
@@ -97,21 +54,36 @@ a:hover ~ .custom-cursor,
   width: 100%;
   max-width: 540px;
   margin: 0 auto;
-  color: #ffffff;
-  overflow: hidden;
   font-family: 'Inter', sans-serif;
-  transition: all 0.3s ease;
+  overflow: visible;
+}
+
+/* 🚨 NUCLEAR FIX: Toate pseudo-elementele = pointer-events none */
+.payment-box::before,
+.payment-box::after,
+.payment-box *::before,
+.payment-box *::after {
+  pointer-events: none !important;
+}
+
+/* 🚨 FIX: Elimină interacțiunea cu orice decorație din PaymentBox */
+.payment-box svg,
+.payment-box canvas,
+.payment-box [style*="position: absolute"],
+.payment-box [style*="position: fixed"],
+.payment-box [class*="decorat"],
+.payment-box [class*="border"],
+.payment-box [class*="circle"],
+.payment-box [class*="glow"],
+.payment-box [class*="effect"] {
+  pointer-events: none !important;
 }
 
 .payment-box:hover {
   border-color: rgba(0, 255, 163, 0.3);
   box-shadow: 0 8px 32px rgba(0, 255, 163, 0.2);
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  background: transparent;
 }
-
-
-
-
 
 .payment-title {
   display: flex;
@@ -121,48 +93,53 @@ a:hover ~ .custom-cursor,
   font-size: 1.8rem;
   font-family: 'Orbitron', 'Space Grotesk', sans-serif;
   font-weight: 700;
-  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 0 20px rgba(0, 255, 163, 0.4));
+  /* 🚨 FIX FINAL: Culoare solidă, fără gradient de fundal, fără glow */
+  background: transparent !important;
+  color: #00FFA3;
+  -webkit-background-clip: border-box;
+  -webkit-text-fill-color: currentColor;
+  background-clip: border-box;
+  filter: none !important;
   margin-bottom: 0.5rem;
+  position: relative;
+  z-index: 5;
+  text-shadow: none !important;
 }
 
-@keyframes cosmicPulse {
-  0%, 100% { 
-    text-shadow: 
-      0px 0px 10px rgba(0, 241, 255, 0.5),
-      0px 0px 20px rgba(0, 241, 255, 0.3),
-      0px 0px 30px rgba(0, 241, 255, 0.1);
-  }
-  50% { 
-    text-shadow: 
-      0px 0px 15px rgba(0, 241, 255, 0.7),
-      0px 0px 30px rgba(0, 241, 255, 0.5),
-      0px 0px 45px rgba(0, 241, 255, 0.3);
-  }
-}
+/* @keyframes cosmicPulse REMOVED to prevent egg glow */
 
 .token-flow {
   display: flex;
   align-items: center;
   gap: 0.3rem;
+  position: relative;
+}
+
+/* 🚨 NUCLEAR FIX: Elimină ORICE pseudo-element decorativ care blochează mouse-ul */
+.token-flow::before,
+.token-flow::after,
+.token-flow *::before,
+.token-flow *::after {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+/* 🚨 FORCE: Toate elementele circulare din token-flow să nu blocheze */
+.token-flow *[style*="position: absolute"],
+.token-flow *[style*="position: fixed"],
+.token-flow svg,
+.token-flow canvas {
+  pointer-events: none !important;
 }
 
 .token-title-icon {
   width: 3rem;
   height: 3rem;
-  border-radius: 50%;
-  /* 🌌 CLEAN GLASS EFFECT - Transparent background */
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
-  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
-  transition: all 0.4s ease;
-  /* 🌟 SOLANA GLOW */
-  box-shadow: 
-    0px 8px 20px rgba(0, 255, 163, 0.2),
-    inset 0px 1px 0px rgba(255, 255, 255, 0.1);
+  border-radius: 8px; /* 🚨 FIX: Pătrat, nu ou */
+  background: transparent;
+  box-shadow: none; /* 🚨 FIX: Fără umbră */
   border: 1px solid rgba(0, 255, 163, 0.3);
+  transition: all 0.4s ease;
 }
 
 .token-title-icon:hover {
@@ -210,9 +187,9 @@ a:hover ~ .custom-cursor,
   justify-content: center;
   gap: 0.8rem;
   /* SOLANA/AI STYLE */
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
-  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
-  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   padding: 0.6rem 1rem;
   border-radius: 1rem;
   box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
@@ -231,7 +208,7 @@ a:hover ~ .custom-cursor,
   transform: translateY(-2px) scale(1.02);
   box-shadow: 0 8px 32px rgba(0, 255, 163, 0.3), 0 0 50px rgba(220, 31, 255, 0.2);
   border-color: rgba(0, 255, 163, 0.3);
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  background: transparent;
 }
 
 /* 🎯 STYLING FOR SELECTED TOKEN */
@@ -316,10 +293,10 @@ a:hover ~ .custom-cursor,
 .input-box {
   display: flex;
   align-items: center;
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
-  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   padding: 0.5rem;
   border-radius: 1rem;
   gap: 0.3rem;
@@ -331,7 +308,7 @@ a:hover ~ .custom-cursor,
 .input-box:focus-within {
   border-color: rgba(0, 255, 163, 0.3);
   box-shadow: 0 0 0 2px rgba(0, 255, 163, 0.2), 0 4px 20px rgba(0, 255, 163, 0.1);
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  background: transparent;
 }
 
 .input-box input {
@@ -392,8 +369,8 @@ a:hover ~ .custom-cursor,
   justify-content: center;
   gap: 0.8rem;
   /* 🌌 CLEAN GLASS EFFECT - Transparent background */
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
-  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  background: transparent;
+  backdrop-filter: none;
   padding: 0.6rem 1rem;
   border-radius: 1rem;
   /* 🌟 SOLANA GLOW */
@@ -431,9 +408,6 @@ a:hover ~ .custom-cursor,
   color: #00ffff; /* Cyan pentru vizibilitate mai bună */
   font-weight: bold;
   text-shadow: 0px 0px 8px rgba(0, 255, 255, 0.6);
-  /* background: linear-gradient(90deg, #ffaa00, #ff6b35); */ /* 🚫 REMOVED - Orange background */
-  /* background-clip removed for crisp text */
-  /* webkit-text-fill-color removed for crisp text */
   padding: 0.3rem 0.8rem;
   background: rgba(0, 255, 255, 0.1); /* Fundal subtil cyan */
   border-radius: 0.5rem;
@@ -624,21 +598,6 @@ a:hover ~ .custom-cursor,
   color: #4ade80;
 }
 
-@media (max-width: 520px) {
-  .stripe-card-box__options {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .stripe-card-box__summary-line {
-    grid-template-columns: 1fr;
-    gap: 4px;
-  }
-
-  .stripe-summary__value {
-    text-align: left;
-  }
-}
-
 @keyframes bonusGlow {
   0% {
     box-shadow: 
@@ -667,12 +626,12 @@ a:hover ~ .custom-cursor,
   justify-content: space-between;
   gap: 0.3rem;
   padding: 0.3rem 0.8rem;
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 1rem;
   font-size: 1.2rem;
   margin-bottom: 0.4rem;
-  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  backdrop-filter: none;
 }
 
 .bonus-summary span {
@@ -732,6 +691,7 @@ a:hover ~ .custom-cursor,
     transparent
   );
   transition: left 0.5s ease;
+  pointer-events: none;
 }
 
 .buy-button:hover {
@@ -811,98 +771,6 @@ a:hover ~ .custom-cursor,
   }
   100% {
     filter: drop-shadow(0px 0px 15px rgba(0, 241, 255, 0.8));
-  }
-}
-
-/* ✅ Responsive pentru mobil */
-@media (max-width: 768px) {
-  .payment-box {
-    max-width: 95vw;
-    padding: 1rem;
-    border-radius: 1rem;
-    margin: 0 auto;
-  }
-
-  .payment-title {
-    font-size: 1.4rem;
-    gap: 0.2rem;
-  }
-
-  .token-title-icon {
-    width: 2.5rem;
-    height: 2.5rem;
-  }
-
-  .price-info {
-    font-size: 1.1rem;
-    flex-direction: column;
-    gap: 0.3rem;
-  }
-
-  .price-line {
-    font-size: 1rem;
-    padding: 0.4rem 0.8rem;
-    min-width: 140px;
-    width: fit-content;
-    max-width: 100%;
-  }
-
-  .bonus-line {
-    font-size: 1rem;
-    padding: 0.4rem 0.8rem;
-    min-width: 140px;
-    max-width: 100%;
-  }
-
-  .bonus-note {
-    font-size: 0.8rem;
-  }
-
-  .buy-button {
-    font-size: 1.2rem;
-    padding: 0.6rem;
-  }
-}
-
-/* ✅ Responsive pentru ecrane foarte mici */
-@media (max-width: 480px) {
-  .payment-box {
-    max-width: 98vw;
-    padding: 0.8rem;
-    border-radius: 0.8rem;
-  }
-
-  .payment-title {
-    font-size: 1.2rem;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .token-flow {
-    justify-content: center;
-  }
-
-  .price-info {
-    font-size: 1rem;
-  }
-
-  .price-line {
-    font-size: 0.9rem;
-    padding: 0.3rem 0.6rem;
-    min-width: 120px;
-    width: fit-content;
-    max-width: 100%;
-  }
-
-  .bonus-line {
-    font-size: 0.9rem;
-    padding: 0.3rem 0.6rem;
-    min-width: 120px;
-    max-width: 100%;
-  }
-
-  .bonus-note {
-    font-size: 0.7rem;
   }
 }
 
@@ -1006,7 +874,7 @@ a:hover ~ .custom-cursor,
   background: rgba(0, 241, 255, 0.05);
   border: 1px solid rgba(0, 241, 255, 0.2);
   border-radius: 12px;
-  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  backdrop-filter: none;
 }
 
 .referral-code-label {
@@ -1022,7 +890,7 @@ a:hover ~ .custom-cursor,
 .referral-code-input {
   width: 100%;
   padding: 12px 15px;
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  background: transparent;
   border: 2px solid rgba(0, 255, 163, 0.3);
   border-radius: 8px;
   color: #e0e0e0;
@@ -1033,13 +901,13 @@ a:hover ~ .custom-cursor,
   text-transform: uppercase;
   letter-spacing: 1px;
   box-sizing: border-box;
-  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  backdrop-filter: none;
 }
 
 .referral-code-input:focus {
   border-color: #00FFA3;
   box-shadow: 0 0 10px rgba(0, 255, 163, 0.3);
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  background: transparent;
 }
 
 .referral-code-input::placeholder {
@@ -1063,8 +931,8 @@ a:hover ~ .custom-cursor,
 .terms-checkbox-container {
   margin: 1rem 0;
   padding: 0.5rem 0.8rem;
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
-  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  background: transparent;
+  backdrop-filter: none;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   transition: all 0.3s ease;
@@ -1074,7 +942,7 @@ a:hover ~ .custom-cursor,
 
 .terms-checkbox-container:hover {
   border-color: rgba(0, 255, 163, 0.3);
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  background: transparent;
 }
 
 .terms-checkbox-label {
@@ -1098,7 +966,7 @@ a:hover ~ .custom-cursor,
   position: relative;
   height: 15px;
   width: 15px;
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  background: transparent;
   border: 2px solid rgba(0, 255, 163, 0.5);
   border-radius: 3px;
   flex-shrink: 0;
@@ -1148,42 +1016,3 @@ a:hover ~ .custom-cursor,
   text-shadow: 0px 0px 8px rgba(0, 241, 255, 0.5);
 }
 
-/* 📱 RESPONSIVE CHECKBOX */
-@media (max-width: 768px) {
-  .terms-checkbox-container {
-    margin: 0.8rem 0;
-    padding: 0.4rem 0.6rem;
-  }
-  
-  .terms-text {
-    font-size: 0.75rem;
-  }
-  
-  .checkbox-custom {
-    height: 14px;
-    width: 14px;
-  }
-}
-
-@media (max-width: 480px) {
-  .terms-checkbox-container {
-    margin: 0.6rem 0;
-    padding: 0.3rem 0.5rem;
-  }
-  
-  .terms-text {
-    font-size: 0.7rem;
-  }
-  
-  .checkbox-custom {
-    height: 12px;
-    width: 12px;
-  }
-}
-
-/* 🎯 DEZACTIVARE CURSOR PE MOBILE */
-@media (max-width: 768px) {
-  .custom-cursor {
-    display: none !important;
-  }
-}

@@ -6,7 +6,8 @@ import RewardStatsSection from "./RewardStatsSection";
 import unifiedRewardsService from "../../services/unifiedRewardsService.js";
 import nodeRewardsService, { formatBitsAmount, validateWalletConnection } from "../../services/nodeRewardsService.js";
 import cachedFetch, { rateLimitConfig, requestLimiter } from "../../utils/requestCache.js";
-import "./ReferralRewardBox.css";
+import "./ReferralRewardBox.desktop.css";
+import "./ReferralRewardBox.mobile.css";
 
 const backendURL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
 

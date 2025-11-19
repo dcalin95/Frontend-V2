@@ -13,7 +13,9 @@ import PaymentMethodSelector from "./PaymentMethodSelector";
 import StripeAmountSelector from "./components/StripeAmountSelector";
 import { tokenList } from "../TokenHandlers/tokenData";
 import useCellManagerData from "../hooks/useCellManagerData";
-import "./PaymentBox.css";
+// Import separated styles
+import "./PaymentBox.desktop.css";
+import "./PaymentBox.mobile.css";
 
 const PaymentBox = ({
   selectedToken,

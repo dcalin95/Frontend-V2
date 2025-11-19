@@ -1,0 +1,104 @@
+/* PresaleDashboard Mobile Styles - Gemini 3 King */
+
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 0.75rem;
+    gap: 0.5rem;
+    border-radius: 16px;
+  }
+
+  .column {
+    gap: 0.5rem;
+  }
+
+  .loading,
+  .error,
+  .info {
+    font-size: 0.9rem;
+    padding: 1rem;
+  }
+
+  .aiErrorContainer {
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+
+  .aiOrb {
+    width: 60px;
+    height: 60px;
+  }
+
+  .aiIcon {
+    font-size: 1.5rem;
+  }
+
+  .errorTitle {
+    font-size: 1.2rem;
+  }
+
+  .errorMessage {
+    font-size: 0.9rem;
+  }
+
+  .aiLoadingContainer {
+    padding: 1.5rem;
+  }
+
+  .neuralNetwork {
+    width: 80px;
+    height: 50px;
+  }
+
+  .node {
+    width: 10px;
+    height: 10px;
+  }
+
+  .loadingText {
+    font-size: 0.9rem;
+  }
+
+  .infoContainer {
+    padding: 1.5rem;
+  }
+
+  .hologram {
+    width: 50px;
+    height: 50px;
+  }
+
+  .infoIcon {
+    font-size: 1.2rem;
+  }
+  
+  /* Mobile Dual Data Layout */
+  .dualDataContainer {
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .sectionHeader h3 {
+    font-size: 1rem;
+  }
+  
+  .dataGrid, .fallbackData {
+    grid-template-columns: 1fr; /* Single column on mobile */
+    gap: 0.5rem;
+  }
+  
+  .dataCard, .fallbackCard {
+    padding: 0.5rem;
+  }
+  
+  .debugInfo {
+    padding: 0.75rem;
+    font-size: 0.85rem;
+    text-align: center;
+  }
+  
+  .debugSection h5 {
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+  }
+}
+

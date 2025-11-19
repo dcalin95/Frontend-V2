@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import './mindmirror.css';
+import './mindmirror.desktop.css';
+import './mindmirror.mobile.css';
 import MindNFTGenerator from './components/MindNFTGenerator';
 
 const MindMirrorDashboard = () => {

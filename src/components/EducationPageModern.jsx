@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import useGoogleAnalytics from '../hooks/useGoogleAnalytics';
 import { Link } from 'react-router-dom';
 // import { useWalletOptimization } from '../utils/walletBrowserDetection'; // DISABLED - causing issues in wallet browsers
-import './EducationPageModern.css';
+import './EducationPageModern.desktop.css';
+import './EducationPageModern.mobile.css';
 import LaserOrbit from './Education/LaserOrbit';
 import './Education/LaserOrbit.css';
 import MiniQuizGPT from './Education/MiniQuizGPT';

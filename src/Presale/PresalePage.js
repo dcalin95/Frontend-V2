@@ -1,6 +1,8 @@
 // CSS imports - Must be first
-import "./PresalePage.css";
-import "./PaymentBox/PaymentBox.css";
+import "./PresalePage.desktop.css";
+import "./PresalePage.mobile.css";
+import "./PaymentBox/PaymentBox.desktop.css";
+import "./PaymentBox/PaymentBox.mobile.css";
 import "./PaymentBox/InputBox.css";
 import "./PaymentBox/PaymentSummary.css";
 

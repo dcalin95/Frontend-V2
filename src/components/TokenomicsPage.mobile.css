@@ -1,0 +1,27 @@
+/* 📱 Tokenomics Page - MOBILE GEMINI KING STYLE */
+
+@media (max-width: 768px) {
+  /* 🌟 GEMINI KING ENHANCEMENTS FOR MOBILE */
+  .tokenomics-page {
+    padding: 1rem;
+    filter: contrast(1.15) brightness(1.05);
+  }
+
+  .tokenomics-toggle {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin: 20px auto;
+    display: block;
+    width: calc(100% - 40px);
+    max-width: 300px;
+    border: 2px solid rgba(0, 255, 163, 0.4);
+    box-shadow: 0 4px 20px rgba(0, 255, 163, 0.4);
+    background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  }
+
+  .tokenomics-toggle:hover {
+    box-shadow: 0 6px 30px rgba(0, 255, 163, 0.6);
+  }
+}
+

@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import STXPaperTrade from './STXPaperTrade';
 import TokenPaperTrade from './TokenPaperTrade';
 import BITSTradingSimulator from './BITSTradingSimulator';
-import './PaperTradingPage.css';
+import './PaperTradingPage.desktop.css';
+import './PaperTradingPage.mobile.css';
 
 const PaperTradingPage = () => {
   const [activeTab, setActiveTab] = useState('bits-simulator');

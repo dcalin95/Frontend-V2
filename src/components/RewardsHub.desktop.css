@@ -1,4 +1,4 @@
-/* RewardsHub.css - CONSISTENT WITH APP THEME */
+/* RewardsHub.desktop.css - CONSISTENT WITH APP THEME */
 
 .rewards-hub {
   min-height: 100vh;
@@ -492,49 +492,6 @@
   font-size: 0.85em;
   opacity: 0.8;
   line-height: 1.4;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .hub-container {
-    padding-top: 20px;
-  }
-  
-  .hub-container h1 {
-    font-size: 2em;
-  }
-  
-  .rewards-summary-card {
-    padding: 20px;
-  }
-  
-  .summary-stats {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-  
-  .action-buttons {
-    grid-template-columns: 1fr;
-  }
-  
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 480px) {
-  .rewards-hub {
-    padding: 10px;
-  }
-  
-  .rewards-summary-card {
-    padding: 15px;
-  }
-  
-  .action-btn {
-    padding: 20px 15px;
-    min-height: 80px;
-  }
 }
 
 /* Additional Bonus Section */

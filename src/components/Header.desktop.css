@@ -5,7 +5,7 @@
 }
 
 /* Force header background to non-transparent to avoid white flash */
-.header { background: rgba(15, 20, 25, 0.85); backdrop-filter: none /* 🔙 REVERTED FROM BLUR */; }
+.header { background: rgba(15, 20, 25, 0.85); backdrop-filter: none; }
 /* === HEADER - SOLANA/AI STYLE === */
 .header {
   display: flex;
@@ -21,8 +21,8 @@
   left: 0;
   z-index: 1000;
   border-bottom: 1px solid rgba(0, 255, 163, 0.2);
-  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
-  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
   gap: 2rem;
   font-family: 'Inter', sans-serif;
@@ -30,8 +30,8 @@
 
 /* === LOGO === */
 .logo-container {
-  flex: 0 0 auto; /* Nu se comprimă și nu crește */
-  min-width: 80px; /* Spațiu minim garantat */
+  flex: 0 0 auto;
+  min-width: 80px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -56,13 +56,13 @@
 /* === NAVIGATION === */
 .navigation {
   display: flex;
-  gap: 0.5rem; /* Gap mai mic între butoane */
+  gap: 0.5rem;
   flex-wrap: wrap;
   align-items: center;
-  flex: 1; /* Ocupă spațiul disponibil */
-  justify-content: center; /* Centrează butoanele */
-  margin: 0 1rem; /* Spațiu de siguranță pe ambele părți */
-  max-width: calc(100% - 400px); /* Lasă spațiu pentru logo și right-section */
+  flex: 1;
+  justify-content: center;
+  margin: 0 1rem;
+  max-width: calc(100% - 400px);
 }
 
 /* Desktop navigation open styles - only apply above mobile breakpoint */
@@ -295,8 +295,6 @@
   background: none !important;
 }
 
-/* Paper Trading: păstrează efectul implicit al timerului (fără override pe container) */
-
 @keyframes glow {
   0% { text-shadow: 0 0 5px #00ffff; }
   50% { text-shadow: 0 0 15px #00ffff, 0 0 30px #00ffff; }
@@ -314,9 +312,9 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  flex: 0 0 auto; /* Nu se comprimă */
-  min-width: 200px; /* Spațiu minim garantat */
-  justify-content: flex-end; /* Aliniază la dreapta */
+  flex: 0 0 auto;
+  min-width: 200px;
+  justify-content: flex-end;
 }
 
 .social {
@@ -330,11 +328,11 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  background: transparent;
   border: 1px solid rgba(0, 255, 163, 0.2);
   box-shadow: 0 0 20px rgba(0, 255, 163, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  backdrop-filter: none;
 }
 
 .social-link img {
@@ -384,9 +382,6 @@
   transition: all 0.3s ease;
 }
 
-/* === RESPONSIVE === */
-/* Mobile styles moved to Header.mobile.css */
-
 /* === CLASE UTILE === */
 .desktop-only {
   display: flex;
@@ -405,28 +400,18 @@
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }
 }
-/* === DEVICE VISIBILITY CLASSES === */
-.desktop-only {
-  display: flex;
-}
-
-.mobile-only {
-  display: none;
-}
-
-/* Mobile visibility handled in Header.mobile.css */
 
 /* === RESPONSIVE ADJUSTMENTS FOR DESKTOP === */
 @media (max-width: 1400px) {
   .navigation {
-    gap: 0.4rem; /* Gap și mai mic pe ecrane mai mici */
-    max-width: calc(100% - 350px); /* Spațiu mai mic pentru logo și right-section */
+    gap: 0.4rem;
+    max-width: calc(100% - 350px);
   }
   
   .navigation a,
   .navigation button {
-    padding: 3px 8px; /* Padding și mai mic */
-    font-size: 0.9rem; /* Font și mai mic */
+    padding: 3px 8px;
+    font-size: 0.9rem;
   }
 }
 
@@ -443,7 +428,7 @@
   }
   
   .right-section {
-    min-width: 150px; /* Spațiu mai mic pentru right-section */
+    min-width: 150px;
   }
 }
 
@@ -452,3 +437,4 @@ body.opera .navigation { max-width: calc(100% - 320px) !important; gap: 0.35rem 
 body.opera .navigation a,
 body.opera .navigation button { padding: 2px 6px !important; font-size: 0.85rem !important; }
 body.opera .right-section { min-width: 160px !important; }
+
