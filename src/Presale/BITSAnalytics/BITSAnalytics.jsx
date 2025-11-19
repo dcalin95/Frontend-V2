@@ -2,7 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { useBoosterSummary } from "./useBoosterSummary";
 import WalletContext from "../../context/WalletContext";
 import { ethers } from "ethers";
-import "./BITSAnalytics.css";
+import "./BITSAnalytics.desktop.css";
+import "./BITSAnalytics.mobile.css";
 // AdditionalBonusBox nu mai e necesar - widget-ul e integrat direct
 import DashboardHeader from "./components/DashboardHeader";
 import { useStakingData } from "../../Staking/useStakingData";
@@ -614,7 +615,7 @@ const BITSAnalytics = () => {
                 Number(stakingPendingFromStakingPage) || 0
               ];
               const p = ordered.find((x) => Number.isFinite(x) && x > 0) || 0;
-              return `${clampBits(p)} $BITS`;
+              return <>{clampBits(p)} <span className="unit">$BITS</span></>;
             })()}
           </div>
           <div className="widget-subtitle">
@@ -646,8 +647,8 @@ const BITSAnalytics = () => {
           <div className="widget-title">$BITS Holdings</div>
           <div className="widget-value">
             {numericTotalBits > 0
-              ? `${Math.floor(numericTotalBits).toLocaleString('en-US')} $BITS`
-              : (walletAddress ? "0 $BITS" : "Connect Wallet")}
+              ? <>{numericTotalBits.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 4 })} <span className="unit">$BITS</span></>
+              : (walletAddress ? <span className="unit">0 $BITS</span> : "Connect Wallet")}
           </div>
           <div className="widget-subtitle">
             {safeData.totalBits > 0 ? "Current Balance" : 
@@ -700,7 +701,7 @@ const BITSAnalytics = () => {
           <div className="widget-icon"><IconStaking /></div>
           <div className="widget-title">Staking</div>
           <div className="widget-value">
-            {(safeData.stakingBits || 0) > 0 ? `${Math.floor(Number(safeData.stakingBits) || 0).toLocaleString('en-US')} $BITS` : '0 $BITS'}
+            {(safeData.stakingBits || 0) > 0 ? <>{Number(safeData.stakingBits).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 4 })} <span className="unit">$BITS</span></> : <span className="unit">0 $BITS</span>}
           </div>
           <div className="widget-subtitle">
             Profit: {(() => {
@@ -752,7 +753,7 @@ const BITSAnalytics = () => {
           <div className="widget-icon"><IconReferral /></div>
           <div className="widget-title">Referral Rewards</div>
           <div className="widget-value">
-            {formatBITS(safeData.referralBonus)}
+            {formatBITS(safeData.referralBonus).replace(' $BITS', '')} <span className="unit">$BITS</span>
           </div>
           <div className="widget-subtitle">
             {safeData.referralBonus > 0 ? "Ready to Claim" : "No Rewards"}
@@ -765,7 +766,7 @@ const BITSAnalytics = () => {
           <div className="widget-value">
             {(() => {
               const v = Math.floor(toNumber(safeData.telegramBonus, 18));
-              return `${v.toLocaleString('en-US')} $BITS`;
+              return <>{v.toLocaleString('en-US')} <span className="unit">$BITS</span></>;
             })()}
           </div>
           <div className="widget-subtitle">
@@ -784,9 +785,9 @@ const BITSAnalytics = () => {
           <div className="widget-value">
             {safeData.additionalBonus > 0 ? (
               <a href="/rewards-hub" style={{ color: '#ffffff', textDecoration: 'none' }}>
-                {formatBITS(safeData.additionalBonus)}
+                {formatBITS(safeData.additionalBonus).replace(' $BITS', '')} <span className="unit">$BITS</span>
               </a>
-            ) : "0.00 $BITS"}
+            ) : <span className="unit">0.00 $BITS</span>}
           </div>
           <div className="widget-subtitle">
             {safeData.additionalBonus > 0 ? (
@@ -837,7 +838,7 @@ const BITSAnalytics = () => {
           <div className="widget-title">Portfolio Size</div>
           <div className="widget-value">{portfolioLevel}</div>
           <div className="widget-subtitle">
-            {`Total Holdings: ${Math.floor(Number(safeData.totalBits) || 0).toLocaleString('en-US')} $BITS`}
+            Total Holdings: {Number(safeData.totalBits || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 4 })} <span className="unit">$BITS</span>
           </div>
         </div>
 

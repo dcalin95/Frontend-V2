@@ -1,0 +1,87 @@
+/* BITSAnalytics Mobile Styles - Gemini 3 King */
+
+@media (max-width: 768px) {
+  /* Header Adjustments */
+  .portfolio-header-title { font-size: 1.5rem; }
+  .portfolio-header-icon-img { width: 48px; height: 48px; }
+
+  /* Feed Adjustments */
+  .btc-feed-list, .stx-feed-list { max-height: 160px; }
+  .btc-feed-row { grid-template-columns: 1fr auto; }
+  .btc-feed-row .meta { grid-column: 1 / -1; }
+
+  /* Widget Grid - Single Column, Full Width */
+  .widget-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+    width: 100%;
+    box-sizing: border-box;
+    padding-bottom: 100px; /* Space for bottom actions */
+  }
+  
+  /* Widget Card - Gemini Mobile Style */
+  .widget {
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100px;
+    /* Darker, more transparent glass for mobile */
+    background: rgba(10, 10, 20, 0.6) !important; 
+    /* Neon border with low opacity */
+    border: 1px solid rgba(0, 255, 163, 0.2) !important;
+    border-radius: 16px !important;
+    box-sizing: border-box;
+    /* Center content for better mobile readability */
+    align-items: center;
+    text-align: center;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+  
+  .widget:hover {
+    transform: none; /* Disable hover lift on touch devices */
+  }
+
+  /* Typography & Icon Scaling */
+  .widget-icon {
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.05); /* Slightly lighter icon bg */
+  }
+
+  .widget-value {
+    font-size: 1.4rem; /* Readable but not huge */
+  }
+
+  .widget-title {
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+  
+  .widget-subtitle {
+    font-size: 0.8rem;
+  }
+
+  /* Skeleton Mobile */
+  .skeleton-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .widget-grid {
+    padding: 10px;
+    gap: 12px;
+  }
+  
+  .widget {
+    padding: 15px;
+  }
+
+  .nw-btn, .nw-wallet-btn, .nw-badge { 
+    padding: 5px 8px; 
+    font-size: 0.75rem; 
+  }
+}
+
