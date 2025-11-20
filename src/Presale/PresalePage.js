@@ -116,12 +116,36 @@ const PresalePage = () => {
   }, []);
 
   const [particleCount, setParticleCount] = useState(40);
+  const [showParticles, setShowParticles] = useState(true); // 🎨 Toggle particles
+  const [darkMode, setDarkMode] = useState(false); // 🌑 Dark mode
+  
   useEffect(() => {
     try {
       const isMobile = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 600px)').matches;
       setParticleCount(isMobile ? 22 : 40);
     } catch {}
   }, []);
+
+  // 🎨 Toggle Particles & Dark Mode (3 states cycle)
+  const handleToggle = () => {
+    if (showParticles && !darkMode) {
+      // State 1 → State 2: Hide particles
+      setShowParticles(false);
+    } else if (!showParticles && !darkMode) {
+      // State 2 → State 3: Enable dark mode
+      setDarkMode(true);
+    } else {
+      // State 3 → State 1: Reset to normal
+      setShowParticles(true);
+      setDarkMode(false);
+    }
+  };
+
+  const getToggleLabel = () => {
+    if (showParticles && !darkMode) return "🌟 Particles ON";
+    if (!showParticles && !darkMode) return "🌟 Particles OFF";
+    return "🌑 Dark Mode";
+  };
 
   // 📊 Analytics: page view + presale view
   useEffect(() => {
@@ -165,7 +189,31 @@ const PresalePage = () => {
   }, [location.search, location.pathname, navigate, setSelectedChain, setSelectedToken]);
 
   return (
-    <div className="presale-page">
+    <div className="presale-page" style={darkMode ? { background: '#000000' } : {}}>
+      {/* 🎨 Toggle Button */}
+      <button
+        onClick={handleToggle}
+        style={{
+          position: 'fixed',
+          top: '80px',
+          right: '20px',
+          zIndex: 9999,
+          padding: '10px 20px',
+          background: 'linear-gradient(135deg, #00FFA3, #DC1FFF)',
+          border: '2px solid rgba(0, 255, 163, 0.4)',
+          borderRadius: '12px',
+          color: '#000',
+          fontWeight: '700',
+          fontSize: '0.9rem',
+          cursor: 'pointer',
+          boxShadow: '0 4px 15px rgba(0, 255, 163, 0.3)',
+          transition: 'all 0.3s ease',
+        }}
+        onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
+        onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+      >
+        {getToggleLabel()}
+      </button>
       {stripeFeedback && (
         <div className={`stripe-feedback stripe-feedback--${stripeFeedback.type}`}>
           <div className="stripe-feedback__icon" aria-hidden>
@@ -195,7 +243,8 @@ const PresalePage = () => {
         </div>
       )}
       {/* AI Text Particle Field */}
-      <div className="ai-text-field" aria-hidden>
+      {showParticles && (
+        <div className="ai-text-field" aria-hidden>
         {useMemo(() => {
           const particles = Array.from({ length: particleCount }).map((_, i) => {
             const genDigits = () => {
@@ -237,6 +286,7 @@ const PresalePage = () => {
           ));
         }, [particleCount])}
       </div>
+      )}
       <div className="presale-wrapper">
         <div className="presale-grid">
           {/* Select Token/Chain */}

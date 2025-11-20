@@ -56,6 +56,18 @@
   margin: 0 auto;
   font-family: 'Inter', sans-serif;
   overflow: visible;
+  
+  /* 🚨 FIX FINAL: Elimină ORICE outline/border care ar putea fi "oul" */
+  outline: none !important;
+}
+
+/* 🚨 HIDE "OU DE CACAT": Ascunde orice arc decorativ mare */
+.payment-box::before,
+.payment-box::after {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  content: none !important;
 }
 
 /* 🚨 NUCLEAR FIX: Toate pseudo-elementele = pointer-events none */

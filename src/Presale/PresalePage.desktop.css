@@ -220,7 +220,7 @@ canvas[class*="background"],
   transition: all 0.3s ease;
 }
 
-/* Asigură că toate pseudo-elementele decorative nu blochează mouse-ul */
+/* 🚨 ASCUNDE COMPLET "OUL DE CACAT" - Pseudo-elemente decorative */
 .card-box::before,
 .card-box::after,
 .grid-payment::before,
@@ -232,6 +232,11 @@ canvas[class*="background"],
 .grid-summary::before,
 .grid-summary::after {
   pointer-events: none;
+  /* 🥚 ELIMINĂ "OUL" COMPLET */
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  content: none !important;
 }
 
 .sticky-wrapper {
