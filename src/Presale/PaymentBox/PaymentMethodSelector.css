@@ -31,6 +31,7 @@
   align-items: center;
   padding: 3rem;
   text-align: center;
+  pointer-events: none !important; /* 🚨 FIX: Nu bloca mouse-ul */
 }
 
 .loading-spinner {
@@ -41,6 +42,7 @@
   border-top-color: #00f0ff;
   animation: spin 1s ease-in-out infinite;
   margin-bottom: 1rem;
+  pointer-events: none !important; /* 🚨 FIX: Nu bloca mouse-ul */
 }
 
 @keyframes spin {
@@ -50,6 +52,7 @@
 .payment-methods-loading p {
   color: #ccc;
   font-size: 1rem;
+  pointer-events: none !important; /* 🚨 FIX: Nu bloca mouse-ul */
 }
 
 /* Payment Methods Grid */

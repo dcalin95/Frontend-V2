@@ -782,6 +782,8 @@
   justify-content: center;
   padding: 2rem;
   gap: 1rem;
+  pointer-events: none !important; /* 🚨 FIX: Nu bloca mouse-ul */
+  z-index: 1000;
 }
 
 .loading-spinner {
@@ -791,12 +793,14 @@
   border-top: 3px solid #00FFA3;
   border-radius: 50%;
   animation: spin 1s linear infinite;
+  pointer-events: none !important; /* 🚨 FIX: Nu bloca mouse-ul */
 }
 
 .loading-text {
   color: #00f1ff;
   font-size: 1.1rem;
   text-align: center;
+  pointer-events: none !important; /* 🚨 FIX: Nu bloca mouse-ul */
 }
 
 @keyframes spin {
