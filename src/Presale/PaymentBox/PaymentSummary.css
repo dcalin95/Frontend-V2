@@ -1,93 +1,54 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@600&display=swap');
 
 /* ═══════════════════════════════════════════════
-   🌟 PAYMENT SUMMARY - COMPACT AI SONNET STYLE 🌟
+   🎯 PAYMENT SUMMARY - 6 SQUARES GRID MINIMAL
    ═══════════════════════════════════════════════ */
 
-/* Animations */
-@keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(0, 255, 163, 0.3),
-                0 0 40px rgba(220, 31, 255, 0.2);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(0, 255, 163, 0.5),
-                0 0 60px rgba(220, 31, 255, 0.4);
-  }
-}
-
-@keyframes shimmer {
-  0% { background-position: -1000px 0; }
-  100% { background-position: 1000px 0; }
-}
-
-/* Main Container - ONE COMPACT BOX */
+/* Main Container - Clean, NO blur shit */
 .payment-summary {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 18px 22px;
-  background: rgba(10, 10, 25, 0.6);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 2px solid transparent;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 20px;
+  background: rgba(10, 10, 25, 0.4);
+  border: 2px solid;
   border-image: linear-gradient(135deg, #00FFA3, #DC1FFF) 1;
   border-radius: 16px;
   font-family: 'Roboto Mono', monospace;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4),
-              inset 0 0 20px rgba(255, 255, 255, 0.05);
-  overflow: hidden;
-  animation: pulseGlow 3s ease-in-out infinite;
 }
 
-/* Animated background shimmer */
-.payment-summary::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 200%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(0, 255, 163, 0.05), transparent);
-  animation: shimmer 3s infinite;
-  pointer-events: none;
-}
-
-/* Summary Line - HORIZONTAL LAYOUT (label | value) */
+/* Each Square - Austere, Minimal */
 .summary-line {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 16px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: 6px 0;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.summary-line:hover,
-.summary-line.hover-effect:hover {
-  transform: translateX(3px);
-}
-
-/* Label Styling */
-.summary-label {
-  display: inline-flex;
-  align-items: center;
+  justify-content: center;
   gap: 8px;
-  color: rgba(0, 255, 163, 0.95);
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  text-shadow: 0 0 10px rgba(0, 255, 163, 0.4);
-  white-space: nowrap;
+  padding: 20px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s ease;
 }
 
-/* Icon Styling */
+.summary-line:hover {
+  border-color: rgba(0, 255, 163, 0.5);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 255, 163, 0.2);
+}
+
+/* Icon/SVG Container */
+.summary-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 4px;
+}
+
 .icon {
-  font-size: 1.2rem;
-  filter: drop-shadow(0 0 8px currentColor);
+  font-size: 2rem;
+  filter: drop-shadow(0 0 10px currentColor);
 }
 
 .icon-pay { color: #00FFA3; }
@@ -95,122 +56,113 @@
 .icon-bonus { color: #fbbf24; }
 .icon-total { color: #DC1FFF; }
 
-/* Value Styling */
+/* Value - BIG */
 .summary-value {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 800;
+  text-align: center;
   color: #ffffff;
-  text-align: right;
-  letter-spacing: 0.3px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  line-height: 1.2;
+  margin-bottom: 2px;
 }
 
 /* Gradient Highlights */
 .summary-value.highlight-bnb {
-  background: linear-gradient(135deg, #00FFA3 0%, #00d4ff 100%);
+  background: linear-gradient(135deg, #00FFA3, #00d4ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 12px rgba(0, 255, 163, 0.5));
 }
 
 .summary-value.bits-gradient {
-  background: linear-gradient(135deg, #4ade80 0%, #22d3ee 100%);
+  background: linear-gradient(135deg, #4ade80, #22d3ee);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 12px rgba(34, 211, 238, 0.5));
 }
 
 .summary-value.bonus-highlight {
-  background: linear-gradient(135deg, #fbbf24 0%, #f472b6 100%);
+  background: linear-gradient(135deg, #fbbf24, #f472b6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.5));
 }
 
 .summary-value.total-highlight {
-  background: linear-gradient(135deg, #DC1FFF 0%, #00FFA3 100%);
+  background: linear-gradient(135deg, #DC1FFF, #00FFA3);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 15px rgba(220, 31, 255, 0.6));
-  font-size: 1.3rem;
+  font-size: 1.5rem;
 }
 
-/* Pulse Animation */
-.summary-value.pulse {
-  animation: pulseGlow 2s ease-in-out infinite;
-}
-
-/* Legal Disclaimer */
-.legal-disclaimer-container {
-  margin-top: 12px;
-  padding: 12px 16px;
-  border-radius: 12px;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: rgba(15, 23, 42, 0.5);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  color: rgba(148, 163, 184, 0.9);
-  font-size: 0.8rem;
-  line-height: 1.5;
+/* Label Text - SMALL, under value */
+.summary-label-text {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.5);
   text-align: center;
-  transition: all 0.3s ease;
 }
 
-.legal-disclaimer-container:hover {
-  border-color: rgba(0, 255, 163, 0.3);
+/* Legal Disclaimer - Outside grid */
+.legal-disclaimer-container {
+  grid-column: 1 / -1;
+  margin-top: 8px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(15, 23, 42, 0.4);
+  color: rgba(148, 163, 184, 0.85);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  text-align: center;
 }
 
 .legal-link {
   color: #00FFA3;
   text-decoration: none;
-  font-weight: 700;
-  transition: all 0.3s ease;
+  font-weight: 600;
 }
 
 .legal-link:hover {
   color: #DC1FFF;
   text-decoration: underline;
-  text-shadow: 0 0 8px rgba(220, 31, 255, 0.5);
 }
 
-/* 📱 Mobile Responsive */
+/* 📱 Mobile - Stack to 2 columns */
 @media (max-width: 768px) {
   .payment-summary {
-    gap: 6px;
-    padding: 14px 16px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 16px;
   }
 
   .summary-line {
-    grid-template-columns: 1fr;
-    gap: 4px;
-    padding: 4px 0;
-  }
-
-  .summary-label {
-    font-size: 0.9rem;
-    gap: 6px;
+    padding: 16px 10px;
   }
 
   .icon {
-    font-size: 1rem;
+    font-size: 1.6rem;
   }
 
   .summary-value {
-    text-align: left;
-    font-size: 1.05rem;
-    padding-left: 28px;
+    font-size: 1.2rem;
   }
 
   .summary-value.total-highlight {
-    font-size: 1.15rem;
+    font-size: 1.3rem;
   }
 
-  .legal-disclaimer-container {
-    padding: 10px 12px;
-    font-size: 0.75rem;
+  .summary-label-text {
+    font-size: 0.65rem;
+  }
+}
+
+/* Extra Small - Full width stack */
+@media (max-width: 480px) {
+  .payment-summary {
+    grid-template-columns: 1fr;
+    gap: 10px;
   }
 }

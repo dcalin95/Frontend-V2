@@ -72,60 +72,70 @@ const PaymentSummary = ({
 
   return (
     <div className="payment-summary">
-      <div className="summary-line hover-effect" translate="no">
-        <span className="summary-label">
-          <FaDollarSign className="icon icon-pay" /> YOU PAY:
-        </span>
-        <span className="summary-value highlight-bnb">
-          {fiatDetails
-            ? `${formatCurrency(parseFloat(fiatDetails.amount || 0), "EUR")} • ${formattedUsdValue}`
-            : `${formattedAmountPay} in ${selectedTokenLabel || selectedToken || "BNB"} • ${formattedUsdValue}`}
-        </span>
+      {/* Square 1: YOU PAY */}
+      <div className="summary-line" translate="no">
+        <div className="summary-label">
+          <FaDollarSign className="icon icon-pay" />
+        </div>
+        <div className="summary-value highlight-bnb">
+          {formattedUsdValue}
+        </div>
+        <div className="summary-label-text">YOU PAY</div>
       </div>
 
-      <div className="summary-line hover-effect" translate="no">
-        <span className="summary-label">
-          <FaCoins className="icon icon-receive" /> YOU RECEIVE:
-        </span>
-        <span className="summary-value bits-gradient">
-          {formattedPureBits} $BITS
-        </span>
+      {/* Square 2: YOU RECEIVE */}
+      <div className="summary-line" translate="no">
+        <div className="summary-label">
+          <FaCoins className="icon icon-receive" />
+        </div>
+        <div className="summary-value bits-gradient">
+          {formattedPureBits}
+        </div>
+        <div className="summary-label-text">YOU RECEIVE</div>
       </div>
 
-      <div className="summary-line hover-effect" translate="no">
-        <span className="summary-label">
-          <FaGift className="icon icon-percentage" /> Bonus Percentage:
-        </span>
-        <span className="summary-value bonus-gradient">
+      {/* Square 3: BONUS % */}
+      <div className="summary-line" translate="no">
+        <div className="summary-label">
+          <FaGift className="icon icon-bonus" />
+        </div>
+        <div className="summary-value bonus-highlight">
           {bonusPercentage}
-        </span>
+        </div>
+        <div className="summary-label-text">BONUS %</div>
       </div>
 
-      <div className="summary-line hover-effect" translate="no">
-        <span className="summary-label">
-          <FaStar className="icon icon-tokens" /> Bonus Tokens:
-        </span>
-        <span className="summary-value bonus-highlight">
-          {formattedBonusAmount} $BITS
-        </span>
+      {/* Square 4: BONUS TOKENS */}
+      <div className="summary-line" translate="no">
+        <div className="summary-label">
+          <FaStar className="icon icon-bonus" />
+        </div>
+        <div className="summary-value bonus-highlight">
+          {formattedBonusAmount}
+        </div>
+        <div className="summary-label-text">BONUS TOKENS</div>
       </div>
 
-      <div className="summary-line hover-effect" translate="no">
-        <span className="summary-label">
-          <FaGem className="icon icon-total-now" /> Total BITS (Now):
-        </span>
-        <span className="summary-value bits-gradient">
-          {formattedPureBits} $BITS
-        </span>
+      {/* Square 5: TOTAL NOW */}
+      <div className="summary-line" translate="no">
+        <div className="summary-label">
+          <FaGem className="icon icon-receive" />
+        </div>
+        <div className="summary-value bits-gradient">
+          {formattedPureBits}
+        </div>
+        <div className="summary-label-text">TOTAL NOW</div>
       </div>
 
-      <div className="summary-line total-bits hover-effect" translate="no">
-        <span className="summary-label">
-          <FaGem className="icon icon-total-including" /> Total BITS (Including Bonus):
-        </span>
-        <span className="summary-value bits-gradient pulse">
-          {formattedTotalBits} $BITS
-        </span>
+      {/* Square 6: TOTAL + BONUS */}
+      <div className="summary-line" translate="no">
+        <div className="summary-label">
+          <FaGem className="icon icon-total" />
+        </div>
+        <div className="summary-value total-highlight">
+          {formattedTotalBits}
+        </div>
+        <div className="summary-label-text">TOTAL + BONUS</div>
       </div>
 
              <div className="legal-disclaimer-container">
