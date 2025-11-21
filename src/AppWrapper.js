@@ -4,15 +4,21 @@ import React from "react";
 import App from "./App";
 
 // 🌐 Context Providers
-import { WalletProvider } from "./context/WalletContext";
+import { WalletProvider } from "./context/WalletContext"; // EVM Provider (wagmi)
+import { SolanaProvider } from "./context/SolanaWalletContext"; // Solana Provider
+import { UnifiedWalletProvider } from "./context/UnifiedWalletContext"; // Unified Logic
 import { ThemeProvider } from "./context/ThemeContext";
 
 const AppWrapper = () => {
   return (
     <WalletProvider>
-      <ThemeProvider>
-        <App />
-      </ThemeProvider>
+      <SolanaProvider>
+        <UnifiedWalletProvider>
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
+        </UnifiedWalletProvider>
+      </SolanaProvider>
     </WalletProvider>
   );
 };
