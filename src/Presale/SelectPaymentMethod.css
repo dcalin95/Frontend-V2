@@ -40,14 +40,18 @@
 
 @keyframes iconGlow {
   0%, 100% {
-    box-shadow: 0 0 15px rgba(0, 255, 163, 0.3), 
-                0 0 30px rgba(220, 31, 255, 0.2),
-                inset 0 0 10px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 20px rgba(0, 255, 163, 0.5), 
+                0 0 40px rgba(220, 31, 255, 0.3),
+                0 8px 30px rgba(0, 0, 0, 0.5),
+                inset 0 0 15px rgba(255, 255, 255, 0.15);
+    transform: scale(1);
   }
   50% {
-    box-shadow: 0 0 25px rgba(0, 255, 163, 0.5), 
-                0 0 45px rgba(220, 31, 255, 0.4),
-                inset 0 0 15px rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 35px rgba(0, 255, 163, 0.7), 
+                0 0 70px rgba(220, 31, 255, 0.5),
+                0 12px 40px rgba(0, 0, 0, 0.6),
+                inset 0 0 25px rgba(255, 255, 255, 0.2);
+    transform: scale(1.02);
   }
 }
 
@@ -60,7 +64,7 @@
 .token-selector h2 {
   font-family: 'Orbitron', 'Space Grotesk', sans-serif;
   font-weight: 700;
-  margin-bottom: 20px;
+  margin-bottom: 28px;
   font-size: 1.6rem;
   animation: solanaPulseSM 3s ease-in-out infinite, floatSoftSM 9s ease-in-out infinite;
   letter-spacing: 1px;
@@ -69,9 +73,9 @@
 /* === Tab-uri Chain (EVM/Solana/Fiat) === AI SONNET STYLE */
 .chain-toggle {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
   flex-wrap: wrap;
 }
 
@@ -111,9 +115,10 @@
 
 .chain-tab:hover {
   border-color: rgba(0, 255, 163, 0.5);
-  box-shadow: 0 0 20px rgba(0, 255, 163, 0.3),
-              0 0 40px rgba(220, 31, 255, 0.2);
-  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 0 25px rgba(0, 255, 163, 0.4),
+              0 0 50px rgba(220, 31, 255, 0.3),
+              0 10px 35px rgba(0, 0, 0, 0.5);
+  transform: translateY(-4px) scale(1.05);
 }
 
 .chain-tab.active {
@@ -121,10 +126,11 @@
   border: 2px solid transparent;
   border-image: linear-gradient(135deg, #00FFA3, #DC1FFF) 1;
   color: #ffffff;
-  box-shadow: 0 0 25px rgba(0, 255, 163, 0.4),
-              0 0 50px rgba(220, 31, 255, 0.3),
-              inset 0 0 20px rgba(255, 255, 255, 0.1);
-  animation: iconGlow 3s ease-in-out infinite;
+  box-shadow: 0 0 30px rgba(0, 255, 163, 0.6),
+              0 0 60px rgba(220, 31, 255, 0.4),
+              0 10px 40px rgba(0, 0, 0, 0.6),
+              inset 0 0 25px rgba(255, 255, 255, 0.15);
+  animation: iconGlow 2.5s ease-in-out infinite;
 }
 
 .chain-tab img,
@@ -145,9 +151,9 @@
 .token-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 18px;
   justify-content: center;
-  margin-top: 16px;
+  margin-top: 20px;
   perspective: 1000px;
 }
 
@@ -198,10 +204,10 @@
 
 .token-button img,
 .token-icon {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
   transition: all 0.3s ease;
   z-index: 1;
   position: relative;
@@ -218,17 +224,17 @@
   border: 2px solid transparent;
   border-image: linear-gradient(135deg, #00FFA3, #DC1FFF) 1;
   color: #ffffff;
-  transform: translateY(-4px) scale(1.08);
-  box-shadow: 0 0 30px rgba(0, 255, 163, 0.5), 
-              0 0 60px rgba(220, 31, 255, 0.3),
-              0 8px 25px rgba(0, 0, 0, 0.4),
-              inset 0 0 20px rgba(255, 255, 255, 0.15);
+  transform: translateY(-5px) scale(1.08);
+  box-shadow: 0 0 35px rgba(0, 255, 163, 0.6), 
+              0 0 70px rgba(220, 31, 255, 0.4),
+              0 12px 40px rgba(0, 0, 0, 0.6),
+              inset 0 0 25px rgba(255, 255, 255, 0.2);
 }
 
 .token-button:hover img,
 .token-button:hover .token-icon {
-  transform: rotate(360deg) scale(1.15);
-  filter: drop-shadow(0 0 15px rgba(0, 255, 163, 0.8));
+  transform: rotate(360deg) scale(1.2);
+  filter: drop-shadow(0 0 20px rgba(0, 255, 163, 1));
 }
 
 .token-button.active {
@@ -237,16 +243,18 @@
   border-image: linear-gradient(135deg, #00FFA3, #DC1FFF) 1;
   color: #000000;
   font-weight: 800;
-  box-shadow: 0 0 35px rgba(0, 255, 163, 0.6), 
-              0 0 70px rgba(220, 31, 255, 0.4),
-              inset 0 0 25px rgba(255, 255, 255, 0.2);
-  animation: iconGlow 3s ease-in-out infinite;
+  box-shadow: 0 0 40px rgba(0, 255, 163, 0.7), 
+              0 0 80px rgba(220, 31, 255, 0.5),
+              0 12px 45px rgba(0, 0, 0, 0.7),
+              inset 0 0 30px rgba(255, 255, 255, 0.25);
+  animation: iconGlow 2.5s ease-in-out infinite;
 }
 
 .token-button.active img,
 .token-button.active .token-icon {
-  transform: scale(1.2);
-  filter: drop-shadow(0 0 20px rgba(0, 255, 163, 1));
+  transform: scale(1.25);
+  filter: drop-shadow(0 0 25px rgba(0, 255, 163, 1)) 
+          drop-shadow(0 0 35px rgba(220, 31, 255, 0.8));
 }
 
 /* === Mobile Responsive === */
