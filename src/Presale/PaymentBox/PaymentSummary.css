@@ -1,116 +1,311 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@600&display=swap');
 
-/* Core layout */
+/* ═══════════════════════════════════════════════
+   🌟 PAYMENT SUMMARY - AI SONNET STYLE 🌟
+   ═══════════════════════════════════════════════ */
+
+/* Animations */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 255, 163, 0.3),
+                0 0 40px rgba(220, 31, 255, 0.2),
+                0 8px 30px rgba(0, 0, 0, 0.4),
+                inset 0 0 15px rgba(255, 255, 255, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(0, 255, 163, 0.5),
+                0 0 60px rgba(220, 31, 255, 0.4),
+                0 12px 40px rgba(0, 0, 0, 0.5),
+                inset 0 0 25px rgba(255, 255, 255, 0.15);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* Main Container - Glassmorphism */
 .payment-summary {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 16px;
-  background: transparent;
-  border: 1px solid rgba(0, 241, 255, 0.1);
-  border-radius: 14px;
+  gap: 20px;
+  padding: 28px;
+  background: rgba(10, 10, 25, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 2px solid transparent;
+  border-image: linear-gradient(135deg, #00FFA3, #DC1FFF) 1;
+  border-radius: 20px;
   font-family: 'Roboto Mono', monospace;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5),
+              inset 0 0 20px rgba(255, 255, 255, 0.05);
+  overflow: hidden;
 }
 
-.summary-line {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 12px;
-  align-items: center;
-  padding: 4px 0;
+/* Animated background shimmer */
+.payment-summary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 255, 163, 0.05),
+    transparent
+  );
+  animation: shimmer 3s infinite;
+  pointer-events: none;
 }
 
-.summary-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: rgba(0, 241, 255, 0.9);
-  font-size: 0.95rem;
-  letter-spacing: 0.04em;
+/* Summary Header (optional title) */
+.payment-summary-header {
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #00FFA3 0%, #DC1FFF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
   text-transform: uppercase;
 }
 
-.summary-value {
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: #e2e8f0;
-  text-align: right;
+/* Summary Line - Stacked Layout */
+.summary-line {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(0, 255, 163, 0.15);
+  border-radius: 14px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
 
+.summary-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 163, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.summary-line:hover::after {
+  left: 100%;
+}
+
+.summary-line:hover,
+.summary-line.hover-effect:hover {
+  background: rgba(0, 255, 163, 0.08);
+  border-color: rgba(0, 255, 163, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 255, 163, 0.2),
+              0 0 30px rgba(220, 31, 255, 0.15);
+}
+
+/* Label Styling */
+.summary-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(0, 255, 163, 0.95);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(0, 255, 163, 0.3);
+}
+
+/* Icon Styling */
+.icon {
+  font-size: 1.3rem;
+  filter: drop-shadow(0 0 8px currentColor);
+  animation: float 3s ease-in-out infinite;
+}
+
+.icon-pay {
+  color: #00FFA3;
+}
+
+.icon-receive {
+  color: #22d3ee;
+}
+
+.icon-bonus {
+  color: #fbbf24;
+}
+
+.icon-total {
+  color: #DC1FFF;
+}
+
+/* Value Styling */
+.summary-value {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-align: left;
+  padding-left: 38px;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Gradient Highlights */
 .summary-value.highlight-bnb {
-  background: linear-gradient(90deg, #00ffcc, #ff4081);
+  background: linear-gradient(135deg, #00FFA3 0%, #00d4ff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 15px rgba(0, 255, 163, 0.5));
 }
 
 .summary-value.bits-gradient {
-  background: linear-gradient(90deg, #4ade80, #22d3ee);
+  background: linear-gradient(135deg, #4ade80 0%, #22d3ee 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 15px rgba(34, 211, 238, 0.5));
 }
 
 .summary-value.bonus-highlight {
-  background: linear-gradient(90deg, #fbbf24, #f472b6);
+  background: linear-gradient(135deg, #fbbf24 0%, #f472b6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.5));
 }
 
+.summary-value.total-highlight {
+  background: linear-gradient(135deg, #DC1FFF 0%, #00FFA3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(220, 31, 255, 0.6));
+  font-size: 1.6rem;
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+/* Pulse Animation for emphasis */
 .summary-value.pulse {
-  animation: pulseEffect 1.5s ease-in-out infinite;
+  animation: pulseGlow 2s ease-in-out infinite;
 }
 
-.icon {
-  font-size: 1rem;
-}
-
-@keyframes pulseEffect {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
-}
-
+/* Legal Disclaimer */
 .legal-disclaimer-container {
-  margin-top: 16px;
-  padding: 12px 16px;
-  border-radius: 10px;
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  background: rgba(15, 23, 42, 0.55);
-  color: rgba(148, 163, 184, 0.85);
-  font-size: 0.8rem;
-  line-height: 1.5;
+  margin-top: 8px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: rgba(148, 163, 184, 0.9);
+  font-size: 0.85rem;
+  line-height: 1.6;
   text-align: center;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .legal-disclaimer-container:hover {
-  border-color: rgba(148, 163, 184, 0.45);
+  border-color: rgba(0, 255, 163, 0.3);
+  background: rgba(15, 23, 42, 0.8);
 }
 
 .legal-link {
-  color: #38bdf8;
+  color: #00FFA3;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
+  transition: all 0.3s ease;
 }
 
 .legal-link:hover {
-  color: #22d3ee;
+  color: #DC1FFF;
   text-decoration: underline;
+  text-shadow: 0 0 10px rgba(220, 31, 255, 0.5);
 }
 
-/* Responsive */
+/* 📱 Mobile Responsive */
 @media (max-width: 768px) {
   .payment-summary {
-    gap: 10px;
-    padding: 14px;
+    gap: 16px;
+    padding: 20px;
+    border-radius: 16px;
   }
 
   .summary-line {
-    grid-template-columns: 1fr;
+    padding: 14px 16px;
     gap: 6px;
   }
 
+  .summary-label {
+    font-size: 0.95rem;
+    gap: 8px;
+  }
+
+  .icon {
+    font-size: 1.1rem;
+  }
+
   .summary-value {
-    text-align: left;
-    font-size: 1.05rem;
+    font-size: 1.2rem;
+    padding-left: 32px;
+  }
+
+  .summary-value.total-highlight {
+    font-size: 1.4rem;
+  }
+
+  .legal-disclaimer-container {
+    padding: 14px 16px;
+    font-size: 0.8rem;
   }
 }
 
+/* Extra Small Mobile */
+@media (max-width: 375px) {
+  .payment-summary {
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .summary-line {
+    padding: 12px 14px;
+  }
+
+  .summary-label {
+    font-size: 0.9rem;
+  }
+
+  .summary-value {
+    font-size: 1.1rem;
+    padding-left: 28px;
+  }
+
+  .summary-value.total-highlight {
+    font-size: 1.3rem;
+  }
+}
