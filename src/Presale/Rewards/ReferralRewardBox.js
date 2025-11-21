@@ -8,6 +8,8 @@ import nodeRewardsService, { formatBitsAmount, validateWalletConnection } from "
 import cachedFetch, { rateLimitConfig, requestLimiter } from "../../utils/requestCache.js";
 import "./ReferralRewardBox.desktop.css";
 import "./ReferralRewardBox.mobile.css";
+import "../CrystalClear.css"; // 💎 Crystal clear text
+import claimRewardsIcon from "../../assets/icons/claim-rewards.svg";
 
 const backendURL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
 
@@ -680,7 +682,10 @@ const ReferralRewardBox = ({ walletAddress }) => {
 
       return (
     <div className="referral-reward-box">
-      <h3>🎁 Your AI Rewards Hub</h3>
+      <h3>
+        <img src={claimRewardsIcon} alt="Rewards" style={{ width: '28px', height: '28px', marginRight: '8px', verticalAlign: 'middle', filter: 'drop-shadow(0 0 8px #00FFA3)' }} />
+        Your AI Rewards Hub
+      </h3>
       <div className="brand-line" title="AI data pipeline" style={{ justifyContent:'center', marginBottom: '10px' }}>
         <img src={require("../../assets/logo.png")} alt="BITS" className="bits-logo-mini" />
         <span className="bitsPulseLabel">BitPulse®</span>

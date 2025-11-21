@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import UserDeviceInfo from './UserDeviceInfo';
 import './MobileUI.css';
 
 const MobileUI = ({ children }) => {
@@ -82,6 +83,8 @@ const MobileUI = ({ children }) => {
       
       {/* Mobile-specific touch feedback */}
       <div className="mobile-touch-feedback" />
+      
+      <UserDeviceInfo />
     </div>
   );
 };

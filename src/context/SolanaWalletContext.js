@@ -4,7 +4,6 @@ import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import {
   PhantomWalletAdapter,
   SolflareWalletAdapter,
-  BackpackWalletAdapter,
   LedgerWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
 import { clusterApiUrl } from '@solana/web3.js';
@@ -20,12 +19,11 @@ export const SolanaProvider = ({ children }) => {
   // RPC endpoint
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
   
-  // Configure supported wallets
+  // Configure supported wallets (removed BackpackWalletAdapter - not available)
   const wallets = useMemo(
     () => [
       new PhantomWalletAdapter(),
       new SolflareWalletAdapter(),
-      new BackpackWalletAdapter(),
       new LedgerWalletAdapter(),
     ],
     []

@@ -11,7 +11,7 @@
 .ai-form-title {
   font-size: 1.6rem;
   font-weight: 700;
-  font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+  font-family: 'Orbitron', 'Space Grotesk', sans-serif !important;
   background: linear-gradient(135deg, #00FFA3, #DC1FFF);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

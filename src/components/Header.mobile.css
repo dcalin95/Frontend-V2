@@ -56,16 +56,16 @@
   /* Mobile Navigation Menu */
   .mobile-nav-menu {
     position: fixed;
-    top: calc(120px + env(safe-area-inset-top, 0px));
+    top: calc(112px + env(safe-area-inset-top, 0px));
     left: 0;
     right: 0;
     bottom: 0;
     width: 100vw;
     background: #000000 !important;
-    padding: 6px 10px 10px;
+    padding: 6px 10px 12px;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
+    gap: 5px;
     border: none;
     box-sizing: border-box;
     overflow-y: auto;
@@ -76,97 +76,161 @@
 
   @media (max-width: 360px) { .mobile-nav-menu { grid-template-columns: 1fr; } }
 
-  /* Stiluri de bază pentru butoane meniu */
+  /* === FORCED OVERRIDE FOR MOBILE BUTTONS - MAXIMIZED TEXT === */
   .mobile-nav-menu a,
   .mobile-nav-menu button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 10px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    border-radius: 12px;
-    background: transparent !important;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important; /* GAP MIC */
+    padding: 0 2px !important; /* PADDING MINIM */
+    border-radius: 6px !important;
+    background: rgba(10, 18, 22, 0.9) !important;
+    border: 1px solid rgba(20, 241, 149, 0.3) !important;
     color: #ffffff !important;
-    text-decoration: none;
-    transition: all 0.25s ease;
-    cursor: pointer;
-    width: 100%;
-    box-sizing: border-box;
-    min-height: 44px;
+    text-decoration: none !important;
+    width: 100% !important;
+    min-height: 26px !important;
+    height: auto !important;
+    box-shadow: none !important;
   }
 
+  /* TEXT OPTIMIZAT (micsorat cu 15%, fara bold excesiv, SOLANA GRADIENT) */
+  .mobile-text {
+    font-size: 0.9rem !important;
+    font-weight: 600 !important; /* Putin mai bold pentru ca gradientul sa se vada bine */
+    line-height: 1 !important;
+    letter-spacing: 0.02em !important;
+    text-transform: none !important;
+    white-space: nowrap !important;
+    opacity: 1 !important;
+    text-rendering: geometricPrecision !important;
+    -webkit-font-smoothing: antialiased !important;
+    text-shadow: none !important;
+    
+    /* SOLANA GRADIENT TEXT */
+    background: linear-gradient(135deg, #00FFA3 0%, #DC1FFF 100%) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    color: transparent !important; /* Fallback */
+  }
+
+  /* ICON OPTIMIZAT - SOLANA COLOR */
   .mobile-nav-menu a i,
-  .mobile-nav-menu button i { font-size: 1rem; opacity: 0.9; }
+  .mobile-nav-menu button i { 
+    font-size: 1.1rem !important;
+    opacity: 1 !important;
+    filter: none !important;
+    text-shadow: 0 0 10px rgba(0, 255, 163, 0.3) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    
+    /* Gradient si pe iconite pentru consistenta */
+    background: linear-gradient(135deg, #00FFA3 0%, #DC1FFF 100%) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    color: transparent !important;
+  }
 
   .mobile-nav-menu a:hover,
-  .mobile-nav-menu button:hover { 
-    transform: translateY(-2px); 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5); 
+  .mobile-nav-menu button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 14px rgba(0, 255, 180, 0.16), inset 0 0 12px rgba(20, 241, 149, 0.1);
+    border-color: rgba(20, 241, 149, 0.45);
+    background: rgba(20, 241, 149, 0.12) !important;
   }
 
-  /* === GEMINI 3 KING COLORS - Mobile Classes === */
-  
   /* Presale - Green Neon */
   .mobile-nav-menu a.mobile-btn-presale {
-    border-color: #14f195 !important;
+    border-color: rgba(20, 241, 149, 0.6) !important;
     color: #14f195 !important;
-    box-shadow: 0 0 10px rgba(20, 241, 149, 0.15);
+    box-shadow: 0 0 8px rgba(20, 241, 149, 0.16);
   }
   .mobile-nav-menu a.mobile-btn-presale:hover {
-    background: rgba(20, 241, 149, 0.1) !important;
+    background: rgba(20, 241, 149, 0.18) !important;
     box-shadow: 0 0 20px rgba(20, 241, 149, 0.3);
   }
 
   /* Staking - Purple Neon */
   .mobile-nav-menu a.mobile-btn-staking {
-    border-color: #9945ff !important;
-    color: #9945ff !important;
-    box-shadow: 0 0 10px rgba(153, 69, 255, 0.15);
+    border-color: rgba(153, 69, 255, 0.55) !important;
+    color: #b47bff !important;
+    box-shadow: 0 0 8px rgba(153, 69, 255, 0.16);
   }
   .mobile-nav-menu a.mobile-btn-staking:hover {
-    background: rgba(153, 69, 255, 0.1) !important;
+    background: rgba(153, 69, 255, 0.18) !important;
     box-shadow: 0 0 20px rgba(153, 69, 255, 0.3);
   }
 
   /* Smart Staking - Pink/Magenta */
   .mobile-nav-menu a.mobile-btn-smart {
-    border-color: #ff00ff !important;
-    color: #ff00ff !important;
+    border-color: rgba(255, 0, 255, 0.5) !important;
+    color: #ff63ff !important;
   }
 
   /* Orbit/Home - Cyan */
   .mobile-nav-menu a.mobile-btn-orbit,
   .mobile-nav-menu a.mobile-btn-home {
-    border-color: #00ffff !important;
-    color: #00ffff !important;
+    border-color: rgba(0, 255, 255, 0.5) !important;
+    color: #8bf4ff !important;
   }
 
   /* Paper Trading - Orange */
   .mobile-nav-menu a.mobile-btn-paper {
-    border-color: #ff9900 !important;
-    color: #ff9900 !important;
+    border-color: rgba(255, 153, 0, 0.55) !important;
+    color: #ffc37a !important;
   }
 
   /* Analytics - Blue */
   .mobile-nav-menu a.mobile-btn-analytics {
-    border-color: #00ccff !important;
-    color: #00ccff !important;
+    border-color: rgba(0, 204, 255, 0.52) !important;
+    color: #8be4ff !important;
   }
 
   /* Rewards - Gold */
   .mobile-nav-menu a.mobile-btn-rewards {
-    border-color: #ffd700 !important;
-    color: #ffd700 !important;
+    border-color: rgba(255, 215, 0, 0.55) !important;
+    color: #ffe595 !important;
   }
 
   /* AI Tools - Deep Purple/Red */
   .mobile-nav-menu button.mobile-btn-ai,
   .mobile-nav-menu a.mobile-btn-ai {
-    border-color: #ff3366 !important;
-    color: #ff3366 !important;
+    border-color: rgba(255, 51, 102, 0.55) !important;
+    color: #ff7f9c !important;
+  }
+
+  /* Whitepaper */
+  .mobile-nav-menu a.mobile-btn-whitepaper {
+    border-color: rgba(116, 205, 255, 0.5) !important;
+    color: #b8e5ff !important;
+  }
+
+  /* Bitcoin Academy */
+  .mobile-nav-menu a.mobile-btn-bitcoin {
+    border-color: rgba(247, 147, 30, 0.55) !important;
+    color: #ffd29f !important;
+  }
+
+  /* Education */
+  .mobile-nav-menu a.mobile-btn-education {
+    border-color: rgba(78, 205, 196, 0.55) !important;
+    color: #b5fff5 !important;
+  }
+
+  /* Contact */
+  .mobile-nav-menu a.mobile-btn-contact {
+    border-color: rgba(0, 255, 163, 0.5) !important;
+    color: #adffe4 !important;
+  }
+
+  /* PoX */
+  .mobile-nav-menu a.mobile-btn-pox {
+    border-color: rgba(0, 221, 153, 0.55) !important;
+    color: #8cffd8 !important;
   }
 
   .header { display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; padding: 0.5rem 1rem; height: 70px; background: rgba(0, 0, 0, 0.9); gap: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); }

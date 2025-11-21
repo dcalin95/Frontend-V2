@@ -47,16 +47,7 @@
   transition: box-shadow 0.3s ease;
 }
 
-/* 🚨 REMOVED: Border gradient decorativ (cercul cyan) complet eliminat */
-
-@media (min-width: 993px) {
-  .gridPanel {
-    position: sticky;
-    top: 100px;
-    align-self: start;
-    z-index: 10;
-  }
-}
+/* 🚨 REMOVED: Sticky panel - layout vertical nu mai are nevoie */
 
 @media (max-width: 992px) {
   .presaleGrid {

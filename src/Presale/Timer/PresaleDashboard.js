@@ -6,6 +6,7 @@ import { useHybridPresaleState } from "./useHybridPresaleState";
 // Import CSS modules
 import "./PresaleDashboard.desktop.css";
 import "./PresaleDashboard.mobile.css";
+import "../CrystalClear.css"; // 💎 Crystal clear text
 
 // Import styles as object for class usage (simulated from CSS modules)
 // Since we switched to standard CSS files, we use standard classes

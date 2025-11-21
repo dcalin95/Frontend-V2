@@ -767,75 +767,97 @@ const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
         </div>
       )}
 
-      {/* 💰 MODERN INPUT SECTION */}
-      <div className="ai-input-group">
+      {/* 💰 MODERN INPUT SECTION - ULTRA COMPACT HUD STYLE */}
+      <div style={{
+        marginBottom: "20px",
+        background: "rgba(0, 0, 0, 0.2)",
+        borderRadius: "12px",
+        padding: "15px",
+        border: "1px solid rgba(255, 255, 255, 0.05)"
+      }}>
+        {/* Top Row: Label & Wallet Balance */}
+        <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "5px"}}>
+          <label style={{color: "#14F195", fontSize: "0.8rem", fontWeight: "700", letterSpacing: "1px", textTransform: "uppercase"}}>
+            STAKE AMOUNT
+          </label>
+          <div style={{fontSize: "0.8rem", color: "rgba(255,255,255,0.6)"}}>
+            Wallet: <span style={{color: "#fff", fontWeight: "600"}}>{Math.floor(parseFloat(balance)).toLocaleString()}</span>
+          </div>
+        </div>
+
+        {/* Input Row: The Input + MAX + Symbol on ONE line */}
         <div style={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: "12px"
-        }}>
-          <div style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "8px"
-          }}>
-            <span style={{ fontSize: "1.2rem" }}>💰</span>
-            <span style={{
-              fontSize: "1rem",
+          borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+          paddingBottom: "5px",
+          transition: "border-color 0.3s"
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.borderBottom = "1px solid rgba(20, 241, 149, 0.5)"}
+        onMouseLeave={(e) => e.currentTarget.style.borderBottom = "1px solid rgba(255, 255, 255, 0.1)"}
+        >
+          <input
+            type="number"
+            min="0"
+            step="0.0001"
+            placeholder="0.00"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            disabled={loading}
+            style={{
+              flex: 1,
+              background: "transparent",
+              border: "none",
+              outline: "none",
+              color: "#fff",
+              fontSize: "1.6rem",
               fontWeight: "600",
-              color: "rgba(0, 255, 200, 0.9)"
-            }}>
-              How much $BITS?
-            </span>
-          </div>
-          <div style={{
-            fontSize: "0.8rem",
-            color: "rgba(255, 255, 255, 0.6)",
-            background: "rgba(255, 255, 255, 0.1)",
-            padding: "0.3rem 0.8rem",
-            borderRadius: "20px"
-          }}>
-            Available: {Math.floor(parseFloat(balance))} $BITS
+              padding: "0",
+              margin: "0",
+              fontFamily: "'Orbitron', 'Space Grotesk', sans-serif", /* SOLANA FONT */
+              letterSpacing: "1px"
+            }}
+          />
+          
+          <div style={{display: "flex", alignItems: "center", gap: "10px"}}>
+            <button
+              onClick={() => setAmount(balance)}
+              style={{
+                background: "rgba(153, 69, 255, 0.15)",
+                border: "1px solid rgba(153, 69, 255, 0.3)",
+                color: "#9945FF",
+                borderRadius: "4px",
+                padding: "4px 8px",
+                fontSize: "0.7rem",
+                fontWeight: "800",
+                cursor: "pointer",
+                textTransform: "uppercase"
+              }}
+            >
+              MAX
+            </button>
+            <span style={{color: "#9945FF", fontWeight: "700", fontSize: "1rem"}}>$BITS</span>
           </div>
         </div>
-        <input
-          type="number"
-          min="0"
-          step="0.0001"
-          placeholder="Enter amount to stake..."
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          disabled={loading}
-          style={{
-            fontSize: "1.1rem",
-            fontWeight: "600",
-            textAlign: "center",
-            background: "rgba(0, 255, 200, 0.05)",
-            border: "2px solid rgba(0, 255, 200, 0.2)",
-            borderRadius: "12px",
-            padding: "1rem",
-            color: "rgba(0, 255, 200, 0.9)"
-          }}
-        />
-        {amount && bitsPriceNum > 0 && (
-          <div style={{ marginTop: 6, textAlign: 'center', fontSize: '0.95rem', color: '#9bded4' }}>
-            💵 ≈ {formatUsd(parseFloat(amount || '0') * bitsPriceNum)} USD
-          </div>
-        )}
-        <div style={{ marginTop: 4, textAlign: 'center', fontSize: '0.8rem', opacity: 0.8 }}>
-          You can stake decimals (min step 0.0001 BITS).
+
+        {/* Bottom Row: USD & Progress */}
+        <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "8px"}}>
+          <span style={{fontSize: "0.75rem", color: "rgba(255,255,255,0.4)"}}>
+            {amount && bitsPriceNum > 0 ? `≈ $${(parseFloat(amount) * bitsPriceNum).toFixed(2)}` : "Min: 0.0001"}
+          </span>
+          
+          {/* Ultra Slim Progress Line */}
+          {amount && (
+            <div style={{width: "40%", height: "2px", background: "rgba(255,255,255,0.1)", borderRadius: "1px"}}>
+               <div style={{
+                 width: `${Math.min((parseFloat(amount) / (parseFloat(balance) || 1)) * 100, 100)}%`,
+                 height: "100%",
+                 background: "#14F195",
+                 boxShadow: "0 0 8px #14F195"
+               }}></div>
+            </div>
+          )}
         </div>
-        
-        {/* AI Progress Bar */}
-        {amount && (
-          <div className="ai-progress-bar">
-            <div 
-              className="ai-progress-fill" 
-              style={{ width: `${Math.min((parseFloat(amount) / parseFloat(balance)) * 100, 100)}%` }}
-            ></div>
-          </div>
-        )}
       </div>
 
       {/* 🏆 TIER SYSTEM */}

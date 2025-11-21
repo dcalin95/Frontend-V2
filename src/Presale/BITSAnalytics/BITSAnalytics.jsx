@@ -4,6 +4,7 @@ import WalletContext from "../../context/WalletContext";
 import { ethers } from "ethers";
 import "./BITSAnalytics.desktop.css";
 import "./BITSAnalytics.mobile.css";
+import "../CrystalClear.css"; // 💎 Crystal clear text
 // AdditionalBonusBox nu mai e necesar - widget-ul e integrat direct
 import DashboardHeader from "./components/DashboardHeader";
 import { useStakingData } from "../../Staking/useStakingData";

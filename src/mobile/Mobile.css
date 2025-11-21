@@ -57,19 +57,9 @@
   margin: 0 auto 30px;
 }
 
+/* 🚨 REMOVED: mobile-logo-glow - cerc mov eliminat complet */
 .mobile-logo-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 140%; /* Slightly larger than container */
-  height: 140%;
-  background: var(--gradient-primary);
-  border-radius: 50%;
-  filter: blur(40px); /* Increased blur for softer glow */
-  opacity: 0.4; /* Reduced opacity */
-  animation: pulse 3s ease-in-out infinite;
-  z-index: 0; /* Behind the logo */
+  display: none !important;
 }
 
 .mobile-logo-text {

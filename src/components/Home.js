@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ThreeBackground from "./StarfieldBackground";
 import LaserOrbit from "./Education/LaserOrbit";
 import HomeAISection from "./HomeAISection";
-import TokenomicsChart from "./TokenomicsChart";
+import TokenomicsPage from "./TokenomicsPage";
 import Roadmap from "./Roadmap";
 import PresaleCountdownMini from "../Presale/Timer/PresaleCountdownMini";
 import bits17Video from "../assets/bits17.mp4";
@@ -83,7 +83,7 @@ const Home = () => {
 
       {/* Graficul Tokenomics */}
       <section className="home-section tokenomics-section">
-        <TokenomicsChart />
+        <TokenomicsPage defaultView="hexagon" showToggle={false} />
       </section>
 
       {/* Roadmap */}

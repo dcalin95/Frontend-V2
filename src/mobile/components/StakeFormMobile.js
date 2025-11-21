@@ -284,13 +284,14 @@ const StakeFormMobile = ({ signer, prefilledAmount, rewardsSource }) => {
              </div>
              
              <div style={{
-                 fontSize: '48px', 
-                 fontWeight: '900', 
+                 fontSize: '28px', /* Redus de la 36px */
+                 fontWeight: '800', 
                  color: '#fff', 
-                 textShadow: '0 0 20px rgba(20,241,149,0.4)',
+                 textShadow: '0 0 15px rgba(20,241,149,0.3)',
                  lineHeight: '1',
                  marginBottom: '5px',
-                 fontFamily: 'Inter, sans-serif'
+                 fontFamily: "'Orbitron', sans-serif",
+                 letterSpacing: "1px"
              }}>
                  {aprPercentDisplayFrom1e18(apr)}
              </div>
@@ -301,31 +302,35 @@ const StakeFormMobile = ({ signer, prefilledAmount, rewardsSource }) => {
          </div>
       </div>
 
-      {/* 2. MODERN INPUT */}
+      {/* 2. MODERN INPUT - REFACTORED */}
       <div className="ai-input-group" style={{marginBottom: '25px'}}>
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: "12px"
-        }}>
-          <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-            <span style={{ fontSize: "1.2rem" }}>💰</span>
-            <span style={{fontSize: "1rem", fontWeight: "600", color: "#14f195"}}>
-              How much $BITS?
-            </span>
-          </div>
-          <div style={{
-            fontSize: "0.8rem",
-            color: "rgba(255, 255, 255, 0.6)",
-            background: "rgba(255, 255, 255, 0.1)",
-            padding: "4px 10px",
-            borderRadius: "20px"
-          }}>
-            Available: {Math.floor(parseFloat(balance))}
-          </div>
-        </div>
         
+        {/* WALLET INFO CARD */}
+        <div style={{
+            background: 'rgba(20, 241, 149, 0.05)',
+            border: '1px solid rgba(20, 241, 149, 0.2)',
+            borderRadius: '16px',
+            padding: '12px 16px',
+            marginBottom: '15px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+        }}>
+            <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                <span style={{fontSize: '1.2rem'}}>💼</span>
+                <span style={{fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', fontWeight: '600'}}>Wallet Balance:</span>
+            </div>
+            <div style={{fontSize: '1.1rem', fontWeight: 'bold', color: '#fff'}}>
+                {parseFloat(balance || '0').toLocaleString('en-US', {maximumFractionDigits: 2})} <span style={{color: '#14f195'}}>$BITS</span>
+            </div>
+        </div>
+
+        {/* INPUT LABEL */}
+        <div style={{marginBottom: '8px', fontSize: '0.9rem', color: 'rgba(255,255,255,0.5)', marginLeft: '5px', display: 'flex', justifyContent: 'space-between'}}>
+            <span>Amount to Stake</span>
+        </div>
+
+        {/* INPUT FIELD */}
         <div style={{position: 'relative'}}>
             <input
               type="number"
@@ -337,19 +342,49 @@ const StakeFormMobile = ({ signer, prefilledAmount, rewardsSource }) => {
               disabled={loading}
               style={{
                 width: '100%',
-                fontSize: "24px",
+                fontSize: "18px", /* Micsorat la 18px */
                 fontWeight: "600",
-                background: "rgba(0, 0, 0, 0.2)",
-                border: "1px solid rgba(255, 255, 255, 0.1)",
+                background: "rgba(0, 0, 0, 0.4)",
+                border: "1px solid rgba(255, 255, 255, 0.15)",
                 borderRadius: "16px",
-                padding: "15px",
+                padding: "16px 90px 16px 16px", 
                 color: "#fff",
                 outline: 'none',
-                textAlign: 'right',
-                boxSizing: 'border-box' // Fix padding overflow
+                textAlign: 'left',
+                boxSizing: 'border-box',
+                fontFamily: "'Orbitron', 'Space Grotesk', sans-serif", /* SOLANA FONT */
+                letterSpacing: "1px"
               }}
             />
-            <span style={{position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.3)', fontSize: '16px', fontWeight: 'bold'}}>$BITS</span>
+            
+            {/* MAX BUTTON & SYMBOL */}
+            <div style={{
+                position: 'absolute', 
+                right: '12px', 
+                top: '50%', 
+                transform: 'translateY(-50%)', 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '8px'
+            }}>
+                <button 
+                    onClick={() => setAmount(balance)}
+                    style={{
+                        background: 'rgba(20, 241, 149, 0.15)',
+                        color: '#14f195',
+                        border: '1px solid rgba(20, 241, 149, 0.3)',
+                        borderRadius: '8px',
+                        padding: '6px 10px',
+                        fontSize: '12px',
+                        fontWeight: 'bold',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s'
+                    }}
+                >
+                    MAX
+                </button>
+                <span style={{color: 'rgba(255,255,255,0.4)', fontWeight: '700', fontSize: '14px'}}>$BITS</span>
+            </div>
         </div>
       </div>
 

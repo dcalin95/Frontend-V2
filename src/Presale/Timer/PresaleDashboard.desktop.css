@@ -315,23 +315,11 @@
   animation: orbFloat 3s ease-in-out infinite;
 }
 
-.pulse {
-  position: absolute;
-  top: -10px;
-  left: -10px;
-  right: -10px;
-  bottom: -10px;
-  border-radius: 50%;
-  border: 2px solid #00f0ff;
-  animation: pulseRing 2s infinite;
-}
+/* 🚨 REMOVED: .pulse - oul de cacat care pulseaza cyan */
 
-/* 🚨 REMOVED: .glow - "oul de cacat" cyan circle */
-
-.aiIcon {
-  font-size: 2rem;
-  z-index: 2;
-  filter: drop-shadow(0 0 10px #fff);
+@keyframes pulseRing {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.3); opacity: 0; }
 }
 
 .errorContent {

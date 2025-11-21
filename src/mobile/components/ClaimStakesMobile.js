@@ -6,6 +6,130 @@ import WalletContext from "../../context/WalletContext";
 import { getStakingContract } from "../../contract/getStakingContract";
 import "../StakingPageMobile.css";
 
+// --- AI GEMINI 3 ICONS (Mobile Version) ---
+const AiIcons = {
+  Brain: ({ size = 24, color = "currentColor" }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-4.04z" />
+      <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-4.04z" />
+      <path d="M12 12h.01" />
+    </svg>
+  ),
+  Chip: ({ size = 20, color = "currentColor" }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="4" y="4" width="16" height="16" rx="2" />
+      <rect x="9" y="9" width="6" height="6" />
+      <path d="M9 1v3" /><path d="M15 1v3" /><path d="M9 20v3" /><path d="M15 20v3" />
+      <path d="M20 9h3" /><path d="M20 14h3" /><path d="M1 9h3" /><path d="M1 14h3" />
+    </svg>
+  ),
+  Pulse: ({ size = 20, color = "currentColor" }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+    </svg>
+  ),
+  Rocket: ({ size = 20, color = "currentColor" }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+      <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+      <path d="M9 12H4s.55-3.03 2-4c1.62-1.1 4-1 4-1" />
+      <path d="M12 15v5s3.03-.55 4-2c1.1-1.62 1-4 1-4" />
+    </svg>
+  ),
+  Lock: ({ size = 20, color = "currentColor" }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </svg>
+  ),
+  Unlock: ({ size = 20, color = "currentColor" }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+      <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+    </svg>
+  ),
+  History: ({ size = 20, color = "currentColor" }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
+    </svg>
+  ),
+  Coins: ({ size = 20, color = "currentColor" }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="8" />
+      <path d="M16 12h-8" />
+      <path d="M12 16V8" />
+    </svg>
+  ),
+  Calendar: ({ size = 20, color = "currentColor" }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+      <line x1="16" y1="2" x2="16" y2="6" />
+      <line x1="8" y1="2" x2="8" y2="6" />
+      <line x1="3" y1="10" x2="21" y2="10" />
+    </svg>
+  ),
+  Check: ({ size = 20, color = "currentColor" }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  )
+};
+
+// Helper styles extracted from Staking Protocol card (Mobile optimized)
+const cardStyle = {
+  background: "rgba(12, 16, 20, 0.35)",
+  border: "1px solid rgba(255, 255, 255, 0.1)",
+  borderRadius: "16px",
+  padding: "20px",
+  marginBottom: "15px",
+  backdropFilter: "blur(10px)",
+  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)"
+};
+
+const labelStyle = {
+  fontSize: "0.8rem",
+  color: "rgba(255, 255, 255, 0.5)",
+  marginBottom: "4px",
+  textTransform: "uppercase",
+  letterSpacing: "0.5px",
+  fontWeight: "600",
+  display: 'flex',
+  alignItems: 'center',
+  gap: '6px',
+  fontFamily: "'Inter', sans-serif"
+};
+
+const valueStyle = {
+  fontSize: "1.4rem",
+  fontWeight: "700",
+  color: "#ffffff",
+  textShadow: "0 0 10px rgba(255, 255, 255, 0.1)",
+  fontFamily: "'Orbitron', 'Space Grotesk', sans-serif", /* SOLANA AI FONT */
+  letterSpacing: "0.5px"
+};
+
+const buttonStyle = {
+  background: "linear-gradient(135deg, #9dffce, #9ad7ff)",
+  color: "#0a0a0a",
+  border: "none",
+  borderRadius: "10px",
+  padding: "14px",
+  fontWeight: "800",
+  fontSize: "1rem",
+  width: "100%",
+  cursor: "pointer",
+  transition: "all 0.3s ease",
+  boxShadow: "0 4px 15px rgba(0, 255, 136, 0.2)",
+  textTransform: "uppercase",
+  letterSpacing: "0.5px",
+  marginTop: "10px",
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '8px'
+};
+
 const formatAprPercentFrom1e18 = (raw) => {
   try {
     const n = Number(raw);
@@ -66,6 +190,7 @@ const ClaimStakesMobile = ({ signer }) => {
   const [dynamicRewards, setDynamicRewards] = useState({});
   const [hasClaimReward, setHasClaimReward] = useState(false);
   const [unstakeFeePct, setUnstakeFeePct] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   const decodeRevert = (err) => {
     try {
@@ -108,6 +233,8 @@ const ClaimStakesMobile = ({ signer }) => {
   const fetchData = async () => {
     if (!signer || !walletAddress) return;
     try {
+      if (stakes.length === 0) setIsLoading(true);
+      
       const contract = getStakingContract(signer);
       try {
         const iface = contract.interface;
@@ -128,10 +255,11 @@ const ClaimStakesMobile = ({ signer }) => {
       let total = ethers.BigNumber.from("0");
       for (let s of rawStakes) {
         const unlockTime = s.startTime.toNumber() + cd.toNumber();
-        if (!s.withdrawn && now >= unlockTime && now >= tge.toNumber()) {
+        const currentT = Math.floor(Date.now() / 1000);
+        if (!s.withdrawn && currentT >= unlockTime && currentT >= tge.toNumber()) {
           const reward = s.locked
             .mul(s.apr)
-            .mul(now - s.updatedAt)
+            .mul(currentT - s.updatedAt)
             .div(365 * 24 * 3600)
             .div(ethers.constants.WeiPerEther);
           total = total.add(reward);
@@ -140,12 +268,14 @@ const ClaimStakesMobile = ({ signer }) => {
       setTotalClaimable(Math.floor(parseFloat(formatUnits(total, 18))).toString());
     } catch (err) {
       console.error("Error fetching stakes:", err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     fetchData();
-  }, [signer, walletAddress, now]);
+  }, [signer, walletAddress]);
 
   const canWithdraw = (stake) => {
     const perStakeLock = stake.lockPeriod?.toNumber ? stake.lockPeriod.toNumber() : cooldown;
@@ -211,7 +341,6 @@ const ClaimStakesMobile = ({ signer }) => {
       } catch (_) {}
       const s = stakes[index];
       const principal = parseFloat(formatUnits(s.locked, 18));
-      const estNet = Math.max(0, principal * (1 - feePct / 100));
       const ok = window.confirm(`Early Unstake applies a ${feePct.toFixed(2)}% fee.\nContinue?`);
       if (!ok) { setLoadingIndex(null); return; }
       const tx = await contract.withdraw(index);
@@ -226,50 +355,100 @@ const ClaimStakesMobile = ({ signer }) => {
 
   return (
     <>
+      <style>{`
+        @keyframes aiSpin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        @keyframes aiPulse {
+          0% { opacity: 0.4; }
+          50% { opacity: 1; }
+          100% { opacity: 0.4; }
+        }
+      `}</style>
+
       {/* Title Header */}
       <div className="mobile-payment-option" style={{
         borderColor: 'rgba(123, 104, 238, 0.5)', 
         background: 'rgba(123, 104, 238, 0.05)',
         display: 'flex',
         alignItems: 'center',
-        gap: '10px'
+        gap: '10px',
+        padding: '15px',
+        borderRadius: '12px',
+        marginBottom: '15px'
       }}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 2 16.9706 2 12C2 7.02944 7.02944 2 12 2C16.9706 2 21 7.02944 21 12Z" stroke="#7b68ee" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-        <h3 style={{margin: 0, fontSize: '20px', fontWeight: 'bold', color: '#fff'}}>My Positions</h3>
+        <AiIcons.Brain size={24} color="#00ffa3" />
+        <h3 style={{margin: 0, fontSize: '18px', fontWeight: 'bold', color: '#fff'}}>My Positions</h3>
       </div>
 
-      {/* Total Claimable Summary */}
-      <div className="mobile-payment-option">
-        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%'}}>
-          <span style={{fontSize: '14px', color: 'rgba(255,255,255,0.6)', marginBottom: '5px'}}>TOTAL CLAIMABLE REWARDS</span>
-          <div style={{
-            fontSize: '28px', 
-            fontWeight: 'bold', 
-            background: 'linear-gradient(90deg, #00ff87 0%, #60efff 100%)', 
-            WebkitBackgroundClip: 'text', 
-            WebkitTextFillColor: 'transparent',
-            textShadow: '0 0 20px rgba(0,255,135,0.3)'
-          }}>
-            {Math.floor(parseFloat(totalClaimable))} $BITS
-          </div>
+      {/* Total Claimable Summary (Staking Protocol Style) */}
+      <div style={{
+        ...cardStyle,
+        padding: '15px 20px',
+        textAlign: 'center',
+        background: "linear-gradient(90deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 0, 0, 0.3) 100%)",
+        border: "1px solid rgba(0, 255, 136, 0.3)"
+      }}>
+        <span style={{fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', marginBottom: '5px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', textTransform: 'uppercase', letterSpacing: '1px'}}>
+          <AiIcons.Coins size={16} /> Total Claimable Rewards
+        </span>
+        <div style={{
+          fontSize: '24px', 
+          fontWeight: 'bold', 
+          background: 'linear-gradient(90deg, #00ff87 0%, #60efff 100%)', 
+          WebkitBackgroundClip: 'text', 
+          WebkitTextFillColor: 'transparent',
+          textShadow: '0 0 20px rgba(0,255,135,0.3)'
+        }}>
+          {Math.floor(parseFloat(totalClaimable))} $BITS
         </div>
       </div>
 
+      {/* Loading State */}
+      {isLoading && (
+        <div style={{
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            padding: '40px 20px',
+            background: 'rgba(12, 16, 20, 0.35)',
+            borderRadius: '16px',
+            border: '1px dashed rgba(0, 255, 163, 0.2)',
+            marginBottom: '20px'
+        }}>
+            <div style={{
+                width: '40px', 
+                height: '40px', 
+                border: '3px solid rgba(0, 255, 163, 0.1)', 
+                borderTop: '3px solid #00ffa3', 
+                borderRadius: '50%', 
+                animation: 'aiSpin 1s linear infinite',
+                marginBottom: '15px'
+            }}></div>
+            <div style={{
+                fontSize: '12px', 
+                color: '#00ffa3', 
+                fontFamily: 'monospace', 
+                letterSpacing: '1px',
+                animation: 'aiPulse 1.5s infinite ease-in-out',
+                textTransform: 'uppercase'
+            }}>
+                Syncing Blockchain...
+            </div>
+        </div>
+      )}
+
       {/* No Stakes State */}
-      {stakes.length === 0 && (
-        <div className="mobile-payment-option" style={{textAlign: 'center', color: 'rgba(255,255,255,0.5)', padding: '40px 20px'}}>
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" style={{marginBottom: '10px', opacity: 0.5}}>
-            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-          </svg>
+      {!isLoading && stakes.length === 0 && (
+        <div style={{textAlign: 'center', color: 'rgba(255,255,255,0.5)', padding: '40px 20px', background: 'rgba(0,0,0,0.2)', borderRadius: '12px'}}>
           <p>No active staking positions found.</p>
         </div>
       )}
 
       {/* Active Stakes List */}
-      {stakes.map((s, i) => {
+      {!isLoading && stakes.map((s, i) => {
         const eligible = canWithdraw(s);
         const dynamicReward = dynamicRewards[i] || 0;
         const unlockTime = s.startTime.toNumber() + ((s.lockPeriod?.toNumber?.() || 0) > 0 ? s.lockPeriod.toNumber() : cooldown);
@@ -277,16 +456,16 @@ const ClaimStakesMobile = ({ signer }) => {
         
         return (
           <React.Fragment key={i}>
-            {/* Main Stake Card - Gemini AI King Style */}
-            <div className="mobile-payment-option" style={{
-              borderColor: s.withdrawn ? 'rgba(0, 255, 163, 0.3)' : 'rgba(147, 51, 234, 0.5)',
-              background: s.withdrawn 
-                ? 'linear-gradient(180deg, rgba(0, 255, 163, 0.05) 0%, rgba(0, 0, 0, 0) 100%)' 
-                : 'linear-gradient(180deg, rgba(147, 51, 234, 0.05) 0%, rgba(0, 0, 0, 0) 100%)',
+            {/* Main Stake Card - Staking Protocol Style Mobile */}
+            <div style={{
+              ...cardStyle,
+              borderColor: s.withdrawn ? 'rgba(255, 255, 255, 0.1)' : (eligible ? 'rgba(0, 255, 136, 0.4)' : 'rgba(255, 255, 255, 0.1)'),
+              boxShadow: eligible && !s.withdrawn ? '0 0 20px rgba(0, 255, 136, 0.15)' : 'none',
               padding: '0',
               overflow: 'hidden'
             }}>
-              {/* Header of Card */}
+              
+              {/* 1. HEADER COMPACT */}
               <div style={{
                 padding: '15px',
                 borderBottom: '1px solid rgba(255,255,255,0.05)',
@@ -295,155 +474,116 @@ const ClaimStakesMobile = ({ signer }) => {
                 alignItems: 'center',
                 background: 'rgba(0,0,0,0.2)'
               }}>
-                <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-                  <div style={{
-                    width: '24px', height: '24px', 
-                    borderRadius: '50%', 
-                    background: s.withdrawn ? 'rgba(0,255,163,0.2)' : 'rgba(147,51,234,0.2)',
-                    color: s.withdrawn ? '#00ffa3' : '#9333ea',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '12px', fontWeight: 'bold'
-                  }}>
-                    #{i + 1}
-                  </div>
-                  <span style={{fontWeight: 'bold', color: '#fff'}}>
-                    {s.withdrawn ? 'COMPLETED' : 'ACTIVE POSITION'}
-                  </span>
+                <div style={{fontSize: '11px', color: 'rgba(255,255,255,0.5)', fontWeight: '600', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px'}}>
+                  <AiIcons.Chip size={14} /> STAKED ON {new Date(s.startTime.toNumber() * 1000).toLocaleDateString()}
                 </div>
-                <div style={{
-                  fontSize: '12px', 
-                  padding: '4px 8px', 
-                  borderRadius: '10px',
-                  background: s.withdrawn ? 'rgba(0,255,163,0.1)' : 'rgba(147,51,234,0.1)',
-                  color: s.withdrawn ? '#00ffa3' : '#9333ea',
-                  border: `1px solid ${s.withdrawn ? 'rgba(0,255,163,0.2)' : 'rgba(147,51,234,0.2)'}`
-                }}>
-                  {s.withdrawn ? 'Claimed' : 'Locked'}
-                </div>
+                
+                {s.withdrawn ? (
+                   <div style={{fontSize: '10px', padding: '3px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.1)', color: '#aaa', border: '1px solid rgba(255,255,255,0.1)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px'}}>
+                     <AiIcons.Check size={12} /> CLOSED
+                   </div>
+                ) : eligible ? (
+                   <div style={{fontSize: '10px', padding: '3px 8px', borderRadius: '6px', background: 'rgba(0, 255, 163, 0.15)', color: '#00ffa3', border: '1px solid rgba(0, 255, 163, 0.3)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px'}}>
+                     <AiIcons.Rocket size={12} /> READY
+                   </div>
+                ) : (
+                   <div style={{fontSize: '10px', padding: '3px 8px', borderRadius: '6px', background: 'rgba(147, 51, 234, 0.15)', color: '#d8b4fe', border: '1px solid rgba(147, 51, 234, 0.3)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px'}}>
+                     <AiIcons.Lock size={12} /> LOCKED
+                   </div>
+                )}
               </div>
 
-              {/* Content Body */}
-              <div style={{padding: '20px'}}>
+              {/* 2. BODY PRINCIPAL */}
+              <div style={{padding: '20px 15px', textAlign: 'center'}}>
                 
-                {/* Row 1: Amount */}
-                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px'}}>
-                  <div style={{display: 'flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.6)', fontSize: '14px'}}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                    </svg>
-                    Staked Amount
-                  </div>
-                  <div style={{fontWeight: 'bold', fontSize: '16px', color: '#fff'}}>
-                    {Math.floor(parseFloat(formatUnits(s.locked, 18)))} $BITS
-                  </div>
+                {/* SUMA MARE */}
+                <div style={{...labelStyle, justifyContent: 'center'}}>Staked Amount</div>
+                <div style={{
+                    ...valueStyle,
+                    marginBottom: '5px',
+                    fontSize: '2rem'
+                }}>
+                  {Math.floor(parseFloat(formatUnits(s.locked, 18))).toLocaleString()} <span style={{fontSize: '1rem', color: '#00ffa3', fontWeight: '600'}}>$BITS</span>
                 </div>
 
-                {/* Row 2: APR */}
-                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px'}}>
-                  <div style={{display: 'flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.6)', fontSize: '14px'}}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-                      <polyline points="17 6 23 6 23 12"></polyline>
-                    </svg>
-                    APR Rate
-                  </div>
-                  <div style={{fontWeight: 'bold', fontSize: '16px', color: '#00ffa3'}}>
-                    {formatAprPercentFrom1e18(s.apr)}
-                  </div>
+                {/* APR BADGE */}
+                <div style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    fontSize: '12px', 
+                    fontWeight: '700', 
+                    color: '#ffd700',
+                    background: 'rgba(255, 215, 0, 0.1)',
+                    border: '1px solid rgba(255, 215, 0, 0.3)',
+                    padding: '4px 10px',
+                    borderRadius: '20px',
+                    marginBottom: '20px'
+                }}>
+                  <AiIcons.Pulse size={14} /> EARNING {formatAprPercentFrom1e18(s.apr)} APR
                 </div>
 
-                {/* Row 3: Rewards */}
-                {!s.withdrawn && (
-                  <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px'}}>
-                    <div style={{display: 'flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.6)', fontSize: '14px'}}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                      </svg>
-                      Earned Rewards
+                {/* 3. GRID DETALII - REWARD LIVE */}
+                <div style={{
+                    display: 'grid', 
+                    gridTemplateColumns: '1fr 1fr', 
+                    gap: '10px',
+                    background: 'rgba(0,0,0,0.2)',
+                    borderRadius: '12px',
+                    padding: '12px'
+                }}>
+                    {/* PENDING REWARDS LIVE */}
+                    <div style={{textAlign: 'left'}}>
+                        <div style={{fontSize: '10px', color: 'rgba(255,255,255,0.5)', marginBottom: '2px', textTransform: 'uppercase'}}>Pending Rewards</div>
+                        <div style={{
+                            fontSize: '14px', 
+                            fontWeight: 'bold', 
+                            color: s.withdrawn ? '#aaa' : '#00ffa3',
+                            fontFamily: 'monospace', 
+                            letterSpacing: '-0.5px'
+                        }}>
+                            {s.withdrawn ? '---' : `+${dynamicReward.toFixed(6)}`}
+                        </div>
                     </div>
-                    <div style={{fontWeight: 'bold', fontSize: '16px', color: '#f39c12'}}>
-                      {clampBits(dynamicReward)} $BITS
-                    </div>
-                  </div>
-                )}
 
-                {/* Row 4: Duration/Timer */}
+                    {/* TIMER / STATUS */}
+                    <div style={{textAlign: 'right'}}>
+                        <div style={{fontSize: '10px', color: 'rgba(255,255,255,0.5)', marginBottom: '2px', textTransform: 'uppercase'}}>
+                            {s.withdrawn ? 'Status' : (eligible ? 'Action' : 'Unlocks In')}
+                        </div>
+                        <div style={{fontSize: '14px', fontWeight: 'bold', color: '#fff'}}>
+                            {s.withdrawn ? 'Withdrawn' : (eligible ? 'Claim Now' : formatTimeLeft(secondsLeft))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* 4. FOOTER ACTION (Doar pt active) */}
                 {!s.withdrawn && (
-                   <div style={{
-                     marginTop: '15px', 
-                     padding: '10px', 
-                     background: 'rgba(0,0,0,0.3)', 
-                     borderRadius: '8px',
-                     border: '1px solid rgba(255,255,255,0.05)',
-                     display: 'flex',
-                     justifyContent: 'center',
-                     alignItems: 'center',
-                     gap: '8px',
-                     fontSize: '13px',
-                     color: eligible ? '#00ffa3' : 'rgba(255,255,255,0.5)'
-                   }}>
-                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                       <circle cx="12" cy="12" r="10"></circle>
-                       <polyline points="12 6 12 12 16 14"></polyline>
-                     </svg>
-                     {eligible ? 'UNLOCKED - READY TO CLAIM' : `Unlocks in: ${formatTimeLeft(secondsLeft)}`}
-                   </div>
+                    <div style={{marginTop: '15px'}}>
+                        <button
+                          onClick={() => eligible ? handleClaim(i) : handleEarlyUnstake(i)}
+                          disabled={loadingIndex === i}
+                          style={{
+                            ...buttonStyle,
+                            background: eligible ? buttonStyle.background : 'transparent',
+                            border: eligible ? 'none' : '1px solid #ff9a76',
+                            color: eligible ? '#0a0a0a' : '#ff9a76',
+                            boxShadow: eligible ? buttonStyle.boxShadow : 'none'
+                          }}
+                        >
+                          {loadingIndex === i ? 'Processing...' : (eligible ? <><AiIcons.Rocket size={16} /> Withdraw All</> : <><AiIcons.Unlock size={16} /> Unstake Early</>)}
+                        </button>
+                        
+                        {!eligible && (
+                            <div style={{fontSize: '10px', color: '#ff9a76', marginTop: '8px', opacity: 0.9, background: 'rgba(255, 154, 118, 0.1)', padding: '4px', borderRadius: '4px'}}>
+                                Fee: {unstakeFeePct ? `${unstakeFeePct}%` : 'Applies'} if unlocked early.
+                            </div>
+                        )}
+                    </div>
                 )}
 
               </div>
             </div>
-
-            {/* Actions - Separated nice buttons */}
-            {!s.withdrawn && (
-              <div style={{
-                display: 'grid', 
-                gridTemplateColumns: hasClaimReward ? '1fr 1fr' : '1fr', 
-                gap: '10px', 
-                marginBottom: '20px'
-              }}>
-                {/* WITHDRAW BUTTON */}
-                <button
-                  onClick={() => eligible ? handleClaim(i) : handleEarlyUnstake(i)}
-                  disabled={loadingIndex === i}
-                  className="mobile-payment-option"
-                  style={{
-                    marginBottom: 0,
-                    background: eligible 
-                      ? 'linear-gradient(135deg, #00ffa3 0%, #00b8ff 100%)' 
-                      : 'rgba(255, 59, 48, 0.1)',
-                    borderColor: eligible ? 'transparent' : 'rgba(255, 59, 48, 0.5)',
-                    color: eligible ? '#000' : '#ff3b30',
-                    justifyContent: 'center',
-                    fontWeight: 'bold',
-                    fontSize: '14px',
-                    padding: '15px'
-                  }}
-                >
-                  {loadingIndex === i ? 'Processing...' : (eligible ? 'WITHDRAW' : 'UNSTAKE EARLY')}
-                </button>
-
-                {/* CLAIM REWARDS BUTTON */}
-                {hasClaimReward && (
-                  <button
-                    onClick={() => handleClaimRewardOnly(i)}
-                    disabled={loadingIndex === i}
-                    className="mobile-payment-option"
-                    style={{
-                      marginBottom: 0,
-                      background: 'rgba(243, 156, 18, 0.1)',
-                      borderColor: 'rgba(243, 156, 18, 0.5)',
-                      color: '#f39c12',
-                      justifyContent: 'center',
-                      fontWeight: 'bold',
-                      fontSize: '14px',
-                      padding: '15px'
-                    }}
-                  >
-                    CLAIM REWARDS
-                  </button>
-                )}
-              </div>
-            )}
           </React.Fragment>
         );
       })}
@@ -454,4 +594,3 @@ const ClaimStakesMobile = ({ signer }) => {
 };
 
 export default ClaimStakesMobile;
-

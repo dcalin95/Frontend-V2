@@ -234,49 +234,49 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
              padding: '10px 15px' 
           }}>
             <Link to="/orbit" className="mobile-btn-orbit laser-sharp" onClick={closeMenu}>
-              <i className="fas fa-bullseye"></i> Orbit
+              <i className="fas fa-bullseye"></i> <span className="mobile-text">Orbit</span>
             </Link>
             <Link to="/home" className="mobile-btn-home laser-sharp" onClick={closeMenu}>
-              <i className="fas fa-home"></i> Home
+              <i className="fas fa-home"></i> <span className="mobile-text">Home</span>
             </Link>
             <Link to="/presale" className="mobile-btn-presale laser-sharp" onClick={closeMenu}>
-              <i className="fas fa-dollar-sign"></i> Buy $BITS Presale
+              <i className="fas fa-dollar-sign"></i> <span className="mobile-text">Buy $BITS Presale</span>
             </Link>
             <Link to="/staking" className="mobile-btn-staking laser-sharp" onClick={closeMenu}>
-              <i className="fas fa-coins"></i> Staking
+              <i className="fas fa-coins"></i> <span className="mobile-text">Staking</span>
             </Link>
             <Link to="/smart-staking" className="mobile-btn-smart laser-sharp" onClick={closeMenu}>
-              <i className="fas fa-rocket"></i> Smart Staking
+              <i className="fas fa-rocket"></i> <span className="mobile-text">Smart Staking</span>
             </Link>
             <Link to="/paper-trading" className="mobile-btn-paper laser-sharp" onClick={closeMenu}>
-              <i className="fas fa-gamepad"></i> Paper Trading
+              <i className="fas fa-gamepad"></i> <span className="mobile-text">Paper Trading</span>
             </Link>
-            <Link to="/whitepaper" className="laser-sharp" onClick={closeMenu}>
-              <i className="fas fa-file-alt"></i> Whitepaper
+            <Link to="/whitepaper" className="mobile-btn-whitepaper laser-sharp" onClick={closeMenu}>
+              <i className="fas fa-file-alt"></i> <span className="mobile-text">Whitepaper</span>
             </Link>
             <Link to="/bits-analytics" className="mobile-btn-analytics laser-sharp" onClick={closeMenu}>
-              <i className="fas fa-chart-bar"></i> BITS Analytics
+              <i className="fas fa-chart-bar"></i> <span className="mobile-text">BITS Analytics</span>
             </Link>
-            <Link to="/bitcoin-academy" onClick={closeMenu}>
-              <i className="fab fa-bitcoin"></i> Bitcoin Academy
+            <Link to="/bitcoin-academy" className="mobile-btn-bitcoin laser-sharp" onClick={closeMenu}>
+              <i className="fab fa-bitcoin"></i> <span className="mobile-text">Bitcoin Academy</span>
             </Link>
-            <Link to="/education" onClick={closeMenu}>
-              <i className="fas fa-graduation-cap"></i> Education
+            <Link to="/education" className="mobile-btn-education laser-sharp" onClick={closeMenu}>
+              <i className="fas fa-graduation-cap"></i> <span className="mobile-text">Education</span>
             </Link>
-            <Link to="/contact" className="laser-sharp" onClick={closeMenu}>
-              <i className="fas fa-envelope"></i> Contact
+            <Link to="/contact" className="mobile-btn-contact laser-sharp" onClick={closeMenu}>
+              <i className="fas fa-envelope"></i> <span className="mobile-text">Contact</span>
             </Link>
-            <Link to="/proof-of-transfer" onClick={closeMenu}>
-              <i className="fas fa-link"></i> PoX & BitSwapDEX
+            <Link to="/proof-of-transfer" className="mobile-btn-pox" onClick={closeMenu}>
+              <i className="fas fa-link"></i> <span className="mobile-text">PoX & BitSwapDEX</span>
             </Link>
             <Link to="/rewards-hub" className="mobile-btn-rewards" onClick={closeMenu}>
-              <i className="fas fa-star"></i> Rewards Hub
+              <i className="fas fa-star"></i> <span className="mobile-text">Rewards Hub</span>
             </Link>
             <Link to="/ai-portfolio-claude4" className="mobile-btn-ai laser-sharp" onClick={closeMenu}>
-              <i className="fas fa-brain"></i> Neural Investment Optimizer
+              <i className="fas fa-brain"></i> <span className="mobile-text">Neural Investment Optimizer</span>
             </Link>
             <button className="mobile-btn-ai" onClick={() => { closeMenu(); navigate("/ai-assistant"); }}>
-              <i className="fas fa-robot"></i> AI BitSwapDEX
+              <i className="fas fa-robot"></i> <span className="mobile-text">AI BitSwapDEX</span>
             </button>
           </nav>
         </div>

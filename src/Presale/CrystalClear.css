@@ -1,0 +1,70 @@
+/* 💎 CRYSTAL CLEAR TEXT - Zero Blur, Zero Shadows, Zero Glow */
+
+/* ========== ELIMINARE COMPLETĂ TEXT-SHADOW ========== */
+* {
+  text-shadow: none !important;
+}
+
+h1, h2, h3, h4, h5, h6,
+p, span, div, a, button,
+.rewards-title,
+.bitsPulseLabel,
+.amount-value,
+.stat-value,
+.reward-value,
+.total-amount-display,
+.success-message,
+.error-message,
+.payment-title,
+.presale-grid h3,
+.ai-loading-text,
+.loading-text {
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+/* ========== ELIMINARE FILTER BLUR/DROP-SHADOW ========== */
+h1, h2, h3, h4, h5, h6 {
+  filter: none !important;
+}
+
+/* ========== TEXT ULTRA-CRISP ========== */
+body,
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* ========== OVERRIDE ROG FONT GLOW ========== */
+.rog-font,
+.rewards-title,
+.title-icon,
+.crystal-glow {
+  text-shadow: none !important;
+  animation: none !important;
+}
+
+/* ========== OVERRIDE TOATE ANIMAȚIILE CU GLOW ========== */
+@keyframes crystal-glow { 
+  0%, 100% { text-shadow: none !important; }
+  50% { text-shadow: none !important; }
+}
+
+@keyframes solanaPulse {
+  0%, 100% {
+    filter: none !important;
+    text-shadow: none !important;
+  }
+  50% {
+    filter: none !important;
+    text-shadow: none !important;
+  }
+}
+
+/* ========== CLEANUP SPACE MONO MATRIX FLICKER ========== */
+@keyframes space-mono-matrix-flicker {
+  0%, 100% { text-shadow: none !important; }
+  50% { text-shadow: none !important; }
+}
+

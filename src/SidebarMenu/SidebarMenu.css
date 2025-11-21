@@ -186,13 +186,15 @@
 @media (max-width: 768px) {
   .sidebar {
     position: fixed;
-    top: 80px;
+    top: 135px; /* Mutat mai jos pentru a fi SUB butonul Hamburger (85px + 42px + gap) */
     left: 0;
     transform: translateX(-100%);
-    height: calc(100vh - 80px);
+    height: calc(100vh - 135px); /* Ajustat inaltimea */
     width: 280px; /* Lățime fixă pentru mobil */
     z-index: 10000 !important; /* PESTE overlay-urile AIToolLauncher */
-    background: transparent; /* Eliminat fundalul pentru a nu acoperi conținutul */
+    background: rgba(5, 5, 10, 0.98) !important; /* Fundal aproape negru opac pentru a ascunde continutul din spate */
+    backdrop-filter: blur(10px); /* Blur pentru un efect modern */
+    -webkit-backdrop-filter: blur(10px);
     transition: transform 0.3s ease;
     overflow-y: auto; /* Permite scroll vertical */
     overflow-x: hidden; /* Ascunde scroll-ul orizontal */

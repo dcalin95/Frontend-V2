@@ -147,7 +147,7 @@ canvas[class*="background"],
 
 .presale-wrapper {
   flex: 1;
-  padding: 2px 2rem;
+  padding: 80px 2rem 2rem 2rem; /* 🔽 Spațiu mare sus (80px) pentru "Launch Power Raised" */
   display: flex;
   justify-content: center;
   box-sizing: border-box;
@@ -204,11 +204,11 @@ canvas[class*="background"],
 .grid-summary {
   padding: 1.5rem;
   border-radius: 1.5rem;
-  background: transparent;
-  border: none;
+  background: rgba(0, 0, 0, 0.25); /* 🎨 Fundal subtil transparent */
+  border: 1px solid rgba(0, 255, 163, 0.2); /* 🌟 Linie neon foarte fină */
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  box-shadow: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* 🔲 Umbră foarte subtilă */
   position: relative;
   overflow: hidden;
   display: flex;
