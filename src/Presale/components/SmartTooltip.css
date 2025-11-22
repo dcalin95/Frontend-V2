@@ -4,36 +4,34 @@
 .smart-tooltip-container {
   position: fixed;
   z-index: 999999;
-  background: rgba(8, 8, 16, 0.85);
+  background: rgba(8, 8, 16, 0.95);
   color: #f0f4f8;
-  padding: 14px 18px;
-  border-radius: 16px;
+  padding: 12px 16px; /* Reduced padding */
+  border-radius: 12px;
   font-family: 'Inter', sans-serif;
-  font-size: 0.9rem;
-  line-height: 1.5;
+  font-size: 0.85rem; /* Slightly smaller for compactness */
+  line-height: 1.4; /* Tighter line height */
   max-width: 340px;
-  min-width: 220px;
+  min-width: 240px;
   width: max-content;
   text-align: left;
+  pointer-events: auto; /* Enable interaction with speaker button */
   
   /* Gemini-style Border Gradient */
   border: 1px solid transparent;
   background-clip: padding-box, border-box;
   background-origin: padding-box, border-box;
   background-image: 
-    linear-gradient(to bottom, rgba(8, 8, 16, 0.95), rgba(15, 15, 30, 0.98)),
+    linear-gradient(to bottom, rgba(8, 8, 16, 0.98), rgba(15, 15, 30, 0.99)),
     linear-gradient(135deg, #4facfe 0%, #00f2fe 50%, #a18cd1 100%);
     
   box-shadow: 
-    0 10px 40px rgba(0, 0, 0, 0.6), 
+    0 8px 32px rgba(0, 0, 0, 0.6), 
     0 0 0 1px rgba(255, 255, 255, 0.05),
     0 0 20px rgba(79, 172, 254, 0.15);
     
-  pointer-events: none;
-  
-  /* 🚀 NEW: Intelligent Animation */
-  /* Will use transform-origin set in JS */
-  animation: tooltipSmartOpen 0.35s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  /* 🚀 Intelligent Animation */
+  animation: tooltipSmartOpen 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards;
   
   backdrop-filter: blur(16px);
   will-change: transform, opacity;
@@ -48,98 +46,145 @@
   width: 40px;
   height: 2px;
   background: linear-gradient(90deg, transparent, #00f2fe, transparent);
-  opacity: 0.8;
+  box-shadow: 0 0 8px #00f2fe;
+  opacity: 1;
 }
 
-.smart-tooltip-content div {
-  margin-bottom: 4px;
+/* Speaker Button */
+.smart-tooltip-speak-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #a0a0a0;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  z-index: 10;
 }
 
-/* Title Styling */
-.smart-tooltip-content div:first-child {
+.smart-tooltip-speak-btn:hover {
+  background: rgba(0, 255, 163, 0.15);
+  color: #00FFA3;
+  border-color: rgba(0, 255, 163, 0.3);
+  transform: scale(1.1);
+}
+
+.smart-tooltip-speak-btn.speaking {
+  color: #00FFA3;
+  border-color: #00FFA3;
+  box-shadow: 0 0 8px rgba(0, 255, 163, 0.4);
+  animation: pulseSpeaker 1.5s infinite;
+}
+
+@keyframes pulseSpeaker {
+  0% { box-shadow: 0 0 0 0 rgba(0, 255, 163, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(0, 255, 163, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 255, 163, 0); }
+}
+
+.smart-tooltip-content {
+    padding-right: 20px; /* Make space for speaker button */
+}
+
+.smart-tooltip-line {
+  margin-bottom: 4px; /* Minimal spacing between lines */
+}
+
+/* Title Styling - First line logic */
+.smart-tooltip-content .smart-tooltip-line:first-child {
   font-family: 'Roboto Mono', monospace;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: transparent;
-  background: linear-gradient(90deg, #00FFA3, #00f2fe);
-  -webkit-background-clip: text;
-  background-clip: text;
-  margin-bottom: 10px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+  text-shadow: 0 0 8px rgba(0, 255, 163, 0.5);
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
 }
 
 /* Badge */
-.smart-tooltip-content div:first-child::after {
-  content: 'AI ANALYTICS';
+.smart-tooltip-content .smart-tooltip-line:first-child::after {
+  content: 'AI CORE';
   margin-left: auto;
-  font-size: 0.6rem;
+  font-size: 0.55rem;
   padding: 2px 6px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(0, 255, 163, 0.1);
+  border: 1px solid rgba(0, 255, 163, 0.2);
   border-radius: 4px;
-  color: rgba(255, 255, 255, 0.6);
-  font-weight: 500;
+  color: #00FFA3;
+  font-weight: 700;
   letter-spacing: 0.5px;
 }
 
-/* Highlighted Values */
+/* Highlighted Values & Keywords */
 .ai-value-highlight {
   font-family: 'Roboto Mono', monospace;
   font-weight: 700;
   color: #fff;
-  background: linear-gradient(90deg, rgba(79, 172, 254, 0.2), rgba(161, 140, 209, 0.1));
-  padding: 0 6px;
-  border-radius: 4px;
-  border: 1px solid rgba(79, 172, 254, 0.3);
+  /* Vibrant Gradient for keywords */
+  background: linear-gradient(90deg, rgba(0, 242, 254, 0.2), rgba(79, 172, 254, 0.2));
+  padding: 0 4px;
+  border-radius: 3px;
+  border-bottom: 1px solid rgba(0, 242, 254, 0.5);
   display: inline-block;
   margin: 0 2px;
-  box-shadow: 0 0 10px rgba(79, 172, 254, 0.1);
+  text-shadow: 0 0 8px rgba(0, 242, 254, 0.6); /* Neon glow */
 }
+
+/* Specific color tweaks for certain keywords could be done with more specific classes, 
+   but general vibrance covers most cases well */
 
 .smart-tooltip-content strong {
   color: #e2e8f0;
   font-weight: 600;
 }
 
+.smart-tooltip-content span {
+  /* Default text color */
+  color: #cbd5e1; 
+}
+
 .smart-tooltip-arrow {
   position: absolute;
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   background: #0f0f1e;
   border: 1px solid rgba(161, 140, 209, 0.5);
   transform: rotate(45deg);
   z-index: -1;
+  box-shadow: 0 0 10px rgba(79, 172, 254, 0.2);
 }
 
 /* Arrow adjustments */
 .smart-tooltip-container.top .smart-tooltip-arrow {
-  bottom: -7px;
+  bottom: -6px;
   border-top-color: transparent;
   border-left-color: transparent;
-  box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
 }
 
 .smart-tooltip-container.bottom .smart-tooltip-arrow {
-  top: -7px;
+  top: -6px;
   border-bottom-color: transparent;
   border-right-color: transparent;
-  box-shadow: -2px -2px 10px rgba(0,0,0,0.2);
 }
 
-/* 🚀 NEW: Improved Animation */
 @keyframes tooltipSmartOpen {
   0% {
     opacity: 0;
-    transform: scale(0.6) translateY(10px); /* Start small and slightly offset */
-    filter: blur(8px);
-  }
-  60% {
-    opacity: 1;
-    filter: blur(0);
+    transform: scale(0.9) translateY(5px); 
+    filter: blur(4px);
   }
   100% {
     opacity: 1;

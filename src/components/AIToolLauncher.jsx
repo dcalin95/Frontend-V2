@@ -80,6 +80,11 @@ const AIToolLauncher = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
+  // Hide on DEX demo page
+  if (location.pathname === '/dex-demo') {
+    return null;
+  }
+
   return (
     <>
       {isOpen && <div className="ai-launcher__backdrop" onClick={() => setIsOpen(false)} />}

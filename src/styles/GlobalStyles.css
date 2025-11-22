@@ -410,13 +410,16 @@ canvas#starfield-canvas {
   max-width: none; /* full width, fără limită fixă */
   margin: 0 auto;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 @media (min-width: 769px) {
   .content-container {
     margin-left: 220px; /* Aliniat la lățimea reală a sidebar-ului */
     width: calc(100% - 220px); /* Ajustează lățimea pentru a compensa sidebar-ul */
-    min-height: calc(100vh - 120px); /* previne urcarea footerului sub sidebar în Opera/zoom diferit */
+    min-height: calc(100vh - 140px); /* spaţiu pentru footer + header */
   }
 }
 

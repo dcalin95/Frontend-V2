@@ -6,7 +6,7 @@ import "./toastStyle.css";
 
 // 🧠 Core React
 import React, { useEffect, useState, Suspense, lazy } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom"; // Imported useLocation
 import { ToastContainer } from "react-toastify";
 
 // 🧩 Layout & UI
@@ -132,7 +132,67 @@ const WalletTestComponent = lazy(() => import("./context/wallet/WalletTestCompon
 const MindMirror = lazy(() => import("./mindmirror/MindMirrorDashboard"));
 const ThankYouPage = lazy(() => import("./components/ThankYouPage"));
 const RegisteredUsers = lazy(() => import("./components/Admin/RegisteredUsers")); // Import nou
+const SwapPage = lazy(() => import("./components/DEX/SwapPage")); // 🔄 Import DEX Demo
 
+
+// 🧠 Main Layout Component
+const MainLayout = ({ children, isMobile, menuOpen, setMenuOpen, headerMenuOpen, setHeaderMenuOpen, currentSection, handleSidebarSelect, toggleSidebarMenu, toggleHeaderMenu }) => {
+  const location = useLocation();
+  const isDexDemo = location.pathname === '/dex-demo';
+
+  // If it's the DEX Demo page, render ONLY the children (SwapPage) without the wrapper
+  if (isDexDemo) {
+    return (
+      <div
+        className="content-container-standalone"
+        style={{
+          width: '100%',
+          minHeight: '100vh',
+          overflowX: 'hidden',
+          overflowY: 'auto',
+          background: '#050508',
+          padding: 0,
+          margin: 0,
+        }}
+      >
+        {children}
+      </div>
+    );
+  }
+
+  // Standard Layout for all other pages
+  return (
+    <div className="app-container">
+      {/* <CustomCursor /> */}
+      <StarfieldBackground />
+      <Header 
+        isMenuOpen={headerMenuOpen} 
+        toggleMenu={toggleHeaderMenu} 
+      />
+      <BoostedBanner />
+      <div className="header-spacer"></div>
+      <HeaderWalletInfo />
+      <ThemeChecker />
+
+      <SidebarMenu
+        isMenuOpen={menuOpen}
+        setCurrentSection={handleSidebarSelect}
+        currentSection={currentSection}
+      />
+      <HamburgerButton
+        isMenuOpen={menuOpen}
+        toggleMenu={toggleSidebarMenu}
+      />
+
+      <div className="content-container">
+        {children}
+      </div>
+
+      <Footer />
+      <PWAInstallPrompt />
+    </div>
+  );
+};
 
 const App = () => {
   const [amountPay, setAmountPay] = useState(0);
@@ -287,29 +347,17 @@ const App = () => {
                   path="/*" 
                   element={
                     <MobileUI>
-                      <div className="app-container">
-                        {/* <CustomCursor /> */} {/* 🚫 DISABLED - Caused slow mouse movement */}
-                        <StarfieldBackground />
-                        <Header 
-                          isMenuOpen={headerMenuOpen} 
-                          toggleMenu={toggleHeaderMenu} 
-                        />
-                        <BoostedBanner />
-                        <div className="header-spacer"></div>
-                        <HeaderWalletInfo />
-                        <ThemeChecker />
-
-                        <SidebarMenu
-                          isMenuOpen={menuOpen}
-                          setCurrentSection={handleSidebarSelect}
-                          currentSection={currentSection}
-                        />
-                        <HamburgerButton
-                          isMenuOpen={menuOpen}
-                          toggleMenu={toggleSidebarMenu}
-                        />
-
-                        <div className="content-container">
+                      <MainLayout
+                        isMobile={isMobile}
+                        menuOpen={menuOpen}
+                        setMenuOpen={setMenuOpen}
+                        headerMenuOpen={headerMenuOpen}
+                        setHeaderMenuOpen={setHeaderMenuOpen}
+                        currentSection={currentSection}
+                        handleSidebarSelect={handleSidebarSelect}
+                        toggleSidebarMenu={toggleSidebarMenu}
+                        toggleHeaderMenu={toggleHeaderMenu}
+                      >
                           <Routes>
                       <Route path="/" element={<Home />} />
                       <Route path="/home" element={<Home />} />
@@ -361,6 +409,7 @@ const App = () => {
                       <Route path="/mind-mirror" element={<MindMirror />} />
                       <Route path="/thank-you" element={<ThankYouPage />} />
                       <Route path="/admin/users" element={<RegisteredUsers />} /> {/* Rută secretă */}
+                      <Route path="/dex-demo" element={<SwapPage />} /> {/* 🔄 Rută DEX Demo */}
                       <Route
                         path="/test-payment"
                         element={
@@ -375,11 +424,7 @@ const App = () => {
                         }
                       />
                           </Routes>
-                        </div>
-
-                        <Footer />
-                        <PWAInstallPrompt />
-                      </div>
+                      </MainLayout>
                       
                       {/* Launcher AI Tools */}
                       <AIToolLauncher />

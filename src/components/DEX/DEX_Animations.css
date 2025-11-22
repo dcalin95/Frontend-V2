@@ -1,0 +1,114 @@
+/* ═══════════════════════════════════════════════════════════════════
+   GEMINI STAR-GATE LOADER & ENTRANCE ANIMATIONS
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Loader Container */
+.dex-stellar-loader {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: #000; z-index: 9999;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+
+/* NEURAL HEXAGON AI LOADER */
+.dex-ai-loader-container {
+  position: relative;
+  width: 120px; height: 120px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 40px;
+}
+
+.dex-hex-ring {
+  position: absolute;
+  width: 100%; height: 100%;
+  border: 2px solid rgba(0, 255, 163, 0.3);
+  border-radius: 50%;
+  border-top-color: #00FFA3;
+  border-bottom-color: #7000FF;
+  animation: spinHex 1.5s linear infinite;
+}
+
+.dex-hex-core {
+  width: 60px; height: 60px;
+  background: radial-gradient(circle, #00FFA3 0%, transparent 70%);
+  border-radius: 50%;
+  animation: pulseCore 1s ease-in-out infinite alternate;
+  z-index: 2;
+}
+
+.dex-hex-orbit {
+  position: absolute;
+  width: 140px; height: 140px;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  animation: spinHex 4s linear infinite reverse;
+}
+
+.dex-hex-orbit::after {
+  content: ''; position: absolute; top: 0; left: 50%;
+  width: 8px; height: 8px; background: #fff; border-radius: 50%;
+  box-shadow: 0 0 10px #fff;
+}
+
+@keyframes spinHex { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes pulseCore { 0% { transform: scale(0.8); opacity: 0.5; } 100% { transform: scale(1.2); opacity: 1; } }
+
+/* Text Effect */
+.dex-loader-text {
+  font-family: 'Orbitron', sans-serif; font-size: 1.2rem; letter-spacing: 6px;
+  color: #fff;
+  text-transform: uppercase;
+  animation: blinkText 1s infinite;
+  text-align: center;
+}
+@keyframes blinkText { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+/* The Core Star (Background Effect) */
+.dex-star-core {
+  position: absolute;
+  width: 4px; height: 4px; background: #fff; border-radius: 50%;
+  box-shadow: 0 0 20px 10px rgba(0, 255, 163, 0.5), 0 0 60px 30px rgba(112, 0, 255, 0.3);
+  animation: starExpand 4s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+  z-index: 1;
+  opacity: 0.5;
+}
+
+@keyframes starExpand {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(300); opacity: 0; }
+}
+
+/* Warp Lines */
+.dex-warp-lines {
+  position: absolute; width: 100%; height: 100%;
+  background: repeating-radial-gradient(circle at center, transparent 0, transparent 2px, rgba(0, 255, 163, 0.1) 3px, transparent 4px);
+  opacity: 0;
+  animation: warpSpeed 4s ease-in-out forwards;
+  z-index: 0;
+}
+
+@keyframes warpSpeed {
+  0% { opacity: 0; transform: scale(0.1) rotate(0deg); }
+  40% { opacity: 0.8; transform: scale(1) rotate(10deg); }
+  100% { opacity: 0; transform: scale(5) rotate(45deg); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ENTRANCE ANIMATIONS (Materialization)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.dex-enter-stagger {
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  animation: materialize 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes materialize {
+  0% { opacity: 0; transform: translateY(30px) scale(0.9); filter: blur(10px); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.3s; }
+.stagger-3 { animation-delay: 0.5s; }
+.stagger-4 { animation-delay: 0.7s; }

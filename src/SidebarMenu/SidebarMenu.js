@@ -36,9 +36,9 @@ const SidebarMenu = ({ isMenuOpen, setCurrentSection, currentSection }) => {
 
   return (
     <div className={`sidebar ${isMenuOpen ? "open" : ""}`}>
-      <SmartTooltip content={`Swap Protocol\nInstant token exchange functionality.\nStatus: Coming Soon`}>
-      <button className="btn-swap" disabled>
-        <i className="fas fa-sync-alt"></i> Swap <span className="soon">SOON</span>
+      <SmartTooltip content={`Swap Protocol\nTry the Live DEX Demo (Beta).\nStatus: Demo Active`}>
+      <button className="btn-swap" onClick={() => handleClick("swap", "/dex-demo")}>
+        <i className="fas fa-sync-alt"></i> Swap <span className="soon" style={{background:'#00FFA3', color:'#000', fontSize:'0.6rem', padding:'2px 4px'}}>(demo)</span>
       </button>
       </SmartTooltip>
 

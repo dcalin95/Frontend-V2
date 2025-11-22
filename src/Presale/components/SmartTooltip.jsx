@@ -3,26 +3,18 @@ import ReactDOM from 'react-dom';
 import './SmartTooltip.css';
 
 // Futuristic UI "Blip" Sound (Short, High-tech)
-const HOVER_SOUND = "data:audio/wav;base64,UklGRl9vT1BXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU"; // Placeholder, will replace with a real short blip base64
-
-// A real short "tick" / "blip" sound (10ms sine wave pluck or similar) - Very subtle
-// We generate unique sounds based on the tooltip content hash
+const HOVER_SOUND = "data:audio/wav;base64,UklGRl9vT1BXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU"; // Placeholder
 
 const generateSoundParams = (text) => {
-  // Handle non-string content gracefully
   const stringContent = typeof text === 'string' ? text : JSON.stringify(text || '');
-  
   let hash = 0;
   for (let i = 0; i < stringContent.length; i++) {
     hash = ((hash << 5) - hash) + stringContent.charCodeAt(i);
-    hash |= 0; // Convert to 32bit integer
+    hash |= 0; 
   }
   
   const positiveHash = Math.abs(hash);
   
-  // 🔍 Amount Detection for WOW Sound
-  // Check if text contains a large dollar amount (> $1,000)
-  // Matches: $1,000, $1000, $10,000.00
   const amountMatch = text.match(/\$([0-9,]+(?:\.[0-9]+)?)/);
   let isLargeAmount = false;
   if (amountMatch) {
@@ -30,24 +22,16 @@ const generateSoundParams = (text) => {
     if (val >= 1000) isLargeAmount = true;
   }
 
-  // 🎵 Sound Signature Generator
-  // 1. Frequency: Map hash to 400Hz - 1200Hz range (pentatonic-ish feel)
   const baseFreq = 400 + (positiveHash % 800);
-  
-  // 2. Slide: Some sounds slide UP (discovery), some DOWN (confirmation)
-  // even hash = slide up, odd hash = slide down
   const slideDirection = (positiveHash % 2 === 0) ? 1 : -0.5;
   const slideAmount = 200 + (positiveHash % 300);
-  
-  // 3. Type: Mostly sine for clean UI, but occassional triangle for "texture"
-  // 20% chance of triangle wave for variety
   const type = (positiveHash % 5 === 0) ? 'triangle' : 'sine';
 
   return { 
     freq: baseFreq, 
     endFreq: baseFreq + (slideAmount * slideDirection), 
     type,
-    isLargeAmount // Pass flag to player
+    isLargeAmount 
   };
 };
 
@@ -60,72 +44,48 @@ const playHoverSound = (params) => {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     
-    // 🔊 WOW EFFECT for Large Amounts
     if (params.isLargeAmount) {
-        // Dual oscillator "shimmer" for rich sound
         const osc2 = ctx.createOscillator();
         const gain2 = ctx.createGain();
-        
-        osc.type = 'sine';
-        osc2.type = 'triangle';
-        
-        // Harmonious interval (Perfect 5th)
+        osc.type = 'sine'; osc2.type = 'triangle';
         osc.frequency.setValueAtTime(600, ctx.currentTime);
         osc2.frequency.setValueAtTime(900, ctx.currentTime);
-        
-        // Slow upward sweep
         osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.4);
         osc2.frequency.exponentialRampToValueAtTime(1800, ctx.currentTime + 0.4);
-        
         gain.gain.setValueAtTime(0.1, ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-        
         gain2.gain.setValueAtTime(0.05, ctx.currentTime);
         gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-        
-        osc.connect(gain);
-        osc2.connect(gain2);
-        gain.connect(ctx.destination);
-        gain2.connect(ctx.destination);
-        
-        osc.start();
-        osc2.start();
-        osc.stop(ctx.currentTime + 0.4);
-        osc2.stop(ctx.currentTime + 0.4);
+        osc.connect(gain); osc2.connect(gain2);
+        gain.connect(ctx.destination); gain2.connect(ctx.destination);
+        osc.start(); osc2.start();
+        osc.stop(ctx.currentTime + 0.4); osc2.stop(ctx.currentTime + 0.4);
         return;
     }
 
-    // Normal Blip Logic
     osc.type = params.type || 'sine';
-    
-    // Frequency envelope
     osc.frequency.setValueAtTime(params.freq, ctx.currentTime);
-    // Smooth slide to target frequency
     osc.frequency.exponentialRampToValueAtTime(Math.max(100, params.endFreq), ctx.currentTime + 0.1);
-    
-    // Volume envelope (Attack - Decay)
     gain.gain.setValueAtTime(0.0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.04, ctx.currentTime + 0.01); // Fast attack
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1); // Smooth decay
-    
+    gain.gain.linearRampToValueAtTime(0.04, ctx.currentTime + 0.01); 
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1); 
     osc.connect(gain);
     gain.connect(ctx.destination);
-    
     osc.start();
     osc.stop(ctx.currentTime + 0.1);
-  } catch (e) {
-    // Ignore audio errors
-  }
+  } catch (e) {}
 };
 
 const SmartTooltip = ({ children, content, className = '' }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [position, setPosition] = useState({ top: 0, left: 0 });
-  const [placement, setPlacement] = useState('top'); // top, bottom
+  const [placement, setPlacement] = useState('top');
   const [transformOrigin, setTransformOrigin] = useState('center bottom');
+  const [isSpeaking, setIsSpeaking] = useState(false);
   
   const targetRef = useRef(null);
   const tooltipRef = useRef(null);
+  const timeoutRef = useRef(null);
 
   // 🧠 AI INTELLIGENT PARSER
   const parseContent = (text) => {
@@ -134,15 +94,14 @@ const SmartTooltip = ({ children, content, className = '' }) => {
     const lines = text.split('\n');
     
     return lines.map((line, lineIndex) => {
-      if (!line) return <div key={lineIndex}>{'\u00A0'}</div>;
+      if (!line) return null; 
 
-      // Regex for values
-      const parts = line.split(/(\$\d+(?:,\d{3})*(?:\.\d+)?|\d+(?:,\d{3})*(?:\.\d+)?\s*BITS|\d+(?:\.\d+)?%|\d+(?:\.\d+)?h|\d+(?:,\d{3})*(?:\.\d+)?\s*messages|\d+ rewards)/g);
+      const parts = line.split(/(\$\d+(?:,\d{3})*(?:\.\d+)?|\d+(?:,\d{3})*(?:\.\d+)?\s*BITS|\d+(?:\.\d+)?%|\d+(?:\.\d+)?h|\d+(?:,\d{3})*(?:\.\d+)?\s*messages|\d+ rewards|AI|Neural|Blockchain|DEX|Wallet|Liquidity|Yield|Profit|Smart Contract|Tokenomics|Burn|Mining|XTB|Binance|Coinbase|Assets)/gi);
 
       return (
-        <div key={lineIndex}>
+        <div key={lineIndex} className="smart-tooltip-line">
           {parts.map((part, partIndex) => {
-            const isHighlight = /^(\$\d+|\d+(?:,\d{3})*(\.\d+)?\s*BITS|\d+(\.\d+)?%|\d+(\.\d+)?h|\d+\s*messages|\d+ rewards)/.test(part);
+            const isHighlight = /^(\$\d+|\d+(?:,\d{3})*(\.\d+)?\s*BITS|\d+(\.\d+)?%|\d+(\.\d+)?h|\d+\s*messages|\d+ rewards|AI|Neural|Blockchain|DEX|Wallet|Liquidity|Yield|Profit|Smart Contract|Tokenomics|Burn|Mining|XTB|Binance|Coinbase|Assets)/i.test(part);
             
             if (isHighlight) {
               return (
@@ -171,13 +130,11 @@ const SmartTooltip = ({ children, content, className = '' }) => {
     let left = targetRect.left + (targetRect.width / 2) - (tooltipRect.width / 2);
     let newPlacement = 'top';
 
-    // 1. Check Vertical Fit
     if (top < viewportPadding) {
       top = targetRect.bottom + spacing;
       newPlacement = 'bottom';
     }
 
-    // 2. Check Horizontal Fit
     if (left < viewportPadding) {
       left = viewportPadding;
     } else if (left + tooltipRect.width > window.innerWidth - viewportPadding) {
@@ -187,8 +144,6 @@ const SmartTooltip = ({ children, content, className = '' }) => {
     setPosition({ top, left });
     setPlacement(newPlacement);
     
-    // Smart Transform Origin Calculation
-    // Calculate where the arrow is relative to the tooltip box
     const arrowX = targetRect.left + (targetRect.width / 2) - left;
     const clampedArrowX = Math.min(Math.max(arrowX, 10), tooltipRect.width - 10);
     
@@ -199,34 +154,94 @@ const SmartTooltip = ({ children, content, className = '' }) => {
     }
   };
 
+  // Auto-Speak Logic
   useEffect(() => {
+    let speechStartTimer;
+    
     if (isVisible) {
       requestAnimationFrame(() => {
         updatePosition();
         requestAnimationFrame(updatePosition);
       });
-      
       window.addEventListener('scroll', updatePosition, true);
       window.addEventListener('resize', updatePosition);
-    }
 
+      // Auto-start speech after 500ms if still visible
+      speechStartTimer = setTimeout(() => {
+          if (isVisible && 'speechSynthesis' in window) {
+            speakText();
+          }
+      }, 500);
+
+    } else {
+      // Cancel everything when not visible
+      window.speechSynthesis?.cancel();
+      setIsSpeaking(false);
+      if (speechStartTimer) clearTimeout(speechStartTimer);
+    }
+    
     return () => {
       window.removeEventListener('scroll', updatePosition, true);
       window.removeEventListener('resize', updatePosition);
+      window.speechSynthesis?.cancel();
+      if (speechStartTimer) clearTimeout(speechStartTimer);
     };
-  }, [isVisible]);
+  }, [isVisible, content]);
 
-  const showTooltip = () => {
-    setIsVisible(true);
-    // 🔊 Play unique sonic signature based on content
-    const soundParams = generateSoundParams(content);
-    playHoverSound(soundParams);
+  const speakText = () => {
+      if (!('speechSynthesis' in window)) return;
+      
+      const textToRead = typeof content === 'string' ? content.replace(/\n/g, ' ').replace(/\s+/g, ' ') : 'System Info';
+      const utterance = new SpeechSynthesisUtterance(textToRead);
+      
+      const voices = window.speechSynthesis.getVoices();
+      // Try to find a good English voice
+      const preferredVoice = voices.find(voice => 
+        (voice.name.includes('Google') && voice.name.includes('English')) || 
+        (voice.name.includes('Samantha') && voice.lang.includes('en')) ||
+        voice.lang === 'en-US'
+      );
+      
+      if (preferredVoice) utterance.voice = preferredVoice;
+      utterance.rate = 1.05; // Slightly faster for tech feel
+      utterance.pitch = 1.0;
+      
+      utterance.onstart = () => setIsSpeaking(true);
+      utterance.onend = () => setIsSpeaking(false);
+      utterance.onerror = () => setIsSpeaking(false);
+      
+      window.speechSynthesis.cancel(); // Stop any previous
+      window.speechSynthesis.speak(utterance);
   };
-  
-  const hideTooltip = () => setIsVisible(false);
+
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    if (!isVisible) {
+        setIsVisible(true);
+        const soundParams = generateSoundParams(content);
+        playHoverSound(soundParams);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    // Increased grace period to 5000ms to allow reaching the tooltip comfortably
+    timeoutRef.current = setTimeout(() => {
+      setIsVisible(false);
+    }, 5000); 
+  };
+
+  // Manual toggle via button
+  const handleSpeakClick = (e) => {
+    e.stopPropagation();
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+    } else {
+      speakText();
+    }
+  };
 
   const child = React.Children.only(children);
-
   const trigger = React.cloneElement(child, {
     ref: (node) => {
       targetRef.current = node;
@@ -235,11 +250,11 @@ const SmartTooltip = ({ children, content, className = '' }) => {
       else if (ref) ref.current = node;
     },
     onMouseEnter: (e) => {
-      showTooltip();
+      handleMouseEnter();
       child.props.onMouseEnter?.(e);
     },
     onMouseLeave: (e) => {
-      hideTooltip();
+      handleMouseLeave();
       child.props.onMouseLeave?.(e);
     },
     'data-tooltip': undefined
@@ -257,10 +272,20 @@ const SmartTooltip = ({ children, content, className = '' }) => {
           style={{ 
             top: `${position.top}px`, 
             left: `${position.left}px`,
-            transformOrigin: transformOrigin // 🚀 Intelligent Origin
+            transformOrigin: transformOrigin
           }}
           role="tooltip"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
         >
+          <button 
+            className={`smart-tooltip-speak-btn ${isSpeaking ? 'speaking' : ''}`}
+            onClick={handleSpeakClick}
+            title={isSpeaking ? "Stop Speaking" : "Read Aloud"}
+          >
+            {isSpeaking ? <span className="speaker-wave">🔊</span> : <span>🔈</span>}
+          </button>
+
           <div className="smart-tooltip-content">
             {parseContent(content)}
           </div>

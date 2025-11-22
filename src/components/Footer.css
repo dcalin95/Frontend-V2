@@ -10,6 +10,8 @@
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
       box-shadow: none;
+    position: relative;
+    z-index: 50;
     }
 
   /* 🚀 FLOATING EXCHANGES - Iconițe care zboară liber */
