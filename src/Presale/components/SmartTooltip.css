@@ -1,0 +1,149 @@
+/* 🌌 GEMINI AI PRO - FUTURISTIC TOOLTIP */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Roboto+Mono:wght@400;700&display=swap');
+
+.smart-tooltip-container {
+  position: fixed;
+  z-index: 999999;
+  background: rgba(8, 8, 16, 0.85);
+  color: #f0f4f8;
+  padding: 14px 18px;
+  border-radius: 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  max-width: 340px;
+  min-width: 220px;
+  width: max-content;
+  text-align: left;
+  
+  /* Gemini-style Border Gradient */
+  border: 1px solid transparent;
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
+  background-image: 
+    linear-gradient(to bottom, rgba(8, 8, 16, 0.95), rgba(15, 15, 30, 0.98)),
+    linear-gradient(135deg, #4facfe 0%, #00f2fe 50%, #a18cd1 100%);
+    
+  box-shadow: 
+    0 10px 40px rgba(0, 0, 0, 0.6), 
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 0 20px rgba(79, 172, 254, 0.15);
+    
+  pointer-events: none;
+  
+  /* 🚀 NEW: Intelligent Animation */
+  /* Will use transform-origin set in JS */
+  animation: tooltipSmartOpen 0.35s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  
+  backdrop-filter: blur(16px);
+  will-change: transform, opacity;
+}
+
+/* Gemini Sparkle Icon Placeholder */
+.smart-tooltip-container::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 20px;
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00f2fe, transparent);
+  opacity: 0.8;
+}
+
+.smart-tooltip-content div {
+  margin-bottom: 4px;
+}
+
+/* Title Styling */
+.smart-tooltip-content div:first-child {
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: transparent;
+  background: linear-gradient(90deg, #00FFA3, #00f2fe);
+  -webkit-background-clip: text;
+  background-clip: text;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+}
+
+/* Badge */
+.smart-tooltip-content div:first-child::after {
+  content: 'AI ANALYTICS';
+  margin-left: auto;
+  font-size: 0.6rem;
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* Highlighted Values */
+.ai-value-highlight {
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(90deg, rgba(79, 172, 254, 0.2), rgba(161, 140, 209, 0.1));
+  padding: 0 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(79, 172, 254, 0.3);
+  display: inline-block;
+  margin: 0 2px;
+  box-shadow: 0 0 10px rgba(79, 172, 254, 0.1);
+}
+
+.smart-tooltip-content strong {
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+.smart-tooltip-arrow {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: #0f0f1e;
+  border: 1px solid rgba(161, 140, 209, 0.5);
+  transform: rotate(45deg);
+  z-index: -1;
+}
+
+/* Arrow adjustments */
+.smart-tooltip-container.top .smart-tooltip-arrow {
+  bottom: -7px;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
+}
+
+.smart-tooltip-container.bottom .smart-tooltip-arrow {
+  top: -7px;
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+  box-shadow: -2px -2px 10px rgba(0,0,0,0.2);
+}
+
+/* 🚀 NEW: Improved Animation */
+@keyframes tooltipSmartOpen {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) translateY(10px); /* Start small and slightly offset */
+    filter: blur(8px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}

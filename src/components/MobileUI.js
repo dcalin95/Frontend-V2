@@ -15,6 +15,22 @@ const MobileUI = ({ children }) => {
       
       setIsMobile(mobile);
       setIsLandscape(landscape);
+
+      // 🚀 GLOBAL BODY CLASSES INJECTION
+      // This acts as the "Central Intelligence" for CSS
+      if (mobile) {
+        document.body.classList.add('mode-mobile');
+        document.body.classList.remove('mode-desktop');
+      } else {
+        document.body.classList.add('mode-desktop');
+        document.body.classList.remove('mode-mobile');
+      }
+
+      if (landscape) {
+        document.body.classList.add('orientation-landscape');
+      } else {
+        document.body.classList.remove('orientation-landscape');
+      }
     };
 
     const checkConnection = async () => {

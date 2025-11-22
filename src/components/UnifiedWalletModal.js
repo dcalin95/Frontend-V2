@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useWallet as useSolanaWalletAdapter } from '@solana/wallet-adapter-react';
 import { useWallet } from '../context/UnifiedWalletContext';
+import walletConnectLogo from '../assets/icons/wallet-connect-logo.png'; 
+import evmIcon from '../assets/icons/evm-logo.jpg'; // Import EVM logo
+import solanaIcon from '../assets/icons/solana-logo.png'; // Import Solana logo
+import binanceLogo from '../assets/exchanges/binance.png'; // Import Binance logo
 import './UnifiedWalletModal.css';
 
 const UnifiedWalletModal = () => {
@@ -27,9 +31,13 @@ const UnifiedWalletModal = () => {
     try {
       const wallet = solanaWallets.find(w => w.adapter.name === walletName);
       if (wallet) {
-        selectSolanaWallet(wallet.adapter.name);
-        setShowWalletModal(false);
-        setSelectedNetwork(null);
+        console.log("Connecting to Solana wallet:", walletName);
+        await selectSolanaWallet(wallet.adapter.name);
+        // Delay closing modal to allow connection to initialize
+        setTimeout(() => {
+            setShowWalletModal(false);
+            setSelectedNetwork(null);
+        }, 500);
       }
     } catch (error) {
       console.error("Error connecting Solana wallet:", error);
@@ -52,18 +60,28 @@ const UnifiedWalletModal = () => {
                 className="network-card evm-card"
                 onClick={() => setSelectedNetwork("EVM")}
               >
-                <div className="network-icon">🔷</div>
-                <div className="network-name">EVM Networks</div>
-                <div className="network-chains">BSC • ETH • Polygon • Arbitrum • Optimism • Base • Avalanche</div>
+                <div className="network-icon-wrapper">
+                  <img src={evmIcon} alt="EVM" className="network-icon-img" />
+                </div>
+                <div className="network-info">
+                  <div className="network-name">EVM Networks</div>
+                  <div className="network-chains">BSC • ETH • Polygon • Arbitrum</div>
+                  <div className="network-chains">Optimism • Base • Avalanche</div>
+                </div>
               </button>
 
               <button 
                 className="network-card solana-card"
                 onClick={() => setSelectedNetwork("SOLANA")}
               >
-                <div className="network-icon">🟣</div>
-                <div className="network-name">Solana</div>
-                <div className="network-chains">Mainnet Beta • Fast & Low Fees</div>
+                <div className="network-icon-wrapper">
+                   <img src={solanaIcon} alt="Solana" className="network-icon-img" />
+                </div>
+                <div className="network-info">
+                  <div className="network-name">Solana</div>
+                  <div className="network-chains">Mainnet Beta</div>
+                  <div className="network-chains">Fast & Low Fees</div>
+                </div>
               </button>
             </div>
           </>
@@ -80,7 +98,7 @@ const UnifiedWalletModal = () => {
                 <span>MetaMask</span>
               </button>
               <button className="wallet-option" onClick={handleEvmConnect}>
-                <img src="https://docs.walletconnect.com/img/walletconnect-logo.png" alt="WalletConnect" />
+                <img src={walletConnectLogo} alt="WalletConnect" />
                 <span>WalletConnect</span>
               </button>
               <button className="wallet-option" onClick={handleEvmConnect}>
@@ -90,6 +108,18 @@ const UnifiedWalletModal = () => {
               <button className="wallet-option" onClick={handleEvmConnect}>
                 <img src="https://avatars.githubusercontent.com/u/48327834?s=200&v=4" alt="Rainbow" />
                 <span>Rainbow</span>
+              </button>
+               <button className="wallet-option" onClick={handleEvmConnect}>
+                <img src="https://trustwallet.com/assets/images/media/assets/TWT.png" alt="Trust Wallet" />
+                <span>Trust Wallet</span>
+              </button>
+              <button className="wallet-option" onClick={handleEvmConnect}>
+                <img src={binanceLogo} alt="Binance Web3" />
+                <span>Binance Web3</span>
+              </button>
+               <button className="wallet-option" onClick={handleEvmConnect}>
+                <div style={{width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.1)', borderRadius: 8}}>➕</div>
+                <span>All Wallets (350+)</span>
               </button>
             </div>
           </>

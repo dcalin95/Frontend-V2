@@ -1,0 +1,79 @@
+.add-token-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(246, 133, 27, 0.4); /* MetaMask Orange tint */
+  border-radius: 12px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.add-token-btn:hover {
+  background: rgba(246, 133, 27, 0.15);
+  border-color: #F6851B;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(246, 133, 27, 0.25);
+}
+
+.add-token-btn:active {
+  transform: translateY(0);
+}
+
+.add-token-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.metamask-fox {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 5px rgba(246, 133, 27, 0.5));
+}
+
+.add-token-text {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.add-token-plus {
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  color: #00FFA3;
+  font-size: 1.2rem;
+  margin-left: auto;
+  text-shadow: 0 0 10px rgba(0, 255, 163, 0.5);
+}
+
+/* Compact Mode */
+.add-token-btn.compact {
+  padding: 8px 12px;
+  gap: 8px;
+}
+
+.add-token-btn.compact .add-token-text {
+  font-size: 0.8rem;
+}
+
+/* Animations */
+.add-token-btn:hover .metamask-fox {
+  animation: foxShake 0.5s ease-in-out;
+}
+
+@keyframes foxShake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  75% { transform: rotate(10deg); }
+}
+

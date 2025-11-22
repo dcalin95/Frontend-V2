@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Icon from "../assets/icons/Icon";
 import bitsLogo from "../assets/logo.png";
 import "./TokenomicsChartHexagon.css";
+import SmartTooltip from "../Presale/components/SmartTooltip"; // Import SmartTooltip
 
 const DEFAULT_SECTIONS = [
   { 
@@ -188,9 +189,11 @@ const TokenomicsChartHexagon = ({
           <Icon name="verified" size="medium" className="stat-icon-hex" />
           <div className="stat-content-hex">
             <span className="stat-label-hex">Coverage</span>
+            <SmartTooltip content={`Coverage: ${totalPercent}%\nRepresents the total allocated percentage of the supply.`}>
             <span className={`stat-value-hex ${totalPercent !== 100 ? 'warning' : ''}`}>
               {totalPercent}%
             </span>
+            </SmartTooltip>
           </div>
         </div>
       </motion.div>
@@ -230,13 +233,17 @@ const TokenomicsChartHexagon = ({
                 {segment.name}
               </h3>
               
+              <SmartTooltip content={`${segment.value}%\nPercentage of total supply allocated to ${segment.name}.`}>
               <div className="hexagon-percent" style={{ color: segment.color }}>
                 {segment.value}%
               </div>
+              </SmartTooltip>
               
+              <SmartTooltip content={`${segment.amountLabel} $BITS\nTotal tokens reserved for this category.`}>
               <div className="hexagon-amount">
                 {segment.amountLabel} $BITS
               </div>
+              </SmartTooltip>
               
               <AnimatePresence>
                 {activeIndex === idx && (

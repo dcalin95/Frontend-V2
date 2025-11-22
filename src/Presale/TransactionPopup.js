@@ -5,6 +5,7 @@ import backgroundGif from "../assets/popup/popupback.gif";
 import voiceMp3 from "../assets/popup/popup-sound.mp3";
 import successWav from "../assets/sounds/success.wav";
 import { getExplorerLink as getExplorerLinkUtil } from "../utils/getExplorerLink";
+import SmartTooltip from "./components/SmartTooltip"; // Import SmartTooltip
 
 const aiIntro = (bits, token, amount) =>
   `Congratulations! You've just bought ${bits} BITS tokens using ${amount} ${token}.`;
@@ -164,13 +165,19 @@ const TransactionPopup = ({
         </p>
 
         <div className="popup-info-large">
+          <SmartTooltip content={`BITS Allocation\nThe total amount of BITS tokens secured for your wallet in this transaction.`}>
           <p className="info-line">
             You bought <span className="glow-amount">{bits} BITS</span>
           </p>
+          </SmartTooltip>
+          
+          <SmartTooltip content={`Payment Details\nThe exact amount and currency spent.`}>
           <p className="info-line">
             Using <span className="glow-amount">{amount} {token}</span>
           </p>
+          </SmartTooltip>
 
+          <SmartTooltip content={`Transaction Hash (TX)\nA unique blockchain identifier proving this transaction is immutable and permanent.`}>
           <p className="info-line">
             TX Hash:{" "}
             {txHash ? (
@@ -185,20 +192,31 @@ const TransactionPopup = ({
               <span style={{ color: "gray" }}>No transaction hash available.</span>
             )}
           </p>
+          </SmartTooltip>
         </div>
 
         <div className="popup-actions">
           {explorerLink && (
+            <SmartTooltip content={`Block Explorer\nVerify this transaction on the public blockchain explorer.`}>
             <a className="btn" href={explorerLink} target="_blank" rel="noreferrer">
               🔗 Open on BscScan
             </a>
+            </SmartTooltip>
           )}
-          <button className="btn" onClick={downloadReceipt}>💾 Save Receipt</button>
-          <button className="btn" onClick={printReceipt}>🖨️ Print</button>
-          <button className="btn" onClick={emailReceipt}>✉️ Email Receipt</button>
-          <button className="btn learn-btn" onClick={handleLearnMore}>
-            🔊 Learn More About BITS
-          </button>
+          <SmartTooltip content={`Save Receipt\nDownload a digital JSON proof of purchase.`}>
+            <button className="btn" onClick={downloadReceipt}>💾 Save Receipt</button>
+          </SmartTooltip>
+          <SmartTooltip content={`Print Receipt\nPrint a physical copy for your records.`}>
+            <button className="btn" onClick={printReceipt}>🖨️ Print</button>
+          </SmartTooltip>
+          <SmartTooltip content={`Email Receipt\nSend this receipt to your email client.`}>
+            <button className="btn" onClick={emailReceipt}>✉️ Email Receipt</button>
+          </SmartTooltip>
+          <SmartTooltip content={`AI Explanation\nListen to an AI-generated overview of the project.`}>
+            <button className="btn learn-btn" onClick={handleLearnMore}>
+              🔊 Learn More About BITS
+            </button>
+          </SmartTooltip>
           <button className="btn theme-btn" onClick={toggleTheme}>
             🌓 Switch AI Mode
           </button>

@@ -49,7 +49,7 @@ const InnerWalletProvider = ({ children }) => {
   console.log("🔍 [Wallet Debug] Balance Error:", isError);
 
   // Reading BITS Token Balance (Wagmi v2)
-  const { data: bitsRawBalance } = useReadContract({
+  const { data: bitsRawBalance, error: bitsError, isLoading: bitsLoading } = useReadContract({
     address: BITS_TOKEN_ADDRESS,
     abi: BitsABI,
     functionName: 'balanceOf',
@@ -59,6 +59,16 @@ const InnerWalletProvider = ({ children }) => {
       refetchInterval: 15000
     }
   });
+
+  // Debug logs for BITS balance
+  useEffect(() => {
+    if (address) {
+       console.log("🔍 [WalletContext] Reading BITS from:", BITS_TOKEN_ADDRESS);
+       console.log("🔍 [WalletContext] User address:", address);
+       console.log("🔍 [WalletContext] Raw BITS data:", bitsRawBalance);
+       if (bitsError) console.error("❌ [WalletContext] BITS Read Error:", bitsError);
+    }
+  }, [bitsRawBalance, bitsError, address]);
   
   // Compatibility states for legacy code
   const [walletAddress, setWalletAddress] = useState(null);

@@ -9,6 +9,7 @@ import StakeForm from "./components/StakeForm";
 import StakingBox from "./components/StakingBox";
 import ClaimStakes from "./components/ClaimStakes";
 import StakingUSDValue from "./components/StakingUSDValue";
+import SmartTooltip from "../Presale/components/SmartTooltip"; // Import SmartTooltip
 
 import "./StakingPage.desktop.css";
 import "./StakingPage.mobile.css";
@@ -79,26 +80,38 @@ const StakingPage = () => {
         <div className="staking-top-row">
           <div className="left-side">
             <div className="ai-container">
-              <StakingSummary signer={signer} stakes={stakes} />
+              <SmartTooltip content={`Staking Summary\nOverview of your current staking positions and earnings.`}>
+                <div><StakingSummary signer={signer} stakes={stakes} /></div>
+              </SmartTooltip>
             </div>
             <div className="ai-container">
-              <StakingInfoBox stakes={stakes} />
+              <SmartTooltip content={`Staking Information\nDetails about APY rates, lock periods, and rules.`}>
+                <div><StakingInfoBox stakes={stakes} /></div>
+              </SmartTooltip>
             </div>
             <div className="ai-container">
-              <StakingUSDValue signer={signer} />
+              <SmartTooltip content={`USD Value Analysis\nCurrent market value of your staked assets in USD.`}>
+                <div><StakingUSDValue signer={signer} /></div>
+              </SmartTooltip>
             </div>
           </div>
           <div className="right-side">
             <div className="ai-container">
-              <StakeForm signer={signer} prefilledAmount={prefilledAmount} rewardsSource={rewardsSource} />
+              <SmartTooltip content={`New Stake Form\nLock tokens to earn rewards. Choose your amount and duration.`}>
+                <div><StakeForm signer={signer} prefilledAmount={prefilledAmount} rewardsSource={rewardsSource} /></div>
+              </SmartTooltip>
             </div>
             <div className="ai-container">
-              <ClaimStakes signer={signer} />
+              <SmartTooltip content={`Claim Rewards\nWithdraw your earned interest or matured stakes.`}>
+                <div><ClaimStakes signer={signer} /></div>
+              </SmartTooltip>
             </div>
           </div>
         </div>
         <div className="staking-bottom">
-          <StakingBox stakes={stakes} signer={signer} />
+          <SmartTooltip content={`Active Stakes Portfolio\nDetailed list of all your individual staking contracts.`}>
+            <div><StakingBox stakes={stakes} signer={signer} /></div>
+          </SmartTooltip>
         </div>
       </main>
     </div>

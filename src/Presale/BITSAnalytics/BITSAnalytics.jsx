@@ -20,6 +20,7 @@ import {
   formatTransactions,
   shortenAddress,
 } from "./utils/dataFormatters";
+import SmartTooltip from "../components/SmartTooltip";
 
 // --- SVG ICONS COMPONENTS (Gemini 3 King Style) ---
 const IconWallet = () => (
@@ -582,6 +583,7 @@ const BITSAnalytics = () => {
 
       <div className="widget-grid">
         {/* Wallet */}
+        <SmartTooltip content={`Wallet Connection\nNetwork: ${walletContextValue?.walletType === 'Solana' ? 'Solana' : 'BSC (Binance Smart Chain)'}\nAddress: ${walletAddress ? shortenAddress(walletAddress) : 'Not Connected'}`}>
         <div className="widget holdings">
           <div className="widget-icon"><IconWallet /></div>
           <div className="widget-title">Wallet Address</div>
@@ -603,8 +605,10 @@ const BITSAnalytics = () => {
           </div>
           <div className="widget-subtitle">{walletContextValue?.walletType === 'Solana' ? 'Solana Devnet' : 'BSC Network'}</div>
         </div>
+        </SmartTooltip>
 
         {/* STAKING PROFIT (Dedicated Live) */}
+        <SmartTooltip content={`Live Staking Rewards\nReal-time earnings from your staked BITS.\nAPY is dynamic based on pool participation.`}>
         <div className="widget rewards">
           <div className="widget-icon"><IconStaking /></div>
           <div className="widget-title">Staking Profit (Live)</div>
@@ -623,8 +627,10 @@ const BITSAnalytics = () => {
             <a href="/staking" style={{ color: '#14F195', textDecoration: 'none' }}>View Staking →</a>
           </div>
         </div>
+        </SmartTooltip>
 
         {/* BITS Portfolio Value */}
+        <SmartTooltip content={`Total Portfolio Value\nCombined value of all your BITS holdings across wallets and staking pools.\nCalculated in real-time USD.`}>
         <div className="widget holdings">
           <div className="widget-icon"><IconPortfolio /></div>
           <div className="widget-title">Portfolio Value</div>
@@ -641,8 +647,10 @@ const BITSAnalytics = () => {
             }
           </div>
         </div>
+        </SmartTooltip>
 
         {/* $BITS Holdings */}
+        <SmartTooltip content={`Your BITS Balance\nTokens currently held in your connected wallet.\nDoes not include pending claims or staked tokens.`}>
         <div className="widget holdings">
           <div className="widget-icon"><IconBits /></div>
           <div className="widget-title">$BITS Holdings</div>
@@ -656,8 +664,10 @@ const BITSAnalytics = () => {
              walletAddress ? "No $BITS Holdings" : "Connect to View"}
           </div>
         </div>
+        </SmartTooltip>
 
         {/* $BITS Price */}
+        <SmartTooltip content={`Current Presale Price\nPrice per 1 BITS token.\nNext Stage Price: Higher (+5-10%)`}>
         <div className="widget market">
           <div className="widget-icon"><IconPrice /></div>
           <div className="widget-title">$BITS Price (Current)</div>
@@ -683,16 +693,20 @@ const BITSAnalytics = () => {
             )}
           </div>
         </div>
+        </SmartTooltip>
 
         {/* Total Value */}
+        <SmartTooltip content={`Holdings Value\nValue of your unstaked BITS tokens only.`}>
         <div className="widget market">
           <div className="widget-icon"><IconTotalValue /></div>
           <div className="widget-title">Total Value</div>
           <div className="widget-value">{holdingsOnlyDisplay}</div>
           <div className="widget-subtitle">Holdings × Price</div>
         </div>
+        </SmartTooltip>
 
         {/* STAKING (New) */}
+        <SmartTooltip content={`Active Staking Positions\nDetailed breakdown of your locked tokens earning compound interest.`}>
         <div className="widget rewards" title={(() => {
           const bd = (safeData.stakingBreakdown || []);
           if (!bd.length) return '';
@@ -716,8 +730,10 @@ const BITSAnalytics = () => {
             })()}
           </div>
         </div>
+        </SmartTooltip>
 
         {/* Performance */}
+        <SmartTooltip content={`Asset Performance\nROI (Return on Investment) based on your entry price vs current price.`}>
         <div className="widget market">
           <div className="widget-icon"><IconPerformance /></div>
           <div className="widget-title">Performance</div>
@@ -726,8 +742,10 @@ const BITSAnalytics = () => {
           </div>
           <div className="widget-subtitle">{roiData.analysis}</div>
         </div>
+        </SmartTooltip>
 
         {/* PnL (USD) */}
+        <SmartTooltip content={`Profit and Loss\nNet profit or loss in USD value since investment.`}>
         <div className="widget market">
           <div className="widget-icon"><IconPnL /></div>
           <div className="widget-title">PnL (USD)</div>
@@ -738,8 +756,10 @@ const BITSAnalytics = () => {
             Bought: {formatUSD(investedUsdPreferred)} • Now: {formatUSD(currentValueUsdForPnl)}
           </div>
         </div>
+        </SmartTooltip>
 
         {/* Transactions */}
+        <SmartTooltip content={`On-Chain Activity\nTotal number of transactions associated with your wallet for this token.`}>
         <div className="widget market">
           <div className="widget-icon"><IconTransactions /></div>
           <div className="widget-title">Transactions</div>
@@ -748,8 +768,10 @@ const BITSAnalytics = () => {
           </div>
           <div className="widget-subtitle">Activity</div>
         </div>
+        </SmartTooltip>
 
         {/* Rewards */}
+        <SmartTooltip content={`Referral Earnings\nBonus BITS earned from inviting friends to the presale.`}>
         <div className="widget rewards">
           <div className="widget-icon"><IconReferral /></div>
           <div className="widget-title">Referral Rewards</div>
@@ -760,7 +782,9 @@ const BITSAnalytics = () => {
             {safeData.referralBonus > 0 ? "Ready to Claim" : "No Rewards"}
           </div>
         </div>
+        </SmartTooltip>
 
+        <SmartTooltip content={`Community Rewards\nBITS earned from Telegram activity and engagement.`}>
         <div className="widget rewards">
           <div className="widget-icon"><img src={telegramLogo} alt="Telegram" className="widget-icon-img" /></div>
           <div className="widget-title">Telegram Rewards</div>
@@ -778,8 +802,10 @@ const BITSAnalytics = () => {
             ) : "No Rewards"}
           </div>
         </div>
+        </SmartTooltip>
 
         {/* Additional Bonus */}
+        <SmartTooltip content={`Special Bonuses\nExtra BITS from promotions, airdrops, or loyalty programs.`}>
         <div className="widget rewards">
           <div className="widget-icon"><IconBonus /></div>
           <div className="widget-title">Additional Bonus</div>
@@ -821,8 +847,10 @@ const BITSAnalytics = () => {
             ) : "No Rewards"}
             </div>
         </div>
+        </SmartTooltip>
 
         {/* System */}
+        <SmartTooltip content={`Solana Integration\nFunds invested directly via the Solana blockchain bridge.`}>
         <div className="widget system">
           <div className="widget-icon"><img src={solanaLogo} alt="Solana" className="widget-icon-img" /></div>
           <div className="widget-title">Solana Investment</div>
@@ -833,7 +861,9 @@ const BITSAnalytics = () => {
           </div>
           <div className="widget-subtitle">SOL Network</div>
         </div>
+        </SmartTooltip>
 
+        <SmartTooltip content={`Investor Tier\nClassification based on total holding size.\n${portfolioTierHint}`}>
         <div className="widget system" title={portfolioTierHint}>
           <div className="widget-icon"><IconSize /></div>
           <div className="widget-title">Portfolio Size</div>
@@ -842,13 +872,16 @@ const BITSAnalytics = () => {
             Total Holdings: {Number(safeData.totalBits || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 4 })} <span className="unit">$BITS</span>
           </div>
         </div>
+        </SmartTooltip>
 
+        <SmartTooltip content={`AI Strategy Suggestion\nAutomated recommendation based on your portfolio performance.`}>
         <div className="widget system">
           <div className="widget-icon"><IconStatus /></div>
           <div className="widget-title">Status</div>
           <div className="widget-value">{statusLabel}</div>
           <div className="widget-subtitle">{strategyText}</div>
         </div>
+        </SmartTooltip>
       </div>
     </div>
   );

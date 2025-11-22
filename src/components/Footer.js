@@ -2,6 +2,8 @@ import React from "react";
 import "./Footer.css";
 import { Link } from "react-router-dom";
 import BrandLogo from "./BrandLogo";
+import SmartTooltip from "../Presale/components/SmartTooltip"; // Import SmartTooltip
+import AddTokenButton from "./AddTokenButton"; // Import AddTokenButton
 import binanceLogo from "../assets/exchanges/binance-clearbit.png";
 import coinbaseLogo from "../assets/exchanges/coinbase-clearbit.png";
 import krakenLogo from "../assets/exchanges/kraken-clearbit.png";
@@ -40,8 +42,8 @@ const Footer = () => {
         </p>
         <div className="exchanges-logos">
           {exchanges.map((exchange, index) => (
+            <SmartTooltip key={index} content={`${exchange.name}\nTop-tier global exchange target for BITS listing.`}>
             <a
-              key={index}
               href={exchange.url}
               target="_blank"
               rel="noopener noreferrer"
@@ -50,7 +52,6 @@ const Footer = () => {
               <img 
                 src={exchange.logo} 
                 alt={exchange.name}
-                title={`${exchange.name} - ${exchange.url}`}
                 className="exchange-logo-mini"
                 onError={(e) => {
                   // Fallback: dacă logo-ul nu se încarcă, afișează numele
@@ -62,6 +63,7 @@ const Footer = () => {
                 }}
               />
             </a>
+            </SmartTooltip>
           ))}
         </div>
         <p className="exchanges-subtitle">Coming Soon to Major Exchanges</p>
@@ -75,19 +77,33 @@ const Footer = () => {
           International Copyright Law!
         </span>
       </p>
+      
+      {/* Add Token Button in Footer */}
+      <div style={{ display: 'flex', justifyContent: 'center', margin: '1rem 0' }}>
+        <AddTokenButton compact={true} />
+      </div>
+
       <div className="footer-links">
+        <SmartTooltip content={`Legal Agreement\nRead our terms of service and conditions of use.`}>
         <Link to="/terms" className="footer-button">
           <i className="fas fa-file-alt footer-icon blue"></i> Terms and Conditions
         </Link>
+        </SmartTooltip>
+        <SmartTooltip content={`Privacy Policy\nHow we collect, use, and protect your data.`}>
         <Link to="/privacy-policy" className="footer-button">
           <i className="fas fa-user-shield footer-icon green"></i> Privacy Policy
         </Link>
+        </SmartTooltip>
+        <SmartTooltip content={`Support Center\nContact our team for help or partnerships.`}>
         <Link to="/contact" className="footer-button">
           <i className="fas fa-envelope footer-icon"></i> Contact
         </Link>
+        </SmartTooltip>
+        <SmartTooltip content={`Return Home\nNavigate back to the main dashboard.`}>
         <Link to="/" className="footer-button">
           <i className="fas fa-home footer-icon red"></i> Go to Home Page
         </Link>
+        </SmartTooltip>
       </div>
     </footer>
   );

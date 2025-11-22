@@ -1,6 +1,9 @@
 import React from "react";
 import { useSpring, animated } from "@react-spring/web";
 import { useNavigate } from "react-router-dom";
+import SmartTooltip from "../Presale/components/SmartTooltip";
+import AddTokenButton from "./AddTokenButton";
+import PurchaseProcessViz from "./PurchaseProcessViz";
 import "./HowToBuy.css";
 
 const HowToBuy = ({ setCurrentSection }) => {
@@ -8,45 +11,55 @@ const HowToBuy = ({ setCurrentSection }) => {
 
   const cardData = [
     {
-      imageSrc: "https://cdn.pixabay.com/photo/2017/08/06/08/05/bitcoin-2592145_960_720.jpg",
-      title: "Step 1: Connect Your Wallet",
-      description: "Choose a trusted wallet like MetaMask, TrustWallet, or Ledger. This ensures your funds are stored securely.",
-      icon: "🔗"
+      title: "1. Connect Wallet",
+      description: "Securely connect MetaMask, TrustWallet or any Web3 wallet to start.",
+      icon: "🔗",
+      tooltip: "Secure Connection\nUses standard EIP-1193 provider.\nClient-side only.",
+      details: "Click 'Connect Wallet' in the top right corner. Ensure you are on the BNB Smart Chain (BSC) network."
     },
     {
-      imageSrc: "https://cdn.pixabay.com/photo/2018/10/15/18/37/bitcoin-3748224_960_720.jpg",
-      title: "Step 2: Select Payment Method",
-      description: "Pay with BNB, USDT, or USDC. Our platform supports multiple payment options for your convenience.",
-      icon: "💳"
+      title: "2. Select Asset",
+      description: "Choose your payment currency: BNB, USDT, USDC or Card.",
+      icon: "💳",
+      tooltip: "Multi-Chain Support\nAccepted: BNB (Native), USDT (BEP20), USDC (BEP20).\nCard: Via Stripe/Wert.",
+      details: "Select the token you wish to swap. Ensure you have a small amount of BNB for gas fees."
     },
     {
-      imageSrc: "https://cdn.pixabay.com/photo/2020/04/08/20/38/cryptocurrency-5026238_960_720.jpg",
-      title: "Step 3: Enter Purchase Amount",
-      description: "Decide the amount of $BITS you want to buy and confirm your transaction in seconds.",
-      icon: "💰"
+      title: "3. Input Amount",
+      description: "Enter the amount you wish to invest. The AI calculator handles the rates.",
+      icon: "💰",
+      tooltip: "Smart Calculation\nReal-time oracle price feed.\nZero slippage guarantee on presale.",
+      details: "Type the amount in USD or Token quantity. You will see the exact BITS allocation immediately."
     },
     {
-      imageSrc: "https://cdn.pixabay.com/photo/2021/05/31/16/29/artificial-intelligence-6292681_960_720.jpg",
-      title: "Step 4: Discover AI Analytics",
-      description: "Access AI-powered predictions and analytics to optimize your trading decisions.",
-      icon: "🤖"
-    },
-    {
-      imageSrc: "https://cdn.pixabay.com/photo/2022/06/12/12/13/artificial-intelligence-7252235_960_720.jpg",
-      title: "Step 5: Advanced Portfolio Tools",
-      description: "Leverage AI-driven portfolio management tools to track and grow your investments.",
-      icon: "📊"
-    },
-    {
-      imageSrc: "https://cdn.pixabay.com/photo/2019/06/11/18/56/artificial-intelligence-4263702_960_720.jpg",
-      title: "Step 6: Enjoy Lightning-Fast Transactions",
-      description: "Experience secure and seamless transactions with zero delays, backed by blockchain technology.",
-      icon: "⚡"
+      title: "4. Confirm & Claim",
+      description: "Approve the transaction and secure your BITS allocation instantly.",
+      icon: "⚡",
+      tooltip: "Instant Confirmation\nTransaction hash generated on-chain.\nTokens are reserved in the smart contract.",
+      details: "Sign the transaction in your wallet. Once confirmed, tokens are linked to your address."
     },
   ];
 
+  const faqData = [
+    {
+      q: "What is the Gas Fee?",
+      a: "A small network fee paid in BNB to process the transaction on the blockchain. Usually < $0.10.",
+      icon: "⛽"
+    },
+    {
+      q: "When do I receive BITS?",
+      a: "Tokens are allocated immediately to your address in the contract. Claiming opens at TGE (Token Generation Event).",
+      icon: "📅"
+    },
+    {
+      q: "Is it Secure?",
+      a: "Yes. Our contract is audited. We do not have access to your private keys. You maintain full custody.",
+      icon: "🛡️"
+    }
+  ];
+
   // Interactive Card Component
-  const InteractiveCard = ({ imageSrc, title, description, icon }) => {
+  const InteractiveCard = ({ title, description, icon, tooltip, details }) => {
     const [springProps, api] = useSpring(() => ({
       scale: 1,
       rotateX: 0,
@@ -58,11 +71,11 @@ const HowToBuy = ({ setCurrentSection }) => {
       const rect = e.currentTarget.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      const rotateX = -(y / rect.height - 0.5) * 15;
-      const rotateY = (x / rect.width - 0.5) * 15;
+      const rotateX = -(y / rect.height - 0.5) * 10; // Subtle rotation
+      const rotateY = (x / rect.width - 0.5) * 10;
 
       api.start({
-        scale: 1.05,
+        scale: 1.03,
         rotateX,
         rotateY,
       });
@@ -77,47 +90,28 @@ const HowToBuy = ({ setCurrentSection }) => {
     };
 
     return (
-      <animated.div
-        className="info-card"
-        style={{
-          transform: springProps.scale.to(
-            (s) => `scale(${s}) rotateX(${springProps.rotateX.get()}deg) rotateY(${springProps.rotateY.get()}deg)`
-          ),
-        }}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-      >
-        <div className="card-icon">{icon}</div>
-        <img 
-          className="info-image" 
-          src={imageSrc} 
-          alt={title}
-          loading="lazy"
-          onError={(e) => {
-            e.target.style.display = 'none';
+      <SmartTooltip content={tooltip}>
+        <animated.div
+          className="guide-card"
+          style={{
+            transform: springProps.scale.to(
+              (s) => `scale(${s}) perspective(1000px) rotateX(${springProps.rotateX.get()}deg) rotateY(${springProps.rotateY.get()}deg)`
+            ),
           }}
-        />
-        <div className="info-content">
-          <h2>{title}</h2>
-          <p>{description}</p>
-        </div>
-      </animated.div>
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div className="guide-icon-wrapper">{icon}</div>
+          <div className="guide-content">
+            <h3>{title}</h3>
+            <p>{description}</p>
+            <span className="guide-details">{details}</span>
+          </div>
+        </animated.div>
+      </SmartTooltip>
     );
   };
 
-  // CTA Button Animation
-  const ctaSpring = useSpring({
-    from: { scale: 1 },
-    to: async (next) => {
-      while (true) {
-        await next({ scale: 1.05 });
-        await next({ scale: 1 });
-      }
-    },
-    config: { mass: 1, tension: 200, friction: 10 },
-  });
-
-  // Handle CTA Click
   const handleClick = () => {
     if (typeof setCurrentSection === "function") {
       setCurrentSection("presale");
@@ -126,91 +120,65 @@ const HowToBuy = ({ setCurrentSection }) => {
     }
   };
 
-  // Header Animation
-  const headerSpring = useSpring({
-    from: { opacity: 0, transform: 'translateY(-50px)' },
-    to: { opacity: 1, transform: 'translateY(0px)' },
-    config: { mass: 1, tension: 200, friction: 25 },
-  });
-
-  // Cards Stagger Animation
-  const cardsSpring = useSpring({
-    from: { opacity: 0 },
-    to: { opacity: 1 },
-    delay: 300,
-    config: { mass: 1, tension: 200, friction: 25 },
-  });
-
   return (
     <div className="how-to-buy-container">
-      {/* Animated Header */}
-      <animated.header className="how-to-buy-header" style={headerSpring}>
-        <div className="header-bg">
-          <h1 className="header-title">
-            Your Guide to <span className="highlight">$BITS</span> Transactions
+      {/* HEADER SECTION */}
+      <header className="htb-header">
+        <SmartTooltip content={`Purchase Guide\nFollow these simple steps to join the BitSwapDEX ecosystem.`}>
+          <h1 className="htb-title">
+            How to Buy <span className="highlight">$BITS</span>
           </h1>
-          <p className="header-subtitle">
-            Secure, intelligent, and fast trading backed by AI-powered tools.
-          </p>
-        </div>
-      </animated.header>
+        </SmartTooltip>
+        <p className="htb-subtitle">
+          A seamless, AI-optimized process to secure your allocation.
+        </p>
+      </header>
 
-      {/* Animated Info Section */}
-      <animated.div className="info-section" style={cardsSpring}>
+      {/* 🧬 ABSTRACT VISUALIZATION */}
+      <section className="htb-viz-section">
+        <div className="viz-label">
+          <span>AI Transaction Flow</span>
+        </div>
+        <PurchaseProcessViz />
+      </section>
+
+      {/* STEPS GRID */}
+      <div className="htb-steps-grid">
         {cardData.map((card, index) => (
           <InteractiveCard
-            key={`card-${index}`}
-            imageSrc={card.imageSrc}
-            title={card.title}
-            description={card.description}
-            icon={card.icon}
+            key={`step-${index}`}
+            {...card}
           />
         ))}
-      </animated.div>
-
-      {/* CTA Section */}
-      <div className="cta-section">
-        <h2 className="cta-title">Start Your Crypto Journey Today</h2>
-        <p className="cta-subtitle">
-          Join thousands of traders who trust our AI-powered platform
-        </p>
-        <animated.button
-          className="cta-button"
-          style={{
-            transform: ctaSpring.scale.to((s) => `scale(${s})`),
-          }}
-          onClick={handleClick}
-          aria-label="Start trading with BITS"
-        >
-          <span className="cta-icon">🚀</span>
-          Get Started
-        </animated.button>
       </div>
 
-      {/* Additional Features Section */}
-      <div className="features-highlight">
-        <h3 className="features-title">Why Choose BITS?</h3>
-        <div className="features-grid">
-          <div className="feature-item">
-            <span className="feature-icon">🔒</span>
-            <h4>Secure</h4>
-            <p>Bank-level security with multi-layer encryption</p>
-          </div>
-          <div className="feature-item">
-            <span className="feature-icon">⚡</span>
-            <h4>Fast</h4>
-            <p>Lightning-fast transactions with minimal fees</p>
-          </div>
-          <div className="feature-item">
-            <span className="feature-icon">🤖</span>
-            <h4>AI-Powered</h4>
-            <p>Advanced analytics and trading insights</p>
-          </div>
-          <div className="feature-item">
-            <span className="feature-icon">🌍</span>
-            <h4>Global</h4>
-            <p>Available worldwide with 24/7 support</p>
-          </div>
+      {/* ACTION AREA */}
+      <div className="htb-actions">
+        <SmartTooltip content={`Go to Presale\nNavigate to the main dashboard to make a purchase.`}>
+          <button className="cta-button-glow" onClick={handleClick}>
+            <span className="cta-icon">🚀</span>
+            Start Purchase
+          </button>
+        </SmartTooltip>
+        
+        <AddTokenButton className="large-btn" />
+      </div>
+
+      {/* FAQ SECTION */}
+      <div className="htb-faq-section">
+        <h3 className="faq-title">Common Questions</h3>
+        <div className="faq-grid">
+          {faqData.map((item, i) => (
+            <SmartTooltip key={i} content={`Info: ${item.q}\n${item.a}`}>
+              <div className="faq-card">
+                <div className="faq-icon">{item.icon}</div>
+                <div>
+                  <h4>{item.q}</h4>
+                  <p>{item.a}</p>
+                </div>
+              </div>
+            </SmartTooltip>
+          ))}
         </div>
       </div>
     </div>

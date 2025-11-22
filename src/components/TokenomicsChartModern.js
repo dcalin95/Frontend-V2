@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Icon from "../assets/icons/Icon";
 import bitsLogo from "../assets/logo.png";
 import "./TokenomicsChartModern.css";
+import SmartTooltip from "../Presale/components/SmartTooltip"; // Import SmartTooltip
 
 const DEFAULT_SECTIONS = [
   { 
@@ -202,9 +203,11 @@ const TokenomicsChartModern = ({
           <Icon name="verified" size="medium" className="stat-icon" />
           <div className="stat-content">
             <span className="stat-label">Coverage</span>
+            <SmartTooltip content={`Coverage: ${totalPercent}%\nRepresents the total allocated percentage of the supply.`}>
             <span className={`stat-value ${totalPercent !== 100 ? 'warning' : ''}`}>
               {totalPercent}%
             </span>
+            </SmartTooltip>
           </div>
         </div>
       </motion.div>
@@ -238,7 +241,7 @@ const TokenomicsChartModern = ({
           {/* Center Core */}
           <div className="ai-ring-core">
             <div className="core-glow" />
-            <img src="/favicon.ico" alt="$BITS" className="core-logo" />
+            <img src={bitsLogo} alt="$BITS" className="core-logo" />
             <div className="core-text">
               <span className="core-label">$BITS</span>
               <span className="core-sublabel">Token</span>
@@ -388,15 +391,19 @@ const TokenomicsChartModern = ({
               <div className="card-stats">
                 <div className="card-stat">
                   <span className="card-stat-label">Allocation</span>
+                  <SmartTooltip content={`${segment.value}%\nPercentage of total supply allocated to ${segment.name}.`}>
                   <span className="card-stat-value" style={{ color: segment.color }}>
                     {segment.value}%
                   </span>
+                  </SmartTooltip>
                 </div>
                 <div className="card-stat">
                   <span className="card-stat-label">Amount</span>
+                  <SmartTooltip content={`${segment.amountLabel} $BITS\nTotal tokens reserved for this category.`}>
                   <span className="card-stat-value">
                     {segment.amountLabel} $BITS
                   </span>
+                  </SmartTooltip>
                 </div>
               </div>
               

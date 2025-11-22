@@ -6,6 +6,7 @@ import { ethers } from "ethers";
 import WalletContext from "../../context/WalletContext";
 import { CONTRACTS } from "../../contract/contracts";
 import { tokenList } from "../TokenHandlers/tokenData";
+import SmartTooltip from "../components/SmartTooltip";
 
 const PaymentSummary = ({
   amountPay,
@@ -73,70 +74,100 @@ const PaymentSummary = ({
   return (
     <div className="payment-summary">
       {/* Square 1: YOU PAY */}
-      <div className="summary-line" translate="no">
-        <div className="summary-label">
-          <FaDollarSign className="icon icon-pay" />
+      <SmartTooltip content={`Total Payment Amount\nPayment Token: ${selectedTokenLabel || 'Select Token'}\nAmount: ${formattedAmountPay}\nUSD Value: ${formattedUsdValue}\n${fiatDetails ? `EUR: ${formatCurrency(parseFloat(fiatDetails.amount || 0), "EUR", 0)}` : ''}\nThis is what you'll pay for this transaction`}>
+        <div 
+          className="summary-line" 
+          translate="no"
+        >
+          <div className="summary-label">
+            <FaDollarSign className="icon icon-pay" />
+          </div>
+          <div className="summary-value highlight-bnb">
+            {formattedUsdValue}
+          </div>
+          <div className="summary-label-text">YOU PAY</div>
         </div>
-        <div className="summary-value highlight-bnb">
-          {formattedUsdValue}
-        </div>
-        <div className="summary-label-text">YOU PAY</div>
-      </div>
+      </SmartTooltip>
 
       {/* Square 2: YOU RECEIVE */}
-      <div className="summary-line" translate="no">
-        <div className="summary-label">
-          <FaCoins className="icon icon-receive" />
+      <SmartTooltip content={`BITS Tokens You'll Receive\nBase Amount: ${formattedPureBits} BITS\nWithout Bonus: Standard token allocation\nCurrent BITS Price: ${formattedBitsPrice} per token\nTokens available immediately after purchase`}>
+        <div 
+          className="summary-line" 
+          translate="no"
+        >
+          <div className="summary-label">
+            <FaCoins className="icon icon-receive" />
+          </div>
+          <div className="summary-value bits-gradient">
+            {formattedPureBits}
+          </div>
+          <div className="summary-label-text">YOU RECEIVE</div>
         </div>
-        <div className="summary-value bits-gradient">
-          {formattedPureBits}
-        </div>
-        <div className="summary-label-text">YOU RECEIVE</div>
-      </div>
+      </SmartTooltip>
 
       {/* Square 3: BONUS % */}
-      <div className="summary-line" translate="no">
-        <div className="summary-label">
-          <FaGift className="icon icon-bonus" />
+      <SmartTooltip content={`Bonus Percentage\nYour Bonus: ${bonusPercentage}\n${bonus > 0 ? `Active Promotion: ${bonus}% bonus on all purchases\nHigher investment = Higher bonus!` : 'No active bonus at this time'}\n${walletAddress ? 'Wallet connected - eligible for all bonuses' : 'Connect wallet to unlock bonuses'}`}>
+        <div 
+          className="summary-line" 
+          translate="no"
+        >
+          <div className="summary-label">
+            <FaGift className="icon icon-bonus" />
+          </div>
+          <div className="summary-value bonus-highlight">
+            {bonusPercentage}
+          </div>
+          <div className="summary-label-text">BONUS %</div>
         </div>
-        <div className="summary-value bonus-highlight">
-          {bonusPercentage}
-        </div>
-        <div className="summary-label-text">BONUS %</div>
-      </div>
+      </SmartTooltip>
 
       {/* Square 4: BONUS TOKENS */}
-      <div className="summary-line" translate="no">
-        <div className="summary-label">
-          <FaStar className="icon icon-bonus" />
+      <SmartTooltip content={`Bonus Tokens You'll Receive\nBonus Amount: ${formattedBonusAmount} BITS\nBonus Percentage: ${bonusPercentage}\nCalculation: ${formattedPureBits} × ${bonusPercentage}\nBonus tokens added on top of your base purchase!`}>
+        <div 
+          className="summary-line" 
+          translate="no"
+        >
+          <div className="summary-label">
+            <FaStar className="icon icon-bonus" />
+          </div>
+          <div className="summary-value bonus-highlight">
+            {formattedBonusAmount}
+          </div>
+          <div className="summary-label-text">BONUS TOKENS</div>
         </div>
-        <div className="summary-value bonus-highlight">
-          {formattedBonusAmount}
-        </div>
-        <div className="summary-label-text">BONUS TOKENS</div>
-      </div>
+      </SmartTooltip>
 
       {/* Square 5: TOTAL NOW */}
-      <div className="summary-line" translate="no">
-        <div className="summary-label">
-          <FaGem className="icon icon-receive" />
+      <SmartTooltip content={`Tokens Available Immediately\nBase Tokens: ${formattedPureBits} BITS\nAvailable Now: Unlocked instantly\nUse immediately for: Trading, Staking, or Holding\nNo vesting period for base tokens`}>
+        <div 
+          className="summary-line" 
+          translate="no"
+        >
+          <div className="summary-label">
+            <FaGem className="icon icon-receive" />
+          </div>
+          <div className="summary-value bits-gradient">
+            {formattedPureBits}
+          </div>
+          <div className="summary-label-text">TOTAL NOW</div>
         </div>
-        <div className="summary-value bits-gradient">
-          {formattedPureBits}
-        </div>
-        <div className="summary-label-text">TOTAL NOW</div>
-      </div>
+      </SmartTooltip>
 
       {/* Square 6: TOTAL + BONUS */}
-      <div className="summary-line" translate="no">
-        <div className="summary-label">
-          <FaGem className="icon icon-total" />
+      <SmartTooltip content={`Total Tokens (Base + Bonus)\nBase Tokens: ${formattedPureBits} BITS\nBonus Tokens: ${formattedBonusAmount} BITS\nGrand Total: ${formattedTotalBits} BITS\nTotal Value: ${formatCurrency(parseFloat(formattedTotalBits.replace(/,/g, '')) * (bitsPriceUSD || 0))}\nYour complete token allocation for this purchase!`}>
+        <div 
+          className="summary-line" 
+          translate="no"
+        >
+          <div className="summary-label">
+            <FaGem className="icon icon-total" />
+          </div>
+          <div className="summary-value total-highlight">
+            {formattedTotalBits}
+          </div>
+          <div className="summary-label-text">TOTAL + BONUS</div>
         </div>
-        <div className="summary-value total-highlight">
-          {formattedTotalBits}
-        </div>
-        <div className="summary-label-text">TOTAL + BONUS</div>
-      </div>
+      </SmartTooltip>
 
              <div className="legal-disclaimer-container">
          <span className="legal-disclaimer-text">

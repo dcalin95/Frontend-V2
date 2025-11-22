@@ -23,19 +23,24 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 20px 12px;
+  gap: 10px;
+  padding: 12px 8px;
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   transition: all 0.3s ease;
+  cursor: help;
+  position: relative;
 }
 
 .summary-line:hover {
   border-color: rgba(0, 255, 163, 0.5);
   transform: translateY(-3px);
   box-shadow: 0 6px 20px rgba(0, 255, 163, 0.2);
+  z-index: 100;
 }
+
+/* REMOVED OLD CSS-ONLY TOOLTIP STYLES (Now using SmartTooltip) */
 
 /* Icon/SVG Container */
 .summary-label {
@@ -47,7 +52,7 @@
 }
 
 .icon {
-  font-size: 2rem;
+  font-size: 3rem; /* MĂRIT! */
   filter: drop-shadow(0 0 10px currentColor);
 }
 
@@ -58,12 +63,12 @@
 
 /* Value - BIG */
 .summary-value {
-  font-size: 1.4rem;
+  font-size: 1.8rem; /* MĂRIT! */
   font-weight: 800;
   text-align: center;
   color: #ffffff;
-  line-height: 1.2;
-  margin-bottom: 2px;
+  line-height: 1.1;
+  margin-bottom: 4px;
 }
 
 /* Gradient Highlights */
@@ -93,16 +98,17 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  font-size: 1.5rem;
+  font-size: 2rem; /* MĂRIT! */
 }
 
 /* Label Text - SMALL, under value */
 .summary-label-text {
-  font-size: 0.7rem;
+  font-size: 0.8rem; /* MĂRIT! */
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.6);
   text-align: center;
+  font-weight: 600;
 }
 
 /* Legal Disclaimer - Outside grid */
@@ -166,3 +172,4 @@
     gap: 10px;
   }
 }
+

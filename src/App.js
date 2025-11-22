@@ -131,6 +131,7 @@ const ContactPage = lazy(() => import("./components/contact/ContactPage"));
 const WalletTestComponent = lazy(() => import("./context/wallet/WalletTestComponent"));
 const MindMirror = lazy(() => import("./mindmirror/MindMirrorDashboard"));
 const ThankYouPage = lazy(() => import("./components/ThankYouPage"));
+const RegisteredUsers = lazy(() => import("./components/Admin/RegisteredUsers")); // Import nou
 
 
 const App = () => {
@@ -359,6 +360,7 @@ const App = () => {
                       <Route path="/wallet-test" element={<WalletTestComponent />} />
                       <Route path="/mind-mirror" element={<MindMirror />} />
                       <Route path="/thank-you" element={<ThankYouPage />} />
+                      <Route path="/admin/users" element={<RegisteredUsers />} /> {/* Rută secretă */}
                       <Route
                         path="/test-payment"
                         element={

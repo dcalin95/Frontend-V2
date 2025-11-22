@@ -14,15 +14,90 @@
   text-rendering: geometricPrecision;
 }
 
-/* === GLOBAL VARIABLES === */
+/* === GLOBAL VARIABLES & RESPONSIVE SCALE SYSTEM === */
 :root {
   --base-font-size: 100%;
+  
+  /* Systematic Spacing & Typography - Auto-Scaling */
+  --spacing-unit: clamp(0.5rem, 2vw, 1rem);
+  --font-size-xs: clamp(0.7rem, 1.5vw, 0.8rem);
+  --font-size-sm: clamp(0.8rem, 2vw, 1rem);
+  --font-size-md: clamp(1rem, 2.5vw, 1.2rem);
+  --font-size-lg: clamp(1.2rem, 3vw, 1.5rem);
+  --font-size-xl: clamp(1.5rem, 4vw, 2rem);
+  --font-size-xxl: clamp(2rem, 5vw, 3rem);
+  --font-size-hero: clamp(2.5rem, 8vw, 4.5rem);
+  
+  --container-padding: clamp(1rem, 5vw, 2rem);
 }
 
 /* === HTML Scaling === */
 html {
   font-size: var(--base-font-size);
   transition: font-size 0.3s ease;
+  overflow-x: hidden; /* Crucial for mobile */
+}
+
+/* 💻 LAPTOP OPTIMIZATION: Reduce scale for 13-15" screens */
+@media screen and (min-width: 1024px) and (max-width: 1580px) {
+  html {
+    font-size: 85%; /* Equivalent to zooming out to ~85% */
+  }
+}
+
+/* 📱 MOBILE OPTIMIZATION SYSTEM - GLOBAL SAFETY NET */
+/* This applies to ALL pages when 'mode-mobile' class is injected by MobileUI.js */
+body.mode-mobile {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+  font-size: 90%;
+}
+
+/* Kill switch for horizontal overflow on mobile */
+body.mode-mobile * {
+  max-width: 100vw !important;
+  box-sizing: border-box !important;
+}
+
+/* Disable heavy effects on mobile for performance */
+body.mode-mobile * {
+  box-shadow: none !important; /* Reduce rendering cost */
+  text-shadow: none !important; /* Reduce rendering cost */
+  backdrop-filter: none !important; /* Heavy on GPU */
+  -webkit-backdrop-filter: none !important;
+  transition: none !important; /* Eliminate layout thrashing on scroll */
+  animation-duration: 0s !important; /* Kill animations if user prefers speed */
+}
+
+/* Re-enable essential visual cues but lighter */
+body.mode-mobile .btn-primary, 
+body.mode-mobile .button, 
+body.mode-mobile button {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+  transition: transform 0.1s ease !important;
+}
+
+/* Hide video background on mobile to save battery/data/CPU */
+body.mode-mobile video, 
+body.mode-mobile .video-background {
+  display: none !important;
+}
+
+/* Fallback background for mobile */
+body.mode-mobile .home-container {
+  background: radial-gradient(circle at center, #0F1419 0%, #000000 100%);
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 90%;
+  }
+  
+  /* Fallback if JS fails */
+  body {
+    overflow-x: hidden;
+  }
 }
 
 /* === BODY Setup (without Tailwind @apply) === */

@@ -2,6 +2,7 @@ import React from "react";
 import PresaleCountdownFlip from "./PresaleCountdownFlip";
 import NewPresaleStats from "./NewPresaleStats";
 import { useHybridPresaleState } from "./useHybridPresaleState";
+import SmartTooltip from "../components/SmartTooltip"; // Import SmartTooltip
 
 // Import CSS modules
 import "./PresaleDashboard.desktop.css";
@@ -82,6 +83,7 @@ const PresaleDashboard = () => {
             </div>
             
             <div className={styles.dataGrid}>
+              <SmartTooltip content={`Active Round\nThe current presale stage active on the smart contract.`}>
               <div className={styles.dataCard}>
                 <div className={styles.cardIcon}>🎯</div>
                 <div className={styles.cardContent}>
@@ -91,7 +93,9 @@ const PresaleDashboard = () => {
                   </div>
                 </div>
               </div>
+              </SmartTooltip>
               
+              <SmartTooltip content={`Token Price\nReal-time price per BITS token fetched directly from the blockchain.`}>
               <div className={styles.dataCard}>
                 <div className={styles.cardIcon}>💰</div>
                 <div className={styles.cardContent}>
@@ -101,7 +105,9 @@ const PresaleDashboard = () => {
                   </div>
                 </div>
               </div>
+              </SmartTooltip>
               
+              <SmartTooltip content={`Cell ID\nUnique identifier for the current presale cell configuration.`}>
               <div className={styles.dataCard}>
                 <div className={styles.cardIcon}>📦</div>
                 <div className={styles.cardContent}>
@@ -111,6 +117,7 @@ const PresaleDashboard = () => {
                   </div>
                 </div>
               </div>
+              </SmartTooltip>
             </div>
           </div>
 

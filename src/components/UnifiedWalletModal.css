@@ -1,4 +1,4 @@
-/* 🌐 UNIFIED WALLET MODAL - EPIC STYLE */
+/* 🌐 UNIFIED WALLET MODAL - EPIC GEMINI AI STYLE */
 
 .unified-wallet-modal-overlay {
   position: fixed;
@@ -7,74 +7,240 @@
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 99999;
-  animation: fadeIn 0.2s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  animation: fadeIn 0.3s ease;
 }
 
 .unified-wallet-modal {
-  background: linear-gradient(135deg, rgba(10, 10, 20, 0.95) 0%, rgba(20, 20, 40, 0.95) 100%);
-  border: 1.5px solid transparent;
-  border-image: linear-gradient(135deg, #14f195 0%, #9945ff 100%) 1;
+  background: rgba(10, 10, 20, 0.92); /* Mai întunecat și transparent */
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 24px;
-  padding: 32px;
-  max-width: 480px;
-  width: 90%;
-  max-height: 80vh;
+  padding: 40px;
+  max-width: 520px; /* Puțin mai lat */
+  width: 95%;
+  max-height: 85vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6),
-              inset 0 0 40px rgba(20, 241, 149, 0.05);
-  animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8),
+              inset 0 0 60px rgba(20, 241, 149, 0.02);
+  animation: slideUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
   position: relative;
 }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+/* Network Selection Grid - Refactored Layout */
+.network-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px; /* Spațiu mai mare între carduri */
+  margin-top: 30px;
 }
 
-.modal-close-btn {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: none;
-  color: #ff4d4d;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  font-size: 16px;
+.network-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 30px 20px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 16px;
+  height: 100%;
+}
+
+/* Specific Themes for Cards */
+.evm-card:hover {
+  background: linear-gradient(145deg, rgba(59, 153, 252, 0.1) 0%, rgba(59, 153, 252, 0.05) 100%);
+  border-color: rgba(59, 153, 252, 0.5);
+  box-shadow: 0 10px 30px rgba(59, 153, 252, 0.2), inset 0 0 20px rgba(59, 153, 252, 0.1);
+}
+
+.solana-card:hover {
+  background: linear-gradient(145deg, rgba(153, 69, 255, 0.1) 0%, rgba(20, 241, 149, 0.05) 100%);
+  border-color: rgba(153, 69, 255, 0.5);
+  box-shadow: 0 10px 30px rgba(153, 69, 255, 0.2), inset 0 0 20px rgba(20, 241, 149, 0.1);
+}
+
+/* Icon Wrapper with Glow */
+.network-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 10px;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.modal-close-btn:hover {
-  background: rgba(255, 77, 77, 0.2);
-  transform: rotate(90deg);
+.network-card:hover .network-icon-wrapper {
+  transform: scale(1.1) rotate(5deg);
+  background: rgba(255, 255, 255, 0.1);
 }
 
+.evm-card:hover .network-icon-wrapper {
+  box-shadow: 0 0 30px rgba(59, 153, 252, 0.4);
+  border-color: rgba(59, 153, 252, 0.6);
+}
+
+.solana-card:hover .network-icon-wrapper {
+  box-shadow: 0 0 30px rgba(153, 69, 255, 0.4);
+  border-color: rgba(153, 69, 255, 0.6);
+}
+
+.network-icon-img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+}
+
+/* Text Typography */
+.network-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.network-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.network-chains {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.4;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.network-card:hover .network-chains {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Modal Title & Subtitle */
+.modal-title {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff 0%, #a5a5a5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+  text-align: center;
+  letter-spacing: -0.5px;
+  text-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+}
+
+.modal-subtitle {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* Mobile Responsive Updates */
+@media (max-width: 768px) {
+  .network-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .network-card {
+    flex-direction: row; /* Horizontal pe mobil */
+    padding: 20px;
+    text-align: left;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .network-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .network-icon-img {
+    width: 32px;
+    height: 32px;
+  }
+
+  .network-info {
+    align-items: flex-start;
+  }
+
+  .network-name {
+    margin-bottom: 4px;
+    font-size: 1.1rem;
+  }
+}
+
+/* =========================================
+   WALLET SELECTION SCREEN (RESTORED STYLES)
+   ========================================= */
+
+/* Wallet List Container */
+.wallet-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* Wallet Option Button */
+.wallet-option {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  width: 100%;
+  text-align: left;
+}
+
+/* Wallet Option Hover Effect */
+.wallet-option:hover {
+  background: linear-gradient(135deg, rgba(20, 241, 149, 0.08) 0%, rgba(153, 69, 255, 0.08) 100%);
+  border-color: rgba(20, 241, 149, 0.3);
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Wallet Icon inside button */
+.wallet-option img {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0; /* Prevents squishing */
+}
+
+/* Back Button */
 .back-btn {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -83,131 +249,52 @@
   border-radius: 8px;
   font-size: 0.9rem;
   cursor: pointer;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .back-btn:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(20, 241, 149, 0.3);
+  transform: translateX(-2px);
 }
 
-.modal-title {
-  font-size: 1.8rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #14f195 0%, #9945ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 8px;
-  text-align: center;
-}
-
-.modal-subtitle {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.95rem;
-  text-align: center;
-  margin-bottom: 28px;
-}
-
-/* Network Selection Grid */
-.network-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-top: 20px;
-}
-
-.network-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-  border: 1.5px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 24px 16px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.network-card::before {
-  content: '';
+/* Close Button (Global) */
+.modal-close-btn {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(20, 241, 149, 0.1) 0%, rgba(153, 69, 255, 0.1) 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.network-card:hover {
-  border-color: rgba(20, 241, 149, 0.5);
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(20, 241, 149, 0.2);
-}
-
-.network-card:hover::before {
-  opacity: 1;
-}
-
-.network-icon {
-  font-size: 3rem;
-  margin-bottom: 12px;
-}
-
-.network-name {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 6px;
-}
-
-.network-chains {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-/* Wallet List */
-.wallet-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.wallet-option {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 16px 20px;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  color: #ff4d4d;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 18px;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
 }
 
-.wallet-option:hover {
-  background: linear-gradient(135deg, rgba(20, 241, 149, 0.08) 0%, rgba(153, 69, 255, 0.08) 100%);
-  border-color: rgba(20, 241, 149, 0.3);
-  transform: translateX(4px);
+.modal-close-btn:hover {
+  background: rgba(255, 77, 77, 0.2);
+  transform: rotate(90deg);
 }
 
-.wallet-option img {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  object-fit: cover;
-}
-
+/* No Wallets State */
 .no-wallets {
   text-align: center;
   padding: 40px 20px;
   color: rgba(255, 255, 255, 0.6);
+  background: rgba(255,255,255,0.02);
+  border-radius: 16px;
+  border: 1px dashed rgba(255,255,255,0.1);
 }
 
 .no-wallets p {
@@ -215,39 +302,21 @@
   font-size: 1rem;
 }
 
+/* Install Link Button */
 .install-link {
   display: inline-block;
   background: linear-gradient(135deg, #14f195 0%, #9945ff 100%);
   color: #000;
   padding: 12px 24px;
-  border-radius: 8px;
+  border-radius: 12px;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
   transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(20, 241, 149, 0.3);
 }
 
 .install-link:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(20, 241, 149, 0.4);
-}
-
-/* Mobile Responsive */
-@media (max-width: 768px) {
-  .unified-wallet-modal {
-    padding: 24px 20px;
-    width: 95%;
-  }
-
-  .network-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .modal-title {
-    font-size: 1.5rem;
-  }
-
-  .wallet-option {
-    padding: 14px 16px;
-  }
+  box-shadow: 0 6px 25px rgba(20, 241, 149, 0.5);
 }
 

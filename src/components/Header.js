@@ -1,10 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import WalletContext from "../context/WalletContext";
+import SmartTooltip from "../Presale/components/SmartTooltip"; // Import SmartTooltip
 
 import { usePresaleState } from "../Presale/Timer/usePresaleState";
 import PresaleCountdownMini from "../Presale/Timer/PresaleCountdownMini";
-
 import logo from "../assets/logo.png";
 import telegramLogo from "../assets/TLogo.png";
 import xLogo from "../assets/XLogo.png";
@@ -134,56 +134,101 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
 
         {/* ✅ Desktop Navigation - DOAR PE DESKTOP */}
         <nav className="navigation desktop-only">
-          <Link to="/orbit" className="btn-home laser-sharp">
-            <i className="fas fa-bullseye"></i> Orbit
-          </Link>
-          <Link to="/home" className="btn-home laser-sharp">
-            <i className="fas fa-home"></i> Home
-          </Link>
-          <Link to="/presale" className="btn-buy laser-sharp">
-            <i className="fas fa-dollar-sign"></i> Buy $BITS Presale
-          </Link>
-          <Link to="/staking" className="btn-tokenomics laser-sharp">
-            <i className="fas fa-coins"></i> Staking
-          </Link>
-          <Link to="/smart-staking" className="btn-smart-staking laser-sharp">
-            <i className="fas fa-rocket"></i> Smart Staking
-          </Link>
-          <Link to="/paper-trading" className="btn-paper-trading laser-sharp">
-            <i className="fas fa-gamepad"></i> Paper Trading
-          </Link>
-          <Link to="/whitepaper" className="btn-audit laser-sharp">
-            <i className="fas fa-file-alt"></i> Whitepaper
-          </Link>
+          <SmartTooltip content={`Project Orbit\nVisual representation of the BitSwapDEX ecosystem.`}>
+            <Link to="/orbit" className="btn-home laser-sharp">
+              <i className="fas fa-bullseye"></i> Orbit
+            </Link>
+          </SmartTooltip>
+          
+          <SmartTooltip content={`Home Dashboard\nYour central command center for all BitSwapDEX features.`}>
+            <Link to="/home" className="btn-home laser-sharp">
+              <i className="fas fa-home"></i> Home
+            </Link>
+          </SmartTooltip>
+          
+          <SmartTooltip content={`Buy $BITS Presale\nJoin the exclusive presale rounds before public listing.\nSecure early entry pricing.`}>
+            <Link to="/presale" className="btn-buy laser-sharp">
+              <i className="fas fa-dollar-sign"></i> Buy $BITS Presale
+            </Link>
+          </SmartTooltip>
+          
+          <SmartTooltip content={`Staking Hub\nEarn passive income by locking your BITS tokens.\nVariable APY based on pool participation.`}>
+            <Link to="/staking" className="btn-tokenomics laser-sharp">
+              <i className="fas fa-coins"></i> Staking
+            </Link>
+          </SmartTooltip>
+          
+          <SmartTooltip content={`Smart Staking\nAI-optimized staking strategies for maximum yield.`}>
+            <Link to="/smart-staking" className="btn-smart-staking laser-sharp">
+              <i className="fas fa-rocket"></i> Smart Staking
+            </Link>
+          </SmartTooltip>
+          
+          <SmartTooltip content={`Paper Trading\nPractice trading strategies without risking real funds.`}>
+            <Link to="/paper-trading" className="btn-paper-trading laser-sharp">
+              <i className="fas fa-gamepad"></i> Paper Trading
+            </Link>
+          </SmartTooltip>
+          
+          <SmartTooltip content={`Whitepaper\nIn-depth technical documentation of the BitSwapDEX protocol.`}>
+            <Link to="/whitepaper" className="btn-audit laser-sharp">
+              <i className="fas fa-file-alt"></i> Whitepaper
+            </Link>
+          </SmartTooltip>
+          
           {false && (
             <Link to="/reward-dashboard" className="btn-leaderboard laser-sharp">
               <i className="fas fa-chart-line"></i> Rewards Dashboard
             </Link>
           )}
-          <Link to="/bits-analytics" className="btn-bits-analytics laser-sharp">
-            <i className="fas fa-chart-bar"></i> BITS Analytics
-          </Link>
-          <Link to="/bitcoin-academy" className="btn-bitcoin-academy laser-sharp">
-            <i className="fab fa-bitcoin"></i> Bitcoin Academy
-          </Link>
-          <Link to="/education" className="btn-education laser-sharp">
-            <i className="fas fa-graduation-cap"></i> Education
-          </Link>
-          <Link to="/contact" className="btn-education laser-sharp">
-            <i className="fas fa-envelope"></i> Contact
-          </Link>
-          <Link to="/proof-of-transfer" className="btn-pox">
-            <i className="fas fa-link"></i> PoX & BitSwapDEX
-          </Link>
-          <Link to="/rewards-hub" className="btn-invite">
-            <i className="fas fa-star"></i> Rewards Hub
-          </Link>
-          <Link to="/ai-portfolio-claude4" className="btn-claude4-ai laser-sharp">
-            <i className="fas fa-brain"></i> Neural Investment Optimizer
-          </Link>
-          <button className="btn-go-main" onClick={() => navigate("/ai-assistant")}>
-            <i className="fas fa-robot"></i> AI BitSwapDEX
-          </button>
+          
+          <SmartTooltip content={`BITS Analytics\nReal-time market data, charts, and portfolio analysis.`}>
+            <Link to="/bits-analytics" className="btn-bits-analytics laser-sharp">
+              <i className="fas fa-chart-bar"></i> BITS Analytics
+            </Link>
+          </SmartTooltip>
+          
+          <SmartTooltip content={`Bitcoin Academy\nLearn about Bitcoin and blockchain technology from experts.`}>
+            <Link to="/bitcoin-academy" className="btn-bitcoin-academy laser-sharp">
+              <i className="fab fa-bitcoin"></i> Bitcoin Academy
+            </Link>
+          </SmartTooltip>
+          
+          <SmartTooltip content={`Education Center\nComprehensive guides and tutorials for crypto investing.`}>
+            <Link to="/education" className="btn-education laser-sharp">
+              <i className="fas fa-graduation-cap"></i> Education
+            </Link>
+          </SmartTooltip>
+          
+          <SmartTooltip content={`Contact Support\nGet in touch with our team for assistance or inquiries.`}>
+            <Link to="/contact" className="btn-education laser-sharp">
+              <i className="fas fa-envelope"></i> Contact
+            </Link>
+          </SmartTooltip>
+          
+          <SmartTooltip content={`Proof of Transfer (PoX)\nExplore the unique consensus mechanism powering BitSwapDEX.`}>
+            <Link to="/proof-of-transfer" className="btn-pox">
+              <i className="fas fa-link"></i> PoX & BitSwapDEX
+            </Link>
+          </SmartTooltip>
+          
+          <SmartTooltip content={`Rewards Hub\nClaim your earned bonuses, referral rewards, and airdrops.`}>
+            <Link to="/rewards-hub" className="btn-invite">
+              <i className="fas fa-star"></i> Rewards Hub
+            </Link>
+          </SmartTooltip>
+          
+          <SmartTooltip content={`Neural Investment Optimizer\nClaude 4 AI-powered portfolio management system.`}>
+            <Link to="/ai-portfolio-claude4" className="btn-claude4-ai laser-sharp">
+              <i className="fas fa-brain"></i> Neural Investment Optimizer
+            </Link>
+          </SmartTooltip>
+          
+          <SmartTooltip content={`AI BitSwapDEX Assistant\nChat with our AI to get instant answers and market insights.`}>
+            <button className="btn-go-main" onClick={() => navigate("/ai-assistant")}>
+              <i className="fas fa-robot"></i> AI BitSwapDEX
+            </button>
+          </SmartTooltip>
         </nav>
 
         {/* ✅ Desktop-only: Timer + Social */}

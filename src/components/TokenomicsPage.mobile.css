@@ -1,27 +1,55 @@
-/* 📱 Tokenomics Page - MOBILE GEMINI KING STYLE */
+/* 📱 Tokenomics Page - MOBILE GEMINI KING SYSTEM */
 
 @media (max-width: 768px) {
-  /* 🌟 GEMINI KING ENHANCEMENTS FOR MOBILE */
   .tokenomics-page {
-    padding: 1rem;
-    filter: contrast(1.15) brightness(1.05);
+    padding: 0.5rem; /* Reduce padding */
+    overflow-x: hidden;
+    width: 100%;
   }
 
+  /* Hide heavy fixed toggle on mobile - use inline if needed or hide */
   .tokenomics-toggle {
-    position: relative;
-    top: auto;
-    right: auto;
-    margin: 20px auto;
-    display: block;
-    width: calc(100% - 40px);
-    max-width: 300px;
-    border: 2px solid rgba(0, 255, 163, 0.4);
-    box-shadow: 0 4px 20px rgba(0, 255, 163, 0.4);
-    background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+    position: static !important; /* Force static flow */
+    margin: 10px auto;
+    width: 90%;
+    max-width: 100%;
+    transform: none;
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+  
+  /* Scale down charts to fit screen */
+  .tokenomics-chart-container, 
+  .tokenomics-ring-chart,
+  .hexagon-chart-container {
+    transform: scale(0.85);
+    transform-origin: center top;
+    margin-bottom: -50px; /* Compensate for scale whitespace */
+    width: 100%;
+    max-width: 100vw;
+    overflow: visible; /* Allow labels to peek if needed, but container handles scroll */
   }
 
-  .tokenomics-toggle:hover {
-    box-shadow: 0 6px 30px rgba(0, 255, 163, 0.6);
+  /* Adjust text sizes inside charts */
+  .chart-label, .legend-item {
+    font-size: 0.8rem !important;
+  }
+  
+  .chart-value {
+    font-size: 1rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .tokenomics-chart-container, 
+  .tokenomics-ring-chart,
+  .hexagon-chart-container {
+    transform: scale(0.65); /* More aggressive scaling for small phones */
+    margin-bottom: -100px;
+  }
+  
+  .tokenomics-toggle {
+    font-size: 0.8rem;
   }
 }
 

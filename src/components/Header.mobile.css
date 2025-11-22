@@ -1,5 +1,6 @@
 /* === Header - MOBILE ONLY === */
-@media (max-width: 768px) {
+/* Increased breakpoint to 1580px to force hamburger menu on laptops */
+@media (max-width: 1580px) {
   
   /* ASCUNDE ELEMENTELE DE DESKTOP COMPLET */
   .desktop-only,
@@ -97,7 +98,7 @@
 
   /* TEXT OPTIMIZAT (micsorat cu 15%, fara bold excesiv, SOLANA GRADIENT) */
   .mobile-text {
-    font-size: 0.9rem !important;
+    font-size: 0.81rem !important; /* Redus de la 0.9rem cu ~10% */
     font-weight: 600 !important; /* Putin mai bold pentru ca gradientul sa se vada bine */
     line-height: 1 !important;
     letter-spacing: 0.02em !important;
@@ -240,10 +241,53 @@
   /* Hide old hamburger styles if any remain */
   .hamburger { display: none !important; }
 
-  .right-section.mobile-only { display: flex !important; flex-direction: row; align-items: center; justify-content: center; flex: 1; gap: 0.5rem; order: 2; min-width: 0; }
-  .header-mini-timer { font-size: 0.65rem; text-align: center; line-height: 1.1; color: #00ffff; animation: glow 2.5s infinite ease-in-out; flex: 0 0 auto; min-width: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .header-mini-timer .timer-label { display: block; font-size: 0.6rem; margin-bottom: 2px; }
-  .social { display: flex; justify-content: center; gap: 8px; flex: 0 0 auto; order: 3; }
+  .right-section.mobile-only { 
+    display: flex !important; 
+    flex-direction: row; 
+    align-items: center; 
+    justify-content: center; 
+    flex: 1; 
+    gap: 0.3rem; /* Reduced gap to prevent overflow */
+    order: 2; 
+    min-width: 0; 
+    margin-right: 4px; /* Slight push from edge */
+  }
+  
+  .header-mini-timer { 
+    font-size: 0.65rem; 
+    text-align: center; 
+    line-height: 1.1; 
+    
+    /* SOLANA GRAPHIC STYLE */
+    color: #00FFA3;
+    text-shadow: 0 0 8px rgba(0, 255, 163, 0.6), 0 0 15px rgba(0, 255, 163, 0.3);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 600;
+    
+    flex: 0 0 auto; 
+    min-width: auto; 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    margin-right: 4px; /* Move slightly left from social icons */
+  }
+  
+  .header-mini-timer .timer-label { 
+    display: block; 
+    font-size: 0.55rem; 
+    margin-bottom: 2px; 
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: none;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .social { 
+    display: flex; 
+    justify-content: center; 
+    gap: 6px; /* Reduced gap between icons */
+    flex: 0 0 auto; 
+    order: 3; 
+  }
   .social-link { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; }
   .social-link img { width: 14px; height: 14px; }
   .header-spacer { height: 70px; }

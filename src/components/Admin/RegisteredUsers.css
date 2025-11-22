@@ -1,0 +1,129 @@
+.registered-users-container {
+  padding: 2rem;
+  background: rgba(15, 20, 25, 0.95);
+  border-radius: 24px;
+  border: 1px solid rgba(0, 255, 163, 0.2);
+  max-width: 1200px;
+  margin: 2rem auto;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+  font-family: 'Inter', sans-serif;
+}
+
+.users-title {
+  font-family: 'Orbitron', sans-serif;
+  color: #fff;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 1rem;
+}
+
+.users-title i {
+  color: #00FFA3;
+}
+
+.users-table-wrapper {
+  overflow-x: auto;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #fff;
+}
+
+.users-table th {
+  text-align: left;
+  padding: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.users-table td {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.95rem;
+}
+
+.users-table tr:hover {
+  background: rgba(0, 255, 163, 0.05);
+}
+
+.wallet-col {
+  font-family: 'Courier New', monospace;
+  color: #00FFA3;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-icon {
+  font-size: 1.2rem;
+}
+
+.location-col {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.flag-icon {
+  font-size: 1.8rem;
+}
+
+.loc-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.loc-country {
+  font-weight: 700;
+  color: #fff;
+}
+
+.loc-city {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.ip-col {
+  color: rgba(255, 255, 255, 0.5);
+  font-family: monospace;
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.status-badge.online {
+  background: rgba(0, 255, 163, 0.2);
+  color: #00FFA3;
+  border: 1px solid rgba(0, 255, 163, 0.4);
+}
+
+@media (max-width: 768px) {
+  .registered-users-container {
+    padding: 1rem;
+    margin: 1rem;
+  }
+  
+  .users-table th, .users-table td {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+  
+  .ip-col {
+    display: none; /* Hide IP on mobile to save space */
+  }
+}
+

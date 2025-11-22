@@ -8,15 +8,18 @@ import { WalletProvider } from "./context/WalletContext"; // EVM Provider (wagmi
 import { SolanaProvider } from "./context/SolanaWalletContext"; // Solana Provider
 import { UnifiedWalletProvider } from "./context/UnifiedWalletContext"; // Unified Logic
 import { ThemeProvider } from "./context/ThemeContext";
+import { GeoLocationProvider } from "./context/GeoLocationContext"; // 🌍 GeoSystem
 
 const AppWrapper = () => {
   return (
     <WalletProvider>
       <SolanaProvider>
         <UnifiedWalletProvider>
-          <ThemeProvider>
-            <App />
-          </ThemeProvider>
+          <GeoLocationProvider>
+            <ThemeProvider>
+              <App />
+            </ThemeProvider>
+          </GeoLocationProvider>
         </UnifiedWalletProvider>
       </SolanaProvider>
     </WalletProvider>

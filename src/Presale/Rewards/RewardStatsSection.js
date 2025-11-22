@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import bitsLogo from "../../assets/logo.png";
 import "./rewards.css";
+import SmartTooltip from "../components/SmartTooltip"; // Import SmartTooltip
 
 const RewardStatsSection = ({ 
   referral, 
@@ -63,6 +64,7 @@ const RewardStatsSection = ({
 
       <div className="reward-stats-grid">
         {/* 🎯 HYBRID: Node.sol Balance */}
+        <SmartTooltip content={`AI Neural Balance\nRecompense acumulate direct pe contractul Node.sol din activitățile rețelei neuronale.\nAceste fonduri sunt verificate și securizate de AI.`}>
         <div className="reward-card hybrid-card">
           <h5>🧠 AI Neural Balance</h5>
           <p><strong>{formatBitsAmount(nodeRewardBalance)}</strong> BITS</p>
@@ -71,7 +73,7 @@ const RewardStatsSection = ({
               Source: {hybridError ? (
                 "⚠️ Traditional"
               ) : (
-                <span className="brand-line" data-tooltip="AI data pipeline">
+                <span className="brand-line">
                   <img src={bitsLogo} alt="BITS" className="bits-logo-mini" />
                   <span className="bitsPulseLabel">BitPulse®</span>
                 </span>
@@ -79,7 +81,9 @@ const RewardStatsSection = ({
             </span>
           </div>
         </div>
+        </SmartTooltip>
 
+        <SmartTooltip content={`Referral Reward\nBonusuri câștigate din achizițiile prietenilor invitați.\nValoarea depinde de suma investită de aceștia.`}>
         <div className="reward-card">
           <h5>🏷️ Referral Reward</h5>
           <p><strong>{referral?.reward ?? 0}</strong> BITS</p>
@@ -88,13 +92,15 @@ const RewardStatsSection = ({
           </div>
           <div className="source-line">
             <span>Source:</span>
-            <span className="brand-line" style={{ marginLeft: 6 }} data-tooltip="AI data pipeline">
+            <span className="brand-line" style={{ marginLeft: 6 }}>
               <img src={bitsLogo} alt="BITS" className="bits-logo-mini" />
               <span className="bitsPulseLabel">BitPulse®</span>
             </span>
           </div>
         </div>
+        </SmartTooltip>
 
+        <SmartTooltip content={`Telegram Activity\nRecompense pentru activitatea ta în comunitatea Telegram.\nCalculat pe baza timpului și a mesajelor trimise.`}>
         <div className="reward-card">
           <h5>💬 Telegram Activity</h5>
           <p><strong>{telegram?.reward ?? 0}</strong> BITS</p>
@@ -116,13 +122,15 @@ const RewardStatsSection = ({
           )}
           <div className="source-line">
             <span>Source:</span>
-            <span className="brand-line" style={{ marginLeft: 6 }} data-tooltip="AI data pipeline">
+            <span className="brand-line" style={{ marginLeft: 6 }}>
               <img src={bitsLogo} alt="BITS" className="bits-logo-mini" />
               <span className="bitsPulseLabel">BitPulse®</span>
             </span>
           </div>
         </div>
+        </SmartTooltip>
 
+        <SmartTooltip content={`AI Invite Code\nCodul tău unic generat de rețeaua neuronală.\nDistribuie-l pentru a câștiga bonusuri suplimentare.`}>
         <div className="reward-card">
           <h5>🚀 AI Invite Code</h5>
           <p>
@@ -142,6 +150,7 @@ const RewardStatsSection = ({
             </span>
           </div>
         </div>
+        </SmartTooltip>
       </div>
 
       {/* 🎯 HYBRID: Reward Tiers Display */}
@@ -150,10 +159,12 @@ const RewardStatsSection = ({
           <h5>🎯 AI Boost Multipliers</h5>
           <div className="tiers-grid">
             {rewardTiers.slice(0, 4).map((tier, index) => (
-              <div key={index} className="tier-card">
+              <SmartTooltip key={index} content={`Tier ${index + 1} Boost\nPrimești +${tier.percent}% bonus pentru primele ${formatBitsAmount(tier.limit)} BITS acumulate.`}>
+              <div className="tier-card">
                 <p><strong>{tier.percent}%</strong></p>
                 <p>up to {formatBitsAmount(tier.limit)}</p>
               </div>
+              </SmartTooltip>
             ))}
           </div>
         </div>
@@ -184,6 +195,7 @@ const RewardStatsSection = ({
             <h5>🔧 AI System Status</h5>
             <div className="ai-duo-grid">
               {/* Card A: Neural + Security */}
+              <SmartTooltip content={`Neural Security Core\nMonitorizează în timp real integritatea sistemului, detectează fraudele și validează tranzacțiile AI.\nStatus: Online & Securizat.`}>
               <div className="ai-card">
                 <div className="ai-card-title">🧠 Neural & Security</div>
                 <div className="neuro-orb" style={{ marginBottom: 10 }}>
@@ -221,8 +233,10 @@ const RewardStatsSection = ({
                   <span className="legend-mini">Latency {latencyMs}ms</span>
                 </div>
               </div>
+              </SmartTooltip>
 
               {/* Card B: Blockchain + Analytics */}
+              <SmartTooltip content={`Blockchain Analytics\nSincronizare în timp real cu nodurile blockchain.\nUrmărește tranzacțiile, blocurile și performanța rețelei.`}>
               <div className="ai-card">
                 <div className="ai-card-title">⛓️ Chain & Analytics</div>
                 <div className="chain-ring" style={{ marginBottom: 10 }}>
@@ -279,6 +293,7 @@ const RewardStatsSection = ({
                   <div className="sparkline-wrap">{/* sparkline static placeholder */}</div>
                 </div>
               </div>
+              </SmartTooltip>
             </div>
 
             {/* AI System Messages */}

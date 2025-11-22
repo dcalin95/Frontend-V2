@@ -130,6 +130,39 @@
   margin-bottom: 6px; /* Mărit de la 4px */
 }
 
+/* 🌍 NEW GEO ROW STYLES */
+.geo-location-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.8rem;
+}
+
+.geo-flag {
+  font-size: 1.1rem;
+}
+
+.geo-country-name {
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+.geo-status-dot {
+  color: #00FFA3;
+  font-size: 0.6rem;
+  margin-left: auto;
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; text-shadow: 0 0 5px #00FFA3; }
+  100% { opacity: 0.5; }
+}
+
 .wallet-name-row {
   display: flex;
   align-items: center;

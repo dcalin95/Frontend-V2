@@ -1,7 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useAccount as useEvmAccount, useDisconnect as useEvmDisconnect, useBalance as useEvmBalance } from 'wagmi';
+import { useAccount as useEvmAccount, useDisconnect as useEvmDisconnect, useBalance as useEvmBalance, useReadContract, useConnect } from 'wagmi';
 import { useWallet as useSolanaWalletAdapter, useConnection } from '@solana/wallet-adapter-react';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { formatEther } from "viem";
+import BitsABI from '../abi/BitsABI.js';
+import { isInAppBrowser } from '../utils/walletBrowserDetection';
+
+const BITS_TOKEN_ADDRESS = "0xCE056ee6ED7Ae0944f10BAfc5E7f5d160c8641fe";
 
 const UnifiedWalletContext = createContext();
 
@@ -11,7 +16,69 @@ export const UnifiedWalletProvider = ({ children }) => {
   // EVM State
   const { address: evmAddress, isConnected: isEvmConnected, connector, chainId } = useEvmAccount();
   const { disconnect: disconnectEvm } = useEvmDisconnect();
-  const { data: evmBalanceData } = useEvmBalance({ address: evmAddress, watch: true });
+  const { connect: connectEvm, connectors } = useConnect();
+  
+  // Auto-connect for In-App Browsers (MetaMask, Trust, etc.)
+  useEffect(() => {
+    if (isInAppBrowser() && !isEvmConnected) {
+      const injectedConnector = connectors.find((c) => c.id === 'injected');
+      if (injectedConnector) {
+        console.log("[UnifiedWallet] Auto-connecting to In-App Wallet...");
+        connectEvm({ connector: injectedConnector });
+      }
+    }
+  }, [connectors, isEvmConnected, connectEvm]);
+
+  
+  // Fetch Native Balance with Auto-Refresh
+  // ⚠️ FIX: We explicitly request balance for current chain.
+  // If user is on Ethereum (Chain 1), this returns ETH balance.
+  // If user is on BSC (Chain 56), this returns BNB balance.
+  // The UI must correctly display the symbol to avoid confusion.
+  const { data: evmBalanceData } = useEvmBalance({ 
+    address: evmAddress, 
+    chainId: chainId,
+    query: {
+      enabled: !!evmAddress,
+      refetchInterval: 5000, // Refresh every 5s
+    }
+  });
+
+  // 🆕 Fetch BSC Balance specifically if we are NOT on BSC but want to show it?
+  // For now, we will trust the nativeSymbol logic below to show the correct currency.
+  
+  // Debugging Logs
+  useEffect(() => {
+    if (evmAddress) {
+      console.log("[UnifiedWallet] EVM Address:", evmAddress);
+      console.log("[UnifiedWallet] Chain ID:", chainId);
+      console.log("[UnifiedWallet] Raw Native Balance:", evmBalanceData?.formatted, evmBalanceData?.symbol);
+    }
+  }, [evmAddress, chainId, evmBalanceData]);
+
+  // BITS Token Balance (EVM)
+  const { data: bitsRawBalance } = useReadContract({
+    address: BITS_TOKEN_ADDRESS,
+    abi: BitsABI,
+    functionName: 'balanceOf',
+    args: [evmAddress],
+    query: {
+      enabled: !!evmAddress,
+      refetchInterval: 10000
+    }
+  });
+
+  const [bitsBalance, setBitsBalance] = useState(0);
+
+  useEffect(() => {
+    if (bitsRawBalance) {
+      // Increase precision to 5 decimals to match user request (e.g. 58.509,84071)
+      const formatted = parseFloat(formatEther(bitsRawBalance)).toFixed(5);
+      setBitsBalance(formatted);
+    } else {
+      setBitsBalance(0);
+    }
+  }, [bitsRawBalance]);
 
   // Solana State
   const { publicKey, connected: isSolanaConnected, disconnect: disconnectSolana, wallet: solanaWallet } = useSolanaWalletAdapter();
@@ -78,7 +145,7 @@ export const UnifiedWalletProvider = ({ children }) => {
       : chainId === 10 ? "ETH" // Optimism
       : chainId === 8453 ? "ETH" // Base
       : chainId === 43114 ? "AVAX" // Avalanche
-      : "Native")
+      : evmBalanceData?.symbol || "ETH") // Fallback to actual chain symbol or ETH
     : "SOL";
 
   const walletName = walletType === "EVM"
@@ -126,7 +193,7 @@ export const UnifiedWalletProvider = ({ children }) => {
     nativeBalance,
     nativeSymbol,
     ethBalance: walletType === "EVM" ? nativeBalance : "0.0000", // Legacy compatibility
-    bitsBalance: 0, // TODO: Implement BITS balance for both chains
+    bitsBalance: walletType === "EVM" ? bitsBalance : 0, // TODO: Add Solana BITS support
     
     // Network
     network: walletType === "EVM" 

@@ -1,0 +1,73 @@
+.process-viz-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 3rem;
+  position: relative;
+  filter: drop-shadow(0 0 30px rgba(0, 255, 163, 0.1));
+}
+
+.process-svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Enhanced Animations for AI Complexity */
+.anim-flow-fast {
+  animation: flowDash 0.5s linear infinite;
+}
+
+.anim-spin-slow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: rotateNode 20s linear infinite;
+}
+
+.anim-spin-slow-rev {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: rotateNodeRev 25s linear infinite;
+}
+
+.anim-orbit-1 {
+  animation: orbit1 4s linear infinite;
+  transform-origin: 100px 150px;
+}
+
+.anim-orbit-2 {
+  animation: orbit2 6s linear infinite;
+  transform-origin: 100px 150px;
+}
+
+@keyframes orbit1 {
+  from { transform: rotate(0deg) translateY(-60px) rotate(0deg); }
+  to { transform: rotate(360deg) translateY(-60px) rotate(-360deg); }
+}
+
+@keyframes orbit2 {
+  from { transform: rotate(180deg) translateY(-70px) rotate(-180deg); }
+  to { transform: rotate(540deg) translateY(-70px) rotate(-540deg); }
+}
+
+.anim-pulse-fast {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pulseCore 1s ease-in-out infinite;
+}
+
+.anim-flow-vertical {
+  stroke-dasharray: 10;
+  animation: flowVertical 1s linear infinite;
+}
+
+@keyframes flowVertical {
+  to { stroke-dashoffset: -20; }
+}
+
+/* Logo styling in SVG */
+.bits-logo-svg {
+  transform-box: fill-box;
+  transform-origin: center;
+  filter: drop-shadow(0 0 10px #00FFA3);
+}
+

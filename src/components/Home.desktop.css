@@ -40,11 +40,22 @@
   width: 100%;
   max-width: 100%;
   overflow-x: hidden; /* prevent horizontal scroll */
+  position: relative; /* Ensure stacking context */
+  z-index: 10; /* Place above StarfieldBackground (-1) */
 }
 
 .home-section {
   width: 100%;
   max-width: 100%;
+  position: relative; /* Local stacking contexts */
+  z-index: 11;
+}
+
+/* Ensure interactive elements are clickable */
+.explore-button, .add-token-btn, .feature-card, .home-hero-title {
+  position: relative;
+  z-index: 20;
+  pointer-events: auto;
 }
 
 .home-hero-title {
@@ -54,6 +65,7 @@
   flex-wrap: wrap;
   gap: 0.75rem;
   text-align: center;
+  cursor: help; /* Indicate interactivity for tooltip */
 }
 
 .home-brand {

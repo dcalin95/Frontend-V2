@@ -17,6 +17,7 @@ module.exports = function override(config) {
       path: require.resolve("path-browserify"),
       url: require.resolve("url/"),
       zlib: require.resolve("browserify-zlib"),
+      vm: require.resolve("vm-browserify"),
       fs: false,
     },
   };

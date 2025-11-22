@@ -368,7 +368,7 @@
 /* ✅ Mobile fix */
 @media (max-width: 768px) {
   .total-boosted-banner {
-    top: 114px; /* poziția normală pe mobil când meniul este închis */
+    top: 114px;
     left: 55%;
     transform: translateX(-50%);
     width: fit-content;
@@ -381,9 +381,25 @@
     gap: 0px;
     line-height: 1.0;
     min-height: auto;
-    z-index: 9998; /* sub wallet */
+    z-index: 9998;
     background: transparent;
     box-shadow: none;
+    
+    /* 🆕 Auto-hide on Mobile */
+    animation: appearBoostedMobile 0.5s ease-out 0.5s forwards, fadeOutMobile 0.5s ease-in 15s forwards;
+    opacity: 0; /* Start hidden, appear, then fade out */
+  }
+
+  @keyframes appearBoostedMobile {
+    to { opacity: 1; }
+  }
+
+  @keyframes fadeOutMobile {
+    to { 
+      opacity: 0; 
+      visibility: hidden; 
+      pointer-events: none;
+    }
   }
 
   /* Când meniul mobil este deschis, împinge bannerul în fluxul paginii */

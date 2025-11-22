@@ -1,10 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useWallet } from "../context/UnifiedWalletContext";
+import { useGeoLocation } from "../context/GeoLocationContext"; // 🌍 Import Geo
 import UnifiedWalletModal from "../components/UnifiedWalletModal";
+import axios from "axios"; // For API calls
 import "./HeaderWalletInfo.css";
 
 import ethIcon from "../assets/icons/evm-logo.jpg";
-import bitsIcon from "../assets/icons/logo.svg";
+import bitsIcon from "../assets/logo.png"; // Updated to use the correct project logo
+import phantomLogo from "../assets/icons/phantom-logo.png"; // Import local Phantom logo
+
+const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+const CURRENT_STAGE_PRICE = 0.00065; // Defined presale price constant
 
 // Solana icon as inline SVG component
 const SolanaIcon = () => (
@@ -21,11 +27,21 @@ const SolanaIcon = () => (
   </svg>
 );
 
+// Helper to get flag emoji from country code
+const getFlagEmoji = (countryCode) => {
+  if (!countryCode || countryCode === 'GL') return '🌐';
+  const codePoints = countryCode
+    .toUpperCase()
+    .split('')
+    .map(char => 127397 + char.charCodeAt());
+  return String.fromCodePoint(...codePoints);
+};
+
 const HeaderWalletInfo = () => {
   const {
     walletAddress,
     disconnectWallet,
-    nativeBalance,
+    ethBalance,
     nativeSymbol,
     bitsBalance,
     connectWallet,
@@ -33,7 +49,93 @@ const HeaderWalletInfo = () => {
     walletType,
   } = useWallet();
 
+  const { countryCode, country, city, ip } = useGeoLocation(); // 🌍 Get Geo Data
+  
+  // 💲 USD Price State - No hardcoded fallbacks
+  const [prices, setPrices] = useState({
+    BNB: 0,
+    ETH: 0,
+    SOL: 0,
+    BITS: CURRENT_STAGE_PRICE 
+  });
+
+  // Fetch Live Prices (Dynamic)
+  useEffect(() => {
+    const fetchPrices = async () => {
+      // 1. Try to load from cache first to avoid flicker/API limits
+      const cached = sessionStorage.getItem('bits_crypto_prices');
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          // Check if cache is fresh (less than 15 mins)
+          if (Date.now() - parsed.timestamp < 15 * 60 * 1000) {
+             setPrices(prev => ({ ...prev, ...parsed.data }));
+             console.log("💲 [WalletInfo] Loaded prices from cache");
+             return;
+          }
+        } catch (e) {
+          // invalid cache, ignore
+        }
+      }
+
+      try {
+        console.log("💲 [WalletInfo] Fetching live prices from CoinGecko...");
+        // Simple CoinGecko API call (free tier)
+        const res = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=binancecoin,ethereum,solana&vs_currencies=usd');
+        
+        const newPrices = {
+          BNB: res.data.binancecoin?.usd || 0,
+          ETH: res.data.ethereum?.usd || 0,
+          SOL: res.data.solana?.usd || 0,
+        };
+
+        setPrices(prev => ({
+          ...prev,
+          ...newPrices
+        }));
+
+        // Update cache
+        sessionStorage.setItem('bits_crypto_prices', JSON.stringify({
+            data: newPrices,
+            timestamp: Date.now()
+        }));
+
+      } catch (e) {
+        console.warn("💲 [WalletInfo] Failed to fetch live prices:", e.message);
+        // In case of error, we stick to 0 (no fake data)
+      }
+    };
+    
+    fetchPrices();
+    // Optional: Refresh every 2 minutes
+    const interval = setInterval(fetchPrices, 120000);
+    return () => clearInterval(interval);
+  }, []);
+
   const [showWalletBox, setShowWalletBox] = useState(false);
+
+  // 🌍 Auto-Register User Location on Connect
+  useEffect(() => {
+    if (walletAddress && countryCode) {
+      const registerLocation = async () => {
+        try {
+          // Trimitem datele la backend pentru a le salva
+          await axios.post(`${API_URL}/api/auth/update-location`, {
+            walletAddress,
+            country,
+            city,
+            countryCode,
+            ip
+          });
+          console.log("🌍 [GeoSystem] Location registered for user:", walletAddress);
+        } catch (error) {
+          // Fail silently (nu deranjăm userul dacă serverul e jos)
+          console.warn("🌍 [GeoSystem] Failed to register location:", error.message);
+        }
+      };
+      registerLocation();
+    }
+  }, [walletAddress, countryCode, country, city, ip]);
 
   // 🎨 Wallet Icon Mapping System
   const getWalletIcon = (name) => {
@@ -48,7 +150,7 @@ const HeaderWalletInfo = () => {
       coinbase: "https://avatars.githubusercontent.com/u/18060234?s=200&v=4",
       rainbow: "https://avatars.githubusercontent.com/u/48327834?s=200&v=4",
       trust: "https://trustwallet.com/assets/images/media/assets/TWT.png",
-      phantom: "https://pbs.twimg.com/profile_images/1598653277809528832/zqWi1qfT_400x400.jpg",
+      phantom: phantomLogo, // Use local import
       safe: "https://avatars.githubusercontent.com/u/24954812?s=200&v=4",
     };
 
@@ -61,6 +163,24 @@ const HeaderWalletInfo = () => {
 
     // Default wallet icon (generic)
     return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Crect x='3' y='6' width='18' height='13' rx='2' stroke='%2314f195' stroke-width='2'/%3E%3Ccircle cx='15' cy='12' r='1.5' fill='%239945ff'/%3E%3C/svg%3E";
+  };
+
+  // Helper to calculate USD value
+  const getUsdValue = (amount, symbol) => {
+    // Determine which price to use based on symbol mapping
+    let price = 0;
+    if (symbol === 'BNB') price = prices.BNB;
+    else if (symbol === 'ETH') price = prices.ETH;
+    else if (symbol === 'SOL') price = prices.SOL;
+    else if (symbol === 'BITS') price = prices.BITS;
+    // Handle other EVM natives (MATIC, AVAX) if needed in future by fetching them
+
+    if (!price || price === 0) return null; // Don't show if price not loaded
+
+    const value = parseFloat(amount) * price;
+    if (isNaN(value) || value === 0) return null;
+    
+    return value < 0.01 ? "< $0.01" : `≈ $${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
   return (
@@ -102,6 +222,15 @@ const HeaderWalletInfo = () => {
                   <span className="wallet-name">{walletName || "Wallet"}</span>
                 </div>
                 <span className="wallet-address">{walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}</span>
+                
+                {/* 🌍 Country Flag Indicator - NEW ROW */}
+                {countryCode && (
+                  <div className="geo-location-row">
+                    <span className="geo-flag">{getFlagEmoji(countryCode)}</span>
+                    <span className="geo-country-name">{country}</span>
+                    <span className="geo-status-dot">●</span>
+                  </div>
+                )}
               </div>
               
               {/* Balances */}
@@ -110,14 +239,32 @@ const HeaderWalletInfo = () => {
                   {walletType === "SOLANA" ? <SolanaIcon /> : <img src={ethIcon} alt={nativeSymbol} />}
                   <span>{nativeSymbol}</span>
                 </div>
-                <span className="balance-amount">{nativeBalance || "0.0000"}</span>
+                <span className="balance-amount">
+                  {/* Display BNB with up to 4 decimals */}
+                  {ethBalance ? parseFloat(ethBalance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 }) : "0.0000"}
+                  <div className="usd-estimate" style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', marginTop: '2px' }}>
+                    {getUsdValue(ethBalance, nativeSymbol)}
+                  </div>
+                </span>
               </div>
               <div className="token-balance">
                 <div className="balance-left">
                   <img src={bitsIcon} alt="BITS" />
                   <span>BITS</span>
                 </div>
-                <span className="balance-amount">{parseFloat(bitsBalance).toLocaleString()}</span>
+                <span className="balance-amount">
+                  {/* Display BITS with up to 5 decimals */}
+                  {walletType === "SOLANA" ? (
+                    <span style={{ fontSize: "0.75rem", opacity: 0.8, fontWeight: 500 }}>(BSC Only)</span>
+                  ) : (
+                    <>
+                      {bitsBalance ? parseFloat(bitsBalance).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 5 }) : "0"}
+                      <div className="usd-estimate" style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', marginTop: '2px' }}>
+                        {getUsdValue(bitsBalance, 'BITS')}
+                      </div>
+                    </>
+                  )}
+                </span>
               </div>
               
               <button className="disconnect-button" onClick={disconnectWallet}>

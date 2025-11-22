@@ -10,23 +10,27 @@
 .tokenomics-toggle {
   position: fixed;
   top: 100px;
-  right: 20px;
-  z-index: 1000;
-  padding: 12px 24px;
-  background: linear-gradient(135deg, #14f195, #9945ff);
-  border: 2px solid rgba(20, 241, 149, 0.5);
+  right: 320px; /* Moved further left */
+  z-index: 990; /* Lower z-index than wallet (9999) */
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(20, 241, 149, 0.4);
   border-radius: 12px;
-  color: #000;
-  font-size: 0.9rem;
-  font-weight: 700;
+  color: #00FFA3;
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(20, 241, 149, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
 }
 
 .tokenomics-toggle:hover {
+  background: rgba(20, 241, 149, 0.1);
+  border-color: #00FFA3;
   transform: translateY(-2px);
-  box-shadow: 0 6px 30px rgba(20, 241, 149, 0.6);
+  box-shadow: 0 0 15px rgba(20, 241, 149, 0.3);
+  color: #fff;
 }
 
 .tokenomics-toggle:active {

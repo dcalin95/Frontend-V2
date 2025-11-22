@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import "./InputBox.css";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { GiBroom, GiWallet } from "react-icons/gi";
+import SmartTooltip from "../components/SmartTooltip";
 
 const InputBox = ({ amountPay, setAmountPay, userBalance, selectedToken, minAmountToken, minAmountDecimals }) => {
   // 🌟 Different minimum amounts and steps by token
@@ -80,28 +81,38 @@ const InputBox = ({ amountPay, setAmountPay, userBalance, selectedToken, minAmou
   return (
     <div className="cosmic-input-container">
       <div className="cosmic-input-wrapper">
-        <input
-          type="text"
-          value={safeValue}
-          onChange={handleInputChange}
-          placeholder="0.00"
-          className="cosmic-input"
-        />
+        <SmartTooltip content={`Investment Amount\nMin: ${MIN_AMOUNT} ${selectedToken}\nEnter the amount you wish to invest.`}>
+          <input
+            type="text"
+            value={safeValue}
+            onChange={handleInputChange}
+            placeholder="0.00"
+            className="cosmic-input"
+          />
+        </SmartTooltip>
       </div>
 
       <div className="action-buttons">
-        <button type="button" onClick={handleDecrement} className="cosmic-button">
-          <FaMinus />
-        </button>
-        <button type="button" onClick={handleIncrement} className="cosmic-button">
-          <FaPlus />
-        </button>
-        <button type="button" onClick={handleErase} className="cosmic-button">
-          <GiBroom />
-        </button>
-        <button type="button" onClick={handleMax} className="cosmic-button">
-          <GiWallet />
-        </button>
+        <SmartTooltip content={`Decrease Amount\nStep: -${STEP} ${selectedToken}`}>
+          <button type="button" onClick={handleDecrement} className="cosmic-button">
+            <FaMinus />
+          </button>
+        </SmartTooltip>
+        <SmartTooltip content={`Increase Amount\nStep: +${STEP} ${selectedToken}`}>
+          <button type="button" onClick={handleIncrement} className="cosmic-button">
+            <FaPlus />
+          </button>
+        </SmartTooltip>
+        <SmartTooltip content="Reset to Minimum">
+          <button type="button" onClick={handleErase} className="cosmic-button">
+            <GiBroom />
+          </button>
+        </SmartTooltip>
+        <SmartTooltip content={`Max Balance\nInvest all available ${selectedToken} from your wallet.`}>
+          <button type="button" onClick={handleMax} className="cosmic-button">
+            <GiWallet />
+          </button>
+        </SmartTooltip>
       </div>
     </div>
   );

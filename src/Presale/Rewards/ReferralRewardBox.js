@@ -10,6 +10,8 @@ import "./ReferralRewardBox.desktop.css";
 import "./ReferralRewardBox.mobile.css";
 import "../CrystalClear.css"; // 💎 Crystal clear text
 import claimRewardsIcon from "../../assets/icons/claim-rewards.svg";
+import { FaDollarSign, FaCoins, FaGift, FaStar, FaGem, FaHourglassHalf, FaCheckCircle, FaChartLine } from "react-icons/fa"; // Icons for Investigation
+import SmartTooltip from "../components/SmartTooltip";
 
 const backendURL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
 
@@ -682,14 +684,19 @@ const ReferralRewardBox = ({ walletAddress }) => {
 
       return (
     <div className="referral-reward-box">
+      <SmartTooltip content={`Your Centralized Dashboard\nTrack and claim all your earnings in one place.\nIncludes Telegram activity, referrals, and bonuses.`}>
       <h3>
         <img src={claimRewardsIcon} alt="Rewards" style={{ width: '28px', height: '28px', marginRight: '8px', verticalAlign: 'middle', filter: 'drop-shadow(0 0 8px #00FFA3)' }} />
         Your AI Rewards Hub
       </h3>
-      <div className="brand-line" title="AI data pipeline" style={{ justifyContent:'center', marginBottom: '10px' }}>
+      </SmartTooltip>
+      
+      <SmartTooltip content={`AI Data Pipeline\nReal-time tracking of your contributions and rewards.\nPowered by BitPulse® Neural Network.`}>
+      <div className="brand-line" style={{ justifyContent:'center', marginBottom: '10px' }}>
         <img src={require("../../assets/logo.png")} alt="BITS" className="bits-logo-mini" />
         <span className="bitsPulseLabel">BitPulse®</span>
       </div>
+      </SmartTooltip>
 
       {!walletAddress ? (
         <p>🔌 Connect your wallet to see rewards.</p>
@@ -699,7 +706,9 @@ const ReferralRewardBox = ({ walletAddress }) => {
         <>
           {/* 🎁 REDESIGNED: Total Unclaimed Rewards */}
           <div className="unified-rewards-section">
+            <SmartTooltip content={`Summary of Unclaimed Rewards\nAll rewards earned but not yet transferred to your wallet.\nCheck the details below.`}>
             <h4>💰 Total Unclaimed Rewards</h4>
+            </SmartTooltip>
             
             {unifiedRewards.loading ? (
               <p>⏳ Loading rewards...</p>
@@ -725,139 +734,155 @@ const ReferralRewardBox = ({ walletAddress }) => {
                   const usdPerBits = Number(priceMilli) / 1000; // 1000 milicents = $1
                   const totalUSD = totalUnclaimed * usdPerBits;
                   
-                  return (
-                    <>
-                      <div className="rewards-summary">
-                        <div style={{ 
-                          fontSize: "1.4em", 
-                          fontWeight: "bold", 
-                          color: "#00ffc3",
-                          marginBottom: "15px",
-                          textAlign: "center"
-                        }}>
-                          {Math.round(totalUnclaimed)} $BITS
-                          <div style={{fontSize:'0.9em', opacity:0.85, marginTop:'6px'}}>
-                            {`$${totalUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD`}
-                          </div>
-                        </div>
-                        
-                          <div className="rewards-breakdown">
-                          <div className="reward-source">
-                            <span className="source-icon">💬</span>
-                            <span className="source-name">Telegram Activity <span className="expected-badge" title="Estimated from your Telegram time/messages. Credit on-chain first, then claim.">Expected</span>:</span>
-                            <span className="source-amount">
-                              {Math.round(telegramExpected)} BITS
-                              <span style={{ marginLeft: 8, opacity: 0.8 }}>
-                                ({`$${(telegramExpected * usdPerBits).toFixed(2)}`})
-                              </span>
-                            </span>
-                          </div>
-                          
-                          <div className="reward-source">
-                            <span className="source-icon">👥</span>
-                            <span className="source-name">Referral Rewards:</span>
-                            <span className="source-amount">
-                              {Math.round(referralPending)} BITS
-                              <span style={{ marginLeft: 8, opacity: 0.8 }}>
-                                ({`$${(referralPending * usdPerBits).toFixed(2)}`})
-                              </span>
-                            </span>
-                          </div>
-                          
-                          <div className="reward-source">
-                            <span className="source-icon">🎁</span>
-                            <span className="source-name">Other Rewards:</span>
-                            <span className="source-amount">
-                              {Math.round(unifiedOther)} BITS
-                              <span style={{ marginLeft: 8, opacity: 0.8 }}>
-                                ({`$${(unifiedOther * usdPerBits).toFixed(2)}`})
-                              </span>
-                            </span>
-                          </div>
-                        </div>
-                        
-                        {totalUnclaimed > 0 && (
-                          <div style={{ 
-                            marginTop: "15px", 
-                            textAlign: "center",
-                            background: "rgba(0, 255, 195, 0.1)",
-                            padding: "10px",
-                            borderRadius: "8px",
-                            border: "1px solid rgba(0, 255, 195, 0.2)"
-                          }}>
-                            <p style={{ margin: "0 0 10px 0", fontSize: "0.9em", opacity: 0.9 }}>
-                              💎 Ready to claim your rewards?
-                            </p>
-                            <a 
-                              href="/rewards-hub" 
-                              style={{
-                                background: "linear-gradient(90deg, #00ffc3, #00aaff)",
-                                color: "#001018",
-                                padding: "8px 16px",
-                                borderRadius: "6px",
-                                textDecoration: "none",
-                                fontWeight: "bold",
-                                fontSize: "0.9em",
-                                display: "inline-block"
-                              }}
-                            >
+                  // Pending & Claimed totals
+                  const totalPending = unifiedRewards.totalPending || 0;
+                  const pendingCount = (unifiedRewards?.byType?.telegram?.pendingCount || 0) + 
+                                     (unifiedRewards?.byType?.referral?.pendingCount || 0);
+                  const totalClaimed = unifiedRewards.totalClaimed || 0;
+                  const claimedCount = (unifiedRewards?.byType?.telegram?.claimedCount || 0) + 
+                                      (unifiedRewards?.byType?.referral?.claimedCount || 0);
+                  
+                  // Tier calculation based on total unclaimed
+  const getTier = (amount) => {
+    if (amount >= 10000) return "💎 Diamond";
+    if (amount >= 5000) return "🏆 Gold";
+    if (amount >= 1000) return "🥈 Silver";
+    if (amount >= 100) return "🥉 Bronze";
+    return "⭐ Starter";
+  };
+  
+  return (
+    <>
+      <div className="rewards-summary">
+        {/* Square 1: Total BITS */}
+        <SmartTooltip content={`Total Unclaimed BITS\nThis is the total amount of BITS tokens waiting to be claimed from all sources.\nClaim them to add to your wallet!`}>
+        <div className="reward-square">
+          <span className="source-icon">💰</span>
+          <div className="reward-square-value total-bits">
+            {Math.round(totalUnclaimed)}
+          </div>
+          <div className="reward-square-label">TOTAL BITS</div>
+        </div>
+        </SmartTooltip>
+        
+        {/* Square 2: USD Value */}
+        <SmartTooltip content={`Estimated USD Value\nCurrent Value: $${totalUSD.toFixed(2)}\nBased on current presale price of $${usdPerBits}/BITS`}>
+        <div className="reward-square">
+          <span className="source-icon">💵</span>
+          <div className="reward-square-value usd-value">
+            ${totalUSD.toFixed(2)}
+          </div>
+          <div className="reward-square-label">USD VALUE</div>
+        </div>
+        </SmartTooltip>
+
+        {/* Square 3: Pending */}
+        <SmartTooltip content={`Pending Transactions\n${pendingCount} rewards waiting for confirmation or processing.\nThese will become claimable shortly.`}>
+        <div className="reward-square">
+          <span className="source-icon">⏳</span>
+          <div className="reward-square-value pending-reward">
+            {Math.round(totalPending)}
+          </div>
+          <div className="reward-count-sub">({pendingCount} rewards)</div>
+          <div className="reward-square-label">PENDING</div>
+        </div>
+        </SmartTooltip>
+
+        {/* Square 4: Claimed */}
+        <SmartTooltip content={`Total Claimed Rewards\n${claimedCount} rewards successfully claimed to your wallet.\nTotal: ${Math.round(totalClaimed).toLocaleString()} BITS`}>
+        <div className="reward-square">
+          <span className="source-icon">✅</span>
+          <div className="reward-square-value claimed-reward">
+            {Math.round(totalClaimed).toLocaleString()}
+          </div>
+          <div className="reward-count-sub">({claimedCount} rewards)</div>
+          <div className="reward-square-label">CLAIMED</div>
+        </div>
+        </SmartTooltip>
+
+        {/* Square 5: Telegram */}
+        <SmartTooltip content={`Telegram Rewards\n${Math.round(telegramExpected)} BITS earned from community activity.\nStatus: Pending/Calculated`}>
+        <div className="reward-square">
+            <span className="source-icon">💬</span>
+          <div className="reward-square-value telegram-reward">
+            {Math.round(telegramExpected)}
+          </div>
+          <div className="reward-usd-sub">
+            ${(telegramExpected * usdPerBits).toFixed(2)}
+          </div>
+          <div className="reward-square-label">TELEGRAM</div>
+          </div>
+          </SmartTooltip>
+          
+        {/* Square 6: Referral */}
+        <SmartTooltip content={`Referral Rewards\n${Math.round(referralPending)} BITS earned from inviting friends.\nShare your code to earn more!`}>
+        <div className="reward-square">
+            <span className="source-icon">👥</span>
+          <div className="reward-square-value referral-reward">
+            {Math.round(referralPending)}
+          </div>
+          <div className="reward-usd-sub">
+            ${(referralPending * usdPerBits).toFixed(2)}
+          </div>
+          <div className="reward-square-label">REFERRAL</div>
+          </div>
+          </SmartTooltip>
+          
+        {/* Square 7: Other */}
+        <SmartTooltip content={`Other Bonuses\n${Math.round(unifiedOther)} BITS from special events, airdrops, or manual bonuses.`}>
+        <div className="reward-square">
+            <span className="source-icon">🎁</span>
+          <div className="reward-square-value other-reward">
+            {Math.round(unifiedOther)}
+          </div>
+          <div className="reward-usd-sub">
+            ${(unifiedOther * usdPerBits).toFixed(2)}
+          </div>
+          <div className="reward-square-label">OTHER</div>
+        </div>
+        </SmartTooltip>
+        
+        {/* Square 8: Tier */}
+        <SmartTooltip content={`Your Reward Tier\nCurrent Level: ${getTier(totalUnclaimed)}\nEarn more BITS to reach the next tier and unlock exclusive multipliers!`}>
+        <div className="reward-square">
+          <span className="source-icon">📊</span>
+          <div className="reward-square-value tier-badge">
+            {getTier(totalUnclaimed)}
+          </div>
+          <div className="reward-square-label">LEVEL</div>
+        </div>
+        </SmartTooltip>
+      </div>
+      
+      {/* Actions & Messages - UNIFIED CARD */}
+                      <div className="rewards-action-card">
+                        {totalUnclaimed > 0 ? (
+                          <>
+                            <p className="action-message">💎 Ready to claim your rewards?</p>
+                            <a href="/rewards-hub" className="action-button primary">
                               🚀 Go to Rewards Hub →
                             </a>
+                          </>
+                        ) : (
+                          <>
+                            <p className="action-message">🎯 Keep earning to unlock rewards!</p>
+                            <div className="telegram-progress">
+                              <span className="progress-label">📱 Telegram Activity:</span>
+                              <span className="progress-value">
+                                <strong>{telegram?.investigationData?.totalHours || "0"}h</strong> / 5h needed
+                              </span>
                           </div>
-                        )}
-                        
-                        {totalUnclaimed === 0 && (
-                          <div style={{ 
-                            textAlign: "center", 
-                            opacity: 0.7,
-                            fontSize: "0.9em",
-                            marginTop: "10px"
-                          }}>
-                            <p>🎯 Keep earning to unlock rewards!</p>
-                            <p style={{ fontSize: "0.8em" }}>
-                              Telegram: {telegram?.investigationData?.totalHours || "0"}h / 5h needed
-                            </p>
-                            <a 
-                              href="/rewards-hub" 
-                              style={{
-                                color: "#00aaff",
-                                textDecoration: "underline",
-                                fontSize: "0.85em"
-                              }}
-                            >
+                            <a href="/rewards-hub" className="action-button secondary">
                               View Rewards Dashboard →
                             </a>
-                          </div>
+                          </>
                         )}
-                        
-                        {unifiedRewards.mock && <p><em>🎭 (Demo Data)</em></p>}
                       </div>
+                      
+                      {unifiedRewards.mock && <p className="demo-badge">🎭 Demo Data</p>}
                     </>
                   );
                 })()}
-                
-                {/* Rewards by Type */}
-                <div className="rewards-by-type">
-                  {Object.entries(unifiedRewards.byType).map(([type, data]) => (
-                    <div key={type} className="reward-type-box">
-                      <h5>
-                        {type.toLowerCase() === 'telegram' ? '💬' : type.toLowerCase() === 'referral' ? '👥' : '🏷️'} {type.charAt(0).toUpperCase() + type.slice(1)} Rewards
-                      </h5>
-                      <div className="type-stats">
-                        <div className="type-line pending">
-                          <span className="type-label">Pending</span>
-                          <span className="type-value">{unifiedRewardsService.formatAmount(data.pending)} <span className="unit">$BITS</span></span>
-                          <span className="type-count">({data.pendingCount} rewards)</span>
-                        </div>
-                        <div className="type-line claimed">
-                          <span className="type-label">Claimed</span>
-                          <span className="type-value">{unifiedRewardsService.formatAmount(data.claimed)} <span className="unit">$BITS</span></span>
-                          <span className="type-count">({data.claimedCount} rewards)</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
                 
                 {/* Pending Rewards List */}
                 {unifiedRewards.pendingRewards.length > 0 && (
@@ -1055,263 +1080,158 @@ const ReferralRewardBox = ({ walletAddress }) => {
             )}
           </div>
 
-          {/* 🔍 TELEGRAM INVESTIGATION SECTION */}
+          {/* 🔍 TELEGRAM INVESTIGATION SECTION - 8 COMPACT SQUARES */}
           {telegram?.investigationData && (
             <div className="telegram-investigation-section">
               <h4>🔍 Telegram Activity Investigation</h4>
               
-              <div className="investigation-summary">
-                <div className="investigation-main-card">
-                  <div className="investigation-row">
-                    <div className="investigation-col">
-                      <h5>⏱️ Time Analysis</h5>
-                      <p><strong>Total Time:</strong> {telegram.investigationData.totalHoursFormatted}h ({telegram.investigationData.totalHours}h decimal)</p>
-                      <p><strong>Raw Seconds:</strong> {telegram.investigationData.totalSeconds}s</p>
-                      <p><strong>Messages:</strong> {telegram.investigationData.messagesTotal} total</p>
-                      <p><strong>Activity Rate:</strong> {telegram.investigationData.activityRate} msg/hour</p>
-                      <p><strong>Data Source:</strong> {(
-                        (telegram.investigationData.dataSource || "").toLowerCase() === 'offline-simulation'
-                          ? 'internal data service (temporarily offline)'
-                          : (telegram.investigationData.dataSource || 'internal data service')
-                      )}</p>
-                    </div>
-                    
-                    <div className="investigation-col">
-                      <h5>🎯 Reward Status</h5>
-                      <p><strong>Current:</strong> {telegram.reward} BITS</p>
-                      <p><strong>Expected:</strong> {telegram.investigationData.expectedReward} BITS</p>
-                      {telegram.investigationData.systemStatus && (
-                        <p style={{ 
-                          color: telegram.investigationData.systemStatus.includes('🔴') ? "#ff6666" : 
-                                telegram.investigationData.systemStatus.includes('🔧') ? "#ff9800" : "#4CAF50",
-                          fontSize: "0.85em"
-                        }}>
-                          <strong>AI System:</strong> {telegram.investigationData.systemStatus}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  
-                  {/* 🎯 NEW: Visual Progress Bar and Countdown */}
-                  <div className="investigation-row">
-                    <div className="investigation-full">
-                      {(() => {
-                        const milestoneData = getMilestoneData(telegram.investigationData.totalSeconds);
+              <div className="investigation-grid-8">
+                {(() => {
+                  // Helper functions for formatting
+                  const formatNumber = (num) => {
+                    if (num === null || num === undefined) return '0';
+                    return Number(num).toLocaleString('en-US', { maximumFractionDigits: 0 });
+                  };
+
+                  const formatDecimal = (num, decimals = 2) => {
+                    if (num === null || num === undefined) return '0.00';
+                    return Number(num).toLocaleString('en-US', { 
+                      minimumFractionDigits: decimals, 
+                      maximumFractionDigits: decimals 
+                    });
+                  };
+
+                  const formatHours = (hours) => {
+                    if (!hours) return '0h';
+                    const h = parseFloat(hours);
+                    return h % 1 === 0 ? `${h.toFixed(0)}h` : `${h.toFixed(1)}h`;
+                  };
+
                         return (
                           <>
-                            <h5>🎯 Milestone Progress</h5>
-                            
-                            {/* Progress Bar */}
-                            <div style={{ marginBottom: "15px" }}>
-                              <div style={{ 
-                                display: "flex", 
-                                justifyContent: "space-between", 
-                                alignItems: "center",
-                                marginBottom: "8px"
-                              }}>
-                                <span style={{ fontWeight: "bold", color: "#4CAF50" }}>
-                                  {milestoneData.nextMilestone.icon} {milestoneData.nextMilestone.name}
-                                </span>
-                                <span style={{ 
-                                  fontSize: "1.1em", 
-                                  fontWeight: "bold",
-                                  color: milestoneData.progress > 80 ? "#4CAF50" : milestoneData.progress > 50 ? "#ff9800" : "#9e9e9e"
-                                }}>
-                                  {milestoneData.progress.toFixed(1)}%
-                                </span>
-                              </div>
+                      {/* Square 1: TOTAL TIME */}
+                      <SmartTooltip content={`Total Activity Time: ${formatHours(telegram.investigationData.totalHoursFormatted)} (${telegram.investigationData.totalHours}h decimal)\nRaw Seconds: ${formatNumber(telegram.investigationData.totalSeconds)}s\nTracking: BitSwapDEX Telegram group, 60s intervals`}>
+                        <div 
+                          className="investigation-square"
+                        >
+                          <FaHourglassHalf className="investigation-icon time" />
+                          <div className="investigation-square-value">
+                            {formatHours(telegram.investigationData.totalHoursFormatted)}
+                          </div>
+                          <div className="investigation-square-label">TOTAL TIME</div>
+                        </div>
+                      </SmartTooltip>
                               
-                              {/* Visual Progress Bar */}
-                              <div style={{
-                                width: "100%",
-                                height: "20px",
-                                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                                borderRadius: "10px",
-                                overflow: "hidden",
-                                border: "1px solid rgba(255, 255, 255, 0.2)"
-                              }}>
-                                <div style={{
-                                  width: `${milestoneData.progress}%`,
-                                  height: "100%",
-                                  background: milestoneData.progress > 80 
-                                    ? "linear-gradient(90deg, #4CAF50, #66BB6A)"
-                                    : milestoneData.progress > 50 
-                                    ? "linear-gradient(90deg, #ff9800, #ffb74d)"
-                                    : "linear-gradient(90deg, #2196F3, #42A5F5)",
-                                  transition: "width 0.3s ease",
-                                  borderRadius: "10px"
-                                }}></div>
-                              </div>
-                              
-                              <div style={{ 
-                                display: "flex", 
-                                justifyContent: "space-between", 
-                                fontSize: "0.85em",
-                                marginTop: "5px",
-                                opacity: 0.8
-                              }}>
-                                <span>{telegram.investigationData.totalHoursFormatted}h ({telegram.investigationData.totalHours}h)</span>
-                                <span>{milestoneData.nextMilestone.hours}h ({milestoneData.nextMilestone.reward} BITS)</span>
-                              </div>
-                            </div>
+                      {/* Square 2: MESSAGES */}
+                      <SmartTooltip content={`Total Messages Sent: ${formatNumber(telegram.investigationData.messagesTotal)}\nTracked in BitSwapDEX Telegram group\nQuality messages contribute to rewards`}>
+                        <div 
+                          className="investigation-square"
+                        >
+                          <FaCoins className="investigation-icon messages" />
+                          <div className="investigation-square-value">
+                            {formatNumber(telegram.investigationData.messagesTotal)}
+                          </div>
+                          <div className="investigation-square-label">MESSAGES</div>
+                        </div>
+                      </SmartTooltip>
 
-                            {/* Countdown Timer */}
-                            {milestoneData.remainingHours > 0 && (
-                              <div style={{
-                                background: "rgba(33, 150, 243, 0.1)",
-                                border: "1px solid rgba(33, 150, 243, 0.3)",
-                                borderRadius: "8px",
-                                padding: "12px",
-                                marginBottom: "10px",
-                                textAlign: "center"
-                              }}>
-                                <div style={{ fontSize: "0.9em", marginBottom: "5px", opacity: 0.9 }}>
-                                  ⏰ Next Reward in:
-                                </div>
-                                <div style={{ 
-                                  fontSize: "1.2em", 
-                                  fontWeight: "bold",
-                                  color: "#2196F3"
-                                }}>
-                                  {milestoneData.remainingHours >= 1 
-                                    ? `${Math.floor(milestoneData.remainingHours)}h ${Math.floor((milestoneData.remainingHours % 1) * 60)}m` 
-                                    : `${milestoneData.remainingMinutes} minutes`}
-                                </div>
-                                <div style={{ fontSize: "0.8em", opacity: 0.7, marginTop: "2px" }}>
-                                  ({milestoneData.remainingHours.toFixed(2)} hours remaining)
-                                </div>
-                                <div style={{ fontSize: "0.85em", marginTop: "5px", opacity: 0.8 }}>
-                                  💰 Upcoming: {milestoneData.nextMilestone.reward} BITS
-                                </div>
-                              </div>
-                            )}
+                      {/* Square 3: ACTIVITY RATE */}
+                      <SmartTooltip content={`Activity Rate: ${formatDecimal(telegram.investigationData.activityRate, 1)} messages per hour\nHigher activity = Better rewards\nCalculated: ${formatNumber(telegram.investigationData.messagesTotal)} messages / ${formatHours(telegram.investigationData.totalHoursFormatted)}`}>
+                        <div 
+                          className="investigation-square"
+                        >
+                          <FaChartLine className="investigation-icon activity" />
+                          <div className="investigation-square-value">
+                            {formatDecimal(telegram.investigationData.activityRate, 1)}
+                          </div>
+                          <div className="investigation-square-label">MSG/HOUR</div>
+                        </div>
+                      </SmartTooltip>
 
-                            {/* Milestone Roadmap */}
-                            <div style={{ marginTop: "15px" }}>
-                              <h6 style={{ marginBottom: "10px", fontSize: "0.9em", opacity: 0.9 }}>🗺️ Milestone Roadmap:</h6>
-                              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: "8px" }}>
-                                {milestoneData.allMilestones.map((milestone, index) => {
-                                  const completed = telegram.investigationData.totalSeconds >= milestone.hours * 3600;
-                                  const current = !completed && milestone === milestoneData.nextMilestone;
-                                  const isSpecial = milestone.isSpecial;
-                                  
-                                  return (
-                                    <div key={index} style={{
-                                      background: completed 
-                                        ? "rgba(76, 175, 80, 0.2)" 
-                                        : current 
-                                        ? "rgba(33, 150, 243, 0.2)"
-                                        : isSpecial
-                                        ? "linear-gradient(135deg, rgba(156, 39, 176, 0.1), rgba(233, 30, 99, 0.1))"
-                                        : "rgba(255, 255, 255, 0.05)",
-                                      border: `1px solid ${completed 
-                                        ? "rgba(76, 175, 80, 0.4)" 
-                                        : current 
-                                        ? "rgba(33, 150, 243, 0.4)"
-                                        : isSpecial
-                                        ? "rgba(156, 39, 176, 0.3)"
-                                        : "rgba(255, 255, 255, 0.1)"}`,
-                                      borderRadius: "6px",
-                                      padding: "8px",
-                                      textAlign: "center",
-                                      fontSize: "0.8em",
-                                      position: "relative",
-                                      overflow: "hidden"
-                                    }}>
-                                      {/* Special glow effect for legendary tiers */}
-                                      {isSpecial && (
-                                        <div style={{
-                                          position: "absolute",
-                                          top: "0",
-                                          left: "0",
-                                          right: "0",
-                                          bottom: "0",
-                                          background: "linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent)",
-                                          animation: "shimmer 3s infinite",
-                                          pointerEvents: "none"
-                                        }}></div>
-                                      )}
+                      {/* Square 4: CURRENT REWARD */}
+                      <SmartTooltip content={`Current Claimed Reward: ${formatNumber(telegram.reward)} BITS\nThis is what you've already received\nExpected reward may be higher based on activity`}>
+                        <div 
+                          className="investigation-square"
+                        >
+                          <FaGem className="investigation-icon current" />
+                          <div className="investigation-square-value">
+                            {formatNumber(telegram.reward)}
+                          </div>
+                          <div className="investigation-square-label">CURRENT BITS</div>
+                        </div>
+                      </SmartTooltip>
+
+                      {/* Square 5: EXPECTED REWARD */}
+                      <SmartTooltip content={`Expected Total Reward: ${formatNumber(telegram.investigationData.expectedReward)} BITS\nBased on your ${formatHours(telegram.investigationData.totalHoursFormatted)} of activity\nClaim available rewards in the Rewards Hub`}>
+                        <div 
+                          className="investigation-square"
+                        >
+                          <FaStar className="investigation-icon expected" />
+                          <div className="investigation-square-value">
+                            {formatNumber(telegram.investigationData.expectedReward)}
+                          </div>
+                          <div className="investigation-square-label">EXPECTED BITS</div>
+                        </div>
+                      </SmartTooltip>
                                       
-                                      <div style={{ 
-                                        fontSize: "1.2em", 
-                                        marginBottom: "2px",
-                                        position: "relative",
-                                        zIndex: 1
-                                      }}>
-                                        {completed ? "✅" : current ? milestone.icon : isSpecial ? milestone.icon : "⚪"}
-                                      </div>
+                      {/* Square 6: MILESTONE PROGRESS */}
+                      <SmartTooltip content={(() => {
+                          const milestoneData = getMilestoneData(telegram.investigationData.totalSeconds);
+                          return `Progress to Next Milestone: ${milestoneData.progress.toFixed(1)}%\nNext: ${milestoneData.nextMilestone.icon} ${milestoneData.nextMilestone.name} (${milestoneData.nextMilestone.hours}h)\nReward: ${formatNumber(milestoneData.nextMilestone.reward)} BITS\nRemaining: ${milestoneData.remainingHours >= 1 ? `${Math.floor(milestoneData.remainingHours)}h ${Math.floor((milestoneData.remainingHours % 1) * 60)}m` : `${milestoneData.remainingMinutes} minutes`}`;
+                        })()}>
+                        <div 
+                          className="investigation-square"
+                        >
+                          <FaGift className="investigation-icon progress" />
+                          <div className="investigation-square-value">
+                            {(() => {
+                              const milestoneData = getMilestoneData(telegram.investigationData.totalSeconds);
+                              return `${milestoneData.progress.toFixed(0)}%`;
+                            })()}
+                          </div>
+                          <div className="investigation-square-label">PROGRESS</div>
+                        </div>
+                      </SmartTooltip>
                                       
-                                      <div style={{ 
-                                        fontWeight: "bold", 
-                                        fontSize: "0.85em",
-                                        color: isSpecial ? "#e91e63" : "inherit",
-                                        position: "relative",
-                                        zIndex: 1
-                                      }}>
-                                        {milestone.hours}h
-                                      </div>
-                                      
-                                      <div style={{ 
-                                        opacity: 0.8,
-                                        color: isSpecial ? "#9c27b0" : "inherit",
-                                        position: "relative",
-                                        zIndex: 1
-                                      }}>
-                                        {milestone.reward} BITS
-                                      </div>
-                                      
-                                      {isSpecial && (
-                                        <div style={{
-                                          fontSize: "0.7em",
-                                          marginTop: "2px",
-                                          color: "#ff9800",
-                                          fontWeight: "bold",
-                                          position: "relative",
-                                          zIndex: 1
-                                        }}>
-                                          {milestone.name}
-                                        </div>
-                                      )}
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
+                      {/* Square 7: NEXT MILESTONE */}
+                      <SmartTooltip content={(() => {
+                          const milestoneData = getMilestoneData(telegram.investigationData.totalSeconds);
+                          return `Next Milestone Reward: ${formatNumber(milestoneData.nextMilestone.reward)} BITS\nMilestone: ${milestoneData.nextMilestone.icon} ${milestoneData.nextMilestone.name}\nRequired: ${milestoneData.nextMilestone.hours}h of activity\nCurrent: ${formatHours(telegram.investigationData.totalHoursFormatted)}\nKeep participating to unlock!`;
+                        })()}>
+                        <div 
+                          className="investigation-square"
+                        >
+                          <FaDollarSign className="investigation-icon next" />
+                          <div className="investigation-square-value">
+                            {(() => {
+                              const milestoneData = getMilestoneData(telegram.investigationData.totalSeconds);
+                              return formatNumber(milestoneData.nextMilestone.reward);
+                            })()}
+                          </div>
+                          <div className="investigation-square-label">NEXT REWARD</div>
+                        </div>
+                      </SmartTooltip>
+
+                      {/* Square 8: AI SYSTEM STATUS */}
+                      <SmartTooltip content={`AI Tracking System Status:\n${telegram.investigationData.systemStatus || '✅ Online'}\nData Source: ${(telegram.investigationData.dataSource || '').toLowerCase() === 'offline-simulation' ? 'Internal service (temporarily offline)' : telegram.investigationData.dataSource || 'BitPulse AI'}\nLast Updated: ${new Date(telegram.investigationData.timestamp).toLocaleString()}\n${telegram.investigationData.explanation || 'System operating normally'}`}>
+                        <div 
+                          className="investigation-square"
+                        >
+                          <FaCheckCircle className="investigation-icon status" />
+                          <div className="investigation-square-value status-text">
+                            {telegram.investigationData.systemStatus?.includes('🔴') ? '🔴 OFF' : 
+                             telegram.investigationData.systemStatus?.includes('🔧') ? '🔧 MAINT' : '✅ OK'}
+                          </div>
+                          <div className="investigation-square-label">AI STATUS</div>
+                        </div>
+                      </SmartTooltip>
                           </>
                         );
                       })()}
-                      
-                      <p style={{ marginTop: "15px", fontSize: "0.85em", opacity: 0.8 }}>
-                        <strong>Group:</strong> BitSwapDEX Telegram | <strong>Tracking:</strong> 60s intervals, 10min idle
-                      </p>
-                      
-                      {telegram.investigationData.explanation && (
-                        <div style={{ 
-                          background: "rgba(255, 152, 0, 0.1)", 
-                          border: "1px solid rgba(255, 152, 0, 0.3)",
-                          borderRadius: "6px",
-                          padding: "10px",
-                          margin: "10px 0",
-                          fontSize: "0.9em"
-                        }}>
-                          <strong>ℹ️ System Status:</strong><br />
-                          {telegram.investigationData.explanation}
                         </div>
-                      )}
-                      
-                      {telegram.investigationData.error && (
-                        <p style={{ color: "#ff9800", fontSize: "0.85em" }}>⚠️ {telegram.investigationData.error}</p>
-                      )}
-                      
-                      <p style={{ fontSize: "0.8em", opacity: 0.7 }}>
-                        <strong>Last Updated:</strong> {new Date(telegram.investigationData.timestamp).toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
-                            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              {/* Investigation Action Buttons */}
+              <div className="investigation-actions">
                 <button 
                   onClick={async (e) => {
                     e.preventDefault();
