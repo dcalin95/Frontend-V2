@@ -4,8 +4,8 @@
 :root {
   --primary-color: #00FFA3;
   --secondary-color: #7000FF;
-  --bg-dark: #0b0e11;
-  --panel-bg: rgba(20, 22, 25, 0.7);
+  --bg-dark: #000000; /* Apple Style Pure Black */
+  --panel-bg: rgba(10, 10, 10, 0.8); /* Very dark transparent for glass */
   --border-color: rgba(255, 255, 255, 0.1);
   --text-color: #ffffff;
   --text-muted: #8b9bb4;
@@ -369,7 +369,7 @@ body {
 .dex-sidebar {
   width: 100%; /* Fills the 260px grid column */
   height: 100%;
-  background: rgba(11, 14, 17, 0.85);
+  background: rgba(0, 0, 0, 0.85); /* Pure black subtle transparency */
   backdrop-filter: blur(20px);
   border-right: 1px solid var(--border-color);
   display: flex; flex-direction: column;

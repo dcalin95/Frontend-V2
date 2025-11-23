@@ -120,3 +120,4 @@ const AiSuggestionBox = ({ fromToken, toToken, slippage }) => {
 };
 
 export default AiSuggestionBox;
+

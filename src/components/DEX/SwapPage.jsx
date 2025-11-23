@@ -4,8 +4,10 @@ import SwapPanel from './SwapPanel';
 import TradingChart from './TradingChart';
 import PositionsTable from './PositionsTable';
 import CosmicLoader from './CosmicLoader'; // New AI Loader
+import SwapPageMobile from './SwapPageMobile'; // Import Mobile Version
 import './DEX.css';
 import bitsLogo from '../../assets/logo.png';
+import { useDeviceDetect } from '../../hooks/useDeviceDetect'; // Import device detection hook
 
 // Data Definitions (RESTORED TO ORIGINAL STATE: bBNB, xBTC)
 const tokens = [
@@ -25,6 +27,7 @@ const MOCK_BALANCES = {
 };
 
 const SwapPage = () => {
+  const isMobile = useDeviceDetect(); // Detect mobile device
   const [activeTab, setActiveTab] = useState('swap');
   const [isLoading, setIsLoading] = useState(true); // Loading State
   
@@ -89,6 +92,11 @@ const SwapPage = () => {
   // AI Loader View
   if (isLoading) {
       return <CosmicLoader />;
+  }
+
+  // Mobile View
+  if (isMobile) {
+      return <SwapPageMobile />;
   }
 
   return (
