@@ -30,15 +30,9 @@ const CosmicLoader = () => {
             {/* GEMINI SIDE */}
             <div className="dex-logo-wrapper gemini-side">
                 <div className="logo-glow-ring gemini-ring"></div>
-                {/* Gemini Star SVG */}
+                {/* Gemini Star SVG - Simplified for React compatibility */}
                 <svg viewBox="0 0 512 512" className="dex-gemini-svg">
-                    <defs>
-                        <linearGradient id="geminiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#4facfe" />
-                            <stop offset="100%" stopColor="#00f2fe" />
-                        </linearGradient>
-                    </defs>
-                    <path fill="url(#geminiGrad)" d="M256,0C256,141.38,141.38,256,0,256c141.38,0,256,114.62,256,256c0-141.38,114.62-256,256-256C370.62,256,256,141.38,256,0z"/>
+                    <path fill="#4facfe" d="M256,0C256,141.38,141.38,256,0,256c141.38,0,256,114.62,256,256c0-141.38,114.62-256,256-256C370.62,256,256,141.38,256,0z"/>
                 </svg>
                 <div className="dex-logo-label">GOOGLE GEMINI</div>
             </div>
@@ -56,10 +50,10 @@ const CosmicLoader = () => {
             </div>
             
             <div className="dex-system-check">
-                <div className="check-row"><span>> ESTABLISHING UPLINK...</span> <span className="status-ok">OK</span></div>
-                <div className="check-row delay-1"><span>> SYNCING LIQUIDITY NODES...</span> <span className="status-ok">100%</span></div>
-                <div className="check-row delay-2"><span>> OPTIMIZING ROUTE PATHS...</span> <span className="status-ok">DONE</span></div>
-                <div className="check-row delay-3"><span>> LAUNCHING INTERFACE...</span></div>
+                <div className="check-row"><span>&gt; ESTABLISHING UPLINK...</span> <span className="status-ok">OK</span></div>
+                <div className="check-row delay-1"><span>&gt; SYNCING LIQUIDITY NODES...</span> <span className="status-ok">100%</span></div>
+                <div className="check-row delay-2"><span>&gt; OPTIMIZING ROUTE PATHS...</span> <span className="status-ok">DONE</span></div>
+                <div className="check-row delay-3"><span>&gt; LAUNCHING INTERFACE...</span></div>
             </div>
         </div>
       </div>
