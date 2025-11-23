@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { Settings, Info, Shield, Zap, Timer, MousePointerClick } from 'lucide-react';
 import SwapRoute from './SwapRoute';
+import SmartTooltip from '../../Presale/components/SmartTooltip';
 import './DEX.css';
 
 // Realistic Market Mock Prices (Simulating an Oracle)
@@ -72,6 +74,8 @@ const SwapPanel = ({ tokens, balances, payToken, setPayToken, receiveToken, setR
   const [showSettings, setShowSettings] = useState(false);
   const [slippage, setSlippage] = useState(0.5);
   const [deadline, setDeadline] = useState(20);
+  const [expertMode, setExpertMode] = useState(false);
+  const [mevShield, setMevShield] = useState(true);
   
   // Derived State for Real Logic
   const payPrice = MARKET_PRICES[payToken.id] || 0;
@@ -110,18 +114,103 @@ const SwapPanel = ({ tokens, balances, payToken, setPayToken, receiveToken, setR
   return (
     <div className="dex-panel-section">
       <div className="dex-swap-card">
-        {/* Header */}
-        <div className="dex-card-header">
-          <h3 className="dex-card-title">Swap</h3>
-          <div className="dex-card-actions">
-            <button onClick={() => setShowSettings(!showSettings)}>⚙️</button>
-          </div>
+        {/* HEADER RE-FACTORED WITH INLINE STYLES FOR GUARANTEED VISIBILITY */}
+        <div className="dex-card-header" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '12px', marginBottom: '20px' }}>
+            
+            {/* ROW 1: TITLE & SETTINGS */}
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <SmartTooltip content={
+                  `NEURAL ROUTING ENGINE v4.0\n
+                  The AI analyzes 15+ liquidity sources instantly.\n
+                  • Finds the optimal path for your swap\n
+                  • Minimizes fees across multiple chains\n
+                  • Predicts and avoids congested routes`
+                }>
+                  <h3 style={{
+                      fontSize: '1.4rem', 
+                      fontFamily: "'Roboto Mono', monospace", 
+                      fontWeight: '800', 
+                      margin: 0,
+                      background: 'linear-gradient(90deg, #fff, #00FFA3)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      letterSpacing: '1px',
+                      textShadow: '0 0 20px rgba(0, 255, 163, 0.4)'
+                  }}>
+                    AI SWAP PROTOCOL
+                  </h3>
+                </SmartTooltip>
+
+                <SmartTooltip content={
+                    `CONFIGURATION TERMINAL\n
+                    Advanced Execution Logic.\n
+                    • Configure AI Slippage Tolerance\n
+                    • Enable Stealth MEV Shield protection\n
+                    • Set 'Expert Mode' for 1-click swaps`
+                }>
+                    <button 
+                        onClick={() => setShowSettings(!showSettings)}
+                        style={{
+                            background: 'rgba(0, 255, 163, 0.1)',
+                            border: '1px solid rgba(0, 255, 163, 0.3)',
+                            borderRadius: '8px',
+                            padding: '6px',
+                            cursor: 'pointer',
+                            color: '#00FFA3',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            boxShadow: '0 0 15px rgba(0, 255, 163, 0.15)',
+                            transition: 'all 0.3s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'rotate(90deg) scale(1.1)';
+                            e.currentTarget.style.background = 'rgba(0, 255, 163, 0.2)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'rotate(0deg) scale(1)';
+                            e.currentTarget.style.background = 'rgba(0, 255, 163, 0.1)';
+                        }}
+                    >
+                        <Settings size={22} />
+                    </button>
+                </SmartTooltip>
+            </div>
+
+            {/* ROW 2: POWERED BY BADGE */}
+            <SmartTooltip content={
+                `THE $BITS ECOSYSTEM PROTOCOL\n
+                Wealth Singularity.\n
+                • 50% Fee Burn Mechanism Active\n
+                • Institutional 'God Mode' Liquidity Access\n
+                • Powered by Quantum-Resistant Smart Contracts`
+            }>
+                 <div style={{
+                     fontSize: '0.75rem', color: '#8b9bb4', letterSpacing: '0.5px', 
+                     display: 'flex', alignItems: 'center', gap: '6px',
+                     padding: '2px 8px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px'
+                 }}>
+                    ⚡ Powered by <span style={{ color: '#00FFA3', fontWeight: '700', textShadow: '0 0 8px rgba(0, 255, 163, 0.5)' }}>$BITS Ecosystem</span>
+                </div>
+            </SmartTooltip>
 
           {/* Settings Modal */}
           {showSettings && (
             <div className="dex-settings-modal">
+              <div className="dex-setting-header">
+                  <span>Execution Settings</span>
+                  <button onClick={() => setShowSettings(false)} style={{background:'none', border:'none', color:'#666', cursor:'pointer'}}>✕</button>
+              </div>
+
+              {/* Slippage */}
               <div className="dex-setting-group">
-                <div className="dex-setting-title">Slippage Tolerance <span>ℹ️</span></div>
+                <SmartTooltip content={
+                    `SLIPPAGE TOLERANCE\n
+                    The maximum price movement you accept.\n
+                    • High Volatility: Use 1.0%+\n
+                    • Stablecoins: Use 0.1%\n
+                    • AI Auto: Recommends optimal setting`
+                }>
+                    <div className="dex-setting-title"><MousePointerClick size={14} /> Slippage Tolerance</div>
+                </SmartTooltip>
                 <div className="dex-setting-options">
                   {[0.1, 0.5, 1.0].map((val) => (
                     <button 
@@ -141,8 +230,12 @@ const SwapPanel = ({ tokens, balances, payToken, setPayToken, receiveToken, setR
                   />
                 </div>
               </div>
-              <div className="dex-setting-group" style={{marginBottom: 16}}>
-                <div className="dex-setting-title">Transaction Deadline</div>
+
+              {/* Deadline */}
+              <div className="dex-setting-group">
+                <SmartTooltip content={`TRANSACTION DEADLINE\nYour swap will revert if pending for longer than this time to protect you from bad rates.`}>
+                    <div className="dex-setting-title"><Timer size={14} /> Transaction Deadline</div>
+                </SmartTooltip>
                 <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
                   <input 
                     type="number" 
@@ -154,12 +247,63 @@ const SwapPanel = ({ tokens, balances, payToken, setPayToken, receiveToken, setR
                   <span style={{fontSize: '0.8rem', color: '#888'}}>minutes</span>
                 </div>
               </div>
+
+              <div className="dex-divider"></div>
+
+              {/* NEW PRO FEATURES */}
+              <div className="dex-setting-row-toggle">
+                 <SmartTooltip content={
+                     `MEV SHIELD (STEALTH MODE)\n
+                     Institutional-Grade Protection.\n
+                     • Routes transaction via private mempools\n
+                     • Invisible to Sandwich Bots and Snipers\n
+                     • Zero front-running guarantee`
+                 }>
+                    <div className="dex-toggle-label">
+                        <Shield size={16} color="#00FFA3" />
+                        <div>
+                            <span style={{display:'block', fontWeight:'600', color:'#fff'}}>MEV Shield</span>
+                            <span style={{fontSize:'0.7rem', color:'#666'}}>Private Tx Routing</span>
+                        </div>
+                    </div>
+                 </SmartTooltip>
+                 <div 
+                    className={`dex-toggle-switch ${mevShield ? 'on' : ''}`}
+                    onClick={() => setMevShield(!mevShield)}
+                 >
+                    <div className="dex-toggle-knob"></div>
+                 </div>
+              </div>
+
+              <div className="dex-setting-row-toggle">
+                 <SmartTooltip content={
+                     `EXPERT MODE\n
+                     High Frequency Trading.\n
+                     • Bypasses confirmation modals\n
+                     • Enables direct smart contract interaction\n
+                     • Faster execution, higher risk`
+                 }>
+                    <div className="dex-toggle-label">
+                        <Zap size={16} color="#E6444D" />
+                        <div>
+                            <span style={{display:'block', fontWeight:'600', color:'#fff'}}>Expert Mode</span>
+                            <span style={{fontSize:'0.7rem', color:'#666'}}>Skip Confirmations</span>
+                        </div>
+                    </div>
+                 </SmartTooltip>
+                 <div 
+                    className={`dex-toggle-switch ${expertMode ? 'on' : ''}`}
+                    onClick={() => setExpertMode(!expertMode)}
+                 >
+                    <div className="dex-toggle-knob"></div>
+                 </div>
+              </div>
               
               <button 
                 className="dex-setting-save-btn"
                 onClick={() => setShowSettings(false)}
               >
-                Save Settings
+                Save Configuration
               </button>
             </div>
           )}
@@ -168,7 +312,15 @@ const SwapPanel = ({ tokens, balances, payToken, setPayToken, receiveToken, setR
         {/* Pay Input */}
         <div className="dex-input-group">
           <div className="dex-label-row">
-            <span>You Pay</span>
+            <SmartTooltip content={
+                `AI LIQUIDITY AGGREGATOR\n
+                Scanning depth across multiple DEXs.\n
+                • Aggregates liquidity from Uniswap, Curve, etc.\n
+                • Splits orders to reduce price impact\n
+                • AI guarantees the best input rate`
+            }>
+                <span style={{cursor: 'help', borderBottom: '1px dashed rgba(255,255,255,0.2)'}}>You Pay</span>
+            </SmartTooltip>
             {/* Only showing static balances for now, or we could pass dynamic balance here too if requested */}
             <span>Balance: {balances[payToken.id] || '0.00'}</span>
           </div>
@@ -241,7 +393,15 @@ const SwapPanel = ({ tokens, balances, payToken, setPayToken, receiveToken, setR
                     <span className="dex-info-val" style={{ fontSize: '0.9rem', fontWeight: '700', color: '#fff' }}>{minReceived.toFixed(6)} {receiveToken.symbol}</span>
                 </div>
                 <div className="dex-info-row">
-                    <span>Price Impact</span>
+                    <SmartTooltip content={
+                        `ZERO-IMPACT GUARD\n
+                        AI Monitoring System Active.\n
+                        • Detects low liquidity pools instantly\n
+                        • Routes around high-impact pairs\n
+                        • Alerts if impact exceeds 2% threshold`
+                    }>
+                        <span style={{cursor: 'help', borderBottom: '1px dashed rgba(255,255,255,0.2)'}}>Price Impact</span>
+                    </SmartTooltip>
                     <span className="dex-info-val" style={{ color: priceImpact < 1 ? '#30C371' : '#E6444D', fontSize: '0.9rem', fontWeight: '700' }}>
                       {priceImpact < 0.01 ? '< 0.01%' : `~${priceImpact}%`}
                     </span>
@@ -254,7 +414,15 @@ const SwapPanel = ({ tokens, balances, payToken, setPayToken, receiveToken, setR
             )}
             
             <div className="dex-info-row" style={{marginTop: '4px'}}>
-                <span>Network Cost</span>
+                <SmartTooltip content={
+                    `SMART GAS ESTIMATOR\n
+                    Blockchain Efficiency Layer.\n
+                    • AI predicts network congestion spikes\n
+                    • Optimizes Gas Limit to save user funds\n
+                    • $BITS holders get gas rebates`
+                }>
+                    <span style={{cursor: 'help', borderBottom: '1px dashed rgba(255,255,255,0.2)'}}>Network Cost</span>
+                </SmartTooltip>
                 <span className="dex-val-highlight" style={{ fontSize: '0.95rem' }}>
                     ~<span style={{ color: '#30C371', fontWeight: '700' }}>$4.20</span>
                 </span>
