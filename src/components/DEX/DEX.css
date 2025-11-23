@@ -36,135 +36,226 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   CINEMATIC 16s LOADER (HOLLYWOOD STYLE)
+   COSMIC REACTOR LOADER (AI REFACTORED)
    ═══════════════════════════════════════════════════════════════════ */
 .dex-cinematic-loader-overlay-v2 {
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-  background: #000;
+  background: #000000; /* Pitch Black */
   z-index: 9999;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
   overflow: hidden;
 }
 
-/* Deep Space Background */
+/* ═══════════════════════════════════════════════════════════════════
+   GRAVITY ASSEMBLE TITLE (AI REQUESTED)
+   ═══════════════════════════════════════════════════════════════════ */
+.dex-loader-title-container {
+    margin-bottom: 30px;
+    z-index: 30;
+    text-align: center;
+    height: 60px; /* Reserve space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    perspective: 1000px; /* For 3D flying effect */
+}
+
+.gravity-char {
+    display: inline-block;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 2.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #fff;
+    
+    /* Solana Gradient Text */
+    background: linear-gradient(90deg, #9945FF, #14F195, #00FFA3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    
+    /* Start Invisible & Scattered */
+    opacity: 0;
+    transform-style: preserve-3d;
+}
+
+/* Base Animation Class applied by React with random params */
+.gravity-animate {
+    animation: gravity-pull 3.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes gravity-pull {
+    0% {
+        opacity: 0;
+        filter: blur(20px);
+        /* Starting positions set via CSS Variables in React for randomness */
+        transform: translate3d(var(--startX), var(--startY), var(--startZ)) rotate(var(--startRot));
+    }
+    20% {
+        opacity: 1;
+        filter: blur(10px);
+    }
+    80% {
+        /* ASSEMBLY MOMENT - Almost there, vibrating */
+        transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+        filter: blur(0) drop-shadow(0 0 10px rgba(153, 69, 255, 0.5));
+        letter-spacing: normal;
+        opacity: 1;
+    }
+    90% {
+        /* OVERSHOOT/IMPACT - Slight contraction for impact feel */
+        transform: scale(0.95);
+        filter: brightness(1.5) drop-shadow(0 0 20px rgba(255, 255, 255, 0.8));
+    }
+    100% {
+        /* FINAL STATE - Locked, Solid, Glowing */
+        transform: scale(1);
+        opacity: 1;
+        filter: drop-shadow(0 0 5px rgba(0, 255, 163, 0.5));
+        /* Ensure it stays visible */
+    }
+}
+
+/* Deep Space Background - Pitch Black */
 .dex-deep-space-bg {
     position: absolute; width: 100%; height: 100%;
-    background: radial-gradient(ellipse at center, #1b2735 0%, #090a0f 100%);
-    animation: space-drift 20s linear infinite;
+    background: #000000; /* Pitch Black */
+    z-index: 0;
 }
+
+/* Dense Star Field */
 .stars-sm {
     width: 1px; height: 1px; background: transparent;
-    box-shadow: 10px 10px #FFF, 50px 100px #FFF, 150px 200px #FFF, 300px 50px #FFF, 500px 300px #FFF;
-    animation: twinkle 3s infinite;
-}
-.nebula-cloud {
-    position: absolute; width: 100%; height: 100%;
-    background-image: linear-gradient(45deg, rgba(112,0,255,0.1) 0%, transparent 50%, rgba(0,255,163,0.1) 100%);
-    opacity: 0.5; animation: nebula-pulse 10s ease-in-out infinite;
+    box-shadow: 
+        10px 10px #FFF, 200px 200px #FFF, 320px 400px #FFF, 500px 100px #FFF,
+        600px 300px #FFF, 800px 50px #FFF, 900px 450px #FFF, 1100px 200px #FFF,
+        50px 500px #FFF, 150px 350px #FFF, 400px 550px #FFF, 700px 600px #FFF,
+        1200px 100px #FFF, 1000px 300px #FFF, 850px 550px #FFF, 300px 150px #FFF;
+    animation: twinkle 3s infinite alternate;
+    opacity: 0.9;
 }
 
-@keyframes space-drift { from { transform: scale(1); } to { transform: scale(1.1); } }
-@keyframes twinkle { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+.stars-md {
+    width: 2px; height: 2px; background: transparent;
+    box-shadow: 
+        100px 50px rgba(255,255,255,0.6), 300px 250px rgba(255,255,255,0.6), 
+        600px 100px rgba(255,255,255,0.6), 900px 500px rgba(255,255,255,0.6),
+        400px 400px rgba(255,255,255,0.6), 750px 200px rgba(255,255,255,0.6),
+        50px 300px rgba(255,255,255,0.6), 1150px 400px rgba(255,255,255,0.6);
+    animation: twinkle 5s infinite alternate-reverse;
+    opacity: 0.6;
+}
 
-.dex-cinematic-container {
-    position: relative; width: 800px; height: 400px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
+@keyframes twinkle { 0% { opacity: 0.3; } 100% { opacity: 1; } }
+
+/* The Reactor Core Container */
+.dex-reactor-container {
+    position: relative;
+    width: 200px; height: 200px;
+    display: flex; align-items: center; justify-content: center;
     z-index: 10;
+    margin-bottom: 40px;
 }
 
-/* STAGE 1: PARTNERSHIP (0s - 5s) */
-.dex-partnership-stage {
-    display: flex; align-items: center; gap: 40px;
-    animation: stage-1-exit 1s forwards 5s; /* Disappears after 5s */
+/* Central BITS Logo - The Fuel */
+.dex-reactor-core-img {
+    width: 80px; height: 80px;
+    z-index: 20;
+    filter: drop-shadow(0 0 20px rgba(0, 255, 163, 0.6));
+    animation: core-pulse 2s ease-in-out infinite;
 }
 
-@keyframes stage-1-exit { to { opacity: 0; transform: scale(1.5); filter: blur(20px); } }
-
-.dex-logo-wrapper {
-    display: flex; flex-direction: column; align-items: center; gap: 15px;
-    opacity: 0; 
-}
-.bits-side { animation: logo-enter 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.5s; }
-.gemini-side { animation: logo-enter 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 1.5s; }
-
-@keyframes logo-enter { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
-
-.dex-loader-bits-img { width: 80px; height: 80px; filter: drop-shadow(0 0 15px rgba(0, 255, 163, 0.6)); }
-.dex-gemini-svg { width: 80px; height: 80px; filter: drop-shadow(0 0 20px rgba(79, 172, 254, 0.6)); animation: gemini-spin 10s linear infinite; }
-
-@keyframes gemini-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-.dex-logo-label {
-    font-family: 'Inter', sans-serif; font-size: 0.8rem; letter-spacing: 3px; color: #8b9bb4; font-weight: 700;
-    opacity: 0; animation: fade-in 1s forwards 2.5s;
+@keyframes core-pulse {
+    0% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(0, 255, 163, 0.6)); }
+    50% { transform: scale(1.05); filter: drop-shadow(0 0 40px rgba(0, 255, 163, 0.9)); }
+    100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(0, 255, 163, 0.6)); }
 }
 
-.logo-glow-ring {
-    position: absolute; width: 120px; height: 120px; border-radius: 50%;
-    border: 1px dashed rgba(0, 255, 163, 0.3);
-    animation: rotate-ring 10s linear infinite;
-}
-.gemini-ring { border-color: rgba(79, 172, 254, 0.3); animation-direction: reverse; }
-
-/* Connection Beam */
-.dex-connection-beam {
-    width: 150px; height: 4px; background: rgba(255,255,255,0.1); position: relative; overflow: hidden;
-    opacity: 0; animation: beam-appear 0.5s forwards 3s;
-}
-@keyframes beam-appear { to { opacity: 1; } }
-
-.beam-energy {
-    position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-    background: linear-gradient(90deg, transparent, #fff, transparent);
-    animation: beam-shoot 1.5s infinite 3s;
-}
-@keyframes beam-shoot { 0% { left: -100%; } 100% { left: 200%; } }
-
-/* STAGE 2: TEXT REVEAL (5s - 10s) */
-.dex-text-reveal-stage {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    display: flex; flex-direction: column; align-items: center;
-    width: 100%;
+/* Gemini Orbital Ring - The Engine */
+.dex-reactor-ring-gemini {
+    position: absolute;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: #4facfe;
+    border-bottom-color: #00f2fe;
+    animation: reactor-spin 3s linear infinite;
+    box-shadow: 0 0 15px rgba(79, 172, 254, 0.2);
 }
 
-.dex-intro-title {
-    font-family: 'Roboto Mono', monospace; font-size: 4rem; font-weight: 900; color: #fff;
-    display: flex; align-items: flex-start; gap: 10px;
-    opacity: 0;
-    animation: title-slam 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 5.5s;
-}
-@keyframes title-slam { 0% { opacity: 0; transform: scale(3); letter-spacing: 20px; } 100% { opacity: 1; transform: scale(1); letter-spacing: 0; } }
-
-.glitch-word { position: relative; }
-.ai-badge {
-    font-size: 1rem; background: #00FFA3; color: #000; padding: 2px 8px; border-radius: 4px;
-    transform: translateY(10px); box-shadow: 0 0 20px #00FFA3;
+.dex-reactor-ring-outer {
+    position: absolute;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    animation: reactor-spin-reverse 8s linear infinite;
 }
 
-.dex-intro-subtitle {
-    font-size: 1.2rem; color: #8b9bb4; margin-top: 10px; letter-spacing: 4px;
-    opacity: 0; animation: fade-up 1s forwards 6s;
+@keyframes reactor-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes reactor-spin-reverse { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
+
+/* Satellite Orbit Animation */
+.dex-ai-satellite-orbit {
+    position: absolute;
+    width: 180px; height: 180px; /* Slightly larger than core ring */
+    border-radius: 50%;
+    animation: satellite-orbit 4s linear infinite;
+    pointer-events: none;
 }
-.gemini-brand { 
-    color: #4facfe; font-weight: 800; margin-left: 8px; text-shadow: 0 0 15px rgba(79, 172, 254, 0.8); 
+
+.dex-ai-satellite-icon {
+    position: absolute;
+    top: -16px; /* Position on the orbit path */
+    left: 50%;
+    transform: translateX(-50%);
+    /* Keep the icon upright while orbiting */
+    animation: satellite-counter-rotate 4s linear infinite; 
 }
 
-/* System Check Terminal */
-.dex-system-check {
-    margin-top: 40px; font-family: monospace; font-size: 0.9rem; color: #555; text-align: left; width: 300px;
+@keyframes satellite-orbit { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes satellite-counter-rotate { 0% { transform: translateX(-50%) rotate(0deg); } 100% { transform: translateX(-50%) rotate(-360deg); } }
+
+/* Data Stream / Text Area */
+.dex-loader-status-area {
+    z-index: 10;
+    text-align: center;
+    font-family: 'Roboto Mono', monospace;
+    width: 300px;
 }
-.check-row { opacity: 0; margin-bottom: 4px; animation: term-type 0.1s forwards; }
-.check-row.delay-1 { animation-delay: 7s; }
-.check-row.delay-2 { animation-delay: 8s; }
-.check-row.delay-3 { animation-delay: 9s; color: #00FFA3; }
 
-.status-ok { color: #00FFA3; float: right; }
+.dex-loader-percentage {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 0 20px rgba(255,255,255,0.5);
+    margin-bottom: 10px;
+    display: block;
+}
 
-@keyframes term-type { to { opacity: 1; } }
+.dex-loader-text {
+    font-size: 0.8rem;
+    color: var(--primary-color);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    height: 20px; /* Fixed height to prevent jumping */
+}
 
-/* ═══════════════════════════════════════════════════════════════════
-   SPECTACULAR COMPONENT ENTRANCE (Holographic Construction)
-   ═══════════════════════════════════════════════════════════════════ */
+.dex-loader-bar-bg {
+    width: 100%; height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    margin-top: 15px;
+    overflow: hidden;
+}
+
+.dex-loader-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), #4facfe);
+    width: 0%;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 10px var(--primary-color);
+}
 
 /* ═══════════════════════════════════════════════════════════════════
    SPECTACULAR COMPONENT ENTRANCE (Holographic Construction)
