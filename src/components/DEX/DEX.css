@@ -36,95 +36,135 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   HYPER-SPACE LOADER & HOLOGRAPHIC CONSTRUCTION
+   CINEMATIC 16s LOADER (HOLLYWOOD STYLE)
    ═══════════════════════════════════════════════════════════════════ */
 .dex-cosmic-loader-overlay {
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-  background: #050608;
+  background: #000;
   z-index: 9999;
   display: flex; align-items: center; justify-content: center;
-  perspective: 1000px;
   overflow: hidden;
 }
 
-/* Starfield Effect */
-.dex-hyper-space-bg {
-    position: absolute; width: 200%; height: 200%;
-    background-image: 
-        radial-gradient(white 1px, transparent 1px),
-        radial-gradient(rgba(0, 255, 163, 0.5) 1px, transparent 1px);
-    background-size: 50px 50px, 100px 100px;
-    background-position: 0 0, 25px 25px;
-    transform: rotateX(60deg);
-    animation: warp-speed 4s linear infinite;
-    opacity: 0.3;
+/* Deep Space Background */
+.dex-deep-space-bg {
+    position: absolute; width: 100%; height: 100%;
+    background: radial-gradient(ellipse at center, #1b2735 0%, #090a0f 100%);
+    animation: space-drift 20s linear infinite;
 }
-@keyframes warp-speed { from { transform: rotateX(60deg) translateY(0); } to { transform: rotateX(60deg) translateY(100px); } }
-
-.dex-loader-content {
-    position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center;
-    gap: 20px;
+.stars-sm {
+    width: 1px; height: 1px; background: transparent;
+    box-shadow: 10px 10px #FFF, 50px 100px #FFF, 150px 200px #FFF, 300px 50px #FFF, 500px 300px #FFF;
+    animation: twinkle 3s infinite;
+}
+.nebula-cloud {
+    position: absolute; width: 100%; height: 100%;
+    background-image: linear-gradient(45deg, rgba(112,0,255,0.1) 0%, transparent 50%, rgba(0,255,163,0.1) 100%);
+    opacity: 0.5; animation: nebula-pulse 10s ease-in-out infinite;
 }
 
-/* Gemini Dual Core Animation */
-.dex-gemini-core-wrapper {
-    position: relative; width: 120px; height: 120px;
-    display: flex; align-items: center; justify-content: center;
-}
-.dex-gemini-orbit {
-    position: absolute; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1);
-}
-.orbit-1 { width: 100%; height: 100%; border-top-color: #00FFA3; animation: spin 2s linear infinite; }
-.orbit-2 { width: 70%; height: 70%; border-bottom-color: #7000FF; animation: spin-reverse 1.5s linear infinite; }
+@keyframes space-drift { from { transform: scale(1); } to { transform: scale(1.1); } }
+@keyframes twinkle { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
 
-.dex-gemini-star {
-    position: absolute; width: 12px; height: 12px; border-radius: 50%;
-    background: #fff; box-shadow: 0 0 20px #fff;
-}
-.star-1 { top: 20%; left: 20%; background: #00FFA3; box-shadow: 0 0 25px #00FFA3; animation: orbit-float 3s ease-in-out infinite; }
-.star-2 { bottom: 20%; right: 20%; background: #7000FF; box-shadow: 0 0 25px #7000FF; animation: orbit-float 3s ease-in-out infinite reverse; }
-
-@keyframes orbit-float { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(5px, -5px) scale(1.2); } }
-
-/* Text Effects */
-.dex-loader-title { font-family: 'Roboto Mono', monospace; font-weight: 800; font-size: 2.5rem; letter-spacing: 2px; display: flex; }
-.letter { opacity: 0; animation: type-in 0.5s forwards; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
-.dex-loader-title .letter:nth-child(1) { animation-delay: 0.1s; }
-.dex-loader-title .letter:nth-child(2) { animation-delay: 0.15s; }
-.dex-loader-title .letter:nth-child(3) { animation-delay: 0.2s; }
-.dex-loader-title .letter:nth-child(4) { animation-delay: 0.25s; }
-.dex-loader-title .letter:nth-child(5) { animation-delay: 0.3s; }
-.dex-loader-title .letter:nth-child(6) { animation-delay: 0.35s; }
-.dex-loader-title .letter:nth-child(7) { animation-delay: 0.4s; }
-.dex-loader-title .letter:nth-child(8) { animation-delay: 0.45s; }
-.dex-loader-title .letter:nth-child(9) { animation-delay: 0.5s; }
-.dex-loader-title .letter:nth-child(10) { animation-delay: 0.55s; }
-.dex-loader-title .letter.spacer { width: 10px; }
-.dex-loader-title .letter.ai-glow { color: #fff; text-shadow: 0 0 20px #00FFA3, 0 0 40px #00FFA3; animation-delay: 0.8s; }
-
-@keyframes type-in { from { opacity: 0; transform: translateY(20px); filter: blur(10px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
-
-.dex-loader-subtitle {
-    font-size: 0.9rem; color: #8b9bb4; letter-spacing: 4px; margin-top: -10px; opacity: 0;
-    animation: fade-up 1s forwards 1s;
-}
-.gemini-text { 
-    background: linear-gradient(90deg, #00FFA3, #7000FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-    font-weight: 800; 
+.dex-cinematic-container {
+    position: relative; width: 800px; height: 400px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 10;
 }
 
-.dex-loading-bar {
-    width: 200px; height: 2px; background: rgba(255,255,255,0.1); margin-top: 20px; overflow: hidden; position: relative;
+/* STAGE 1: PARTNERSHIP (0s - 8s) */
+.dex-partnership-stage {
+    display: flex; align-items: center; gap: 40px;
+    animation: stage-1-exit 1s forwards 8s; /* Disappears after 8s */
 }
-.dex-loading-progress {
-    width: 100%; height: 100%; background: linear-gradient(90deg, transparent, #00FFA3, #7000FF, transparent);
-    position: absolute; left: -100%; animation: progress-slide 2s infinite;
-}
-@keyframes progress-slide { 0% { left: -100%; } 50% { left: 100%; } 100% { left: 100%; } }
 
-.dex-loader-status {
-    font-family: monospace; font-size: 0.7rem; color: #555; margin-top: 5px; animation: pulse 1s infinite;
+@keyframes stage-1-exit { to { opacity: 0; transform: scale(1.5); filter: blur(20px); } }
+
+.dex-logo-wrapper {
+    display: flex; flex-direction: column; align-items: center; gap: 15px;
+    opacity: 0; 
 }
+.bits-side { animation: logo-enter 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 1s; }
+.gemini-side { animation: logo-enter 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 3s; }
+
+@keyframes logo-enter { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
+
+.dex-loader-bits-img { width: 80px; height: 80px; filter: drop-shadow(0 0 15px rgba(0, 255, 163, 0.6)); }
+.dex-gemini-svg { width: 80px; height: 80px; filter: drop-shadow(0 0 20px rgba(79, 172, 254, 0.6)); animation: gemini-spin 10s linear infinite; }
+
+@keyframes gemini-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+.dex-logo-label {
+    font-family: 'Inter', sans-serif; font-size: 0.8rem; letter-spacing: 3px; color: #8b9bb4; font-weight: 700;
+    opacity: 0; animation: fade-in 1s forwards 4s;
+}
+
+.logo-glow-ring {
+    position: absolute; width: 120px; height: 120px; border-radius: 50%;
+    border: 1px dashed rgba(0, 255, 163, 0.3);
+    animation: rotate-ring 10s linear infinite;
+}
+.gemini-ring { border-color: rgba(79, 172, 254, 0.3); animation-direction: reverse; }
+
+/* Connection Beam */
+.dex-connection-beam {
+    width: 150px; height: 4px; background: rgba(255,255,255,0.1); position: relative; overflow: hidden;
+    opacity: 0; animation: beam-appear 0.5s forwards 5s;
+}
+@keyframes beam-appear { to { opacity: 1; } }
+
+.beam-energy {
+    position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, #fff, transparent);
+    animation: beam-shoot 2s infinite 5s;
+}
+@keyframes beam-shoot { 0% { left: -100%; } 100% { left: 200%; } }
+
+/* STAGE 2: TEXT REVEAL (8s - 16s) */
+.dex-text-reveal-stage {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    display: flex; flex-direction: column; align-items: center;
+    width: 100%;
+}
+
+.dex-intro-title {
+    font-family: 'Roboto Mono', monospace; font-size: 4rem; font-weight: 900; color: #fff;
+    display: flex; align-items: flex-start; gap: 10px;
+    opacity: 0;
+    animation: title-slam 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 8.5s;
+}
+@keyframes title-slam { 0% { opacity: 0; transform: scale(3); letter-spacing: 20px; } 100% { opacity: 1; transform: scale(1); letter-spacing: 0; } }
+
+.glitch-word { position: relative; }
+.ai-badge {
+    font-size: 1rem; background: #00FFA3; color: #000; padding: 2px 8px; border-radius: 4px;
+    transform: translateY(10px); box-shadow: 0 0 20px #00FFA3;
+}
+
+.dex-intro-subtitle {
+    font-size: 1.2rem; color: #8b9bb4; margin-top: 10px; letter-spacing: 4px;
+    opacity: 0; animation: fade-up 1s forwards 9.5s;
+}
+.gemini-brand { 
+    color: #4facfe; font-weight: 800; margin-left: 8px; text-shadow: 0 0 15px rgba(79, 172, 254, 0.8); 
+}
+
+/* System Check Terminal */
+.dex-system-check {
+    margin-top: 40px; font-family: monospace; font-size: 0.9rem; color: #555; text-align: left; width: 300px;
+}
+.check-row { opacity: 0; margin-bottom: 4px; animation: term-type 0.1s forwards; }
+.check-row.delay-1 { animation-delay: 11s; }
+.check-row.delay-2 { animation-delay: 12.5s; }
+.check-row.delay-3 { animation-delay: 14s; color: #00FFA3; }
+
+.status-ok { color: #00FFA3; float: right; }
+
+@keyframes term-type { to { opacity: 1; } }
+
+/* ═══════════════════════════════════════════════════════════════════
+   SPECTACULAR COMPONENT ENTRANCE (Holographic Construction)
+   ═══════════════════════════════════════════════════════════════════ */
 
 /* ═══════════════════════════════════════════════════════════════════
    SPECTACULAR COMPONENT ENTRANCE (Holographic Construction)

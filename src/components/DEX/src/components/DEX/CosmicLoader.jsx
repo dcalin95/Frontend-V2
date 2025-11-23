@@ -1,44 +1,66 @@
 import React from 'react';
 import './DEX.css';
+import bitsLogo from '../../assets/logo.png';
 
 const CosmicLoader = () => {
   return (
     <div className="dex-cosmic-loader-overlay">
-      <div className="dex-hyper-space-bg"></div>
+      <div className="dex-deep-space-bg">
+        <div className="stars-sm"></div>
+        <div className="stars-md"></div>
+        <div className="nebula-cloud"></div>
+      </div>
       
-      <div className="dex-loader-content">
-        {/* The Gemini Dual Core */}
-        <div className="dex-gemini-core-wrapper">
-            <div className="dex-gemini-orbit orbit-1"></div>
-            <div className="dex-gemini-orbit orbit-2"></div>
-            <div className="dex-gemini-star star-1"></div>
-            <div className="dex-gemini-star star-2"></div>
+      <div className="dex-cinematic-container">
+        {/* PARTNERSHIP LOGOS SEQUENCE (0s - 8s) */}
+        <div className="dex-partnership-stage">
+            {/* BITS SIDE */}
+            <div className="dex-logo-wrapper bits-side">
+                <div className="logo-glow-ring"></div>
+                <img src={bitsLogo} alt="BITS" className="dex-loader-bits-img" />
+                <div className="dex-logo-label">BITS ECOSYSTEM</div>
+            </div>
+
+            {/* CONNECTION BEAM */}
+            <div className="dex-connection-beam">
+                <div className="beam-energy"></div>
+                <div className="connection-node"></div>
+            </div>
+
+            {/* GEMINI SIDE */}
+            <div className="dex-logo-wrapper gemini-side">
+                <div className="logo-glow-ring gemini-ring"></div>
+                {/* Gemini Star SVG */}
+                <svg viewBox="0 0 512 512" className="dex-gemini-svg">
+                    <defs>
+                        <linearGradient id="geminiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stopColor="#4facfe" />
+                            <stop offset="100%" stopColor="#00f2fe" />
+                        </linearGradient>
+                    </defs>
+                    <path fill="url(#geminiGrad)" d="M256,0C256,141.38,141.38,256,0,256c141.38,0,256,114.62,256,256c0-141.38,114.62-256,256-256C370.62,256,256,141.38,256,0z"/>
+                </svg>
+                <div className="dex-logo-label">GOOGLE GEMINI</div>
+            </div>
         </div>
 
-        {/* Text Container */}
-        <div className="dex-loader-text-group">
-            <div className="dex-loader-title">
-                <span className="letter">B</span>
-                <span className="letter">i</span>
-                <span className="letter">t</span>
-                <span className="letter">S</span>
-                <span className="letter">w</span>
-                <span className="letter">a</span>
-                <span className="letter">p</span>
-                <span className="letter" style={{color: '#00FFA3'}}>D</span>
-                <span className="letter" style={{color: '#00FFA3'}}>E</span>
-                <span className="letter" style={{color: '#00FFA3'}}>X</span>
-                <span className="letter spacer"> </span>
-                <span className="letter ai-glow">A</span>
-                <span className="letter ai-glow">I</span>
+        {/* TEXT REVEAL SEQUENCE (8s - 16s) */}
+        <div className="dex-text-reveal-stage">
+            <h1 className="dex-intro-title">
+                <span className="glitch-word" data-text="BitSwapDEX">BitSwapDEX</span>
+                <span className="ai-badge">AI</span>
+            </h1>
+            <div className="dex-intro-subtitle">
+                <span className="sub-text">POWERED BY</span>
+                <span className="gemini-brand">GEMINI NEURAL ENGINE</span>
             </div>
-            <div className="dex-loader-subtitle">
-                POWERED BY <span className="gemini-text">GEMINI</span>
+            
+            <div className="dex-system-check">
+                <div className="check-row"><span>> ESTABLISHING UPLINK...</span> <span className="status-ok">OK</span></div>
+                <div className="check-row delay-1"><span>> SYNCING LIQUIDITY NODES...</span> <span className="status-ok">100%</span></div>
+                <div className="check-row delay-2"><span>> OPTIMIZING ROUTE PATHS...</span> <span className="status-ok">DONE</span></div>
+                <div className="check-row delay-3"><span>> LAUNCHING INTERFACE...</span></div>
             </div>
-            <div className="dex-loading-bar">
-                <div className="dex-loading-progress"></div>
-            </div>
-            <div className="dex-loader-status">INITIALIZING NEURAL UPLINK...</div>
         </div>
       </div>
     </div>
@@ -46,4 +68,3 @@ const CosmicLoader = () => {
 };
 
 export default CosmicLoader;
-

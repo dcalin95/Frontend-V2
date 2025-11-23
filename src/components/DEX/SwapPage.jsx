@@ -45,11 +45,11 @@ const SwapPage = () => {
     return saved ? JSON.parse(saved) : [];
   });
 
-  // Simulate AI Initialization
+  // Simulate AI Initialization (Cinematic 16s Intro)
   useEffect(() => {
       const timer = setTimeout(() => {
           setIsLoading(false);
-      }, 3500); // Increased to 3.5s for full dramatic effect
+      }, 16000); // 16 Seconds Cinematic Experience
       return () => clearTimeout(timer);
   }, []);
 
