@@ -263,7 +263,7 @@ body {
 }
 
 .dex-panel-section { 
-  width: 375px; /* Increased from 340px by ~10% */
+  width: 395px; /* Increased further by ~5% */
   display: flex; 
   flex-direction: column;
   flex-shrink: 0;
