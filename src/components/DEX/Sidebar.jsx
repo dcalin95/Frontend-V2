@@ -59,10 +59,7 @@ Every trade you make here refines the algorithm for maximum profitability.`}>
             
             {/* DEMO Badge - Visual only now, trigger is the whole area */}
             <div style={{ marginLeft: 'auto' }}>
-                <div style={{ 
-                    background: 'rgba(255,255,255,0.1)', padding: '2px 6px', borderRadius: '4px', 
-                    fontSize: '0.6rem', color: '#fff', fontWeight: '700', border: '1px solid rgba(255,255,255,0.2)'
-                }}>
+                <div className="dex-demo-badge-cosmic">
                     DEMO
                 </div>
             </div>

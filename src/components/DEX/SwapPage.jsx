@@ -3,6 +3,7 @@ import Sidebar from './Sidebar';
 import SwapPanel from './SwapPanel';
 import TradingChart from './TradingChart';
 import PositionsTable from './PositionsTable';
+import CosmicLoader from './CosmicLoader'; // New AI Loader
 import './DEX.css';
 import bitsLogo from '../../assets/logo.png';
 
@@ -25,6 +26,7 @@ const MOCK_BALANCES = {
 
 const SwapPage = () => {
   const [activeTab, setActiveTab] = useState('swap');
+  const [isLoading, setIsLoading] = useState(true); // Loading State
   
   // Lifted State for Tokens to share with Sidebar AI
   const [payToken, setPayToken] = useState(tokens[0]);
@@ -42,6 +44,14 @@ const SwapPage = () => {
     const saved = localStorage.getItem('dex_demo_positions');
     return saved ? JSON.parse(saved) : [];
   });
+
+  // Simulate AI Initialization
+  useEffect(() => {
+      const timer = setTimeout(() => {
+          setIsLoading(false);
+      }, 2500); // 2.5s cosmic load
+      return () => clearTimeout(timer);
+  }, []);
 
   // Save changes to LocalStorage whenever they change
   useEffect(() => {
@@ -76,15 +86,22 @@ const SwapPage = () => {
     setBalance(prev => prev + profit);
   };
 
+  // AI Loader View
+  if (isLoading) {
+      return <CosmicLoader />;
+  }
+
   return (
     <div className="dex-page-container">
-      <Sidebar 
-          activeTab={activeTab} 
-          setActiveTab={setActiveTab}
-          aiContext={{ fromToken: payToken.symbol, toToken: receiveToken.symbol }}
-          balance={balance} // Pass dynamic balance
-          assets={MOCK_BALANCES} // Pass assets breakdown
-      />
+      <div className="stagger-fade-in stagger-1" style={{height: '100%'}}>
+        <Sidebar 
+            activeTab={activeTab} 
+            setActiveTab={setActiveTab}
+            aiContext={{ fromToken: payToken.symbol, toToken: receiveToken.symbol }}
+            balance={balance} // Pass dynamic balance
+            assets={MOCK_BALANCES} // Pass assets breakdown
+        />
+      </div>
 
       <div className="dex-main-content">
         <div className="dex-glow-bg">
@@ -98,7 +115,7 @@ const SwapPage = () => {
               <>
                 {/* Upper Section: Panel + Chart */}
                 <div className="dex-top-split">
-                    <section className="dex-panel-section">
+                    <section className="dex-panel-section stagger-fade-in stagger-2">
                       <SwapPanel 
                         tokens={tokens}
                         balances={MOCK_BALANCES}
@@ -110,13 +127,13 @@ const SwapPage = () => {
                       />
                     </section>
 
-                    <section className="dex-chart-section">
+                    <section className="dex-chart-section stagger-fade-in stagger-3">
                       <TradingChart fromToken={payToken.symbol} toToken={receiveToken.symbol} />
                     </section>
                 </div>
 
                 {/* Bottom Section: Positions Table */}
-                <section className="dex-positions-section">
+                <section className="dex-positions-section stagger-fade-in stagger-4">
                     <PositionsTable 
                         positions={positions} 
                         onClosePosition={handleClosePosition} 
@@ -125,7 +142,7 @@ const SwapPage = () => {
                 </section>
               </>
             ) : (
-              <div className="dex-coming-soon">
+              <div className="dex-coming-soon stagger-fade-in">
                 <h2>Coming Soon</h2>
                 <p>The {activeTab} module is currently under development.</p>
               </div>

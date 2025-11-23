@@ -29,11 +29,111 @@ body {
 /* MASTER LAYOUT - GRID FORCES EXACT POSITIONS */
 .dex-page-container {
   display: grid;
-  grid-template-columns: 365px 1fr; /* Fixed Sidebar | Rest Content */
+  grid-template-columns: clamp(300px, 19vw, 400px) 1fr; /* Dynamic but controlled */
   width: 100vw;
   height: 100vh;
   overflow: hidden;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   COSMIC LOADER & ANIMATIONS
+   ═══════════════════════════════════════════════════════════════════ */
+.dex-cosmic-loader-overlay {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: #0b0e11;
+  z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at center, #1a1f2e 0%, #0b0e11 100%);
+}
+
+.dex-cosmic-loader-container {
+  position: relative; width: 200px; height: 200px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.dex-cosmic-core {
+  width: 40px; height: 40px; background: #fff; border-radius: 50%;
+  box-shadow: 0 0 30px #00FFA3, 0 0 60px #7000FF;
+  animation: core-pulse 2s ease-in-out infinite;
+  z-index: 10;
+}
+
+.dex-cosmic-ring {
+  position: absolute; border-radius: 50%; border: 2px solid transparent;
+}
+
+.ring-1 {
+  width: 100px; height: 100px;
+  border-top: 2px solid #00FFA3; border-right: 2px solid transparent;
+  animation: spin 3s linear infinite;
+}
+.ring-2 {
+  width: 140px; height: 140px;
+  border-bottom: 2px solid #7000FF; border-left: 2px solid transparent;
+  animation: spin-reverse 5s linear infinite;
+}
+.ring-3 {
+  width: 180px; height: 180px;
+  border: 1px dashed rgba(255,255,255,0.1);
+  animation: spin 10s linear infinite;
+}
+
+.dex-cosmic-text {
+    position: absolute; bottom: -60px; display: flex; flex-direction: column; align-items: center; gap: 4px;
+    font-family: 'Roboto Mono', monospace; font-weight: 700; letter-spacing: 3px;
+}
+.dex-cosmic-word {
+    opacity: 0;
+    animation: fade-in-text 0.5s forwards;
+    background: linear-gradient(90deg, #00FFA3, #7000FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.dex-cosmic-word:nth-child(1) { animation-delay: 0.2s; font-size: 1.2rem; }
+.dex-cosmic-word:nth-child(2) { animation-delay: 0.6s; font-size: 1.5rem; }
+.dex-cosmic-word:nth-child(3) { animation-delay: 1.0s; font-size: 0.8rem; color: #fff; -webkit-text-fill-color: #fff; animation: blink 1s infinite; }
+
+@keyframes core-pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 50px #00FFA3, 0 0 80px #7000FF; } }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes spin-reverse { 0% { transform: rotate(360deg); } 100% { transform: rotate(0deg); } }
+@keyframes fade-in-text { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Staggered Fade In Classes */
+.stagger-fade-in { opacity: 0; animation: cosmicFadeIn 0.8s ease-out forwards; }
+.stagger-1 { animation-delay: 0.1s; } /* Sidebar */
+.stagger-2 { animation-delay: 0.3s; } /* Swap Panel */
+.stagger-3 { animation-delay: 0.5s; } /* Chart */
+.stagger-4 { animation-delay: 0.7s; } /* Positions */
+
+@keyframes cosmicFadeIn {
+    from { opacity: 0; transform: scale(0.95) translateY(20px); filter: blur(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   NEW DEMO BADGE (COSMIC)
+   ═══════════════════════════════════════════════════════════════════ */
+.dex-demo-badge-cosmic {
+    background: linear-gradient(135deg, rgba(112, 0, 255, 0.2), rgba(0, 255, 163, 0.2));
+    border: 1px solid rgba(0, 255, 163, 0.4);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 0 15px rgba(112, 0, 255, 0.3);
+    animation: badge-pulse 3s infinite;
+    position: relative;
+    overflow: hidden;
+}
+.dex-demo-badge-cosmic::before {
+    content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: shine 3s infinite;
+}
+
+@keyframes badge-pulse { 0%, 100% { box-shadow: 0 0 15px rgba(112, 0, 255, 0.3); border-color: rgba(0, 255, 163, 0.4); } 50% { box-shadow: 0 0 25px rgba(0, 255, 163, 0.5); border-color: #00FFA3; } }
+@keyframes shine { 0%, 80% { left: -100%; } 100% { left: 200%; } }
 
 /* ═══════════════════════════════════════════════════════════════════
    SIDEBAR
@@ -263,7 +363,7 @@ body {
 }
 
 .dex-panel-section { 
-  width: 395px; /* Increased further by ~5% */
+  width: clamp(340px, 22vw, 450px); /* Dynamic but controlled */
   display: flex; 
   flex-direction: column;
   flex-shrink: 0;
