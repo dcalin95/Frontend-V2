@@ -4,7 +4,7 @@ import bitsLogo from '../../assets/logo.png';
 
 const CosmicLoader = () => {
   return (
-    <div className="dex-cosmic-loader-overlay">
+    <div className="dex-cinematic-loader-overlay-v2">
       <div className="dex-deep-space-bg">
         <div className="stars-sm"></div>
         <div className="stars-md"></div>

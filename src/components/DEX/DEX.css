@@ -38,7 +38,7 @@ body {
 /* ═══════════════════════════════════════════════════════════════════
    CINEMATIC 16s LOADER (HOLLYWOOD STYLE)
    ═══════════════════════════════════════════════════════════════════ */
-.dex-cosmic-loader-overlay {
+.dex-cinematic-loader-overlay-v2 {
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
   background: #000;
   z-index: 9999;
