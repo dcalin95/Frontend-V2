@@ -29,7 +29,7 @@ body {
 /* MASTER LAYOUT - GRID FORCES EXACT POSITIONS */
 .dex-page-container {
   display: grid;
-  grid-template-columns: 260px 1fr; /* Fixed Sidebar | Rest Content */
+  grid-template-columns: 300px 1fr; /* Fixed Sidebar | Rest Content */
   width: 100vw;
   height: 100vh;
   overflow: hidden;
