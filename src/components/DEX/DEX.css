@@ -72,10 +72,10 @@ body {
     z-index: 10;
 }
 
-/* STAGE 1: PARTNERSHIP (0s - 8s) */
+/* STAGE 1: PARTNERSHIP (0s - 5s) */
 .dex-partnership-stage {
     display: flex; align-items: center; gap: 40px;
-    animation: stage-1-exit 1s forwards 8s; /* Disappears after 8s */
+    animation: stage-1-exit 1s forwards 5s; /* Disappears after 5s */
 }
 
 @keyframes stage-1-exit { to { opacity: 0; transform: scale(1.5); filter: blur(20px); } }
@@ -84,8 +84,8 @@ body {
     display: flex; flex-direction: column; align-items: center; gap: 15px;
     opacity: 0; 
 }
-.bits-side { animation: logo-enter 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 1s; }
-.gemini-side { animation: logo-enter 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 3s; }
+.bits-side { animation: logo-enter 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.5s; }
+.gemini-side { animation: logo-enter 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 1.5s; }
 
 @keyframes logo-enter { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
 
@@ -96,7 +96,7 @@ body {
 
 .dex-logo-label {
     font-family: 'Inter', sans-serif; font-size: 0.8rem; letter-spacing: 3px; color: #8b9bb4; font-weight: 700;
-    opacity: 0; animation: fade-in 1s forwards 4s;
+    opacity: 0; animation: fade-in 1s forwards 2.5s;
 }
 
 .logo-glow-ring {
@@ -109,18 +109,18 @@ body {
 /* Connection Beam */
 .dex-connection-beam {
     width: 150px; height: 4px; background: rgba(255,255,255,0.1); position: relative; overflow: hidden;
-    opacity: 0; animation: beam-appear 0.5s forwards 5s;
+    opacity: 0; animation: beam-appear 0.5s forwards 3s;
 }
 @keyframes beam-appear { to { opacity: 1; } }
 
 .beam-energy {
     position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
     background: linear-gradient(90deg, transparent, #fff, transparent);
-    animation: beam-shoot 2s infinite 5s;
+    animation: beam-shoot 1.5s infinite 3s;
 }
 @keyframes beam-shoot { 0% { left: -100%; } 100% { left: 200%; } }
 
-/* STAGE 2: TEXT REVEAL (8s - 16s) */
+/* STAGE 2: TEXT REVEAL (5s - 10s) */
 .dex-text-reveal-stage {
     position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
     display: flex; flex-direction: column; align-items: center;
@@ -131,7 +131,7 @@ body {
     font-family: 'Roboto Mono', monospace; font-size: 4rem; font-weight: 900; color: #fff;
     display: flex; align-items: flex-start; gap: 10px;
     opacity: 0;
-    animation: title-slam 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 8.5s;
+    animation: title-slam 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 5.5s;
 }
 @keyframes title-slam { 0% { opacity: 0; transform: scale(3); letter-spacing: 20px; } 100% { opacity: 1; transform: scale(1); letter-spacing: 0; } }
 
@@ -143,7 +143,7 @@ body {
 
 .dex-intro-subtitle {
     font-size: 1.2rem; color: #8b9bb4; margin-top: 10px; letter-spacing: 4px;
-    opacity: 0; animation: fade-up 1s forwards 9.5s;
+    opacity: 0; animation: fade-up 1s forwards 6s;
 }
 .gemini-brand { 
     color: #4facfe; font-weight: 800; margin-left: 8px; text-shadow: 0 0 15px rgba(79, 172, 254, 0.8); 
@@ -154,9 +154,9 @@ body {
     margin-top: 40px; font-family: monospace; font-size: 0.9rem; color: #555; text-align: left; width: 300px;
 }
 .check-row { opacity: 0; margin-bottom: 4px; animation: term-type 0.1s forwards; }
-.check-row.delay-1 { animation-delay: 11s; }
-.check-row.delay-2 { animation-delay: 12.5s; }
-.check-row.delay-3 { animation-delay: 14s; color: #00FFA3; }
+.check-row.delay-1 { animation-delay: 7s; }
+.check-row.delay-2 { animation-delay: 8s; }
+.check-row.delay-3 { animation-delay: 9s; color: #00FFA3; }
 
 .status-ok { color: #00FFA3; float: right; }
 
