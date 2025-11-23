@@ -12,7 +12,7 @@ const CosmicLoader = () => {
       </div>
       
       <div className="dex-cinematic-container">
-        {/* PARTNERSHIP LOGOS SEQUENCE (0s - 8s) */}
+        {/* PARTNERSHIP LOGOS SEQUENCE (0s - 5s) */}
         <div className="dex-partnership-stage">
             {/* BITS SIDE */}
             <div className="dex-logo-wrapper bits-side">
@@ -38,7 +38,7 @@ const CosmicLoader = () => {
             </div>
         </div>
 
-        {/* TEXT REVEAL SEQUENCE (8s - 16s) */}
+        {/* TEXT REVEAL SEQUENCE (5s - 10s) */}
         <div className="dex-text-reveal-stage">
             <h1 className="dex-intro-title">
                 <span className="glitch-word" data-text="BitSwapDEX">BitSwapDEX</span>
