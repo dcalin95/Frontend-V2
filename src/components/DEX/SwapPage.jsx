@@ -49,7 +49,7 @@ const SwapPage = () => {
   useEffect(() => {
       const timer = setTimeout(() => {
           setIsLoading(false);
-      }, 2500); // 2.5s cosmic load
+      }, 3500); // Increased to 3.5s for full dramatic effect
       return () => clearTimeout(timer);
   }, []);
 
