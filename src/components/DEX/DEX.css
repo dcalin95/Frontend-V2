@@ -166,10 +166,6 @@ body {
    SPECTACULAR COMPONENT ENTRANCE (Holographic Construction)
    ═══════════════════════════════════════════════════════════════════ */
 
-/* ═══════════════════════════════════════════════════════════════════
-   SPECTACULAR COMPONENT ENTRANCE (Holographic Construction)
-   ═══════════════════════════════════════════════════════════════════ */
-
 /* Base Class for Staggered Elements */
 .stagger-fade-in {
     opacity: 0;
@@ -180,6 +176,13 @@ body {
     animation: holographicConstruct 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     position: relative;
 }
+
+/* Simple Mobile Fade In */
+.mobile-fade-in {
+    animation: fade-in 0.5s ease-out forwards;
+}
+
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 
 /* Delays - Increased for dramatic effect */
 .stagger-1 { animation-delay: 0.3s; } /* Sidebar - First */

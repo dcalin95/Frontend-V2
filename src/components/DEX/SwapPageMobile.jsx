@@ -127,7 +127,7 @@ const SwapPageMobile = () => {
         {/* Conditional View based on Tab */}
         {activeTab === 'swap' && (
             <>
-                <section className="stagger-fade-in stagger-1">
+                <section className="mobile-fade-in">
                     <SwapPanel 
                         tokens={tokens}
                         balances={MOCK_BALANCES}
@@ -140,14 +140,14 @@ const SwapPageMobile = () => {
                 </section>
                 
                 {/* Compact Chart Teaser */}
-                <section className="stagger-fade-in stagger-2" style={{ height: '250px', opacity: 0.8 }}>
+                <section className="mobile-fade-in" style={{ height: '250px', opacity: 0.8, marginTop: '20px' }}>
                      <TradingChart fromToken={payToken.symbol} toToken={receiveToken.symbol} />
                 </section>
             </>
         )}
 
         {activeTab === 'positions' && (
-            <section className="stagger-fade-in stagger-1">
+            <section className="mobile-fade-in">
                 <PositionsTable 
                     positions={positions} 
                     onClosePosition={handleClosePosition} 
@@ -157,7 +157,7 @@ const SwapPageMobile = () => {
         )}
 
         {activeTab === 'chart' && (
-            <section className="stagger-fade-in stagger-1" style={{ height: '60vh' }}>
+            <section className="mobile-fade-in" style={{ height: '60vh' }}>
                 <TradingChart fromToken={payToken.symbol} toToken={receiveToken.symbol} />
             </section>
         )}
