@@ -20,15 +20,16 @@ const FloatingAIAvatar = ({ onNavigate }) => {
   const avatarRef = useRef(null);
   const videoRef = useRef(null);
 
-  // Random position on mount
+  // Random position on mount - avoid bottom area where positions table is
   useEffect(() => {
     const randomizePosition = () => {
+      // Safe positions that avoid overlapping with content
       const positions = [
-        { x: window.innerWidth - 120, y: window.innerHeight - 180 },
-        { x: window.innerWidth / 2 - 60, y: window.innerHeight - 180 },
-        { x: window.innerWidth - 120, y: 80 },
-        { x: window.innerWidth - 120, y: window.innerHeight / 2 - 80 },
-        { x: 340, y: window.innerHeight - 180 },
+        { x: window.innerWidth - 150, y: 100 }, // Top right
+        { x: window.innerWidth - 150, y: window.innerHeight / 3 }, // Middle right
+        { x: window.innerWidth - 150, y: window.innerHeight / 2 - 100 }, // Center right
+        { x: 350, y: 100 }, // Top left (after sidebar)
+        { x: window.innerWidth / 2 - 60, y: 100 }, // Top center
       ];
 
       const randomPos = positions[Math.floor(Math.random() * positions.length)];

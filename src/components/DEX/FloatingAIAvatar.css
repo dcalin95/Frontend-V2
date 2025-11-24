@@ -2,7 +2,7 @@
 
 .floating-ai-avatar {
   position: fixed;
-  z-index: 9999;
+  z-index: 999; /* Reduced from 9999 - should be below modals/dropdowns but visible */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -12,13 +12,14 @@
   animation: floatIn 1s ease-out;
   user-select: none;
   -webkit-user-drag: none;
+  pointer-events: auto; /* Ensure it's clickable */
 }
 
 .floating-ai-avatar.dragging {
   cursor: grabbing;
   transform: scale(1.1);
   filter: brightness(1.2);
-  z-index: 10000;
+  z-index: 1000; /* Slightly higher when dragging */
   transition: none;
 }
 
