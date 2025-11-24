@@ -14,8 +14,8 @@ const metadata = {
 
 // 🌐 Supported EVM chains: BSC, Ethereum, Polygon, Arbitrum, Optimism, Base, Avalanche
 export const chains = [
-  mainnet,      // Ethereum Mainnet
   bsc,          // Binance Smart Chain
+  mainnet,      // Ethereum Mainnet
   polygon,      // Polygon (MATIC)
   arbitrum,     // Arbitrum One (Layer 2)
   optimism,     // Optimism (Layer 2)
@@ -29,7 +29,8 @@ export const config = defaultWagmiConfig({
   metadata,
   enableCoinbase: true,
   enableEmail: true,
-  enableEIP6963: true,
-  enableInjected: true,
+  enableEIP6963: true, // Detects multiple injected wallets (MetaMask, Trust, Phantom, etc.)
+  enableInjected: true, // Essential for dApp browsers (Trust Wallet Browser, MetaMask Browser)
+  enableWalletConnect: true, // Standard connection for external wallets
 });
 

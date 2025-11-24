@@ -114,7 +114,7 @@ const AiSuggestionBox = ({ fromToken, toToken, slippage }) => {
 
             {!involvesBits && (
                <div className="dex-hint-row">
-                 <Sparkles size={12} color="#00FFA3" />
+                 <Sparkles size={12} color="#6b7280" />
                  <span>Pro Tip: Pay fees with <strong className="solana-gradient-text">$BITS</strong> for 10% off.</span>
                </div>
             )}

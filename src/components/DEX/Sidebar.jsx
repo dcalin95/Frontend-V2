@@ -52,11 +52,11 @@ Every trade you make here refines the algorithm for maximum profitability.`}>
                alt="BitSwap Logo" 
                style={{ 
                    width: 40, height: 40, 
-                   filter: 'drop-shadow(0 0 8px rgba(0, 255, 163, 0.4))' 
+                   filter: 'drop-shadow(0 0 6px rgba(139, 155, 180, 0.3))' 
                }} 
             />
             <div className="dex-logo-text">
-              <span className="solana-gradient-text">BitSwap</span>DEX <span style={{ color: '#00FFA3' }}>AI</span>
+              <span className="solana-gradient-text">BitSwap</span>DEX <span style={{ color: '#DC1FFF' }}>AI</span>
             </div>
             
             {/* DEMO Badge - Visual only now, trigger is the whole area */}
@@ -81,27 +81,7 @@ Every trade you make here refines the algorithm for maximum profitability.`}>
           ))}
         </nav>
 
-        {/* AI Copilot Insight - Moved to Sidebar */}
-        <div className="dex-sidebar-ai-wrapper">
-             {/* AI LOGIC TOOLTIP HEADER - TRIGGER ON TITLE */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px', padding: '0 4px' }}>
-                <SmartTooltip content={`The Institutional Advantage: AI-Driven Execution\n
-BitSwapDEX Core is not a standard AMM router. It is a Deep Learning Model processing 50,000+ liquidity points per second across Binance Smart Chain, Ethereum, and Solana.\n
-How it wins against the market:\n
-1. Predictive Routing: The AI anticipates slippage before it happens, locking in rates that human traders cannot see.\n
-2. MEV Shield Protection: Our "Stealth Mode" splits orders into micro-batches to prevent front-running bots and sandwich attacks.\n
-3. Gas Optimization: By bundling transactions and using $BITS as fuel, the AI lowers network costs by up to 40% compared to Uniswap or PancakeSwap.\n
-This is institutional-grade algorithmic trading, democratized for you.`}>
-                  <span style={{ fontSize: '0.75rem', color: '#8b9bb4', fontWeight: '600', cursor: 'help', borderBottom: '1px dashed #8b9bb4' }}>AI INTELLIGENCE</span>
-                </SmartTooltip>
-            </div>
-            
-            <AiSuggestionBox 
-                fromToken={aiContext?.fromToken} 
-                toToken={aiContext?.toToken} 
-                slippage={0.5} 
-            />
-        </div>
+        {/* REMOVED: AI Copilot Insight - Now floating avatar instead */}
 
         {/* Wallet Logic */}
         {isConnected ? (

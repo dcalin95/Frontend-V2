@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import stakingABI from "../abi/stakingABI"; // asigură-te că acest path este corect
 import { getRobustProvider, executeWithFallback } from "../utils/rpcFallback";
 
-// Updated with new BSC Testnet address  
+// BSC Mainnet address (CORRECT)
 const STAKING_ADDRESS = "0xF1fd04dB28545C5d5d2f2a7709135839B22984de";
 
 /**

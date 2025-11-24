@@ -10,6 +10,7 @@ import VoteCenter from './VoteCenter';
 import AIIntelligencePage from './AIIntelligencePage'; // New Page
 import CosmicLoader from './CosmicLoader'; // New AI Loader
 import SwapPageMobile from './SwapPageMobile'; // Import Mobile Version
+import FloatingAIAvatar from './FloatingAIAvatar'; // Floating AI Avatar
 import WalletContext from '../../context/WalletContext'; // Import Wallet Context
 import { Wallet } from 'lucide-react'; // Wallet icon
 import './DEX.css';
@@ -233,6 +234,9 @@ const SwapPage = () => {
             {renderMainContent()}
           </main>
         </div>
+
+        {/* Floating AI Avatar - Random Position */}
+        <FloatingAIAvatar onNavigate={setActiveTab} />
       </div>
     </div>
   );

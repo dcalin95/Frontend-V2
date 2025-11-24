@@ -50,7 +50,7 @@ export const CONTRACT_MAP = {
   },
   NODE: {
     name: "NodeContract",
-    address: "0xE6536756d73F0771D9a317F49453DE96541C352F",
+    address: "0xE6536756d73F0771d9a317F49453de96541C352F",
     abi: nodeABI,
   },
   ADDITIONAL_REWARD: {

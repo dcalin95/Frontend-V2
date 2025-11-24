@@ -9,6 +9,288 @@
     box-sizing: border-box;
 }
 
+/* Live Price Ticker */
+.live-price-ticker {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 20px 32px;
+    background: linear-gradient(135deg, rgba(220, 31, 255, 0.15) 0%, rgba(1, 247, 191, 0.15) 100%);
+    border: 2px solid rgba(220, 31, 255, 0.4);
+    border-radius: 16px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(220, 31, 255, 0.3);
+}
+
+.ticker-pulse {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(220, 31, 255, 0.3), transparent);
+    animation: ticker-pulse 3s linear infinite;
+}
+
+@keyframes ticker-pulse {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.ticker-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Roboto Mono', monospace;
+    z-index: 1;
+}
+
+.ticker-icon {
+    font-size: 2.2rem;
+    filter: drop-shadow(0 0 8px rgba(220, 31, 255, 0.6));
+}
+
+.ticker-label {
+    font-size: 1.2rem;
+    color: #c084fc;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.ticker-price {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ffffff;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 20px rgba(220, 31, 255, 0.5);
+}
+
+.ticker-price.price-up {
+    color: #01F7BF;
+    animation: priceFlashUp 0.6s ease;
+}
+
+.ticker-price.price-down {
+    color: #DC1FFF;
+    animation: priceFlashDown 0.6s ease;
+}
+
+@keyframes priceFlashUp {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); color: #01F7BF; text-shadow: 0 0 20px rgba(1, 247, 191, 0.8); }
+}
+
+@keyframes priceFlashDown {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); color: #DC1FFF; text-shadow: 0 0 20px rgba(220, 31, 255, 0.8); }
+}
+
+.ticker-change {
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 8px;
+}
+
+.ticker-change.positive {
+    background: rgba(1, 247, 191, 0.2);
+    color: #01F7BF;
+    border: 1px solid rgba(1, 247, 191, 0.4);
+}
+
+.ticker-change.negative {
+    background: rgba(220, 31, 255, 0.2);
+    color: #DC1FFF;
+    border: 1px solid rgba(220, 31, 255, 0.4);
+}
+
+.live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: rgba(220, 31, 255, 0.2);
+    border: 1px solid rgba(220, 31, 255, 0.4);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #DC1FFF;
+    letter-spacing: 1.5px;
+}
+
+.live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #DC1FFF;
+    animation: livePulse 1.5s ease-in-out infinite;
+    box-shadow: 0 0 8px rgba(220, 31, 255, 0.8);
+}
+
+@keyframes livePulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 8px #DC1FFF; transform: scale(1); }
+    50% { opacity: 0.4; box-shadow: 0 0 16px #DC1FFF; transform: scale(1.2); }
+}
+
+.ticker-change {
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.ticker-change.positive {
+    background: rgba(220, 31, 255, 0.15);
+    color: #DC1FFF;
+}
+
+.ticker-change.negative {
+    background: rgba(230, 68, 77, 0.15);
+    color: #E6444D;
+}
+
+/* Suggested Questions */
+.suggested-questions {
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.suggested-questions h4 {
+    margin: 0 0 16px;
+    font-size: 1.1rem;
+    color: #DC1FFF;
+}
+
+.suggestions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.suggestion-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    background: rgba(220, 31, 255, 0.05);
+    border: 1px solid rgba(220, 31, 255, 0.2);
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.suggestion-card:hover {
+    background: rgba(220, 31, 255, 0.15);
+    border-color: rgba(220, 31, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+.suggestion-icon {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.suggestion-text {
+    flex: 1;
+    line-height: 1.3;
+}
+
+/* Quick Action Buttons */
+.quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    margin-bottom: 12px;
+}
+
+.quick-action-btn {
+    padding: 8px 16px;
+    background: rgba(220, 31, 255, 0.1);
+    border: 1px solid rgba(220, 31, 255, 0.3);
+    border-radius: 8px;
+    color: #DC1FFF;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.quick-action-btn:hover {
+    background: rgba(220, 31, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Rich Message Formatting */
+.ai-chat-bubble strong {
+    color: #DC1FFF;
+    font-weight: 700;
+}
+
+.ai-chat-bubble code {
+    background: rgba(220, 31, 255, 0.15);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.9em;
+    color: #DC1FFF;
+}
+
+/* AI Mode Selector (Tab Buttons) */
+.ai-mode-selector {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 8px;
+    background: rgba(22, 26, 30, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    backdrop-filter: blur(12px);
+}
+
+.ai-mode-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 20px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    color: #8b9bb4;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.ai-mode-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+}
+
+.ai-mode-btn.active {
+    background: rgba(220, 31, 255, 0.15);
+    border-color: #DC1FFF;
+    color: #DC1FFF;
+    box-shadow: 0 0 20px rgba(220, 31, 255, 0.2);
+}
+
+.ai-mode-btn span {
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: 0.5px;
+}
+
 .ai-hero-section {
     background: radial-gradient(circle at top, rgba(30, 42, 58, 0.8) 0%, rgba(8, 12, 18, 0.92) 55%, rgba(5, 8, 13, 0.98) 100%);
     border: 1px solid rgba(17, 255, 182, 0.18);
@@ -34,13 +316,29 @@
 }
 
 .ai-hero-avatar {
-    width: 56px; height: 56px; border-radius: 50%;
-    background: url('https://cdn-icons-png.flaticon.com/512/4712/4712035.png') center/cover no-repeat;
+    width: 80px; 
+    height: 80px; 
+    border-radius: 50%;
+    overflow: hidden;
     box-shadow: 0 0 20px rgba(20, 241, 149, 0.4);
     border: 2px solid #14F195;
     animation: ai-pulse-hero 3s infinite;
+    position: relative;
+    background: #000;
 }
-@keyframes ai-pulse-hero { 0% { box-shadow: 0 0 10px rgba(20, 241, 149, 0.3); } 50% { box-shadow: 0 0 30px rgba(20, 241, 149, 0.5), 0 0 10px #fff; } 100% { box-shadow: 0 0 10px rgba(20, 241, 149, 0.3); } }
+
+.ai-avatar-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+@keyframes ai-pulse-hero { 
+    0% { box-shadow: 0 0 10px rgba(20, 241, 149, 0.3); } 
+    50% { box-shadow: 0 0 30px rgba(20, 241, 149, 0.5), 0 0 10px #fff; } 
+    100% { box-shadow: 0 0 10px rgba(20, 241, 149, 0.3); } 
+}
 
 .ai-hero-title {
     font-family: 'Space Grotesk', sans-serif;
@@ -176,4 +474,49 @@
 @media (max-width: 640px) {
     .ai-hero-title { font-size: 1.4rem; }
     .ai-hero-section { padding: 20px; }
+    
+    /* Mobile responsive pentru AI Mode Selector */
+    .ai-mode-selector {
+        flex-direction: column;
+        gap: 8px;
+        padding: 6px;
+    }
+    
+    .ai-mode-btn {
+        padding: 12px 16px;
+        font-size: 0.9rem;
+    }
+    
+    .ai-mode-btn span {
+        display: inline; /* Afișează textul pe mobile */
+    }
+    
+    .ai-hero-avatar {
+        width: 64px;
+        height: 64px;
+    }
+    
+    /* Ticker responsive */
+    .live-price-ticker {
+        padding: 10px 16px;
+    }
+    
+    .ticker-price {
+        font-size: 1rem;
+    }
+    
+    /* Suggestions responsive */
+    .suggestions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Quick actions responsive */
+    .quick-actions {
+        padding: 10px;
+    }
+    
+    .quick-action-btn {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+    }
 }

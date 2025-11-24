@@ -1,13 +1,15 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { createWeb3Modal, useWeb3Modal } from "@web3modal/wagmi/react";
-import { WagmiProvider, useAccount, useDisconnect, useBalance, useSwitchChain, useReadContract } from "wagmi";
+import { WagmiProvider, useAccount, useDisconnect, useBalance, useSwitchChain, useReadContract, useWalletClient } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { config, projectId } from "./wagmiConfig";
 import { formatEther } from "viem";
+import { providers } from "ethers";
 import BitsABI from '../abi/BitsABI.js';
+import { CONTRACT_MAP } from '../contract/contractMap';
 
-// Adresa Contractului BITS Token
-const BITS_TOKEN_ADDRESS = "0xCE056ee6ED7Ae0944f10BAfc5E7f5d160c8641fe";
+// Adresa Contractului BITS Token (BSC Mainnet)
+const BITS_TOKEN_ADDRESS = CONTRACT_MAP.BITS_TOKEN.address;
 
 // 🎨 Web3Modal (AppKit) Initialization - Modern Interface
 createWeb3Modal({
@@ -16,7 +18,7 @@ createWeb3Modal({
   enableAnalytics: true,
   themeMode: 'dark',
   themeVariables: {
-    '--w3m-accent': '#00FFA3', // Brand Color (Solana Green)
+    '--w3m-accent': '#00FFA3', // Brand Color
     '--w3m-border-radius-master': '12px',
     '--w3m-font-family': 'Inter, sans-serif',
     '--w3m-z-index': 99999
@@ -59,6 +61,27 @@ const InnerWalletProvider = ({ children }) => {
       refetchInterval: 15000
     }
   });
+
+  // 🚀 Hook to convert WalletClient to Ethers Signer
+  function clientToSigner(client) {
+    const { account, chain, transport } = client;
+    const network = {
+      chainId: chain.id,
+      name: chain.name,
+      ensAddress: chain.contracts?.ensRegistry?.address,
+    };
+    const provider = new providers.Web3Provider(transport, network);
+    const signer = provider.getSigner(account.address);
+    return signer;
+  }
+
+  // 🚀 Use Wallet Client to generate Signer
+  const { data: walletClient } = useWalletClient({ chainId });
+
+  const signer = useMemo(() => {
+    if (!walletClient) return null;
+    return clientToSigner(walletClient);
+  }, [walletClient]);
 
   // Debug logs for BITS balance
   useEffect(() => {
@@ -175,7 +198,7 @@ const InnerWalletProvider = ({ children }) => {
         walletIcon,
         network,
         provider: connector, // Expose current connector
-        signer: null, // TODO: Adapter for ethers.js signer if critical
+        signer, // Adapter for ethers.js signer
 
         // Functions
         connectWallet,

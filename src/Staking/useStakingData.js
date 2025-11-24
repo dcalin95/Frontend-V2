@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { getStakingContract } from "../contract/getStakingContract";
 import { ethers } from "ethers";
+import { CONTRACT_MAP } from "../contract/contractMap";
+import stakingABI from "../abi/stakingABI";
 
 export const useStakingData = (signer, userAddress) => {
   const [stakes, setStakes] = useState([]);
@@ -20,14 +21,22 @@ export const useStakingData = (signer, userAddress) => {
     console.log("✅ useStakingData: Starting fetchStakes");
     const fetchStakes = async () => {
       try {
-        // Always use robust read-only provider for stable reads (avoid MetaMask/Firefox RPC issues)
-        const contract = await getStakingContract(null, true);
+        // Use robust public RPC provider
+        const provider = new ethers.providers.JsonRpcProvider("https://bsc-dataseed1.binance.org");
+        const contract = new ethers.Contract(
+          CONTRACT_MAP.STAKING.address,
+          stakingABI,
+          provider
+        );
+        
+        console.log("📍 Staking Contract Address:", CONTRACT_MAP.STAKING.address);
+        
         const rawStakes = await contract.getStakeByUser(userAddress);
         const PRECISION = await contract.PRECISION();
         const SECONDS_IN_YEAR = await contract.SECONDS_IN_YEAR();
 
-              let totalSt = ethers.BigNumber.from(0);
-      let totalRw = ethers.BigNumber.from(0);
+        let totalSt = ethers.BigNumber.from(0);
+        let totalRw = ethers.BigNumber.from(0);
 
         const now = Math.floor(Date.now() / 1000);
 
@@ -58,12 +67,15 @@ export const useStakingData = (signer, userAddress) => {
         console.log("- rawStakes:", rawStakes);
         console.log("- formattedStakes:", formattedStakes);
         console.log("- formattedStakes.length:", formattedStakes.length);
+        console.log("- totalStaked:", totalSt.toString());
+        console.log("- totalReward:", totalRw.toString());
         
         setStakes(formattedStakes);
         setTotalStaked(totalSt);
         setTotalReward(totalRw);
       } catch (err) {
         console.error("❌ Error fetching staking data:", err);
+        console.error("❌ Error details:", err.message);
       }
     };
 

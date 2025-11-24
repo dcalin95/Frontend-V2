@@ -8,18 +8,34 @@ import './StakeVault.css';
 import bitsLogo from '../../assets/logo.png';
 import WalletContext from '../../context/WalletContext';
 import { useStakingData } from '../../Staking/useStakingData';
-import { getStakingContract } from '../../contract/getStakingContract';
-import { getContractInstance } from '../../contract/getContract';
+import { CONTRACT_MAP } from '../../contract/contractMap';
+import stakingABI from '../../abi/stakingABI';
 
 const StakeVault = ({ layout = 'desktop' }) => {
-  const { signer, walletAddress } = useContext(WalletContext);
+  const { signer, walletAddress, bitsBalance } = useContext(WalletContext);
   const { stakes, totalStaked, totalReward } = useStakingData(signer, walletAddress);
+
+  console.log('🔍 [StakeVault] Render Debug:');
+  console.log('  - signer:', signer);
+  console.log('  - walletAddress:', walletAddress);
+  console.log('  - bitsBalance:', bitsBalance);
+  console.log('  - stakes:', stakes);
+  console.log('  - totalStaked:', totalStaked);
+  console.log('  - totalReward:', totalReward);
 
   // State pentru staking form
   const [amount, setAmount] = useState('');
   const [balance, setBalance] = useState('0');
   const [apr, setApr] = useState('0');
   const [loading, setLoading] = useState(false);
+
+  // ✅ Sync balance from Context (instant display)
+  useEffect(() => {
+    if (bitsBalance) {
+      console.log('✅ Balance synced from Context:', bitsBalance);
+      setBalance(bitsBalance);
+    }
+  }, [bitsBalance]);
 
   const formatBits = (valueBN) => {
     try {
@@ -32,37 +48,26 @@ const StakeVault = ({ layout = 'desktop' }) => {
   const totalStakedBits = formatBits(totalStaked);
   const totalRewardBits = formatBits(totalReward);
 
-  // ✅ Fetch $BITS balance
-  useEffect(() => {
-    const fetchBalance = async () => {
-      if (!signer || !walletAddress) return;
-      try {
-        // Folosim BITS_TOKEN și pasăm signer-ul corect
-        const token = getContractInstance('BITS_TOKEN', signer);
-        const raw = await token.balanceOf(walletAddress);
-        setBalance(ethers.utils.formatUnits(raw, 18));
-        console.log('✅ Balance fetched:', ethers.utils.formatUnits(raw, 18));
-      } catch (err) {
-        console.error('❌ Error fetching balance:', err);
-      }
-    };
-    fetchBalance();
-  }, [signer, walletAddress]);
-
-  // ✅ Fetch APR
+  // ✅ Fetch APR (Robust Fallback)
   useEffect(() => {
     const fetchAPR = async () => {
-      if (!signer) return;
       try {
-        const contract = getStakingContract(signer);
+        let provider = signer;
+        if (!provider) {
+            // Fallback to public RPC if wallet not connected
+            provider = new ethers.providers.JsonRpcProvider("https://bsc-dataseed1.binance.org");
+        }
+        const contract = new ethers.Contract(CONTRACT_MAP.STAKING.address, stakingABI, provider);
         const rawApr = await contract.currentAPR();
         setApr(rawApr.toString());
+        console.log('✅ APR fetched:', rawApr.toString());
       } catch (err) {
         console.error('Error fetching APR:', err);
+        setApr('0'); // Reset on error
       }
     };
     fetchAPR();
-  }, [signer]);
+  }, [signer]); // Re-fetch when signer becomes available
 
   // ✅ Handle Stake
   const handleStake = async () => {
@@ -74,8 +79,8 @@ const StakeVault = ({ layout = 'desktop' }) => {
     setLoading(true);
     try {
       const amtWei = ethers.utils.parseUnits(amount, 18);
-      const contract = getStakingContract(signer);
-      const token = getContractInstance('BITS_TOKEN', signer);
+      const contract = new ethers.Contract(CONTRACT_MAP.STAKING.address, stakingABI, signer);
+      const token = new ethers.Contract(CONTRACT_MAP.BITS_TOKEN.address, CONTRACT_MAP.BITS_TOKEN.abi, signer);
 
       // Check allowance
       const allowance = await token.allowance(walletAddress, contract.address);
@@ -104,6 +109,7 @@ const StakeVault = ({ layout = 'desktop' }) => {
 
   return (
     <div className={`dex-stake-container ${layout === 'mobile' ? 'stake-mobile' : 'stake-desktop'}`}>
+        {console.log('🎨 [StakeVault] Rendering JSX...')}
         <div className="dex-stake-header">
             <h2 className="section-title">
                 <img
