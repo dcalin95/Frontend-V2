@@ -1,0 +1,716 @@
+.dex-stake-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dex-stake-container.stake-mobile {
+  padding-bottom: 56px;
+}
+
+.dex-stake-container.stake-desktop {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.dex-stake-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dex-stake-header .section-title {
+  font-size: 1.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  letter-spacing: 0.8px;
+}
+
+.dex-stake-header .section-subtitle {
+  color: #8ea4bf;
+  font-size: 0.92rem;
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.dex-stake-card {
+  background: radial-gradient(circle at top, rgba(30, 42, 58, 0.8) 0%, rgba(8, 12, 18, 0.92) 55%, rgba(5, 8, 13, 0.98) 100%);
+  border: 1px solid rgba(17, 255, 182, 0.18);
+  border-radius: 20px;
+  box-shadow: 0 22px 46px rgba(3, 8, 15, 0.55);
+  overflow: hidden;
+}
+
+.dex-stake-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 28px;
+  background: linear-gradient(135deg, rgba(17, 255, 182, 0.12), rgba(153, 69, 255, 0.08));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dex-stake-card-head .dex-stake-label {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #7f8ea3;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dex-stake-apy {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #14f195;
+  text-shadow: 0 0 14px rgba(20, 241, 149, 0.4);
+}
+
+.dex-stake-card-subtitle {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: rgba(255, 255, 255, 0.58);
+}
+
+.dex-stake-card-body {
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dex-stake-meta-list {
+  list-style: none;
+  margin: 0;
+  padding: 24px 28px;
+  display: grid;
+  gap: 14px;
+  background: rgba(10, 16, 24, 0.9);
+}
+
+.dex-stake-meta-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: rgba(8, 14, 22, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+
+.dex-stake-meta-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #7f8ea3;
+  font-weight: 600;
+}
+
+.dex-stake-meta-value {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #f4fbff;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dex-stake-alert {
+  background: rgba(230, 68, 77, 0.12);
+  border: 1px solid rgba(230, 68, 77, 0.4);
+  color: #ff9fa9;
+  border-radius: 16px;
+  padding: 16px 18px;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.dex-stake-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dex-stake-form-label {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #7f8ea3;
+  font-weight: 600;
+}
+
+.dex-stake-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dex-stake-input {
+  flex: 1;
+  background: rgba(12, 16, 24, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 1.05rem;
+  color: #f4fbff;
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+  font-weight: 600;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dex-stake-input:focus {
+  outline: none;
+  border-color: rgba(20, 241, 149, 0.48);
+  box-shadow: 0 0 0 2px rgba(20, 241, 149, 0.18), inset 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.dex-stake-input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.dex-stake-input-hint {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.4px;
+}
+
+.dex-stake-btn-max {
+  background: rgba(153, 69, 255, 0.16);
+  border: 1px solid rgba(153, 69, 255, 0.32);
+  color: #d5c7ff;
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.dex-stake-btn-max:hover {
+  background: rgba(153, 69, 255, 0.24);
+  border-color: rgba(153, 69, 255, 0.46);
+}
+
+.dex-stake-btn-primary {
+  width: 100%;
+  background: linear-gradient(135deg, rgba(20, 241, 149, 0.85), rgba(153, 69, 255, 0.75));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px 22px;
+  font-size: 1.08rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #050b11;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 12px 28px rgba(3, 8, 15, 0.65), 0 8px 24px rgba(20, 241, 149, 0.18);
+}
+
+.dex-stake-btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(3, 8, 15, 0.65), 0 10px 28px rgba(20, 241, 149, 0.24);
+}
+
+.dex-stake-btn-primary:disabled {
+  background: rgba(12, 16, 24, 0.6);
+  color: rgba(255, 255, 255, 0.35);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.dex-stake-apr-box {
+  background: rgba(10, 18, 28, 0.92);
+  border: 1px solid rgba(20, 241, 149, 0.3);
+  border-radius: 14px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.06);
+}
+
+.dex-stake-apr-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #7f8ea3;
+}
+
+.dex-stake-apr-value {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #14f195;
+  letter-spacing: 0.5px;
+}
+
+.dex-stake-positions-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px 24px;
+}
+
+.dex-stake-position-card {
+  background: rgba(12, 16, 24, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 18px 20px;
+  box-shadow: 0 16px 32px rgba(3, 8, 15, 0.45);
+  transition: border 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dex-stake-position-card:hover {
+  border-color: rgba(20, 241, 149, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 20px 36px rgba(3, 8, 15, 0.55);
+}
+
+.dex-stake-position-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.dex-stake-position-number {
+  font-size: 0.82rem;
+  color: #7f8ea3;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.dex-stake-badge {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  font-weight: 700;
+}
+
+.dex-stake-badge-active {
+  background: rgba(20, 241, 149, 0.14);
+  color: #14f195;
+  border: 1px solid rgba(20, 241, 149, 0.35);
+}
+
+.dex-stake-badge-closed {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.dex-stake-position-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+}
+
+.dex-stake-stat-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: #7f8ea3;
+  letter-spacing: 0.5px;
+}
+
+.dex-stake-stat-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #f4fbff;
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+}
+
+.dex-stake-stat-value-reward {
+  color: #14f195;
+}
+
+@media (max-width: 1024px) {
+  .dex-stake-card-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dex-stake-meta-list {
+    padding: 20px;
+  }
+
+  .dex-stake-card-body {
+    padding: 20px;
+  }
+
+  .dex-stake-positions-container {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .dex-stake-header .section-title {
+    font-size: 1.35rem;
+  }
+
+  .dex-stake-card-head {
+    padding: 18px 20px;
+  }
+
+  .dex-stake-card-body {
+    padding: 18px 20px;
+  }
+
+  .dex-stake-input-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dex-stake-btn-max {
+    width: 100%;
+    text-align: center;
+  }
+
+  .dex-stake-position-stats {
+    grid-template-columns: 1fr;
+  }
+}
+.dex-stake-container {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.dex-stake-card {
+    background: rgba(12, 16, 24, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 18px 20px;
+    box-shadow: 0 10px 30px rgba(3, 7, 13, 0.4);
+}
+
+.dex-stake-card + .dex-stake-card {
+    margin-top: 6px;
+}
+
+.dex-stake-card-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 18px;
+}
+
+.dex-stake-card-head .dex-stake-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    color: #8b9bb4;
+    text-transform: uppercase;
+}
+
+.dex-stake-card-subtitle {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.65);
+    letter-spacing: 0.5px;
+}
+
+.dex-stake-apy {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: #14f195;
+    letter-spacing: 1px;
+}
+
+.dex-stake-meta-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 12px;
+}
+
+.dex-stake-meta-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(20, 24, 32, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dex-stake-meta-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: #7f8ea3;
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+}
+
+.dex-stake-meta-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #f4fbff;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dex-stake-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.dex-stake-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dex-stake-form-label {
+    font-size: 0.78rem;
+    color: #7f8ea3;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 600;
+}
+
+.dex-stake-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dex-stake-input {
+    flex: 1;
+    background: rgba(12, 16, 24, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: #f4fbff;
+    font-size: 1.05rem;
+    font-weight: 600;
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    outline: none;
+    transition: border 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.dex-stake-input:focus {
+    border-color: rgba(20, 241, 149, 0.5);
+    box-shadow: 0 0 0 1px rgba(20, 241, 149, 0.35), inset 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.dex-stake-input::placeholder {
+    color: rgba(255, 255, 255, 0.28);
+}
+
+.dex-stake-input-hint {
+    font-size: 0.75rem;
+    color: #8b9bb4;
+    font-weight: 500;
+}
+
+.dex-stake-btn-max {
+    background: rgba(153, 69, 255, 0.12);
+    border: 1px solid rgba(153, 69, 255, 0.32);
+    color: #c1a6ff;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-weight: 600;
+    font-size: 0.82rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.dex-stake-btn-max:hover {
+    background: rgba(153, 69, 255, 0.2);
+    border-color: rgba(153, 69, 255, 0.45);
+}
+
+.dex-stake-btn-primary {
+    width: 100%;
+    background: linear-gradient(135deg, rgba(20, 241, 149, 0.88), rgba(153, 69, 255, 0.82));
+    color: #060a10;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 16px 22px;
+    font-size: 1.05rem;
+    font-weight: 800;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 10px 24px rgba(12, 18, 26, 0.6), 0 8px 24px rgba(20, 241, 149, 0.18);
+}
+
+.dex-stake-btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(12, 18, 26, 0.6), 0 10px 28px rgba(20, 241, 149, 0.26);
+}
+
+.dex-stake-btn-primary:disabled {
+    background: rgba(12, 16, 24, 0.6);
+    color: rgba(255, 255, 255, 0.35);
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.dex-stake-apr-box {
+    margin-top: 10px;
+    padding: 16px 18px;
+    background: rgba(12, 16, 24, 0.9);
+    border: 1px solid rgba(20, 241, 149, 0.32);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(3, 7, 13, 0.4);
+}
+
+.dex-stake-apr-label {
+    font-size: 0.74rem;
+    color: #8b9bb4;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.dex-stake-apr-value {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #14f195;
+    letter-spacing: 0.5px;
+}
+
+.dex-stake-positions-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dex-stake-position-card {
+    background: rgba(12, 16, 24, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 18px;
+    transition: border 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 10px 24px rgba(3, 7, 13, 0.45);
+}
+
+.dex-stake-position-card:hover {
+    border-color: rgba(20, 241, 149, 0.35);
+    box-shadow: 0 14px 30px rgba(3, 7, 13, 0.55);
+    transform: translateY(-2px);
+}
+
+.dex-stake-position-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.dex-stake-position-number {
+    color: #7f8ea3;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.dex-stake-badge {
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.dex-stake-badge-active {
+    background: rgba(20, 241, 149, 0.12);
+    color: #14f195;
+    border: 1px solid rgba(20, 241, 149, 0.35);
+}
+
+.dex-stake-badge-closed {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.dex-stake-position-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
+}
+
+.dex-stake-stat-label {
+    font-size: 0.73rem;
+    color: #8b9bb4;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.dex-stake-stat-value {
+    font-size: 1.12rem;
+    font-weight: 700;
+    color: #f4fbff;
+}
+
+.dex-stake-stat-value-reward {
+    color: #14f195;
+}
+
+.dex-stake-alert {
+    background: rgba(230, 68, 77, 0.1);
+    border: 1px solid rgba(230, 68, 77, 0.4);
+    color: #ff8f9a;
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .dex-stake-card {
+        padding: 16px;
+    }
+
+    .dex-stake-card-head {
+        align-items: center;
+    }
+
+    .dex-stake-form-label {
+        font-size: 0.76rem;
+    }
+
+    .dex-stake-input-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .dex-stake-btn-max {
+        width: 100%;
+        text-align: center;
+    }
+}
+

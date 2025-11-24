@@ -16,14 +16,18 @@ const AiSuggestionBox = ({ fromToken, toToken, slippage }) => {
 
   // Dynamic Message Logic
   let mainMessage = '';
-  let subMessage = '';
+  let subMessage = null;
   
   if (isBtcToBnb) {
     mainMessage = "High-Speed Bridge Detected via Stacks (STX).";
     subMessage = "Gas Efficiency: +35% | Est. Time: ~4.5 mins";
   } else if (involvesBits) {
     mainMessage = "Native Token Boost Active.";
-    subMessage = "Trading with $BITS unlocks premium staking APY tiers.";
+    subMessage = (
+      <>
+        Trading with <span className="solana-gradient-text">$BITS</span> unlocks premium staking APY tiers.
+      </>
+    );
   } else {
     mainMessage = `Analyzing liquidity for ${fromToken}/${toToken}...`;
     subMessage = `Market volatility normal. Slippage ${slippage}% optimal.`;
@@ -103,7 +107,7 @@ const AiSuggestionBox = ({ fromToken, toToken, slippage }) => {
             
             {involvesBits && (
               <div className="dex-apy-highlight">
-                <span style={{ opacity: 0.8 }}>Current APY for BITS Staking:</span>
+                <span style={{ opacity: 0.8 }}>Current APY for <span className="solana-gradient-text">BITS</span> Staking:</span>
                 <span className="dex-neon-val">125%</span>
               </div>
             )}
@@ -111,7 +115,7 @@ const AiSuggestionBox = ({ fromToken, toToken, slippage }) => {
             {!involvesBits && (
                <div className="dex-hint-row">
                  <Sparkles size={12} color="#00FFA3" />
-                 <span>Pro Tip: Pay fees with <strong style={{color:'#00FFA3'}}>$BITS</strong> for 10% off.</span>
+                 <span>Pro Tip: Pay fees with <strong className="solana-gradient-text">$BITS</strong> for 10% off.</span>
                </div>
             )}
           </div>

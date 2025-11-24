@@ -1,0 +1,233 @@
+/* Clean CSS */
+.dex-vote-center {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.vote-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 24px;
+}
+
+/* Side Panel Style - Match StakeVault Card */
+.vote-sidebar {
+    background: radial-gradient(circle at top left, rgba(30, 42, 58, 0.6) 0%, rgba(8, 12, 18, 0.9) 100%);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 20px;
+    height: fit-content;
+}
+
+.vote-sidebar-title {
+    font-size: 0.9rem;
+    color: #8b9bb4;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+.vote-proposal-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.vote-proposal-item {
+    padding: 16px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.vote-proposal-item:hover {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.1);
+}
+
+.vote-proposal-item.active {
+    background: rgba(20, 241, 149, 0.05);
+    border-color: rgba(20, 241, 149, 0.3);
+}
+
+.proposal-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.proposal-status {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-right: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.vote-status-active { background: rgba(20, 241, 149, 0.1); color: #14F195; border: 1px solid rgba(20, 241, 149, 0.2); }
+.vote-status-queued { background: rgba(252, 213, 53, 0.1); color: #FCD535; border: 1px solid rgba(252, 213, 53, 0.2); }
+.vote-status-completed { background: rgba(139, 155, 180, 0.1); color: #8b9bb4; border: 1px solid rgba(139, 155, 180, 0.2); }
+
+.proposal-time {
+    font-size: 0.8rem;
+    color: #8b9bb4;
+    display: inline-block;
+}
+
+.vote-content {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main Card Style - Match StakeVault Card */
+.vote-card {
+    background: radial-gradient(circle at top, rgba(30, 42, 58, 0.8) 0%, rgba(8, 12, 18, 0.92) 55%, rgba(5, 8, 13, 0.98) 100%);
+    border: 1px solid rgba(17, 255, 182, 0.18);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+
+.vote-card-header {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding-bottom: 24px;
+}
+
+.vote-card-header svg {
+    color: #14F195;
+    padding: 12px;
+    background: rgba(20, 241, 149, 0.1);
+    border-radius: 12px;
+    box-sizing: content-box;
+    border: 1px solid rgba(20, 241, 149, 0.2);
+}
+
+.vote-card-header h3 {
+    font-size: 1.6rem;
+    margin: 0 0 12px 0;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.vote-description {
+    color: #a0b4c8;
+    line-height: 1.7;
+    font-size: 1.05rem;
+    margin-bottom: 32px;
+}
+
+.vote-progress-bar {
+    height: 10px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 32px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.vote-progress {
+    height: 100%;
+    background: linear-gradient(90deg, #14F195, #00FFA3);
+    border-radius: 5px;
+    box-shadow: 0 0 15px rgba(20, 241, 149, 0.3);
+}
+
+.vote-options {
+    display: flex;
+    gap: 16px;
+}
+
+.vote-btn {
+    flex: 1;
+    padding: 18px;
+    border-radius: 14px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.vote-btn.primary {
+    background: linear-gradient(135deg, rgba(20, 241, 149, 0.85), rgba(153, 69, 255, 0.75));
+    color: #050b11;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.vote-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(20, 241, 149, 0.2);
+}
+
+.vote-btn.secondary {
+    background: rgba(255,255,255,0.03);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.vote-btn.secondary:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.2);
+}
+
+.vote-result {
+    background: rgba(20, 241, 149, 0.05);
+    border: 1px solid rgba(20, 241, 149, 0.2);
+    color: #14F195;
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 1024px) {
+    .vote-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .vote-sidebar {
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 640px) {
+    .vote-options {
+        flex-direction: column;
+    }
+    
+    .vote-card {
+        padding: 20px;
+    }
+}

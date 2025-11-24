@@ -1,11 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Sidebar from './Sidebar';
 import SwapPanel from './SwapPanel';
 import TradingChart from './TradingChart';
 import PositionsTable from './PositionsTable';
+import DashboardOverview from './DashboardOverview';
+import LiquidityPools from './LiquidityPools';
+import StakeVault from './StakeVault';
+import VoteCenter from './VoteCenter';
+import AIIntelligencePage from './AIIntelligencePage'; // New Page
 import CosmicLoader from './CosmicLoader'; // New AI Loader
+import SwapPageMobile from './SwapPageMobile'; // Import Mobile Version
+import WalletContext from '../../context/WalletContext'; // Import Wallet Context
+import { Wallet } from 'lucide-react'; // Wallet icon
 import './DEX.css';
 import bitsLogo from '../../assets/logo.png';
+import { useDeviceDetect } from '../../hooks/useDeviceDetect'; // Import device detection hook
 
 // Data Definitions (RESTORED TO ORIGINAL STATE: bBNB, xBTC)
 const tokens = [
@@ -25,8 +34,14 @@ const MOCK_BALANCES = {
 };
 
 const SwapPage = () => {
+  const isMobileDetected = useDeviceDetect(); // Width-based detection
+  const [isMobile, setIsMobile] = useState(isMobileDetected); // Combined state
+  
   const [activeTab, setActiveTab] = useState('swap');
   const [isLoading, setIsLoading] = useState(true); // Loading State
+  
+  // Wallet Context
+  const { walletAddress, bitsBalance, ethBalance, nativeSymbol, connectWallet, disconnectWallet } = useContext(WalletContext);
   
   // Lifted State for Tokens to share with Sidebar AI
   const [payToken, setPayToken] = useState(tokens[0]);
@@ -44,6 +59,21 @@ const SwapPage = () => {
     const saved = localStorage.getItem('dex_demo_positions');
     return saved ? JSON.parse(saved) : [];
   });
+
+  // Force Mobile Check via User Agent as fallback
+  useEffect(() => {
+      const checkMobileUserAgent = () => {
+          const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+          if (/android/i.test(userAgent) || /iPad|iPhone|iPod/.test(userAgent) || window.innerWidth <= 768) {
+              setIsMobile(true);
+          } else {
+              setIsMobile(isMobileDetected);
+          }
+      };
+      checkMobileUserAgent();
+      window.addEventListener('resize', checkMobileUserAgent);
+      return () => window.removeEventListener('resize', checkMobileUserAgent);
+  }, [isMobileDetected]);
 
   // Simulate AI Initialization (Cinematic 10s Intro)
   useEffect(() => {
@@ -86,6 +116,64 @@ const SwapPage = () => {
     setBalance(prev => prev + profit);
   };
 
+  const renderMainContent = () => {
+    switch (activeTab) {
+      case 'swap':
+        return (
+          <>
+            <div className="dex-top-split">
+              <section className="dex-layout-sidebar-slot stagger-fade-in stagger-2">
+                <SwapPanel 
+                  tokens={tokens}
+                  balances={MOCK_BALANCES}
+                  payToken={payToken}
+                  setPayToken={setPayToken}
+                  receiveToken={receiveToken}
+                  setReceiveToken={setReceiveToken}
+                  onSwap={handleSwapExecution} 
+                />
+              </section>
+
+              <section className="dex-chart-section stagger-fade-in stagger-3">
+                <TradingChart fromToken={payToken.symbol} toToken={receiveToken.symbol} />
+              </section>
+            </div>
+
+            <section className="dex-positions-section stagger-fade-in stagger-4">
+              <PositionsTable 
+                  positions={positions} 
+                  onClosePosition={handleClosePosition} 
+                  balance={balance} 
+              />
+            </section>
+          </>
+        );
+      case 'dashboard':
+        return (
+          <DashboardOverview 
+            positions={positions}
+            balance={balance}
+            onClosePosition={handleClosePosition}
+          />
+        );
+      case 'pools':
+        return <LiquidityPools layout="grid" />;
+      case 'stake':
+        return <StakeVault layout="desktop" />;
+      case 'governance':
+        return <VoteCenter />;
+      case 'ai-intelligence':
+        return <AIIntelligencePage />;
+      default:
+        return null;
+    }
+  };
+
+  // Mobile View - Prioritize Mobile Component
+  if (isMobile) {
+      return <SwapPageMobile />;
+  }
+
   // AI Loader View
   if (isLoading) {
       return <CosmicLoader />;
@@ -109,44 +197,40 @@ const SwapPage = () => {
           <div className="dex-glow-2" />
         </div>
 
+        {/* Desktop Wallet Header */}
+        <div className="dex-desktop-wallet-header">
+          {!walletAddress ? (
+            <button className="dex-wallet-connect-btn" onClick={connectWallet}>
+              <Wallet size={18} />
+              <span>Connect Wallet</span>
+            </button>
+          ) : (
+            <div className="dex-wallet-info-display">
+              <div className="dex-wallet-balances">
+                <div className="dex-wallet-balance-item">
+                  <img src={bitsLogo} alt="BITS" style={{ width: 20, height: 20 }} />
+                  <span className="balance-amount">{parseFloat(bitsBalance).toFixed(2)}</span>
+                  <span className="balance-symbol">BITS</span>
+                </div>
+                <div className="dex-wallet-balance-item">
+                  <span className="balance-amount">{parseFloat(ethBalance).toFixed(4)}</span>
+                  <span className="balance-symbol">{nativeSymbol}</span>
+                </div>
+              </div>
+              <div className="dex-wallet-address-chip">
+                <Wallet size={16} />
+                <span>{walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}</span>
+              </div>
+              <button className="dex-wallet-disconnect-btn" onClick={disconnectWallet}>
+                Disconnect
+              </button>
+            </div>
+          )}
+        </div>
+
         <div className="dex-main-inner">
           <main className="dex-trading-area">
-            {activeTab === 'swap' ? (
-              <>
-                {/* Upper Section: Panel + Chart */}
-                <div className="dex-top-split">
-                    <section className="dex-panel-section stagger-fade-in stagger-2">
-                      <SwapPanel 
-                        tokens={tokens}
-                        balances={MOCK_BALANCES}
-                        payToken={payToken}
-                        setPayToken={setPayToken}
-                        receiveToken={receiveToken}
-                        setReceiveToken={setReceiveToken}
-                        onSwap={handleSwapExecution} 
-                      />
-                    </section>
-
-                    <section className="dex-chart-section stagger-fade-in stagger-3">
-                      <TradingChart fromToken={payToken.symbol} toToken={receiveToken.symbol} />
-                    </section>
-                </div>
-
-                {/* Bottom Section: Positions Table */}
-                <section className="dex-positions-section stagger-fade-in stagger-4">
-                    <PositionsTable 
-                        positions={positions} 
-                        onClosePosition={handleClosePosition} 
-                        balance={balance} // Pass balance for Footer
-                    />
-                </section>
-              </>
-            ) : (
-              <div className="dex-coming-soon stagger-fade-in">
-                <h2>Coming Soon</h2>
-                <p>The {activeTab} module is currently under development.</p>
-              </div>
-            )}
+            {renderMainContent()}
           </main>
         </div>
       </div>

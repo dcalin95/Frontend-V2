@@ -1,0 +1,217 @@
+/* Clean CSS */
+.dex-swap-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 10;
+}
+
+.dex-swap-card {
+    /* Match StakeVault Card */
+    background: radial-gradient(circle at top, rgba(30, 42, 58, 0.9) 0%, rgba(8, 12, 18, 0.96) 100%);
+    border: 1px solid rgba(17, 255, 182, 0.15);
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: visible; /* Allow dropdowns to flow out if needed */
+}
+
+.dex-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.dex-input-group {
+    background: rgba(10, 13, 18, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 16px 20px;
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
+}
+
+.dex-input-group:hover {
+    border-color: rgba(17, 255, 182, 0.3);
+    box-shadow: 0 0 20px rgba(17, 255, 182, 0.05);
+}
+
+.dex-label-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #8b9bb4;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.dex-input-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.dex-amount-input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 600;
+    width: 100%;
+    outline: none;
+    font-family: 'Space Grotesk', sans-serif;
+    padding: 0;
+}
+
+.dex-amount-input::placeholder {
+    color: rgba(255, 255, 255, 0.15);
+}
+
+.dex-token-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 8px 16px;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    font-size: 0.95rem;
+}
+
+.dex-token-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.dex-usd-value {
+    font-size: 0.8rem;
+    color: #6c7a8c;
+    margin-top: 8px;
+    font-weight: 500;
+}
+
+.dex-swap-switch-container {
+    display: flex;
+    justify-content: center;
+    margin: -20px 0;
+    position: relative;
+    z-index: 5;
+    height: 40px;
+}
+
+.dex-switch-btn {
+    width: 40px;
+    height: 40px;
+    background: #161b22;
+    border: 4px solid #0b0e11;
+    border-radius: 12px;
+    color: #14F195;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.dex-switch-btn:hover {
+    transform: rotate(180deg) scale(1.1);
+    background: #1a2029;
+    color: #fff;
+}
+
+.dex-info-box {
+    background: rgba(20, 241, 149, 0.03);
+    border: 1px solid rgba(20, 241, 149, 0.1);
+    border-radius: 14px;
+    padding: 16px;
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dex-info-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: #8b9bb4;
+}
+
+.dex-info-val {
+    color: #fff;
+    font-weight: 600;
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+.dex-action-btn {
+    width: 100%;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.4);
+    border: none;
+    border-radius: 16px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    cursor: not-allowed;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 12px;
+}
+
+.dex-action-btn.primary {
+    /* Match StakeVault Button */
+    background: linear-gradient(135deg, rgba(20, 241, 149, 0.85), rgba(153, 69, 255, 0.75));
+    color: #050b11;
+    cursor: pointer;
+    box-shadow: 0 12px 28px rgba(3, 8, 15, 0.65), 0 8px 24px rgba(20, 241, 149, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dex-action-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(20, 241, 149, 0.25);
+}
+
+/* Settings Modal - Refined */
+.dex-settings-modal {
+    position: absolute;
+    top: 70px;
+    right: 24px;
+    width: 320px;
+    background: #15191f;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 20px;
+    z-index: 100;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+
+.dex-setting-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #fff;
+    font-size: 1rem;
+}
+
+@media (max-width: 640px) {
+    .dex-swap-card {
+        padding: 20px;
+        border-radius: 20px;
+    }
+    
+    .dex-amount-input {
+        font-size: 1.6rem;
+    }
+}

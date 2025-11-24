@@ -1,0 +1,125 @@
+/* Clean CSS */
+.dashboard-overview {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.dashboard-balance-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dashboard-subtitle {
+    font-size: 1rem;
+    color: #8b9bb4;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+/* AI WIDGET (Mini version for Dashboard) */
+.dex-ai-assistant-widget {
+    background: linear-gradient(145deg, rgba(16, 20, 25, 0.9), rgba(8, 10, 12, 0.95));
+    border: 1px solid rgba(0, 255, 163, 0.2);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 255, 163, 0.05);
+}
+
+.dex-ai-assistant-widget::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+    background: linear-gradient(90deg, transparent, #00FFA3, transparent);
+    animation: scan-line 3s linear infinite;
+}
+@keyframes scan-line { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+.ai-widget-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+}
+
+.ai-avatar-pulse {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: url('https://cdn-icons-png.flaticon.com/512/4712/4712035.png') center/cover no-repeat;
+    box-shadow: 0 0 10px #00FFA3;
+    animation: pulse-avatar 2s infinite;
+    border: 1px solid #00FFA3;
+}
+@keyframes pulse-avatar { 0% { box-shadow: 0 0 5px #00FFA3; } 50% { box-shadow: 0 0 15px #00FFA3, 0 0 5px #fff; } 100% { box-shadow: 0 0 5px #00FFA3; } }
+
+.ai-widget-title {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.9rem; color: #00FFA3; font-weight: 700; letter-spacing: 1px;
+}
+
+.ai-message-bubble {
+    background: rgba(0, 255, 163, 0.05);
+    border-left: 2px solid #00FFA3;
+    padding: 10px;
+    border-radius: 0 8px 8px 8px;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: #ddd;
+}
+
+.ai-typing-cursor {
+    display: inline-block; width: 6px; height: 12px; background: #00FFA3;
+    animation: blink 0.8s infinite; margin-left: 4px; vertical-align: middle;
+}
+
+.ai-action-btn {
+    margin-top: 12px;
+    width: 100%;
+    padding: 8px;
+    background: rgba(0, 255, 163, 0.1);
+    border: 1px solid rgba(0, 255, 163, 0.3);
+    color: #00FFA3;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.ai-action-btn:hover {
+    background: rgba(0, 255, 163, 0.2);
+    box-shadow: 0 0 10px rgba(0, 255, 163, 0.2);
+}
+
+/* Mobile Balance Card Styles */
+.mobile-balance-card {
+    background: rgba(255,255,255,0.05);
+    padding: 16px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.mobile-balance-card .label {
+    font-size: 0.8rem; color: #aaa;
+}
+
+.mobile-balance-card .value {
+    font-size: 1.8rem; font-weight: 700; color: #fff;
+}
+
+.mobile-balance-card .pnl-pill {
+    font-size: 0.8rem; color: #30C371; background: rgba(48, 195, 113, 0.15);
+    padding: 2px 8px; border-radius: 4px;
+}
+
+@media (max-width: 640px) {
+    .dashboard-overview {
+        gap: 16px;
+    }
+}

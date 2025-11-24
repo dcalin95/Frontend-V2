@@ -71,6 +71,7 @@ body {
     
     /* Solana Gradient Text */
     background: linear-gradient(90deg, #9945FF, #14F195, #00FFA3);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -481,7 +482,7 @@ body {
   cursor: pointer;
 }
 .dex-logo-img { width: 36px; height: 36px; }
-.dex-logo-text { font-size: 1.4rem; font-weight: 700; background: linear-gradient(90deg, #fff, #00FFA3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.dex-logo-text { font-size: 1.4rem; font-weight: 700; background: linear-gradient(90deg, #fff, #00FFA3); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
 .dex-nav-menu { display: flex; flex-direction: column; gap: 4px; }
 .dex-nav-item {
@@ -652,6 +653,103 @@ body {
 .dex-glow-1 { position: absolute; top: -20%; left: 20%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(0, 255, 163, 0.06), transparent 70%); }
 .dex-glow-2 { position: absolute; bottom: -20%; right: 10%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(112, 0, 255, 0.08), transparent 70%); }
 
+/* Desktop Wallet Header */
+.dex-desktop-wallet-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(0, 255, 163, 0.1);
+  background: rgba(10, 10, 20, 0.4);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.dex-wallet-connect-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #00FFA3 0%, #00CC82 100%);
+  color: #0a0a14;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 255, 163, 0.2);
+}
+
+.dex-wallet-connect-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 255, 163, 0.35);
+}
+
+.dex-wallet-info-display {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.dex-wallet-balances {
+  display: flex;
+  gap: 12px;
+}
+
+.dex-wallet-balance-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: rgba(0, 255, 163, 0.08);
+  border: 1px solid rgba(0, 255, 163, 0.2);
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.dex-wallet-balance-item .balance-amount {
+  color: #00FFA3;
+  font-weight: 700;
+}
+
+.dex-wallet-balance-item .balance-symbol {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+}
+
+.dex-wallet-address-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: rgba(112, 0, 255, 0.1);
+  border: 1px solid rgba(112, 0, 255, 0.3);
+  border-radius: 8px;
+  color: #a78bfa;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.dex-wallet-disconnect-btn {
+  padding: 8px 16px;
+  background: rgba(255, 59, 48, 0.15);
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  border-radius: 6px;
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dex-wallet-disconnect-btn:hover {
+  background: rgba(255, 59, 48, 0.25);
+  border-color: rgba(255, 59, 48, 0.5);
+}
+
 .dex-main-inner {
   position: relative; z-index: 1;
   padding: 16px;
@@ -669,27 +767,27 @@ body {
   height: 100%;
   gap: 8px; /* Reduced gap to save vertical space */
   width: 100%;
-  overflow: hidden; /* Prevents outer scroll */
+  overflow-y: auto; /* Allow vertical scroll for long content like Stake */
+  overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 /* Top Split: Panel (Left) & Chart (Right) */
 .dex-top-split {
   display: flex; /* Changed from Grid to Flex for better height control */
-  gap: 8px; /* Reduced gap */
+  gap: 20px; 
   width: 100%;
   flex: 1; /* Takes all available vertical space */
   min-height: 0; /* Crucial for nested scrolling/fitting */
 }
 
-.dex-panel-section { 
-  width: clamp(340px, 22vw, 450px); /* Dynamic but controlled */
+.dex-layout-sidebar-slot { 
+  width: 380px; /* Fixed width for swap panel on desktop */
   display: flex; 
   flex-direction: column;
   flex-shrink: 0;
   height: 100%; /* Force full height matching parent */
-  overflow: hidden; /* No scrollbars outside */
 }
-.dex-panel-section::-webkit-scrollbar { display: none; }
+.dex-layout-sidebar-slot::-webkit-scrollbar { display: none; }
 
 .dex-chart-section { 
   flex: 1; /* Takes remaining width */
@@ -725,6 +823,7 @@ body {
     text-transform: uppercase;
     letter-spacing: 1.5px;
     background: linear-gradient(90deg, #fff, #00FFA3);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 0 0 15px rgba(0, 255, 163, 0.3);
@@ -886,7 +985,8 @@ body {
 /* ═══════════════════════════════════════════════════════════════════
    POSITIONS TABLE (XTB STYLE)
    ═══════════════════════════════════════════════════════════════════ */
-.dex-positions-section {
+.dex-positions-container,
+.dex-positions-section { /* Support both names for compatibility */
   display: flex; flex-direction: column;
   background: rgba(22, 26, 30, 0.6); backdrop-filter: blur(12px);
   border: var(--glass-border); border-radius: 16px;
@@ -903,7 +1003,10 @@ body {
 .dex-tab.active { color: #fff; background: rgba(255,255,255,0.05); }
 .dex-tab.active::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--primary-color); }
 
-.dex-table-container { flex: 1; overflow-y: auto; position: relative; }
+.dex-table-wrapper,
+.dex-table-container { /* Support both names */
+  flex: 1; overflow-y: auto; position: relative; 
+}
 .dex-table { width: 100%; border-collapse: collapse; font-size: 1rem; }
 .dex-table th {
   text-align: left; padding: 12px 20px; color: var(--text-muted); font-size: 0.9rem; font-weight: 500;
@@ -1014,6 +1117,7 @@ body {
 .dex-setting-input::-webkit-inner-spin-button,
 .dex-amount-input::-webkit-outer-spin-button,
 .dex-amount-input::-webkit-inner-spin-button { 
+  appearance: none;
   -webkit-appearance: none; 
   margin: 0; 
 }
@@ -1095,83 +1199,629 @@ body {
 
 
 @media (max-width: 768px) {
-  .dex-page-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
+  /* Reset Page Container for Mobile Flow */
+  html, body {
+      background-color: #000000 !important;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
   }
 
-  .dex-sidebar {
-    display: none;
+  .dex-page-container,
+  .dex-mobile-app {
+    display: block !important; /* No flex container, standard flow */
+    height: auto;
+    min-height: 100vh;
+    width: 100vw;
+    overflow-x: hidden;
+    background-color: #000000 !important;
+    position: relative;
   }
 
+  .dex-sidebar { display: none; }
+
+  /* FIXED MOBILE HEADER */
+  .dex-mobile-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: rgba(8, 10, 14, 0.95); /* Slightly darker */
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0, 255, 163, 0.1); /* Green hint border */
+      z-index: 9998; 
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+
+  /* CYBER WALLET BADGE STYLES */
+  .dex-cyber-wallet-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px; /* Increased gap */
+      background: linear-gradient(90deg, rgba(0, 255, 163, 0.1), rgba(0, 255, 163, 0.05));
+      border: 1px solid rgba(0, 255, 163, 0.2);
+      padding: 4px 12px 4px 6px;
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 15px rgba(0, 255, 163, 0.05);
+      min-width: 140px; /* Ensure enough space */
+      justify-content: space-between;
+  }
+  
+  /* Shine effect passing through */
+  .dex-cyber-wallet-badge::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      animation: shine-wallet 4s infinite;
+  }
+  @keyframes shine-wallet { 0%, 80% { left: -100%; } 100% { left: 200%; } }
+
+  .wallet-icon-wrapper {
+      width: 28px; height: 28px;
+      background: #00FFA3;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 10px rgba(0, 255, 163, 0.4);
+      flex-shrink: 0;
+  }
+
+  .wallet-balance-wrapper {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end; /* Align text to right */
+      line-height: 1.2;
+      flex: 1; /* Take remaining space */
+  }
+
+  .wallet-label {
+      font-size: 0.6rem;
+      color: #8b9bb4;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 0;
+  }
+
+  .wallet-amount {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0;
+  }
+
+  .wallet-glow-dot {
+      width: 6px; height: 6px;
+      background: #00FFA3;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #00FFA3;
+      animation: pulse-dot 2s infinite;
+      margin-left: 4px;
+      flex-shrink: 0;
+  }
+
+  /* Mobile Bottom Nav - Fixed Bottom */
   .dex-bottom-nav {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    background: rgba(11, 14, 17, 0.95);
+    background: rgba(10, 12, 16, 0.98); 
     backdrop-filter: blur(10px);
-    border-top: 1px solid var(--border-color);
-    padding: 10px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 8px 0;
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    z-index: 100;
-    height: 60px; 
+    height: 60px;
+    z-index: 9999; /* Highest Z-Index */
   }
   
-  .dex-main-content {
-    flex: 1;
-    overflow-y: auto;
-    padding-bottom: 60px; /* Space for bottom nav */
+  /* Content Area - Scrollable between Header and Footer */
+  .dex-main-content,
+  .dex-mobile-scroll-area {
+    display: block !important;
+    position: fixed; /* Fix the container */
+    top: 60px; /* Start below header */
+    bottom: 60px; /* End above footer */
+    left: 0; 
+    right: 0;
+    width: 100%;
+    margin: 0 !important;
+    padding: 10px !important;
+    padding-bottom: 150px !important; /* HUGE BUFFER ensures scroll past nav */
+    overflow-y: auto !important; /* Scroll happens HERE */
+    -webkit-overflow-scrolling: touch;
+    background-color: #000000 !important;
+    z-index: 1; /* Between background and navs */
+  }
+
+  /* Ensure inner content has no extra spacing */
+  .dex-swap-card,
+  .dex-panel-section {
+      margin-top: 0 !important;
+  }
+
+  /* REMOVE MARGINS FROM FIRST CHILD TO FIX GAP */
+  .dex-main-content > *:first-child,
+  .dex-mobile-scroll-area > *:first-child {
+      margin-top: 0 !important;
+      padding-top: 0 !important;
   }
   
+  .mobile-fade-in {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+  }
+
+  /* HIDE DEBUG INFO OVERLAYS */
+  .user-device-info,
+  .device-info-content,
+  .info-toggle {
+      display: none !important;
+  }
+  
+  /* STAKE VAULT STYLES moved to StakeVault.css */
+
+/* POOLS CARD STYLES moved to LiquidityPools.css */
+
+/* AI ASSISTANT DASHBOARD WIDGET moved to DashboardOverview.css */
+  
+  /* Mobile Nav Items */
   .dex-nav-item-mobile {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 2px;
     background: none;
     border: none;
-    color: var(--text-muted);
-    font-size: 0.7rem;
+    color: #8b9bb4;
+    font-size: 0.65rem;
     cursor: pointer;
+    width: 100%;
   }
   
   .dex-nav-item-mobile.active {
     color: var(--primary-color);
   }
+  
+  .dex-nav-item-mobile svg {
+      width: 20px; height: 20px;
+  }
 
-  /* Adjust top split for mobile */
+  /* FORCE STACKING */
   .dex-top-split {
-    flex-direction: column; /* Stack vertically */
-    overflow-y: auto;
+    display: block !important; /* Changed from flex to block */
+    height: auto !important; 
+    margin: 0 !important;
+    padding: 0 !important;
   }
   
+  /* NUCLEAR RESET FOR FIRST CARD POSITION */
   .dex-panel-section {
-    width: 100%; /* Full width on mobile */
-    overflow: visible;
+    width: 100% !important; 
+    height: auto !important; 
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    flex: none !important;
+  }
+
+  /* Ensure the internal card has no outer spacing */
+  .dex-swap-card {
+      margin: 0 !important;
+      width: 100% !important;
+      height: auto !important;
+  }
+
+  .mobile-fade-in:first-child {
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+      display: block !important;
   }
 
   .dex-chart-section {
-    height: 400px; /* Fixed height for chart on mobile */
+    height: 350px; 
+    width: 100%;
     flex: none;
   }
   
   .dex-trading-area {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    overflow-y: auto; /* Allow full page scroll on mobile */
+    height: auto;
+    overflow: visible;
   }
   
+  /* Fix Chart Wrapper on Mobile */
   .dex-chart-wrapper {
+    height: 100%;
     min-height: 300px;
+    border-radius: 12px;
   }
   
+  /* Positions Table Mobile */
+  .dex-positions-container,
   .dex-positions-section {
+    height: auto; 
+    min-height: 200px;
     margin-bottom: 20px;
+    background: rgba(22, 26, 30, 0.6);
   }
+  
+  /* Mobile Positions Footer - Grid Layout to fix overflow */
+  .dex-positions-footer {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr; /* 2 Columns */
+      gap: 8px;
+      padding: 10px !important;
+      background: rgba(0,0,0,0.4);
+  }
+  
+  .dex-footer-stat {
+      font-size: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255,255,255,0.03);
+      padding: 6px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+  }
+  
+  .dex-footer-stat span {
+      margin-left: 0 !important; /* Reset default margin */
+  }
+  
+  .dex-footer-stat span:last-child {
+      font-weight: 700;
+      color: #fff;
+  }
+  
+  /* Profit takes full width at bottom */
+  .dex-footer-stat:last-child {
+      grid-column: 1 / -1;
+      justify-content: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.08);
+      font-size: 0.9rem;
+      margin-top: 4px;
+  }
+  
+  /* Hide Complex Table Columns on Mobile */
+  .dex-table th:nth-child(3), .dex-table td:nth-child(3), /* Volume */
+  .dex-table th:nth-child(4), .dex-table td:nth-child(4), /* Open Price */
+  .dex-table th:nth-child(6), .dex-table td:nth-child(6), /* Comm */
+  .dex-table th:nth-child(7), .dex-table td:nth-child(7)  /* Swap */
+  {
+      display: none;
+  }
+  
+  /* Adjust remaining columns */
+  .dex-table th, .dex-table td {
+      padding: 10px 8px;
+      font-size: 0.8rem;
+  }
+  
+  .dex-symbol-cell {
+      max-width: 80px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     MOBILE CHART OPTIMIZATIONS (Binance Style)
+     ═══════════════════════════════════════════════════════════════════ */
+  .dex-chart-header-modern {
+      flex-wrap: wrap; /* Allow wrapping */
+      gap: 10px;
+      padding: 10px !important;
+  }
+
+  /* Hide detailed stats on mobile to save space */
+  .dex-stats-row {
+      display: none !important; 
+  }
+
+  /* Simplify Timeframe controls */
+  .timeframe-pills button:not(.active) {
+      display: none; /* Show only active timeframe */
+  }
+  .timeframe-pills {
+      background: transparent;
+      padding: 0;
+  }
+  .timeframe-pills button.active {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  /* Adjust Price Display */
+  .dex-price-display {
+      flex-direction: column;
+      gap: 0;
+      align-items: flex-start;
+  }
+  .current-price {
+      font-size: 1.4rem !important;
+  }
+  .price-change {
+      font-size: 0.9rem !important;
+  }
+
+  /* Make Chart Area cleaner */
+  .watermark {
+      opacity: 0.05;
+      transform: scale(0.5); /* Smaller watermark */
+  }
+  
+  /* Hide Overlay Text */
+  .loading-overlay span {
+      font-size: 0.7rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   STAKE VAULT MODULE (component-specific styles moved to StakeVault.css)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   SECTION UTILITIES
+   ═══════════════════════════════════════════════════════════════════ */
+.section-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.section-subtitle {
+    color: #8b9bb4;
+    font-size: 0.9rem;
+    margin-top: 4px;
+    line-height: 1.5;
+}
+
+.dex-section-header {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.dex-pools-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* DASHBOARD OVERVIEW MODULE moved to DashboardOverview.css */
+
+.solana-gradient-text {
+    background: linear-gradient(90deg, #9945FF, #14F195, #00FFA3);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Legacy stake layout overrides removed – see StakeVault.css */
+
+/* ═══════════════════════════════════════════════════════════════════
+   VOTE CENTER MODULE (Moved to VoteCenter.css)
+   ═══════════════════════════════════════════════════════════════════ */
+
+
+.vote-progress {
+    height: 100%;
+    background: linear-gradient(90deg, #00FFA3, #4FACFE);
+}
+
+.vote-options {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.vote-btn {
+    flex: 1 1 200px;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+}
+
+.vote-btn.primary {
+    background: rgba(0, 255, 163, 0.15);
+    border-color: rgba(0, 255, 163, 0.4);
+    color: #00FFA3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.vote-btn.secondary {
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+}
+
+.vote-result {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #4FACFE;
+    font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+    .vote-layout { grid-template-columns: 1fr; }
+}
+
+.dex-stake-container.stake-desktop .dex-stake-grid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.dex-stake-container.stake-mobile .dex-stake-grid {
+    grid-template-columns: 1fr;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   STAKE FORM - Custom Input & Button Styles
+   ═══════════════════════════════════════════════════════════════════ */
+
+.dex-stake-form-group {
+    margin-bottom: 18px;
+}
+
+.dex-stake-form-label {
+    font-size: 0.8rem;
+    color: #7f8ea3;
+    margin-bottom: 6px;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 600;
+}
+
+.dex-stake-input-wrapper {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+/* StakeVault form controls defined in StakeVault.css */
+
+/* ═══════════════════════════════════════════════════════════════════
+   STAKE BUTTONS
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* StakeVault button styles defined in StakeVault.css */
+
+/* ═══════════════════════════════════════════════════════════════════
+   APR INFO BOX
+   ═══════════════════════════════════════════════════════════════════ */
+
+.dex-stake-apr-box {
+    margin-top: 18px;
+    padding: 16px 18px;
+    background: rgba(12, 16, 24, 0.9);
+    border: 1px solid rgba(20, 241, 149, 0.32);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(3, 7, 13, 0.4);
+}
+
+.dex-stake-apr-label {
+    font-size: 0.8rem;
+    color: #8b9bb4;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.dex-stake-apr-value {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #14f195;
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ACTIVE POSITIONS CARDS
+   ═══════════════════════════════════════════════════════════════════ */
+
+.dex-stake-positions-container {
+    padding: 18px;
+}
+
+.dex-stake-position-card {
+    background: rgba(12, 16, 24, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 14px;
+    transition: border 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 10px 24px rgba(3, 7, 13, 0.45);
+}
+
+.dex-stake-position-card:hover {
+    border-color: rgba(20, 241, 149, 0.35);
+    box-shadow: 0 14px 30px rgba(3, 7, 13, 0.55);
+    transform: translateY(-2px);
+}
+
+.dex-stake-position-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.dex-stake-position-number {
+    color: #7f8ea3;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.dex-stake-badge {
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.dex-stake-badge-active {
+    background: rgba(20, 241, 149, 0.12);
+    color: #14f195;
+    border: 1px solid rgba(20, 241, 149, 0.35);
+}
+
+.dex-stake-badge-closed {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.dex-stake-position-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
+}
+
+.dex-stake-stat-label {
+    font-size: 0.73rem;
+    color: #8b9bb4;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dex-stake-stat-value {
+    font-size: 1.12rem;
+    font-weight: 700;
+    color: #f4fbff;
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+}
+
+.dex-stake-stat-value-reward {
+    color: #14f195;
+    font-weight: 700;
 }

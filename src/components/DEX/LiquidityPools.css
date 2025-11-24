@@ -1,0 +1,159 @@
+/* Clean CSS */
+.dex-pools-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    /* Eliminam marginile si width-urile fortate care creeaza dublu container */
+    box-sizing: border-box;
+}
+
+.dex-pools-grid {
+    display: grid;
+    gap: 20px;
+    /* Grid adaptiv curat */
+}
+
+.dex-pool-card {
+    /* Stil identic cu StakeVault */
+    background: radial-gradient(circle at top, rgba(30, 42, 58, 0.8) 0%, rgba(8, 12, 18, 0.92) 55%, rgba(5, 8, 13, 0.98) 100%);
+    border: 1px solid rgba(17, 255, 182, 0.18);
+    border-radius: 20px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.dex-pool-card:hover {
+    border-color: rgba(17, 255, 182, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+}
+
+.dex-pool-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 16px;
+}
+
+.dex-pool-icons {
+    display: flex;
+    align-items: center;
+}
+
+.dex-pool-icons img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #0e1218;
+    background: #1a1f26;
+    object-fit: contain;
+}
+
+.dex-pool-icons img:nth-child(2) {
+    margin-left: -14px;
+}
+
+.dex-pool-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #fff;
+    margin-left: 14px;
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+.dex-risk-badge {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* Culori mai profesionale, mai putin neon */
+.risk-low { background: rgba(48, 195, 113, 0.1); color: #30C371; border: 1px solid rgba(48, 195, 113, 0.2); }
+.risk-medium { background: rgba(252, 213, 53, 0.1); color: #FCD535; border: 1px solid rgba(252, 213, 53, 0.2); }
+.risk-high { background: rgba(230, 68, 77, 0.1); color: #E6444D; border: 1px solid rgba(230, 68, 77, 0.2); }
+
+.dex-pool-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px; /* Pentru efectul de separator */
+    background: rgba(255,255,255,0.05); /* Separator color */
+    padding: 1px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.dex-stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: rgba(14, 18, 24, 0.6); /* Back to card bg */
+    padding: 12px;
+    align-items: center;
+    text-align: center;
+}
+
+.dex-stat-label {
+    font-size: 0.75rem;
+    color: #8b9bb4;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.dex-stat-val {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+.dex-apy-val {
+    color: #14F195; /* Solana Green */
+}
+
+.dex-deposit-btn {
+    width: 100%;
+    padding: 16px;
+    /* Gradientul din StakeVault */
+    background: linear-gradient(135deg, rgba(20, 241, 149, 0.15), rgba(153, 69, 255, 0.15));
+    border: 1px solid rgba(20, 241, 149, 0.3);
+    color: #14F195;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.dex-deposit-btn:hover {
+    background: linear-gradient(135deg, rgba(20, 241, 149, 0.25), rgba(153, 69, 255, 0.25));
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(20, 241, 149, 0.1);
+}
+
+@media (max-width: 640px) {
+    .dex-pool-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .dex-risk-badge {
+        align-self: flex-start;
+    }
+    
+    .dex-pool-card {
+        padding: 16px;
+    }
+}

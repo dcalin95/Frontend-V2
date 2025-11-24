@@ -47,6 +47,7 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
 
   // --- DATA FETCHING ---
   const fetchData = useCallback(async () => {
+    // Prevent rapid refetching if not needed, but ensure refetch on token change
     setLoading(true);
     
     // Fallback imediat la date simulate pentru Demo robust
@@ -76,6 +77,10 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
           prices = response.data.prices;
           totalVolumes = response.data.total_volumes;
       } else {
+          // GENERATE UNIQUE MOCK DATA BASED ON TOKEN ID to simulate different charts
+          // Use simple hash of token name to seed the generation if possible, 
+          // or just use token specific base prices.
+          // We already handle base price in generateMockData based on token name
           throw new Error("Demo Mode: Using generated data");
       }
 
@@ -91,28 +96,40 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
     } finally {
       setLoading(false);
     }
-  }, [fromToken, timeframe]);
+  }, [fromToken, timeframe]); // Depend on fromToken to trigger refresh
 
   // Trigger data fetch ONLY when chart is ready and deps change
   useEffect(() => {
     if (isChartReady) {
         fetchData();
     }
-  }, [isChartReady, fetchData]);
+  }, [isChartReady, fetchData, fromToken, toToken]); // Explicitly add fromToken/toToken to deps
 
   // Helper: Generate Mock Data
   const generateMockData = (days, stepSeconds) => {
      const now = Math.floor(Date.now() / 1000);
      const dataPoints = [];
      const steps = Math.floor((days * 24 * 3600) / stepSeconds);
-     let price = fromToken === 'BTC' ? 65000 : fromToken === 'ETH' ? 3500 : 100;
+     
+     // Dynamic Base Price based on Token
+     let price = 65000; // Default BTC
+     if (fromToken === 'ETH' || fromToken === 'WETH') price = 3500;
+     else if (fromToken === 'SOL') price = 145;
+     else if (fromToken === 'bBNB') price = 600;
+     else if (fromToken === 'USDT' || fromToken === 'USDC') price = 1;
+     else if (fromToken === 'BITS') price = 0.85;
+     else if (fromToken === 'STX') price = 2.50;
      
      let trend = 0; 
 
      for(let i = steps; i > 0; i--) {
          const time = now - (i * stepSeconds);
          let volatility = price * (timeframe === '1M' ? 0.0008 : 0.02); 
-         trend += (Math.random() - 0.5) * 0.002; 
+         
+         // Add some randomness to trend based on token so charts look different
+         const randomSeed = (fromToken.charCodeAt(0) + i) % 100;
+         trend += ((randomSeed / 50) - 1) * 0.0001; // Slight drift
+         
          trend = Math.max(Math.min(trend, 0.01), -0.01);
 
          let change = (Math.random() - 0.5 + trend) * volatility;

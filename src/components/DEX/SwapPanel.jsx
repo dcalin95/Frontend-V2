@@ -3,6 +3,7 @@ import { Settings, Info, Shield, Zap, Timer, MousePointerClick } from 'lucide-re
 import SwapRoute from './SwapRoute';
 import SmartTooltip from '../../Presale/components/SmartTooltip';
 import './DEX.css';
+import './SwapPanel.css';
 
 // Realistic Market Mock Prices (Simulating an Oracle)
 const MARKET_PRICES = {
@@ -112,7 +113,7 @@ const SwapPanel = ({ tokens, balances, payToken, setPayToken, receiveToken, setR
   };
 
   return (
-    <div className="dex-panel-section">
+    <div className="dex-swap-container">
       <div className="dex-swap-card">
         {/* HEADER RE-FACTORED WITH INLINE STYLES FOR GUARANTEED VISIBILITY */}
         <div className="dex-card-header" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '12px', marginBottom: '20px' }}>
@@ -188,7 +189,7 @@ const SwapPanel = ({ tokens, balances, payToken, setPayToken, receiveToken, setR
                      display: 'flex', alignItems: 'center', gap: '6px',
                      padding: '2px 8px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px'
                  }}>
-                    ⚡ Powered by <span style={{ color: '#00FFA3', fontWeight: '700', textShadow: '0 0 8px rgba(0, 255, 163, 0.5)' }}>$BITS Ecosystem</span>
+                    ⚡ Powered by $<span className="solana-gradient-text">BITS</span> Ecosystem
                 </div>
             </SmartTooltip>
 
@@ -436,7 +437,7 @@ const SwapPanel = ({ tokens, balances, payToken, setPayToken, receiveToken, setR
               checked={payWithBits} 
               onChange={(e) => setPayWithBits(e.target.checked)}
             />
-            <span>Pay fee with <span style={{ color: '#00FFA3' }}>$BITS</span> (10% off)</span>
+            <span>Pay fee with <span className="solana-gradient-text">$BITS</span> (10% off)</span>
           </label>
         </div>
 

@@ -12,13 +12,15 @@ const PositionsTable = ({ positions, onClosePosition, balance = 142590.00 }) => 
       setMarketPrices(prev => {
         const newPrices = { ...prev };
         positions.forEach(pos => {
+          // Ensure openPrice is a number
+          const openPrice = parseFloat(pos.openPrice) || 0;
           // Simulare preț: +/- 0.1% față de prețul de deschidere
           // În realitate ar veni din websocket
-          const volatility = pos.openPrice * 0.002; 
+          const volatility = openPrice * 0.002; 
           const randomMove = (Math.random() - 0.5) * volatility;
           
           // Dacă nu avem un preț inițial setat, pornim de la openPrice
-          const currentBase = newPrices[pos.id] || pos.openPrice;
+          const currentBase = newPrices[pos.id] || openPrice;
           newPrices[pos.id] = currentBase + randomMove;
         });
         return newPrices;
@@ -29,10 +31,14 @@ const PositionsTable = ({ positions, onClosePosition, balance = 142590.00 }) => 
   }, [positions]);
 
   const calculateProfit = (pos) => {
-    const currentPrice = marketPrices[pos.id] || pos.openPrice;
+    // Safely parse values
+    const openPrice = parseFloat(pos.openPrice) || 0;
+    const amount = parseFloat(pos.amount) || parseFloat(pos.volume) || 0; // Handle both amount and volume keys
+    const currentPrice = marketPrices[pos.id] || openPrice;
+    
     // Profit = (Preț Curent - Preț Deschidere) * Cantitate
     // Pentru simplificare, presupunem că toate sunt BUY (Long)
-    const profit = (currentPrice - pos.openPrice) * parseFloat(pos.amount);
+    const profit = (currentPrice - openPrice) * amount;
     return profit;
   };
 
@@ -93,16 +99,18 @@ const PositionsTable = ({ positions, onClosePosition, balance = 142590.00 }) => 
               </tr>
             ) : (
               positions.map((pos) => {
-                const currentPrice = marketPrices[pos.id] || pos.openPrice;
+                const openPrice = parseFloat(pos.openPrice) || 0;
+                const currentPrice = marketPrices[pos.id] || openPrice;
                 const profit = calculateProfit(pos);
                 const isProfit = profit >= 0;
+                const volume = parseFloat(pos.amount) || parseFloat(pos.volume) || 0;
 
                 return (
                   <tr key={pos.id}>
                     <td className="dex-symbol-cell" style={{ fontSize: '1.05em' }}>{pos.symbol}</td>
                     <td><span className="dex-pos-type buy">Buy</span></td>
-                    <td>{parseFloat(pos.amount).toFixed(2)}</td>
-                    <td><span style={{ fontWeight: '700', color: '#fff', fontSize: '1.05em' }}>{pos.openPrice.toFixed(4)}</span></td>
+                    <td>{volume.toFixed(2)}</td>
+                    <td><span style={{ fontWeight: '700', color: '#fff', fontSize: '1.05em' }}>{openPrice.toFixed(4)}</span></td>
                     <td><span style={{ fontWeight: '700', color: '#fff', fontSize: '1.05em' }}>{currentPrice.toFixed(4)}</span></td>
                     <td>$0.00</td> {/* Mock Commission */}
                     <td>$0.00</td> {/* Mock Swap */}

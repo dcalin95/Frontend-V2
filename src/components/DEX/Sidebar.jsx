@@ -13,7 +13,8 @@ import {
   ChevronDown,
   CheckCircle2,
   LogIn,
-  Coins
+  Coins,
+  Brain
 } from 'lucide-react';
 
 const Sidebar = ({ activeTab, setActiveTab, aiContext, balance = 142590.00, assets }) => {
@@ -25,7 +26,8 @@ const Sidebar = ({ activeTab, setActiveTab, aiContext, balance = 142590.00, asse
     { id: 'swap', label: 'Swap', icon: <ArrowRightLeft size={20} /> },
     { id: 'pools', label: 'Pools', icon: <Waves size={20} /> },
     { id: 'stake', label: 'Stake', icon: <Lock size={20} /> },
-    { id: 'governance', label: 'Governance', icon: <Scale size={20} /> },
+    { id: 'governance', label: 'Vote', icon: <Scale size={20} /> },
+    { id: 'ai-intelligence', label: 'AI Intelligence', icon: <Brain size={20} /> },
   ];
 
   return (
@@ -54,7 +56,7 @@ Every trade you make here refines the algorithm for maximum profitability.`}>
                }} 
             />
             <div className="dex-logo-text">
-              BitSwap<span style={{ color: '#00FFA3' }}>DEX</span>
+              <span className="solana-gradient-text">BitSwap</span>DEX <span style={{ color: '#00FFA3' }}>AI</span>
             </div>
             
             {/* DEMO Badge - Visual only now, trigger is the whole area */}
@@ -160,7 +162,7 @@ As DEX volume grows, demand for $BITS increases while supply decreases. This mat
                           <img src={bitsLogo} alt="BITS" style={{width: '100%', height: '100%', objectFit: 'contain'}} />
                         </div>
                         <div className="dex-asset-details">
-                            <span className="dex-asset-symbol">BITS <span className="dex-asset-badge">Fee Discount</span></span>
+                            <span className="dex-asset-symbol"><span className="solana-gradient-text">BITS</span> <span className="dex-asset-badge">Fee Discount</span></span>
                             <span className="dex-asset-amount">{assets.BITS}</span>
                         </div>
                     </div>
