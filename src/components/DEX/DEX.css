@@ -784,12 +784,27 @@ body {
   min-height: 0; /* Crucial for nested scrolling/fitting */
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   TOP SPLIT CONTAINER (Swap + Chart Side by Side)
+   ═══════════════════════════════════════════════════════════════════ */
+.dex-top-split {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1; /* Ensure it stays above positions table */
+  flex-shrink: 0;
+}
+
 .dex-layout-sidebar-slot { 
   width: 380px; /* Fixed width for swap panel on desktop */
   display: flex; 
   flex-direction: column;
   flex-shrink: 0;
   height: 100%; /* Force full height matching parent */
+  position: relative;
+  z-index: 2; /* Above positions table */
 }
 .dex-layout-sidebar-slot::-webkit-scrollbar { display: none; }
 
@@ -799,6 +814,8 @@ body {
   flex-direction: column; 
   min-width: 0; /* Prevents flex overflow issues */
   height: 100%; /* Force full height matching parent */
+  position: relative;
+  z-index: 2; /* Above positions table */
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -997,6 +1014,9 @@ body {
   overflow: hidden;
   height: 200px; /* Reduced height to give more room to Chart */
   flex-shrink: 0; /* Prevent shrinking */
+  position: relative;
+  z-index: 0; /* Below swap and chart */
+  margin-top: 16px; /* Ensure gap from top split */
 }
 
 .dex-positions-tabs { display: flex; gap: 1px; background: rgba(0,0,0,0.3); border-bottom: 1px solid var(--border-color); }
