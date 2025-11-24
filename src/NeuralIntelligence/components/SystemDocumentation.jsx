@@ -345,39 +345,39 @@ const SystemDocumentation = () => {
             <div className="module-card">
               <h5>🔄 Rebalancing Engine</h5>
               <ul>
-                <li>Monitorizează diferența între <strong>alocarea actuală</strong> și <strong>alocarea țintă</strong></li>
-                <li>Efectuează rebalanșare incrementală doar când este necesar</li>
-                <li>Minimizează taxele și slippage-ul prin trade-uri micro</li>
+                <li>Monitors the difference between <strong>current allocation</strong> and <strong>target allocation</strong></li>
+                <li>Performs incremental rebalancing only when necessary</li>
+                <li>Minimizes fees and slippage through micro-trades</li>
               </ul>
             </div>
 
             <div className="module-card">
               <h5>📈 Market Regime Classifier</h5>
-              <p>Detectează medii de piață și ajustează alocările:</p>
+              <p>Detects market environments and adjusts allocations:</p>
               <ul>
-                <li>🟢 <strong>Bullish trend</strong> - tendință ascendentă</li>
-                <li>🔴 <strong>Bearish trend</strong> - tendință descendentă</li>
-                <li>⚪ <strong>Sideways/Consolidation</strong> - piață laterală</li>
-                <li>🟡 <strong>High-volatility phase</strong> - volatilitate mare</li>
-                <li>🔵 <strong>Post-crash recovery</strong> - recuperare după corecție</li>
+                <li>🟢 <strong>Bullish trend</strong> - upward momentum</li>
+                <li>🔴 <strong>Bearish trend</strong> - downward momentum</li>
+                <li>⚪ <strong>Sideways/Consolidation</strong> - lateral market</li>
+                <li>🟡 <strong>High-volatility phase</strong> - increased volatility</li>
+                <li>🔵 <strong>Post-crash recovery</strong> - recovery after correction</li>
               </ul>
             </div>
 
             <div className="module-card">
               <h5>⚙️ Micro-Adjustment System</h5>
               <ul>
-                <li>Efectuează "micro-trades" la interval de câteva ore</li>
-                <li>Focus: minimizare risc, reducere slippage, taxe mici</li>
-                <li>Îmbunătățire graduală a performanței pe termen lung</li>
+                <li>Executes "micro-trades" at intervals of a few hours</li>
+                <li>Focus: minimize risk, reduce slippage, keep fees low</li>
+                <li>Gradual improvement of long-term performance</li>
               </ul>
             </div>
 
             <div className="module-card">
               <h5>🧠 AI Learning Loop</h5>
               <ul>
-                <li>Evaluează rezultatele acțiunilor și învață continuu</li>
-                <li>Îmbunătățește: selecția strategiilor, sensibilitatea pragurilor, alocările, timing-ul</li>
-                <li>Loop-ul de învățare rămâne transparent și auditabil</li>
+                <li>Evaluates action results and learns continuously</li>
+                <li>Improves: strategy selection, threshold sensitivity, allocations, timing</li>
+                <li>Learning loop remains transparent and auditable</li>
               </ul>
             </div>
 
@@ -388,21 +388,21 @@ const SystemDocumentation = () => {
               <ul>
                 <li>Stablecoins (USDT, USDC, BUSD)</li>
                 <li>BTC / ETH</li>
-                <li>BNB, MATIC, alte active majore</li>
-                <li>Tokenuri din ecosistemul BITS</li>
-                <li>Coșuri filtrate după risc (opțiune viitoare)</li>
+                <li>BNB, MATIC, other major assets</li>
+                <li>Tokens from BITS ecosystem</li>
+                <li>Risk-filtered baskets (future option)</li>
               </ul>
             </div>
 
             <div className="architecture-layer">
               <h3>🚫 Hard Constraints</h3>
               <ul>
-                <li>❌ Fără leverage excesiv (decât dacă permis de reglementări)</li>
-                <li>❌ Fără futures/derivate până la licențiere</li>
-                <li>❌ Fără active ilchiide</li>
-                <li>❌ Fără meme/speculative tokens</li>
-                <li>❌ Fără comportamente de manipulare a pieței</li>
-                <li>✅ Respectarea strictă a limitelor de risc definite de utilizator</li>
+                <li>❌ No excessive leverage (unless permitted by regulation)</li>
+                <li>❌ No futures/derivatives until licensed</li>
+                <li>❌ No illiquid assets</li>
+                <li>❌ No meme/speculative tokens</li>
+                <li>❌ No behaviors that could resemble market manipulation</li>
+                <li>✅ Strict adherence to user-defined risk limits</li>
               </ul>
             </div>
 
@@ -410,25 +410,25 @@ const SystemDocumentation = () => {
             
             <div className="info-box">
               <span className="info-icon">🛡️</span>
-              <span><strong>Safety Mechanisms:</strong> Sistemul execută decizii doar în condiții stricte de siguranță.</span>
+              <span><strong>Safety Mechanisms:</strong> The system executes decisions only under strict safety conditions.</span>
             </div>
 
             <div className="endpoints-list">
               <div className="endpoint-item">
                 <span className="method get">1</span>
-                <strong>Daily Exposure Limits</strong> - Limită de expunere zilnică
+                <strong>Daily Exposure Limits</strong> - Daily exposure cap
               </div>
               <div className="endpoint-item">
                 <span className="method get">2</span>
-                <strong>Drawdown Protection</strong> - Protecție împotriva pierderilor mari
+                <strong>Drawdown Protection</strong> - Protection against large losses
               </div>
               <div className="endpoint-item">
                 <span className="method get">3</span>
-                <strong>Slippage & Fee Boundaries</strong> - Limite pentru slippage și taxe
+                <strong>Slippage & Fee Boundaries</strong> - Limits for slippage and fees
               </div>
               <div className="endpoint-item">
                 <span className="method get">4</span>
-                <strong>Execution Windows</strong> - Evită orele cu lichiditate redusă
+                <strong>Execution Windows</strong> - Avoids low liquidity hours
               </div>
               <div className="endpoint-item">
                 <span className="method get">5</span>
@@ -436,25 +436,25 @@ const SystemDocumentation = () => {
               </div>
               <div className="endpoint-item">
                 <span className="method get">6</span>
-                <strong>Fail-Safe Mode</strong> - Automat când volatilitatea depășește praguri
+                <strong>Fail-Safe Mode</strong> - Automatic when volatility exceeds thresholds
               </div>
             </div>
 
             <h3>6.4 Regulatory Compliance Framework</h3>
-            <p>Wealth Engine se aliniază la principiile globale pentru investiții automatizate:</p>
+            <p>Wealth Engine aligns with global principles for automated investing:</p>
             
             <div className="module-card">
               <h5>📋 Operating Modes</h5>
               <ul>
-                <li>💡 <strong>Advisory Mode</strong> - Activ în toate regiunile</li>
-                <li>⚙️ <strong>Semi-Automatic Mode</strong> - Majoritatea regiunilor</li>
-                <li>🤖 <strong>Automated Mode</strong> - Doar în jurisdicții cu licențiere completă</li>
+                <li>💡 <strong>Advisory Mode</strong> - Active in all regions</li>
+                <li>⚙️ <strong>Semi-Automatic Mode</strong> - Most regions</li>
+                <li>🤖 <strong>Automated Mode</strong> - Only in jurisdictions with full licensing</li>
               </ul>
             </div>
 
             <div className="info-box">
               <span className="info-icon">⚖️</span>
-              <span>Automatizarea completă necesită: consimțământ utilizator, verificare KYC, aprobare regulatorie per regiune.</span>
+              <span>Full automation requires: user consent, KYC verification, regulatory approval per region.</span>
             </div>
 
             <h3>6.5 Competitive Advantages</h3>
