@@ -3,7 +3,7 @@ import { formatEther } from "ethers/lib/utils";
 import { getStakingContract } from "../../contract/getStakingContract";
 import styles from '../styles/StakingCard.module.css';
 import { aprPercentDisplayFrom1e18 } from "../utils/aprFormat";
-import successSfx from "../../assets/sounds/success.wav";
+import successSfx from "../../assets/sounds/success.mp3";
 console.log("✅ StakingCard loaded");
 
 

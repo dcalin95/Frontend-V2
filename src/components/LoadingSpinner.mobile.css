@@ -1,0 +1,157 @@
+/* ========================================
+   LOADING SPINNER - MOBILE OPTIMIZED
+   Ecrane: 320px - 768px
+   ======================================== */
+
+/* 📱 WRAPPER */
+body.mode-mobile .ai-loading-wrapper {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background: #000000;
+  z-index: 10000;
+}
+
+/* 🎯 NEURAL CORE - Mai mic pe mobil */
+body.mode-mobile .ai-neural-core {
+  width: 100px; /* Redus de la 120px */
+  height: 100px;
+}
+
+body.mode-mobile .ai-ring {
+  border-width: 2px;
+}
+
+body.mode-mobile .ring-1 {
+  animation: spin-ai 2.5s linear infinite;
+}
+
+body.mode-mobile .ring-2 {
+  animation: spin-ai-reverse 1.8s linear infinite;
+}
+
+body.mode-mobile .ring-3 {
+  animation: spin-ai 0.9s linear infinite;
+}
+
+body.mode-mobile .ai-core-pulse {
+  width: 32%;
+  height: 32%;
+  animation: pulse-ai 1.3s ease-in-out infinite;
+}
+
+body.mode-mobile .ai-core-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* 📝 TEXT & PROGRESS */
+body.mode-mobile .ai-loading-text {
+  margin-top: 30px;
+  padding: 0 1rem;
+}
+
+body.mode-mobile .text-glitch {
+  font-size: 0.9rem; /* Redus de la 1rem */
+  letter-spacing: 2px;
+}
+
+body.mode-mobile .loading-bar {
+  width: 180px; /* Redus de la 200px */
+  height: 2px;
+  margin-top: 12px;
+}
+
+body.mode-mobile .loading-progress {
+  animation: progress-slide 1.3s ease-in-out infinite;
+}
+
+/* ========================================
+   ECRANE FOARTE MICI: <= 375px
+   ======================================== */
+@media (max-width: 375px) {
+  body.mode-mobile .ai-neural-core {
+    width: 90px;
+    height: 90px;
+  }
+
+  body.mode-mobile .ai-core-icon {
+    width: 15px;
+    height: 15px;
+  }
+
+  body.mode-mobile .ai-loading-text {
+    margin-top: 25px;
+  }
+
+  body.mode-mobile .text-glitch {
+    font-size: 0.85rem;
+    letter-spacing: 1.5px;
+  }
+
+  body.mode-mobile .loading-bar {
+    width: 160px;
+  }
+}
+
+/* ========================================
+   ECRANE EXTRA MICI: <= 320px
+   ======================================== */
+@media (max-width: 320px) {
+  body.mode-mobile .ai-neural-core {
+    width: 80px;
+    height: 80px;
+  }
+
+  body.mode-mobile .ai-ring {
+    border-width: 1.5px;
+  }
+
+  body.mode-mobile .ai-core-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  body.mode-mobile .ai-loading-text {
+    margin-top: 20px;
+  }
+
+  body.mode-mobile .text-glitch {
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+  }
+
+  body.mode-mobile .loading-bar {
+    width: 140px;
+    height: 1.5px;
+  }
+}
+
+/* ========================================
+   OPTIMIZARE PERFORMANȚĂ
+   ======================================== */
+
+/* Low power mode - Reduc animații */
+body.mode-mobile.low-power .ring-1,
+body.mode-mobile.low-power .ring-2,
+body.mode-mobile.low-power .ring-3 {
+  animation-duration: 4s;
+}
+
+body.mode-mobile.low-power .ai-core-pulse {
+  animation: pulse-ai-simple 2s ease-in-out infinite;
+}
+
+@keyframes pulse-ai-simple {
+  0%, 100% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+body.mode-mobile.low-power .text-glitch::before,
+body.mode-mobile.low-power .text-glitch::after {
+  display: none; /* Dezactivez glitch effect */
+}
+
+body.mode-mobile.low-power .loading-progress {
+  animation-duration: 2s;
+}

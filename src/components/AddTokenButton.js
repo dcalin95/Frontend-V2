@@ -4,6 +4,7 @@ import SmartTooltip from '../Presale/components/SmartTooltip';
 import metamaskLogo from '../assets/icons/metamask-logo.png'; // Asigură-te că există sau folosim un fallback
 import bitsLogo from '../assets/logo.png';
 import './AddTokenButton.css';
+import './AddTokenButton.mobile.css';
 
 const AddTokenButton = ({ className = '', style = {}, compact = false }) => {
   
@@ -41,7 +42,7 @@ const AddTokenButton = ({ className = '', style = {}, compact = false }) => {
       if (wasAdded) {
         toast.success("BITS Token added to wallet!");
         // Play success sound
-        const audio = new Audio('/sounds/success.wav');
+        const audio = new Audio('/sounds/success.mp3');
         audio.play().catch(e => console.log(e));
       } else {
         toast.info("Action cancelled.");

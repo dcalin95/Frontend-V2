@@ -1,0 +1,300 @@
+/* ═══════════════════════════════════════════════════════════════════
+   POSITIONS TABLE - Styles separați pentru mentenanță ușoară
+   Component: PositionsTable.jsx
+   Style: XTB Trading Platform
+   ═══════════════════════════════════════════════════════════════════ */
+
+.dex-positions-container,
+.dex-positions-section {
+  display: flex; 
+  flex-direction: column;
+  background: rgba(22, 26, 30, 0.6); 
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08); 
+  border-radius: 16px;
+  overflow: hidden;
+  flex-shrink: 0;
+  margin-top: 16px;
+  width: 100%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   TABS HEADER
+   ═══════════════════════════════════════════════════════════════════ */
+.dex-positions-tabs { 
+  display: flex; 
+  gap: 1px; 
+  background: rgba(0,0,0,0.25); 
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
+}
+
+.dex-tab {
+  padding: 12px 20px; 
+  background: transparent; 
+  border: none; 
+  color: var(--text-muted); 
+  font-size: 0.9rem; 
+  font-weight: 600;
+  cursor: pointer; 
+  position: relative;
+}
+
+.dex-tab.active { 
+  color: #fff; 
+  background: rgba(255,255,255,0.05); 
+}
+
+.dex-tab.active::after { 
+  content: ''; 
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 2px; 
+  background: var(--primary-color); 
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   TABLE WRAPPER
+   ═══════════════════════════════════════════════════════════════════ */
+.dex-table-wrapper,
+.dex-table-container {
+  flex: 1; 
+  overflow-y: auto; 
+  overflow-x: auto; /* Permite scroll orizontal dacă e nevoie */
+  position: relative;
+  min-height: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   TABLE STYLES
+   ═══════════════════════════════════════════════════════════════════ */
+.dex-table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  font-size: 0.9rem;
+  table-layout: auto; /* Permite coloanelor să se adapteze la conținut */
+  min-width: 800px; /* Asigură spațiu pentru toate coloanele */
+}
+
+.dex-table th {
+  text-align: left; 
+  padding: 12px 20px; 
+  color: var(--text-muted); 
+  font-size: 0.9rem; 
+  font-weight: 500;
+  background: rgba(0,0,0,0.2); 
+  position: sticky; 
+  top: 0; 
+  z-index: 10;
+}
+
+.dex-table td { 
+  padding: 14px 20px; 
+  border-bottom: 1px solid rgba(255,255,255,0.02); 
+  color: #EAECEF;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dex-table tbody {
+  display: table-row-group;
+  position: relative;
+}
+
+.dex-table tr { 
+  display: table-row;
+  position: relative;
+}
+
+.dex-table tr:hover { 
+  background: rgba(255,255,255,0.02); 
+}
+
+/* Action Column */
+.dex-table th:last-child {
+  text-align: right;
+  padding-right: 16px;
+}
+
+.dex-table td:last-child {
+  padding-right: 8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   POSITION TYPE BADGES
+   ═══════════════════════════════════════════════════════════════════ */
+.dex-pos-type { 
+  padding: 4px 8px; 
+  border-radius: 4px; 
+  font-size: 0.8rem; 
+  font-weight: 700; 
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.dex-pos-type.buy { 
+  color: var(--success-color); 
+  background: rgba(48, 195, 113, 0.15); 
+}
+
+.dex-pos-type.sell { 
+  color: var(--danger-color); 
+  background: rgba(230, 68, 77, 0.15); 
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PROFIT/LOSS VALUES
+   ═══════════════════════════════════════════════════════════════════ */
+.dex-pnl-val { 
+  font-weight: 700; 
+}
+
+.dex-pnl-val.pos { 
+  color: var(--success-color); 
+}
+
+.dex-pnl-val.neg { 
+  color: var(--danger-color); 
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CLOSE POSITION BUTTONS
+   ═══════════════════════════════════════════════════════════════════ */
+.dex-close-pos-btn {
+  border: none;
+  outline: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  min-width: 80px;
+  letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.dex-close-pos-btn.take-profit {
+  background: rgba(48, 195, 113, 0.15);
+  color: #30C371;
+  border: 1px solid rgba(48, 195, 113, 0.3);
+}
+
+.dex-close-pos-btn.take-profit:hover {
+  background: #30C371;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(48, 195, 113, 0.4);
+}
+
+.dex-close-pos-btn.stop-loss {
+  background: rgba(230, 68, 77, 0.15);
+  color: #E6444D;
+  border: 1px solid rgba(230, 68, 77, 0.3);
+}
+
+.dex-close-pos-btn.stop-loss:hover {
+  background: #E6444D;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(230, 68, 77, 0.4);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FOOTER (Balance, Equity, Margin, Profit)
+   ═══════════════════════════════════════════════════════════════════ */
+.dex-positions-footer {
+  padding: 12px 20px; 
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex; 
+  gap: 24px; 
+  font-size: 0.9rem; 
+  color: #8b9bb4; 
+  background: rgba(0,0,0,0.25);
+}
+
+.dex-footer-stat span { 
+  color: #fff; 
+  font-weight: 600; 
+  margin-left: 6px; 
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   MOBILE RESPONSIVE
+   ═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .dex-positions-container,
+  .dex-positions-section {
+    height: auto; 
+    min-height: 200px;
+    margin-bottom: 20px;
+  }
+  
+  /* Grid Layout for Footer */
+  .dex-positions-footer {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 10px !important;
+    background: rgba(0,0,0,0.4);
+  }
+  
+  .dex-footer-stat {
+    font-size: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.03);
+    padding: 6px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  
+  .dex-footer-stat span {
+    margin-left: 0 !important;
+  }
+  
+  .dex-footer-stat span:last-child {
+    font-weight: 700;
+    color: #fff;
+  }
+  
+  /* Profit takes full width at bottom */
+  .dex-footer-stat:last-child {
+    grid-column: 1 / -1;
+    justify-content: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.08);
+    font-size: 0.9rem;
+    margin-top: 4px;
+  }
+  
+  /* Hide Complex Table Columns on Mobile */
+  .dex-table th:nth-child(3), .dex-table td:nth-child(3),
+  .dex-table th:nth-child(4), .dex-table td:nth-child(4),
+  .dex-table th:nth-child(6), .dex-table td:nth-child(6),
+  .dex-table th:nth-child(7), .dex-table td:nth-child(7) {
+    display: none;
+  }
+  
+  /* Adjust remaining columns */
+  .dex-table th, .dex-table td {
+    padding: 10px 8px;
+    font-size: 0.8rem;
+  }
+  
+  .dex-symbol-cell {
+    max-width: 80px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+

@@ -1,0 +1,141 @@
+/* ========================================
+   ADD TOKEN BUTTON - MOBILE OPTIMIZED
+   Ecrane: 320px - 768px
+   ======================================== */
+
+/* 📱 BUTTON - Touch optimized */
+body.mode-mobile .add-token-btn {
+  padding: 12px 18px; /* Touch target mai mare */
+  gap: 10px;
+  border-radius: 14px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  min-height: 48px; /* Touch target minim */
+  width: 100%;
+  max-width: 320px;
+  justify-content: center;
+}
+
+body.mode-mobile .add-token-btn:hover {
+  transform: none; /* Dezactivez hover */
+}
+
+body.mode-mobile .add-token-btn:active {
+  transform: scale(0.97);
+  background: rgba(246, 133, 27, 0.2);
+}
+
+body.mode-mobile .add-token-icon-wrapper {
+  width: 26px;
+  height: 26px;
+}
+
+body.mode-mobile .metamask-fox {
+  width: 100%;
+  height: 100%;
+}
+
+body.mode-mobile .add-token-text {
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+body.mode-mobile .add-token-plus {
+  font-size: 1.3rem;
+  margin-left: 8px;
+}
+
+/* COMPACT MODE */
+body.mode-mobile .add-token-btn.compact {
+  padding: 10px 14px;
+  gap: 8px;
+  min-height: 44px;
+}
+
+body.mode-mobile .add-token-btn.compact .add-token-icon-wrapper {
+  width: 22px;
+  height: 22px;
+}
+
+body.mode-mobile .add-token-btn.compact .add-token-text {
+  font-size: 0.85rem;
+}
+
+body.mode-mobile .add-token-btn.compact .add-token-plus {
+  font-size: 1.1rem;
+}
+
+/* ========================================
+   ECRANE FOARTE MICI: <= 375px
+   ======================================== */
+@media (max-width: 375px) {
+  body.mode-mobile .add-token-btn {
+    padding: 11px 16px;
+    gap: 8px;
+    max-width: 100%;
+  }
+
+  body.mode-mobile .add-token-icon-wrapper {
+    width: 24px;
+    height: 24px;
+  }
+
+  body.mode-mobile .add-token-text {
+    font-size: 0.88rem;
+  }
+
+  body.mode-mobile .add-token-plus {
+    font-size: 1.2rem;
+  }
+}
+
+/* ========================================
+   ECRANE EXTRA MICI: <= 320px
+   ======================================== */
+@media (max-width: 320px) {
+  body.mode-mobile .add-token-btn {
+    padding: 10px 14px;
+    gap: 7px;
+    border-radius: 12px;
+  }
+
+  body.mode-mobile .add-token-icon-wrapper {
+    width: 22px;
+    height: 22px;
+  }
+
+  body.mode-mobile .add-token-text {
+    font-size: 0.85rem;
+  }
+
+  body.mode-mobile .add-token-plus {
+    font-size: 1.15rem;
+  }
+
+  body.mode-mobile .add-token-btn.compact {
+    padding: 9px 12px;
+  }
+}
+
+/* ========================================
+   OPTIMIZARE PERFORMANȚĂ
+   ======================================== */
+
+/* Low power mode */
+body.mode-mobile.low-power .add-token-btn {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: rgba(255, 255, 255, 0.08);
+  transition: none;
+}
+
+body.mode-mobile.low-power .add-token-btn:hover .metamask-fox {
+  animation: none;
+}
+
+/* Accessibility */
+body.mode-mobile .add-token-btn {
+  -webkit-tap-highlight-color: rgba(246, 133, 27, 0.15);
+  cursor: pointer;
+}

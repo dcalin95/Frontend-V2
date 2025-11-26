@@ -1,0 +1,234 @@
+/* ========================================
+   WHITEPAPER - MOBILE OPTIMIZED STYLES
+   Ecrane: 320px - 768px
+   ======================================== */
+
+/* 📱 CONTAINER PRINCIPAL */
+body.mode-mobile .whitepaper-container {
+  padding: 1.5rem 1rem;
+  margin: 1rem auto;
+  width: 95%;
+  max-width: 100%;
+  border-radius: 1.2rem;
+  background: rgba(10, 15, 25, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 20px rgba(0, 255, 163, 0.12);
+}
+
+/* 🌞 LOGO/SUN */
+body.mode-mobile .whitepaper-sun {
+  width: 70px;
+  height: 70px;
+  margin-bottom: 1.5rem;
+}
+
+body.mode-mobile .whitepaper-sun::after {
+  width: 60px;
+  height: 60px;
+}
+
+/* 📝 TITLU & SUBTITLU */
+body.mode-mobile .whitepaper-title {
+  font-size: 1.5rem; /* Redus de la 1.8rem */
+  margin-bottom: 0.8rem;
+  line-height: 1.3;
+  filter: drop-shadow(0 0 12px rgba(0, 255, 163, 0.25));
+}
+
+body.mode-mobile .whitepaper-subtitle {
+  font-size: 1rem; /* Redus de la 1.2rem */
+  margin-bottom: 1.2rem;
+}
+
+/* 📄 TEXT CONTENT */
+body.mode-mobile .whitepaper-text {
+  font-size: 0.9rem; /* Redus de la 1rem */
+  line-height: 1.6;
+  margin-bottom: 1.2rem;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+body.mode-mobile .highlight-bits,
+body.mode-mobile .highlight-bitcoin,
+body.mode-mobile .whitepaper-text span {
+  font-weight: 700;
+  color: #d2691e;
+}
+
+/* 🔘 BUTTON - Touch optimized */
+body.mode-mobile .whitepaper-button {
+  padding: 14px 28px; /* Touch target minim 44px */
+  font-size: 0.95rem;
+  width: 100%;
+  max-width: 320px;
+  display: block;
+  margin: 0 auto;
+  border-radius: 12px;
+  min-height: 48px;
+  box-shadow: 0 0 16px rgba(0, 255, 163, 0.25);
+}
+
+body.mode-mobile .whitepaper-button:hover {
+  transform: none; /* Dezactivez hover pe mobil */
+  box-shadow: 0 0 20px rgba(0, 255, 163, 0.4);
+}
+
+body.mode-mobile .whitepaper-button:active {
+  /* Active state pentru touch */
+  transform: scale(0.98);
+  box-shadow: 0 0 16px rgba(0, 255, 163, 0.3);
+}
+
+/* ========================================
+   ECRANE FOARTE MICI: <= 375px
+   ======================================== */
+@media (max-width: 375px) {
+  body.mode-mobile .whitepaper-container {
+    padding: 1.2rem 0.8rem;
+    width: 96%;
+  }
+
+  body.mode-mobile .whitepaper-sun {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 1.2rem;
+  }
+
+  body.mode-mobile .whitepaper-sun::after {
+    width: 50px;
+    height: 50px;
+  }
+
+  body.mode-mobile .whitepaper-title {
+    font-size: 1.35rem;
+    margin-bottom: 0.7rem;
+  }
+
+  body.mode-mobile .whitepaper-subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+
+  body.mode-mobile .whitepaper-text {
+    font-size: 0.87rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  body.mode-mobile .whitepaper-button {
+    padding: 12px 24px;
+    font-size: 0.9rem;
+    max-width: 100%;
+  }
+}
+
+/* ========================================
+   ECRANE EXTRA MICI: <= 320px
+   ======================================== */
+@media (max-width: 320px) {
+  body.mode-mobile .whitepaper-container {
+    padding: 1rem 0.6rem;
+    margin: 0.8rem auto;
+    border-radius: 1rem;
+  }
+
+  body.mode-mobile .whitepaper-sun {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 1rem;
+  }
+
+  body.mode-mobile .whitepaper-sun::after {
+    width: 45px;
+    height: 45px;
+  }
+
+  body.mode-mobile .whitepaper-title {
+    font-size: 1.2rem;
+    margin-bottom: 0.6rem;
+  }
+
+  body.mode-mobile .whitepaper-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+  }
+
+  body.mode-mobile .whitepaper-text {
+    font-size: 0.83rem;
+    line-height: 1.5;
+    margin-bottom: 0.9rem;
+  }
+
+  body.mode-mobile .whitepaper-button {
+    padding: 11px 20px;
+    font-size: 0.87rem;
+  }
+}
+
+/* ========================================
+   LANDSCAPE MODE
+   ======================================== */
+body.mode-mobile.orientation-landscape .whitepaper-container {
+  padding: 1.2rem 1.5rem;
+  max-width: 90%;
+}
+
+body.mode-mobile.orientation-landscape .whitepaper-sun {
+  width: 55px;
+  height: 55px;
+  margin-bottom: 1rem;
+}
+
+body.mode-mobile.orientation-landscape .whitepaper-title {
+  font-size: 1.3rem;
+}
+
+body.mode-mobile.orientation-landscape .whitepaper-subtitle {
+  font-size: 0.95rem;
+}
+
+body.mode-mobile.orientation-landscape .whitepaper-text {
+  font-size: 0.85rem;
+  columns: 2;
+  column-gap: 1.5rem;
+}
+
+body.mode-mobile.orientation-landscape .whitepaper-button {
+  max-width: 280px;
+}
+
+/* ========================================
+   OPTIMIZARE PERFORMANȚĂ
+   ======================================== */
+
+/* Low power mode */
+body.mode-mobile.low-power .whitepaper-container {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: rgba(10, 15, 25, 0.9);
+}
+
+body.mode-mobile.low-power .whitepaper-title {
+  filter: none;
+  background: #00FFA3;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body.mode-mobile.low-power .whitepaper-button {
+  box-shadow: none;
+  transition: none;
+}
+
+/* Slow connection */
+body.mode-mobile.slow-connection .whitepaper-container {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: rgba(10, 15, 25, 0.95);
+}
+
+body.mode-mobile.slow-connection .whitepaper-button:hover {
+  box-shadow: 0 0 12px rgba(0, 255, 163, 0.3);
+}
+

@@ -1,5 +1,6 @@
 import React from "react";
 import "./Whitepaper.css";
+import "./Whitepaper.mobile.css";
 
 const Whitepaper = () => {
   return (

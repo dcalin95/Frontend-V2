@@ -1,0 +1,177 @@
+/* ========================================
+   FOOTER - MOBILE OPTIMIZED STYLES
+   Ecrane: 320px - 768px
+   ======================================== */
+
+/* 📱 GLOBAL MOBILE - aplicat prin body.mode-mobile */
+body.mode-mobile .footer-container {
+  font-size: 0.8rem;
+  padding: 1.5rem 1rem;
+  background: rgba(15, 20, 25, 0.95); /* Mai opac pe mobil */
+}
+
+/* 🚀 EXCHANGES SECTION - Optimizat pentru touch */
+body.mode-mobile .footer-exchanges-compact {
+  margin-bottom: 2rem;
+}
+
+body.mode-mobile .exchanges-slogan {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 1.2rem;
+  padding: 0 0.5rem;
+}
+
+body.mode-mobile .exchanges-logos {
+  gap: 1rem; /* Gap mai mic pentru ecrane mici */
+}
+
+body.mode-mobile .exchange-logo-mini {
+  width: 36px; /* Mai mic decât 43px de pe desktop */
+  height: 36px;
+  /* Tooltip disabled pe mobil - prea mic */
+}
+
+body.mode-mobile .exchange-logo-mini::after {
+  display: none; /* Ascund tooltip pe mobil */
+}
+
+body.mode-mobile .exchange-logo-mini:hover {
+  transform: scale(1.15); /* Hover mai mic pe mobil */
+  animation: none; /* Dezactivez animația float */
+}
+
+body.mode-mobile .exchanges-subtitle {
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+/* 📝 FOOTER TEXT */
+body.mode-mobile .footer-text {
+  font-size: 0.85rem;
+  margin-bottom: 1.2rem;
+  flex-direction: column; /* Stack vertical pe mobil */
+  gap: 0.5rem;
+}
+
+body.mode-mobile .footer-text__content {
+  max-width: 100%;
+  padding: 0 0.5rem;
+}
+
+/* 🔘 FOOTER BUTTONS - Touch-friendly */
+body.mode-mobile .footer-links {
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  width: 100%;
+}
+
+body.mode-mobile .footer-button {
+  padding: 0.75rem 1.5rem; /* Touch target minim 44px */
+  font-size: 0.9rem;
+  width: 100%;
+  max-width: 320px;
+  justify-content: center;
+  min-height: 44px; /* iOS minimum touch target */
+}
+
+body.mode-mobile .footer-icon {
+  font-size: 1.1rem;
+}
+
+/* 🎨 ADD TOKEN BUTTON */
+body.mode-mobile .footer-container > div {
+  margin: 1rem 0 0.5rem;
+}
+
+/* ========================================
+   ECRANE FOARTE MICI: <= 375px
+   ======================================== */
+@media (max-width: 375px) {
+  body.mode-mobile .footer-container {
+    padding: 1.2rem 0.8rem;
+    font-size: 0.75rem;
+  }
+
+  body.mode-mobile .exchanges-slogan {
+    font-size: 0.85rem;
+  }
+
+  body.mode-mobile .exchange-logo-mini {
+    width: 32px;
+    height: 32px;
+  }
+
+  body.mode-mobile .exchanges-logos {
+    gap: 0.8rem;
+  }
+
+  body.mode-mobile .footer-text {
+    font-size: 0.8rem;
+  }
+
+  body.mode-mobile .footer-button {
+    padding: 0.65rem 1.2rem;
+    font-size: 0.85rem;
+    max-width: 280px;
+  }
+}
+
+/* ========================================
+   ECRANE EXTRA MICI: <= 320px
+   ======================================== */
+@media (max-width: 320px) {
+  body.mode-mobile .footer-container {
+    padding: 1rem 0.5rem;
+  }
+
+  body.mode-mobile .exchanges-slogan {
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+
+  body.mode-mobile .exchange-logo-mini {
+    width: 28px;
+    height: 28px;
+  }
+
+  body.mode-mobile .exchanges-logos {
+    gap: 0.6rem;
+    max-width: 100%;
+  }
+
+  body.mode-mobile .footer-button {
+    font-size: 0.8rem;
+    padding: 0.6rem 1rem;
+  }
+
+  body.mode-mobile .footer-icon {
+    font-size: 1rem;
+  }
+}
+
+/* ========================================
+   LANDSCAPE MODE - Optimizare orientare
+   ======================================== */
+body.mode-mobile.orientation-landscape .footer-container {
+  padding: 1rem;
+}
+
+body.mode-mobile.orientation-landscape .exchanges-logos {
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+body.mode-mobile.orientation-landscape .footer-links {
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+body.mode-mobile.orientation-landscape .footer-button {
+  max-width: 45%;
+  font-size: 0.8rem;
+  padding: 0.6rem 1rem;
+}
+

@@ -1,0 +1,389 @@
+/* ========================================
+   UNIFIED WALLET MODAL - MOBILE OPTIMIZED
+   Ecrane: 320px - 768px
+   ULTRA IMPORTANT pentru UX mobil!
+   ======================================== */
+
+/* 📱 OVERLAY - Full screen pe mobil */
+body.mode-mobile .unified-wallet-modal-overlay {
+  backdrop-filter: blur(8px); /* Mai puțin blur pentru performanță */
+  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.9); /* Mai întunecat */
+  padding: 0;
+}
+
+/* 🎴 MODAL - Aproape full screen pe mobil */
+body.mode-mobile .unified-wallet-modal {
+  padding: 1.5rem 1rem;
+  max-width: 95%;
+  width: 95%;
+  max-height: 90vh; /* Mai mult spațiu vertical */
+  border-radius: 20px;
+  background: rgba(10, 10, 20, 0.95); /* Mai opac */
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+}
+
+/* 📊 NETWORK GRID - 1 coloană pe mobil */
+body.mode-mobile .network-grid {
+  grid-template-columns: 1fr; /* Stack vertical */
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* 🎯 NETWORK CARDS - Touch optimized */
+body.mode-mobile .network-card {
+  padding: 1.5rem 1rem;
+  border-radius: 16px;
+  min-height: auto;
+  gap: 12px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.02) 100%);
+  /* Touch target minim 48px */
+}
+
+body.mode-mobile .network-card:hover {
+  transform: none; /* Dezactivez hover */
+}
+
+body.mode-mobile .network-card:active {
+  /* Active state pentru touch */
+  transform: scale(0.98);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+}
+
+body.mode-mobile .evm-card:active {
+  border-color: rgba(59, 153, 252, 0.6);
+  box-shadow: 0 8px 24px rgba(59, 153, 252, 0.25);
+}
+
+body.mode-mobile .solana-card:active {
+  border-color: rgba(153, 69, 255, 0.6);
+  box-shadow: 0 8px 24px rgba(153, 69, 255, 0.25);
+}
+
+/* 🎨 ICON WRAPPER - Mai mic pe mobil */
+body.mode-mobile .network-icon-wrapper {
+  width: 70px;
+  height: 70px;
+  margin-bottom: 8px;
+}
+
+body.mode-mobile .network-card:hover .network-icon-wrapper {
+  transform: none;
+}
+
+body.mode-mobile .network-card:active .network-icon-wrapper {
+  transform: scale(1.05);
+}
+
+body.mode-mobile .network-icon-img {
+  width: 42px;
+  height: 42px;
+}
+
+/* 📝 TEXT - Font sizes reduse */
+body.mode-mobile .network-name {
+  font-size: 1.1rem; /* Redus de la 1.25rem */
+  margin-bottom: 6px;
+  letter-spacing: 0.3px;
+}
+
+body.mode-mobile .network-chains {
+  font-size: 0.8rem; /* Redus de la 0.85rem */
+  line-height: 1.3;
+}
+
+/* 🎯 MODAL TITLE */
+body.mode-mobile .modal-title {
+  font-size: 1.5rem; /* Redus de la 2rem */
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+body.mode-mobile .modal-subtitle {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  padding: 0 0.5rem;
+}
+
+/* 🔘 CLOSE BUTTON - Touch friendly */
+body.mode-mobile .close-button {
+  width: 44px; /* Touch target minim */
+  height: 44px;
+  top: 12px;
+  right: 12px;
+  font-size: 1.3rem;
+}
+
+/* 🔗 CONNECTED STATE */
+body.mode-mobile .wallet-connected-status {
+  padding: 1rem;
+  border-radius: 12px;
+  margin-top: 1rem;
+}
+
+body.mode-mobile .wallet-address {
+  font-size: 0.85rem;
+  word-break: break-all;
+  padding: 0.5rem;
+}
+
+body.mode-mobile .disconnect-button {
+  padding: 12px 24px;
+  font-size: 0.9rem;
+  min-height: 44px;
+  border-radius: 12px;
+  margin-top: 0.8rem;
+}
+
+/* 💰 BALANCE INFO */
+body.mode-mobile .balance-info {
+  font-size: 0.9rem;
+  padding: 0.8rem;
+  margin: 0.8rem 0;
+}
+
+body.mode-mobile .balance-amount {
+  font-size: 1.1rem;
+  margin-top: 0.3rem;
+}
+
+/* ⚡ LOADING STATE */
+body.mode-mobile .loading-spinner {
+  width: 40px;
+  height: 40px;
+}
+
+body.mode-mobile .loading-text {
+  font-size: 0.9rem;
+  margin-top: 0.8rem;
+}
+
+/* ========================================
+   ECRANE FOARTE MICI: <= 375px
+   ======================================== */
+@media (max-width: 375px) {
+  body.mode-mobile .unified-wallet-modal {
+    padding: 1.2rem 0.8rem;
+    max-width: 98%;
+    width: 98%;
+    border-radius: 16px;
+  }
+
+  body.mode-mobile .network-grid {
+    gap: 0.8rem;
+    margin-top: 1.2rem;
+  }
+
+  body.mode-mobile .network-card {
+    padding: 1.2rem 0.8rem;
+    border-radius: 14px;
+  }
+
+  body.mode-mobile .network-icon-wrapper {
+    width: 60px;
+    height: 60px;
+  }
+
+  body.mode-mobile .network-icon-img {
+    width: 38px;
+    height: 38px;
+  }
+
+  body.mode-mobile .network-name {
+    font-size: 1rem;
+  }
+
+  body.mode-mobile .network-chains {
+    font-size: 0.75rem;
+  }
+
+  body.mode-mobile .modal-title {
+    font-size: 1.35rem;
+  }
+
+  body.mode-mobile .modal-subtitle {
+    font-size: 0.8rem;
+  }
+}
+
+/* ========================================
+   ECRANE EXTRA MICI: <= 320px
+   ======================================== */
+@media (max-width: 320px) {
+  body.mode-mobile .unified-wallet-modal {
+    padding: 1rem 0.6rem;
+    max-width: 100%;
+    width: 100%;
+    border-radius: 12px;
+    max-height: 95vh;
+  }
+
+  body.mode-mobile .network-grid {
+    gap: 0.7rem;
+    margin-top: 1rem;
+  }
+
+  body.mode-mobile .network-card {
+    padding: 1rem 0.7rem;
+    border-radius: 12px;
+    gap: 10px;
+  }
+
+  body.mode-mobile .network-icon-wrapper {
+    width: 55px;
+    height: 55px;
+    margin-bottom: 6px;
+  }
+
+  body.mode-mobile .network-icon-img {
+    width: 35px;
+    height: 35px;
+  }
+
+  body.mode-mobile .network-name {
+    font-size: 0.95rem;
+    letter-spacing: 0.2px;
+  }
+
+  body.mode-mobile .network-chains {
+    font-size: 0.72rem;
+    line-height: 1.3;
+  }
+
+  body.mode-mobile .modal-title {
+    font-size: 1.2rem;
+  }
+
+  body.mode-mobile .modal-subtitle {
+    font-size: 0.75rem;
+    padding: 0 0.3rem;
+  }
+
+  body.mode-mobile .close-button {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  body.mode-mobile .wallet-address {
+    font-size: 0.8rem;
+    padding: 0.4rem;
+  }
+
+  body.mode-mobile .disconnect-button {
+    padding: 10px 20px;
+    font-size: 0.85rem;
+  }
+}
+
+/* ========================================
+   LANDSCAPE MODE - 2 coloane
+   ======================================== */
+body.mode-mobile.orientation-landscape .unified-wallet-modal {
+  max-width: 85%;
+  padding: 1.2rem 1.5rem;
+  max-height: 85vh;
+}
+
+body.mode-mobile.orientation-landscape .network-grid {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+body.mode-mobile.orientation-landscape .network-card {
+  padding: 1.2rem 0.8rem;
+}
+
+body.mode-mobile.orientation-landscape .network-icon-wrapper {
+  width: 60px;
+  height: 60px;
+}
+
+body.mode-mobile.orientation-landscape .network-icon-img {
+  width: 38px;
+  height: 38px;
+}
+
+body.mode-mobile.orientation-landscape .modal-title {
+  font-size: 1.4rem;
+}
+
+body.mode-mobile.orientation-landscape .network-name {
+  font-size: 1rem;
+}
+
+body.mode-mobile.orientation-landscape .network-chains {
+  font-size: 0.75rem;
+}
+
+/* ========================================
+   OPTIMIZARE PERFORMANȚĂ
+   ======================================== */
+
+/* Low power mode - fără blur */
+body.mode-mobile.low-power .unified-wallet-modal-overlay {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: rgba(0, 0, 0, 0.95);
+}
+
+body.mode-mobile.low-power .unified-wallet-modal {
+  box-shadow: none;
+  background: rgba(10, 10, 20, 1);
+}
+
+body.mode-mobile.low-power .network-card {
+  background: rgba(255, 255, 255, 0.05);
+  transition: none;
+}
+
+body.mode-mobile.low-power .network-card:active {
+  transform: none;
+}
+
+/* Slow connection - fundal solid */
+body.mode-mobile.slow-connection .unified-wallet-modal-overlay {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+body.mode-mobile.slow-connection .network-card {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* ========================================
+   ACCESSIBILITY - Touch targets
+   ======================================== */
+
+/* Asigur că toate butoanele au minim 44x44px */
+body.mode-mobile .network-card {
+  min-height: 48px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(0, 255, 163, 0.1);
+}
+
+body.mode-mobile .close-button,
+body.mode-mobile .disconnect-button {
+  min-width: 44px;
+  min-height: 44px;
+  -webkit-tap-highlight-color: rgba(255, 0, 0, 0.1);
+}
+
+/* Prevent text selection pe touch */
+body.mode-mobile .network-card,
+body.mode-mobile .modal-title,
+body.mode-mobile .network-name {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Safe area pentru notch/cutout */
+body.mode-mobile .unified-wallet-modal {
+  padding-top: max(1.5rem, env(safe-area-inset-top));
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+

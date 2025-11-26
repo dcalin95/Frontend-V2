@@ -1,0 +1,428 @@
+/* ========================================
+   TRADING CHART - MOBILE OPTIMIZED
+   Ecrane: 320px - 768px
+   CRITICAL pentru vizualizare chart pe mobil!
+   ======================================== */
+
+/* 📱 CHART WRAPPER */
+body.mode-mobile .dex-chart-wrapper {
+  min-height: 320px; /* Optimizat pentru ecrane mici */
+  border-radius: 12px;
+  background: rgba(22, 26, 30, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  margin: 0.5rem;
+}
+
+/* 🎯 FULLSCREEN - CRITICAL pe mobil */
+body.mode-mobile .dex-chart-fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 999999 !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: #0a0e13 !important;
+  backdrop-filter: none !important;
+}
+
+body.mode-mobile.chart-fullscreen-active {
+  overflow: hidden !important;
+  position: fixed !important;
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+/* 📊 CHART HEADER - Compact */
+body.mode-mobile .dex-chart-header-modern {
+  padding: 10px 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+body.mode-mobile .dex-token-info {
+  gap: 8px;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: space-between;
+}
+
+body.mode-mobile .dex-pair-title {
+  font-size: 1.05rem; /* Redus de la 1.2rem */
+  gap: 6px;
+  line-height: 1.3;
+}
+
+body.mode-mobile .dex-badge-perp {
+  font-size: 0.65rem;
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+/* 💰 PRICE DISPLAY */
+body.mode-mobile .dex-price-display {
+  gap: 8px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+body.mode-mobile .current-price {
+  font-size: 1.15rem; /* Vizibil pe mobil */
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+body.mode-mobile .price-change {
+  font-size: 0.82rem;
+  padding: 3px 7px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* ⏱️ TIMEFRAME BUTTONS - Touch optimized */
+body.mode-mobile .dex-timeframe-selector {
+  gap: 4px;
+  flex-wrap: wrap;
+  padding: 8px 0;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+body.mode-mobile .tf-btn {
+  padding: 7px 11px;
+  font-size: 0.75rem;
+  min-width: 44px; /* Touch target */
+  min-height: 36px;
+  border-radius: 8px;
+  font-weight: 600;
+  flex: 0 0 auto;
+}
+
+body.mode-mobile .tf-btn:hover {
+  transform: none;
+}
+
+body.mode-mobile .tf-btn:active {
+  transform: scale(0.95);
+  background: rgba(139, 155, 180, 0.25);
+}
+
+body.mode-mobile .tf-btn.active {
+  background: rgba(139, 155, 180, 0.3);
+  border-color: rgba(139, 155, 180, 0.6);
+}
+
+/* 🛠️ CHART TOOLS - Compact toolbar */
+body.mode-mobile .dex-chart-tools {
+  padding: 8px 10px;
+  gap: 6px;
+  flex-wrap: wrap;
+  background: rgba(0, 0, 0, 0.25);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+body.mode-mobile .tool-group {
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+body.mode-mobile .icon-btn {
+  min-width: 40px;
+  min-height: 40px;
+  padding: 8px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body.mode-mobile .icon-btn:hover {
+  transform: none;
+}
+
+body.mode-mobile .icon-btn:active {
+  transform: scale(0.93);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+body.mode-mobile .icon-btn.active {
+  background: rgba(139, 155, 180, 0.25);
+  border-color: rgba(139, 155, 180, 0.5);
+}
+
+body.mode-mobile .icon-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* 📺 FULLSCREEN BUTTON - Prominent */
+body.mode-mobile .fullscreen-btn {
+  padding: 9px 14px;
+  font-size: 0.87rem;
+  min-height: 40px;
+  gap: 6px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+body.mode-mobile .fullscreen-btn:active {
+  transform: scale(0.96);
+}
+
+/* 📈 CHART CONTAINER */
+body.mode-mobile .dex-chart-container {
+  height: auto;
+  min-height: 250px;
+  position: relative;
+}
+
+body.mode-mobile .chart-canvas {
+  width: 100% !important;
+  height: auto !important;
+  touch-action: pan-x pan-y; /* Allow touch gestures */
+}
+
+/* ========================================
+   ECRANE FOARTE MICI: <= 375px
+   ======================================== */
+@media (max-width: 375px) {
+  body.mode-mobile .dex-chart-wrapper {
+    min-height: 280px;
+    margin: 0.4rem;
+    border-radius: 10px;
+  }
+
+  body.mode-mobile .dex-chart-header-modern {
+    padding: 8px 10px;
+  }
+
+  body.mode-mobile .dex-pair-title {
+    font-size: 0.98rem;
+  }
+
+  body.mode-mobile .current-price {
+    font-size: 1.08rem;
+  }
+
+  body.mode-mobile .price-change {
+    font-size: 0.78rem;
+    padding: 2px 6px;
+  }
+
+  body.mode-mobile .tf-btn {
+    padding: 6px 9px;
+    font-size: 0.72rem;
+    min-width: 42px;
+    min-height: 34px;
+  }
+
+  body.mode-mobile .icon-btn {
+    min-width: 38px;
+    min-height: 38px;
+    padding: 7px;
+  }
+
+  body.mode-mobile .icon-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  body.mode-mobile .fullscreen-btn {
+    padding: 8px 12px;
+    font-size: 0.83rem;
+  }
+
+  body.mode-mobile .dex-chart-container {
+    min-height: 220px;
+  }
+}
+
+/* ========================================
+   ECRANE EXTRA MICI: <= 320px
+   ======================================== */
+@media (max-width: 320px) {
+  body.mode-mobile .dex-chart-wrapper {
+    min-height: 250px;
+    margin: 0.3rem;
+    border-radius: 8px;
+  }
+
+  body.mode-mobile .dex-chart-header-modern {
+    padding: 6px 8px;
+    gap: 6px;
+  }
+
+  body.mode-mobile .dex-pair-title {
+    font-size: 0.92rem;
+  }
+
+  body.mode-mobile .dex-badge-perp {
+    font-size: 0.6rem;
+    padding: 1px 4px;
+  }
+
+  body.mode-mobile .current-price {
+    font-size: 1rem;
+  }
+
+  body.mode-mobile .price-change {
+    font-size: 0.75rem;
+    padding: 2px 5px;
+  }
+
+  body.mode-mobile .dex-timeframe-selector {
+    gap: 3px;
+    padding: 6px 0;
+  }
+
+  body.mode-mobile .tf-btn {
+    padding: 5px 8px;
+    font-size: 0.68rem;
+    min-width: 40px;
+    min-height: 32px;
+    border-radius: 6px;
+  }
+
+  body.mode-mobile .dex-chart-tools {
+    padding: 6px 8px;
+    gap: 4px;
+  }
+
+  body.mode-mobile .icon-btn {
+    min-width: 36px;
+    min-height: 36px;
+    padding: 6px;
+  }
+
+  body.mode-mobile .icon-btn svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  body.mode-mobile .fullscreen-btn {
+    padding: 7px 10px;
+    font-size: 0.8rem;
+    min-height: 36px;
+  }
+
+  body.mode-mobile .dex-chart-container {
+    min-height: 200px;
+  }
+}
+
+/* ========================================
+   LANDSCAPE MODE - Optimizare orizontală
+   ======================================== */
+body.mode-mobile.orientation-landscape .dex-chart-wrapper {
+  min-height: 220px;
+  margin: 0.3rem;
+}
+
+body.mode-mobile.orientation-landscape .dex-chart-header-modern {
+  padding: 6px 10px;
+}
+
+body.mode-mobile.orientation-landscape .dex-timeframe-selector {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+body.mode-mobile.orientation-landscape .tf-btn {
+  padding: 5px 9px;
+  font-size: 0.7rem;
+  min-height: 32px;
+}
+
+body.mode-mobile.orientation-landscape .dex-chart-tools {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+body.mode-mobile.orientation-landscape .dex-chart-container {
+  min-height: 180px;
+}
+
+/* ========================================
+   OPTIMIZARE PERFORMANȚĂ
+   ======================================== */
+
+/* Low power mode - Reduc efecte */
+body.mode-mobile.low-power .dex-chart-wrapper {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: rgba(22, 26, 30, 0.98);
+}
+
+body.mode-mobile.low-power .dex-chart-header-modern {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+body.mode-mobile.low-power .tf-btn,
+body.mode-mobile.low-power .icon-btn,
+body.mode-mobile.low-power .fullscreen-btn {
+  transition: none;
+}
+
+body.mode-mobile.low-power .tf-btn:active,
+body.mode-mobile.low-power .icon-btn:active {
+  transform: none;
+}
+
+/* Slow connection */
+body.mode-mobile.slow-connection .dex-chart-wrapper {
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* ========================================
+   ACCESSIBILITY & TOUCH
+   ======================================== */
+
+/* Touch feedback */
+body.mode-mobile .tf-btn,
+body.mode-mobile .icon-btn,
+body.mode-mobile .fullscreen-btn {
+  -webkit-tap-highlight-color: rgba(139, 155, 180, 0.15);
+  cursor: pointer;
+}
+
+/* Prevent text selection */
+body.mode-mobile .dex-pair-title,
+body.mode-mobile .current-price,
+body.mode-mobile .price-change {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Safe area pentru notch/cutout */
+body.mode-mobile .dex-chart-header-modern {
+  padding-top: max(10px, env(safe-area-inset-top));
+  padding-left: max(12px, env(safe-area-inset-left));
+  padding-right: max(12px, env(safe-area-inset-right));
+}
+
+body.mode-mobile .dex-chart-fullscreen .dex-chart-header-modern {
+  padding-top: max(12px, env(safe-area-inset-top));
+}
+
+/* ========================================
+   HIDE COMPLEX ELEMENTS pe mobil
+   ======================================== */
+
+/* Ascund funcții prea complexe pentru touch */
+body.mode-mobile .chart-drawing-mode {
+  display: none; /* Prea greu de folosit pe touch */
+}
+
+body.mode-mobile .advanced-indicators-menu {
+  display: none; /* Ocupă prea mult spațiu */
+}
+

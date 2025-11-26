@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import SmartTooltip from '../../Presale/components/SmartTooltip';
 import './DEX.css';
+import './PositionsTable.css';
 
 const PositionsTable = ({ positions, onClosePosition, balance = 142590.00 }) => {
   // State local pentru a simula prețuri live și P/L dinamic

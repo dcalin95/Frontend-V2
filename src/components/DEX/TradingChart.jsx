@@ -4,6 +4,9 @@ import axios from 'axios';
 import { Activity, RefreshCw, BarChart3, Maximize2, Minimize2 } from 'lucide-react';
 import SmartTooltip from '../../Presale/components/SmartTooltip';
 import './DEX.css';
+import './DEX.mobile.css';
+import './TradingChart.css';
+import './TradingChart.mobile.css';
 
 // Moved outside component to avoid dependency issues
 const COIN_GECKO_MAP = {
@@ -50,11 +53,116 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
     // Prevent rapid refetching if not needed, but ensure refetch on token change
     setLoading(true);
     
-    // Fallback imediat la date simulate pentru Demo robust
-    // Încercăm API-ul doar dacă nu suntem în modul demo pur, dar pentru stabilitate acum folosim Mock
-    // CoinGecko dă rate-limit foarte repede pe free tier
+    // Helper: Generate Mock Data (moved inside to avoid dependency warning)
+    const generateMockData = (days, stepSeconds) => {
+       const now = Math.floor(Date.now() / 1000);
+       const dataPoints = [];
+       const steps = Math.floor((days * 24 * 3600) / stepSeconds);
+       
+       // Dynamic Base Price based on Token
+       let price = 65000; // Default BTC
+       if (fromToken === 'ETH' || fromToken === 'WETH') price = 3500;
+       else if (fromToken === 'SOL') price = 145;
+       else if (fromToken === 'bBNB') price = 600;
+       else if (fromToken === 'USDT' || fromToken === 'USDC') price = 1;
+       else if (fromToken === 'BITS') price = 0.85;
+       else if (fromToken === 'STX') price = 2.50;
+       
+       let trend = 0; 
+
+       for(let i = steps; i > 0; i--) {
+           const time = now - (i * stepSeconds);
+           let volatility = price * (timeframe === '1M' ? 0.0008 : 0.02); 
+           
+           // Add some randomness to trend based on token so charts look different
+           const randomSeed = (fromToken.charCodeAt(0) + i) % 100;
+           trend += ((randomSeed / 50) - 1) * 0.0001; // Slight drift
+           
+           trend = Math.max(Math.min(trend, 0.01), -0.01);
+
+           let change = (Math.random() - 0.5 + trend) * volatility;
+           
+           if (timeframe === '1M' && Math.abs(change) < volatility * 0.3) {
+               change = (Math.random() > 0.5 ? 1 : -1) * volatility * (0.5 + Math.random()); 
+           }
+
+           const open = price;
+           const close = price + change;
+           
+           const highWick = Math.random() * volatility * (timeframe === '1M' ? 1.5 : 0.5);
+           const lowWick = Math.random() * volatility * (timeframe === '1M' ? 1.5 : 0.5);
+
+           const high = Math.max(open, close) + highWick;
+           const low = Math.min(open, close) - lowWick;
+           const volume = Math.random() * 1000000 * (Math.random() > 0.9 ? 5 : 1);
+           
+           dataPoints.push({ time, open, high, low, close, volume });
+           price = close;
+       }
+       return dataPoints;
+    };
+
+    const processMockData = (data) => {
+        if (!data || data.length === 0) {
+            return;
+        }
+        
+        const candles = data.map(d => ({
+            time: d.time, open: d.open, high: d.high, low: d.low, close: d.close
+        }));
+        const volumes = data.map(d => ({
+            time: d.time, value: d.volume, 
+            color: d.close >= d.open ? 'rgba(48, 195, 113, 0.5)' : 'rgba(230, 68, 77, 0.5)'
+        }));
+        
+        updateChart(candles, volumes);
+        
+        // Force fit content with a slight delay to ensure render cycle is complete
+        if (chartInstance.current) {
+           requestAnimationFrame(() => {
+               if (chartInstance.current) {
+                  chartInstance.current.timeScale().fitContent();
+               }
+           });
+        }
+    };
+
+    const processData = (prices, totalVolumes) => {
+        const candles = [];
+        const volumes = [];
+        
+        let groupSize = 1;
+        if (timeframe === '1M') groupSize = 1; 
+        else if (timeframe === '15M') groupSize = 15; 
+        else if (timeframe === '4H') groupSize = 4;
+        
+        for (let i = 0; i < prices.length; i += groupSize) {
+          const chunk = prices.slice(i, i + groupSize);
+          if (chunk.length === 0) continue;
+
+          const chunkPrices = chunk.map(p => p[1]);
+          const open = chunkPrices[0];
+          const close = chunkPrices[chunkPrices.length - 1];
+          const high = Math.max(...chunkPrices);
+          const low = Math.min(...chunkPrices);
+          const time = chunk[0][0] / 1000; 
+
+          const volChunk = totalVolumes.slice(i, i + groupSize);
+          const volSum = volChunk.reduce((acc, val) => acc + val[1], 0);
+          const vol = volSum / groupSize;
+
+          const color = close >= open ? 'rgba(48, 195, 113, 0.5)' : 'rgba(230, 68, 77, 0.5)';
+
+          candles.push({ time, open, high, low, close });
+          volumes.push({ time, value: vol, color });
+        }
+        updateChart(candles, volumes);
+    };
     
-    const useRealData = false; // Setam pe false pentru a garanta ca DEMO-ul merge perfect
+    // Toggle între date LIVE (CoinGecko API) și Mock Data
+    // ATENȚIE: CoinGecko FREE tier are rate limits (10-50 req/min)
+    // Pentru tokeni custom (BITS, STX), folosește fallback la BTC
+    const useRealData = false; // true = LIVE API | false = Mock Data pentru demo stabil
 
     const coinId = COIN_GECKO_MAP[fromToken] || 'bitcoin';
     const config = TIMEFRAME_CONFIG[timeframe];
@@ -78,9 +186,6 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
           totalVolumes = response.data.total_volumes;
       } else {
           // GENERATE UNIQUE MOCK DATA BASED ON TOKEN ID to simulate different charts
-          // Use simple hash of token name to seed the generation if possible, 
-          // or just use token specific base prices.
-          // We already handle base price in generateMockData based on token name
           throw new Error("Demo Mode: Using generated data");
       }
 
@@ -96,7 +201,8 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
     } finally {
       setLoading(false);
     }
-  }, [fromToken, timeframe]); // Depend on fromToken to trigger refresh
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fromToken, timeframe]); // chartInstance, candlestickSeries, volumeSeries sunt refs și nu trebuie în dependencies
 
   // Trigger data fetch ONLY when chart is ready and deps change
   useEffect(() => {
@@ -105,140 +211,115 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
     }
   }, [isChartReady, fetchData, fromToken, toToken]); // Explicitly add fromToken/toToken to deps
 
-  // Helper: Generate Mock Data
-  const generateMockData = (days, stepSeconds) => {
-     const now = Math.floor(Date.now() / 1000);
-     const dataPoints = [];
-     const steps = Math.floor((days * 24 * 3600) / stepSeconds);
-     
-     // Dynamic Base Price based on Token
-     let price = 65000; // Default BTC
-     if (fromToken === 'ETH' || fromToken === 'WETH') price = 3500;
-     else if (fromToken === 'SOL') price = 145;
-     else if (fromToken === 'bBNB') price = 600;
-     else if (fromToken === 'USDT' || fromToken === 'USDC') price = 1;
-     else if (fromToken === 'BITS') price = 0.85;
-     else if (fromToken === 'STX') price = 2.50;
-     
-     let trend = 0; 
-
-     for(let i = steps; i > 0; i--) {
-         const time = now - (i * stepSeconds);
-         let volatility = price * (timeframe === '1M' ? 0.0008 : 0.02); 
-         
-         // Add some randomness to trend based on token so charts look different
-         const randomSeed = (fromToken.charCodeAt(0) + i) % 100;
-         trend += ((randomSeed / 50) - 1) * 0.0001; // Slight drift
-         
-         trend = Math.max(Math.min(trend, 0.01), -0.01);
-
-         let change = (Math.random() - 0.5 + trend) * volatility;
-         
-         if (timeframe === '1M' && Math.abs(change) < volatility * 0.3) {
-             change = (Math.random() > 0.5 ? 1 : -1) * volatility * (0.5 + Math.random()); 
-         }
-
-         const open = price;
-         const close = price + change;
-         
-         const highWick = Math.random() * volatility * (timeframe === '1M' ? 1.5 : 0.5);
-         const lowWick = Math.random() * volatility * (timeframe === '1M' ? 1.5 : 0.5);
-
-         const high = Math.max(open, close) + highWick;
-         const low = Math.min(open, close) - lowWick;
-         const volume = Math.random() * 1000000 * (Math.random() > 0.9 ? 5 : 1);
-         
-         dataPoints.push({ time, open, high, low, close, volume });
-         price = close;
-     }
-     return dataPoints;
-  };
-
-  const processMockData = (data) => {
-      const candles = data.map(d => ({
-          time: d.time, open: d.open, high: d.high, low: d.low, close: d.close
-      }));
-      const volumes = data.map(d => ({
-          time: d.time, value: d.volume, 
-          color: d.close >= d.open ? 'rgba(48, 195, 113, 0.5)' : 'rgba(230, 68, 77, 0.5)'
-      }));
-      updateChart(candles, volumes);
-      
-      // Force fit content with a slight delay to ensure render cycle is complete
-      if (chartInstance.current) {
-         requestAnimationFrame(() => {
-             if (chartInstance.current) {
-                chartInstance.current.timeScale().fitContent();
-             }
-         });
-      }
-  };
-
-  const processData = (prices, totalVolumes) => {
-      const candles = [];
-      const volumes = [];
-      
-      let groupSize = 1;
-      if (timeframe === '1M') groupSize = 1; 
-      else if (timeframe === '15M') groupSize = 15; 
-      else if (timeframe === '4H') groupSize = 4;
-      
-      for (let i = 0; i < prices.length; i += groupSize) {
-        const chunk = prices.slice(i, i + groupSize);
-        if (chunk.length === 0) continue;
-
-        const chunkPrices = chunk.map(p => p[1]);
-        const open = chunkPrices[0];
-        const close = chunkPrices[chunkPrices.length - 1];
-        const high = Math.max(...chunkPrices);
-        const low = Math.min(...chunkPrices);
-        const time = chunk[0][0] / 1000; 
-
-        const volChunk = totalVolumes.slice(i, i + groupSize);
-        const volSum = volChunk.reduce((acc, val) => acc + val[1], 0);
-        const vol = volSum / groupSize;
-
-        const color = close >= open ? 'rgba(48, 195, 113, 0.5)' : 'rgba(230, 68, 77, 0.5)';
-
-        candles.push({ time, open, high, low, close });
-        volumes.push({ time, value: vol, color });
-      }
-      updateChart(candles, volumes);
-  };
-
   const updateChart = (candles, volumes) => {
-      if (candlestickSeries.current && volumeSeries.current) {
-        candlestickSeries.current.setData(candles);
-        volumeSeries.current.setData(volumes);
-        
-        if (chartInstance.current) {
-           chartInstance.current.timeScale().fitContent();
-        }
-        
-        if (candles.length > 0) {
-            lastCandleRef.current = { ...candles[candles.length - 1] };
-        }
+      if (!candlestickSeries.current || !volumeSeries.current) {
+          return;
       }
-
+      
+      if (candles.length === 0) {
+          return;
+      }
+      
+      candlestickSeries.current.setData(candles);
+      volumeSeries.current.setData(volumes);
+      
+      if (chartInstance.current) {
+         chartInstance.current.timeScale().fitContent();
+      }
+      
       if (candles.length > 0) {
-          const lastCandle = candles[candles.length - 1];
-          setCurrentPrice(lastCandle.close);
-          
-          const startPrice = candles[0].open;
-          const change = ((lastCandle.close - startPrice) / startPrice) * 100;
-          setPriceChange(change);
-
-          const allHigh = Math.max(...candles.map(c => c.high));
-          const allLow = Math.min(...candles.map(c => c.low));
-          const totalVol = volumes.reduce((acc, v) => acc + v.value, 0); 
-
-          setStats({
-            high: allHigh,
-            low: allLow,
-            vol: totalVol
-          });
+          lastCandleRef.current = { ...candles[candles.length - 1] };
       }
+
+      const lastCandle = candles[candles.length - 1];
+      setCurrentPrice(lastCandle.close);
+      
+      const startPrice = candles[0].open;
+      const change = ((lastCandle.close - startPrice) / startPrice) * 100;
+      setPriceChange(change);
+
+      const allHigh = Math.max(...candles.map(c => c.high));
+      const allLow = Math.min(...candles.map(c => c.low));
+      const totalVol = volumes.reduce((acc, v) => acc + v.value, 0); 
+
+      setStats({
+        high: allHigh,
+        low: allLow,
+        vol: totalVol
+      });
   };
+
+  // --- RESIZE CHART ON FULLSCREEN CHANGE ---
+  useEffect(() => {
+      if (!chartInstance.current || !chartContainerRef.current) return;
+      
+      // Delay pentru a aștepta Portal-ul să facă render
+      const resizeTimer = setTimeout(() => {
+          let newWidth, newHeight;
+          
+          if (isFullscreen) {
+              newWidth = window.innerWidth;
+              newHeight = window.innerHeight - 140;
+          } else {
+              newWidth = chartContainerRef.current.clientWidth || 800;
+              newHeight = chartContainerRef.current.clientHeight || 400;
+          }
+          
+          if (newWidth > 0 && newHeight > 0) {
+              chartInstance.current.applyOptions({ 
+                  width: newWidth, 
+                  height: newHeight 
+              });
+              chartInstance.current.timeScale().fitContent();
+          }
+      }, 100);
+      
+      return () => clearTimeout(resizeTimer);
+  }, [isFullscreen]);
+
+  // --- ESC KEY TO EXIT FULLSCREEN ---
+  useEffect(() => {
+      const handleEscKey = (e) => {
+          if (e.key === 'Escape' && isFullscreen) {
+              setIsFullscreen(false);
+              
+              // Cleanup
+              document.body.classList.remove('chart-fullscreen-active');
+              document.body.style.overflow = '';
+              
+              const chartSection = document.querySelector('.dex-chart-section');
+              const topSplit = document.querySelector('.dex-top-split');
+              const tradingArea = document.querySelector('.dex-trading-area');
+              const pageContainer = document.querySelector('.dex-page-container');
+              
+              if (chartSection) chartSection.style.position = '';
+              if (topSplit) topSplit.style.position = '';
+              if (tradingArea) tradingArea.style.overflow = '';
+              if (pageContainer) pageContainer.style.overflow = '';
+          }
+      };
+
+      window.addEventListener('keydown', handleEscKey);
+      return () => window.removeEventListener('keydown', handleEscKey);
+  }, [isFullscreen]);
+  
+  // --- CLEANUP ON UNMOUNT ---
+  useEffect(() => {
+      return () => {
+          document.body.classList.remove('chart-fullscreen-active');
+          document.body.style.overflow = '';
+          
+          const chartSection = document.querySelector('.dex-chart-section');
+          const topSplit = document.querySelector('.dex-top-split');
+          const tradingArea = document.querySelector('.dex-trading-area');
+          const pageContainer = document.querySelector('.dex-page-container');
+          
+          if (chartSection) chartSection.style.position = '';
+          if (topSplit) topSplit.style.position = '';
+          if (tradingArea) tradingArea.style.overflow = '';
+          if (pageContainer) pageContainer.style.overflow = '';
+      };
+  }, []);
 
   // --- LIVE PRICE UPDATE SIMULATION ---
   useEffect(() => {
@@ -387,12 +468,95 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
   }, []);
 
   const toggleFullscreen = () => {
-      setIsFullscreen(!isFullscreen);
-      setTimeout(() => {
-          if (chartInstance.current) {
-              chartInstance.current.timeScale().fitContent();
+      const newFullscreenState = !isFullscreen;
+      setIsFullscreen(newFullscreenState);
+      
+      console.log('🔍 Toggling fullscreen:', newFullscreenState);
+      
+      // Add/remove class from body AND parent containers to prevent scrolling and manage z-index
+      if (newFullscreenState) {
+          document.body.classList.add('chart-fullscreen-active');
+          document.body.style.overflow = 'hidden';
+          
+          // Find and modify parent containers directly (fallback for browsers without :has() support)
+          const chartSection = document.querySelector('.dex-chart-section');
+          const topSplit = document.querySelector('.dex-top-split');
+          const tradingArea = document.querySelector('.dex-trading-area');
+          const pageContainer = document.querySelector('.dex-page-container');
+          
+          console.log('📦 Found containers:', {
+              chartSection: !!chartSection,
+              topSplit: !!topSplit,
+              tradingArea: !!tradingArea,
+              pageContainer: !!pageContainer
+          });
+          
+          if (chartSection) {
+              chartSection.style.position = 'static';
+              chartSection.style.zIndex = '999999';
+              console.log('✅ Modified chartSection');
           }
-      }, 100);
+          if (topSplit) {
+              topSplit.style.position = 'static';
+              topSplit.style.zIndex = '999999';
+              console.log('✅ Modified topSplit');
+          }
+          if (tradingArea) {
+              tradingArea.style.overflow = 'visible';
+              tradingArea.style.zIndex = '999999';
+              console.log('✅ Modified tradingArea');
+          }
+          if (pageContainer) {
+              pageContainer.style.overflow = 'visible';
+              pageContainer.style.position = 'static';
+              console.log('✅ Modified pageContainer');
+          }
+      } else {
+          document.body.classList.remove('chart-fullscreen-active');
+          document.body.style.overflow = '';
+          
+          // Restore parent containers
+          const chartSection = document.querySelector('.dex-chart-section');
+          const topSplit = document.querySelector('.dex-top-split');
+          const tradingArea = document.querySelector('.dex-trading-area');
+          const pageContainer = document.querySelector('.dex-page-container');
+          
+          if (chartSection) chartSection.style.cssText = '';
+          if (topSplit) topSplit.style.cssText = '';
+          if (tradingArea) tradingArea.style.cssText = '';
+          if (pageContainer) pageContainer.style.cssText = '';
+          
+          console.log('✅ Restored all containers');
+      }
+      
+      // Wait for DOM update and CSS transition
+      requestAnimationFrame(() => {
+          setTimeout(() => {
+              if (chartInstance.current && chartContainerRef.current) {
+                  let newWidth, newHeight;
+                  
+                  if (newFullscreenState) {
+                      // Fullscreen - folosește dimensiunile viewport-ului
+                      newWidth = window.innerWidth;
+                      newHeight = window.innerHeight - 140; // Header + Footer
+                  } else {
+                      // Normal - folosește dimensiunile containerului
+                      newWidth = chartContainerRef.current.clientWidth;
+                      newHeight = chartContainerRef.current.clientHeight;
+                  }
+                  
+                  if (newWidth > 0 && newHeight > 0) {
+                      chartInstance.current.applyOptions({ 
+                          width: newWidth, 
+                          height: newHeight 
+                      });
+                      
+                      // Force redraw
+                      chartInstance.current.timeScale().fitContent();
+                  }
+              }
+          }, 200);
+      });
   };
 
   const formatPrice = (p) => p ? p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '---';
@@ -405,6 +569,12 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
 
   return (
     <div className={`dex-chart-wrapper ${isFullscreen ? 'dex-chart-fullscreen' : ''}`}>
+      {isFullscreen && (
+        <div className="fullscreen-indicator">
+          <span>Fullscreen Mode</span>
+          <span className="esc-hint">Press ESC to exit</span>
+        </div>
+      )}
       <div className="dex-chart-header-modern">
         <div className="dex-token-info">
             <SmartTooltip content={
@@ -466,11 +636,11 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
             </SmartTooltip>
             
             <button onClick={fetchData} className="refresh-btn" title="Refresh Data">
-                <RefreshCw size={14} className={loading ? 'spin' : ''} />
+                <RefreshCw size={16} strokeWidth={2} className={loading ? 'spin' : ''} />
             </button>
 
             <button onClick={toggleFullscreen} className="refresh-btn" title={isFullscreen ? "Exit Fullscreen (Esc)" : "Fullscreen"}>
-                {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+                {isFullscreen ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
             </button>
         </div>
       </div>
@@ -506,13 +676,13 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
         
         {loading && (
           <div className="loading-overlay">
-             <Activity className="pulse-icon" size={32} />
+             <Activity className="pulse-icon" size={36} strokeWidth={2} />
              <span>SYNCING MARKET DATA...</span>
           </div>
         )}
 
         <div className="watermark">
-           <BarChart3 size={120} />
+           <BarChart3 size={140} strokeWidth={1.5} />
         </div>
       </div>
 

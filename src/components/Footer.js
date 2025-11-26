@@ -1,5 +1,6 @@
 import React from "react";
 import "./Footer.css";
+import "./Footer.mobile.css";
 import { Link } from "react-router-dom";
 import BrandLogo from "./BrandLogo";
 import SmartTooltip from "../Presale/components/SmartTooltip"; // Import SmartTooltip

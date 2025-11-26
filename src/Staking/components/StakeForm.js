@@ -9,7 +9,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/StakeForm.css";
 import useBitsPrice from "../../Presale/prices/useBitsPrice";
-import successSfx from "../../assets/sounds/success.wav";
+import successSfx from "../../assets/sounds/success.mp3";
 
 const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
   const { walletAddress } = useContext(WalletContext);

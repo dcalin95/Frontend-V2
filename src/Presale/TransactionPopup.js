@@ -3,7 +3,7 @@ import "./TransactionPopup.css";
 import avatarGif from "../assets/popup/popup-avatar.gif";
 import backgroundGif from "../assets/popup/popupback.gif";
 import voiceMp3 from "../assets/popup/popup-sound.mp3";
-import successWav from "../assets/sounds/success.wav";
+import successWav from "../assets/sounds/success.mp3";
 import { getExplorerLink as getExplorerLinkUtil } from "../utils/getExplorerLink";
 import SmartTooltip from "./components/SmartTooltip"; // Import SmartTooltip
 

@@ -1,5 +1,6 @@
 import React from "react";
 import "./HowItWorks.css";
+import "./HowItWorks.mobile.css";
 
 const HowItWorks = () => {
   const features = [

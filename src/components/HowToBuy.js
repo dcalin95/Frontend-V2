@@ -5,6 +5,7 @@ import SmartTooltip from "../Presale/components/SmartTooltip";
 import AddTokenButton from "./AddTokenButton";
 import PurchaseProcessViz from "./PurchaseProcessViz";
 import "./HowToBuy.css";
+import "./HowToBuy.mobile.css";
 
 const HowToBuy = ({ setCurrentSection }) => {
   const navigate = useNavigate();

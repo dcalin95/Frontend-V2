@@ -3,6 +3,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { motion } from "framer-motion";
 import { Box, Typography } from "@mui/material";
 import "./TokenomicsChart.css";
+import "./TokenomicsChart.mobile.css";
 
 /**
  * Props:

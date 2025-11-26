@@ -1,5 +1,6 @@
 import React from "react";
 import "./Roadmap.css";
+import "./Roadmap.mobile.css";
 
 // Import icoane
 import bscIcon from "../assets/bsc-icon.png";

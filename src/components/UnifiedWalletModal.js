@@ -7,6 +7,7 @@ import evmIcon from '../assets/icons/evm-logo.jpg'; // Import EVM logo
 import solanaIcon from '../assets/icons/solana-logo.png'; // Import Solana logo
 import binanceLogo from '../assets/exchanges/binance.png'; // Import Binance logo
 import './UnifiedWalletModal.css';
+import './UnifiedWalletModal.mobile.css';
 
 const UnifiedWalletModal = () => {
   const { showWalletModal, setShowWalletModal } = useWallet();

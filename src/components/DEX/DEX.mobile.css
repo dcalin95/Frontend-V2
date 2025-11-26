@@ -1,0 +1,299 @@
+/* ========================================
+   DEX - MOBILE OPTIMIZED STYLES
+   Ecrane: 320px - 768px
+   ULTRA COMPLEX - Trading interface pe mobil!
+   ======================================== */
+
+/* 📱 BODY & CONTAINER - Mobil first */
+body.mode-mobile {
+  overflow-x: hidden;
+  overflow-y: auto; /* Allow scroll pe mobil */
+  height: auto;
+}
+
+body.mode-mobile .dex-page-container {
+  display: flex; /* Schimb din grid în flex stack */
+  flex-direction: column;
+  width: 100vw;
+  height: auto;
+  min-height: 100vh;
+  overflow: visible;
+  grid-template-columns: none;
+}
+
+/* 🎯 LOADER - Optimizat */
+body.mode-mobile .dex-cinematic-loader-overlay-v2 {
+  position: fixed;
+  z-index: 10000;
+}
+
+body.mode-mobile .dex-loader-title-container {
+  height: 50px;
+  margin-bottom: 20px;
+}
+
+body.mode-mobile .gravity-char {
+  font-size: 1.8rem; /* Redus de la 2.5rem */
+}
+
+/* 📊 CHARTS - Full width pe mobil */
+body.mode-mobile .dex-chart-wrapper {
+  min-height: 300px; /* Redus de la 400px */
+  border-radius: 10px;
+  margin: 0;
+}
+
+body.mode-mobile .dex-chart-fullscreen {
+  border-radius: 0 !important;
+}
+
+/* HEADER CHART - Compact */
+body.mode-mobile .dex-chart-header-modern {
+  padding: 10px 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+body.mode-mobile .dex-token-info {
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+body.mode-mobile .dex-pair-title {
+  font-size: 1rem; /* Redus de la 1.2rem */
+  gap: 6px;
+}
+
+body.mode-mobile .dex-badge-perp {
+  font-size: 0.65rem;
+  padding: 1px 4px;
+}
+
+/* PRICE DISPLAY - Mai compact */
+body.mode-mobile .dex-price-display {
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+body.mode-mobile .current-price {
+  font-size: 1.1rem;
+}
+
+body.mode-mobile .price-change {
+  font-size: 0.8rem;
+  padding: 2px 6px;
+}
+
+/* TIMEFRAME BUTTONS - Touch optimized */
+body.mode-mobile .dex-timeframe-selector {
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+body.mode-mobile .tf-btn {
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  min-width: 44px; /* Touch target */
+  min-height: 36px;
+  border-radius: 8px;
+}
+
+/* CHART TOOLS - Stack vertical pe mobil */
+body.mode-mobile .dex-chart-tools {
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+}
+
+body.mode-mobile .tool-group {
+  width: 100%;
+  justify-content: space-between;
+}
+
+body.mode-mobile .icon-btn {
+  min-width: 40px;
+  min-height: 40px;
+  padding: 8px;
+}
+
+/* 🎨 FULLSCREEN BUTTON */
+body.mode-mobile .fullscreen-btn {
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  min-height: 40px;
+}
+
+/* ========================================
+   ECRANE FOARTE MICI: <= 375px
+   ======================================== */
+@media (max-width: 375px) {
+  body.mode-mobile .gravity-char {
+    font-size: 1.5rem;
+  }
+
+  body.mode-mobile .dex-chart-wrapper {
+    min-height: 250px;
+  }
+
+  body.mode-mobile .dex-chart-header-modern {
+    padding: 8px 10px;
+  }
+
+  body.mode-mobile .dex-pair-title {
+    font-size: 0.95rem;
+  }
+
+  body.mode-mobile .current-price {
+    font-size: 1rem;
+  }
+
+  body.mode-mobile .tf-btn {
+    padding: 5px 8px;
+    font-size: 0.7rem;
+    min-width: 40px;
+    min-height: 34px;
+  }
+
+  body.mode-mobile .icon-btn {
+    min-width: 38px;
+    min-height: 38px;
+  }
+}
+
+/* ========================================
+   ECRANE EXTRA MICI: <= 320px
+   ======================================== */
+@media (max-width: 320px) {
+  body.mode-mobile .gravity-char {
+    font-size: 1.3rem;
+  }
+
+  body.mode-mobile .dex-chart-wrapper {
+    min-height: 220px;
+    border-radius: 8px;
+  }
+
+  body.mode-mobile .dex-chart-header-modern {
+    padding: 6px 8px;
+  }
+
+  body.mode-mobile .dex-pair-title {
+    font-size: 0.9rem;
+  }
+
+  body.mode-mobile .current-price {
+    font-size: 0.95rem;
+  }
+
+  body.mode-mobile .price-change {
+    font-size: 0.75rem;
+    padding: 1px 4px;
+  }
+
+  body.mode-mobile .tf-btn {
+    padding: 4px 7px;
+    font-size: 0.68rem;
+    min-width: 38px;
+    min-height: 32px;
+  }
+
+  body.mode-mobile .icon-btn {
+    min-width: 36px;
+    min-height: 36px;
+    padding: 6px;
+  }
+
+  body.mode-mobile .fullscreen-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+}
+
+/* ========================================
+   LANDSCAPE MODE
+   ======================================== */
+body.mode-mobile.orientation-landscape .dex-page-container {
+  flex-direction: row;
+}
+
+body.mode-mobile.orientation-landscape .dex-chart-wrapper {
+  min-height: 200px;
+}
+
+body.mode-mobile.orientation-landscape .dex-chart-header-modern {
+  padding: 8px 12px;
+}
+
+body.mode-mobile.orientation-landscape .tf-btn {
+  padding: 5px 8px;
+  font-size: 0.72rem;
+}
+
+/* ========================================
+   OPTIMIZARE PERFORMANȚĂ
+   ======================================== */
+
+/* Low power mode - Reduc animații */
+body.mode-mobile.low-power .dex-chart-wrapper {
+  backdrop-filter: none;
+  background: rgba(22, 26, 30, 0.95);
+}
+
+body.mode-mobile.low-power .gravity-char {
+  animation: none;
+  opacity: 1;
+  filter: none;
+}
+
+body.mode-mobile.low-power .tf-btn,
+body.mode-mobile.low-power .icon-btn {
+  transition: none;
+}
+
+/* Slow connection - Fundal solid */
+body.mode-mobile.slow-connection .dex-chart-wrapper {
+  backdrop-filter: blur(6px);
+  background: rgba(22, 26, 30, 0.85);
+}
+
+/* ========================================
+   ACCESSIBILITY - Touch targets
+   ======================================== */
+
+body.mode-mobile .tf-btn,
+body.mode-mobile .icon-btn,
+body.mode-mobile .fullscreen-btn {
+  -webkit-tap-highlight-color: rgba(139, 155, 180, 0.2);
+  cursor: pointer;
+}
+
+/* Prevent text selection */
+body.mode-mobile .dex-pair-title,
+body.mode-mobile .current-price,
+body.mode-mobile .price-change {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Safe area pentru notch */
+body.mode-mobile .dex-chart-header-modern {
+  padding-top: max(10px, env(safe-area-inset-top));
+  padding-left: max(12px, env(safe-area-inset-left));
+  padding-right: max(12px, env(safe-area-inset-right));
+}
+
+/* ========================================
+   HIDE DESKTOP-ONLY ELEMENTS
+   ======================================== */
+
+/* Ascund elemente prea complexe pentru mobil */
+body.mode-mobile .dex-advanced-indicators {
+  display: none;
+}
+
+body.mode-mobile .dex-chart-drawing-tools {
+  display: none; /* Prea complex pentru touch */
+}
+

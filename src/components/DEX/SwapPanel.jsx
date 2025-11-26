@@ -3,7 +3,9 @@ import { Settings, Info, Shield, Zap, Timer, MousePointerClick } from 'lucide-re
 import SwapRoute from './SwapRoute';
 import SmartTooltip from '../../Presale/components/SmartTooltip';
 import './DEX.css';
+import './DEX.mobile.css';
 import './SwapPanel.css';
+import './SwapPanel.mobile.css';
 
 // Realistic Market Mock Prices (Simulating an Oracle)
 const MARKET_PRICES = {
@@ -24,7 +26,7 @@ const TokenSelector = ({ tokens, selected, onSelect, exclude }) => {
         {selected ? (
           <>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <img src={selected.icon} alt={selected.symbol} style={{ width: 20, height: 20, borderRadius: '50%', objectFit: 'contain' }} />
+                <img src={selected.icon} alt={selected.symbol} style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'contain', flexShrink: 0 }} />
                 <span style={{ fontWeight: '700' }}>{selected.symbol}</span>
             </div>
           </>
@@ -53,7 +55,7 @@ const TokenSelector = ({ tokens, selected, onSelect, exclude }) => {
                 onMouseEnter={(e) => e.currentTarget.style.background = '#2a2a2e'}
                 onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
               >
-                <img src={token.icon} alt={token.symbol} style={{ width: 24, height: 24, borderRadius: '50%', objectFit: 'contain' }} />
+                <img src={token.icon} alt={token.symbol} style={{ width: 22, height: 22, borderRadius: '50%', objectFit: 'contain', flexShrink: 0 }} />
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <span style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>{token.symbol}</span>
                   <span style={{ fontSize: '0.7rem', color: '#888' }}>{token.name}</span>
@@ -155,12 +157,18 @@ const SwapPanel = ({ tokens, balances, payToken, setPayToken, receiveToken, setR
                             background: 'rgba(0, 255, 163, 0.1)',
                             border: '1px solid rgba(0, 255, 163, 0.3)',
                             borderRadius: '8px',
-                            padding: '6px',
+                            padding: '7px',
+                            width: '34px',
+                            height: '34px',
                             cursor: 'pointer',
                             color: '#00FFA3',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
                             boxShadow: '0 0 15px rgba(0, 255, 163, 0.15)',
-                            transition: 'all 0.3s ease'
+                            transition: 'all 0.3s ease',
+                            lineHeight: '1',
+                            flexShrink: '0'
                         }}
                         onMouseEnter={(e) => {
                             e.currentTarget.style.transform = 'rotate(90deg) scale(1.1)';
@@ -171,7 +179,7 @@ const SwapPanel = ({ tokens, balances, payToken, setPayToken, receiveToken, setR
                             e.currentTarget.style.background = 'rgba(0, 255, 163, 0.1)';
                         }}
                     >
-                        <Settings size={22} />
+                        <Settings size={20} strokeWidth={2} />
                     </button>
                 </SmartTooltip>
             </div>
@@ -210,7 +218,7 @@ const SwapPanel = ({ tokens, balances, payToken, setPayToken, receiveToken, setR
                     • Stablecoins: Use 0.1%\n
                     • AI Auto: Recommends optimal setting`
                 }>
-                    <div className="dex-setting-title"><MousePointerClick size={14} /> Slippage Tolerance</div>
+                    <div className="dex-setting-title"><MousePointerClick size={16} strokeWidth={2} /> Slippage Tolerance</div>
                 </SmartTooltip>
                 <div className="dex-setting-options">
                   {[0.1, 0.5, 1.0].map((val) => (
@@ -235,7 +243,7 @@ const SwapPanel = ({ tokens, balances, payToken, setPayToken, receiveToken, setR
               {/* Deadline */}
               <div className="dex-setting-group">
                 <SmartTooltip content={`TRANSACTION DEADLINE\nYour swap will revert if pending for longer than this time to protect you from bad rates.`}>
-                    <div className="dex-setting-title"><Timer size={14} /> Transaction Deadline</div>
+                    <div className="dex-setting-title"><Timer size={16} strokeWidth={2} /> Transaction Deadline</div>
                 </SmartTooltip>
                 <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
                   <input 
@@ -261,7 +269,7 @@ const SwapPanel = ({ tokens, balances, payToken, setPayToken, receiveToken, setR
                      • Zero front-running guarantee`
                  }>
                     <div className="dex-toggle-label">
-                        <Shield size={16} color="#00FFA3" />
+                        <Shield size={18} strokeWidth={2} color="#00FFA3" />
                         <div>
                             <span style={{display:'block', fontWeight:'600', color:'#fff'}}>MEV Shield</span>
                             <span style={{fontSize:'0.7rem', color:'#666'}}>Private Tx Routing</span>
@@ -285,7 +293,7 @@ const SwapPanel = ({ tokens, balances, payToken, setPayToken, receiveToken, setR
                      • Faster execution, higher risk`
                  }>
                     <div className="dex-toggle-label">
-                        <Zap size={16} color="#E6444D" />
+                        <Zap size={18} strokeWidth={2} color="#E6444D" />
                         <div>
                             <span style={{display:'block', fontWeight:'600', color:'#fff'}}>Expert Mode</span>
                             <span style={{fontSize:'0.7rem', color:'#666'}}>Skip Confirmations</span>
