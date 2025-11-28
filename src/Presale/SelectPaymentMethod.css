@@ -1,4 +1,4 @@
-/* === Container Token Selector === SOLANA/AI STYLE */
+/* === Container Token Selector === AI SONNET STYLE */
 .token-selector {
   background: transparent;
   padding: 0;
@@ -38,117 +38,279 @@
   }
 }
 
-/* === Titlu === SOLANA/AI STYLE */
+@keyframes iconGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 255, 163, 0.5), 
+                0 0 40px rgba(220, 31, 255, 0.3),
+                0 8px 30px rgba(0, 0, 0, 0.5),
+                inset 0 0 15px rgba(255, 255, 255, 0.15);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(0, 255, 163, 0.7), 
+                0 0 70px rgba(220, 31, 255, 0.5),
+                0 12px 40px rgba(0, 0, 0, 0.6),
+                inset 0 0 25px rgba(255, 255, 255, 0.2);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes rotate3D {
+  0% { transform: perspective(500px) rotateY(0deg); }
+  100% { transform: perspective(500px) rotateY(360deg); }
+}
+
+/* === Titlu === AI SONNET STYLE */
 .token-selector h2 {
   font-family: 'Orbitron', 'Space Grotesk', sans-serif;
   font-weight: 700;
-  margin-bottom: 12px;
-  font-size: 1.4rem;
+  margin-bottom: 28px;
+  font-size: 1.6rem;
   animation: solanaPulseSM 3s ease-in-out infinite, floatSoftSM 9s ease-in-out infinite;
+  letter-spacing: 1px;
 }
 
-/* === Grid de butoane === */
-.token-grid {
+/* === Tab-uri Chain (EVM/Solana/Fiat) === AI SONNET STYLE */
+.chain-toggle {
   display: flex;
+  gap: 14px;
+  justify-content: center;
+  margin-bottom: 32px;
   flex-wrap: wrap;
-  gap: 12px;
-  justify-content: center;
-  margin-top: 12px;
-}
-
-/* === Buton Token === SOLANA/AI STYLE */
-.token-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-
-  padding: 12px 16px;
-  font-weight: 700;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.95rem;
-
-  background: transparent; /* 🔙 TRANSPARENT */
-  color: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: none;
-}
-
-/* === Active & Hover === SOLANA/AI STYLE */
-.token-button.active,
-.token-button:hover {
-  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
-  color: #000000;
-  transform: scale(1.05) translateY(-2px);
-  box-shadow: 0 0 15px rgba(0, 255, 163, 0.4), 0 0 30px rgba(220, 31, 255, 0.2);
-  border-color: rgba(0, 255, 163, 0.3);
-}
-
-@media (max-width: 768px) {
-  .token-grid {
-    justify-content: center;
-    gap: 10px;
-  }
-
-  .token-button {
-    width: 30%;
-    min-width: 80px;
-    max-width: 100px;
-    font-size: 0.75rem;
-    padding: 10px;
-    flex-direction: column; /* Icon deasupra textului */
-  }
-
-  .token-icon {
-    width: 24px;
-    height: 24px;
-    margin-bottom: 6px;
-  }
-}
-
-.chain-tabs {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  margin-bottom: 20px;
 }
 
 .chain-tab {
-  background: transparent; /* 🔙 TRANSPARENT */
-  color: rgba(255, 255, 255, 0.9);
-  padding: 8px 20px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  font-size: 1rem;
+  font-weight: 700;
+  background: rgba(10, 10, 20, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.chain-tab::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.chain-tab:hover::before {
+  left: 100%;
+}
+
+.chain-tab:hover {
+  border-color: rgba(0, 255, 163, 0.5);
+  box-shadow: 0 0 25px rgba(0, 255, 163, 0.4),
+              0 0 50px rgba(220, 31, 255, 0.3),
+              0 10px 35px rgba(0, 0, 0, 0.5);
+  transform: translateY(-4px) scale(1.05);
+}
+
+.chain-tab.active {
+  background: linear-gradient(135deg, rgba(0, 255, 163, 0.2), rgba(220, 31, 255, 0.2));
+  border: 2px solid transparent;
+  border-image: linear-gradient(135deg, #00FFA3, #DC1FFF) 1;
+  color: #ffffff;
+  box-shadow: 0 0 30px rgba(0, 255, 163, 0.6),
+              0 0 60px rgba(220, 31, 255, 0.4),
+              0 10px 40px rgba(0, 0, 0, 0.6),
+              inset 0 0 25px rgba(255, 255, 255, 0.15);
+  animation: iconGlow 2.5s ease-in-out infinite;
+}
+
+.chain-tab img,
+.chain-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+  transition: transform 0.3s ease;
+}
+
+.chain-tab:hover img,
+.chain-tab:hover .chain-icon {
+  transform: rotate(360deg) scale(1.1);
+}
+
+/* === Grid de butoane Token === AI SONNET STYLE */
+.token-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: center;
+  margin-top: 20px;
+  perspective: 1000px;
+}
+
+/* === Buton Token === AI SONNET GLASSMORPHISM STYLE */
+.token-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 24px;
   font-weight: 700;
   font-family: 'Inter', sans-serif;
+  font-size: 1.05rem;
+  
+  background: rgba(10, 10, 25, 0.5);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  color: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3),
+              inset 0 0 15px rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+/* Glow effect cu pseudo-element */
+.token-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 255, 163, 0.4), transparent);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+  z-index: 0;
+}
+
+.token-button:hover::after {
+  width: 200%;
+  height: 200%;
+}
+
+.token-button img,
+.token-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
   transition: all 0.3s ease;
-  box-shadow: none;
+  z-index: 1;
+  position: relative;
 }
 
-.chain-tab--stripe {
-  border-color: rgba(99, 91, 255, 0.45);
+.token-button span {
+  z-index: 1;
+  position: relative;
 }
 
-.chain-tab.active,
-.chain-tab:hover {
-  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+/* === Active & Hover === AI SONNET STYLE */
+.token-button:hover {
+  background: linear-gradient(135deg, rgba(0, 255, 163, 0.25), rgba(220, 31, 255, 0.25));
+  border: 2px solid transparent;
+  border-image: linear-gradient(135deg, #00FFA3, #DC1FFF) 1;
+  color: #ffffff;
+  transform: translateY(-5px) scale(1.08);
+  box-shadow: 0 0 35px rgba(0, 255, 163, 0.6), 
+              0 0 70px rgba(220, 31, 255, 0.4),
+              0 12px 40px rgba(0, 0, 0, 0.6),
+              inset 0 0 25px rgba(255, 255, 255, 0.2);
+}
+
+.token-button:hover img,
+.token-button:hover .token-icon {
+  transform: rotate(360deg) scale(1.2);
+  filter: drop-shadow(0 0 20px rgba(0, 255, 163, 1));
+}
+
+.token-button.active {
+  background: linear-gradient(135deg, rgba(0, 255, 163, 0.3), rgba(220, 31, 255, 0.3));
+  border: 2px solid transparent;
+  border-image: linear-gradient(135deg, #00FFA3, #DC1FFF) 1;
   color: #000000;
-  box-shadow: 0 0 15px rgba(0, 255, 163, 0.4), 0 0 30px rgba(220, 31, 255, 0.2);
-  border-color: rgba(0, 255, 163, 0.3);
-  transform: translateY(-2px) scale(1.05);
+  font-weight: 800;
+  box-shadow: 0 0 40px rgba(0, 255, 163, 0.7), 
+              0 0 80px rgba(220, 31, 255, 0.5),
+              0 12px 45px rgba(0, 0, 0, 0.7),
+              inset 0 0 30px rgba(255, 255, 255, 0.25);
+  animation: iconGlow 2.5s ease-in-out infinite;
 }
-.chain-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 8px;
-  filter: drop-shadow(0 0 5px rgba(0, 255, 163, 0.4));
+
+.token-button.active img,
+.token-button.active .token-icon {
+  transform: scale(1.25);
+  filter: drop-shadow(0 0 25px rgba(0, 255, 163, 1)) 
+          drop-shadow(0 0 35px rgba(220, 31, 255, 0.8));
+}
+
+/* === Mobile Responsive === */
+@media (max-width: 768px) {
+  .token-selector h2 {
+    font-size: 1.3rem;
+    margin-bottom: 16px;
+  }
+
+  .chain-toggle {
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+
+  .chain-tab {
+    padding: 12px 20px;
+    font-size: 0.9rem;
+  }
+
+  .chain-tab img,
+  .chain-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .token-grid {
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .token-button {
+    width: calc(33.33% - 8px);
+    min-width: 100px;
+    padding: 14px 18px;
+    font-size: 0.95rem;
+  }
+
+  .token-button img,
+  .token-icon {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* === Extra Small Mobile === */
+@media (max-width: 375px) {
+  .token-button {
+    width: calc(50% - 6px);
+    min-width: 90px;
+    padding: 12px 14px;
+    font-size: 0.85rem;
+  }
+
+  .token-button img,
+  .token-icon {
+    width: 24px;
+    height: 24px;
+  }
 }
