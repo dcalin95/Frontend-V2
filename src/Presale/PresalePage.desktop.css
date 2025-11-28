@@ -79,7 +79,7 @@
   pointer-events: none;
   position: fixed;
   inset: 0;
-  z-index: 1;
+  z-index: 0; /* Changed from 1 - must be BELOW content */
   overflow: hidden;
 }
 
@@ -166,7 +166,8 @@ canvas[class*="background"],
   width: 100%;
   max-width: 1280px;
   position: relative;
-  overflow-x: hidden;
+  overflow-x: visible; /* Changed from hidden - allow overflow for tooltips */
+  overflow-y: visible; /* Allow vertical overflow too */
   align-items: stretch;
 }
 
@@ -210,7 +211,7 @@ canvas[class*="background"],
   -webkit-backdrop-filter: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* 🔲 Umbră foarte subtilă */
   position: relative;
-  overflow: hidden;
+  overflow: visible; /* Changed from hidden - allow tooltips and content overflow */
   display: flex;
   flex-direction: column;
   height: 100%;
