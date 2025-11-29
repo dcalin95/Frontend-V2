@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 const formatBITS = (value) => {
   try {
     const num = typeof value === "string" ? parseFloat(value) : Number(value);
-    return isNaN(num) ? "0.0000 $BITS" : `${num.toFixed(4)} $BITS`;
+    return isNaN(num) ? "0.0 $BITS" : `${num.toFixed(1)} $BITS`;
   } catch (err) {
     console.warn("Error formatting BITS:", err.message);
     return "0.0000 $BITS";

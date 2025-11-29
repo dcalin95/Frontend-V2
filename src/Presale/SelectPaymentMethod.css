@@ -159,27 +159,29 @@
 
 /* === Buton Token === AI SONNET GLASSMORPHISM STYLE */
 .token-button {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 16px 24px;
-  font-weight: 700;
-  font-family: 'Inter', sans-serif;
-  font-size: 1.05rem;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  padding: 16px 24px !important;
+  font-weight: 700 !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 1.05rem !important;
+  min-width: 140px !important;
   
-  background: rgba(10, 10, 25, 0.5);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  color: rgba(255, 255, 255, 0.9);
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3),
-              inset 0 0 15px rgba(255, 255, 255, 0.05);
-  overflow: hidden;
+  background: linear-gradient(135deg, rgba(0, 255, 163, 0.15), rgba(220, 31, 255, 0.15)) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  border: 2px solid rgba(0, 255, 163, 0.3) !important;
+  border-radius: 16px !important;
+  cursor: pointer !important;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 0 20px rgba(0, 255, 163, 0.3),
+              0 4px 20px rgba(0, 0, 0, 0.3),
+              inset 0 0 15px rgba(255, 255, 255, 0.05) !important;
+  overflow: hidden !important;
 }
 
 /* Glow effect cu pseudo-element */

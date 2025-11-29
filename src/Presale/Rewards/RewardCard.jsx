@@ -64,7 +64,7 @@ const RewardCard = ({ provider, userAddress, contractInfo, label }) => {
       ) : rewardAmount !== null ? (
         <>
           <p>
-            <strong>Available:</strong> {rewardAmount.toFixed(4)} BITS
+            <strong>Available:</strong> {rewardAmount.toFixed(1)} BITS
           </p>
           <button
             onClick={handleClaim}

@@ -79,7 +79,7 @@
   pointer-events: none;
   position: fixed;
   inset: 0;
-  z-index: 0; /* Changed from 1 - must be BELOW content */
+  z-index: -1; /* MUST be BEHIND everything */
   overflow: hidden;
 }
 
@@ -166,8 +166,7 @@ canvas[class*="background"],
   width: 100%;
   max-width: 1280px;
   position: relative;
-  overflow-x: visible; /* Changed from hidden - allow overflow for tooltips */
-  overflow-y: visible; /* Allow vertical overflow too */
+  overflow: visible; /* Allow content to overflow naturally */
   align-items: stretch;
 }
 
@@ -183,7 +182,13 @@ canvas[class*="background"],
   height: 100%;
 }
 
-.grid-select   { grid-area: select; }
+.grid-select   { 
+  grid-area: select; 
+  height: fit-content !important; /* 🎯 DOAR cât conținutul SelectPaymentMethod! */
+  min-height: unset !important; /* 🎯 Fără minim forțat! */
+  align-self: start !important; /* 🎯 Aliniere la TOP, fără stretch! */
+}
+
 .grid-payment  { grid-area: payment; }
 .grid-panel    { grid-area: panel; }
 .grid-claim    { grid-area: referral; }

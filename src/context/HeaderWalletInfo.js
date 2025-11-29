@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useWallet } from "../context/UnifiedWalletContext";
 import { useGeoLocation } from "../context/GeoLocationContext"; // 🌍 Import Geo
 import UnifiedWalletModal from "../components/UnifiedWalletModal";
+import SwapModal from "../components/SwapModal";
+import HistoryModal from "../components/HistoryModal";
 import axios from "axios"; // For API calls
 import "./HeaderWalletInfo.css";
 
@@ -113,6 +115,8 @@ const HeaderWalletInfo = () => {
   }, []);
 
   const [showWalletBox, setShowWalletBox] = useState(false);
+  const [swapModalOpen, setSwapModalOpen] = useState(false);
+  const [historyModalOpen, setHistoryModalOpen] = useState(false);
 
   // 🌍 Auto-Register User Location on Connect
   useEffect(() => {
@@ -267,6 +271,24 @@ const HeaderWalletInfo = () => {
                 </span>
               </div>
               
+              {/* Quick Actions Buttons - NEW */}
+              <div className="wallet-quick-actions">
+                <button 
+                  className="wallet-action-btn history-btn" 
+                  onClick={() => { setHistoryModalOpen(true); setShowWalletBox(false); }}
+                >
+                  <i className="fas fa-history"></i>
+                  <span>View History</span>
+                </button>
+                <button 
+                  className="wallet-action-btn swap-btn" 
+                  onClick={() => { setSwapModalOpen(true); setShowWalletBox(false); }}
+                >
+                  <i className="fas fa-right-left"></i>
+                  <span>Swap Tokens</span>
+                </button>
+              </div>
+              
               <button className="disconnect-button" onClick={disconnectWallet}>
                 🔓 Disconnect
               </button>
@@ -284,6 +306,10 @@ const HeaderWalletInfo = () => {
         </div>
       )}
     </div>
+    
+    {/* Modals */}
+    <SwapModal isOpen={swapModalOpen} onClose={() => setSwapModalOpen(false)} />
+    <HistoryModal isOpen={historyModalOpen} onClose={() => setHistoryModalOpen(false)} />
     </>
   );
 };

@@ -70,6 +70,8 @@ export const useHybridPresaleState = () => {
   // Combine CellManager + Database data
   const hybridState = {
     // 📊 FROM CELLMANAGER (Blockchain) - PRIORITY
+    // ⚠️⚠️⚠️ WARNING: Acest cod STRICĂ prețul înmulțind cu 100!
+    // ⚠️ NU folosi acest price pentru afișare! Folosește cellManagerData.currentPrice DIRECT!
     price: cellManagerData.currentPrice && !cellManagerData.loading && cellManagerData.currentPrice > 0 ? 
            Math.round(cellManagerData.currentPrice * 100) : 
            6, // Fallback to $0.06 if CellManager not configured

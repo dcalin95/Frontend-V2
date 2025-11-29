@@ -1,0 +1,458 @@
+/* ==========================================================================
+   📜 HISTORY MODAL - GEMINI 3 / SOLANA AI AESTHETIC
+   Status: Ultra-Premium, Deep Black, Razor Sharp
+   ========================================================================== */
+
+/* Overlay - Deep Focus */
+.history-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  z-index: 2000;
+  display: flex;
+  align-items: flex-start; /* Top align like SwapModal */
+  justify-content: center;
+  padding-top: 140px; /* Consistent Offset */
+  padding-bottom: 40px;
+  animation: fadeIn 0.3s ease-out;
+  overflow-y: auto;
+}
+
+/* Modal Content - THE MONOLITH */
+.history-modal-content {
+  background: #020406; /* Deep Void Black */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 520px; /* Slightly wider than Swap for lists */
+  box-shadow: 
+    0 0 0 1px rgba(0, 0, 0, 1),
+    0 40px 80px -20px rgba(0, 0, 0, 0.9),
+    0 0 40px rgba(102, 126, 234, 0.05); /* Subtle Blue Glow for History */
+  animation: slideUp 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  /* Typography Settings */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  max-height: 70vh; /* Limit height */
+}
+
+/* Header */
+.history-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 24px 16px 24px;
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.history-modal-branding {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.history-modal-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.history-modal-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.history-modal-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: -0.02em;
+}
+
+.history-modal-header h2 svg {
+  width: 22px;
+  height: 22px;
+  color: #667eea; /* Blue for History */
+  filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.4));
+}
+
+.history-modal-subtitle {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.history-modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.history-modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+/* Body */
+.history-modal-body {
+  padding: 0; /* Reset padding for scroll area */
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Wallet Info Bar */
+.history-wallet-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.history-wallet-address {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Roboto Mono', monospace;
+  color: #a0aec0;
+  font-size: 13px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.history-wallet-address i {
+  color: #667eea;
+}
+
+.history-copy-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.history-copy-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.history-view-bscscan {
+  font-size: 12px;
+  color: #667eea;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.history-view-bscscan:hover {
+  color: #7f9cf5;
+  text-decoration: underline;
+}
+
+/* Filters */
+.history-filters {
+  display: flex;
+  gap: 8px;
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  overflow-x: auto;
+}
+
+.history-filter-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.history-filter-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.history-filter-btn.active {
+  background: rgba(102, 126, 234, 0.15);
+  border-color: #667eea;
+  color: #667eea;
+}
+
+/* Transactions List - Scrollable Area */
+.history-transactions {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Scrollbar Customization */
+.history-transactions::-webkit-scrollbar {
+  width: 6px;
+}
+.history-transactions::-webkit-scrollbar-track {
+  background: transparent;
+}
+.history-transactions::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+.history-transactions::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Transaction Item Card */
+.history-tx-item {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all 0.2s;
+}
+
+.history-tx-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  transform: translateX(4px);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.history-tx-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.history-tx-icon.received {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.history-tx-icon.sent {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.history-tx-icon.swap {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+}
+
+.history-tx-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.history-tx-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.history-tx-type {
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+}
+
+.history-tx-amount {
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.history-tx-amount.received { color: #10b981; }
+.history-tx-amount.sent { color: #ef4444; }
+.history-tx-amount.swap { color: #fff; }
+
+.history-tx-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.history-tx-address {
+  font-family: 'Roboto Mono', monospace;
+}
+
+.history-tx-link {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.3);
+  transition: all 0.2s;
+}
+
+.history-tx-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* Empty State */
+.history-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.history-empty svg {
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.history-empty h3 {
+  margin: 0 0 8px 0;
+  color: #fff;
+  font-size: 16px;
+}
+
+.history-empty p {
+  margin: 0;
+  font-size: 13px;
+}
+
+/* Marketing Footer */
+.history-marketing {
+  padding: 16px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 0 0 24px 24px;
+}
+
+.history-marketing-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.history-marketing-item i {
+  color: #667eea;
+  font-size: 14px;
+}
+
+.history-marketing-item div strong {
+  display: block;
+  font-size: 11px;
+  color: #fff;
+}
+
+.history-marketing-item div p {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+}
+
+.history-powered-by {
+  text-align: center;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.2);
+  padding-bottom: 12px;
+  margin-top: -8px;
+}
+
+.history-dot {
+  margin: 0 6px;
+  color: #667eea;
+}
+
+/* Loading State */
+.history-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: rgba(255, 255, 255, 0.5);
+  gap: 12px;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .history-modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+  
+  .history-modal-content {
+    border-radius: 24px 24px 0 0;
+    max-width: 100%;
+    max-height: 85vh;
+    animation: slideUpMobile 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  @keyframes slideUpMobile {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .history-marketing {
+    grid-template-columns: 1fr;
+  }
+}

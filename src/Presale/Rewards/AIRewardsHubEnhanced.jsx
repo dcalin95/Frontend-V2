@@ -69,7 +69,7 @@ export default function AIRewardsHubEnhanced({ walletAddress }) {
       addNotification({
         id: Date.now(),
         type: "reward",
-        message: `🎉 New reward available: +${newReward.toFixed(2)} BITS!`,
+        message: `🎉 New reward available: +${newReward.toFixed(1)} BITS!`,
         timestamp: new Date().toISOString()
       });
     }

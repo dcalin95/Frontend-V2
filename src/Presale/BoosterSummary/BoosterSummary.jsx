@@ -32,14 +32,14 @@ const BoosterSummary = () => {
   };
 
   const formatBITS = (value) => {
-    if (value === null || isNaN(value)) return "0.00 $BITS";
-    return `${Number(value).toFixed(2)} $BITS`;
+    if (value === null || isNaN(value)) return "0.0 $BITS";
+    return `${Number(value).toFixed(1)} $BITS`;
   };
 
   // AI-Style data formatting with animations
   const formatBITSWithAnimation = (value) => {
-    if (value === null || isNaN(value)) return "0.00 $BITS";
-    const formatted = `${Number(value).toFixed(2)} $BITS`;
+    if (value === null || isNaN(value)) return "0.0 $BITS";
+    const formatted = `${Number(value).toFixed(1)} $BITS`;
     return (
       <span className={`${styles.animatedValue} ${pulseEffect ? styles.pulse : ''}`}>
         {formatted}

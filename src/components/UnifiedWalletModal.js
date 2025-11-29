@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useWallet as useSolanaWalletAdapter } from '@solana/wallet-adapter-react';
 import { useWallet } from '../context/UnifiedWalletContext';
+import { prepareForConnection, forceDisconnectAll, handleConnectionError } from '../utils/walletConnectionFix';
 import walletConnectLogo from '../assets/icons/wallet-connect-logo.png'; 
 import evmIcon from '../assets/icons/evm-logo.jpg'; // Import EVM logo
 import solanaIcon from '../assets/icons/solana-logo.png'; // Import Solana logo
@@ -15,21 +16,42 @@ const UnifiedWalletModal = () => {
   const { select: selectSolanaWallet, wallets: solanaWallets } = useSolanaWalletAdapter();
   
   const [selectedNetwork, setSelectedNetwork] = useState(null); // "EVM" | "SOLANA" | null
+  const [isClearing, setIsClearing] = useState(false);
+  const [error, setError] = useState(null);
 
   if (!showWalletModal) return null;
 
   const handleClose = () => {
     setShowWalletModal(false);
     setSelectedNetwork(null);
+    setError(null);
   };
 
   const handleEvmConnect = async () => {
-    setShowWalletModal(false);
-    await openEvmModal();
+    try {
+      setError(null);
+      // 🔧 FIX: Prepare connection before opening modal
+      await prepareForConnection();
+      
+      setShowWalletModal(false);
+      await openEvmModal();
+    } catch (err) {
+      console.error('[WalletModal] EVM connection error:', err);
+      const errorInfo = await handleConnectionError(err);
+      
+      if (errorInfo.retry) {
+        setError('EVM connection failed. Try "Clear Cache & Retry" button below.');
+      } else if (errorInfo.reason === 'user_rejected') {
+        setShowWalletModal(false);
+      } else {
+        setError('EVM connection failed. Please try again.');
+      }
+    }
   };
 
   const handleSolanaConnect = async (walletName) => {
     try {
+      setError(null);
       const wallet = solanaWallets.find(w => w.adapter.name === walletName);
       if (wallet) {
         console.log("Connecting to Solana wallet:", walletName);
@@ -153,6 +175,80 @@ const UnifiedWalletModal = () => {
             </div>
           </>
         )}
+
+        {/* 🔧 Error message */}
+        {error && (
+          <div className="wallet-error-box" style={{
+            background: 'rgba(255, 100, 100, 0.1)',
+            border: '1px solid rgba(255, 100, 100, 0.3)',
+            borderRadius: '8px',
+            padding: '12px',
+            marginTop: '16px',
+            color: '#ff6464',
+            fontSize: '0.9rem',
+            textAlign: 'center'
+          }}>
+            ⚠️ {error}
+          </div>
+        )}
+
+        {/* 🔧 Clear Cache & Retry Button */}
+        <button
+          onClick={async () => {
+            setIsClearing(true);
+            setError(null);
+            
+            try {
+              await forceDisconnectAll();
+              await new Promise(resolve => setTimeout(resolve, 500));
+              
+              // Retry based on selected network
+              if (selectedNetwork === 'EVM') {
+                await handleEvmConnect();
+              } else if (!selectedNetwork) {
+                // If on main screen, just clear
+                setError(null);
+              }
+            } catch (err) {
+              console.error('[WalletModal] Clear & retry error:', err);
+              setError('Still unable to connect. Please refresh the page and try again.');
+            } finally {
+              setIsClearing(false);
+            }
+          }}
+          disabled={isClearing}
+          className="clear-cache-btn"
+          style={{
+            width: '100%',
+            marginTop: '16px',
+            padding: '12px',
+            background: 'rgba(255, 200, 100, 0.1)',
+            border: '1px solid rgba(255, 200, 100, 0.3)',
+            borderRadius: '8px',
+            color: '#ffc864',
+            fontSize: '0.9rem',
+            cursor: isClearing ? 'wait' : 'pointer',
+            transition: 'all 0.2s ease',
+            fontWeight: '600'
+          }}
+          onMouseEnter={(e) => {
+            if (!isClearing) {
+              e.target.style.background = 'rgba(255, 200, 100, 0.2)';
+              e.target.style.borderColor = 'rgba(255, 200, 100, 0.5)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = 'rgba(255, 200, 100, 0.1)';
+            e.target.style.borderColor = 'rgba(255, 200, 100, 0.3)';
+          }}
+        >
+          {isClearing ? '🔄 Clearing cache...' : '🔧 Clear Cache & Retry Connection'}
+        </button>
+
+        {/* Info text */}
+        <p style={{fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', marginTop: '12px', textAlign: 'center'}}>
+          💡 Having connection issues? Click "Clear Cache & Retry" above
+        </p>
       </div>
     </div>
   );

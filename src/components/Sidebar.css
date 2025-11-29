@@ -1,0 +1,559 @@
+.sidebar {
+  position: fixed !important;
+  left: 0 !important;
+  top: calc(var(--header-height, 80px) + 16px) !important;
+  z-index: 999 !important;
+  padding: 20px 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+  width: 240px !important;
+  max-height: calc(100vh - (var(--header-height, 80px) + 56px)) !important;
+  overflow-y: auto !important;
+  padding-top: 20px !important;
+  overflow-x: visible !important;
+  background: transparent !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Asigură că butonul Ambassador este întotdeauna vizibil */
+.sidebar > .sidebar-ambassador-btn:first-child,
+.sidebar > a.sidebar-ambassador-btn:first-child,
+.sidebar > Link.sidebar-ambassador-btn:first-child {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 10 !important;
+  min-height: 40px !important;
+  min-width: 200px !important;
+}
+
+.sidebar-ambassador-btn,
+.sidebar-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.22s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  justify-content: flex-start;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.sidebar-ambassador-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  order: -1; /* Mută butonul la început */
+  margin-bottom: 4px; /* Adaugă spațiu după el */
+  display: flex !important; /* Forțează afișarea */
+  visibility: visible !important; /* Forțează vizibilitatea */
+  opacity: 1 !important; /* Forțează opacitatea */
+  position: relative !important; /* Asigură poziționarea */
+  z-index: 1 !important; /* Asigură că este deasupra */
+}
+
+.sidebar-ambassador-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.sidebar-join-btn {
+  background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-join-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+
+.sidebar-telegram-btn {
+  background: linear-gradient(135deg, #0088cc 0%, #229ED9 100%);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-telegram-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 136, 204, 0.4);
+}
+
+.sidebar-ambassador-btn i,
+.sidebar-btn i {
+  font-size: 15px;
+}
+
+/* Unlock Access */
+.sidebar-unlock-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-unlock-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(56, 189, 248, 0.55);
+  background: linear-gradient(135deg, rgba(15, 118, 255, 0.28), rgba(167, 139, 250, 0.22), rgba(14, 165, 233, 0.28));
+  color: #f8fafc;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.25px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 0 18px rgba(59, 130, 246, 0.35), 0 0 0 1px rgba(94, 234, 212, 0.15);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.sidebar-unlock-btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(56, 189, 248, 0.85);
+  box-shadow: 0 18px 36px rgba(14, 165, 233, 0.35), 0 0 0 1px rgba(94, 234, 212, 0.25);
+}
+
+.sidebar-unlock-icon {
+  width: 32px;
+  height: 20px;
+  display: block;
+  object-fit: cover;
+  border-radius: 6px;
+  filter: drop-shadow(0 8px 18px rgba(14, 165, 233, 0.38));
+}
+
+.sidebar-unlock-link {
+  font-size: 11px;
+  color: #bae6fd;
+  text-decoration: none;
+  letter-spacing: 0.25px;
+}
+
+.sidebar-unlock-link:hover {
+  color: #e0f2fe;
+  text-decoration: underline;
+}
+
+/* User Menu */
+.sidebar-user-menu {
+  position: relative;
+}
+
+.sidebar-user-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 600;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.sidebar-user-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(102, 126, 234, 0.5);
+}
+
+.sidebar-user-initial {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #22d3ee, #7c3aed);
+  color: #0b1020;
+  font-weight: 900;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.sidebar-user-name {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-user-badge {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  color: #9de1ff;
+  background: rgba(56, 189, 248, 0.1);
+}
+
+.sidebar-user-btn i {
+  font-size: 10px;
+  opacity: 0.7;
+  transition: transform 0.2s ease;
+}
+
+/* User Dropdown */
+.sidebar-user-dropdown {
+  position: relative;
+  margin-top: 8px;
+  width: 100%;
+  background: rgba(15, 23, 42, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  z-index: 1002;
+  overflow: hidden;
+}
+
+.sidebar-dropdown-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.sidebar-dropdown-link:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+}
+
+.sidebar-dropdown-link i {
+  width: 18px;
+  text-align: center;
+  color: #667eea;
+  font-size: 15px;
+}
+
+.sidebar-dropdown-link.signout-link {
+  color: rgba(255, 100, 100, 0.9);
+}
+
+.sidebar-dropdown-link.signout-link:hover {
+  background: rgba(255, 100, 100, 0.1);
+  color: #ff6464;
+}
+
+.sidebar-dropdown-link.signout-link i {
+  color: #ff6464;
+}
+
+/* Wallet Button & Info */
+.sidebar-wallet-btn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-wallet-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+/* Wallet Container & Info Button */
+.sidebar-wallet-container {
+  position: relative;
+  width: 100%;
+}
+
+.sidebar-wallet-info {
+  width: 100%;
+  padding: 12px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  color: inherit;
+}
+
+.sidebar-wallet-info:hover {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.5);
+  transform: translateY(-1px);
+}
+
+.sidebar-wallet-main {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.sidebar-wallet-address {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: 'Courier New', monospace;
+}
+
+.sidebar-wallet-balance {
+  font-size: 14px;
+  font-weight: 700;
+  color: #10b981;
+}
+
+.wallet-dropdown-icon {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  transition: transform 0.2s ease;
+}
+
+/* Wallet Dropdown */
+.sidebar-wallet-dropdown {
+  position: relative;
+  margin-top: 8px;
+  width: 100%;
+  background: rgba(15, 23, 42, 0.98);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  z-index: 1002;
+  overflow: hidden;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.wallet-dropdown-section {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.wallet-dropdown-section:last-of-type {
+  border-bottom: none;
+}
+
+.wallet-dropdown-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 8px;
+}
+
+.wallet-dropdown-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wallet-balance-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+.wallet-balance-item:last-child {
+  border-bottom: none;
+}
+
+/* Refactored Balance Styles */
+.balance-symbol {
+  color: #10b981; /* Verde neon Solana AI */
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+}
+
+.balance-amount {
+  color: #10b981; /* Verde neon Solana AI */
+  font-family: 'Roboto Mono', monospace; /* Monospaced for numbers */
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.3px;
+  text-shadow: 0 0 12px rgba(16, 185, 129, 0.4); /* Solana Glow */
+}
+
+.sidebar-token-icon-main {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 4px;
+  margin-bottom: 2px;
+}
+
+.sidebar-token-icon-small {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  vertical-align: text-bottom;
+  margin-right: 4px;
+}
+
+.wallet-balance-item.bits .balance-symbol {
+  /* Specific styles for BITS symbol if needed, keeping generic for now */
+}
+
+.wallet-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-top: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+}
+
+.wallet-action-btn:first-of-type {
+  margin-top: 0;
+}
+
+.wallet-action-btn:hover {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #10b981;
+  transform: translateX(2px);
+}
+
+.wallet-action-btn i {
+  width: 16px;
+  text-align: center;
+  color: #667eea;
+  font-size: 14px;
+}
+
+.sidebar-wallet-disconnect {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(239, 68, 68, 0.08);
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  color: #ef4444;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.sidebar-wallet-disconnect:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ff6464;
+}
+
+.sidebar-wallet-disconnect i {
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .sidebar-unlock-link {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    top: 60px;
+    padding: 8px 12px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .sidebar-ambassador-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    gap: 6px;
+  }
+
+  .sidebar-ambassador-btn span {
+    display: inline; /* Afișează textul și pe mobil */
+  }
+
+  .sidebar-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    gap: 6px;
+  }
+
+  .sidebar-btn span {
+    display: none;
+  }
+
+  .sidebar-unlock {
+    order: 1;
+  }
+
+  .sidebar-user-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    gap: 6px;
+  }
+
+  .sidebar-user-name {
+    display: none;
+  }
+
+  .sidebar-user-badge {
+    display: none;
+  }
+}

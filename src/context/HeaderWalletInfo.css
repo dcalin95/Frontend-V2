@@ -304,7 +304,7 @@
 /* 📱 MOBILE RESPONSIVE */
 @media (max-width: 768px) {
   .wallet-toggle-wrapper {
-    top: 65px; /* Mai sus pentru a se vedea bine */
+    top: 95px !important; /* Moved down - BELOW header line! */
     right: 10px;
     transform: scale(0.95); /* Ușor mai mic pe mobil */
   }
@@ -406,7 +406,7 @@
 /* 📲 Extra Small Mobile (iPhone SE, etc.) */
 @media (max-width: 375px) {
   .wallet-toggle-wrapper {
-    top: 60px;
+    top: 90px !important; /* Moved down - BELOW header line! */
     right: 8px;
     transform: scale(0.9);
   }
@@ -440,3 +440,58 @@
     font-size: 0.9rem;
   }
 }
+
+/* 🎯 QUICK ACTIONS BUTTONS - NEW */
+.wallet-quick-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.wallet-action-btn {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 10px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(20, 241, 149, 0.1) 0%, rgba(153, 69, 255, 0.1) 100%);
+  color: #00FFA3;
+  border: 1px solid rgba(20, 241, 149, 0.3);
+  box-shadow: 0 2px 10px rgba(20, 241, 149, 0.1);
+}
+
+.wallet-action-btn:hover {
+  background: linear-gradient(135deg, rgba(20, 241, 149, 0.2) 0%, rgba(153, 69, 255, 0.2) 100%);
+  border-color: #00FFA3;
+  box-shadow: 0 4px 20px rgba(20, 241, 149, 0.3);
+  transform: translateY(-2px);
+}
+
+.wallet-action-btn i {
+  font-size: 1.1rem;
+  filter: drop-shadow(0 0 4px rgba(20, 241, 149, 0.6));
+}
+
+/* Responsive for Quick Actions */
+@media (max-width: 768px) {
+  .wallet-quick-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .wallet-action-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+}
+

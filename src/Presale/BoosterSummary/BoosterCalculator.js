@@ -131,7 +131,7 @@ const BoosterCalculator = ({ baseBits }) => {
 
       <div className="booster-item">
         <span className="label">🎯</span>
-        <span className="value">{bonusTokens.toFixed(2)} $BITS</span>
+        <span className="value">{bonusTokens.toFixed(1)} $BITS</span>
       </div>
 
       <div className="booster-item">
@@ -141,7 +141,7 @@ const BoosterCalculator = ({ baseBits }) => {
 
       <div className="booster-item">
         <span className="label">🛡️</span>
-        <span className="value">{totalTokens.toFixed(2)} $BITS</span>
+        <span className="value">{totalTokens.toFixed(1)} $BITS</span>
       </div>
     </div>
   );

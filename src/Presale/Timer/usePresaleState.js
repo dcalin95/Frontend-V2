@@ -69,6 +69,8 @@ export const usePresaleState = () => {
             sold: data.sold || 0,
             supply: (data.totalSupply || 0) - (data.sold || 0),
             totalSupply: data.totalSupply || 0,
+            // ⚠️⚠️⚠️ WARNING: Acest price vine din BACKEND API, poate fi vechi/greșit!
+            // ⚠️ Pentru prețul LIVE corect, folosește useCellManagerData.currentPrice!
             price: data.price || 0.01,
             progress: data.progress || 0,
             totalBoosted: data.totalBoosted || 0,

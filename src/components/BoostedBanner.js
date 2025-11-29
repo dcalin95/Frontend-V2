@@ -423,7 +423,10 @@ const BoostedBanner = () => {
       <img src="/logo.png" alt="BITS Logo" className="bits-logo-floating" />
       <span className="boosted-label">Launch Power Raised:</span>
       {boosted === null ? (
-        <span className="shimmer-loader">████████████</span>
+        <span className="shimmer-loader" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <i className="fa-solid fa-brain fa-beat-fade" style={{ color: '#00FFA3', fontSize: '14px', filter: 'drop-shadow(0 0 8px rgba(0, 255, 163, 0.6))' }}></i>
+          AI Loading...
+        </span>
       ) : (
         <span className={`boosted-amount ${showWowEffect ? showWowEffect : ''}`}>
           <CountUp

@@ -1,10 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAccount as useEvmAccount, useDisconnect as useEvmDisconnect, useBalance as useEvmBalance, useReadContract, useConnect } from 'wagmi';
-import { useWallet as useSolanaWalletAdapter, useConnection } from '@solana/wallet-adapter-react';
-import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { formatEther } from "viem";
 import BitsABI from '../abi/BitsABI.js';
 import { isInAppBrowser } from '../utils/walletBrowserDetection';
+import { prepareForConnection, handleConnectionError } from '../utils/walletConnectionFix';
 
 const BITS_TOKEN_ADDRESS = "0xCE056ee6ED7Ae0944f10BAfc5E7f5d160c8641fe";
 
@@ -16,45 +15,83 @@ export const UnifiedWalletProvider = ({ children }) => {
   // EVM State
   const { address: evmAddress, isConnected: isEvmConnected, connector, chainId } = useEvmAccount();
   const { disconnect: disconnectEvm } = useEvmDisconnect();
-  const { connect: connectEvm, connectors } = useConnect();
+  const { connect: connectEvm, connectAsync: connectEvmAsync, connectors, error: connectError } = useConnect();
+  
+  // 🔧 FIX: Clear pending connection state on mount
+  useEffect(() => {
+    const clearPendingConnections = async () => {
+      try {
+        // Clear wagmi cached connector
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('wagmi.store');
+          localStorage.removeItem('wagmi.wallet');
+          localStorage.removeItem('wagmi.connected');
+          sessionStorage.removeItem('wagmi.connector');
+        }
+        
+        // Clear MetaMask pending requests
+        if (window.ethereum) {
+          // Reset any pending MetaMask requests
+          if (window.ethereum._metamask) {
+            await window.ethereum._metamask.isUnlocked().catch(() => {});
+          }
+        }
+      } catch (error) {
+        console.warn("[UnifiedWallet] Error clearing pending connections:", error);
+      }
+    };
+    
+    clearPendingConnections();
+  }, []);
+  
+  // 🔧 FIX: Handle connection errors and retry
+  useEffect(() => {
+    if (connectError) {
+      console.error("[UnifiedWallet] Connection error:", connectError);
+      
+      // Clear error state after 3 seconds
+      const timer = setTimeout(() => {
+        // Force disconnect to clear state
+        disconnectEvm();
+      }, 3000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [connectError, disconnectEvm]);
   
   // Auto-connect for In-App Browsers (MetaMask, Trust, etc.)
   useEffect(() => {
-    if (isInAppBrowser() && !isEvmConnected) {
+    if (isInAppBrowser() && !isEvmConnected && !connectError) {
       const injectedConnector = connectors.find((c) => c.id === 'injected');
       if (injectedConnector) {
         console.log("[UnifiedWallet] Auto-connecting to In-App Wallet...");
-        connectEvm({ connector: injectedConnector });
+        if (connectEvmAsync) {
+          connectEvmAsync({ connector: injectedConnector }).catch((err) => {
+            console.warn("[UnifiedWallet] Auto-connect failed:", err);
+          });
+        } else {
+          connectEvm({ connector: injectedConnector });
+        }
       }
     }
-  }, [connectors, isEvmConnected, connectEvm]);
-
+  }, [connectors, isEvmConnected, connectEvm, connectError]);
   
-  // Fetch Native Balance with Auto-Refresh
-  // ⚠️ FIX: We explicitly request balance for current chain.
-  // If user is on Ethereum (Chain 1), this returns ETH balance.
-  // If user is on BSC (Chain 56), this returns BNB balance.
-  // The UI must correctly display the symbol to avoid confusion.
-  const { data: evmBalanceData } = useEvmBalance({ 
+  // Fetch Native Balance
+  const { data: evmBalanceData, refetch: refetchNativeBalance } = useEvmBalance({ 
     address: evmAddress, 
     chainId: chainId,
     query: {
       enabled: !!evmAddress,
-      refetchInterval: 5000, // Refresh every 5s
+      refetchInterval: 5000,
     }
   });
 
-  // 🆕 Fetch BSC Balance specifically if we are NOT on BSC but want to show it?
-  // For now, we will trust the nativeSymbol logic below to show the correct currency.
-  
-  // Debugging Logs
+  // Refetch balance on connection
   useEffect(() => {
-    if (evmAddress) {
-      console.log("[UnifiedWallet] EVM Address:", evmAddress);
-      console.log("[UnifiedWallet] Chain ID:", chainId);
-      console.log("[UnifiedWallet] Raw Native Balance:", evmBalanceData?.formatted, evmBalanceData?.symbol);
+    if (isEvmConnected) {
+      refetchNativeBalance();
     }
-  }, [evmAddress, chainId, evmBalanceData]);
+  }, [isEvmConnected, refetchNativeBalance]);
 
   // BITS Token Balance (EVM)
   const { data: bitsRawBalance } = useReadContract({
@@ -72,7 +109,6 @@ export const UnifiedWalletProvider = ({ children }) => {
 
   useEffect(() => {
     if (bitsRawBalance) {
-      // Increase precision to 5 decimals to match user request (e.g. 58.509,84071)
       const formatted = parseFloat(formatEther(bitsRawBalance)).toFixed(5);
       setBitsBalance(formatted);
     } else {
@@ -80,92 +116,44 @@ export const UnifiedWalletProvider = ({ children }) => {
     }
   }, [bitsRawBalance]);
 
-  // Solana State
-  const { publicKey, connected: isSolanaConnected, disconnect: disconnectSolana, wallet: solanaWallet } = useSolanaWalletAdapter();
-  const { connection } = useConnection();
-  const [solanaBalance, setSolanaBalance] = useState(0);
-
   // Unified State
-  const [walletType, setWalletType] = useState(null); // "EVM" | "SOLANA" | null
   const [showWalletModal, setShowWalletModal] = useState(false);
 
-  // Determine active wallet type
-  useEffect(() => {
-    if (isEvmConnected && !isSolanaConnected) {
-      setWalletType("EVM");
-    } else if (isSolanaConnected && !isEvmConnected) {
-      setWalletType("SOLANA");
-    } else if (!isEvmConnected && !isSolanaConnected) {
-      setWalletType(null);
+  // 🔧 FIX: Better balance formatting (5 decimals)
+  const getFormattedBalance = (data) => {
+    if (!data?.value) return "0.0000";
+    try {
+      const val = parseFloat(formatEther(data.value));
+      if (val === 0) return "0.0000";
+      if (val < 0.00001) return "<0.00001";
+      return val.toFixed(5); // Show 5 decimals (e.g. 0.00887)
+    } catch (e) {
+      return "0.0000";
     }
-  }, [isEvmConnected, isSolanaConnected]);
+  };
 
-  // Fetch Solana balance
-  useEffect(() => {
-    if (publicKey && connection) {
-      const fetchSolanaBalance = async () => {
-        try {
-          const balance = await connection.getBalance(publicKey);
-          setSolanaBalance((balance / LAMPORTS_PER_SOL).toFixed(4));
-        } catch (error) {
-          console.error("Error fetching Solana balance:", error);
-          setSolanaBalance(0);
-        }
-      };
-      fetchSolanaBalance();
+  const nativeBalance = getFormattedBalance(evmBalanceData);
 
-      // Refresh every 10 seconds
-      const interval = setInterval(fetchSolanaBalance, 10000);
-      return () => clearInterval(interval);
-    } else {
-      setSolanaBalance(0);
-    }
-  }, [publicKey, connection]);
-
-  // Unified getters
-  const walletAddress = walletType === "EVM" 
-    ? evmAddress 
-    : walletType === "SOLANA" 
-    ? publicKey?.toString() 
-    : null;
-
-  const isConnected = isEvmConnected || isSolanaConnected;
-
-  const nativeBalance = walletType === "EVM"
-    ? evmBalanceData?.formatted || "0.0000"
-    : walletType === "SOLANA"
-    ? solanaBalance
-    : "0.0000";
-
-  const nativeSymbol = walletType === "EVM"
-    ? (chainId === 56 ? "BNB" 
+  const nativeSymbol = chainId === 56 ? "BNB" 
       : chainId === 1 ? "ETH" 
       : chainId === 137 ? "MATIC" 
-      : chainId === 42161 ? "ETH" // Arbitrum
-      : chainId === 10 ? "ETH" // Optimism
-      : chainId === 8453 ? "ETH" // Base
-      : chainId === 43114 ? "AVAX" // Avalanche
-      : evmBalanceData?.symbol || "ETH") // Fallback to actual chain symbol or ETH
-    : "SOL";
+      : chainId === 42161 ? "ETH"
+      : chainId === 10 ? "ETH"
+      : chainId === 8453 ? "ETH"
+      : chainId === 43114 ? "AVAX"
+      : evmBalanceData?.symbol || "ETH";
 
-  const walletName = walletType === "EVM"
-    ? connector?.name || "EVM Wallet"
-    : walletType === "SOLANA"
-    ? solanaWallet?.adapter?.name || "Solana Wallet"
-    : null;
+  const walletName = connector?.name || "EVM Wallet";
 
-  // Unified actions
-  const connectWallet = () => {
+  // Actions
+  const connectWallet = async () => {
+    // 🔧 FIX: Prepare connection (clear cache if needed)
+    await prepareForConnection();
     setShowWalletModal(true);
   };
 
   const disconnectWallet = () => {
-    if (walletType === "EVM") {
-      disconnectEvm();
-    } else if (walletType === "SOLANA") {
-      disconnectSolana();
-    }
-    setWalletType(null);
+    disconnectEvm();
   };
 
   // Get network name
@@ -184,22 +172,20 @@ export const UnifiedWalletProvider = ({ children }) => {
 
   const value = {
     // Status
-    walletType,
-    isConnected,
-    walletAddress,
+    walletType: "EVM",
+    isConnected: isEvmConnected,
+    walletAddress: evmAddress,
     walletName,
     
     // Balance
     nativeBalance,
     nativeSymbol,
-    ethBalance: walletType === "EVM" ? nativeBalance : "0.0000", // Legacy compatibility
-    bitsBalance: walletType === "EVM" ? bitsBalance : 0, // TODO: Add Solana BITS support
+    ethBalance: nativeBalance,
+    bitsBalance,
     
     // Network
-    network: walletType === "EVM" 
-      ? getNetworkName(chainId)
-      : "Solana",
-    chainId: walletType === "EVM" ? chainId : null,
+    network: getNetworkName(chainId),
+    chainId,
     
     // Actions
     connectWallet,
@@ -209,10 +195,8 @@ export const UnifiedWalletProvider = ({ children }) => {
     showWalletModal,
     setShowWalletModal,
     
-    // Raw providers (for advanced usage)
+    // Raw providers
     evmConnector: connector,
-    solanaPublicKey: publicKey,
-    solanaConnection: connection,
   };
 
   return (

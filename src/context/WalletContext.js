@@ -64,6 +64,10 @@ const InnerWalletProvider = ({ children }) => {
 
   // 🚀 Hook to convert WalletClient to Ethers Signer
   function clientToSigner(client) {
+    if (!client || !client.account || !client.chain || !client.transport) {
+      console.warn("⚠️ [clientToSigner] Invalid client:", client);
+      return null;
+    }
     const { account, chain, transport } = client;
     const network = {
       chainId: chain.id,
