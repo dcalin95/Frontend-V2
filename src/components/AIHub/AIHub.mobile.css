@@ -1,0 +1,71 @@
+/* 📱 AI HUB - MOBILE OPTIMIZATION */
+
+@media (max-width: 768px) {
+  .ai-hub-container {
+    padding: 100px 16px 40px;
+  }
+
+  .ai-hub-header {
+    margin-bottom: 40px;
+  }
+
+  .ai-hub-title {
+    font-size: 2rem;
+    letter-spacing: 2px;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .title-icon {
+    font-size: 2.5rem;
+  }
+
+  .ai-hub-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .tools-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .tool-card {
+    padding: 24px;
+  }
+
+  .tool-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+  }
+
+  .tool-name {
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+  }
+
+  .tool-description {
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+  }
+
+  .tool-cost {
+    padding: 10px 14px;
+  }
+
+  .cost-label {
+    font-size: 0.75rem;
+  }
+
+  .cost-value {
+    font-size: 1.1rem;
+  }
+
+  .locked-overlay {
+    font-size: 1rem;
+  }
+
+  .locked-overlay i {
+    font-size: 2rem;
+  }
+}
+

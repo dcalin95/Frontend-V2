@@ -1,0 +1,174 @@
+/* 📱 USER DEVICE INFO - MOBILE RESPONSIVE */
+
+@media (max-width: 768px) {
+  /* Container principal */
+  .user-device-info {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+  }
+
+  /* Button trigger - Mobile Floating */
+  .device-info-btn {
+    background: linear-gradient(135deg, rgba(0, 255, 163, 0.15), rgba(153, 69, 255, 0.15));
+    border: 1px solid rgba(0, 255, 163, 0.4);
+    color: #00FFA3;
+    padding: 12px 18px;
+    border-radius: 25px; /* 🚨 Rounded pe mobile */
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-shadow: 0 4px 15px rgba(0, 255, 163, 0.2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90vw;
+  }
+
+  .device-info-btn i {
+    font-size: 14px;
+  }
+
+  /* Modal Content - FULL SCREEN pe mobile */
+  .device-info-content {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 90vw !important; /* 🚨 90% lățime ecran */
+    max-width: 400px !important;
+    max-height: 80vh !important; /* 🚨 80% înălțime ecran */
+    overflow-y: auto !important; /* 🚨 Scroll dacă e prea mult conținut */
+    margin: 0 !important;
+    padding: 12px !important;
+    border-radius: 16px !important;
+    background: rgba(0, 0, 0, 0.98) !important; /* 🚨 Aproape solid pe mobile */
+    border: 1px solid rgba(0, 255, 163, 0.4) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8) !important;
+    z-index: 10000 !important;
+  }
+
+  /* Overlay background când e deschis */
+  .user-device-info.visible::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7); /* 🚨 Overlay întunecat */
+    z-index: 9998;
+    backdrop-filter: blur(5px);
+  }
+
+  /* Close Button - Mai mare pe mobile */
+  .device-info-close {
+    position: absolute !important;
+    top: 8px !important;
+    right: 8px !important;
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 16px !important;
+    z-index: 10001 !important;
+  }
+
+  /* Grid - 2 coloane pe mobile */
+  .info-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 6px !important;
+  }
+
+  /* Item cards - Compacte pe mobile */
+  .info-item {
+    padding: 6px 8px !important;
+    border-radius: 8px !important;
+    min-height: 70px !important;
+  }
+
+  .info-item i {
+    font-size: 16px !important;
+  }
+
+  .info-label {
+    font-size: 8px !important;
+    letter-spacing: 0.3px !important;
+  }
+
+  .info-value {
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Scroll styling pentru mobile */
+  .device-info-content::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .device-info-content::-webkit-scrollbar-track {
+    background: rgba(0, 255, 163, 0.1);
+    border-radius: 2px;
+  }
+
+  .device-info-content::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 163, 0.4);
+    border-radius: 2px;
+  }
+
+  .device-info-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 255, 163, 0.6);
+  }
+}
+
+/* 📱 EXTRA SMALL MOBILE (< 480px) */
+@media (max-width: 480px) {
+  .device-info-btn {
+    font-size: 11px;
+    padding: 10px 14px;
+    max-width: 85vw;
+  }
+
+  .device-info-content {
+    width: 95vw !important;
+    max-height: 85vh !important;
+    padding: 10px !important;
+  }
+
+  .info-grid {
+    gap: 5px !important;
+  }
+
+  .info-item {
+    padding: 5px 6px !important;
+    min-height: 65px !important;
+  }
+
+  .info-item i {
+    font-size: 14px !important;
+  }
+
+  .info-label {
+    font-size: 7px !important;
+  }
+
+  .info-value {
+    font-size: 8px !important;
+  }
+}
+
+/* 📱 LANDSCAPE MODE (horizontal) */
+@media (max-width: 768px) and (orientation: landscape) {
+  .device-info-content {
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+  }
+
+  .info-grid {
+    grid-template-columns: repeat(3, 1fr) !important; /* 🚨 3 coloane în landscape */
+  }
+}
+

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import BrandLogo from "./BrandLogo";
 import SmartTooltip from "../Presale/components/SmartTooltip"; // Import SmartTooltip
 import AddTokenButton from "./AddTokenButton"; // Import AddTokenButton
+import UserDeviceInfo from "./UserDeviceInfo";
 import binanceLogo from "../assets/exchanges/binance-clearbit.png";
 import coinbaseLogo from "../assets/exchanges/coinbase-clearbit.png";
 import krakenLogo from "../assets/exchanges/kraken-clearbit.png";
@@ -105,6 +106,11 @@ const Footer = () => {
           <i className="fas fa-home footer-icon red"></i> Go to Home Page
         </Link>
         </SmartTooltip>
+      </div>
+
+      {/* 🕵️ User Device Info Panel - Desktop only (Mobile has it in MobileUI.js) */}
+      <div className="desktop-device-info" style={{marginTop: '30px', display: 'flex', justifyContent: 'center'}}>
+        <UserDeviceInfo className="footer-mode" />
       </div>
     </footer>
   );

@@ -201,8 +201,9 @@ const InnerWalletProvider = ({ children }) => {
         walletName,
         walletIcon,
         network,
-        provider: connector, // Expose current connector
+        provider: signer?.provider || null, // ✅ Expose ethers provider, not connector
         signer, // Adapter for ethers.js signer
+        connector, // ✅ Expose connector separately (read-only)
 
         // Functions
         connectWallet,

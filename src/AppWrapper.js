@@ -9,20 +9,23 @@ import { SolanaProvider } from "./context/SolanaWalletContext"; // Solana Provid
 import { UnifiedWalletProvider } from "./context/UnifiedWalletContext"; // Unified Logic
 import { ThemeProvider } from "./context/ThemeContext";
 import { GeoLocationProvider } from "./context/GeoLocationContext"; // 🌍 GeoSystem
+import { AuthProvider } from "./context/AuthContext"; // 🔐 Auth System
 
 const AppWrapper = () => {
   return (
-    <WalletProvider>
-      <SolanaProvider>
-        <UnifiedWalletProvider>
-          <GeoLocationProvider>
-            <ThemeProvider>
-              <App />
-            </ThemeProvider>
-          </GeoLocationProvider>
-        </UnifiedWalletProvider>
-      </SolanaProvider>
-    </WalletProvider>
+    <AuthProvider>
+      <WalletProvider>
+        <SolanaProvider>
+          <UnifiedWalletProvider>
+            <GeoLocationProvider>
+              <ThemeProvider>
+                <App />
+              </ThemeProvider>
+            </GeoLocationProvider>
+          </UnifiedWalletProvider>
+        </SolanaProvider>
+      </WalletProvider>
+    </AuthProvider>
   );
 };
 

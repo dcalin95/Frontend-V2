@@ -5,7 +5,7 @@ import "./toastStyle.css";
  
 
 // 🧠 Core React
-import React, { useEffect, useState, Suspense, lazy } from "react";
+import React, { useState, Suspense, lazy, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom"; // Imported useLocation
 import { ToastContainer } from "react-toastify";
 
@@ -98,6 +98,15 @@ const SidebarDashboard = lazy(() => import("./SidebarMenu/SidebarDashboard"));
 const PresaleHistory = lazy(() => import("./Presale/Timer/PresaleHistory"));
 
 const PresalePage = lazy(() => import("./Presale/PresalePage"));
+
+// 🔐 Auth & AI Hub
+const Login = lazy(() => import("./components/Login"));
+const AIHub = lazy(() => import("./components/AIHub/AIHub"));
+const MarketOracle = lazy(() => import("./components/AIHub/MarketOracle"));
+const StressTest = lazy(() => import("./components/AIHub/StressTest"));
+const LieDetector = lazy(() => import("./components/AIHub/LieDetector"));
+const SmartAudit = lazy(() => import("./components/AIHub/SmartAudit"));
+const AdminNeuralLink = lazy(() => import("./components/AIHub/AdminNeuralLink"));
 const PaymentBox = lazy(() => import("./Presale/PaymentBox/PaymentBox"));
 
 // 📱 Mobile versions
@@ -409,6 +418,15 @@ const App = () => {
                       <Route path="/mind-mirror" element={<MindMirror />} />
                       <Route path="/thank-you" element={<ThankYouPage />} />
                       <Route path="/admin/users" element={<RegisteredUsers />} /> {/* Rută secretă */}
+                      
+                      {/* 🔐 Login & AI Hub */}
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/ai-hub" element={<AIHub />} />
+                      <Route path="/ai-hub/market-oracle" element={<MarketOracle />} />
+                      <Route path="/ai-hub/portfolio-stress" element={<StressTest />} />
+                      <Route path="/ai-hub/lie-detector" element={<LieDetector />} />
+                      <Route path="/ai-hub/smart-audit" element={<SmartAudit />} />
+                      <Route path="/ai-hub/admin-neural" element={<AdminNeuralLink />} />
                       <Route path="/dex-demo" element={<SwapPage />} /> {/* 🔄 Rută DEX Demo */}
                       <Route
                         path="/test-payment"

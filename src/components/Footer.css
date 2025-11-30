@@ -2,11 +2,11 @@
   .footer-container {
       padding: 2rem 1rem;
       text-align: center;
-      background: rgba(15, 20, 25, 0.6);
+      background: transparent; /* 🚨 Total transparent - no background */
       color: rgba(255, 255, 255, 0.9);
       font-size: 0.9rem;
       font-family: 'Inter', sans-serif;
-      border-top: 1px solid rgba(0, 255, 163, 0.2);
+      border-top: none; /* 🚨 No border line */
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
       box-shadow: none;
@@ -184,55 +184,5 @@
     color: #DC1FFF;
   }
   
-  /* Responsivitate pentru mobil */
-  @media (max-width: 768px) {
-    .footer-container {
-      font-size: 0.8rem;
-      padding: 1.5rem 1rem;
-    }
-  
-    .footer-text {
-      font-size: 0.85rem;
-      margin-bottom: 1.2rem;
-    }
-  
-    .footer-links {
-      flex-direction: column;
-      align-items: center;
-      gap: 0.8rem;
-    }
-  
-    .footer-button {
-      padding: 0.5rem 1rem;
-      font-size: 0.85rem;
-      width: 100%;
-      max-width: 280px;
-      justify-content: center;
-    }
-  
-    .footer-icon {
-      font-size: 1rem;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .footer-container {
-      padding: 1.2rem 0.8rem;
-      font-size: 0.75rem;
-    }
-
-    .footer-text {
-      font-size: 0.8rem;
-      margin-bottom: 1rem;
-    }
-
-    .footer-button {
-      padding: 0.45rem 0.9rem;
-      font-size: 0.8rem;
-    }
-
-    .footer-icon {
-      font-size: 0.9rem;
-    }
-  }
+  /* 🚨 Mobile styles moved to Footer.mobile.css */
   

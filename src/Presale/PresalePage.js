@@ -59,8 +59,8 @@ const PresalePage = () => {
   const [showTikTokDebug, setShowTikTokDebug] = useState(false);
   const [stripeFeedback, setStripeFeedback] = useState(null);
   const [particleCount, setParticleCount] = useState(40);
-  const [showParticles, setShowParticles] = useState(true); // 🎨 Toggle particles
-  const [darkMode, setDarkMode] = useState(false); // 🌑 Dark mode
+  const [showParticles, setShowParticles] = useState(false); // 🎨 Toggle particles
+  const [darkMode, setDarkMode] = useState(true); // 🌑 Dark mode - Apple Super Dark
 
   useEffect(() => {
     const detectWallet = async () => {

@@ -1,0 +1,93 @@
+/* 🧠 ADMIN NEURAL LINK - Matrix Style */
+
+.admin-neural-container {
+  min-height: 100vh;
+  background: #000;
+  padding: 120px 40px 60px;
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+}
+
+.admin-neural-title {
+  font-size: 2.5rem;
+  font-weight: 900;
+  text-align: center;
+  margin: 0 0 16px;
+  color: #00ff00;
+  text-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+  letter-spacing: 4px;
+}
+
+.admin-neural-subtitle {
+  text-align: center;
+  font-size: 1rem;
+  opacity: 0.7;
+  margin: 0 0 40px;
+}
+
+.matrix-text {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #00ff00;
+  animation: matrix-blink 1s infinite;
+}
+
+@keyframes matrix-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.visitor-table-container {
+  overflow-x: auto;
+  background: rgba(0, 255, 0, 0.05);
+  border: 1px solid rgba(0, 255, 0, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.visitor-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.visitor-table th {
+  background: rgba(0, 255, 0, 0.2);
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 2px solid #00ff00;
+}
+
+.visitor-table td {
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+}
+
+.visitor-table tbody tr:hover {
+  background: rgba(0, 255, 0, 0.1);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .admin-neural-container {
+    padding: 100px 16px 40px;
+  }
+
+  .admin-neural-title {
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+  }
+
+  .visitor-table {
+    font-size: 0.75rem;
+  }
+
+  .visitor-table th,
+  .visitor-table td {
+    padding: 8px 10px;
+  }
+}
+

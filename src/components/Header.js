@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import WalletContext from "../context/WalletContext";
 import SmartTooltip from "../Presale/components/SmartTooltip"; // Import SmartTooltip
+import { useAuth } from "../context/AuthContext"; // Auth Context
 
 import { usePresaleState } from "../Presale/Timer/usePresaleState";
 import PresaleCountdownMini from "../Presale/Timer/PresaleCountdownMini";
@@ -14,8 +15,7 @@ import "./Header.mobile.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu }) => {
-  const { walletAddress, disconnectWallet } = useContext(WalletContext);
-  const location = useLocation();
+  const { user, isAuthenticated, signOut } = useAuth(); // Auth state
   const navigate = useNavigate();
   const [internalIsMenuOpen, setInternalIsMenuOpen] = useState(false);
 
@@ -25,20 +25,8 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
 
   const { endTime, isLoaded } = usePresaleState();
 
-  // Close menu on outside click or escape key + Add body class
+  // Close menu on escape key + Add body class
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (isMenuOpen && !event.target.closest('.header') && !event.target.closest('.mobile-nav-menu')) {
-        if (externalToggleMenu) {
-           // If managed externally and clicking outside header, parent handles it?
-           // But parent doesn't know about clicks here. 
-           // We should check if we are clicking the hamburger.
-        }
-        // Simplification: Just close if clicking outside header/menu
-        // But we must not close if clicking the hamburger itself (handled by toggle)
-      }
-    };
-
     const handleEscapeKey = (event) => {
       if (event.key === 'Escape' && isMenuOpen) {
         // Close menu
@@ -229,6 +217,26 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
               <i className="fas fa-robot"></i> AI BitSwapDEX
             </button>
           </SmartTooltip>
+          
+          <SmartTooltip content={`AI Utility Hub\nAccess AI-powered tools: Market Oracle, Stress Test, Lie Detector & more.`}>
+            <Link to="/ai-hub" className="btn-ai-hub laser-sharp" style={{background: 'linear-gradient(135deg, #00FFA3 0%, #DC1FFF 100%)', color: '#000'}}>
+              <i className="fas fa-brain"></i> AI Hub
+            </Link>
+          </SmartTooltip>
+          
+          {isAuthenticated ? (
+            <SmartTooltip content={`Sign Out\nLogged in as ${user?.email || 'User'}`}>
+              <button className="btn-logout" onClick={signOut} style={{background: 'rgba(255, 50, 50, 0.2)', border: '1px solid rgba(255, 50, 50, 0.5)'}}>
+                <i className="fas fa-sign-out-alt"></i> Logout
+              </button>
+            </SmartTooltip>
+          ) : (
+            <SmartTooltip content={`Login/Register\nAccess exclusive features and AI tools.`}>
+              <Link to="/login" className="btn-login laser-sharp" style={{background: 'rgba(0, 255, 163, 0.2)', border: '1px solid rgba(0, 255, 163, 0.5)'}}>
+                <i className="fas fa-user"></i> Login
+              </Link>
+            </SmartTooltip>
+          )}
         </nav>
 
         {/* ✅ Desktop-only: Timer + Social */}
@@ -323,6 +331,18 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
             <button className="mobile-btn-ai" onClick={() => { closeMenu(); navigate("/ai-assistant"); }}>
               <i className="fas fa-robot"></i> <span className="mobile-text">AI BitSwapDEX</span>
             </button>
+            <Link to="/ai-hub" className="mobile-btn-ai-hub laser-sharp" onClick={closeMenu} style={{background: 'linear-gradient(135deg, #00FFA3 0%, #DC1FFF 100%)', color: '#000'}}>
+              <i className="fas fa-brain"></i> <span className="mobile-text">AI Hub</span>
+            </Link>
+            {isAuthenticated ? (
+              <button className="mobile-btn-logout" onClick={() => { closeMenu(); signOut(); }} style={{background: 'rgba(255, 50, 50, 0.2)', border: '1px solid rgba(255, 50, 50, 0.5)'}}>
+                <i className="fas fa-sign-out-alt"></i> <span className="mobile-text">Logout</span>
+              </button>
+            ) : (
+              <Link to="/login" className="mobile-btn-login laser-sharp" onClick={closeMenu} style={{background: 'rgba(0, 255, 163, 0.2)', border: '1px solid rgba(0, 255, 163, 0.5)'}}>
+                <i className="fas fa-user"></i> <span className="mobile-text">Login</span>
+              </Link>
+            )}
           </nav>
         </div>
       )}
