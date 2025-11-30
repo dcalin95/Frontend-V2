@@ -1,17 +1,9 @@
 import React from 'react';
-import Icon from '../../assets/icons/Icon';
-import '../Mobile.css';
+import CosmicLoader from '../../components/DEX/CosmicLoader';
 
-const LoadingSpinnerMobile = ({ message = "Loading..." }) => {
-  return (
-    <div className="mobile-loading-container">
-      <div className="mobile-loading-spinner">
-        <Icon name="loading" size="xlarge" animate="spin" className="mobile-loading-icon" />
-        <div className="mobile-loading-text">{message}</div>
-      </div>
-    </div>
-  );
+// 🔄 REDIRECT: Mobile Loader now points to the OFFICIAL CosmicLoader
+const LoadingSpinnerMobile = () => {
+  return <CosmicLoader />;
 };
 
 export default LoadingSpinnerMobile;
-

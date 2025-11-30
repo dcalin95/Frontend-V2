@@ -11,6 +11,7 @@ const SelectPaymentMethod = ({
   onSelectToken,
   selectedChain,
   onSelectChain,
+  tokenPrices // 💲 Received from parent
 }) => {
   const isStripeSelected = selectedToken === "STRIPE";
 
@@ -39,6 +40,30 @@ const SelectPaymentMethod = ({
     if (selectedToken !== "STRIPE") {
       onSelectToken("STRIPE");
     }
+  };
+
+  // Helper to get price safely
+  const getTokenPrice = (tokenKey) => {
+    if (!tokenPrices) return null;
+    // Mapping keys if necessary (e.g. ETH -> ETH)
+    // Assuming tokenPrices uses the same keys as tokenList
+    const tokenData = tokenPrices[tokenKey] || tokenPrices[tokenKey.toUpperCase()];
+    
+    // 🔧 FIX: Extract numeric price from object { price: 123, source: '...' }
+    let priceValue = null;
+    if (typeof tokenData === 'object' && tokenData !== null && 'price' in tokenData) {
+      priceValue = tokenData.price;
+    } else if (typeof tokenData === 'number') {
+      priceValue = tokenData;
+    }
+
+    if (priceValue) {
+        // Format logic: if < $1 show 4 decimals, else 2 decimals
+        return priceValue < 1 
+            ? `$${priceValue.toFixed(4)}` 
+            : `$${priceValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+    }
+    return null;
   };
 
   return (
@@ -84,7 +109,14 @@ const SelectPaymentMethod = ({
             className={`chain-tab ${
               selectedChain === "fiat" && !isStripeSelected ? "active" : ""
             }`}
-            onClick={() => handleSelectChain("fiat")}
+            onClick={() => {
+              onSelectChain("fiat");
+              // 🔄 Force reset selection to first non-Stripe Fiat token
+              const fallback = tokenList.find(
+                (token) => token.chain === "fiat" && token.key !== "STRIPE"
+              );
+              if (fallback) onSelectToken(fallback.key);
+            }}
           >
             <img src={cardIcon} alt="Fiat" className="chain-icon" />
             Fiat
@@ -94,35 +126,69 @@ const SelectPaymentMethod = ({
 
       {/* === Token Buttons (filtered by chain) === */}
       <div className="token-grid">
-        {filteredTokens.map((token) => (
-          <SmartTooltip 
-            key={token.key} 
-            content={`${token.name} (${token.symbol})\nChain: ${token.chain === 'evm' ? 'BSC/ETH' : token.chain === 'solana' ? 'Solana' : 'Fiat'}\n${token.chain === 'solana' ? 'Gas Fee: <$0.001' : token.chain === 'evm' ? 'Gas Fee: ~$0.05 (BSC)' : 'No Gas Fee'}`}
-          >
-            <button
-              className={`token-button ${
-                selectedToken === token.key ? "active" : ""
-              }`}
-              onClick={() => onSelectToken(token.key)}
-              style={{
-                borderColor: selectedToken === token.key ? token.color : "#333",
-              }}
-            >
-              <img
-                src={token.icon}
-                alt={`${token.name} icon`}
-                className="token-icon"
-                style={{
-                  filter: `drop-shadow(0 0 4px ${token.color})`,
-                  marginRight: "8px",
-                  width: "24px",
-                  height: "24px",
-                }}
-              />
-              {token.name}
-            </button>
-          </SmartTooltip>
-        ))}
+        {isStripeSelected ? (
+          // 💳 Stripe Selected View
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '12px',
+            padding: '16px 24px',
+            background: 'rgba(99, 91, 255, 0.1)', // Cleaner background
+            border: '1px solid #635bff',
+            borderRadius: '12px',
+            color: '#fff',
+            marginTop: '10px',
+            width: '100%',
+            maxWidth: '400px',
+            margin: '10px auto 0',
+            boxShadow: '0 4px 20px rgba(99, 91, 255, 0.2)'
+          }}>
+            <img src={cardIcon} alt="Stripe" style={{width: '32px', height: '32px', borderRadius: '50%'}} />
+            <div style={{textAlign: 'left'}}>
+              <div style={{fontSize: '1.1rem', fontWeight: '700', color: '#fff', fontFamily: 'Space Grotesk, sans-serif'}}>Stripe Secure Checkout</div>
+              <div style={{fontSize: '0.85rem', opacity: 0.8, fontFamily: 'Inter, sans-serif'}}>Credit/Debit Card selected. Continue below.</div>
+            </div>
+          </div>
+        ) : (
+          // 💱 Standard Token Grid
+          filteredTokens.map((token) => {
+            const price = getTokenPrice(token.key);
+            
+            return (
+              <SmartTooltip 
+                key={token.key} 
+                content={`${token.name} (${token.symbol})\nPrice: ${price || 'Updating...'}\nChain: ${token.chain === 'evm' ? 'BSC/ETH' : token.chain === 'solana' ? 'Solana' : 'Fiat'}\n${token.chain === 'solana' ? 'Gas Fee: <$0.001' : token.chain === 'evm' ? 'Gas Fee: ~$0.05 (BSC)' : 'No Gas Fee'}`}
+              >
+                <button
+                  className={`token-button ${
+                    selectedToken === token.key ? "active" : ""
+                  }`}
+                  onClick={() => onSelectToken(token.key)}
+                  style={{
+                    borderColor: selectedToken === token.key ? token.color : "rgba(255,255,255,0.1)",
+                  }}
+                >
+                  <div className="token-btn-content">
+                    <img
+                      src={token.icon}
+                      alt={`${token.name} icon`}
+                      className="token-icon"
+                    />
+                    <div className="token-text-col">
+                      <span className="token-name">{token.name}</span>
+                      {price && (
+                        <span className="token-live-price" style={{ color: selectedToken === token.key ? '#fff' : 'rgba(255,255,255,0.5)' }}>
+                          {price}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </button>
+              </SmartTooltip>
+            );
+          })
+        )}
       </div>
     </div>
   );

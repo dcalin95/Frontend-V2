@@ -147,7 +147,8 @@ canvas[class*="background"],
 
 .presale-wrapper {
   flex: 1;
-  padding: 80px 2rem 2rem 2rem; /* 🔽 Spațiu mare sus (80px) pentru "Launch Power Raised" */
+  padding: 140px 2rem 2rem 2rem; /* 🔽 UPDATED: Increased top padding to 140px to prevent header overlap */
+  margin-top: 2vh; /* 🔽 UPDATED: Added 2vh margin top for safety */
   display: flex;
   justify-content: center;
   box-sizing: border-box;
@@ -187,10 +188,36 @@ canvas[class*="background"],
   height: fit-content !important; /* 🎯 DOAR cât conținutul SelectPaymentMethod! */
   min-height: unset !important; /* 🎯 Fără minim forțat! */
   align-self: start !important; /* 🎯 Aliniere la TOP, fără stretch! */
+  
+  /* 🧹 CLEANUP: Eliminate ANY background or border from this specific container */
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  padding: 0 !important; /* Remove padding to ensure no ghost box */
+  position: relative;
 }
 
-.grid-payment  { grid-area: payment; }
-.grid-panel    { grid-area: panel; }
+/* 🚨 NUCLEAR CLEANUP: Hide any phantom pseudo-elements behind the selection area */
+.grid-select::before,
+.grid-select::after {
+  display: none !important;
+  content: none !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  border: none !important;
+  background: none !important;
+}
+
+.grid-payment  { 
+  grid-area: payment; 
+  margin-top: 10vh; /* 🔽 Push down 10% from the top component */
+}
+.grid-panel    { 
+  grid-area: panel; 
+  margin-top: 10vh; /* 🔽 Push down 10% from the top component */
+}
 .grid-claim    { grid-area: referral; }
 .grid-summary  { grid-area: summary; }
 

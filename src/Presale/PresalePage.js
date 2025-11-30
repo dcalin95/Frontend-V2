@@ -315,6 +315,7 @@ const PresalePage = () => {
               onSelectToken={setSelectedToken}
               selectedChain={selectedChain}
               onSelectChain={setSelectedChain}
+              tokenPrices={tokenPrices} /* 💲 PASS PRICES DOWN */
             />
           </div>
 

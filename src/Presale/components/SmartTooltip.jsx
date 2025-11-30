@@ -86,6 +86,7 @@ const SmartTooltip = ({ children, content, className = '' }) => {
   const targetRef = useRef(null);
   const tooltipRef = useRef(null);
   const timeoutRef = useRef(null);
+  const openTimerRef = useRef(null); // ⏳ Timer for delayed opening
 
   // 🧠 AI INTELLIGENT PARSER
   const parseContent = (text) => {
@@ -214,23 +215,53 @@ const SmartTooltip = ({ children, content, className = '' }) => {
       window.speechSynthesis.speak(utterance);
   };
 
+  // 🖱️ Hover Logic with 3s Delay
   const handleMouseEnter = () => {
+    // Clear any closing timer
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    
+    // Only start opening timer if not already visible
     if (!isVisible) {
-        setIsVisible(true);
-        const soundParams = generateSoundParams(content);
-        playHoverSound(soundParams);
+        openTimerRef.current = setTimeout(() => {
+            setIsVisible(true);
+            const soundParams = generateSoundParams(content);
+            playHoverSound(soundParams);
+        }, 3000); // ⏳ 3 SECONDS DELAY
     }
   };
 
   const handleMouseLeave = () => {
-    // Increased grace period to 5000ms to allow reaching the tooltip comfortably
+    // Cancel opening if mouse leaves before 3s
+    if (openTimerRef.current) clearTimeout(openTimerRef.current);
+
+    // Close immediately if open (standard behavior for tooltip usually, or small delay)
+    // User requested "daca userul decide poate sa staea citeva secunde... si atunci sa se deschida"
+    // If it's already open, we can close it with a small grace period or immediately.
+    // Let's keep a small grace period for usability.
     timeoutRef.current = setTimeout(() => {
       setIsVisible(false);
-    }, 5000); 
+    }, 300); 
   };
 
-  // Manual toggle via button
+  // 🖱️ Click Logic: Immediate Open
+  const handleClick = (e) => {
+      // If user clicks, open immediately (bypass timer)
+      if (openTimerRef.current) clearTimeout(openTimerRef.current);
+      
+      if (!isVisible) {
+          setIsVisible(true);
+          const soundParams = generateSoundParams(content);
+          playHoverSound(soundParams);
+      } else {
+          // Optional: Click again to close? Or keep open? 
+          // Usually clicking a tooltip trigger might perform an action (like navigation), 
+          // so we should be careful not to block navigation.
+          // But if it's just for info, toggle is fine.
+          // For buttons that navigate (Link), the click will navigate away anyway.
+      }
+  };
+
+  // Manual toggle via button (inside tooltip)
   const handleSpeakClick = (e) => {
     e.stopPropagation();
     if (isSpeaking) {
@@ -257,6 +288,12 @@ const SmartTooltip = ({ children, content, className = '' }) => {
       handleMouseLeave();
       child.props.onMouseLeave?.(e);
     },
+    onClick: (e) => {
+        handleClick(e);
+        child.props.onClick?.(e);
+    },
+    // Add a visual cursor indicator if needed
+    style: { ...child.props.style, cursor: child.props.onClick ? 'pointer' : 'help' },
     'data-tooltip': undefined
   });
 
@@ -275,7 +312,10 @@ const SmartTooltip = ({ children, content, className = '' }) => {
             transformOrigin: transformOrigin
           }}
           role="tooltip"
-          onMouseEnter={handleMouseEnter}
+          onMouseEnter={() => {
+              // Keep open if hovering the tooltip itself
+              if (timeoutRef.current) clearTimeout(timeoutRef.current);
+          }}
           onMouseLeave={handleMouseLeave}
         >
           <button 

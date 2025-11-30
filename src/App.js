@@ -23,7 +23,7 @@ import HamburgerButton from "./HamburgerButton/HamburgerButton";
 import ThemeChecker from "./components/ThemeChecker";
 
 // 🔄 State/Loading
-import LoadingSpinner from "./components/LoadingSpinner";
+import CosmicLoader from "./components/DEX/CosmicLoader";
 import PWAInstallPrompt from "./components/PWAInstallPrompt";
 
 // 📱 Mobile
@@ -285,7 +285,7 @@ const App = () => {
       <Router>
         <GoogleAnalyticsWrapper>
           <ErrorBoundary>
-            <Suspense fallback={<LoadingSpinner />}>
+                    <Suspense fallback={<CosmicLoader />}>
               <Routes>
                 {/* ===== PAGINI STANDALONE (FĂRĂ HEADER/FOOTER/SIDEBAR) ===== */}
                 <Route

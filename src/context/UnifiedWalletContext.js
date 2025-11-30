@@ -59,22 +59,20 @@ export const UnifiedWalletProvider = ({ children }) => {
     }
   }, [connectError, disconnectEvm]);
   
-  // Auto-connect for In-App Browsers (MetaMask, Trust, etc.)
+  // Auto-connect for In-App Browsers (Mobile Only - MetaMask, Trust, etc.)
   useEffect(() => {
     if (isInAppBrowser() && !isEvmConnected && !connectError) {
       const injectedConnector = connectors.find((c) => c.id === 'injected');
       if (injectedConnector) {
-        console.log("[UnifiedWallet] Auto-connecting to In-App Wallet...");
+        console.log("[UnifiedWallet] Auto-connecting to Mobile In-App Wallet...");
         if (connectEvmAsync) {
           connectEvmAsync({ connector: injectedConnector }).catch((err) => {
             console.warn("[UnifiedWallet] Auto-connect failed:", err);
           });
-        } else {
-          connectEvm({ connector: injectedConnector });
         }
       }
     }
-  }, [connectors, isEvmConnected, connectEvm, connectError]);
+  }, [connectors, isEvmConnected, connectEvmAsync, connectError]);
   
   // Fetch Native Balance
   const { data: evmBalanceData, refetch: refetchNativeBalance } = useEvmBalance({ 

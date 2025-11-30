@@ -1,63 +1,21 @@
 /* === Container Token Selector === AI SONNET STYLE */
 .token-selector {
-  background: transparent;
-  padding: 0;
-  border-radius: 0;
-  box-shadow: none;
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  border: none !important;
   text-align: center;
   font-family: 'Inter', sans-serif;
+  position: relative;
 }
 
-/* Floating + Pulse animations (local) */
-@keyframes floatSoftSM {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
-}
-
-@keyframes solanaPulseSM {
-  0% { 
-    background: linear-gradient(135deg, #00FFA3, #DC1FFF);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.4));
-  }
-  50% { 
-    background: linear-gradient(135deg, #DC1FFF, #00FFA3);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 0 20px rgba(220, 31, 255, 0.6));
-  }
-  100% { 
-    background: linear-gradient(135deg, #00FFA3, #DC1FFF);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.4));
-  }
-}
-
-@keyframes iconGlow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(0, 255, 163, 0.5), 
-                0 0 40px rgba(220, 31, 255, 0.3),
-                0 8px 30px rgba(0, 0, 0, 0.5),
-                inset 0 0 15px rgba(255, 255, 255, 0.15);
-    transform: scale(1);
-  }
-  50% {
-    box-shadow: 0 0 35px rgba(0, 255, 163, 0.7), 
-                0 0 70px rgba(220, 31, 255, 0.5),
-                0 12px 40px rgba(0, 0, 0, 0.6),
-                inset 0 0 25px rgba(255, 255, 255, 0.2);
-    transform: scale(1.02);
-  }
-}
-
-@keyframes rotate3D {
-  0% { transform: perspective(500px) rotateY(0deg); }
-  100% { transform: perspective(500px) rotateY(360deg); }
+/* 🚨 NUCLEAR FIX: Hide any pseudo-elements on the container */
+.token-selector::before,
+.token-selector::after {
+  display: none !important;
+  content: none !important;
+  opacity: 0 !important;
 }
 
 /* === Titlu === AI SONNET STYLE */
@@ -66,8 +24,27 @@
   font-weight: 700;
   margin-bottom: 28px;
   font-size: 1.6rem;
-  animation: solanaPulseSM 3s ease-in-out infinite, floatSoftSM 9s ease-in-out infinite;
   letter-spacing: 1px;
+  
+  /* 🧹 CLEAN TEXT STYLE - NO FOG */
+  color: #00FFA3;
+  text-shadow: 0 0 10px rgba(0, 255, 163, 0.2); /* Reduced shadow for clarity */
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: #00FFA3;
+}
+
+/* === 🌟 NEW: Crystal Clear Text Effect for "With What Do You Want to Pay" === */
+.token-selector h2 {
+  /* Reset & Override */
+  background: linear-gradient(180deg, #FFFFFF 0%, #00FFA3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0px 2px 10px rgba(0, 255, 163, 0.15); /* Minimal glow, high definition */
+  font-family: 'Space Grotesk', sans-serif; /* Solana Standard Font */
+  font-weight: 700;
+  letter-spacing: -0.5px; /* Tighter, modern tracking */
+  text-transform: none; /* Keep it natural casing */
 }
 
 /* === Tab-uri Chain (EVM/Solana/Fiat) === AI SONNET STYLE */
@@ -77,6 +54,12 @@
   justify-content: center;
   margin-bottom: 32px;
   flex-wrap: wrap;
+  
+  /* 🚨 CLEANUP */
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  backdrop-filter: none !important;
 }
 
 .chain-tab {
@@ -84,77 +67,60 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 28px;
-  font-size: 1rem;
-  font-weight: 700;
-  background: rgba(10, 10, 20, 0.6);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.15);
-  border-radius: 16px;
-  color: rgba(255, 255, 255, 0.8);
+  padding: 12px 24px; /* Slightly reduced padding */
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: 'Space Grotesk', sans-serif; /* Solana Style Font */
+  
+  /* 🧹 CRYSTAL CLEAR STYLE */
+  background: rgba(10, 10, 25, 0.8); /* Darker, clearer background */
+  backdrop-filter: none !important; /* REMOVED BLUR */
+  -webkit-backdrop-filter: none !important;
+  
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Thinner border */
+  border-radius: 12px; /* Slightly sharper corners */
+  color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease; /* Faster transition */
   overflow: hidden;
 }
 
-.chain-tab::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  transition: left 0.5s;
-}
-
-.chain-tab:hover::before {
-  left: 100%;
-}
-
 .chain-tab:hover {
-  border-color: rgba(0, 255, 163, 0.5);
-  box-shadow: 0 0 25px rgba(0, 255, 163, 0.4),
-              0 0 50px rgba(220, 31, 255, 0.3),
-              0 10px 35px rgba(0, 0, 0, 0.5);
-  transform: translateY(-4px) scale(1.05);
+  border-color: rgba(0, 255, 163, 0.4);
+  background: rgba(20, 20, 35, 0.9);
+  color: #fff;
+  transform: translateY(-2px);
 }
 
 .chain-tab.active {
-  background: linear-gradient(135deg, rgba(0, 255, 163, 0.2), rgba(220, 31, 255, 0.2));
-  border: 2px solid transparent;
-  border-image: linear-gradient(135deg, #00FFA3, #DC1FFF) 1;
-  color: #ffffff;
-  box-shadow: 0 0 30px rgba(0, 255, 163, 0.6),
-              0 0 60px rgba(220, 31, 255, 0.4),
-              0 10px 40px rgba(0, 0, 0, 0.6),
-              inset 0 0 25px rgba(255, 255, 255, 0.15);
-  animation: iconGlow 2.5s ease-in-out infinite;
+  background: rgba(0, 255, 163, 0.1);
+  border-color: #00FFA3;
+  color: #fff;
+  box-shadow: 0 0 15px rgba(0, 255, 163, 0.15); /* Minimal glow */
 }
 
 .chain-tab img,
 .chain-icon {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
-  transition: transform 0.3s ease;
-}
-
-.chain-tab:hover img,
-.chain-tab:hover .chain-icon {
-  transform: rotate(360deg) scale(1.1);
+  filter: none !important; /* REMOVED FOGGY SHADOW */
+  transition: transform 0.2s ease;
 }
 
 /* === Grid de butoane Token === AI SONNET STYLE */
 .token-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 18px;
+  gap: 14px;
   justify-content: center;
   margin-top: 20px;
   perspective: 1000px;
+  
+  /* 🚨 CLEANUP */
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 /* === Buton Token === AI SONNET GLASSMORPHISM STYLE */
@@ -162,101 +128,97 @@
   position: relative !important;
   display: flex !important;
   align-items: center !important;
-  justify-content: center !important;
-  gap: 10px !important;
-  padding: 16px 24px !important;
-  font-weight: 700 !important;
-  font-family: 'Inter', sans-serif !important;
-  font-size: 1.05rem !important;
-  min-width: 140px !important;
+  justify-content: flex-start !important; /* Align content to start */
+  padding: 10px 16px !important; /* Compact padding */
+  min-width: 130px !important;
+  height: 56px !important; /* Fixed height to prevent deformation */
   
-  background: linear-gradient(135deg, rgba(0, 255, 163, 0.15), rgba(220, 31, 255, 0.15)) !important;
-  backdrop-filter: blur(15px) !important;
-  -webkit-backdrop-filter: blur(15px) !important;
-  color: rgba(255, 255, 255, 0.9) !important;
-  border: 2px solid rgba(0, 255, 163, 0.3) !important;
-  border-radius: 16px !important;
+  /* 🧹 CRYSTAL CLEAR STYLE */
+  background: rgba(15, 20, 35, 0.85) !important; /* Solid dark background */
+  backdrop-filter: none !important; /* NO BLUR */
+  -webkit-backdrop-filter: none !important;
+  
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 12px !important;
   cursor: pointer !important;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  box-shadow: 0 0 20px rgba(0, 255, 163, 0.3),
-              0 4px 20px rgba(0, 0, 0, 0.3),
-              inset 0 0 15px rgba(255, 255, 255, 0.05) !important;
+  transition: all 0.2s ease !important;
+  box-shadow: none !important; /* Removed default shadow */
   overflow: hidden !important;
 }
 
-/* Glow effect cu pseudo-element */
-.token-button::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 255, 163, 0.4), transparent);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s ease, height 0.6s ease;
-  z-index: 0;
+/* Inner Content Layout */
+.token-btn-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
 }
 
-.token-button:hover::after {
-  width: 200%;
-  height: 200%;
+.token-text-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  line-height: 1.1;
+}
+
+.token-name {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 0.95rem !important;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.token-live-price {
+  font-family: 'Inter', sans-serif !important; /* Clean number font */
+  font-size: 0.8rem !important; /* ⬆️ INCREASED SIZE */
+  font-weight: 700 !important; /* ⬆️ BOLDER */
+  opacity: 1 !important; /* ⬆️ FULL VISIBILITY */
+  margin-top: 2px;
+  
+  /* 🎨 VIOLENT COLORS: Hot Pink / Cyan gradient for high contrast */
+  background: linear-gradient(90deg, #00F0FF 0%, #FF00AA 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 5px rgba(0, 240, 255, 0.3);
+}
+
+/* Remove Glow effect pseudo-element to reduce fog */
+.token-button::after {
+  display: none !important;
 }
 
 .token-button img,
 .token-icon {
-  width: 36px;
-  height: 36px;
+  width: 32px !important;
+  height: 32px !important;
   border-radius: 50%;
-  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
-  transition: all 0.3s ease;
-  z-index: 1;
-  position: relative;
-}
-
-.token-button span {
+  filter: none !important; /* REMOVED FOGGY GLOW */
   z-index: 1;
   position: relative;
 }
 
 /* === Active & Hover === AI SONNET STYLE */
 .token-button:hover {
-  background: linear-gradient(135deg, rgba(0, 255, 163, 0.25), rgba(220, 31, 255, 0.25));
-  border: 2px solid transparent;
-  border-image: linear-gradient(135deg, #00FFA3, #DC1FFF) 1;
-  color: #ffffff;
-  transform: translateY(-5px) scale(1.08);
-  box-shadow: 0 0 35px rgba(0, 255, 163, 0.6), 
-              0 0 70px rgba(220, 31, 255, 0.4),
-              0 12px 40px rgba(0, 0, 0, 0.6),
-              inset 0 0 25px rgba(255, 255, 255, 0.2);
-}
-
-.token-button:hover img,
-.token-button:hover .token-icon {
-  transform: rotate(360deg) scale(1.2);
-  filter: drop-shadow(0 0 20px rgba(0, 255, 163, 1));
+  background: rgba(25, 30, 45, 0.95) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  transform: translateY(-2px) !important;
 }
 
 .token-button.active {
-  background: linear-gradient(135deg, rgba(0, 255, 163, 0.3), rgba(220, 31, 255, 0.3));
-  border: 2px solid transparent;
-  border-image: linear-gradient(135deg, #00FFA3, #DC1FFF) 1;
-  color: #000000;
-  font-weight: 800;
-  box-shadow: 0 0 40px rgba(0, 255, 163, 0.7), 
-              0 0 80px rgba(220, 31, 255, 0.5),
-              0 12px 45px rgba(0, 0, 0, 0.7),
-              inset 0 0 30px rgba(255, 255, 255, 0.25);
-  animation: iconGlow 2.5s ease-in-out infinite;
+  background: rgba(0, 255, 163, 0.15) !important;
+  border: 1px solid #00FFA3 !important;
+  box-shadow: 0 0 20px rgba(0, 255, 163, 0.15) !important; /* Clean glow only on active */
 }
 
-.token-button.active img,
-.token-button.active .token-icon {
-  transform: scale(1.25);
-  filter: drop-shadow(0 0 25px rgba(0, 255, 163, 1)) 
-          drop-shadow(0 0 35px rgba(220, 31, 255, 0.8));
+.token-button.active .token-name {
+  color: #00FFA3 !important;
+}
+
+.token-button.active .token-live-price {
+  color: #fff !important;
+  opacity: 1;
 }
 
 /* === Mobile Responsive === */
@@ -272,47 +234,33 @@
   }
 
   .chain-tab {
-    padding: 12px 20px;
-    font-size: 0.9rem;
-  }
-
-  .chain-tab img,
-  .chain-icon {
-    width: 24px;
-    height: 24px;
+    padding: 10px 16px;
+    font-size: 0.85rem;
   }
 
   .token-grid {
     justify-content: center;
-    gap: 12px;
+    gap: 10px;
   }
 
   .token-button {
-    width: calc(33.33% - 8px);
-    min-width: 100px;
-    padding: 14px 18px;
-    font-size: 0.95rem;
+    width: calc(50% - 10px); /* 2 columns on mobile */
+    min-width: unset !important;
+    padding: 8px 12px !important;
+    height: 52px !important;
   }
 
   .token-button img,
   .token-icon {
-    width: 28px;
-    height: 28px;
+    width: 28px !important;
+    height: 28px !important;
   }
-}
-
-/* === Extra Small Mobile === */
-@media (max-width: 375px) {
-  .token-button {
-    width: calc(50% - 6px);
-    min-width: 90px;
-    padding: 12px 14px;
-    font-size: 0.85rem;
+  
+  .token-name {
+    font-size: 0.85rem !important;
   }
-
-  .token-button img,
-  .token-icon {
-    width: 24px;
-    height: 24px;
+  
+  .token-live-price {
+    font-size: 0.65rem !important;
   }
 }
