@@ -188,6 +188,15 @@ const InnerWalletProvider = ({ children }) => {
   const connectViaCoinbase = connectWallet;
   const connectViaRainbow = connectWallet;
 
+  // Safe Disconnect Wrapper
+  const safeDisconnect = async () => {
+    try {
+        await disconnect();
+    } catch (e) {
+        console.warn("[WalletContext] Disconnect failed suppressed:", e);
+    }
+  };
+
   return (
     <WalletContext.Provider
       value={{
@@ -207,7 +216,7 @@ const InnerWalletProvider = ({ children }) => {
 
         // Functions
         connectWallet,
-        disconnectWallet: disconnect,
+        disconnectWallet: safeDisconnect, // ✅ Use safe wrapper
         
         // Legacy Functions (Mapped)
         connectViaMetamask,

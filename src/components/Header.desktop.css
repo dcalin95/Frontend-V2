@@ -105,6 +105,37 @@
   transition: all 0.3s ease;
 }
 
+/* 🔧 FIX: Override for buttons that need SOLID text (not gradient) */
+.navigation .btn-ai-hub {
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+  font-weight: 800 !important;
+  text-shadow: 0 0 15px rgba(0, 255, 163, 0.4) !important;
+  border-color: #00FFA3 !important;
+}
+
+.navigation .btn-login {
+  background-image: none !important;
+  background-clip: border-box !important;
+  -webkit-background-clip: border-box !important;
+  -webkit-text-fill-color: initial !important;
+  animation: none !important;
+}
+
+/* Specific coloring for AI Hub (Black text on Gradient BG) */
+/* .navigation .btn-ai-hub {
+  color: #000000 !important;
+  font-weight: 700 !important;
+} */
+
+/* Specific coloring for Login (Neon Green text) */
+.navigation .btn-login {
+  color: #00FFA3 !important;
+}
+
 .navigation a::before,
 .navigation button::before {
   content: "";
@@ -130,6 +161,19 @@
   -webkit-text-fill-color: transparent;
   box-shadow: 0 0 20px rgba(0, 255, 163, 0.4), 0 0 40px rgba(220, 31, 255, 0.2);
   background-color: rgba(0, 255, 163, 0.05);
+}
+
+/* Restore solid colors on hover for special buttons */
+.navigation .btn-ai-hub:hover {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  background-image: none !important;
+}
+
+.navigation .btn-login:hover {
+  color: #00FFA3 !important;
+  -webkit-text-fill-color: #00FFA3 !important;
+  background-image: none !important;
 }
 
 .navigation a:hover i,
@@ -436,4 +480,3 @@ body.opera .navigation { max-width: calc(100% - 320px) !important; gap: 0.35rem 
 body.opera .navigation a,
 body.opera .navigation button { padding: 2px 6px !important; font-size: 0.85rem !important; }
 body.opera .right-section { min-width: 160px !important; }
-

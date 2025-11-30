@@ -96,6 +96,31 @@
     box-shadow: none !important;
   }
 
+  /* 🔧 FIX: Ensure special buttons on mobile have visible text by overriding gradient text fill if needed */
+  .mobile-nav-menu .mobile-btn-login .mobile-text {
+    -webkit-text-fill-color: initial !important;
+    background: none !important;
+    background-clip: border-box !important;
+    -webkit-background-clip: border-box !important;
+    color: #ffffff !important; /* Fallback to white if gradient fails */
+  }
+
+  /* AI HUB - AI SOLANA STYLE (Gradient Text) */
+  .mobile-nav-menu .mobile-btn-ai-hub .mobile-text {
+    background: linear-gradient(135deg, #00FFA3 0%, #DC1FFF 100%) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    color: transparent !important;
+    font-weight: 800 !important;
+    text-shadow: 0 0 10px rgba(0, 255, 163, 0.3) !important;
+  }
+  
+  /* But keep specific colors if possible */
+  .mobile-nav-menu .mobile-btn-login .mobile-text {
+    color: #00FFA3 !important;
+  }
+
   /* TEXT OPTIMIZAT (micsorat cu 15%, fara bold excesiv, SOLANA GRADIENT) */
   .mobile-text {
     font-size: 0.81rem !important; /* Redus de la 0.9rem cu ~10% */

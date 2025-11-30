@@ -174,9 +174,19 @@
   color: #ff5050;
   z-index: 10;
   border-radius: 20px;
+  backdrop-filter: blur(8px); /* 🌪️ Add blur for better focus on message */
 }
 
 .locked-overlay i {
-  font-size: 2.5rem;
+  font-size: 3rem; /* ⬆️ Bigger lock icon */
+  color: #ff5050;
+  text-shadow: 0 0 20px rgba(255, 80, 80, 0.5); /* 🔴 Red neon glow */
+  margin-bottom: 10px;
+}
+
+.locked-overlay span {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(255, 80, 80, 0.3);
 }
 

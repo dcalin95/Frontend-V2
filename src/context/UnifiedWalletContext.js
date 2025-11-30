@@ -17,6 +17,15 @@ export const UnifiedWalletProvider = ({ children }) => {
   const { disconnect: disconnectEvm } = useEvmDisconnect();
   const { connect: connectEvm, connectAsync: connectEvmAsync, connectors, error: connectError } = useConnect();
   
+  // 🛡️ Safe Disconnect Wrapper
+  const safeDisconnect = () => {
+    try {
+      disconnectEvm();
+    } catch (error) {
+      console.warn("[UnifiedWallet] Disconnect error suppressed:", error);
+    }
+  };
+
   // 🔧 FIX: Clear pending connection state on mount
   useEffect(() => {
     const clearPendingConnections = async () => {
@@ -52,12 +61,12 @@ export const UnifiedWalletProvider = ({ children }) => {
       // Clear error state after 3 seconds
       const timer = setTimeout(() => {
         // Force disconnect to clear state
-        disconnectEvm();
+        safeDisconnect();
       }, 3000);
       
       return () => clearTimeout(timer);
     }
-  }, [connectError, disconnectEvm]);
+  }, [connectError, disconnectEvm]); // Use safeDisconnect ideally but we define it inside
   
   // Auto-connect for In-App Browsers (Mobile Only - MetaMask, Trust, etc.)
   useEffect(() => {
@@ -151,7 +160,7 @@ export const UnifiedWalletProvider = ({ children }) => {
   };
 
   const disconnectWallet = () => {
-    disconnectEvm();
+    safeDisconnect();
   };
 
   // Get network name
@@ -205,4 +214,3 @@ export const UnifiedWalletProvider = ({ children }) => {
 };
 
 export default UnifiedWalletContext;
-
