@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
+import './Login.mobile.css'; // 📱 Separate Mobile System
 import { signInWithEmail, signInWithProvider } from '../utils/backend';
 import { useAuth } from '../context/AuthContext';
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './PaymentMethodSelector.css';
+import './PaymentMethodSelector.mobile.css'; // 📱 Separate Mobile System
 
 // Icons (you can replace with actual imports)
 const icons = {

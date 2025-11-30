@@ -381,61 +381,7 @@
 
 /* ============================================
    MOBILE OPTIMIZATION
+   Moved to Login.mobile.css as per System Requirements
    ============================================ */
-@media (max-width: 768px) {
-  .login-page {
-    padding: 80px 12px 32px;
-  }
 
-  .login-card {
-    max-width: 100%;
-  }
-
-  .login-card:not(.profile-card) {
-    padding: 24px 20px;
-  }
-
-  .login-card h1 {
-    font-size: 1.5rem;
-  }
-
-  .profile-header {
-    padding: 40px 20px 30px;
-  }
-
-  .user-avatar-large {
-    width: 100px;
-    height: 100px;
-  }
-
-  .user-initial-large {
-    font-size: 40px;
-  }
-
-  .profile-username {
-    font-size: 24px;
-  }
-
-  .profile-stats {
-    padding: 0 16px 16px;
-  }
-
-  .stat-card {
-    padding: 16px 12px;
-  }
-
-  .stat-icon {
-    width: 40px;
-    height: 40px;
-    font-size: 18px;
-  }
-
-  .stat-value {
-    font-size: 18px;
-  }
-
-  .existing-actions {
-    padding: 0 16px 16px;
-  }
-}
 

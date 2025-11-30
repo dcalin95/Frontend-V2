@@ -256,48 +256,8 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
-  .payment-methods-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .payment-method-card {
-    padding: 1.25rem;
-  }
-  
-  .summary-content {
-    flex-direction: column;
-    text-align: center;
-    gap: 1rem;
-  }
-  
-  .continue-button {
-    width: 100%;
-  }
-}
+/* Moved to PaymentMethodSelector.mobile.css as per System Requirements */
 
-@media (max-width: 480px) {
-  .payment-selector-header h3 {
-    font-size: 1.3rem;
-  }
-  
-  .payment-selector-header p {
-    font-size: 0.9rem;
-  }
-  
-  .payment-method-card {
-    padding: 1rem;
-  }
-  
-  .payment-method-icon {
-    font-size: 2rem;
-  }
-  
-  .payment-method-info h4 {
-    font-size: 1.1rem;
-  }
-}
 
 
 

@@ -1,0 +1,50 @@
+/* 📱 PAYMENT METHOD SELECTOR - MOBILE RESPONSIVE SYSTEM */
+/* Separate Mobile Logic as per System Requirements */
+
+@media (max-width: 768px) {
+  .payment-methods-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+  
+  .payment-method-card {
+    padding: 1.25rem;
+    /* Make it look more like a card/modal element on mobile */
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    background: rgba(0, 0, 0, 0.6);
+  }
+  
+  .summary-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .continue-button {
+    width: 100%;
+    padding: 16px; /* Larger touch target */
+  }
+}
+
+@media (max-width: 480px) {
+  .payment-selector-header h3 {
+    font-size: 1.3rem;
+  }
+  
+  .payment-selector-header p {
+    font-size: 0.9rem;
+  }
+  
+  .payment-method-card {
+    padding: 1rem;
+  }
+  
+  .payment-method-icon {
+    font-size: 2rem;
+  }
+  
+  .payment-method-info h4 {
+    font-size: 1.1rem;
+  }
+}
+
