@@ -226,13 +226,13 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
           
           {isAuthenticated ? (
             <SmartTooltip content={`Sign Out\nLogged in as ${user?.email || 'User'}`}>
-              <button className="btn-logout" onClick={signOut} style={{background: 'rgba(255, 50, 50, 0.2)', border: '1px solid rgba(255, 50, 50, 0.5)'}}>
+              <button className="btn-logout" onClick={signOut}>
                 <i className="fas fa-sign-out-alt"></i> Logout
               </button>
             </SmartTooltip>
           ) : (
             <SmartTooltip content={`Login/Register\nAccess exclusive features and AI tools.`}>
-              <Link to="/login" className="btn-login laser-sharp" style={{background: 'rgba(0, 255, 163, 0.2)', border: '1px solid rgba(0, 255, 163, 0.5)'}}>
+              <Link to="/login" className="btn-login laser-sharp">
                 <i className="fas fa-user"></i> Login
               </Link>
             </SmartTooltip>

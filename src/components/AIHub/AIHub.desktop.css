@@ -2,9 +2,11 @@
 
 .ai-hub-container {
   min-height: 100vh;
-  background: #000; /* Absolute Black */
+  background: transparent; /* ✨ Transparent to show Starfield */
   padding: 120px 40px 60px;
   color: #fff;
+  position: relative;
+  z-index: 1;
 }
 
 .ai-hub-header {

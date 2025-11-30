@@ -97,7 +97,8 @@
   }
 
   /* 🔧 FIX: Ensure special buttons on mobile have visible text by overriding gradient text fill if needed */
-  .mobile-nav-menu .mobile-btn-login .mobile-text {
+  .mobile-nav-menu .mobile-btn-login .mobile-text,
+  .mobile-nav-menu .mobile-btn-logout .mobile-text {
     -webkit-text-fill-color: initial !important;
     background: none !important;
     background-clip: border-box !important;
@@ -119,6 +120,10 @@
   /* But keep specific colors if possible */
   .mobile-nav-menu .mobile-btn-login .mobile-text {
     color: #00FFA3 !important;
+  }
+  
+  .mobile-nav-menu .mobile-btn-logout .mobile-text {
+    color: #ff5050 !important;
   }
 
   /* TEXT OPTIMIZAT (micsorat cu 15%, fara bold excesiv, SOLANA GRADIENT) */

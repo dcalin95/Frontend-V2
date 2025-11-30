@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { get } from '../utils/http';
+import { getUserProfile, signOut as apiSignOut } from '../utils/backend'; // Updated import
 
 const AuthContext = createContext(null);
 
@@ -8,18 +8,34 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  // Load user from local storage on mount
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await get('/api/auth/me');
-        if (response && response.user) {
-          setUser(response.user);
+        const savedUser = localStorage.getItem('bits_user');
+        if (savedUser) {
+          const parsedUser = JSON.parse(savedUser);
+          setUser(parsedUser);
           setIsAuthenticated(true);
+        } else {
+          // Optional: Check backend if needed, but for now trust localStorage or failing that
+          // we could call getUserProfile() which now mocks checking localStorage too.
+          try {
+             const response = await getUserProfile();
+             if (response && response.user) {
+               setUser(response.user);
+               setIsAuthenticated(true);
+               localStorage.setItem('bits_user', JSON.stringify(response.user));
+             }
+          } catch (e) {
+             // Silent fail
+          }
         }
       } catch (error) {
-        console.log('Not authenticated:', error);
+        console.log('Auth init error:', error);
         setUser(null);
         setIsAuthenticated(false);
+        localStorage.removeItem('bits_user');
       } finally {
         setLoading(false);
       }
@@ -28,13 +44,25 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
+  // Manual Login Helper (updates state immediately)
+  const loginSuccess = (userData) => {
+    setUser(userData);
+    setIsAuthenticated(true);
+    localStorage.setItem('bits_user', JSON.stringify(userData));
+  };
+
   const signOut = async () => {
     try {
-      await get('/api/auth/logout');
+      await apiSignOut();
       setUser(null);
       setIsAuthenticated(false);
+      localStorage.removeItem('bits_user');
     } catch (error) {
       console.error('Sign out error:', error);
+      // Force local cleanup anyway
+      setUser(null);
+      setIsAuthenticated(false);
+      localStorage.removeItem('bits_user');
     }
   };
 
@@ -44,7 +72,8 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated,
     signOut,
     setUser,
-    setIsAuthenticated
+    setIsAuthenticated,
+    loginSuccess // Exported to be called by Login component
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -57,4 +86,3 @@ export const useAuth = () => {
   }
   return context;
 };
-

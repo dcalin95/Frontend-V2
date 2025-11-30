@@ -1,19 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useWallet } from '../context/WalletContext';
+import useBitsBalance from '../hooks/useBitsBalance';
 import './mindmirror.desktop.css';
 import './mindmirror.mobile.css';
 import MindNFTGenerator from './components/MindNFTGenerator';
 
 const MindMirrorDashboard = () => {
+  // Wallet & Balance Hooks
+  const { account } = useWallet();
+  const { balance: bitsBalance, loading: balanceLoading } = useBitsBalance(account);
+
   // State management
   const [inputText, setInputText] = useState('');
   const [analysisResults, setAnalysisResults] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [videoStream, setVideoStream] = useState(null);
-  const [userBadge, setUserBadge] = useState(null);
   const [currentTier, setCurrentTier] = useState(1);
-  const [walletBalance, setWalletBalance] = useState(0);
   const [hasUsedAnalysis, setHasUsedAnalysis] = useState(false);
   const [showWarningModal, setShowWarningModal] = useState(false);
   const [wordMilestone, setWordMilestone] = useState({
@@ -24,18 +28,47 @@ const MindMirrorDashboard = () => {
   const [hoveredFeature, setHoveredFeature] = useState(null);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
 
+  const videoRef = useRef(null);
+
+  // Calculate progress and word count
+  const wordCount = wordMilestone.count || (inputText.trim() ? inputText.trim().split(/\s+/).length : 0);
+  const progress = Math.min((wordCount / 1000) * 100, 100);
+
+  // Check word milestone and usage on component mount or account change
+  useEffect(() => {
+    if (account) {
+      checkWordMilestone();
+      checkAnalysisUsage();
+    } else {
+      setWordMilestone({ count: 0, hasAccess: false, isLoading: false });
+    }
+  }, [account]);
+
+  // Page protection against accidental closure
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (analysisResults) {
+        e.preventDefault();
+        e.returnValue = 'You have unsaved analysis results! If you leave, the data will be lost forever.';
+        return 'You have unsaved analysis results! If you leave, the data will be lost forever.';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [analysisResults]);
+
   // Check if user has already used the analysis
   const checkAnalysisUsage = async () => {
     try {
       const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
-      const connectedWallet = window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet');
       
-      if (!connectedWallet) return;
+      if (!account) return;
       
       const response = await fetch(`${BACKEND_URL}/api/word-analysis/check-usage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ walletAddress: connectedWallet })
+        body: JSON.stringify({ walletAddress: account })
       });
       
       const data = await response.json();
@@ -45,63 +78,21 @@ const MindMirrorDashboard = () => {
     }
   };
 
-  // Page protection against accidental closure
-  useEffect(() => {
-    const handleBeforeUnload = (e) => {
-      if (analysisResults) {
-        e.preventDefault();
-        e.returnValue = 'You have unsaved analysis results! If you leave, the data will be lost forever.';
-        return 'You have unsaved analysis results! If you leave, the data will be lost forever.';
-      }
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [analysisResults]);
-
-  const videoRef = useRef(null);
-  const canvasRef = useRef(null);
-
-  // Calculate progress and word count
-  const wordCount = wordMilestone.count || (inputText.trim() ? inputText.trim().split(/\s+/).length : 0);
-  const progress = Math.min((wordCount / 1000) * 100, 100);
-
-  // Check word milestone on component mount
-  useEffect(() => {
-    checkWordMilestone();
-    checkAnalysisUsage();
-  }, []);
-
-  // Page protection against accidental closure
-  useEffect(() => {
-    const handleBeforeUnload = (e) => {
-      if (analysisResults) {
-        e.preventDefault();
-        e.returnValue = 'You have unsaved analysis results! If you leave, the data will be lost forever.';
-        return 'You have unsaved analysis results! If you leave, the data will be lost forever.';
-      }
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [analysisResults]);
-
   const checkWordMilestone = async () => {
     try {
       const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
-      const connectedWallet = window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet');
       
-      if (!connectedWallet) {
+      if (!account) {
         setWordMilestone({ count: 0, hasAccess: false, isLoading: false });
         return;
       }
 
-      console.log('🔍 Fetching word count for wallet:', connectedWallet);
+      console.log('🔍 Fetching word count for wallet:', account);
 
       const response = await fetch(`${BACKEND_URL}/api/word-analysis/analyze-user-words`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ walletAddress: connectedWallet })
+        body: JSON.stringify({ walletAddress: account })
       });
 
       if (!response.ok) {
@@ -109,13 +100,13 @@ const MindMirrorDashboard = () => {
       }
 
       const data = await response.json();
-      const wordCount = data.wordCount || 0;
+      const fetchedWordCount = data.wordCount || 0;
       
-      console.log('📊 Word count result:', { wordCount, hasAccess: wordCount >= 1000 });
+      console.log('📊 Word count result:', { wordCount: fetchedWordCount, hasAccess: fetchedWordCount >= 1000 });
 
       setWordMilestone({
-        count: wordCount,
-        hasAccess: wordCount >= 10, // TEMPORARY: Allow analysis with just 10 words for testing
+        count: fetchedWordCount,
+        hasAccess: fetchedWordCount >= 1000,
         isLoading: false
       });
     } catch (error) {
@@ -125,6 +116,11 @@ const MindMirrorDashboard = () => {
   };
 
   const handleAnalysis = async () => {
+    if (!account) {
+      alert('Please connect your wallet first!');
+      return;
+    }
+
     // Check if user has already used the analysis
     if (hasUsedAnalysis) {
       alert('⚠️ You have already used the free psychological analysis! For a new analysis, contact us for paid options.');
@@ -149,7 +145,7 @@ const MindMirrorDashboard = () => {
 ${analysisResults.analysis}
 
 Generated by MindMirror AI - bits-ai.io
-Wallet: ${window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet')}
+Wallet: ${account}
 Date: ${new Date().toLocaleDateString()}
     `);
     
@@ -175,7 +171,7 @@ Date: ${new Date().toLocaleDateString()}
           <div class="analysis">${analysisResults.analysis}</div>
           <hr>
           <p><strong>Generated by:</strong> MindMirror AI - bits-ai.io</p>
-          <p><strong>Wallet:</strong> ${window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet')}</p>
+          <p><strong>Wallet:</strong> ${account}</p>
           <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
         </body>
       </html>
@@ -193,7 +189,7 @@ Date: ${new Date().toLocaleDateString()}
 ${analysisResults.analysis}
 
 Generated by MindMirror AI - bits-ai.io
-Wallet: ${window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet')}
+Wallet: ${account}
 Date: ${new Date().toLocaleDateString()}
     `;
     
@@ -239,129 +235,6 @@ Check out your own analysis at bits-ai.io
 
   const handleFeatureLeave = () => {
     setHoveredFeature(null);
-  };
-
-  // Feature popup content
-  const getFeaturePopupContent = (featureKey) => {
-    const features = {
-      'emotional_prosody': {
-        title: '🎯 Emotional Prosody Mapping',
-        description: 'Advanced AI analysis of emotional patterns in speech, detecting micro-expressions and vocal stress indicators that reveal true trading psychology.',
-        access: 'Level 2+ (5,000 BITS)',
-        status: 'Premium Feature'
-      },
-      'trading_psychology': {
-        title: '📊 Trading Psychology Profiling',
-        description: 'Comprehensive psychological assessment combining behavioral analysis, risk tolerance evaluation, and decision-making pattern recognition.',
-        access: 'Level 1+ (1,000 BITS)',
-        status: 'Available Now'
-      },
-      'voice_analysis': {
-        title: '🔊 Real-time Voice Analysis',
-        description: 'Live monitoring of vocal biomarkers during trading sessions, providing instant feedback on stress levels and emotional state.',
-        access: 'Level 3+ (25,000 BITS)',
-        status: 'Coming Soon'
-      },
-      'personalized_trading': {
-        title: '💡 Personalized Trading Recommendations',
-        description: 'AI-powered trading suggestions based on your unique psychological profile, risk tolerance, and historical decision patterns.',
-        access: 'Level 2+ (5,000 BITS)',
-        status: 'Beta Testing'
-      }
-    };
-    return features[featureKey];
-  };
-
-  const proceedWithAnalysis = async () => {
-    // Restore body scroll
-    document.body.style.overflow = '';
-    
-    setShowWarningModal(false);
-    setIsAnalyzing(true);
-    
-    try {
-      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
-      
-      const connectedWallet = window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet');
-      
-      if (!connectedWallet) {
-        throw new Error('Please connect your wallet first to analyze your psychology profile');
-      }
-
-      // Get ONLY the raw words - no analysis!
-      const rawWordsResponse = await fetch(`${BACKEND_URL}/api/word-analysis/get-user-words`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ walletAddress: connectedWallet })
-      });
-
-      if (!rawWordsResponse.ok) {
-        throw new Error('Failed to get user words for OpenAI analysis');
-      }
-
-      const rawWordsData = await rawWordsResponse.json();
-      const userWords = rawWordsData.words || [];
-      
-      if (userWords.length === 0) {
-        throw new Error('No words found for analysis');
-      }
-      
-      const wordsText = userWords.join(' ');
-
-      console.log('🧠 Making neuropsychological analysis request with', userWords.length, 'words');
-      
-      // Use the REAL AI analysis endpoint with user's actual words
-      const url = `${BACKEND_URL}/api/ai/analyze`;
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: `Analyze the neuropsychological profile of a trader based on their collected words from Telegram participation. Word count: ${userWords.length}. Words: ${wordsText}`,
-          analysisType: 'neuropsychological'
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`Analysis failed: ${response.status} ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      
-      // Use REAL OpenAI analysis results - no more hardcoded values!
-      const enhancedResults = {
-        ...data,
-        aiProvider: "OpenAI GPT-4 Turbo",
-        analysisTimestamp: new Date().toLocaleString(),
-        wordCount: userWords.length,
-        // Convert stress level to percentage for UI
-        stressLevel: Math.round((data.stress_indicators?.level || 0.5) * 100),
-        // Convert confidence to percentage
-        confidenceLevel: Math.round((data.trading_psychology?.confidence_level || 0.7) * 100),
-        // Convert emotional stability to percentage  
-        emotionalStability: Math.round((data.trading_psychology?.emotional_stability || 0.8) * 100),
-        // Convert cognitive load to percentage
-        cognitiveLoad: Math.round((data.cognitive_patterns?.load || 0.6) * 100),
-        // Map attention focus to numeric value
-        focusLevel: data.cognitive_patterns?.attention_focus === 'high' ? 85 : 
-                   data.cognitive_patterns?.attention_focus === 'medium' ? 65 : 45,
-        // Convert stress resilience to percentage
-        anxietyLevel: Math.round((1 - (data.neuropsychological_profile?.stress_resilience || 0.75)) * 100),
-        // Additional metrics from real analysis
-        decisionSpeed: data.cognitive_patterns?.decision_style === 'analytical' ? 'Deliberate-Analytical' :
-                      data.cognitive_patterns?.decision_style === 'intuitive' ? 'Moderate-Intuitive' : 'Fast-Impulsive',
-        riskAppetite: data.trading_psychology?.risk_tolerance === 'high' ? 'Aggressive-Risk-Seeking' :
-                     data.trading_psychology?.risk_tolerance === 'medium' ? 'Balanced-Moderate' : 'Conservative-Risk-Averse'
-      };
-      
-      setAnalysisResults(enhancedResults);
-      setHasUsedAnalysis(true); // Mark as used after successful analysis
-      
-    } catch (error) {
-      console.error('Analysis error:', error);
-      alert(`Analysis failed: ${error.message}. Please try again.`);
-    } finally {
-      setIsAnalyzing(false);
-    }
   };
 
   // Get tier information - PROFESSIONAL MEDICAL TERMINOLOGY WITH BITS REQUIREMENTS
@@ -434,6 +307,127 @@ Check out your own analysis at bits-ai.io
     return tiers[tier] || tiers[1];
   };
 
+  // Feature popup content
+  const getFeaturePopupContent = (featureKey) => {
+    const features = {
+      'emotional_prosody': {
+        title: '🎯 Emotional Prosody Mapping',
+        description: 'Advanced AI analysis of emotional patterns in speech, detecting micro-expressions and vocal stress indicators that reveal true trading psychology.',
+        access: 'Level 2+ (5,000 BITS)',
+        status: 'Premium Feature'
+      },
+      'trading_psychology': {
+        title: '📊 Trading Psychology Profiling',
+        description: 'Comprehensive psychological assessment combining behavioral analysis, risk tolerance evaluation, and decision-making pattern recognition.',
+        access: 'Level 1+ (1,000 BITS)',
+        status: 'Available Now'
+      },
+      'voice_analysis': {
+        title: '🔊 Real-time Voice Analysis',
+        description: 'Live monitoring of vocal biomarkers during trading sessions, providing instant feedback on stress levels and emotional state.',
+        access: 'Level 3+ (25,000 BITS)',
+        status: 'Coming Soon'
+      },
+      'personalized_trading': {
+        title: '💡 Personalized Trading Recommendations',
+        description: 'AI-powered trading suggestions based on your unique psychological profile, risk tolerance, and historical decision patterns.',
+        access: 'Level 2+ (5,000 BITS)',
+        status: 'Beta Testing'
+      }
+    };
+    return features[featureKey];
+  };
+
+  const proceedWithAnalysis = async () => {
+    // Restore body scroll
+    document.body.style.overflow = '';
+    
+    setShowWarningModal(false);
+    setIsAnalyzing(true);
+    
+    try {
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+      
+      if (!account) {
+        throw new Error('Please connect your wallet first to analyze your psychology profile');
+      }
+
+      // Get ONLY the raw words - no analysis!
+      const rawWordsResponse = await fetch(`${BACKEND_URL}/api/word-analysis/get-user-words`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ walletAddress: account })
+      });
+
+      if (!rawWordsResponse.ok) {
+        throw new Error('Failed to get user words for OpenAI analysis');
+      }
+
+      const rawWordsData = await rawWordsResponse.json();
+      const userWords = rawWordsData.words || [];
+      
+      if (userWords.length === 0) {
+        throw new Error('No words found for analysis');
+      }
+      
+      const wordsText = userWords.join(' ');
+
+      console.log('🧠 Making neuropsychological analysis request with', userWords.length, 'words');
+      
+      // Use the REAL AI analysis endpoint with user's actual words
+      const url = `${BACKEND_URL}/api/ai/analyze`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: `Analyze the neuropsychological profile of a trader based on their collected words from Telegram participation. Word count: ${userWords.length}. Words: ${wordsText}`,
+          analysisType: 'neuropsychological'
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Analysis failed: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      
+      // Use REAL OpenAI analysis results - no more hardcoded values!
+      const enhancedResults = {
+        ...data,
+        aiProvider: "OpenAI GPT-4 Turbo",
+        analysisTimestamp: new Date().toLocaleString(),
+        wordCount: userWords.length,
+        // Convert stress level to percentage for UI
+        stressLevel: Math.round((data.stress_indicators?.level || 0.5) * 100),
+        // Convert confidence to percentage
+        confidenceLevel: Math.round((data.trading_psychology?.confidence_level || 0.7) * 100),
+        // Convert emotional stability to percentage  
+        emotionalStability: Math.round((data.trading_psychology?.emotional_stability || 0.8) * 100),
+        // Convert cognitive load to percentage
+        cognitiveLoad: Math.round((data.cognitive_patterns?.load || 0.6) * 100),
+        // Map attention focus to numeric value
+        focusLevel: data.cognitive_patterns?.attention_focus === 'high' ? 85 : 
+                   data.cognitive_patterns?.attention_focus === 'medium' ? 65 : 45,
+        // Convert stress resilience to percentage
+        anxietyLevel: Math.round((1 - (data.neuropsychological_profile?.stress_resilience || 0.75)) * 100),
+        // Additional metrics from real analysis
+        decisionSpeed: data.cognitive_patterns?.decision_style === 'analytical' ? 'Deliberate-Analytical' :
+                      data.cognitive_patterns?.decision_style === 'intuitive' ? 'Moderate-Intuitive' : 'Fast-Impulsive',
+        riskAppetite: data.trading_psychology?.risk_tolerance === 'high' ? 'Aggressive-Risk-Seeking' :
+                     data.trading_psychology?.risk_tolerance === 'medium' ? 'Balanced-Moderate' : 'Conservative-Risk-Averse'
+      };
+      
+      setAnalysisResults(enhancedResults);
+      setHasUsedAnalysis(true); // Mark as used after successful analysis
+      
+    } catch (error) {
+      console.error('Analysis error:', error);
+      alert(`Analysis failed: ${error.message}. Please try again.`);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
   const startVideoRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ 
@@ -461,13 +455,10 @@ Check out your own analysis at bits-ai.io
     setIsRecording(false);
   };
 
-  if (wordMilestone.isLoading) {
-    return (
-      <div className="mind-mirror-loading">
-        <div className="loading-spinner"></div>
-        <p>Loading Mind Mirror...</p>
-      </div>
-    );
+  // Loading State
+  if (wordMilestone.isLoading && !account) {
+     // Just show nothing or a simple loader if initializing
+     // But actually we want to show the dashboard even if not connected, just locked
   }
 
   return (
@@ -480,6 +471,16 @@ Check out your own analysis at bits-ai.io
             <div className="hero-text">
               <h1 className="hero-title laser-sharp">AI Mind Mirror</h1>
               <p className="hero-subtitle laser-sharp">Advanced Neuropsychological Analysis for Professional Traders</p>
+              {!account && (
+                  <div style={{marginTop: '1rem', color: '#ff5050', fontWeight: 'bold'}}>
+                      <i className="fas fa-exclamation-triangle"></i> Connect Wallet to Access Profile
+                  </div>
+              )}
+              {account && (
+                  <div style={{marginTop: '0.5rem', color: '#00FFA3', fontSize: '0.9rem'}}>
+                      Balance: {balanceLoading ? "..." : bitsBalance.toLocaleString()} BITS
+                  </div>
+              )}
             </div>
           </div>
 
@@ -530,11 +531,15 @@ Check out your own analysis at bits-ai.io
         <div className="tier-grid">
           {[1, 2, 3, 4].map(tier => {
             const tierInfo = getTierInfo(tier);
+            // Check if user has enough BITS
+            const isLocked = bitsBalance < tierInfo.bitsRequired;
+            
             return (
               <div 
                 key={tier} 
-                className={`tier-card ${currentTier === tier ? 'active' : ''}`}
-                onClick={() => setCurrentTier(tier)}
+                className={`tier-card ${currentTier === tier ? 'active' : ''} ${isLocked ? 'locked-tier' : ''}`}
+                onClick={() => !isLocked && setCurrentTier(tier)}
+                style={{ opacity: isLocked ? 0.6 : 1, cursor: isLocked ? 'not-allowed' : 'pointer' }}
               >
                 <div className="tier-header">
                   <h3 className="laser-sharp">Level {tier}</h3>
@@ -544,16 +549,20 @@ Check out your own analysis at bits-ai.io
                 <h4 className="laser-sharp">{tierInfo.name}</h4>
                 <p className="tier-description laser-sharp">{tierInfo.description}</p>
                 <div className="tier-unlock-condition laser-sharp">
-                  <strong>🔓 Unlock:</strong> {tierInfo.unlockCondition}
+                  {isLocked ? (
+                      <strong style={{color: '#ff5050'}}><i className="fas fa-lock"></i> Locked (Need {tierInfo.bitsRequired} BITS)</strong>
+                  ) : (
+                      <strong style={{color: '#00FFA3'}}><i className="fas fa-unlock"></i> Unlocked</strong>
+                  )}
                 </div>
                 <ul>
                   {tierInfo.features.map((feature, idx) => (
                     <li key={idx} className="laser-sharp">{feature}</li>
                   ))}
                 </ul>
-                    </div>
-                  );
-                })}
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -575,16 +584,16 @@ Check out your own analysis at bits-ai.io
 
           <div className="context-info">
             <p className="context-text">
-              {wordCount < 10 
-                ? `🧠 Participate in Telegram group to collect ${10 - wordCount} more words for analysis`
-                : "✨ Ready for advanced neuropsychological analysis! (TESTING MODE)"
+              {wordCount < 1000 
+                ? `🧠 Participate in Telegram group to collect ${1000 - wordCount} more words for analysis`
+                : "✨ Ready for advanced neuropsychological analysis!"
               }
             </p>
           </div>
 
           <button 
             onClick={handleAnalysis}
-            disabled={isAnalyzing || !wordMilestone.hasAccess}
+            disabled={isAnalyzing || !wordMilestone.hasAccess || !account}
             className={`analyze-button laser-sharp ${isAnalyzing ? 'analyzing' : ''}`}
           >
             {isAnalyzing ? (
@@ -592,10 +601,12 @@ Check out your own analysis at bits-ai.io
                 <span className="spinner"></span>
                 🤖 OpenAI GPT-4 Analyzing...
               </>
+            ) : !account ? (
+                '🔌 Connect Wallet First'
             ) : wordMilestone.hasAccess ? (
               '🧬 Initialize Cognitive Analysis'
             ) : (
-              `🔒 Need 10 words (${wordMilestone.count || 0}/10) - TESTING MODE`
+              `🔒 Need 1000 words (${wordMilestone.count || 0}/1000)`
             )}
           </button>
         </div>

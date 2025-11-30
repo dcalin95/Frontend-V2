@@ -4,6 +4,7 @@
 @media (max-width: 768px) {
   .login-page {
     padding: 80px 12px 32px;
+    background: transparent; /* Ensure transparency on mobile too */
   }
 
   .login-card {
@@ -18,43 +19,83 @@
     font-size: 1.5rem;
   }
 
+  /* ==============================
+     PROFILE CARD MOBILE STYLES
+     ============================== */
   .profile-header {
-    padding: 40px 20px 30px;
+    padding: 30px 20px 20px;
+    margin-bottom: 16px;
+  }
+  
+  .profile-header-bg {
+    height: 140px;
   }
 
   .user-avatar-large {
-    width: 100px;
-    height: 100px;
+    width: 90px;
+    height: 90px;
+    margin-bottom: 12px;
   }
 
   .user-initial-large {
-    font-size: 40px;
+    font-size: 36px;
   }
 
   .profile-username {
-    font-size: 24px;
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+
+  .profile-email {
+    font-size: 12px;
+    margin-bottom: 12px;
   }
 
   .profile-stats {
     padding: 0 16px 16px;
+    grid-template-columns: 1fr 1fr; /* Two columns for stats on mobile if space permits, or 1fr for very small */
+    gap: 12px;
+  }
+  
+  @media (max-width: 400px) {
+    .profile-stats {
+      grid-template-columns: 1fr;
+    }
   }
 
   .stat-card {
-    padding: 16px 12px;
+    padding: 12px 10px;
+    gap: 10px;
+    flex-direction: column;
+    text-align: center;
   }
 
   .stat-icon {
-    width: 40px;
-    height: 40px;
-    font-size: 18px;
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    margin: 0 auto;
+  }
+
+  .stat-content {
+    align-items: center;
+  }
+
+  .stat-label {
+    font-size: 10px;
   }
 
   .stat-value {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .existing-actions {
     padding: 0 16px 16px;
+    gap: 10px;
+  }
+  
+  .btn {
+    padding: 12px 20px;
+    font-size: 13px;
   }
 }
-

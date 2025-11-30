@@ -1,15 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AI_TOOLS_PRICING } from './pricingConfig';
-import useBitsBalance from '../../hooks/useBitsBalance';
-import { useWallet } from '../../context/WalletContext';
+import { useWallet } from '../../context/WalletContext'; // Core Wallet Context
+import useBitsBalance from '../../hooks/useBitsBalance'; // Dedicated Balance Hook
 import './AIHub.desktop.css';
 import './AIHub.mobile.css';
 
 const AIHub = () => {
   const navigate = useNavigate();
-  const { account } = useWallet();
-  const { balance: bitsBalance } = useBitsBalance(account);
+  
+  // 1. Get wallet address from global context
+  const { account } = useWallet(); 
+  
+  // 2. Fetch REAL BITS balance using the hook
+  const { balance: bitsBalance, loading } = useBitsBalance(account);
+
+  // Debugging
+  useEffect(() => {
+    console.log("AI Hub - Wallet:", account);
+    console.log("AI Hub - BITS Balance:", bitsBalance);
+  }, [account, bitsBalance]);
+
+  const displayBalance = loading ? "..." : bitsBalance?.toLocaleString() || "0";
 
   const tools = [
     {
@@ -31,6 +43,11 @@ const AIHub = () => {
       ...AI_TOOLS_PRICING.smartAudit,
       icon: '🛡️',
       route: '/ai-hub/smart-audit'
+    },
+    {
+      ...AI_TOOLS_PRICING.mindMirror,
+      icon: '🧠',
+      route: '/mind-mirror'
     }
   ];
 
@@ -42,13 +59,19 @@ const AIHub = () => {
           AI UTILITY NEXUS
         </h1>
         <p className="ai-hub-subtitle">
-          Powered by BITS Tokens • Your Balance: <span className="balance-highlight">{bitsBalance.toLocaleString()}</span> BITS
+          Powered by BITS Tokens • Your Balance: <span className="balance-highlight">{displayBalance}</span> BITS
         </p>
+        {!account && (
+            <p style={{color: '#ff5050', fontSize: '0.9rem', marginTop: '5px'}}>
+                <i className="fas fa-exclamation-circle"></i> Wallet not connected. Please connect your wallet to access tools.
+            </p>
+        )}
       </div>
 
       <div className="tools-grid">
         {tools.map((tool) => {
-          const canAfford = bitsBalance >= tool.cost;
+          // Only allow access if wallet connected AND balance sufficient
+          const canAfford = account && (bitsBalance >= tool.cost);
           
           return (
             <div
@@ -61,12 +84,12 @@ const AIHub = () => {
               <p className="tool-description">{tool.description}</p>
               <div className="tool-cost">
                 <span className="cost-label">Cost:</span>
-                <span className="cost-value">{tool.cost} BITS</span>
+                <span className="cost-value">{tool.cost === 0 ? "Free Tier" : `${tool.cost} BITS`}</span>
               </div>
               {!canAfford && (
                 <div className="locked-overlay">
                   <i className="fas fa-lock"></i>
-                  <span>Insufficient BITS</span>
+                  <span>{!account ? "Connect Wallet" : "Insufficient BITS"}</span>
                 </div>
               )}
             </div>
@@ -85,4 +108,3 @@ const AIHub = () => {
 };
 
 export default AIHub;
-

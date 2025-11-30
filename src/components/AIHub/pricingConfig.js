@@ -25,6 +25,12 @@ export const AI_TOOLS_PRICING = {
     cost: 500,
     description: 'Quick AI security scan for smart contracts'
   },
+  mindMirror: {
+    id: 'mind-mirror',
+    name: 'AI Mind Mirror',
+    cost: 0, // Starting Tier is Free
+    description: 'Advanced Neuropsychological Analysis for Traders'
+  },
   zenMode: {
     id: 'zen-mode',
     name: 'Zen Trading Mode',
@@ -32,4 +38,3 @@ export const AI_TOOLS_PRICING = {
     description: 'Calm your FOMO with AI-guided meditation'
   }
 };
-

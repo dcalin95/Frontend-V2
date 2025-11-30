@@ -117,7 +117,8 @@
   border-color: #00FFA3 !important;
 }
 
-.navigation .btn-login {
+.navigation .btn-login,
+.navigation .btn-logout {
   background-image: none !important;
   background-clip: border-box !important;
   -webkit-background-clip: border-box !important;
@@ -125,15 +126,21 @@
   animation: none !important;
 }
 
-/* Specific coloring for AI Hub (Black text on Gradient BG) */
-/* .navigation .btn-ai-hub {
-  color: #000000 !important;
-  font-weight: 700 !important;
-} */
-
 /* Specific coloring for Login (Neon Green text) */
 .navigation .btn-login {
   color: #00FFA3 !important;
+}
+
+/* Specific coloring for Logout (Red text & Border) */
+.navigation .btn-logout {
+  color: #ff5050 !important;
+  border-color: rgba(255, 50, 50, 0.5) !important;
+  background: rgba(255, 50, 50, 0.1) !important;
+}
+.navigation .btn-logout:hover {
+  background: rgba(255, 50, 50, 0.25) !important;
+  box-shadow: 0 0 15px rgba(255, 50, 50, 0.4) !important;
+  transform: translateY(-2px);
 }
 
 .navigation a::before,

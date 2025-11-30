@@ -4,12 +4,13 @@
   /* 🌟 GEMINI KING ENHANCEMENTS FOR MOBILE */
   .mind-mirror-container {
     padding: 1rem;
-    filter: contrast(1.15) brightness(1.05);
+    background: transparent !important; /* Ensure transparency on mobile */
   }
 
   .hero-header {
     flex-direction: column;
     gap: 1rem;
+    text-align: center;
   }
   
   .hero-title {
@@ -19,25 +20,27 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     filter: drop-shadow(0 0 15px rgba(0, 255, 163, 0.4));
-    animation: geminiGlow 3s ease-in-out infinite;
+    margin-bottom: 0.5rem;
   }
 
-  @keyframes geminiGlow {
-    0%, 100% { filter: drop-shadow(0 0 15px rgba(0, 255, 163, 0.4)); }
-    50% { filter: drop-shadow(0 0 25px rgba(220, 31, 255, 0.6)); }
+  .hero-subtitle {
+    font-size: 1rem;
   }
   
   .hero-features {
     grid-template-columns: 1fr;
     gap: 1rem;
+    margin-top: 2rem;
+    margin-bottom: 3rem;
   }
 
   .feature-item {
     padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(0, 255, 163, 0.3);
     border-radius: 1.2rem;
-    background: linear-gradient(135deg, rgba(0, 255, 163, 0.05), rgba(220, 31, 255, 0.05));
-    box-shadow: 0 4px 12px rgba(0, 255, 163, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 255, 163, 0.1);
+    backdrop-filter: blur(5px);
   }
   
   .tier-grid {
@@ -47,7 +50,9 @@
 
   .tier-card {
     border: 1px solid rgba(0, 255, 163, 0.3);
-    box-shadow: 0 4px 15px rgba(0, 255, 163, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 255, 163, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(5px);
   }
   
   .results-grid {
@@ -55,11 +60,14 @@
     gap: 1.5rem;
   }
 
+  .results-section {
+    padding: 2rem 1rem;
+    background: rgba(15, 15, 25, 0.85);
+  }
+
   .result-card {
     border: 1px solid rgba(0, 255, 163, 0.25);
-    box-shadow: 
-      0 6px 20px rgba(0, 0, 0, 0.3),
-      0 0 15px rgba(0, 255, 163, 0.15);
+    background: rgba(255, 255, 255, 0.05);
   }
   
   .analyze-button {
@@ -102,4 +110,3 @@
     transform: translateX(-50%);
   }
 }
-
