@@ -103,12 +103,19 @@
   display: none; /* 🚨 Ascuns complet - eliminat "📱 Device Information" */
 }
 
-/* 3 coloane - COMPACT și SIMETRIC */
+/* 3 coloane - COMPACT și SIMETRIC - DESKTOP */
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr) !important; /* 🚨 3 coloane pe DESKTOP */
   gap: 6px;
   max-width: 100%;
+}
+
+/* 🚨 Force 3 columns pe desktop (min-width: 769px) */
+@media (min-width: 769px) {
+  .info-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
 }
 
 .info-item {

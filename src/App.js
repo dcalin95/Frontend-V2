@@ -18,6 +18,7 @@ import StarfieldBackground from "./components/StarfieldBackground";
 // import CustomCursor from "./components/CustomCursor"; // 🚫 DISABLED - Performance optimization
 import ErrorBoundary from "./components/ErrorBoundary";
 import SidebarMenu from "./SidebarMenu/SidebarMenu";
+import InstallAppModal from "./components/PWA/InstallAppModal"; // 🚀 PWA Install Prompt
 import HamburgerButton from "./HamburgerButton/HamburgerButton";
 import ThemeChecker from "./components/ThemeChecker";
 
@@ -173,6 +174,8 @@ const MainLayout = ({ children, isMobile, menuOpen, setMenuOpen, headerMenuOpen,
   return (
     <div className="app-container">
       {/* <CustomCursor /> */}
+      {/* 📱 PWA Install Prompt - Runs automatically */}
+      <InstallAppModal />
       <StarfieldBackground />
       <Header 
         isMenuOpen={headerMenuOpen} 

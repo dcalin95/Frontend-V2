@@ -8,8 +8,9 @@
 
   /* Footer container - Mai compact */
   .footer-container {
-    padding: 1.5rem 1rem !important;
+    padding: 1.5rem 1rem 120px 1rem !important; /* 🚨 Padding bottom mare pentru Device Info */
     font-size: 0.85rem !important;
+    min-height: auto !important;
   }
 
   /* Footer text - Mai mic */
@@ -36,43 +37,67 @@
     padding: 4px !important;
   }
 
-  /* Footer links - Stack vertical cu spacing */
+  /* Footer links - GRID 2x2 pe mobile */
   .footer-links {
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 0.6rem !important;
-    margin-bottom: 80px !important; /* 🚨 Spațiu pentru Device Info button */
+    display: grid !important; /* 🚨 Grid în loc de flex */
+    grid-template-columns: 1fr 1fr !important; /* 🚨 2 coloane */
+    gap: 0.7rem !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 20px !important;
     width: 100% !important;
+    max-width: 400px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 
-  /* Buttons - COMPACT și DISCRETE */
+  /* Buttons - NEUTRAL și COMPACT pe mobile */
   .footer-button {
-    padding: 0.5rem 1rem !important;
-    font-size: 0.7rem !important; /* 🚨 Mai mic */
+    padding: 0.7rem 0.5rem !important;
+    font-size: 0.7rem !important;
+    line-height: 1.2 !important;
     border-radius: 8px !important;
-    width: auto !important;
-    min-width: 140px !important; /* 🚨 Lățime minimă */
-    max-width: 180px !important; /* 🚨 Lățime maximă redusă */
-    white-space: nowrap !important; /* 🚨 O singură linie */
+    width: 100% !important; /* 🚨 Full width în grid */
+    min-width: unset !important;
+    max-width: unset !important;
+    white-space: normal !important; /* 🚨 Allow text wrap */
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important; /* 🚨 Icon + text vertical */
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.3rem !important;
     
-    /* 🚨 DISCRETE - culori mai subțiri */
-    background: linear-gradient(135deg, rgba(0, 255, 163, 0.08), rgba(220, 31, 255, 0.08)) !important;
-    border: 1px solid rgba(0, 255, 163, 0.2) !important;
-    box-shadow: none !important;
-    opacity: 0.85;
+    /* 🚨 NEUTRAL - grayscale discrete */
+    background: rgba(40, 40, 40, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    text-decoration: none !important;
   }
 
   .footer-button:hover,
   .footer-button:active {
-    background: linear-gradient(135deg, rgba(0, 255, 163, 0.15), rgba(220, 31, 255, 0.15)) !important;
-    box-shadow: 0 0 10px rgba(0, 255, 163, 0.15) !important; /* 🚨 Umbră subtilă la hover */
-    transform: scale(1.02) !important; /* 🚨 NU translateY - doar scale mic */
-    opacity: 1;
+    background: rgba(50, 50, 50, 0.8) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+    transform: scale(0.98) !important; /* 🚨 Press effect */
   }
 
   /* Icons în butoane - Mai mici */
   .footer-icon {
-    font-size: 0.9rem !important;
+    font-size: 1rem !important;
+    margin: 0 !important;
+  }
+  
+  /* 🚨 Add BITS button - Mai mic și compact */
+  .footer-container > div:has(.add-bits-button) {
+    margin: 0.8rem 0 !important;
+  }
+  
+  .add-bits-button {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.7rem !important;
+    max-width: 180px !important;
+    margin: 0 auto !important;
   }
 
   /* 🚨 Device Info Button - FIXED la bottom (nu în footer!) */
@@ -82,7 +107,7 @@
 /* 📱 EXTRA SMALL MOBILE (< 480px) */
 @media (max-width: 480px) {
   .footer-container {
-    padding: 1.2rem 0.8rem !important;
+    padding: 1.2rem 0.8rem 130px 0.8rem !important; /* 🚨 Padding bottom mai mare */
     font-size: 0.75rem !important;
   }
 
@@ -92,14 +117,19 @@
   }
 
   .footer-button {
-    padding: 0.4rem 0.8rem !important;
+    padding: 0.65rem 0.4rem !important;
     font-size: 0.65rem !important;
-    min-width: 120px !important;
-    max-width: 160px !important;
+    width: 100% !important;
   }
   
   .footer-links {
-    margin-bottom: 90px !important; /* 🚨 Mai mult spațiu pe ecrane mici */
+    margin-top: 1.5rem !important;
+    margin-bottom: 20px !important;
+    gap: 0.6rem !important;
+  }
+  
+  .footer-icon {
+    font-size: 0.9rem !important;
   }
 
   .footer-icon {

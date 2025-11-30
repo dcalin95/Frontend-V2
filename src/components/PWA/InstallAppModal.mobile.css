@@ -1,0 +1,116 @@
+/* 📱 MOBILE PWA INSTALL MODAL */
+
+.install-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000000; /* Absolute Black */
+    z-index: 99999; /* Peste TOT */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Loader Container - Background Visual */
+.install-loader-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.6; /* Ușor transparent să se vadă textul */
+    z-index: 1;
+    pointer-events: none; /* Să nu blocheze click-urile */
+}
+
+/* Modificări specifice pentru Loader când e în Install Mode */
+.install-loader-wrapper .dex-cinematic-loader-overlay-v2 {
+    background: transparent !important;
+}
+
+/* UI Content - Deasupra Loaderului */
+.install-content-ui {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+    width: 100%;
+    padding-bottom: 80px; /* Spațiu jos */
+    background: linear-gradient(to top, #000000 0%, rgba(0,0,0,0.8) 40%, transparent 100%);
+}
+
+.install-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    color: #00FFA3;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    text-shadow: 0 0 15px rgba(0, 255, 163, 0.5);
+    text-align: center;
+}
+
+.install-desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #ccc;
+    text-align: center;
+    max-width: 80%;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+.install-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 80%;
+    max-width: 300px;
+}
+
+.btn-install-app {
+    background: linear-gradient(90deg, #00FFA3, #4facfe);
+    border: none;
+    padding: 15px 20px;
+    border-radius: 12px;
+    color: #000;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 0 20px rgba(0, 255, 163, 0.4);
+    transition: transform 0.2s;
+    text-transform: uppercase;
+}
+
+.btn-install-app:active {
+    transform: scale(0.95);
+}
+
+.btn-maybe-later {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 12px;
+    border-radius: 12px;
+    color: #888;
+    font-size: 14px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-maybe-later:active {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
