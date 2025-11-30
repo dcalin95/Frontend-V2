@@ -1,4 +1,4 @@
-/* AI HUB DESKTOP REFACTOR - FIXED GRID & CARDS */
+/* AI HUB DESKTOP REFACTOR - AI SOLANA STYLE (CRYSTAL CLEAR - NO BLUR) */
 
 .ai-hub-container {
   padding: 40px 20px;
@@ -7,7 +7,6 @@
   min-height: 80vh;
   color: #fff;
   font-family: 'Inter', sans-serif;
-  /* Ensure it sits below fixed header */
   margin-top: 100px; 
 }
 
@@ -18,144 +17,186 @@
 }
 
 .ai-hub-title {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 3rem;
-  font-weight: 700;
-  margin: 0 0 10px 0;
-  background: linear-gradient(135deg, #fff 0%, #00FFA3 100%);
+  /* AI Solana Style: Education Page Match */
+  font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 900;
+  margin: 0 0 15px 0;
+  
+  /* THE SPECIFIC GRADIENT AND SHADOW */
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 30px rgba(0, 255, 163, 0.3);
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(0, 255, 163, 0.4));
+  
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 15px;
+  letter-spacing: 1px;
 }
 
 .title-icon {
-  font-size: 2.5rem;
-  filter: drop-shadow(0 0 10px rgba(0,255,163,0.5));
+  font-size: 3rem;
+  filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.6));
 }
 
 .ai-hub-subtitle {
-  color: #8892b0;
+  color: #aaa; /* Sharper gray */
   font-size: 1.1rem;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
+  font-family: 'JetBrains Mono', monospace; /* Tech font */
 }
 
 .balance-highlight {
   color: #00FFA3;
   font-weight: bold;
-  text-shadow: 0 0 10px rgba(0, 255, 163, 0.5);
+  text-shadow: 0 0 5px #00FFA3;
 }
 
-/* TOOLS GRID - FIXED 3 COLUMN LAYOUT */
+/* TOOLS GRID */
 .tools-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Force 3 columns */
+  grid-template-columns: repeat(3, 1fr);
   gap: 30px;
   padding: 20px;
-  justify-items: center; /* Center cards in their cells */
+  justify-items: center;
 }
 
-/* TOOL CARD */
+/* TOOL CARD - CRYSTAL CLEAR TECH STYLE */
 .tool-card {
-  background: rgba(10, 10, 18, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
+  /* NO BLUR - ABSOLUTE CLARITY */
+  background: transparent; 
+  border: 1px solid rgba(255, 255, 255, 0.15); /* Sharp thin line */
+  border-radius: 16px;
   padding: 30px;
   position: relative;
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease-out; /* Snappy transition */
   cursor: pointer;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none !important; /* NUCLEAR CLEANUP OF BLUR */
+  box-shadow: none; /* No fuzzy shadows */
   
-  /* Layout Control */
+  /* Layout */
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   width: 100%;
-  max-width: 350px; /* Prevent wide stretching */
-  height: 450px; /* Fixed height for uniformity */
-  justify-content: flex-start; /* Align items to top */
+  max-width: 350px;
+  height: 480px;
+  justify-content: flex-start;
+}
+
+/* Tech Grid Overlay on Card Background */
+.tool-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.5;
+  z-index: 0;
 }
 
 .tool-card:hover {
-  transform: translateY(-5px);
-  border-color: #00FFA3;
-  box-shadow: 0 10px 30px -10px rgba(0, 255, 163, 0.2);
-  background: rgba(15, 15, 25, 0.8);
+  transform: translateY(-4px);
+  border-color: #00FFA3; /* Sharp neon border on hover */
+  background: rgba(0, 255, 163, 0.02); /* Very subtle tint, fully clear */
+  box-shadow: 0 0 0 1px #00FFA3; /* Double sharp border effect */
 }
 
 /* LOCKED STATE */
 .tool-card.locked {
-  opacity: 0.7;
-  cursor: not-allowed;
+  opacity: 0.6;
   border-color: rgba(255, 50, 50, 0.3);
 }
 
 .tool-card.locked:hover {
-  transform: none;
-  box-shadow: none;
-  border-color: rgba(255, 50, 50, 0.5);
+  border-color: #FF3333;
+  box-shadow: 0 0 0 1px #FF3333;
 }
 
 /* CARD CONTENT */
 .tool-icon {
-  font-size: 3.5rem;
+  font-size: 4rem;
   margin-bottom: 20px;
-  background: rgba(255, 255, 255, 0.05);
-  width: 80px;
-  height: 80px;
+  background: transparent;
+  width: 90px;
+  height: 90px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
   flex-shrink: 0;
+  z-index: 2;
 }
 
 .tool-card:hover .tool-icon {
-  background: rgba(0, 255, 163, 0.1);
+  background: transparent;
   border-color: #00FFA3;
-  transform: scale(1.1);
+  color: #00FFA3;
+  box-shadow: 0 0 15px rgba(0, 255, 163, 0.2); /* Tight glow */
+  transform: scale(1.05);
 }
 
 .tool-name {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 1.4rem;
-  margin: 0 0 10px 0;
-  color: #fff;
-  height: 60px; /* Fixed height for titles */
+  /* AI SOLANA STYLE APPLIED TO CARD TITLES */
+  font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0 0 15px 0;
+  
+  /* THE GRADIENT & SHADOW */
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 163, 0.3));
+  
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 2;
+}
+
+.tool-card:hover .tool-name {
+  /* Amplify glow on hover */
+  filter: drop-shadow(0 0 12px rgba(0, 255, 163, 0.6));
 }
 
 .tool-description {
-  color: #8892b0;
+  color: #ccc; /* Light gray, high contrast */
   font-size: 0.9rem;
   line-height: 1.5;
   margin-bottom: 20px;
-  height: 60px; /* Fixed height for description */
+  height: 75px;
   overflow: hidden;
+  z-index: 2;
+  font-family: 'Inter', sans-serif;
 }
 
-/* FOOTER SECTION OF CARD (Cost + Status) */
+/* FOOTER SECTION */
 .tool-footer {
-  margin-top: auto; /* Push to bottom */
+  margin-top: auto;
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  z-index: 2;
 }
 
 .tool-cost {
-  background: rgba(0, 0, 0, 0.3);
+  background: transparent;
   padding: 10px;
-  border-radius: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Tech border */
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -163,59 +204,55 @@
 }
 
 .cost-label {
-  font-size: 0.7rem;
-  color: #666;
+  font-size: 0.65rem;
+  color: #888;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
+  font-weight: 700;
 }
 
 .cost-value {
   color: #fff;
-  font-weight: bold;
+  font-weight: 700;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
-/* STATUS BADGES */
+/* BADGES - SHARP & NEON */
 .access-granted-badge {
-  background: rgba(0, 255, 163, 0.1);
+  background: rgba(0, 255, 163, 0.05);
   border: 1px solid #00FFA3;
   color: #00FFA3;
-  padding: 10px;
+  padding: 12px;
   border-radius: 8px;
   font-size: 0.8rem;
-  font-weight: 700;
+  font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   width: 100%;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  animation: pulseGreen 3s infinite;
+  letter-spacing: 1.5px;
+  box-shadow: 0 0 10px rgba(0, 255, 163, 0.1); /* Subtle tight glow */
+  text-shadow: 0 0 5px rgba(0, 255, 163, 0.5);
 }
 
 .locked-overlay {
-  background: rgba(255, 50, 50, 0.1);
-  border: 1px solid #ff3333;
-  color: #ff3333;
-  padding: 10px;
+  background: rgba(255, 50, 50, 0.05);
+  border: 1px solid #FF3333;
+  color: #FF3333;
+  padding: 12px;
   border-radius: 8px;
   font-size: 0.8rem;
-  font-weight: 700;
+  font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   width: 100%;
   text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-@keyframes pulseGreen {
-  0% { box-shadow: 0 0 0 0 rgba(0, 255, 163, 0.2); }
-  70% { box-shadow: 0 0 0 5px rgba(0, 255, 163, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(0, 255, 163, 0); }
+  letter-spacing: 1.5px;
 }
 
 /* RESPONSIVE */
