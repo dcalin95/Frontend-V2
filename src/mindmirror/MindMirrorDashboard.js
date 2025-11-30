@@ -7,6 +7,7 @@ import PaymentModal from '../components/PaymentModal';
 import './mindmirror.desktop.css';
 import './mindmirror.mobile.css';
 import MindNFTGenerator from './components/MindNFTGenerator';
+import AITradingGuardian from '../components/AIHub/AITradingGuardian';
 
 const MindMirrorDashboard = () => {
   // Wallet & Balance Hooks
@@ -42,6 +43,44 @@ const MindMirrorDashboard = () => {
     const saved = localStorage.getItem('unlocked_tiers');
     return saved ? JSON.parse(saved) : [1]; // Tier 1 is always free
   });
+
+  // Payment Logic
+  const initiatePayment = (tier, price, name) => {
+    // Clean price string "15000 BITS" -> 15000
+    const numericPrice = parseInt(price.replace(/[^0-9]/g, ''));
+    
+    setTargetTier(tier);
+    setPaymentAmount(numericPrice);
+    setPaymentItemName(name);
+    setIsPaymentModalOpen(true);
+  };
+
+  const handlePaymentConfirm = async () => {
+    try {
+      setIsProcessingPayment(true);
+      
+      // 1. Execute Blockchain Transaction
+      // Import signer dynamically if needed or use from context
+      const result = await sendBitsToTreasury(signer, paymentAmount);
+
+      if (result.success) {
+        // 2. Grant Access (Update State)
+        const newUnlocked = [...unlockedTiers, targetTier];
+        setUnlockedTiers(newUnlocked);
+        localStorage.setItem('unlocked_tiers', JSON.stringify(newUnlocked));
+        
+        alert(`✅ Payment Successful! Tier ${targetTier} Unlocked.`);
+        setIsPaymentModalOpen(false);
+      } else {
+        alert(`❌ Payment Failed: ${result.error}`);
+      }
+    } catch (error) {
+      console.error("Payment process error:", error);
+      alert("Payment process encountered an error.");
+    } finally {
+      setIsProcessingPayment(false);
+    }
+  };
 
   const videoRef = useRef(null);
 
@@ -817,6 +856,15 @@ Check out your own analysis at bits-ai.io
         itemName={paymentItemName}
         balance={bitsBalance}
         isProcessing={isProcessingPayment}
+      />
+
+      {/* 🤖 AI TRADING GUARDIAN (Floating HUD) */}
+      <AITradingGuardian 
+        userProfile={{ 
+          tier: currentTier,
+          wallet: walletAddress,
+          balance: bitsBalance 
+        }} 
       />
 
     </div>

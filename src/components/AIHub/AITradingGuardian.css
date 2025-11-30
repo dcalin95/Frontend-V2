@@ -1,0 +1,280 @@
+/* 🛡️ AI TRADING GUARDIAN - HUD STYLE */
+
+.guardian-container {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 10000;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* --- ACTIVATOR BUTTON (The Orb) --- */
+.guardian-orb {
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle at 30% 30%, #00FFA3, #008556);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 
+    0 0 20px rgba(0, 255, 163, 0.4),
+    0 0 40px rgba(0, 255, 163, 0.2),
+    inset 0 0 10px rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  animation: orbFloat 4s ease-in-out infinite;
+}
+
+.guardian-orb:hover {
+  transform: scale(1.1);
+  box-shadow: 
+    0 0 30px rgba(0, 255, 163, 0.6),
+    0 0 60px rgba(0, 255, 163, 0.3);
+}
+
+.orb-icon {
+  font-size: 1.8rem;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.guardian-status-dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 14px;
+  height: 14px;
+  background: #ff3366; /* Red = Alert, Green = Safe */
+  border-radius: 50%;
+  border: 2px solid #000;
+  animation: pulseDot 2s infinite;
+}
+
+/* --- INTERFACE PANEL (The Window) --- */
+.guardian-interface {
+  width: 350px;
+  height: 500px;
+  background: rgba(10, 10, 18, 0.95);
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  border-radius: 20px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: bottom right;
+}
+
+/* Header */
+.guardian-header {
+  background: linear-gradient(90deg, rgba(0, 255, 163, 0.1), transparent);
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 255, 163, 0.1);
+}
+
+.guardian-identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.guardian-avatar {
+  width: 32px;
+  height: 32px;
+  background: rgba(0, 255, 163, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  border: 1px solid rgba(0, 255, 163, 0.4);
+}
+
+.guardian-name {
+  font-weight: 700;
+  color: #00FFA3;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+}
+
+.guardian-level {
+  font-size: 0.7rem;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: color 0.2s;
+}
+
+.close-btn:hover {
+  color: #fff;
+}
+
+/* Chat Area */
+.guardian-messages {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.message {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  position: relative;
+  animation: fadeInMsg 0.3s ease;
+}
+
+.message.guardian {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.05);
+  border-top-left-radius: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e0e0e0;
+}
+
+.message.user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #00FFA3, #00C2FF);
+  color: #000;
+  border-top-right-radius: 2px;
+  font-weight: 600;
+}
+
+.message.alert {
+  background: rgba(255, 50, 50, 0.1);
+  border: 1px solid rgba(255, 50, 50, 0.3);
+  color: #ff5050;
+  align-self: center;
+  text-align: center;
+  width: 100%;
+}
+
+/* Input Area */
+.guardian-input-area {
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  gap: 10px;
+}
+
+.guardian-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 10px 15px;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.guardian-input:focus {
+  border-color: #00FFA3;
+  background: rgba(0, 255, 163, 0.05);
+}
+
+.send-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: #00FFA3;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.send-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Quick Actions (Chips) */
+.guardian-chips {
+  padding: 0 15px 10px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.chip {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  color: #ccc;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.chip:hover {
+  background: rgba(0, 255, 163, 0.2);
+  color: #00FFA3;
+  border-color: rgba(0, 255, 163, 0.3);
+}
+
+/* Animations */
+@keyframes orbFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulseDot {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(50px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes fadeInMsg {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scrollbar */
+.guardian-messages::-webkit-scrollbar {
+  width: 4px;
+}
+.guardian-messages::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.1);
+}
+.guardian-messages::-webkit-scrollbar-thumb {
+  background: rgba(0, 255, 163, 0.3);
+  border-radius: 2px;
+}
+
