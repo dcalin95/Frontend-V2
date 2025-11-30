@@ -10,16 +10,16 @@ const AIHub = () => {
   const navigate = useNavigate();
   
   // 1. Get wallet address from global context
-  const { account } = useWallet(); 
+  const { walletAddress } = useWallet(); 
   
   // 2. Fetch REAL BITS balance using the hook
-  const { balance: bitsBalance, loading } = useBitsBalance(account);
+  const { balance: bitsBalance, loading } = useBitsBalance(walletAddress);
 
   // Debugging
   useEffect(() => {
-    console.log("AI Hub - Wallet:", account);
+    console.log("AI Hub - Wallet:", walletAddress);
     console.log("AI Hub - BITS Balance:", bitsBalance);
-  }, [account, bitsBalance]);
+  }, [walletAddress, bitsBalance]);
 
   const displayBalance = loading ? "..." : bitsBalance?.toLocaleString() || "0";
 
@@ -48,6 +48,11 @@ const AIHub = () => {
       ...AI_TOOLS_PRICING.mindMirror,
       icon: '🧠',
       route: '/mind-mirror'
+    },
+    {
+      ...AI_TOOLS_PRICING.gemHunter,
+      icon: '🚀',
+      route: '/ai-hub/gem-hunter'
     }
   ];
 
@@ -61,7 +66,7 @@ const AIHub = () => {
         <p className="ai-hub-subtitle">
           Powered by BITS Tokens • Your Balance: <span className="balance-highlight">{displayBalance}</span> BITS
         </p>
-        {!account && (
+        {!walletAddress && (
             <p style={{color: '#ff5050', fontSize: '0.9rem', marginTop: '5px'}}>
                 <i className="fas fa-exclamation-circle"></i> Wallet not connected. Please connect your wallet to access tools.
             </p>
@@ -71,7 +76,7 @@ const AIHub = () => {
       <div className="tools-grid">
         {tools.map((tool) => {
           // Only allow access if wallet connected AND balance sufficient
-          const canAfford = account && (bitsBalance >= tool.cost);
+          const canAfford = walletAddress && (bitsBalance >= tool.cost);
           
           return (
             <div
@@ -82,16 +87,24 @@ const AIHub = () => {
               <div className="tool-icon">{tool.icon}</div>
               <h3 className="tool-name">{tool.name}</h3>
               <p className="tool-description">{tool.description}</p>
-              <div className="tool-cost">
-                <span className="cost-label">Cost:</span>
-                <span className="cost-value">{tool.cost === 0 ? "Free Tier" : `${tool.cost} BITS`}</span>
-              </div>
-              {!canAfford && (
-                <div className="locked-overlay">
-                  <i className="fas fa-lock"></i>
-                  <span>{!account ? "Connect Wallet" : "Insufficient BITS"}</span>
+              <div className="tool-footer">
+                <div className="tool-cost">
+                  <span className="cost-label">Required Holding:</span>
+                  <span className="cost-value">{tool.cost === 0 ? "Free Tier" : `${tool.cost.toLocaleString()} BITS`}</span>
                 </div>
-              )}
+                
+                {/* ACCESS STATUS INDICATORS */}
+                {!canAfford ? (
+                  <div className="locked-overlay">
+                    <i className="fas fa-lock"></i>
+                    <span>{!walletAddress ? "Connect Wallet" : "Insufficient Holding"}</span>
+                  </div>
+                ) : (
+                  <div className="access-granted-badge">
+                    <i className="fas fa-check-circle"></i> Access Granted
+                  </div>
+                )}
+              </div>
             </div>
           );
         })}

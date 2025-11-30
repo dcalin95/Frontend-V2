@@ -107,6 +107,7 @@ const MarketOracle = lazy(() => import("./components/AIHub/MarketOracle"));
 const StressTest = lazy(() => import("./components/AIHub/StressTest"));
 const LieDetector = lazy(() => import("./components/AIHub/LieDetector"));
 const SmartAudit = lazy(() => import("./components/AIHub/SmartAudit"));
+const GemHunter = lazy(() => import("./components/AIHub/GemHunter")); // 💎 New Tool
 const AdminNeuralLink = lazy(() => import("./components/AIHub/AdminNeuralLink"));
 const PaymentBox = lazy(() => import("./Presale/PaymentBox/PaymentBox"));
 
@@ -429,6 +430,7 @@ const App = () => {
                       <Route path="/ai-hub/portfolio-stress" element={<StressTest />} />
                       <Route path="/ai-hub/lie-detector" element={<LieDetector />} />
                       <Route path="/ai-hub/smart-audit" element={<SmartAudit />} />
+                      <Route path="/ai-hub/gem-hunter" element={<GemHunter />} />
                       <Route path="/ai-hub/admin-neural" element={<AdminNeuralLink />} />
                       <Route path="/dex-demo" element={<SwapPage />} /> {/* 🔄 Rută DEX Demo */}
                       <Route

@@ -4,6 +4,7 @@ import useBitsBalance from '../../hooks/useBitsBalance';
 import { useWallet } from '../../context/WalletContext';
 import './AIHub.desktop.css';
 import './LieDetector.css';
+import './LieDetector.mobile.css'; // 📱 Separate Mobile CSS
 
 const LieDetector = () => {
   const { walletAddress } = useWallet();

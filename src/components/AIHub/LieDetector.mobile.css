@@ -1,0 +1,89 @@
+/* LIE DETECTOR - MOBILE OPTIMIZED */
+
+@media (max-width: 768px) {
+  .lie-detector-container {
+    padding: 10px;
+    margin-top: 80px;
+  }
+
+  .ai-hub-title {
+    font-size: 1.5rem;
+  }
+
+  .monitor-wrapper {
+    height: 220px; /* Smaller monitor for mobile */
+  }
+
+  /* Stack controls vertically */
+  .control-panel {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  /* Specs Grid - 1 column */
+  .specs-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Telemetry - 2 columns is fine, but smaller text */
+  .telemetry-grid {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 10px;
+  }
+
+  .tele-val {
+    font-size: 0.9rem;
+  }
+
+  .record-btn-large {
+    padding: 15px;
+    font-size: 1rem;
+  }
+
+  /* --- VERDICT MODAL MOBILE OPTIMIZATION --- */
+  .verdict-modal-content {
+    width: 95%;
+    max-height: 90vh; /* Prevent overflow */
+    overflow-y: auto; /* Allow scrolling inside modal */
+    border-radius: 8px;
+  }
+
+  .verdict-body {
+    padding: 20px;
+  }
+
+  .verdict-main-result {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+  }
+
+  .trading-advice-box {
+    padding: 15px;
+    font-size: 0.9rem;
+  }
+
+  .forensic-details {
+    font-size: 0.8rem;
+  }
+
+  .close-verdict-btn {
+    width: 100%; /* Full width button for easy tap */
+    padding: 15px;
+    font-size: 1rem;
+  }
+  
+  /* NOISE WARNING */
+  .noise-warning-box {
+    width: 90%;
+    padding: 20px;
+  }
+  
+  .noise-warning-box i {
+    font-size: 2rem;
+  }
+  
+  .noise-warning-box h2 {
+    font-size: 1.2rem;
+  }
+}
+
