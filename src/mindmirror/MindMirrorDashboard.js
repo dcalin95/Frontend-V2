@@ -8,6 +8,7 @@ import './mindmirror.desktop.css';
 import './mindmirror.mobile.css';
 import MindNFTGenerator from './components/MindNFTGenerator';
 import AITradingGuardian from '../components/AIHub/AITradingGuardian';
+import DynamicNFTCard from '../components/AIHub/DynamicNFTCard';
 
 const MindMirrorDashboard = () => {
   // Wallet & Balance Hooks
@@ -787,13 +788,25 @@ Check out your own analysis at bits-ai.io
             </div>
           )}
 
-          {/* NFT Generation Section */}
+          {/* NFT Generation Section - NOW DYNAMIC SOULBOUND IDENTITY */}
           <div className="nft-section">
             <div className="nft-header">
-              <h3 className="laser-sharp">🎨 Generate Your Mind NFT</h3>
-              <p>Create a unique NFT based on your neuropsychological analysis</p>
+              <h3 className="laser-sharp">💎 Your Soulbound Identity</h3>
+              <p>This living NFT evolves as you gain trading experience and BITS holdings.</p>
             </div>
-            <MindNFTGenerator results={analysisResults} />
+            
+            {/* New Dynamic Card */}
+            <DynamicNFTCard userProfile={{
+              tier: currentTier,
+              balance: bitsBalance,
+              wallet: walletAddress,
+              analysisCount: hasUsedAnalysis ? 1 : 0
+            }} />
+
+            {/* Legacy Static Generator (Hidden or kept for download) */}
+            <div style={{display: 'none'}}>
+               <MindNFTGenerator results={analysisResults} />
+            </div>
           </div>
         </section>
       )}

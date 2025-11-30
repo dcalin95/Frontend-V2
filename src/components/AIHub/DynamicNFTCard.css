@@ -1,0 +1,231 @@
+/* 💎 DYNAMIC SOULBOUND NFT - HOLOGRAPHIC STYLE */
+
+.soulbound-container {
+  perspective: 1000px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  margin-top: 3rem;
+}
+
+.soulbound-card {
+  width: 320px;
+  height: 480px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  cursor: pointer;
+  border-radius: 20px;
+}
+
+.soulbound-card:hover {
+  transform: rotateY(10deg) rotateX(5deg) scale(1.05);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  backface-visibility: hidden;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 10, 20, 0.8);
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 0 30px rgba(0, 0, 0, 0.5),
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* --- EVOLUTION TIERS --- */
+
+/* Level 1: NEOPHYTE (Blue/Grey) */
+.card-face.tier-1 {
+  border-color: rgba(0, 163, 255, 0.3);
+  box-shadow: 0 0 40px rgba(0, 163, 255, 0.1);
+}
+.card-face.tier-1::before {
+  background: linear-gradient(135deg, rgba(0, 163, 255, 0.1), transparent);
+}
+
+/* Level 2: APPRENTICE (Neon Green) */
+.card-face.tier-2 {
+  border-color: rgba(0, 255, 163, 0.5);
+  box-shadow: 0 0 50px rgba(0, 255, 163, 0.2);
+}
+.card-face.tier-2::before {
+  background: linear-gradient(135deg, rgba(0, 255, 163, 0.15), transparent);
+}
+
+/* Level 3: MASTER (Purple/Gold) */
+.card-face.tier-3 {
+  border-color: rgba(220, 31, 255, 0.6);
+  box-shadow: 0 0 60px rgba(220, 31, 255, 0.3);
+}
+.card-face.tier-3::before {
+  background: linear-gradient(135deg, rgba(220, 31, 255, 0.2), rgba(255, 215, 0, 0.1));
+}
+
+/* Level 4: GRANDMASTER (Void Black) */
+.card-face.tier-4 {
+  border-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 
+    0 0 80px rgba(255, 255, 255, 0.2),
+    0 0 30px rgba(0, 0, 0, 1);
+  background: #000;
+}
+.card-face.tier-4::before {
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1), transparent 70%);
+  animation: pulseVoid 4s infinite;
+}
+
+/* --- HOLOGRAPHIC OVERLAY --- */
+.holographic-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    125deg, 
+    transparent 30%, 
+    rgba(255, 255, 255, 0.1) 40%, 
+    rgba(255, 255, 255, 0.4) 45%, 
+    rgba(255, 255, 255, 0.1) 50%, 
+    transparent 60%
+  );
+  background-size: 200% 200%;
+  animation: holoShine 6s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* --- CARD CONTENT --- */
+.card-header {
+  padding: 20px;
+  text-align: center;
+  z-index: 2;
+}
+
+.card-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.tier-1 .card-title { color: #00a3ff; }
+.tier-2 .card-title { color: #00ff9d; }
+.tier-3 .card-title { color: #dc1fff; }
+.tier-4 .card-title { color: #fff; text-shadow: 0 0 10px #fff; }
+
+.card-avatar-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.card-avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  background: rgba(0,0,0,0.3);
+  border: 2px solid rgba(255,255,255,0.1);
+  position: relative;
+  z-index: 2;
+}
+
+.card-avatar::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255,255,255,0.2);
+  animation: spinSlow 20s linear infinite;
+}
+
+.card-stats {
+  padding: 20px;
+  background: rgba(0,0,0,0.4);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  z-index: 2;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  color: #aaa;
+}
+
+.stat-value {
+  color: #fff;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+}
+
+/* --- EVOLUTION PROGRESS BAR --- */
+.evolution-bar-container {
+  width: 100%;
+  margin-top: 2rem;
+  text-align: center;
+  max-width: 400px;
+}
+
+.evolution-label {
+  color: #888;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.evolution-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.evolution-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00FFA3, #DC1FFF);
+  border-radius: 3px;
+  box-shadow: 0 0 10px rgba(0, 255, 163, 0.5);
+}
+
+/* Animations */
+@keyframes holoShine {
+  0% { background-position: 200% 0; opacity: 0.5; }
+  50% { opacity: 0.2; }
+  100% { background-position: -200% 0; opacity: 0.5; }
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulseVoid {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+
