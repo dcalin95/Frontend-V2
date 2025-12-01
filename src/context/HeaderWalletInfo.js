@@ -6,6 +6,7 @@ import SwapModal from "../components/SwapModal";
 import HistoryModal from "../components/HistoryModal";
 import axios from "axios"; // For API calls
 import "./HeaderWalletInfo.css";
+import "./HeaderWalletInfo.mobile.css"; // 📱 Mobile Compact Styles
 
 import ethIcon from "../assets/icons/evm-logo.jpg";
 import bitsIcon from "../assets/logo.png"; // Updated to use the correct project logo

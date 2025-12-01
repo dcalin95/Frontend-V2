@@ -18,10 +18,32 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
   const { user, isAuthenticated, signOut } = useAuth(); // Auth state
   const navigate = useNavigate();
   const [internalIsMenuOpen, setInternalIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Use external state if provided, otherwise use local state
   const isMenuOpen = externalIsMenuOpen !== undefined ? externalIsMenuOpen : internalIsMenuOpen;
   const toggleMenu = externalToggleMenu || (() => setInternalIsMenuOpen(!internalIsMenuOpen));
+
+  // Calculam inaltimea header-ului dinamic pentru meniul mobil
+  const [headerHeight, setHeaderHeight] = useState('12vh');
+  
+  useEffect(() => {
+     if (isScrolled) setHeaderHeight('70px');
+     else setHeaderHeight('12vh');
+  }, [isScrolled]);
 
   const { endTime, isLoaded } = usePresaleState();
 
@@ -56,7 +78,7 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
 
   return (
     <>
-      <header className="header">
+      <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
         {/* Logo */}
         <div className="logo-container">
           <img src={logo} alt="BIT Logo" className="logo" width={60} height={60} />
@@ -267,7 +289,7 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
       {isMenuOpen && (
         <div style={{ 
           position: 'fixed',
-          top: '70px',
+          top: headerHeight,
           left: 0,
           right: 0,
           bottom: 0,

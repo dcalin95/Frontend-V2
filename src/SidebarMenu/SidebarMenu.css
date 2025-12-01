@@ -272,7 +272,7 @@
 @media (min-width: 769px) {
   .sidebar {
     position: fixed; /* Schimbat de la static la fixed */
-    top: 80px; /* Poziționat sub header */
+    top: 16vh; /* Redus de la 22vh pentru a fi mai sus */
     left: 0;
     transform: none;
     height: auto;

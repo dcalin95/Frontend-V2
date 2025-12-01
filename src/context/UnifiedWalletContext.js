@@ -58,6 +58,16 @@ export const UnifiedWalletProvider = ({ children }) => {
     if (connectError) {
       console.error("[UnifiedWallet] Connection error:", connectError);
       
+      // 🚨 Detect stuck request error (-32002)
+      if (connectError.message?.includes('Request of type') || connectError.code === -32002) {
+         console.warn("🚨 Stuck request detected! Forcing reset...");
+         safeDisconnect();
+         if (window.ethereum?.request) {
+            // Try to reset permissions if possible (non-standard but helpful)
+            window.ethereum.request({ method: 'wallet_requestPermissions', params: [{ eth_accounts: {} }] }).catch(() => {});
+         }
+      }
+
       // Clear error state after 3 seconds
       const timer = setTimeout(() => {
         // Force disconnect to clear state
@@ -154,6 +164,19 @@ export const UnifiedWalletProvider = ({ children }) => {
 
   // Actions
   const connectWallet = async () => {
+    // 🔧 FIX: Force disconnect before connecting to clear stuck states
+    try {
+      if (isEvmConnected) await disconnectEvm();
+      
+      // Clear any local storage state that might be stuck
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('wagmi.store');
+        localStorage.removeItem('wagmi.connected');
+      }
+    } catch (e) {
+      console.warn("[UnifiedWallet] Pre-connect cleanup failed:", e);
+    }
+
     // 🔧 FIX: Prepare connection (clear cache if needed)
     await prepareForConnection();
     setShowWalletModal(true);

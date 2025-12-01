@@ -1,0 +1,251 @@
+/* ==========================================================================
+   HEADER WALLET INFO - MOBILE OPTIMIZATIONS
+   Status: Standardized with body.mode-mobile pattern
+   ========================================================================== */
+
+/* Wallet Toggle Wrapper & Button */
+body.mode-mobile .wallet-toggle-wrapper {
+  top: 95px !important;
+  right: 10px !important;
+  transform: scale(0.95) !important;
+}
+
+body.mode-mobile .wallet-toggle-btn {
+  height: 42px !important;
+  padding: 8px 14px !important;
+  font-size: 0.85rem !important;
+  min-width: 110px !important;
+  border-radius: 12px !important;
+  background: rgba(7, 7, 15, 0.95) !important;
+  backdrop-filter: blur(15px) !important;
+  gap: 6px !important;
+}
+
+body.mode-mobile .wallet-toggle-btn svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* Container principal - Wallet Dropdown */
+body.mode-mobile .wallet-header-info {
+  width: calc(100vw - 20px) !important;
+  max-width: 300px !important;
+  right: 10px !important;
+  top: 70px !important; /* Sub header dinamic */
+  padding: 10px !important;
+  gap: 6px !important;
+  border-radius: 14px !important;
+  background: rgba(0, 0, 0, 0.98) !important;
+  backdrop-filter: blur(10px) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8) !important;
+  z-index: 9999 !important;
+}
+
+/* Identificator Wallet (Nume + Adresă) */
+body.mode-mobile .wallet-identifier {
+  padding: 8px 10px !important;
+  gap: 3px !important;
+  border-radius: 10px !important;
+  margin-bottom: 4px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+}
+
+body.mode-mobile .wallet-name-row {
+  gap: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+body.mode-mobile .wallet-provider-icon {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+body.mode-mobile .wallet-name {
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+}
+
+body.mode-mobile .wallet-address {
+  font-size: 0.7rem !important;
+  margin-left: 22px !important;
+  opacity: 0.8 !important;
+}
+
+/* Geo Location Row */
+body.mode-mobile .geo-location-row {
+  margin-top: 2px !important;
+  padding-top: 2px !important;
+  font-size: 0.7rem !important;
+  gap: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+body.mode-mobile .geo-flag {
+  font-size: 0.9rem !important;
+}
+
+body.mode-mobile .geo-country-name {
+  font-size: 0.7rem !important;
+  opacity: 0.9 !important;
+}
+
+body.mode-mobile .geo-status-dot {
+  font-size: 0.5rem !important;
+  color: #00ffa3 !important;
+}
+
+/* Linii de Balanță - Token Balance */
+body.mode-mobile .token-balance {
+  padding: 6px 10px !important;
+  border-radius: 8px !important;
+  font-size: 0.8rem !important;
+  min-height: 32px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+body.mode-mobile .balance-left {
+  gap: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+body.mode-mobile .balance-left img,
+body.mode-mobile .balance-left svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+body.mode-mobile .balance-amount {
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  text-align: right !important;
+}
+
+body.mode-mobile .usd-estimate {
+  font-size: 0.65rem !important;
+  margin-top: 0 !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Quick Actions - Butoane History & Swap */
+body.mode-mobile .wallet-quick-actions {
+  display: flex !important;
+  gap: 8px !important;
+  margin-top: 8px !important;
+  width: 100% !important;
+}
+
+body.mode-mobile .wallet-action-btn {
+  flex: 1 !important; /* Lățime egală (50/50) */
+  padding: 8px 4px !important;
+  font-size: 0.75rem !important;
+  border-radius: 8px !important;
+  height: 36px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+  min-width: 0 !important;
+  border: 1px solid rgba(0, 255, 163, 0.3) !important;
+  background: rgba(0, 255, 163, 0.05) !important;
+  transition: all 0.2s ease !important;
+}
+
+body.mode-mobile .wallet-action-btn:hover {
+  background: rgba(0, 255, 163, 0.15) !important;
+  border-color: rgba(0, 255, 163, 0.5) !important;
+}
+
+body.mode-mobile .wallet-action-btn span {
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+}
+
+body.mode-mobile .wallet-action-btn i {
+  font-size: 0.9rem !important;
+  margin-right: 4px !important;
+}
+
+/* Butoane Connect/Disconnect */
+body.mode-mobile .connect-wallet-button,
+body.mode-mobile .disconnect-button {
+  padding: 8px !important;
+  font-size: 0.8rem !important;
+  border-radius: 8px !important;
+  margin-top: 8px !important;
+  height: 36px !important;
+  width: 100% !important;
+  font-weight: 600 !important;
+}
+
+body.mode-mobile .connect-wallet-button {
+  background: linear-gradient(135deg, #00ffa3 0%, #9945ff 100%) !important;
+  border: none !important;
+}
+
+body.mode-mobile .disconnect-button {
+  background: rgba(255, 59, 48, 0.1) !important;
+  border: 1px solid rgba(255, 59, 48, 0.3) !important;
+  color: #ff3b30 !important;
+}
+
+/* Buton închidere (X) */
+body.mode-mobile .wallet-close-btn {
+  width: 22px !important;
+  height: 22px !important;
+  font-size: 12px !important;
+  top: 6px !important;
+  right: 6px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Extra Small Mobile (< 360px) */
+@media (max-width: 360px) {
+  body.mode-mobile .wallet-toggle-wrapper {
+    top: 90px !important;
+    right: 8px !important;
+    transform: scale(0.9) !important;
+  }
+
+  body.mode-mobile .wallet-toggle-btn {
+    height: 38px !important;
+    padding: 6px 12px !important;
+    font-size: 0.8rem !important;
+    min-width: 100px !important;
+  }
+
+  body.mode-mobile .wallet-header-info {
+    max-width: 260px !important;
+    padding: 8px !important;
+    width: calc(100vw - 16px) !important;
+    right: 8px !important;
+  }
+  
+  body.mode-mobile .wallet-name {
+    font-size: 0.7rem !important;
+  }
+  
+  body.mode-mobile .wallet-address {
+    font-size: 0.65rem !important;
+  }
+  
+  body.mode-mobile .wallet-action-btn span {
+    font-size: 0.7rem !important;
+  }
+
+  body.mode-mobile .token-balance {
+    font-size: 0.75rem !important;
+  }
+
+  body.mode-mobile .balance-amount {
+    font-size: 0.8rem !important;
+  }
+}

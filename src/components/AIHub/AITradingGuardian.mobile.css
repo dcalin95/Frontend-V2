@@ -1,0 +1,117 @@
+/* ==========================================================================
+   SENTINEL AI - MOBILE OPTIMIZATIONS
+   ========================================================================== */
+
+/* Container - Repoziționat în stânga jos */
+body.mode-mobile .guardian-container {
+  bottom: 20px !important;
+  left: 20px !important;
+  right: auto !important;
+  align-items: flex-start !important;
+}
+
+/* Orb (Iconița) - Mai mic pe mobil */
+body.mode-mobile .guardian-orb {
+  width: 50px !important;
+  height: 50px !important;
+}
+
+body.mode-mobile .orb-icon {
+  font-size: 1.5rem !important;
+}
+
+body.mode-mobile .guardian-status-dot {
+  width: 12px !important;
+  height: 12px !important;
+}
+
+/* Panel Chat - Compact */
+body.mode-mobile .guardian-interface {
+  width: 90vw !important;
+  max-width: 320px !important;
+  height: 60vh !important;
+  max-height: 450px !important;
+  margin-bottom: 15px !important;
+  border-radius: 16px !important;
+  transform-origin: bottom left !important;
+}
+
+/* Header */
+body.mode-mobile .guardian-header {
+  padding: 12px !important;
+}
+
+body.mode-mobile .guardian-avatar {
+  width: 28px !important;
+  height: 28px !important;
+  font-size: 1rem !important;
+}
+
+body.mode-mobile .guardian-name {
+  font-size: 0.85rem !important;
+}
+
+body.mode-mobile .guardian-level {
+  font-size: 0.65rem !important;
+}
+
+/* Messages */
+body.mode-mobile .guardian-messages {
+  padding: 12px !important;
+  gap: 10px !important;
+}
+
+body.mode-mobile .message {
+  max-width: 90% !important;
+  padding: 8px 12px !important;
+  font-size: 0.85rem !important;
+  border-radius: 10px !important;
+}
+
+/* Chips */
+body.mode-mobile .guardian-chips {
+  padding: 0 12px 8px !important;
+  gap: 6px !important;
+}
+
+body.mode-mobile .chip {
+  padding: 5px 10px !important;
+  font-size: 0.7rem !important;
+  border-radius: 10px !important;
+}
+
+/* Input */
+body.mode-mobile .guardian-input-area {
+  padding: 12px !important;
+  gap: 8px !important;
+}
+
+body.mode-mobile .guardian-input {
+  padding: 8px 12px !important;
+  font-size: 0.85rem !important;
+  border-radius: 16px !important;
+}
+
+body.mode-mobile .send-btn {
+  width: 36px !important;
+  height: 36px !important;
+  font-size: 0.9rem !important;
+}
+
+/* Extra Small Mobile */
+@media (max-width: 360px) {
+  body.mode-mobile .guardian-container {
+    bottom: 15px !important;
+    left: 15px !important;
+  }
+
+  body.mode-mobile .guardian-orb {
+    width: 45px !important;
+    height: 45px !important;
+  }
+
+  body.mode-mobile .guardian-interface {
+    width: 95vw !important;
+    max-width: 280px !important;
+  }
+}

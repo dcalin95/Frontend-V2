@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './AITradingGuardian.css';
+import './AITradingGuardian.mobile.css';
 import { useWallet } from '../../context/WalletContext';
 
 const AITradingGuardian = ({ userProfile }) => {

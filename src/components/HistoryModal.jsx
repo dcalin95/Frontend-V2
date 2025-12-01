@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useWallet } from '../context/UnifiedWalletContext';
 import logo from '../assets/logo.png';
 import './HistoryModal.css';
+import './HistoryModal.mobile.css'; // 📱 Mobile Optimizations
 
 const HistoryModal = ({ isOpen, onClose }) => {
   const { walletAddress, chainId } = useWallet();

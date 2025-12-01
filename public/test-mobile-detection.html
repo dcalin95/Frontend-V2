@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Detection Test</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0e12;
+            color: #00ffa3;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ffa3;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #00ffa3;
+            text-shadow: 0 0 10px rgba(0, 255, 163, 0.5);
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 163, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .status.success {
+            background: #00ffa3;
+            color: #000;
+        }
+        
+        .status.error {
+            background: #ff3b30;
+            color: #fff;
+        }
+        
+        .status.warning {
+            background: #ffa500;
+            color: #000;
+        }
+        
+        code {
+            background: rgba(0, 255, 163, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #9945ff;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #00ffa3, #9945ff);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+        }
+        
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 163, 0.5);
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .info-item {
+            background: rgba(0, 255, 163, 0.05);
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 255, 163, 0.2);
+        }
+        
+        .info-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+        
+        .info-value {
+            color: #00ffa3;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        #console {
+            background: #000;
+            border: 1px solid #00ffa3;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+        }
+        
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #00ffa3;
+            padding-left: 10px;
+        }
+        
+        .log-entry.error {
+            border-left-color: #ff3b30;
+            color: #ff3b30;
+        }
+        
+        .log-entry.success {
+            border-left-color: #00ffa3;
+            color: #00ffa3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Mobile Detection System Test</h1>
+        
+        <div class="test-section">
+            <h3>📱 Current Status</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Window Width</div>
+                    <div class="info-value" id="width">-</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Window Height</div>
+                    <div class="info-value" id="height">-</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Device Type</div>
+                    <div class="info-value" id="device-type">-</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Body Class</div>
+                    <div class="info-value" id="body-class">-</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>✅ System Tests</h3>
+            <div id="test-results"></div>
+            <button onclick="runTests()">🔄 Run Tests</button>
+            <button onclick="simulateMobile()">📱 Simulate Mobile (768px)</button>
+            <button onclick="simulateDesktop()">🖥️ Simulate Desktop (1920px)</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>📊 Live Console</h3>
+            <div id="console"></div>
+            <button onclick="clearConsole()">🗑️ Clear Console</button>
+        </div>
+    </div>
+    
+    <script>
+        // Logger
+        function log(message, type = 'info') {
+            const consoleEl = document.getElementById('console');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            consoleEl.appendChild(entry);
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
+        
+        function clearConsole() {
+            document.getElementById('console').innerHTML = '';
+        }
+        
+        // Update display
+        function updateDisplay() {
+            document.getElementById('width').textContent = window.innerWidth + 'px';
+            document.getElementById('height').textContent = window.innerHeight + 'px';
+            
+            const isMobile = window.innerWidth <= 768;
+            document.getElementById('device-type').textContent = isMobile ? '📱 Mobile' : '🖥️ Desktop';
+            
+            const bodyClass = document.body.className || '(none)';
+            document.getElementById('body-class').textContent = bodyClass;
+            
+            log(`Window resized to ${window.innerWidth}x${window.innerHeight} - ${isMobile ? 'MOBILE' : 'DESKTOP'}`, isMobile ? 'success' : 'info');
+        }
+        
+        // Run tests
+        function runTests() {
+            const resultsEl = document.getElementById('test-results');
+            resultsEl.innerHTML = '';
+            
+            const tests = [
+                {
+                    name: 'Window object exists',
+                    test: () => typeof window !== 'undefined',
+                },
+                {
+                    name: 'Body element exists',
+                    test: () => document.body !== null,
+                },
+                {
+                    name: 'classList API available',
+                    test: () => typeof document.body.classList !== 'undefined',
+                },
+                {
+                    name: 'Resize event listener works',
+                    test: () => {
+                        let fired = false;
+                        const handler = () => { fired = true; };
+                        window.addEventListener('resize', handler);
+                        window.dispatchEvent(new Event('resize'));
+                        window.removeEventListener('resize', handler);
+                        return fired;
+                    },
+                },
+                {
+                    name: 'Mobile detection (width <= 768)',
+                    test: () => {
+                        const isMobile = window.innerWidth <= 768;
+                        return typeof isMobile === 'boolean';
+                    },
+                },
+                {
+                    name: 'Body class can be modified',
+                    test: () => {
+                        document.body.classList.add('test-class');
+                        const hasClass = document.body.classList.contains('test-class');
+                        document.body.classList.remove('test-class');
+                        return hasClass;
+                    },
+                },
+            ];
+            
+            tests.forEach(test => {
+                const result = document.createElement('div');
+                result.style.margin = '10px 0';
+                
+                try {
+                    const passed = test.test();
+                    result.innerHTML = `
+                        <strong>${test.name}</strong>
+                        <span class="status ${passed ? 'success' : 'error'}">
+                            ${passed ? '✅ PASS' : '❌ FAIL'}
+                        </span>
+                    `;
+                    log(`Test: ${test.name} - ${passed ? 'PASSED' : 'FAILED'}`, passed ? 'success' : 'error');
+                } catch (e) {
+                    result.innerHTML = `
+                        <strong>${test.name}</strong>
+                        <span class="status error">❌ ERROR</span>
+                        <div style="color: #ff3b30; margin-top: 5px; font-size: 0.9rem;">${e.message}</div>
+                    `;
+                    log(`Test: ${test.name} - ERROR: ${e.message}`, 'error');
+                }
+                
+                resultsEl.appendChild(result);
+            });
+        }
+        
+        // Simulate mobile
+        function simulateMobile() {
+            log('Simulating mobile viewport (768px)...', 'info');
+            // Note: Can't actually resize window in production, but can test detection
+            if (window.innerWidth > 768) {
+                log('⚠️ Current width is > 768px. Please use DevTools Device Toolbar to test mobile.', 'error');
+            } else {
+                log('✅ Already in mobile viewport!', 'success');
+            }
+        }
+        
+        // Simulate desktop
+        function simulateDesktop() {
+            log('Simulating desktop viewport (1920px)...', 'info');
+            if (window.innerWidth <= 768) {
+                log('⚠️ Current width is <= 768px. Please resize browser or disable Device Toolbar.', 'error');
+            } else {
+                log('✅ Already in desktop viewport!', 'success');
+            }
+        }
+        
+        // Initialize
+        window.addEventListener('resize', updateDisplay);
+        window.addEventListener('load', () => {
+            log('🚀 Mobile Detection Test System Loaded', 'success');
+            updateDisplay();
+            runTests();
+        });
+    </script>
+</body>
+</html>

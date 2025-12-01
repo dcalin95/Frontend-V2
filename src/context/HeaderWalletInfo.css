@@ -2,7 +2,7 @@
 
 .wallet-toggle-wrapper {
   position: fixed;
-  top: 90px;
+  top: 120px; /* Schimbat de la 90px la 120px pentru a fi mai jos */
   right: 20px;
   z-index: 9999;
   font-family: 'Inter', 'Segoe UI', sans-serif;
@@ -301,145 +301,7 @@
   border-color: #ff4d4d;
 }
 
-/* 📱 MOBILE RESPONSIVE */
-@media (max-width: 768px) {
-  .wallet-toggle-wrapper {
-    top: 95px !important; /* Moved down - BELOW header line! */
-    right: 10px;
-    transform: scale(0.95); /* Ușor mai mic pe mobil */
-  }
-
-  .wallet-toggle-btn {
-    height: 42px;
-    padding: 8px 14px;
-    font-size: 0.85rem;
-    min-width: 110px;
-    border-radius: 12px;
-    background: rgba(7, 7, 15, 0.95); /* Mai opac pe mobil */
-    backdrop-filter: blur(15px);
-    gap: 6px;
-  }
-
-  .wallet-toggle-btn svg {
-    width: 20px !important;
-    height: 20px !important;
-  }
-
-  /* Container wallet deschis pe mobil */
-  .wallet-header-info {
-    width: calc(100vw - 20px); /* Ocupă aproape tot ecranul */
-    max-width: 340px;
-    right: 10px;
-    top: 55px; /* Distanță de buton */
-    padding: 14px;
-    gap: 10px;
-    border-radius: 18px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8),
-                inset 0 0 30px rgba(20, 241, 149, 0.1);
-  }
-
-  /* Wallet Identifier pe mobil */
-  .wallet-identifier {
-    padding: 10px 12px;
-    gap: 5px;
-    border-radius: 12px;
-  }
-
-  .wallet-provider-icon {
-    width: 20px;
-    height: 20px;
-  }
-
-  .wallet-name {
-    font-size: 0.8rem;
-  }
-
-  .wallet-address {
-    font-size: 0.75rem;
-    margin-left: 26px;
-  }
-
-  /* Balanțe pe mobil */
-  .token-balance {
-    padding: 10px 12px;
-    border-radius: 12px;
-    font-size: 0.9rem;
-  }
-
-  .balance-left img,
-  .balance-left svg {
-    width: 24px !important;
-    height: 24px !important;
-  }
-
-  .balance-amount {
-    font-size: 0.95rem;
-    font-weight: 800;
-  }
-
-  /* Butoane pe mobil */
-  .connect-wallet-button,
-  .disconnect-button {
-    padding: 12px;
-    font-size: 0.95rem;
-    border-radius: 12px;
-    margin-top: 8px;
-    font-weight: 700;
-  }
-
-  /* Buton închidere mai vizibil pe mobil */
-  .wallet-close-btn {
-    width: 28px;
-    height: 28px;
-    font-size: 16px;
-    top: 10px;
-    right: 10px;
-    background: rgba(255, 77, 77, 0.15);
-    border: 1px solid rgba(255, 77, 77, 0.3);
-  }
-
-  .wallet-close-btn:hover {
-    background: rgba(255, 77, 77, 0.3);
-  }
-}
-
-/* 📲 Extra Small Mobile (iPhone SE, etc.) */
-@media (max-width: 375px) {
-  .wallet-toggle-wrapper {
-    top: 90px !important; /* Moved down - BELOW header line! */
-    right: 8px;
-    transform: scale(0.9);
-  }
-
-  .wallet-toggle-btn {
-    height: 38px;
-    padding: 6px 12px;
-    font-size: 0.8rem;
-    min-width: 100px;
-  }
-
-  .wallet-header-info {
-    width: calc(100vw - 16px);
-    right: 8px;
-    padding: 12px;
-  }
-
-  .wallet-name {
-    font-size: 0.75rem;
-  }
-
-  .wallet-address {
-    font-size: 0.7rem;
-  }
-
-  .token-balance {
-    font-size: 0.85rem;
-  }
-
-  .balance-amount {
-    font-size: 0.9rem;
-  }
-}
+/* 📱 MOBILE RESPONSIVE - Handled by HeaderWalletInfo.mobile.css with body.mode-mobile */
 
 /* 🎯 QUICK ACTIONS BUTTONS - NEW */
 .wallet-quick-actions {

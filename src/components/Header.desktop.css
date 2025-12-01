@@ -13,8 +13,8 @@
   align-items: center;
   background: rgba(15, 20, 25, 0.85);
   color: white;
-  padding: 1rem 2rem;
-  height: 80px;
+  padding: 2.5rem 2rem 1rem 2rem;
+  height: 110px;
   width: 100%;
   position: fixed;
   top: 0;
@@ -26,6 +26,17 @@
   box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
   gap: 2rem;
   font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease; /* Smooth transition for dynamic header */
+}
+
+/* === DYNAMIC SCROLLED STATE === */
+.header.scrolled {
+  padding: 1rem 2rem;
+  height: 80px;
+  background: rgba(10, 14, 18, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 30px rgba(0, 255, 163, 0.15);
 }
 
 /* === LOGO === */
@@ -43,8 +54,13 @@
   border-radius: 50%;
   object-fit: cover;
   box-shadow: 0 0 30px rgba(0, 255, 163, 0.5), 0 0 60px rgba(220, 31, 255, 0.3);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, width 0.3s ease, height 0.3s ease;
   filter: drop-shadow(0 4px 12px rgba(0, 255, 163, 0.4));
+}
+
+.header.scrolled .logo-container .logo {
+  width: 50px !important;
+  height: 50px !important;
 }
 
 .logo:hover {
@@ -442,7 +458,7 @@
 
 /* === HEADER SPACER === */
 .header-spacer {
-  height: 80px;
+  height: 12vh; /* Spatiu relativ la inaltimea ecranului pentru a compensa header-ul */
   width: 100%;
 }
 

@@ -1,0 +1,141 @@
+/* ==========================================================================
+   HISTORY MODAL - MOBILE OPTIMIZATIONS
+   Status: Standardized with SwapModal
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  /* OVERLAY: Same as SwapModal */
+  .history-modal-overlay {
+    align-items: flex-end !important;
+    padding: 0 !important;
+    top: 70px !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+  }
+
+  /* CONTENT: Same positioning as SwapModal */
+  .history-modal-content {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    border-radius: 20px 20px 0 0 !important;
+    animation: slideUpMobile 0.3s ease-out !important;
+    
+    position: fixed !important;
+    top: 100px !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: auto !important;
+    transform: none !important;
+    
+    max-height: calc(100vh - 100px) !important;
+    height: auto !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    
+    background: #020406 !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+
+  /* Header Compact */
+  .history-modal-header {
+    padding: 12px 16px !important;
+  }
+
+  .history-modal-header h2 {
+    font-size: 16px !important;
+  }
+
+  .history-modal-subtitle {
+    font-size: 10px !important;
+  }
+
+  .history-modal-logo {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  /* Wallet Info Compact */
+  .history-wallet-info {
+    padding: 10px 16px !important;
+  }
+
+  .history-wallet-address {
+    font-size: 11px !important;
+    padding: 4px 8px !important;
+  }
+
+  .history-view-bscscan {
+    font-size: 10px !important;
+  }
+
+  /* Filters */
+  .history-filters {
+    padding: 10px 16px !important;
+    gap: 6px !important;
+  }
+
+  .history-filter-btn {
+    padding: 4px 10px !important;
+    font-size: 11px !important;
+  }
+
+  /* Transactions List */
+  .history-transactions {
+    padding: 10px 16px !important;
+    gap: 6px !important;
+  }
+
+  .history-tx-item {
+    padding: 10px !important;
+    gap: 10px !important;
+    border-radius: 12px !important;
+  }
+
+  .history-tx-icon {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .history-tx-type {
+    font-size: 12px !important;
+  }
+
+  .history-tx-amount {
+    font-size: 12px !important;
+  }
+
+  .history-tx-info {
+    font-size: 10px !important;
+  }
+
+  /* Marketing Footer */
+  .history-marketing {
+    padding: 12px 16px !important;
+    gap: 8px !important;
+  }
+
+  .history-marketing-item div strong {
+    font-size: 10px !important;
+  }
+
+  .history-marketing-item div p {
+    font-size: 9px !important;
+  }
+
+  .history-powered-by {
+    font-size: 9px !important;
+    padding-bottom: 10px !important;
+  }
+}
+
+@keyframes slideUpMobile {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

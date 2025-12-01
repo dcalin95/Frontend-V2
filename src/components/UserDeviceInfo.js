@@ -26,6 +26,7 @@ const UserDeviceInfo = ({ className = '' }) => {
     gpu: null,
     touch: '...',
     isp: '...',
+    language: '...', // 🌐 Language
     devicePrice: 'Estimating...', // 🚨 Preț estimat device
     deviceName: 'Detecting...' // 🚨 Nume device
   });
@@ -367,6 +368,12 @@ const UserDeviceInfo = ({ className = '' }) => {
               <i className="fas fa-rocket"></i>
               <span className="info-label">Browser</span>
               <span className="info-value">{info.browser}</span>
+            </div>
+
+            <div className="info-item">
+              <i className="fas fa-language"></i>
+              <span className="info-label">Language</span>
+              <span className="info-value">{info.language}</span>
             </div>
 
             <div className="info-item">

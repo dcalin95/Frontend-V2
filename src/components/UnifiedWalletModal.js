@@ -17,6 +17,7 @@ const UnifiedWalletModal = () => {
   
   const [selectedNetwork, setSelectedNetwork] = useState(null); // "EVM" | "SOLANA" | null
   const [isClearing, setIsClearing] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false); // ⏳ New connecting state
   const [error, setError] = useState(null);
 
   if (!showWalletModal) return null;
@@ -25,14 +26,20 @@ const UnifiedWalletModal = () => {
     setShowWalletModal(false);
     setSelectedNetwork(null);
     setError(null);
+    setIsConnecting(false);
   };
 
   const handleEvmConnect = async () => {
     try {
       setError(null);
+      setIsConnecting(true); // Start loading
+      
       // 🔧 FIX: Prepare connection before opening modal
       await prepareForConnection();
       
+      // Short delay to ensure UI updates
+      await new Promise(resolve => setTimeout(resolve, 300));
+
       setShowWalletModal(false);
       await openEvmModal();
     } catch (err) {
@@ -46,12 +53,16 @@ const UnifiedWalletModal = () => {
       } else {
         setError('EVM connection failed. Please try again.');
       }
+    } finally {
+      setIsConnecting(false);
     }
   };
 
   const handleSolanaConnect = async (walletName) => {
     try {
       setError(null);
+      setIsConnecting(true); // Start loading
+      
       const wallet = solanaWallets.find(w => w.adapter.name === walletName);
       if (wallet) {
         console.log("Connecting to Solana wallet:", walletName);
@@ -60,10 +71,13 @@ const UnifiedWalletModal = () => {
         setTimeout(() => {
             setShowWalletModal(false);
             setSelectedNetwork(null);
-        }, 500);
+            setIsConnecting(false);
+        }, 1000);
       }
     } catch (error) {
       console.error("Error connecting Solana wallet:", error);
+      setError("Solana connection failed. Please try again.");
+      setIsConnecting(false);
     }
   };
 
@@ -72,6 +86,13 @@ const UnifiedWalletModal = () => {
       <div className="unified-wallet-modal" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close-btn" onClick={handleClose}>✖</button>
         
+        {isConnecting && (
+          <div className="connecting-overlay">
+            <div className="loading-spinner"></div>
+            <p>Initializing connection...</p>
+          </div>
+        )}
+
         {!selectedNetwork ? (
           // Step 1: Network Selection
           <>

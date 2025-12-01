@@ -57,7 +57,7 @@
   /* Mobile Navigation Menu */
   .mobile-nav-menu {
     position: fixed;
-    top: calc(112px + env(safe-area-inset-top, 0px));
+    top: calc(95px + env(safe-area-inset-top, 0px));
     left: 0;
     right: 0;
     bottom: 0;
@@ -264,9 +264,42 @@
     color: #8cffd8 !important;
   }
 
-  .header { display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; padding: 0.5rem 1rem; height: 70px; background: rgba(0, 0, 0, 0.9); gap: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .header { 
+    display: flex; 
+    flex-wrap: nowrap; 
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 2rem 1rem 0.5rem 1rem; 
+    height: 95px; 
+    background: rgba(0, 0, 0, 0.9); 
+    gap: 0.5rem; 
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.3s ease;
+  }
+  
+  .header.scrolled {
+    padding: 0.5rem 1rem;
+    height: 70px;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
+  }
+
   .logo-container { flex: 0 0 auto; order: 1; }
   .logo-container .logo { width: 32px !important; height: 32px !important; }
+
+  .header.scrolled .logo-container .logo {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  /* Update mobile menu top position when scrolled */
+  .header.scrolled + .mobile-nav-container .mobile-nav-menu, 
+  body.mobile-menu-open .header.scrolled ~ div .mobile-nav-menu {
+     /* This needs JS inline style update or !important override if possible, but JS handled top logic is cleaner. 
+        However, since the menu is fixed top, we might just want it to push down.
+        Actually, since the menu overlays everything, maybe we don't change it dynamically or we accept a gap.
+     */
+  }
 
   /* Hide old hamburger styles if any remain */
   .hamburger { display: none !important; }
@@ -320,7 +353,7 @@
   }
   .social-link { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; }
   .social-link img { width: 14px; height: 14px; }
-  .header-spacer { height: 70px; }
+  .header-spacer { height: 12vh; }
 }
 
 /* Fallback global */

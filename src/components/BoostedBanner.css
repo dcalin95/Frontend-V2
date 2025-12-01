@@ -1,7 +1,7 @@
 .total-boosted-banner {
   position: fixed;
-  top: 80px; /* Schimbat de la 110px la 80px pentru a fi imediat sub header */
-  left: 35%; /* Schimbat de la 50% la 70% pentru a fi la 30% din dreapta */
+  top: 110px; /* Schimbat de la 80px la 110px pentru a fi mai jos */
+  left: 35%; 
   transform: translateX(-50%);
   z-index: 9999;
   background: transparent; /* Eliminat fundalul cyan */
