@@ -70,13 +70,25 @@
 .ai-powered-badge {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   padding: 12px 28px;
   background: linear-gradient(135deg, rgba(156, 81, 255, 0.12), rgba(0, 212, 255, 0.12));
   border: 1px solid rgba(156, 81, 255, 0.25);
   border-radius: 24px;
   margin-bottom: 28px;
   transition: all 0.3s ease;
+}
+
+.badge-logos {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bits-logo {
+  height: 24px;
+  width: auto;
+  filter: drop-shadow(0 2px 8px rgba(20, 241, 149, 0.4));
 }
 
 .ai-powered-badge:hover {
@@ -104,19 +116,65 @@
 .ai-badge-text {
   font-size: 15px;
   font-weight: 700;
-  background: linear-gradient(135deg, #9C51FF, #00D4FF);
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.2px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.bits-brand {
+  background: linear-gradient(135deg, #14F195, #00D4FF);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  letter-spacing: 0.4px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  -webkit-font-smoothing: antialiased;
 }
 
 .ai-badge-partners {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.45);
-  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding-left: 12px;
   border-left: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.partner-logo {
+  height: 20px;
+  width: auto;
+  object-fit: contain;
+  transition: all 0.3s ease;
+  filter: brightness(0.9);
+}
+
+.partner-logo:hover {
+  filter: brightness(1.1) drop-shadow(0 2px 8px rgba(255, 255, 255, 0.3));
+  transform: scale(1.1);
+}
+
+.openai-logo {
+  height: 18px;
+}
+
+.anthropic-logo {
+  height: 18px;
+  border-radius: 4px;
+}
+
+.partner-separator {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 600;
+  margin: 0 4px;
+}
+
+.partner-text {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.65);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  margin-left: 4px;
+  -webkit-font-smoothing: antialiased;
 }
 
 .hero-title {
@@ -147,6 +205,20 @@
   max-width: 720px;
   margin: 0 auto;
   font-weight: 400;
+}
+
+.bits-highlight {
+  background: linear-gradient(135deg, #14F195, #00D4FF);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+  -webkit-font-smoothing: antialiased;
+}
+
+.hero-subtitle strong {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
 }
 
 /* ========== TECHNICAL SPECIFICATIONS ========== */
@@ -223,9 +295,19 @@
 .framework-header h3 {
   font-size: 26px;
   font-weight: 700;
-  color: #fff;
+  background: linear-gradient(135deg, #14F195 0%, #00D4FF 50%, #9C51FF 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin: 0 0 8px 0;
   letter-spacing: -0.6px;
+  -webkit-font-smoothing: antialiased;
+  filter: drop-shadow(0 2px 12px rgba(20, 241, 149, 0.3));
+  transition: filter 0.3s ease;
+}
+
+.framework-header h3:hover {
+  filter: drop-shadow(0 4px 20px rgba(20, 241, 149, 0.5));
 }
 
 .framework-header p {
@@ -290,7 +372,10 @@
 .header-text h4 {
   font-size: 18px;
   font-weight: 600;
-  color: #fff;
+  background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.9) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin: 0 0 4px 0;
   letter-spacing: -0.4px;
   -webkit-font-smoothing: antialiased;
@@ -422,9 +507,13 @@
 .methodology-header h3 {
   font-size: 22px;
   font-weight: 700;
-  color: #FF9F43;
+  background: linear-gradient(135deg, #FF9F43 0%, #FF6B6B 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin: 0 0 8px 0;
   letter-spacing: -0.4px;
+  -webkit-font-smoothing: antialiased;
 }
 
 .methodology-subtitle {
@@ -493,9 +582,13 @@
 .methodology-card h4 {
   font-size: 18px;
   font-weight: 700;
-  color: #fff;
+  background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.85) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin: 0 0 10px 0;
   letter-spacing: -0.3px;
+  -webkit-font-smoothing: antialiased;
 }
 
 .methodology-card p {
@@ -575,9 +668,13 @@
 .collection-requirements h4 {
   font-size: 17px;
   font-weight: 700;
-  color: #9C51FF;
+  background: linear-gradient(135deg, #9C51FF 0%, #00D4FF 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin: 0 0 18px 0;
   letter-spacing: -0.2px;
+  -webkit-font-smoothing: antialiased;
 }
 
 .requirements-grid {
@@ -665,9 +762,13 @@
 .standards-badge .badge-content h4 {
   font-size: 19px;
   font-weight: 700;
-  color: #00D4FF;
+  background: linear-gradient(135deg, #00D4FF 0%, #14F195 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin: 0 0 10px 0;
   letter-spacing: -0.3px;
+  -webkit-font-smoothing: antialiased;
 }
 
 .standards-badge .badge-content p {
@@ -675,6 +776,59 @@
   color: rgba(255, 255, 255, 0.65);
   line-height: 1.6;
   margin: 0;
+}
+
+.bits-logo-text {
+  background: linear-gradient(135deg, #14F195, #00D4FF);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.tech-partners {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.partner-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+}
+
+.partner-logos-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tech-partner-logo {
+  height: 24px;
+  width: auto;
+  object-fit: contain;
+  transition: all 0.3s ease;
+  filter: brightness(0.85);
+}
+
+.tech-partner-logo:hover {
+  filter: brightness(1.1) drop-shadow(0 2px 12px rgba(255, 255, 255, 0.4));
+  transform: translateY(-2px);
+}
+
+.partner-x {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.3);
+  font-weight: 600;
+  margin: 0 2px;
 }
 
 /* ========== VALUE PROPOSITION ========== */
@@ -685,10 +839,14 @@
 .value-proposition h3 {
   font-size: 26px;
   font-weight: 700;
-  color: #fff;
+  background: linear-gradient(135deg, #14F195 0%, #9C51FF 50%, #00D4FF 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   text-align: center;
   margin: 0 0 24px 0;
   letter-spacing: -0.6px;
+  -webkit-font-smoothing: antialiased;
 }
 
 .benefits-grid {
@@ -724,9 +882,13 @@
 .benefit-card h4 {
   font-size: 16px;
   font-weight: 600;
-  color: #fff;
+  background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.9) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin: 0 0 8px 0;
   letter-spacing: -0.2px;
+  -webkit-font-smoothing: antialiased;
 }
 
 .benefit-card p {

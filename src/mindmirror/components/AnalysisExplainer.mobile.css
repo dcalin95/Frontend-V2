@@ -47,8 +47,21 @@
   }
 
   .ai-badge-partners {
-    font-size: 10px;
+    gap: 6px;
     padding-left: 10px;
+  }
+
+  .partner-logo {
+    height: 16px;
+  }
+
+  .openai-logo,
+  .anthropic-logo {
+    height: 15px;
+  }
+
+  .bits-logo {
+    height: 20px;
   }
 
   .hero-title {
@@ -315,6 +328,20 @@
     font-size: 12px;
   }
 
+  .tech-partners {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .partner-logos-row {
+    gap: 8px;
+  }
+
+  .tech-partner-logo {
+    height: 20px;
+  }
+
   /* ========== VALUE PROPOSITION ========== */
   .value-proposition {
     margin-bottom: 28px;
@@ -381,8 +408,25 @@
     padding-left: 0;
     border-left: none;
     width: 100%;
-    text-align: center;
+    justify-content: center;
     margin-top: 4px;
+  }
+
+  .partner-logo {
+    height: 14px;
+  }
+
+  .openai-logo,
+  .anthropic-logo {
+    height: 13px;
+  }
+
+  .bits-logo {
+    height: 18px;
+  }
+
+  .tech-partner-logo {
+    height: 18px;
   }
 
   .hero-title {

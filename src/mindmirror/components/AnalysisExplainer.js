@@ -132,8 +132,8 @@ const AnalysisExplainer = () => {
     {
       icon: '🤖',
       label: 'AI Model',
-      value: 'BitSwapDEX AI Engine',
-      description: 'Proprietary AI trained with specialized prompts & ML algorithms'
+      value: 'BITS AI Engine',
+      description: 'Proprietary AI • OpenAI × Anthropic collaboration'
     },
     {
       icon: '📊',
@@ -177,16 +177,34 @@ const AnalysisExplainer = () => {
         </div>
         <div className="ai-powered-badge">
           <span className="ai-badge-icon">⚡</span>
-          <span className="ai-badge-text">Powered by BitSwapDEX AI</span>
-          <span className="ai-badge-partners">OpenAI × Anthropic</span>
+          <span className="ai-badge-text">
+            Powered by <span className="bits-brand">BITS</span> AI Engine
+          </span>
+          <div className="ai-badge-partners">
+            <img 
+              src="https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg" 
+              alt="OpenAI" 
+              className="partner-logo openai-logo"
+              onError={(e) => {e.target.style.display='none'}}
+            />
+            <span className="partner-text">OpenAI</span>
+            <span className="partner-separator">×</span>
+            <img 
+              src="https://www.anthropic.com/images/icons/apple-touch-icon.png" 
+              alt="Anthropic" 
+              className="partner-logo anthropic-logo"
+              onError={(e) => {e.target.style.display='none'}}
+            />
+            <span className="partner-text">Anthropic</span>
+          </div>
         </div>
         <h2 className="hero-title">
           What You'll Receive:
           <span className="gradient-text"> Clinical-Grade Mind Mirror Assessment</span>
         </h2>
         <p className="hero-subtitle">
-          Powered by BitSwapDEX AI Engine - a proprietary system trained with specialized prompts 
-          and machine learning algorithms in collaboration with OpenAI and Anthropic - combining 
+          Powered by <strong className="bits-highlight">BITS AI Engine</strong> - a proprietary system trained with specialized prompts 
+          and machine learning algorithms in collaboration with <strong>OpenAI</strong> × <strong>Anthropic</strong> - combining 
           cutting-edge neuroscience, behavioral finance research, and computational linguistics 
           to create your unique psychological trading profile.
         </p>
@@ -371,14 +389,34 @@ const AnalysisExplainer = () => {
         <div className="standards-badge">
           <span className="badge-icon">🏆</span>
           <div className="badge-content">
-            <h4>BitSwapDEX AI Technology</h4>
+            <h4>
+              <span className="bits-logo-text">BITS</span> AI Technology
+            </h4>
             <p>
-              Our proprietary AI engine is specially trained with advanced machine learning algorithms 
-              and custom neuropsychological prompts, developed in collaboration with OpenAI and Anthropic. 
+              Our proprietary <strong className="bits-highlight">BITS AI Engine</strong> is specially trained with advanced machine learning algorithms 
+              and custom neuropsychological prompts, developed in collaboration with <strong>OpenAI</strong> × <strong>Anthropic</strong>. 
               The system integrates principles from the American Psychological Association (APA), 
               computational neuroscience research, and evidence-based behavioral finance frameworks 
               to deliver specialized cryptocurrency trading psychology assessments.
             </p>
+            <div className="tech-partners">
+              <span className="partner-label">Powered by:</span>
+              <div className="partner-logos-row">
+                <img 
+                  src="https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg" 
+                  alt="OpenAI" 
+                  className="tech-partner-logo"
+                  onError={(e) => {e.target.style.display='none'}}
+                />
+                <span className="partner-x">×</span>
+                <img 
+                  src="https://www.anthropic.com/images/icons/apple-touch-icon.png" 
+                  alt="Anthropic" 
+                  className="tech-partner-logo"
+                  onError={(e) => {e.target.style.display='none'}}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
