@@ -1,9 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './AnalysisExplainer.css';
 import './AnalysisExplainer.mobile.css';
+import useReadingTracker from '../hooks/useReadingTracker';
+import ReadingProgressBar from './ReadingProgressBar';
+import SmartHighlight from './SmartHighlight';
 
 const AnalysisExplainer = () => {
   const [expandedSection, setExpandedSection] = useState(null);
+  
+  // Reading Tracker Hook
+  const {
+    activeSection,
+    readingSections,
+    scrollProgress,
+    analytics,
+    observeSection,
+    trackCardExpansion,
+    trackHover,
+    getEngagementScore,
+  } = useReadingTracker();
+
+  // Refs for section tracking
+  const heroRef = useRef(null);
+  const frameworkRef = useRef(null);
+  const methodologyRef = useRef(null);
+  const standardsRef = useRef(null);
+  const valueRef = useRef(null);
+
+  // Setup observers
+  useEffect(() => {
+    const cleanupFns = [];
+
+    if (heroRef.current) {
+      cleanupFns.push(observeSection(heroRef.current, 'hero'));
+    }
+    if (frameworkRef.current) {
+      cleanupFns.push(observeSection(frameworkRef.current, 'framework'));
+    }
+    if (methodologyRef.current) {
+      cleanupFns.push(observeSection(methodologyRef.current, 'methodology'));
+    }
+    if (standardsRef.current) {
+      cleanupFns.push(observeSection(standardsRef.current, 'standards'));
+    }
+    if (valueRef.current) {
+      cleanupFns.push(observeSection(valueRef.current, 'value'));
+    }
+
+    return () => {
+      cleanupFns.forEach(cleanup => cleanup && cleanup());
+    };
+  }, [observeSection]);
+
+  // Track card expansion
+  const handleToggleSection = (sectionId) => {
+    setExpandedSection(expandedSection === sectionId ? null : sectionId);
+    if (expandedSection !== sectionId) {
+      trackCardExpansion(sectionId);
+    }
+  };
 
   const analysisFramework = [
     {
@@ -169,8 +224,18 @@ const AnalysisExplainer = () => {
 
   return (
     <div className="analysis-explainer-container">
+      {/* Reading Progress Bar */}
+      <ReadingProgressBar 
+        progress={scrollProgress}
+        readingSections={readingSections}
+        engagementScore={getEngagementScore()}
+      />
+
       {/* Hero Header */}
-      <div className="explainer-hero">
+      <div 
+        ref={heroRef}
+        className={`explainer-hero ${activeSection === 'hero' ? 'section-active' : ''}`}
+      >
         <div className="hero-badge">
           <span className="badge-icon">🧠</span>
           <span className="badge-text">Advanced Neuropsychological Analysis</span>
@@ -225,12 +290,16 @@ const AnalysisExplainer = () => {
       </div>
 
       {/* Analysis Framework Sections */}
-      <div className="framework-header">
-        <h3>8-Dimensional Analysis Framework</h3>
-        <p>Click each section to explore the scientific methodology</p>
-      </div>
+      <div 
+        ref={frameworkRef}
+        className={`framework-section-wrapper ${activeSection === 'framework' ? 'section-active' : ''}`}
+      >
+        <div className="framework-header">
+          <h3>8-Dimensional Analysis Framework</h3>
+          <p>Click each section to explore the scientific methodology</p>
+        </div>
 
-      <div className="framework-sections">
+        <div className="framework-sections">
         {analysisFramework.map((section) => (
           <div 
             key={section.id} 
@@ -238,7 +307,8 @@ const AnalysisExplainer = () => {
           >
             <div 
               className="framework-card-header"
-              onClick={() => setExpandedSection(expandedSection === section.id ? null : section.id)}
+              onClick={() => handleToggleSection(section.id)}
+              onMouseEnter={() => trackHover(`framework-${section.id}`)}
             >
               <div className="header-left">
                 <span className="framework-icon">{section.icon}</span>
@@ -282,10 +352,14 @@ const AnalysisExplainer = () => {
             )}
           </div>
         ))}
+        </div>
       </div>
 
       {/* Data Collection Methodology */}
-      <div className="methodology-section">
+      <div 
+        ref={methodologyRef}
+        className={`methodology-section ${activeSection === 'methodology' ? 'section-active' : ''}`}
+      >
         <div className="methodology-header">
           <h3>⚠️ Critical: Natural Data Collection Required</h3>
           <p className="methodology-subtitle">Why We Need 1000+ Words from Natural Telegram Conversations</p>
@@ -385,7 +459,10 @@ const AnalysisExplainer = () => {
       </div>
 
       {/* Scientific Standards Badge */}
-      <div className="scientific-standards">
+      <div 
+        ref={standardsRef}
+        className={`scientific-standards ${activeSection === 'standards' ? 'section-active' : ''}`}
+      >
         <div className="standards-badge">
           <span className="badge-icon">🏆</span>
           <div className="badge-content">
@@ -422,7 +499,10 @@ const AnalysisExplainer = () => {
       </div>
 
       {/* Value Proposition */}
-      <div className="value-proposition">
+      <div 
+        ref={valueRef}
+        className={`value-proposition ${activeSection === 'value' ? 'section-active' : ''}`}
+      >
         <h3>Why This Matters for Crypto Traders</h3>
         <div className="benefits-grid">
           <div className="benefit-card">

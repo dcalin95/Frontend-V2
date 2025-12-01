@@ -1,0 +1,232 @@
+/* ==========================================
+   READING PROGRESS BAR - APPLE × SOLANA STYLE
+   ========================================== */
+
+.reading-progress-container {
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+
+/* Main Progress Bar */
+.reading-progress-bar {
+  position: relative;
+  width: 200px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.05);
+}
+
+.reading-progress-fill {
+  position: relative;
+  height: 100%;
+  background: linear-gradient(90deg, #14F195 0%, #00D4FF 50%, #9C51FF 100%);
+  border-radius: 20px;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 20px rgba(20, 241, 149, 0.5);
+  overflow: hidden;
+}
+
+.progress-shimmer {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+.progress-percentage {
+  position: absolute;
+  top: -28px;
+  right: 0;
+  font-size: 12px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #14F195, #00D4FF);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.6);
+  -webkit-text-fill-color: #14F195;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(20, 241, 149, 0.3);
+  pointer-events: auto;
+}
+
+/* Reading Stats */
+.reading-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  pointer-events: auto;
+  cursor: default;
+}
+
+.stat-item:hover {
+  background: rgba(0, 0, 0, 0.8);
+  border-color: rgba(20, 241, 149, 0.3);
+  box-shadow: 
+    0 6px 24px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(20, 241, 149, 0.2),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08);
+  transform: translateX(-4px);
+}
+
+.stat-icon {
+  font-size: 18px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 8px rgba(20, 241, 149, 0.3));
+}
+
+.stat-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #14F195;
+  min-width: 24px;
+  text-align: center;
+  -webkit-font-smoothing: antialiased;
+}
+
+.stat-value.complete {
+  color: #14F195;
+  font-size: 18px;
+  animation: completePulse 1s ease-in-out infinite;
+}
+
+@keyframes completePulse {
+  0%, 100% { 
+    transform: scale(1);
+    filter: drop-shadow(0 0 8px rgba(20, 241, 149, 0.6));
+  }
+  50% { 
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 16px rgba(20, 241, 149, 0.9));
+  }
+}
+
+.stat-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .reading-progress-container {
+    top: 60px;
+    right: 12px;
+  }
+
+  .reading-progress-bar {
+    width: 150px;
+    height: 6px;
+  }
+
+  .progress-percentage {
+    font-size: 10px;
+    top: -24px;
+  }
+
+  .stat-item {
+    padding: 8px 12px;
+  }
+
+  .stat-icon {
+    font-size: 16px;
+  }
+
+  .stat-value {
+    font-size: 14px;
+  }
+
+  .stat-label {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .reading-progress-container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .reading-progress-bar {
+    width: 100%;
+    max-width: 120px;
+  }
+
+  .reading-stats {
+    flex-direction: row;
+    gap: 6px;
+  }
+
+  .stat-item {
+    flex-direction: column;
+    padding: 6px 10px;
+    gap: 4px;
+    min-width: 60px;
+  }
+
+  .stat-icon {
+    font-size: 14px;
+  }
+
+  .stat-value {
+    font-size: 12px;
+  }
+
+  .stat-label {
+    font-size: 9px;
+  }
+
+  .progress-percentage {
+    position: static;
+    margin-left: 8px;
+  }
+}
+

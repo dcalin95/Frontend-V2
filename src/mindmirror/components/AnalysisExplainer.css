@@ -898,6 +898,47 @@
   margin: 0;
 }
 
+/* ========== ACTIVE SECTION GLOW ========== */
+.section-active {
+  animation: sectionGlow 2s ease-in-out infinite;
+}
+
+@keyframes sectionGlow {
+  0%, 100% {
+    box-shadow: 
+      0 0 30px rgba(20, 241, 149, 0.2),
+      0 0 60px rgba(20, 241, 149, 0.1),
+      inset 0 0 20px rgba(20, 241, 149, 0.05);
+  }
+  50% {
+    box-shadow: 
+      0 0 40px rgba(20, 241, 149, 0.3),
+      0 0 80px rgba(20, 241, 149, 0.15),
+      inset 0 0 30px rgba(20, 241, 149, 0.08);
+  }
+}
+
+.explainer-hero.section-active {
+  border-color: rgba(20, 241, 149, 0.3);
+}
+
+.framework-section-wrapper.section-active .framework-header h3 {
+  filter: drop-shadow(0 4px 24px rgba(20, 241, 149, 0.6));
+}
+
+.methodology-section.section-active .methodology-header {
+  border-color: rgba(255, 159, 67, 0.4);
+  box-shadow: 0 0 30px rgba(255, 159, 67, 0.2);
+}
+
+.scientific-standards.section-active .standards-badge {
+  border-color: rgba(0, 212, 255, 0.4);
+}
+
+.value-proposition.section-active {
+  animation: sectionGlow 2s ease-in-out infinite;
+}
+
 /* ========== RESPONSIVE DESIGN ========== */
 @media (max-width: 768px) {
   .analysis-explainer-container {

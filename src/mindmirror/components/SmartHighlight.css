@@ -1,0 +1,178 @@
+/* ==========================================
+   SMART HIGHLIGHT - INTERACTIVE TOOLTIPS
+   Apple × Solana Style
+   ========================================== */
+
+.smart-highlight-wrapper {
+  position: relative;
+  display: inline;
+}
+
+.smart-highlight-term {
+  background: linear-gradient(135deg, rgba(20, 241, 149, 0.15), rgba(0, 212, 255, 0.15));
+  border-bottom: 2px solid;
+  border-image: linear-gradient(90deg, #14F195, #00D4FF) 1;
+  padding: 2px 4px;
+  cursor: help;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  font-weight: 600;
+  color: #14F195;
+  -webkit-font-smoothing: antialiased;
+}
+
+.smart-highlight-term:hover {
+  background: linear-gradient(135deg, rgba(20, 241, 149, 0.25), rgba(0, 212, 255, 0.25));
+  box-shadow: 
+    0 2px 12px rgba(20, 241, 149, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+/* Tooltip */
+.smart-highlight-tooltip {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 280px;
+  max-width: 350px;
+  padding: 16px 20px;
+  background: rgba(10, 10, 20, 0.95);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(20, 241, 149, 0.3);
+  border-radius: 16px;
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.7),
+    0 0 30px rgba(20, 241, 149, 0.2),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08);
+  z-index: 10000;
+  pointer-events: none;
+  animation: tooltipFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.tooltip-icon {
+  font-size: 24px;
+  display: block;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 2px 8px rgba(20, 241, 149, 0.4));
+}
+
+.tooltip-content {
+  text-align: left;
+}
+
+.tooltip-term {
+  font-size: 14px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #14F195, #00D4FF);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: block;
+  margin-bottom: 6px;
+  letter-spacing: 0.3px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.tooltip-definition {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Tooltip Arrow */
+.tooltip-arrow {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid rgba(20, 241, 149, 0.3);
+}
+
+.tooltip-arrow::before {
+  content: '';
+  position: absolute;
+  bottom: 1px;
+  left: -7px;
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 7px solid rgba(10, 10, 20, 0.95);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .smart-highlight-tooltip {
+    min-width: 240px;
+    max-width: 300px;
+    padding: 14px 16px;
+    left: auto;
+    right: 0;
+    transform: translateX(0);
+  }
+
+  .tooltip-icon {
+    font-size: 20px;
+  }
+
+  .tooltip-term {
+    font-size: 13px;
+  }
+
+  .tooltip-definition {
+    font-size: 11px;
+  }
+
+  .tooltip-arrow {
+    left: auto;
+    right: 20px;
+    transform: translateX(0);
+  }
+
+  .tooltip-arrow::before {
+    left: -7px;
+  }
+}
+
+@media (max-width: 480px) {
+  .smart-highlight-tooltip {
+    position: fixed;
+    bottom: 20px;
+    left: 10px;
+    right: 10px;
+    width: auto;
+    min-width: auto;
+    max-width: none;
+    transform: none;
+  }
+
+  .tooltip-arrow {
+    display: none;
+  }
+
+  .smart-highlight-term {
+    padding: 1px 3px;
+    font-size: 14px;
+  }
+}
+
