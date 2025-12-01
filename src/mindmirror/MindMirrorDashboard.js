@@ -7,6 +7,8 @@ import './mindmirror.mobile.css';
 import MindNFTGenerator from './components/MindNFTGenerator';
 import AITradingGuardian from '../components/AIHub/AITradingGuardian';
 import DynamicNFTCard from '../components/AIHub/DynamicNFTCard';
+import WordCollectionProgress from './components/WordCollectionProgress';
+import AnalysisExplainer from './components/AnalysisExplainer';
 
 const MindMirrorDashboard = () => {
   // Wallet & Balance Hooks
@@ -36,12 +38,15 @@ const MindMirrorDashboard = () => {
   const wordCount = wordMilestone.count || (inputText.trim() ? inputText.trim().split(/\s+/).length : 0);
   const progress = Math.min((wordCount / 1000) * 100, 100);
 
-  // Check word milestone and usage on component mount or account change
+  // Check word milestone and usage on component mount or account change  
   useEffect(() => {
+    console.log('🔄 [useEffect] Wallet address changed:', walletAddress);
     if (walletAddress) {
+      console.log('✅ [useEffect] Wallet is connected, fetching word count and usage...');
       checkWordMilestone();
       checkAnalysisUsage();
     } else {
+      console.log('⚠️ [useEffect] No wallet connected, resetting word milestone');
       setWordMilestone({ count: 0, hasAccess: false, isLoading: false });
     }
   }, [walletAddress]);
@@ -85,29 +90,67 @@ const MindMirrorDashboard = () => {
       const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
       
       if (!walletAddress) {
+        console.log('❌ [Word Check] No wallet address provided');
+        setWordMilestone({ count: 0, hasAccess: false, isLoading: false });
+        return;
+      }
+      
+      // Set loading state
+      setWordMilestone(prev => ({ ...prev, isLoading: true }));
+      
+      console.log('🔍 [Word Check] Starting check for wallet:', walletAddress);
+      console.log('🔍 [Word Check] Backend URL:', BACKEND_URL);
+      console.log('🔍 [Word Check] Full API endpoint:', `${BACKEND_URL}/api/word-analysis/analyze-user-words`);
+      
+      const requestBody = { walletAddress: walletAddress };
+      console.log('🔍 [Word Check] Request body:', JSON.stringify(requestBody));
+      
+      const response = await fetch(`${BACKEND_URL}/api/word-analysis/analyze-user-words`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody)
+      });
+
+      console.log('🔍 [Word Check] Response status:', response.status);
+      console.log('🔍 [Word Check] Response ok:', response.ok);
+
+      // Handle 404 - No words found (user has 0 words or wallet not linked)
+      if (response.status === 404) {
+        const errorData = await response.json();
+        console.log('⚠️ [Word Check] 404 Response:', errorData);
+        console.log('⚠️ [Word Check] No words found for this wallet - it may not be linked to Telegram');
         setWordMilestone({ count: 0, hasAccess: false, isLoading: false });
         return;
       }
 
-      const response = await fetch(`${BACKEND_URL}/api/word-analysis/analyze-user-words`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ walletAddress: walletAddress })
-      });
-
-      if (!response.ok) throw new Error(`Failed to fetch word count: ${response.status}`);
+      // Handle other errors
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ [Word Check] API error:', response.status, errorText);
+        throw new Error(`API error: ${response.status} - ${errorText}`);
+      }
 
       const data = await response.json();
+      console.log('✅ [Word Check] Full API response:', data);
+      
       const fetchedWordCount = data.wordCount || 0;
+      console.log('✅ [Word Check] Word count extracted:', fetchedWordCount);
+      console.log('✅ [Word Check] Has access (>=1000):', fetchedWordCount >= 1000);
       
       setWordMilestone({
         count: fetchedWordCount,
         hasAccess: fetchedWordCount >= 1000,
         isLoading: false
       });
+      
+      // Alert user with result
+      alert(`✅ Word count loaded: ${fetchedWordCount}/1000 words`);
     } catch (error) {
-      console.error('❌ Error checking word milestone:', error);
+      console.error('❌ [Word Check] Fatal error:', error);
+      console.error('❌ [Word Check] Error details:', error.message);
+      console.error('❌ [Word Check] Error stack:', error.stack);
       setWordMilestone({ count: 0, hasAccess: false, isLoading: false });
+      alert(`❌ Error loading word count: ${error.message}`);
     }
   };
 
@@ -330,7 +373,7 @@ const MindMirrorDashboard = () => {
       
       const enhancedResults = {
         ...data,
-        aiProvider: "OpenAI GPT-4 Turbo",
+        aiProvider: "BitSwapDEX AI Engine (OpenAI & Anthropic)",
         analysisTimestamp: new Date().toLocaleString(),
         wordCount: userWords.length,
         stressLevel: Math.round((data.stress_indicators?.level || 0.5) * 100),
@@ -465,30 +508,76 @@ const MindMirrorDashboard = () => {
         </div>
       </section>
 
-      {/* Compact Status Section */}
+      {/* Word Collection Progress - New Component */}
+      <WordCollectionProgress
+        wordCount={wordCount}
+        walletAddress={walletAddress}
+        onRefresh={checkWordMilestone}
+        isLoading={wordMilestone.isLoading}
+        onDebugTest={async () => {
+          const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+          console.log('🧪 [API TEST] Starting comprehensive API test...');
+          console.log('🧪 [API TEST] Wallet:', walletAddress);
+          console.log('🧪 [API TEST] Backend:', BACKEND_URL);
+          
+          // Test 1: Get Telegram ID
+          try {
+            console.log('🧪 [TEST 1/3] Testing /get-telegram-id...');
+            const res1 = await fetch(`${BACKEND_URL}/api/word-analysis/get-telegram-id`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ walletAddress })
+            });
+            const data1 = await res1.json();
+            console.log('✅ [TEST 1/3] Telegram ID response:', data1);
+            alert(`TEST 1: Telegram ID\n${JSON.stringify(data1, null, 2)}`);
+          } catch (e) {
+            console.error('❌ [TEST 1/3] Failed:', e);
+            alert(`TEST 1 FAILED: ${e.message}`);
+          }
+          
+          // Test 2: Analyze words
+          try {
+            console.log('🧪 [TEST 2/3] Testing /analyze-user-words...');
+            const res2 = await fetch(`${BACKEND_URL}/api/word-analysis/analyze-user-words`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ walletAddress })
+            });
+            const data2 = await res2.json();
+            console.log('✅ [TEST 2/3] Analyze words response:', data2);
+            alert(`TEST 2: Word Count\n${JSON.stringify(data2, null, 2)}`);
+          } catch (e) {
+            console.error('❌ [TEST 2/3] Failed:', e);
+            alert(`TEST 2 FAILED: ${e.message}`);
+          }
+          
+          // Test 3: Get raw words
+          try {
+            console.log('🧪 [TEST 3/3] Testing /get-user-words...');
+            const res3 = await fetch(`${BACKEND_URL}/api/word-analysis/get-user-words`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ walletAddress })
+            });
+            const data3 = await res3.json();
+            console.log('✅ [TEST 3/3] Get words response:', data3);
+            alert(`TEST 3: Raw Words\nCount: ${data3.wordCount || 0}\nFirst 10 words: ${(data3.words || []).slice(0, 10).join(', ')}`);
+          } catch (e) {
+            console.error('❌ [TEST 3/3] Failed:', e);
+            alert(`TEST 3 FAILED: ${e.message}`);
+          }
+          
+          console.log('🧪 [API TEST] All tests completed! Check console for details.');
+        }}
+      />
+
+      {/* Analysis Explainer - What You'll Get */}
+      <AnalysisExplainer />
+
+      {/* Analyze Button Section */}
       <section className="status-section">
         <div className="status-wrapper">
-          <div className="progress-compact">
-            <div className="progress-info">
-              <span>Progress: <strong className="word-count-highlight">{wordCount}</strong>/1000 words</span>
-              <span className="progress-percent">{progress.toFixed(1)}%</span>
-            </div>
-            <div className="progress-bar">
-              <div 
-                className="progress-fill" 
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          </div>
-
-          <div className="context-info">
-            <p className="context-text">
-              {wordCount < 1000 
-                ? `🧠 Participate in Telegram group to collect ${1000 - wordCount} more words for analysis`
-                : "✨ Ready for advanced neuropsychological analysis!"
-              }
-            </p>
-          </div>
 
           <button 
             onClick={handleAnalysis}
@@ -496,7 +585,7 @@ const MindMirrorDashboard = () => {
             className={`analyze-button laser-sharp ${isAnalyzing ? 'analyzing' : ''}`}
           >
             {isAnalyzing ? (
-              <><span className="spinner"></span> 🤖 OpenAI GPT-4 Analyzing...</>
+              <><span className="spinner"></span> 🤖 BitSwapDEX AI Analyzing...</>
             ) : !walletAddress ? (
                 '🔌 Connect Wallet First'
             ) : wordMilestone.hasAccess ? (
@@ -569,7 +658,7 @@ const MindMirrorDashboard = () => {
             <div className="analysis-text-section">
               <div className="analysis-text-header">
                 <h3 className="laser-sharp">📋 Complete Medical Psychological Analysis</h3>
-                <p>Professional psychological trading profile generated by OpenAI GPT-4 Turbo</p>
+                <p>Professional psychological trading profile generated by BitSwapDEX AI Engine</p>
               </div>
               <div className="analysis-text-content">
                 <div className="analysis-text laser-sharp">{analysisResults.detailed_analysis || analysisResults.analysis}</div>

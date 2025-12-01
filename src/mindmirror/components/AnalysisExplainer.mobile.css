@@ -1,0 +1,551 @@
+/* ==========================================
+   ANALYSIS EXPLAINER - MOBILE OPTIMIZED
+   Apple × Anthropic Style for Mobile Devices
+   ========================================== */
+
+/* ========== MOBILE OVERRIDES ========== */
+@media (max-width: 768px) {
+  .analysis-explainer-container {
+    margin: 20px 16px;
+    padding: 0;
+  }
+
+  /* ========== HERO HEADER ========== */
+  .explainer-hero {
+    padding: 24px 20px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+
+  .hero-badge {
+    padding: 8px 18px;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .badge-icon {
+    font-size: 18px;
+  }
+
+  .badge-text {
+    font-size: 11px;
+    letter-spacing: 0.6px;
+  }
+
+  .ai-powered-badge {
+    padding: 10px 20px;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .ai-badge-icon {
+    font-size: 18px;
+  }
+
+  .ai-badge-text {
+    font-size: 13px;
+  }
+
+  .ai-badge-partners {
+    font-size: 10px;
+    padding-left: 10px;
+  }
+
+  .hero-title {
+    font-size: 24px;
+    margin: 0 0 12px 0;
+    letter-spacing: -0.5px;
+  }
+
+  .hero-subtitle {
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  /* ========== TECHNICAL SPECIFICATIONS ========== */
+  .tech-specs-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .tech-spec-card {
+    padding: 16px;
+    gap: 12px;
+    border-radius: 14px;
+  }
+
+  .spec-icon {
+    font-size: 26px;
+  }
+
+  .spec-label {
+    font-size: 9px;
+    margin-bottom: 3px;
+  }
+
+  .spec-value {
+    font-size: 16px;
+    margin-bottom: 3px;
+  }
+
+  .spec-description {
+    font-size: 10px;
+  }
+
+  /* ========== FRAMEWORK SECTIONS ========== */
+  .framework-header {
+    margin-bottom: 18px;
+  }
+
+  .framework-header h3 {
+    font-size: 22px;
+    margin: 0 0 6px 0;
+  }
+
+  .framework-header p {
+    font-size: 12px;
+  }
+
+  .framework-sections {
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .framework-card {
+    border-radius: 16px;
+  }
+
+  .framework-card-header {
+    padding: 14px 18px;
+  }
+
+  .header-left {
+    gap: 14px;
+  }
+
+  .framework-icon {
+    font-size: 28px;
+  }
+
+  .header-text h4 {
+    font-size: 15px;
+  }
+
+  .header-text .subtitle {
+    font-size: 11px;
+  }
+
+  .expand-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+    border-radius: 8px;
+  }
+
+  .framework-card-content {
+    padding: 0 18px 18px;
+  }
+
+  .description {
+    font-size: 13px;
+    margin: 0 0 18px 0;
+  }
+
+  .metrics-section h5,
+  .brain-regions-section h5 {
+    font-size: 11px;
+    margin: 0 0 10px 0;
+  }
+
+  .metrics-list {
+    margin: 0 0 18px 0;
+  }
+
+  .metrics-list li {
+    padding: 8px 0;
+    font-size: 12px;
+    gap: 10px;
+  }
+
+  .metric-bullet {
+    font-size: 12px;
+  }
+
+  .brain-regions-tags {
+    gap: 8px;
+  }
+
+  .brain-region-tag {
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 11px;
+  }
+
+  /* ========== DATA COLLECTION METHODOLOGY ========== */
+  .methodology-section {
+    margin-bottom: 28px;
+  }
+
+  .methodology-header {
+    margin-bottom: 18px;
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .methodology-header h3 {
+    font-size: 18px;
+    margin: 0 0 6px 0;
+  }
+
+  .methodology-subtitle {
+    font-size: 12px;
+  }
+
+  .methodology-cards {
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .methodology-card {
+    padding: 18px;
+    border-radius: 14px;
+  }
+
+  .methodology-card .card-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+  }
+
+  .methodology-card h4 {
+    font-size: 16px;
+    margin: 0 0 8px 0;
+  }
+
+  .methodology-card p {
+    font-size: 12px;
+    margin: 0 0 10px 0;
+  }
+
+  .methodology-card ul li {
+    padding: 6px 0;
+    font-size: 12px;
+  }
+
+  .scientific-points {
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .scientific-points .point {
+    padding: 14px 16px;
+    gap: 6px;
+    border-radius: 10px;
+    border-left-width: 2px;
+  }
+
+  .scientific-points .point strong {
+    font-size: 13px;
+  }
+
+  .scientific-points .point span {
+    font-size: 12px;
+  }
+
+  .collection-requirements {
+    padding: 18px;
+    border-radius: 14px;
+  }
+
+  .collection-requirements h4 {
+    font-size: 15px;
+    margin: 0 0 14px 0;
+  }
+
+  .requirements-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .requirement-item {
+    padding: 14px 16px;
+    gap: 10px;
+    border-radius: 10px;
+  }
+
+  .req-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 13px;
+  }
+
+  .req-content strong {
+    font-size: 13px;
+    margin-bottom: 3px;
+  }
+
+  .req-content p {
+    font-size: 11px;
+  }
+
+  /* ========== SCIENTIFIC STANDARDS ========== */
+  .scientific-standards {
+    margin-bottom: 28px;
+  }
+
+  .standards-badge {
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+    border-radius: 16px;
+    text-align: center;
+  }
+
+  .standards-badge .badge-icon {
+    font-size: 36px;
+    margin: 0 auto;
+  }
+
+  .standards-badge .badge-content h4 {
+    font-size: 17px;
+    margin: 0 0 8px 0;
+  }
+
+  .standards-badge .badge-content p {
+    font-size: 12px;
+  }
+
+  /* ========== VALUE PROPOSITION ========== */
+  .value-proposition {
+    margin-bottom: 28px;
+  }
+
+  .value-proposition h3 {
+    font-size: 22px;
+    margin: 0 0 18px 0;
+  }
+
+  .benefits-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .benefit-card {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .benefit-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+  }
+
+  .benefit-card h4 {
+    font-size: 15px;
+    margin: 0 0 6px 0;
+  }
+
+  .benefit-card p {
+    font-size: 11px;
+  }
+}
+
+/* ========== SMALL MOBILE (< 480px) ========== */
+@media (max-width: 480px) {
+  .analysis-explainer-container {
+    margin: 16px 12px;
+  }
+
+  .explainer-hero {
+    padding: 20px 16px;
+    border-radius: 18px;
+  }
+
+  .hero-badge {
+    padding: 7px 16px;
+    gap: 6px;
+  }
+
+  .badge-text {
+    font-size: 10px;
+  }
+
+  .ai-powered-badge {
+    padding: 9px 18px;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .ai-badge-partners {
+    padding-left: 0;
+    border-left: none;
+    width: 100%;
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  .hero-title {
+    font-size: 21px;
+    margin: 0 0 10px 0;
+  }
+
+  .hero-subtitle {
+    font-size: 12px;
+  }
+
+  .tech-spec-card {
+    padding: 14px;
+  }
+
+  .spec-icon {
+    font-size: 24px;
+  }
+
+  .spec-value {
+    font-size: 15px;
+  }
+
+  .framework-card-header {
+    padding: 12px 16px;
+  }
+
+  .framework-icon {
+    font-size: 26px;
+  }
+
+  .header-text h4 {
+    font-size: 14px;
+  }
+
+  .header-text .subtitle {
+    font-size: 10px;
+  }
+
+  .expand-icon {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+  }
+
+  .framework-card-content {
+    padding: 0 16px 16px;
+  }
+
+  .description {
+    font-size: 12px;
+  }
+
+  .metrics-list li {
+    font-size: 11px;
+  }
+
+  .brain-region-tag {
+    padding: 5px 10px;
+    font-size: 10px;
+  }
+
+  .methodology-header {
+    padding: 14px;
+  }
+
+  .methodology-header h3 {
+    font-size: 16px;
+  }
+
+  .methodology-subtitle {
+    font-size: 11px;
+  }
+
+  .methodology-card {
+    padding: 16px;
+  }
+
+  .methodology-card .card-icon {
+    font-size: 28px;
+  }
+
+  .methodology-card h4 {
+    font-size: 15px;
+  }
+
+  .methodology-card p,
+  .methodology-card ul li {
+    font-size: 11px;
+  }
+
+  .scientific-points .point {
+    padding: 12px 14px;
+  }
+
+  .scientific-points .point strong {
+    font-size: 12px;
+  }
+
+  .scientific-points .point span {
+    font-size: 11px;
+  }
+
+  .collection-requirements {
+    padding: 16px;
+  }
+
+  .collection-requirements h4 {
+    font-size: 14px;
+  }
+
+  .requirement-item {
+    padding: 12px 14px;
+  }
+
+  .req-icon {
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+  }
+
+  .req-content strong {
+    font-size: 12px;
+  }
+
+  .req-content p {
+    font-size: 10px;
+  }
+
+  .standards-badge {
+    padding: 18px;
+  }
+
+  .standards-badge .badge-icon {
+    font-size: 32px;
+  }
+
+  .standards-badge .badge-content h4 {
+    font-size: 16px;
+  }
+
+  .standards-badge .badge-content p {
+    font-size: 11px;
+  }
+
+  .value-proposition h3 {
+    font-size: 20px;
+  }
+
+  .benefit-card {
+    padding: 14px;
+  }
+
+  .benefit-icon {
+    font-size: 28px;
+  }
+
+  .benefit-card h4 {
+    font-size: 14px;
+  }
+
+  .benefit-card p {
+    font-size: 10px;
+  }
+}
+
