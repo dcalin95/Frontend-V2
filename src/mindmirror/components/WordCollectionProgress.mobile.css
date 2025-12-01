@@ -1,0 +1,460 @@
+/* ==========================================
+   WORD COLLECTION PROGRESS - MOBILE OPTIMIZED
+   Apple × Solana Style for Mobile Devices
+   ========================================== */
+
+/* ========== MOBILE OVERRIDES ========== */
+@media (max-width: 768px) {
+  .word-collection-container {
+    padding: 24px 18px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+
+  /* ========== HEADER SECTION ========== */
+  .word-collection-header {
+    flex-direction: column;
+    text-align: center;
+    margin-bottom: 24px;
+    gap: 12px;
+  }
+
+  .header-icon {
+    margin: 0 auto;
+    width: 54px;
+    height: 54px;
+  }
+
+  .brain-icon {
+    font-size: 28px;
+  }
+
+  .header-content {
+    align-items: center;
+  }
+
+  .collection-title {
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .collection-subtitle {
+    font-size: 12px;
+  }
+
+  /* ========== PROGRESS CIRCLE ========== */
+  .progress-circle-container {
+    width: 200px;
+    height: 200px;
+    margin: 24px auto;
+  }
+
+  .progress-circle {
+    width: 200px;
+    height: 200px;
+  }
+
+  .word-count-display {
+    gap: 3px;
+  }
+
+  .current-count {
+    font-size: 42px;
+  }
+
+  .total-count {
+    font-size: 22px;
+  }
+
+  .progress-percentage {
+    font-size: 15px;
+    margin-top: 6px;
+  }
+
+  .completion-badge {
+    padding: 6px 14px;
+    margin-top: 10px;
+  }
+
+  .badge-icon {
+    font-size: 16px;
+  }
+
+  .badge-text {
+    font-size: 12px;
+  }
+
+  /* ========== STATUS MESSAGES ========== */
+  .status-messages {
+    margin-bottom: 20px;
+  }
+
+  .status-message {
+    flex-direction: column;
+    text-align: center;
+    padding: 16px;
+    gap: 10px;
+    border-radius: 14px;
+  }
+
+  .status-icon {
+    font-size: 32px;
+  }
+
+  .status-title {
+    font-size: 15px;
+  }
+
+  .status-desc {
+    font-size: 12px;
+  }
+
+  .status-hint {
+    font-size: 11px;
+  }
+
+  .command-code {
+    font-size: 11px;
+    padding: 6px 10px;
+    margin: 6px auto 0;
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* ========== ACTION BUTTONS ========== */
+  .action-buttons {
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .refresh-button,
+  .debug-button {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 14px;
+    border-radius: 12px;
+  }
+
+  .button-icon {
+    font-size: 16px;
+  }
+
+  /* ========== COLLECTED WORDS SECTION ========== */
+  .collected-words-section {
+    margin-bottom: 20px;
+  }
+
+  .toggle-words-button {
+    padding: 14px 18px;
+    font-size: 14px;
+    border-radius: 12px;
+  }
+
+  .toggle-icon {
+    font-size: 14px;
+  }
+
+  .words-content {
+    max-height: 250px;
+    margin-top: 12px;
+    border-radius: 12px;
+  }
+
+  .words-loading {
+    padding: 28px;
+    gap: 10px;
+  }
+
+  .words-loading span:not(.button-spinner) {
+    font-size: 13px;
+  }
+
+  .words-grid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 8px;
+    padding: 14px;
+  }
+
+  .word-chip {
+    padding: 8px 12px;
+    font-size: 12px;
+    border-radius: 10px;
+  }
+
+  /* ========== INFO CARDS ========== */
+  .info-cards {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .info-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 16px;
+    gap: 10px;
+    border-radius: 14px;
+  }
+
+  .card-icon {
+    font-size: 32px;
+  }
+
+  .info-card h4 {
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+
+  .info-card p {
+    font-size: 11px;
+  }
+}
+
+/* ========== SMALL MOBILE (< 480px) ========== */
+@media (max-width: 480px) {
+  .word-collection-container {
+    padding: 20px 14px;
+    border-radius: 18px;
+    margin-bottom: 20px;
+  }
+
+  /* ========== HEADER SECTION ========== */
+  .word-collection-header {
+    margin-bottom: 20px;
+    gap: 10px;
+  }
+
+  .header-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .brain-icon {
+    font-size: 26px;
+  }
+
+  .collection-title {
+    font-size: 20px;
+    margin-bottom: 5px;
+  }
+
+  .collection-subtitle {
+    font-size: 11px;
+  }
+
+  /* ========== PROGRESS CIRCLE ========== */
+  .progress-circle-container {
+    width: 180px;
+    height: 180px;
+    margin: 20px auto;
+  }
+
+  .progress-circle {
+    width: 180px;
+    height: 180px;
+  }
+
+  .progress-circle circle[r="85"] {
+    r: 76;
+  }
+
+  .current-count {
+    font-size: 38px;
+  }
+
+  .total-count {
+    font-size: 20px;
+  }
+
+  .progress-percentage {
+    font-size: 14px;
+    margin-top: 5px;
+  }
+
+  .completion-badge {
+    padding: 5px 12px;
+    margin-top: 8px;
+  }
+
+  .badge-icon {
+    font-size: 14px;
+  }
+
+  .badge-text {
+    font-size: 11px;
+  }
+
+  /* ========== STATUS MESSAGES ========== */
+  .status-messages {
+    margin-bottom: 16px;
+  }
+
+  .status-message {
+    padding: 14px;
+    gap: 8px;
+    border-radius: 12px;
+  }
+
+  .status-icon {
+    font-size: 28px;
+  }
+
+  .status-title {
+    font-size: 14px;
+  }
+
+  .status-desc {
+    font-size: 11px;
+  }
+
+  .status-hint {
+    font-size: 10px;
+  }
+
+  .command-code {
+    font-size: 10px;
+    padding: 5px 8px;
+  }
+
+  /* ========== ACTION BUTTONS ========== */
+  .action-buttons {
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .refresh-button,
+  .debug-button {
+    padding: 12px 18px;
+    font-size: 13px;
+    border-radius: 10px;
+  }
+
+  .button-icon {
+    font-size: 15px;
+  }
+
+  /* ========== COLLECTED WORDS SECTION ========== */
+  .collected-words-section {
+    margin-bottom: 16px;
+  }
+
+  .toggle-words-button {
+    padding: 12px 16px;
+    font-size: 13px;
+    border-radius: 10px;
+  }
+
+  .toggle-icon {
+    font-size: 13px;
+  }
+
+  .words-content {
+    max-height: 220px;
+    margin-top: 10px;
+    border-radius: 10px;
+  }
+
+  .words-loading {
+    padding: 24px;
+  }
+
+  .words-loading span:not(.button-spinner) {
+    font-size: 12px;
+  }
+
+  .words-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 6px;
+    padding: 12px;
+  }
+
+  .word-chip {
+    padding: 7px 10px;
+    font-size: 11px;
+    border-radius: 8px;
+  }
+
+  /* ========== INFO CARDS ========== */
+  .info-cards {
+    gap: 8px;
+  }
+
+  .info-card {
+    padding: 14px;
+    gap: 8px;
+    border-radius: 12px;
+  }
+
+  .card-icon {
+    font-size: 28px;
+  }
+
+  .info-card h4 {
+    font-size: 14px;
+    margin-bottom: 3px;
+  }
+
+  .info-card p {
+    font-size: 10px;
+  }
+
+  /* ========== CUSTOM SCROLLBAR (MOBILE) ========== */
+  .words-content::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .words-content::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+  }
+}
+
+/* ========== LANDSCAPE MODE (SMALL HEIGHT) ========== */
+@media (max-height: 500px) and (orientation: landscape) {
+  .progress-circle-container {
+    width: 140px;
+    height: 140px;
+    margin: 16px auto;
+  }
+
+  .progress-circle {
+    width: 140px;
+    height: 140px;
+  }
+
+  .progress-circle circle[r="85"] {
+    r: 60;
+  }
+
+  .current-count {
+    font-size: 32px;
+  }
+
+  .total-count {
+    font-size: 16px;
+  }
+
+  .progress-percentage {
+    font-size: 12px;
+  }
+
+  .status-message {
+    padding: 12px;
+  }
+
+  .info-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .info-card {
+    flex-direction: row;
+    text-align: left;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .card-icon {
+    font-size: 24px;
+  }
+}
+

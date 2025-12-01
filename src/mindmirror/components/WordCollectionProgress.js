@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './WordCollectionProgress.css';
+import './WordCollectionProgress.mobile.css';
 
 const WordCollectionProgress = ({
   wordCount = 0,
