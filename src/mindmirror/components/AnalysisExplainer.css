@@ -9,6 +9,9 @@
   max-width: 1200px;
   margin: 40px auto;
   padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 /* ========== HERO HEADER ========== */
@@ -61,6 +64,7 @@
   color: #14F195;
   text-transform: uppercase;
   letter-spacing: 0.8px;
+  -webkit-font-smoothing: antialiased;
 }
 
 .ai-powered-badge {
@@ -122,6 +126,8 @@
   margin: 0 0 16px 0;
   line-height: 1.15;
   letter-spacing: -0.8px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 .gradient-text {
@@ -130,6 +136,8 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 800;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 .hero-subtitle {
@@ -183,11 +191,12 @@
 
 .spec-label {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.5);
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 1px;
   margin-bottom: 4px;
   font-weight: 600;
+  -webkit-font-smoothing: antialiased;
 }
 
 .spec-value {
@@ -195,7 +204,8 @@
   font-weight: 700;
   color: #14F195;
   margin-bottom: 4px;
-  letter-spacing: -0.3px;
+  letter-spacing: -0.5px;
+  -webkit-font-smoothing: antialiased;
 }
 
 .spec-description {
@@ -282,7 +292,8 @@
   font-weight: 600;
   color: #fff;
   margin: 0 0 4px 0;
-  letter-spacing: -0.2px;
+  letter-spacing: -0.4px;
+  -webkit-font-smoothing: antialiased;
 }
 
 .header-text .subtitle {
@@ -344,7 +355,8 @@
   color: #14F195;
   margin: 0 0 14px 0;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
+  letter-spacing: 1.2px;
+  -webkit-font-smoothing: antialiased;
 }
 
 .metrics-list {
