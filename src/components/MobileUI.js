@@ -1,23 +1,74 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import UserDeviceInfo from './UserDeviceInfo';
 import './MobileUI.css';
 
 const MobileUI = ({ children }) => {
-  const [isMobile, setIsMobile] = useState(false);
-  const [isLandscape, setIsLandscape] = useState(false);
+  // ✅ FIX: Folosim matchMedia pentru sincronizare perfectă cu CSS-ul
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(max-width: 768px)').matches;
+    }
+    return false;
+  });
+
+  const [isLandscape, setIsLandscape] = useState(() => {
+    if (typeof window !== 'undefined') {
+      // Landscape ONLY when: width > height AND height is very small (phone in landscape)
+      // This prevents false positives on portrait mode or desktop browsers
+      const isLandscapeOrientation = window.innerWidth > window.innerHeight;
+      const isSmallHeight = window.innerHeight < 450; // Reduced threshold
+      const isMobileWidth = window.innerWidth < 900; // Ensure it's actually a mobile device
+      return isLandscapeOrientation && isSmallHeight && isMobileWidth;
+    }
+    return false;
+  });
+
   const [isLowPower, setIsLowPower] = useState(false);
   const [isSlowConnection, setIsSlowConnection] = useState(false);
 
+  // 🚀 Aplicăm clasele IMEDIAT, înainte de paint
+  useLayoutEffect(() => {
+    const updateClasses = () => {
+      const mobile = window.matchMedia('(max-width: 768px)').matches;
+      
+      if (mobile) {
+        document.body.classList.add('mode-mobile');
+        document.body.classList.remove('mode-desktop');
+      } else {
+        document.body.classList.add('mode-desktop');
+        document.body.classList.remove('mode-mobile');
+      }
+
+      // Landscape ONLY when: width > height AND height is very small AND mobile width
+      const isLandscapeOrientation = window.innerWidth > window.innerHeight;
+      const isSmallHeight = window.innerHeight < 450;
+      const isMobileWidth = window.innerWidth < 900;
+      const landscape = isLandscapeOrientation && isSmallHeight && isMobileWidth;
+      
+      if (landscape) {
+        document.body.classList.add('orientation-landscape');
+      } else {
+        document.body.classList.remove('orientation-landscape');
+      }
+    };
+
+    updateClasses();
+  }, []);
+
   useEffect(() => {
-    const checkDevice = () => {
-      const mobile = window.innerWidth <= 768;
-      const landscape = window.innerHeight < window.innerWidth && window.innerHeight < 500;
+    const mobileQuery = window.matchMedia('(max-width: 768px)');
+
+    const handleResize = () => {
+      const mobile = mobileQuery.matches;
+      // Landscape ONLY when: width > height AND height is very small AND mobile width
+      const isLandscapeOrientation = window.innerWidth > window.innerHeight;
+      const isSmallHeight = window.innerHeight < 450;
+      const isMobileWidth = window.innerWidth < 900;
+      const landscape = isLandscapeOrientation && isSmallHeight && isMobileWidth;
       
       setIsMobile(mobile);
       setIsLandscape(landscape);
 
-      // 🚀 GLOBAL BODY CLASSES INJECTION
-      // This acts as the "Central Intelligence" for CSS
       if (mobile) {
         document.body.classList.add('mode-mobile');
         document.body.classList.remove('mode-desktop');
@@ -33,6 +84,15 @@ const MobileUI = ({ children }) => {
       }
     };
 
+    // Listeners
+    if (mobileQuery.addEventListener) {
+        mobileQuery.addEventListener('change', handleResize);
+    } else {
+        mobileQuery.addListener(handleResize);
+    }
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+
     const checkConnection = async () => {
       if ('connection' in navigator) {
         const connection = navigator.connection;
@@ -45,7 +105,6 @@ const MobileUI = ({ children }) => {
         try {
           const battery = await navigator.getBattery();
           setIsLowPower(battery.level < 0.2);
-          
           battery.addEventListener('levelchange', () => {
             setIsLowPower(battery.level < 0.2);
           });
@@ -55,54 +114,52 @@ const MobileUI = ({ children }) => {
       }
     };
 
-    checkDevice();
     checkConnection();
     checkBattery();
 
-    window.addEventListener('resize', checkDevice);
-    window.addEventListener('orientationchange', checkDevice);
-
     return () => {
-      window.removeEventListener('resize', checkDevice);
-      window.removeEventListener('orientationchange', checkDevice);
+      if (mobileQuery.removeEventListener) {
+        mobileQuery.removeEventListener('change', handleResize);
+      } else {
+        mobileQuery.removeListener(handleResize);
+      }
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
     };
   }, []);
 
-  if (!isMobile) {
-    return children;
-  }
-
+  // Randează mereu structura, dar adaptează conținutul
+  // Astfel evităm "re-mount" complet la copii când se schimbă isMobile
   return (
-    <div className={`mobile-ui ${isLandscape ? 'landscape' : ''} ${isLowPower ? 'low-power' : ''} ${isSlowConnection ? 'slow-connection' : ''}`}>
+    <div className={isMobile ? `mobile-ui ${isLandscape ? 'landscape' : ''} ${isLowPower ? 'low-power' : ''} ${isSlowConnection ? 'slow-connection' : ''}` : 'desktop-ui'}>
       {/* Mobile-specific optimizations */}
-      {isLowPower && (
+      {isMobile && isLowPower && (
         <div className="mobile-warning low-power-warning">
           <span>🔋</span> Low battery mode - animations disabled
         </div>
       )}
       
-      {isSlowConnection && (
+      {isMobile && isSlowConnection && (
         <div className="mobile-warning slow-connection-warning">
           <span>📡</span> Slow connection - loading optimized content
         </div>
       )}
       
-      {isLandscape && (
+      {isMobile && isLandscape && (
         <div className="mobile-warning landscape-warning">
           <span>📱</span> Rotate to portrait for better experience
         </div>
       )}
       
-      <div className="mobile-content">
+      <div className={isMobile ? "mobile-content" : "desktop-content"}>
         {children}
       </div>
       
-      {/* Mobile-specific touch feedback */}
-      <div className="mobile-touch-feedback" />
-      
-      <UserDeviceInfo />
+      {/* Mobile-specific touch feedback & Device Info */}
+      {isMobile && <div className="mobile-touch-feedback" />}
+      {isMobile && <UserDeviceInfo />}
     </div>
   );
 };
 
-export default MobileUI; 
+export default MobileUI;

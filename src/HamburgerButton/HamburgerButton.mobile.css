@@ -1,89 +1,77 @@
 /* ========================================
-   HAMBURGER BUTTON - MOBILE OPTIMIZED
+   SIDEBAR TOGGLE BUTTON - MOBILE OPTIMIZED
+   Grid Icon Style - Diferit de Header Hamburger
    Ecrane: 320px - 768px
    ======================================== */
 
-/* 📱 BUTON HAMBURGER - Touch optimized */
-body.mode-mobile .ai-animated-hamburger {
-  top: 70px; /* Mai sus pe mobil pentru a fi vizibil */
+/* 📱 SIDEBAR TOGGLE - Touch optimized */
+body.mode-mobile .sidebar-toggle-button {
+  top: 70px;
   left: 12px;
-  width: 50px; /* Touch target minim */
-  height: 50px;
-  border-radius: 14px;
-  background: rgba(10, 10, 20, 0.85); /* Mai opac pe mobil */
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
-  z-index: 12500; /* Mai sus pe mobil */
-  /* Touch feedback */
-  -webkit-tap-highlight-color: rgba(20, 241, 149, 0.2);
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(153, 69, 255, 0.25), rgba(20, 241, 149, 0.2));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(153, 69, 255, 0.5);
+  box-shadow: 
+    0 4px 20px rgba(153, 69, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  z-index: 12500;
+  -webkit-tap-highlight-color: rgba(20, 241, 149, 0.3);
 }
 
-body.mode-mobile .ai-animated-hamburger:hover {
-  transform: none; /* Dezactivez hover scale */
-  background: rgba(10, 10, 20, 0.85);
+body.mode-mobile .sidebar-toggle-button:hover {
+  transform: none;
 }
 
-body.mode-mobile .ai-animated-hamburger:active {
-  /* Active state pentru touch */
-  transform: scale(0.95);
-  background: rgba(20, 241, 149, 0.2);
-  box-shadow: 0 0 20px rgba(20, 241, 149, 0.5);
+body.mode-mobile .sidebar-toggle-button:active {
+  transform: scale(0.92);
+  background: linear-gradient(135deg, rgba(20, 241, 149, 0.3), rgba(153, 69, 255, 0.25));
+  box-shadow: 0 0 25px rgba(20, 241, 149, 0.5);
 }
 
-body.mode-mobile .ai-animated-hamburger.open {
-  background: #000000 !important;
-  border-color: #9945ff;
-  box-shadow: 0 0 20px rgba(153, 69, 255, 0.5);
+body.mode-mobile .sidebar-toggle-button.open {
+  background: linear-gradient(135deg, rgba(255, 77, 77, 0.3), rgba(153, 69, 255, 0.25));
+  border-color: #ff4d4d;
+  box-shadow: 0 0 25px rgba(255, 77, 77, 0.5);
   z-index: 12501;
 }
 
-/* 🎯 LINII - Dimensiuni optimizate */
-body.mode-mobile .hamburger-lines {
-  width: 26px;
+/* 🎯 ICON - Dimensiuni optimizate */
+body.mode-mobile .sidebar-icon {
+  color: #14f195;
+}
+
+body.mode-mobile .sidebar-icon svg {
+  width: 22px;
   height: 22px;
+  filter: drop-shadow(0 0 5px rgba(20, 241, 149, 0.6));
 }
 
-body.mode-mobile .line {
-  height: 3.5px; /* Mai groase pentru vizibilitate */
-  border-radius: 10px;
+body.mode-mobile .sidebar-toggle-button.open .sidebar-icon {
+  color: #ff4d4d;
 }
 
-/* Animații identice dar optimizate */
-body.mode-mobile .ai-animated-hamburger.open .line1 {
-  transform: rotate(45deg) translate(6px, 7px);
-}
-
-body.mode-mobile .ai-animated-hamburger.open .line3 {
-  transform: rotate(-45deg) translate(6px, -7px);
+body.mode-mobile .sidebar-toggle-button.open .sidebar-icon svg {
+  filter: drop-shadow(0 0 5px rgba(255, 77, 77, 0.8));
 }
 
 /* ========================================
    ECRANE FOARTE MICI: <= 375px
    ======================================== */
 @media (max-width: 375px) {
-  body.mode-mobile .ai-animated-hamburger {
+  body.mode-mobile .sidebar-toggle-button {
     top: 65px;
     left: 10px;
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
   }
 
-  body.mode-mobile .hamburger-lines {
-    width: 24px;
+  body.mode-mobile .sidebar-icon svg {
+    width: 20px;
     height: 20px;
-  }
-
-  body.mode-mobile .line {
-    height: 3px;
-  }
-
-  body.mode-mobile .ai-animated-hamburger.open .line1 {
-    transform: rotate(45deg) translate(5px, 6px);
-  }
-
-  body.mode-mobile .ai-animated-hamburger.open .line3 {
-    transform: rotate(-45deg) translate(5px, -7px);
   }
 }
 
@@ -91,36 +79,32 @@ body.mode-mobile .ai-animated-hamburger.open .line3 {
    ECRANE EXTRA MICI: <= 320px
    ======================================== */
 @media (max-width: 320px) {
-  body.mode-mobile .ai-animated-hamburger {
+  body.mode-mobile .sidebar-toggle-button {
     top: 60px;
     left: 8px;
-    width: 46px;
-    height: 46px;
-    border-radius: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
   }
 
-  body.mode-mobile .hamburger-lines {
-    width: 22px;
+  body.mode-mobile .sidebar-icon svg {
+    width: 18px;
     height: 18px;
-  }
-
-  body.mode-mobile .line {
-    height: 2.5px;
   }
 }
 
 /* ========================================
    LANDSCAPE MODE
    ======================================== */
-body.mode-mobile.orientation-landscape .ai-animated-hamburger {
+body.mode-mobile.orientation-landscape .sidebar-toggle-button {
   top: 15px;
   left: 15px;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
 }
 
-body.mode-mobile.orientation-landscape .hamburger-lines {
-  width: 22px;
+body.mode-mobile.orientation-landscape .sidebar-icon svg {
+  width: 18px;
   height: 18px;
 }
 
@@ -129,23 +113,19 @@ body.mode-mobile.orientation-landscape .hamburger-lines {
    ======================================== */
 
 /* Low power mode */
-body.mode-mobile.low-power .ai-animated-hamburger {
+body.mode-mobile.low-power .sidebar-toggle-button {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  background: rgba(10, 10, 20, 0.95);
+  background: rgba(153, 69, 255, 0.3);
   transition: none;
 }
 
-body.mode-mobile.low-power .ai-animated-hamburger:active {
+body.mode-mobile.low-power .sidebar-toggle-button:active {
   transform: none;
 }
 
-body.mode-mobile.low-power .line {
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
 /* Slow connection */
-body.mode-mobile.slow-connection .ai-animated-hamburger {
+body.mode-mobile.slow-connection .sidebar-toggle-button {
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
 }
@@ -153,7 +133,7 @@ body.mode-mobile.slow-connection .ai-animated-hamburger {
 /* ========================================
    SAFE AREA pentru notch
    ======================================== */
-body.mode-mobile .ai-animated-hamburger {
+body.mode-mobile .sidebar-toggle-button {
   top: max(70px, calc(60px + env(safe-area-inset-top)));
   left: max(12px, env(safe-area-inset-left));
 }
@@ -163,9 +143,8 @@ body.mode-mobile .ai-animated-hamburger {
    ======================================== */
 
 /* Prevent text selection */
-body.mode-mobile .ai-animated-hamburger,
-body.mode-mobile .hamburger-lines,
-body.mode-mobile .line {
+body.mode-mobile .sidebar-toggle-button,
+body.mode-mobile .sidebar-icon {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -173,12 +152,12 @@ body.mode-mobile .line {
 }
 
 /* Focus state pentru keyboard navigation */
-body.mode-mobile .ai-animated-hamburger:focus {
+body.mode-mobile .sidebar-toggle-button:focus {
   outline: 2px solid rgba(20, 241, 149, 0.6);
   outline-offset: 3px;
 }
 
-body.mode-mobile .ai-animated-hamburger:focus:not(:focus-visible) {
+body.mode-mobile .sidebar-toggle-button:focus:not(:focus-visible) {
   outline: none;
 }
 

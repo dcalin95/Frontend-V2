@@ -1,115 +1,117 @@
-/* ===== BUTON HAMBURGER (Sidebar) - GEMINI 3 KING STYLE ===== */
-.ai-animated-hamburger {
+/* ===== SIDEBAR TOGGLE BUTTON - GRID ICON STYLE ===== */
+/* Diferit de hamburger-ul din Header pentru a evita confuzia */
+
+.sidebar-toggle-button {
   position: fixed;
-  top: 90px; /* Ajustat pentru a nu se suprapune cu header-ul */
+  top: 90px;
   left: 15px;
-  width: 48px;
-  height: 48px;
-  background: rgba(10, 10, 20, 0.6); /* Dark glass */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(20, 241, 149, 0.3);
-  border-radius: 12px; /* Modern soft square */
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, rgba(153, 69, 255, 0.2), rgba(20, 241, 149, 0.15));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(153, 69, 255, 0.4);
+  border-radius: 10px;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  z-index: 12000; /* Peste Sidebar */
+  box-shadow: 
+    0 4px 20px rgba(153, 69, 255, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  z-index: 12000;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 0;
   overflow: hidden;
 }
 
-/* Glow effect on hover */
-.ai-animated-hamburger:hover {
-  background: rgba(20, 241, 149, 0.15);
+/* Icon container */
+.sidebar-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #14f195;
+  transition: all 0.3s ease;
+}
+
+.sidebar-icon svg {
+  filter: drop-shadow(0 0 4px rgba(20, 241, 149, 0.5));
+}
+
+/* Hover effect */
+.sidebar-toggle-button:hover {
+  background: linear-gradient(135deg, rgba(153, 69, 255, 0.35), rgba(20, 241, 149, 0.25));
   border-color: #14f195;
   box-shadow: 
-    0 0 15px rgba(20, 241, 149, 0.4),
+    0 0 20px rgba(20, 241, 149, 0.4),
+    0 0 40px rgba(153, 69, 255, 0.2),
     inset 0 0 10px rgba(20, 241, 149, 0.1);
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 
-/* Active/Open State - SOLID BLACK BACKGROUND */
-.ai-animated-hamburger.open {
-  background: #000000 !important; /* Solid Black - No transparency */
-  border-color: #9945ff;
+.sidebar-toggle-button:hover .sidebar-icon {
+  color: #ffffff;
+}
+
+.sidebar-toggle-button:hover .sidebar-icon svg {
+  filter: drop-shadow(0 0 8px rgba(20, 241, 149, 0.8));
+}
+
+/* Active/Open State */
+.sidebar-toggle-button.open {
+  background: linear-gradient(135deg, rgba(255, 77, 77, 0.25), rgba(153, 69, 255, 0.2));
+  border-color: #ff4d4d;
   box-shadow: 
-    0 0 15px rgba(153, 69, 255, 0.4),
-    inset 0 0 10px rgba(153, 69, 255, 0.1);
-  z-index: 12001; /* Asigura-te ca e peste orice */
+    0 0 20px rgba(255, 77, 77, 0.4),
+    inset 0 0 10px rgba(255, 77, 77, 0.1);
+  z-index: 12001;
 }
 
-/* Container pentru linii */
-.hamburger-lines {
-  width: 24px;
-  height: 20px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+.sidebar-toggle-button.open .sidebar-icon {
+  color: #ff4d4d;
 }
 
-/* Liniile individuale */
-.line {
-  display: block;
-  height: 3px;
-  width: 100%;
-  border-radius: 10px;
-  background: linear-gradient(90deg, #14f195, #9945ff);
-  transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.4s ease;
+.sidebar-toggle-button.open .sidebar-icon svg {
+  filter: drop-shadow(0 0 6px rgba(255, 77, 77, 0.8));
 }
 
-/* Animație Hamburger -> X */
-.ai-animated-hamburger.open .line1 {
-  transform: rotate(45deg) translate(5px, 6px);
-  background: #ff4d4d; /* Roșu neon la închidere */
-  box-shadow: 0 0 8px #ff4d4d;
+/* Active state (pressed) */
+.sidebar-toggle-button:active {
+  transform: scale(0.95);
 }
 
-.ai-animated-hamburger.open .line2 {
-  opacity: 0;
-  transform: translateX(-10px);
-}
-
-.ai-animated-hamburger.open .line3 {
-  transform: rotate(-45deg) translate(5px, -7px);
-  background: #ff4d4d; /* Roșu neon la închidere */
-  box-shadow: 0 0 8px #ff4d4d;
-}
-
-/* Hide on large screens if not needed */
+/* Hide on large screens */
 @media (min-width: 993px) {
-  .ai-animated-hamburger {
+  .sidebar-toggle-button {
     display: none !important;
   }
 }
 
 /* Mobile adjustments */
 @media (max-width: 768px) {
-  .ai-animated-hamburger {
+  .sidebar-toggle-button {
     top: 85px;
     left: 10px;
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
   }
   
-  .hamburger-lines {
-    width: 20px;
+  .sidebar-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 380px) {
+  .sidebar-toggle-button {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .sidebar-icon svg {
+    width: 16px;
     height: 16px;
-  }
-  
-  .line {
-    height: 2px;
-  }
-  
-  /* Ajustare fină a poziției X pe mobil */
-  .ai-animated-hamburger.open .line1 {
-    transform: rotate(45deg) translate(5px, 5px);
-  }
-  
-  .ai-animated-hamburger.open .line3 {
-    transform: rotate(-45deg) translate(5px, -5px);
   }
 }
