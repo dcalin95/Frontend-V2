@@ -1,5 +1,17 @@
 /* 📱 Mind Mirror Dashboard - MOBILE GEMINI KING STYLE */
 
+/* 🔔 TOAST NOTIFICATION - Mobile */
+@media (max-width: 768px) {
+  .toast-notification {
+    top: 80px;
+    right: 10px;
+    left: 10px;
+    max-width: calc(100% - 20px);
+    font-size: 13px;
+    padding: 10px 16px;
+  }
+}
+
 @media (max-width: 768px) {
   /* 🌟 GEMINI KING ENHANCEMENTS FOR MOBILE */
   .mind-mirror-container {

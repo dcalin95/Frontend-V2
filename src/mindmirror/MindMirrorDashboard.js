@@ -31,8 +31,15 @@ const MindMirrorDashboard = () => {
   });
   const [hoveredFeature, setHoveredFeature] = useState(null);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
+  const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
   
   const videoRef = useRef(null);
+
+  // Toast notification helper
+  const showToast = (message, type = 'info', duration = 3000) => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast({ show: false, message: '', type: 'info' }), duration);
+  };
 
   // Calculate progress and word count
   const wordCount = wordMilestone.count || (inputText.trim() ? inputText.trim().split(/\s+/).length : 0);
@@ -143,25 +150,31 @@ const MindMirrorDashboard = () => {
         isLoading: false
       });
       
-      // Alert user with result
-      alert(`✅ Word count loaded: ${fetchedWordCount}/1000 words`);
+      // Subtle toast notification
+      if (fetchedWordCount >= 1000) {
+        showToast(`🎉 Complete! ${fetchedWordCount}/1000 words - Ready for analysis!`, 'success', 4000);
+      } else {
+        showToast(`📊 ${fetchedWordCount}/1000 words collected`, 'info', 2000);
+      }
+      console.log(`✅ [Word Check] Word count loaded: ${fetchedWordCount}/1000 words`);
     } catch (error) {
       console.error('❌ [Word Check] Fatal error:', error);
       console.error('❌ [Word Check] Error details:', error.message);
       console.error('❌ [Word Check] Error stack:', error.stack);
       setWordMilestone({ count: 0, hasAccess: false, isLoading: false });
-      alert(`❌ Error loading word count: ${error.message}`);
+      // Subtle error toast
+      showToast('⚠️ Could not load word count. Click refresh to try again.', 'error', 4000);
     }
   };
 
   const handleAnalysis = async () => {
     if (!walletAddress) {
-      alert('Please connect your wallet first!');
+      showToast('🔌 Please connect your wallet first!', 'warning', 3000);
       return;
     }
 
     if (hasUsedAnalysis) {
-      alert('⚠️ You have already used the free psychological analysis! For a new analysis, contact us for paid options.');
+      showToast('⚠️ You have already used the free analysis!', 'warning', 4000);
       return;
     }
     
@@ -736,6 +749,13 @@ const MindMirrorDashboard = () => {
           balance: bitsBalance 
         }} 
       />
+
+      {/* 🔔 TOAST NOTIFICATION */}
+      {toast.show && (
+        <div className={`toast-notification toast-${toast.type}`}>
+          <span className="toast-message">{toast.message}</span>
+        </div>
+      )}
 
     </div>
   );

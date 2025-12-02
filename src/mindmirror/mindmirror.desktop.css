@@ -7,6 +7,90 @@
   text-rendering: geometricPrecision !important;
 }
 
+/* 🔔 TOAST NOTIFICATION - Subtle & Beautiful */
+.toast-notification {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  z-index: 10000;
+  padding: 12px 24px;
+  border-radius: 12px;
+  backdrop-filter: blur(20px);
+  background: rgba(20, 241, 149, 0.1);
+  border: 1px solid rgba(20, 241, 149, 0.3);
+  box-shadow: 
+    0 8px 32px rgba(20, 241, 149, 0.2),
+    0 0 20px rgba(20, 241, 149, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  animation: toast-slide-in 0.3s ease-out, toast-fade-out 0.3s ease-in 2.7s;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(20, 241, 149, 0.5);
+  max-width: 350px;
+  word-wrap: break-word;
+}
+
+.toast-notification.toast-success {
+  background: rgba(20, 241, 149, 0.15);
+  border-color: rgba(20, 241, 149, 0.4);
+  box-shadow: 
+    0 8px 32px rgba(20, 241, 149, 0.3),
+    0 0 30px rgba(20, 241, 149, 0.2);
+}
+
+.toast-notification.toast-error {
+  background: rgba(255, 80, 80, 0.15);
+  border-color: rgba(255, 80, 80, 0.4);
+  box-shadow: 
+    0 8px 32px rgba(255, 80, 80, 0.3),
+    0 0 30px rgba(255, 80, 80, 0.2);
+  text-shadow: 0 0 10px rgba(255, 80, 80, 0.5);
+}
+
+.toast-notification.toast-warning {
+  background: rgba(255, 195, 0, 0.15);
+  border-color: rgba(255, 195, 0, 0.4);
+  box-shadow: 
+    0 8px 32px rgba(255, 195, 0, 0.3),
+    0 0 30px rgba(255, 195, 0, 0.2);
+  text-shadow: 0 0 10px rgba(255, 195, 0, 0.5);
+}
+
+.toast-notification.toast-info {
+  background: rgba(99, 179, 237, 0.15);
+  border-color: rgba(99, 179, 237, 0.4);
+  box-shadow: 
+    0 8px 32px rgba(99, 179, 237, 0.3),
+    0 0 30px rgba(99, 179, 237, 0.2);
+  text-shadow: 0 0 10px rgba(99, 179, 237, 0.5);
+}
+
+.toast-message {
+  display: block;
+  line-height: 1.4;
+}
+
+@keyframes toast-slide-in {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes toast-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 .laser-sharp {
   text-shadow: 0.5px 0.5px 0px rgba(0, 0, 0, 0.1);
   filter: contrast(1.1) brightness(1.1);
