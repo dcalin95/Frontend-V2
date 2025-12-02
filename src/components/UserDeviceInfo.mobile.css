@@ -1,176 +1,178 @@
-/* 📱 USER DEVICE INFO - MOBILE RESPONSIVE */
+/* 📱 USER DEVICE INFO - MOBILE STATIC FOOTER & COMPACT */
 
 @media (max-width: 768px) {
-  /* Container principal */
-  .user-device-info {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 9999;
+  /* Container principal - ACUM ESTE STATIC (în fluxul paginii) */
+  body.mode-mobile .user-device-info {
+    position: relative !important; /* Nu mai e fixed */
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
+    margin-top: 20px !important; /* Spațiu față de conținutul de sus */
+    padding-top: 20px !important;
+    pointer-events: auto !important;
+    z-index: 1 !important; /* Z-index mic */
   }
 
-  /* Button trigger - Mobile Floating */
-  .device-info-btn {
-    background: linear-gradient(135deg, rgba(0, 255, 163, 0.15), rgba(153, 69, 255, 0.15));
-    border: 1px solid rgba(0, 255, 163, 0.4);
-    color: #00FFA3;
-    padding: 12px 18px;
-    border-radius: 25px; /* 🚨 Rounded pe mobile */
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    box-shadow: 0 4px 15px rgba(0, 255, 163, 0.2);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 90vw;
+  /* Button trigger - Foarte discret */
+  body.mode-mobile .device-info-btn {
+    pointer-events: auto;
+    background: rgba(10, 14, 18, 0.85) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-bottom: none !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    padding: 4px 12px !important;
+    border-radius: 12px 12px 0 0 !important;
+    font-size: 9px !important;
+    font-weight: 500 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    margin-bottom: 0 !important;
+    width: auto !important;
+    height: 24px !important;
+    transition: all 0.3s ease;
   }
 
-  .device-info-btn i {
-    font-size: 14px;
+  body.mode-mobile .device-info-btn:hover,
+  body.mode-mobile .device-info-btn:active {
+    color: #00FFA3 !important;
+    background: rgba(10, 14, 18, 0.95) !important;
   }
 
-  /* Modal Content - FULL SCREEN pe mobile */
+  body.mode-mobile .device-info-btn i {
+    font-size: 10px !important;
+  }
+
+  /* 
+     🚨 PANOUL DESCHIS RĂMÂNE FIXED PE ECRAN 
+     Chiar dacă butonul e jos de tot, când deschizi, panoul apare peste tot ecranul (jos)
+  */
   body.mode-mobile .user-device-info .device-info-content,
   body.mode-mobile .user-device-info.visible .device-info-content {
-    position: fixed !important;
-    top: auto !important; /* 🚨 Anulează top-ul implicit */
-    bottom: 20px !important; /* 🚨 Fixat jos */
-    left: 50% !important;
-    transform: translateX(-50%) !important; /* 🚨 Centrat doar orizontal */
-    width: 90vw !important;
-    max-width: 400px !important;
-    max-height: 60vh !important;
+    pointer-events: auto;
+    position: fixed !important; /* Asta rămâne fixed! */
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 50vh !important;
     overflow-y: auto !important;
     margin: 0 !important;
-    padding: 12px !important;
-    border-radius: 16px !important;
-    background: rgba(0, 0, 0, 0.98) !important;
-    border: 1px solid rgba(0, 255, 163, 0.4) !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8) !important;
-    z-index: 10000 !important;
+    padding: 10px 8px 25px 8px !important;
+    border-radius: 20px 20px 0 0 !important;
+    background: rgba(5, 5, 8, 0.98) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.9) !important;
+    z-index: 10000 !important; /* Z-index mare */
+    transform: translateY(0) !important;
+    animation: slideUpPanel 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* Overlay background când e deschis */
-  .user-device-info.visible::before {
+  @keyframes slideUpPanel {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  /* Overlay */
+  body.mode-mobile .user-device-info.visible::before {
     content: '';
+    pointer-events: auto;
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.7); /* 🚨 Overlay întunecat */
-    z-index: 9998;
-    backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    backdrop-filter: blur(2px);
+    animation: fadeInOverlay 0.3s ease;
   }
 
-  /* Close Button - Mai mare pe mobile */
-  .device-info-close {
+  @keyframes fadeInOverlay {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Close Button */
+  body.mode-mobile .device-info-close {
     position: absolute !important;
     top: 8px !important;
     right: 8px !important;
-    width: 32px !important;
-    height: 32px !important;
-    font-size: 16px !important;
-    z-index: 10001 !important;
+    width: 20px !important;
+    height: 20px !important;
+    font-size: 10px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.6) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none !important;
   }
 
-  /* Grid - 2 coloane pe mobile */
-  .info-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 6px !important;
+  /* Grid 3 coloane */
+  body.mode-mobile .info-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 4px !important;
+    margin-top: 15px;
   }
 
-  /* Item cards - Compacte pe mobile */
-  .info-item {
-    padding: 6px 8px !important;
-    border-radius: 8px !important;
-    min-height: 70px !important;
+  /* Item curat */
+  body.mode-mobile .info-item {
+    padding: 4px 2px !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    min-height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
   }
 
-  .info-item i {
-    font-size: 16px !important;
+  /* Iconițe */
+  body.mode-mobile .info-item i {
+    font-size: 14px !important;
+    color: rgba(0, 255, 163, 0.7) !important;
+    margin-bottom: 2px;
   }
 
-  .info-label {
-    font-size: 8px !important;
-    letter-spacing: 0.3px !important;
+  /* Text */
+  body.mode-mobile .info-label {
+    font-size: 7px !important;
+    color: rgba(255, 255, 255, 0.3) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1px !important;
   }
 
-  .info-value {
+  body.mode-mobile .info-value {
     font-size: 9px !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
     line-height: 1.2 !important;
   }
-
-  /* Scroll styling pentru mobile */
-  .device-info-content::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  .device-info-content::-webkit-scrollbar-track {
-    background: rgba(0, 255, 163, 0.1);
-    border-radius: 2px;
-  }
-
-  .device-info-content::-webkit-scrollbar-thumb {
-    background: rgba(0, 255, 163, 0.4);
-    border-radius: 2px;
-  }
-
-  .device-info-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 255, 163, 0.6);
+  
+  /* Titlu */
+  body.mode-mobile .device-info-content h3 {
+    font-size: 10px !important;
+    color: rgba(255, 255, 255, 0.3) !important;
+    text-transform: uppercase;
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+    position: absolute;
+    top: 10px;
+    left: 12px;
+    text-align: left;
   }
 }
-
-/* 📱 EXTRA SMALL MOBILE (< 480px) */
-@media (max-width: 480px) {
-  .device-info-btn {
-    font-size: 11px;
-    padding: 10px 14px;
-    max-width: 85vw;
-  }
-
-  .device-info-content {
-    width: 95vw !important;
-    max-height: 85vh !important;
-    padding: 10px !important;
-  }
-
-  .info-grid {
-    gap: 5px !important;
-  }
-
-  .info-item {
-    padding: 5px 6px !important;
-    min-height: 65px !important;
-  }
-
-  .info-item i {
-    font-size: 14px !important;
-  }
-
-  .info-label {
-    font-size: 7px !important;
-  }
-
-  .info-value {
-    font-size: 8px !important;
-  }
-}
-
-/* 📱 LANDSCAPE MODE (horizontal) */
-@media (max-width: 768px) and (orientation: landscape) {
-  .device-info-content {
-    max-height: 90vh !important;
-    overflow-y: auto !important;
-  }
-
-  .info-grid {
-    grid-template-columns: repeat(3, 1fr) !important; /* 🚨 3 coloane în landscape */
-  }
-}
-

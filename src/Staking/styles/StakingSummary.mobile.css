@@ -1,0 +1,35 @@
+/* --- MOBILE SPECIFIC STYLES FOR STAKING SUMMARY --- */
+/* Activates only when MobileUI detects mobile screen */
+
+@media (max-width: 768px) {
+    body.mode-mobile .staking-summary-container {
+        grid-template-columns: 1fr !important; /* Single column */
+        gap: 12px !important;
+        padding: 0 !important;
+    }
+
+    body.mode-mobile .summary-box {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 16px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+    }
+
+    body.mode-mobile .summary-title {
+        font-size: 0.9rem !important;
+    }
+
+    body.mode-mobile .summary-value {
+        font-size: 1.5rem !important;
+    }
+
+    /* If there are icons, make them bigger on mobile */
+    body.mode-mobile .summary-icon {
+        width: 32px !important;
+        height: 32px !important;
+        margin-bottom: 8px !important;
+    }
+}

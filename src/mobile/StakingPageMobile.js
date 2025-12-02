@@ -5,9 +5,9 @@ import WalletContext from "../context/WalletContext";
 import { useStakingData } from "../Staking/useStakingData";
 import StakingSummary from "../Staking/components/StakingSummary";
 import StakingInfoBox from "../Staking/components/StakingInfoBox";
-import StakeFormMobile from "./components/StakeFormMobile"; // ✅ NEW MOBILE FORM
+import StakeForm from "../Staking/components/StakeForm"; // ✅ Use standard responsive component
 import StakingBox from "../Staking/components/StakingBox";
-import ClaimStakesMobile from "./components/ClaimStakesMobile";
+import ClaimStakes from "../Staking/components/ClaimStakes"; // ✅ Use standard responsive component
 import StakingUSDValue from "../Staking/components/StakingUSDValue";
 
 import "./StakingPageMobile.css";
@@ -93,20 +93,15 @@ const StakingPageMobile = () => {
               <StakingUSDValue signer={signer} />
             </div>
 
-            {/* 4. Stake Form (MOBILE VERSION) */}
+            {/* 4. Stake Form (RESPONSIVE VERSION) */}
             <div className="ai-container">
-              <StakeFormMobile signer={signer} prefilledAmount={prefilledAmount} rewardsSource={rewardsSource} />
+              <StakeForm signer={signer} prefilledAmount={prefilledAmount} rewardsSource={rewardsSource} />
             </div>
 
-            {/* 5. Claim/Positions */}
+            {/* 5. Claim/Positions (RESPONSIVE VERSION) */}
             <div>
-              <ClaimStakesMobile signer={signer} />
+              <ClaimStakes signer={signer} />
             </div>
-          </div>
-
-          {/* Bottom section */}
-          <div className="staking-bottom">
-            <StakingBox stakes={stakes} signer={signer} />
           </div>
         </main>
       </div>

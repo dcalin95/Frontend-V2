@@ -1,5 +1,8 @@
 /* Tailwind directives removed to avoid build-time processing on CRA */
 
+/* 📱 MOBILE FIXED COMPONENTS - GLOBAL UNIFIED STYLES */
+@import './styles/MobileFixedComponents.css';
+
 /* 🔥 LASER-SHARP FONT RENDERING - GLOBAL */
 * {
   -webkit-font-smoothing: never !important;
@@ -61,7 +64,8 @@ body.mode-mobile * {
 }
 
 /* Disable heavy effects on mobile for performance */
-body.mode-mobile * {
+/* EXCEPȚIE: Componentele fixe (header, sidebar, ai-launcher, wallet) au stiluri separate în MobileFixedComponents.css */
+body.mode-mobile *:not(.header):not(.header *):not(.mobile-hamburger):not(.mobile-hamburger *):not(.mobile-nav-menu):not(.mobile-nav-menu *):not(.sidebar):not(.sidebar *):not(.sidebar-toggle-button):not(.sidebar-toggle-button *):not(.ai-animated-hamburger):not(.ai-animated-hamburger *):not(.ai-launcher):not(.ai-launcher *):not(.wallet-toggle-wrapper):not(.wallet-toggle-wrapper *):not(.wallet-toggle-btn):not(.wallet-toggle-btn *):not(.wallet-toggle-btn-minimal):not(.wallet-toggle-btn-minimal *):not(.device-info-content):not(.device-info-content *):not(.footer-container):not(.footer-container *) {
   box-shadow: none !important; /* Reduce rendering cost */
   text-shadow: none !important; /* Reduce rendering cost */
   backdrop-filter: none !important; /* Heavy on GPU */
@@ -71,11 +75,34 @@ body.mode-mobile * {
 }
 
 /* Re-enable essential visual cues but lighter */
-body.mode-mobile .btn-primary, 
-body.mode-mobile .button, 
-body.mode-mobile button {
+/* EXCEPȚIE: Butoanele din sidebar NU primesc acest box-shadow */
+body.mode-mobile .btn-primary:not(.sidebar .btn-primary), 
+body.mode-mobile .button:not(.sidebar .button), 
+body.mode-mobile button:not(.sidebar button):not(.btn-swap):not(.btn-pool):not(.btn-buy):not(.btn-how-to-buy):not(.btn-tokenomics):not(.btn-audit):not(.btn-invite):not(.btn-how-it-works):not(.btn-roadmap):not(.btn-leaderboard):not(.btn-about):not(.btn-mindmirror):not(.btn-go-main) {
   box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
   transition: transform 0.1s ease !important;
+}
+
+/* SIDEBAR BUTTONS - FUNDAL NEGRU COMPLET */
+body.mode-mobile .sidebar button,
+body.mode-mobile .sidebar a,
+body.mode-mobile .btn-swap,
+body.mode-mobile .btn-pool,
+body.mode-mobile .btn-buy,
+body.mode-mobile .btn-how-to-buy,
+body.mode-mobile .btn-tokenomics,
+body.mode-mobile .btn-audit,
+body.mode-mobile .btn-invite,
+body.mode-mobile .btn-how-it-works,
+body.mode-mobile .btn-roadmap,
+body.mode-mobile .btn-leaderboard,
+body.mode-mobile .btn-about,
+body.mode-mobile .btn-mindmirror,
+body.mode-mobile .btn-go-main {
+  background: #000000 !important;
+  background-color: #000000 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 /* Hide video background on mobile to save battery/data/CPU */

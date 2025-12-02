@@ -7,14 +7,14 @@ import { useSelectedToken } from "../Presale/hooks/useSelectedToken";
 import useTokenPrices from "../Presale/prices/useTokenPrices";
 import useCellManagerData from "../Presale/hooks/useCellManagerData"; // ✅ Import data hook
 import bitsLogo from "../assets/logo.png";
+import StakingSummary from "../Staking/components/StakingSummary"; // ✅ Use Responsive Component
+import RewardsHub from "../components/RewardsHub"; // ✅ Use Responsive Component
 import "./Mobile.css";
 
 // Lazy load mobile components
 const PaymentSelectorMobile = lazy(() => import("./components/PaymentSelectorMobile"));
 const StripeBoxMobile = lazy(() => import("./components/StripeBoxMobile"));
 const CryptoBoxMobile = lazy(() => import("./components/CryptoBoxMobile"));
-const StakingMobile = lazy(() => import("./components/StakingMobile"));
-const RewardsMobile = lazy(() => import("./components/RewardsMobile"));
 
 const MobileLoading = () => (
   <div className="mobile-loading">
@@ -263,18 +263,19 @@ const PresaleMobile = () => {
         )}
       </Suspense>
 
-      {/* Staking Section - Header is inside StakingMobile */}
+      {/* Staking Section - Simplified Summary */}
       <div style={{marginTop: '30px'}}>
-        <Suspense fallback={<MobileLoading />}>
-          <StakingMobile walletAddress={walletAddress} />
-        </Suspense>
+          <div style={{display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px', paddingLeft: '10px'}}>
+             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#14f195" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+             <h3 style={{margin: 0, fontSize: '16px', color: '#fff'}}>Staking Overview</h3>
+          </div>
+          <StakingSummary />
       </div>
 
-      {/* Rewards Section - Header is inside RewardsMobile */}
+      {/* Rewards Section - Responsive Hub */}
       <div style={{marginTop: '30px'}}>
-        <Suspense fallback={<MobileLoading />}>
-          <RewardsMobile walletAddress={walletAddress} />
-        </Suspense>
+        <h3 style={{color:'#fff', marginBottom:'15px', paddingLeft:'10px'}}>Rewards & Bonuses</h3>
+        <RewardsHub />
       </div>
     </div>
   );

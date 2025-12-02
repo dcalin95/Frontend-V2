@@ -1,0 +1,801 @@
+/* =====================================================
+   MOBILE FIXED COMPONENTS - GLOBAL UNIFIED STYLES
+   =====================================================
+   Acest fișier asigură că toate componentele fixe 
+   (Header, Footer, Sidebar, AI Command, Wallet, Device Info)
+   se afișează IDENTIC pe TOATE paginile pe mobil.
+   
+   Importat în index.css pentru prioritate maximă.
+   ===================================================== */
+
+/* =====================================================
+   1. HEADER - POZIȚIE ȘI DIMENSIUNI FIXE
+   ===================================================== */
+body.mode-mobile .header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  height: 85px !important;
+  min-height: 85px !important;
+  max-height: 85px !important;
+  z-index: 9000 !important;
+  background: rgba(0, 0, 0, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  padding: 0.5rem 1rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  border: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* Header Hamburger Button */
+body.mode-mobile .mobile-hamburger-container {
+  display: flex !important;
+  align-items: center !important;
+  z-index: 9001 !important;
+}
+
+body.mode-mobile .mobile-hamburger {
+  width: 42px !important;
+  height: 42px !important;
+  padding: 8px !important;
+  background: rgba(0, 0, 0, 0.8) !important;
+  border: 1.5px solid rgba(20, 241, 149, 0.5) !important;
+  border-radius: 10px !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  box-shadow: 0 4px 15px rgba(20, 241, 149, 0.3) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+}
+
+body.mode-mobile .mobile-hamburger span {
+  display: block !important;
+  height: 3px !important;
+  width: 100% !important;
+  background: linear-gradient(90deg, #14f195, #9945ff) !important;
+  border-radius: 2px !important;
+  transition: all 0.3s ease !important;
+}
+
+body.mode-mobile .mobile-hamburger:active {
+  transform: scale(0.95) !important;
+  background: rgba(20, 241, 149, 0.2) !important;
+}
+
+/* Mobile Navigation Menu */
+body.mode-mobile .mobile-nav-menu {
+  position: fixed !important;
+  top: 85px !important; /* Sub header */
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  z-index: 8999 !important;
+  background: rgba(0, 0, 0, 0.98) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  padding: 10px !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 8px !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  align-content: start !important;
+  border-top: 1px solid rgba(20, 241, 149, 0.3) !important;
+}
+
+/* =====================================================
+   2. SIDEBAR TOGGLE BUTTON - POZIȚIE FIXĂ
+   ===================================================== */
+body.mode-mobile .sidebar-toggle-button,
+body.mode-mobile .ai-animated-hamburger {
+  position: fixed !important;
+  top: 100px !important; /* 85px header + 15px gap */
+  left: 12px !important;
+  width: 48px !important;
+  height: 48px !important;
+  z-index: 12000 !important;
+  background: linear-gradient(135deg, rgba(153, 69, 255, 0.3), rgba(20, 241, 149, 0.25)) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+  border: 1.5px solid rgba(153, 69, 255, 0.5) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px rgba(153, 69, 255, 0.4) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  transition: all 0.3s ease !important;
+}
+
+body.mode-mobile .sidebar-toggle-button:active,
+body.mode-mobile .ai-animated-hamburger:active {
+  transform: scale(0.92) !important;
+  background: linear-gradient(135deg, rgba(20, 241, 149, 0.35), rgba(153, 69, 255, 0.3)) !important;
+}
+
+body.mode-mobile .sidebar-toggle-button.open,
+body.mode-mobile .ai-animated-hamburger.open {
+  background: linear-gradient(135deg, rgba(255, 77, 77, 0.35), rgba(153, 69, 255, 0.3)) !important;
+  border-color: rgba(255, 77, 77, 0.6) !important;
+  box-shadow: 0 4px 25px rgba(255, 77, 77, 0.5) !important;
+}
+
+/* Sidebar Icon */
+body.mode-mobile .sidebar-icon,
+body.mode-mobile .ai-hamburger-icon {
+  font-size: 1.8rem !important;
+  color: #14f195 !important;
+  filter: drop-shadow(0 0 10px rgba(20, 241, 149, 0.7)) !important;
+}
+
+body.mode-mobile .sidebar-toggle-button.open .sidebar-icon,
+body.mode-mobile .ai-animated-hamburger.open .ai-hamburger-icon {
+  color: #ff4d4d !important;
+  filter: drop-shadow(0 0 10px rgba(255, 77, 77, 0.8)) !important;
+}
+
+/* =====================================================
+   3. SIDEBAR MENU - FLOATING STYLE (fără container vizibil)
+   Culorile butoanelor sunt definite în SidebarMenu.css
+   ===================================================== */
+body.mode-mobile .sidebar {
+  position: fixed !important;
+  top: 160px !important;
+  left: 8px !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: 220px !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  z-index: 11999 !important;
+  
+  /* COMPLET INVIZIBIL - FĂRĂ CONTAINER */
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  border-width: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  
+  padding: 0 !important;
+  margin: 0 !important;
+  
+  /* FĂRĂ SCROLLBAR - CRITICAL */
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+  
+  transform: translateX(-120%) !important;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Ascunde scrollbar-ul complet */
+body.mode-mobile .sidebar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+body.mode-mobile .sidebar.open {
+  transform: translateX(0) !important;
+  
+  /* FORȚEAZĂ TRANSPARENT CÂND E DESCHIS */
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Sidebar UL - spacing */
+body.mode-mobile .sidebar ul {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  list-style: none !important;
+}
+
+/* Și li-urile să fie transparente */
+body.mode-mobile .sidebar ul li {
+  background: transparent !important;
+  background-color: transparent !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Sidebar Buttons - FUNDAL NEGRU COMPLET */
+body.mode-mobile .sidebar button,
+body.mode-mobile .sidebar a {
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  padding: 10px 14px !important;
+  margin: 4px 0 !important;
+  border-radius: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  white-space: nowrap !important;
+  
+  /* FUNDAL NEGRU COMPLET - APPLE STYLE */
+  background: #000000 !important;
+  background-color: #000000 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  
+  /* Border și glow păstrate */
+  border: 2px solid currentColor !important;
+  box-shadow: 0 0 10px currentColor !important;
+  text-shadow: 0 0 8px currentColor !important;
+  
+  /* Animație staggered pentru intrare */
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: slideInButton 0.3s ease forwards;
+}
+
+/* Animație staggered - fiecare buton intră cu delay */
+body.mode-mobile .sidebar.open button:nth-child(1),
+body.mode-mobile .sidebar.open a:nth-child(1),
+body.mode-mobile .sidebar.open li:nth-child(1) button,
+body.mode-mobile .sidebar.open li:nth-child(1) a { animation-delay: 0.05s; }
+
+body.mode-mobile .sidebar.open button:nth-child(2),
+body.mode-mobile .sidebar.open a:nth-child(2),
+body.mode-mobile .sidebar.open li:nth-child(2) button,
+body.mode-mobile .sidebar.open li:nth-child(2) a { animation-delay: 0.08s; }
+
+body.mode-mobile .sidebar.open button:nth-child(3),
+body.mode-mobile .sidebar.open a:nth-child(3),
+body.mode-mobile .sidebar.open li:nth-child(3) button,
+body.mode-mobile .sidebar.open li:nth-child(3) a { animation-delay: 0.11s; }
+
+body.mode-mobile .sidebar.open button:nth-child(4),
+body.mode-mobile .sidebar.open a:nth-child(4),
+body.mode-mobile .sidebar.open li:nth-child(4) button,
+body.mode-mobile .sidebar.open li:nth-child(4) a { animation-delay: 0.14s; }
+
+body.mode-mobile .sidebar.open button:nth-child(5),
+body.mode-mobile .sidebar.open a:nth-child(5),
+body.mode-mobile .sidebar.open li:nth-child(5) button,
+body.mode-mobile .sidebar.open li:nth-child(5) a { animation-delay: 0.17s; }
+
+body.mode-mobile .sidebar.open button:nth-child(6),
+body.mode-mobile .sidebar.open a:nth-child(6),
+body.mode-mobile .sidebar.open li:nth-child(6) button,
+body.mode-mobile .sidebar.open li:nth-child(6) a { animation-delay: 0.20s; }
+
+body.mode-mobile .sidebar.open button:nth-child(7),
+body.mode-mobile .sidebar.open a:nth-child(7),
+body.mode-mobile .sidebar.open li:nth-child(7) button,
+body.mode-mobile .sidebar.open li:nth-child(7) a { animation-delay: 0.23s; }
+
+body.mode-mobile .sidebar.open button:nth-child(8),
+body.mode-mobile .sidebar.open a:nth-child(8),
+body.mode-mobile .sidebar.open li:nth-child(8) button,
+body.mode-mobile .sidebar.open li:nth-child(8) a { animation-delay: 0.26s; }
+
+body.mode-mobile .sidebar.open button:nth-child(9),
+body.mode-mobile .sidebar.open a:nth-child(9),
+body.mode-mobile .sidebar.open li:nth-child(9) button,
+body.mode-mobile .sidebar.open li:nth-child(9) a { animation-delay: 0.29s; }
+
+body.mode-mobile .sidebar.open button:nth-child(10),
+body.mode-mobile .sidebar.open a:nth-child(10),
+body.mode-mobile .sidebar.open li:nth-child(10) button,
+body.mode-mobile .sidebar.open li:nth-child(10) a { animation-delay: 0.32s; }
+
+@keyframes slideInButton {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+body.mode-mobile .sidebar button:active,
+body.mode-mobile .sidebar a:active {
+  transform: scale(0.96) !important;
+  background: rgba(20, 241, 149, 0.15) !important;
+}
+
+body.mode-mobile .sidebar button i,
+body.mode-mobile .sidebar a i {
+  font-size: 1.3rem !important;
+  margin-right: 12px !important;
+  filter: drop-shadow(0 0 4px currentColor) !important;
+}
+
+/* =====================================================
+   4. AI COMMAND BUTTON - POZIȚIE FIXĂ
+   ===================================================== */
+body.mode-mobile .ai-launcher {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 20px !important;
+  z-index: 12500 !important;
+}
+
+body.mode-mobile .ai-launcher__fab {
+  width: 64px !important;
+  height: 64px !important;
+  min-width: 64px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  background: rgba(0, 0, 0, 0.75) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1.5px solid rgba(20, 241, 149, 0.5) !important;
+  box-shadow: 
+    0 8px 32px rgba(153, 69, 255, 0.4),
+    0 0 24px rgba(20, 241, 149, 0.3) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+}
+
+body.mode-mobile .ai-launcher__fab:active {
+  transform: scale(0.95) !important;
+  background: rgba(20, 241, 149, 0.2) !important;
+}
+
+body.mode-mobile .ai-launcher__label {
+  display: none !important;
+}
+
+body.mode-mobile .ai-launcher__icon {
+  width: 42px !important;
+  height: 42px !important;
+  margin: 0 !important;
+}
+
+body.mode-mobile .ai-launcher__icon-img {
+  width: 100% !important;
+  height: 100% !important;
+  filter: drop-shadow(0 0 15px rgba(20, 241, 149, 0.7)) !important;
+}
+
+/* AI Command Panel */
+body.mode-mobile .ai-launcher__panel {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: 80vh !important;
+  z-index: 12501 !important;
+  background: rgba(0, 0, 0, 0.98) !important;
+  backdrop-filter: blur(30px) !important;
+  -webkit-backdrop-filter: blur(30px) !important;
+  border: 1px solid rgba(20, 241, 149, 0.3) !important;
+  border-bottom: none !important;
+  border-radius: 24px 24px 0 0 !important;
+  padding: 24px 20px 32px !important;
+  transform: translateY(100%) !important;
+  transition: transform 0.3s ease !important;
+  overflow-y: auto !important;
+}
+
+body.mode-mobile .ai-launcher__panel--visible {
+  transform: translateY(0) !important;
+}
+
+body.mode-mobile .ai-launcher__backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 12499 !important;
+  background: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+/* =====================================================
+   5. WALLET BUTTON - POZIȚIE FIXĂ
+   ===================================================== */
+body.mode-mobile .wallet-toggle-wrapper {
+  position: fixed !important;
+  top: 100px !important; /* 85px header + 15px gap */
+  right: 12px !important;
+  z-index: 12000 !important;
+}
+
+body.mode-mobile .wallet-toggle-btn,
+body.mode-mobile .wallet-toggle-btn-minimal {
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  padding: 6px !important;
+  border-radius: 14px !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+body.mode-mobile .wallet-svg-animated {
+  width: 52px !important;
+  height: 52px !important;
+  filter: drop-shadow(0 0 10px rgba(20, 241, 149, 0.5)) !important;
+  transition: all 0.3s ease !important;
+}
+
+body.mode-mobile .wallet-toggle-btn:active .wallet-svg-animated,
+body.mode-mobile .wallet-toggle-btn-minimal:active .wallet-svg-animated {
+  transform: scale(0.95) !important;
+  filter: drop-shadow(0 0 20px rgba(20, 241, 149, 0.8)) !important;
+}
+
+/* Wallet Dropdown */
+body.mode-mobile .wallet-dropdown {
+  position: fixed !important;
+  top: 160px !important;
+  right: 12px !important;
+  width: calc(100vw - 24px) !important;
+  max-width: 350px !important;
+  z-index: 12001 !important;
+  background: rgba(0, 0, 0, 0.98) !important;
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+  border: 1px solid rgba(20, 241, 149, 0.3) !important;
+  border-radius: 16px !important;
+  padding: 16px !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9) !important;
+}
+
+/* =====================================================
+   6. DEVICE INFO - POZIȚIE FIXĂ
+   ===================================================== */
+body.mode-mobile .user-device-info {
+  position: relative !important;
+  width: 100% !important;
+  z-index: 100 !important;
+  margin-top: 20px !important;
+  padding: 10px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+
+body.mode-mobile .device-info-btn {
+  background: rgba(10, 14, 18, 0.9) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px 12px 0 0 !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+  padding: 6px 14px !important;
+  font-size: 10px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+}
+
+body.mode-mobile .device-info-btn:active {
+  background: rgba(20, 241, 149, 0.2) !important;
+  color: #14f195 !important;
+}
+
+/* Device Info Panel */
+body.mode-mobile .device-info-content {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  max-height: 50vh !important;
+  z-index: 12502 !important;
+  background: rgba(5, 5, 8, 0.98) !important;
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+  border-top: 1px solid rgba(20, 241, 149, 0.3) !important;
+  border-radius: 20px 20px 0 0 !important;
+  padding: 15px !important;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.9) !important;
+  overflow-y: auto !important;
+  transform: translateY(100%) !important;
+  transition: transform 0.3s ease !important;
+}
+
+body.mode-mobile .user-device-info.visible .device-info-content {
+  transform: translateY(0) !important;
+}
+
+/* =====================================================
+   7. FOOTER - POZIȚIE ȘI DIMENSIUNI FIXE
+   ===================================================== */
+body.mode-mobile .footer-container {
+  position: relative !important;
+  width: 100% !important;
+  padding: 20px 15px 100px 15px !important; /* Extra padding pentru Device Info */
+  background: rgba(0, 0, 0, 0.95) !important;
+  border-top: 1px solid rgba(20, 241, 149, 0.2) !important;
+}
+
+body.mode-mobile .footer-links {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 10px !important;
+  width: 100% !important;
+  max-width: 400px !important;
+  margin: 15px auto !important;
+}
+
+body.mode-mobile .footer-button {
+  padding: 12px 8px !important;
+  font-size: 0.75rem !important;
+  border-radius: 10px !important;
+  background: rgba(30, 30, 30, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease !important;
+}
+
+body.mode-mobile .footer-button:active {
+  transform: scale(0.98) !important;
+  background: rgba(20, 241, 149, 0.15) !important;
+}
+
+/* =====================================================
+   8. Z-INDEX HIERARCHY (pentru a preveni suprapunerile)
+   ===================================================== */
+/*
+  Header:           9000
+  Mobile Nav Menu:  8999
+  Sidebar Button:   12000
+  Wallet Button:    12000
+  Sidebar Menu:     11999
+  AI Command:       12500
+  AI Panel:         12501
+  Device Info:      12502
+  Overlays:         12499
+*/
+
+/* =====================================================
+   9. SPACER PENTRU CONȚINUT (să nu fie acoperit de Header)
+   ===================================================== */
+body.mode-mobile .header-spacer,
+body.mode-mobile .main-content {
+  padding-top: 95px !important; /* 85px header + 10px gap */
+}
+
+/* =====================================================
+   10. ECRANE FOARTE MICI (sub 375px)
+   ===================================================== */
+@media (max-width: 375px) {
+  body.mode-mobile .header {
+    height: 80px !important;
+    min-height: 80px !important;
+    max-height: 80px !important;
+    padding: 0.4rem 0.8rem !important;
+  }
+  
+  body.mode-mobile .mobile-hamburger {
+    width: 38px !important;
+    height: 38px !important;
+  }
+  
+  body.mode-mobile .mobile-nav-menu {
+    top: 80px !important;
+  }
+  
+  body.mode-mobile .sidebar-toggle-button,
+  body.mode-mobile .ai-animated-hamburger {
+    top: 95px !important;
+    width: 44px !important;
+    height: 44px !important;
+  }
+  
+  body.mode-mobile .wallet-toggle-wrapper {
+    top: 95px !important;
+  }
+  
+  body.mode-mobile .wallet-toggle-btn,
+  body.mode-mobile .wallet-toggle-btn-minimal {
+    width: 48px !important;
+    height: 48px !important;
+  }
+  
+  body.mode-mobile .wallet-svg-animated {
+    width: 48px !important;
+    height: 48px !important;
+  }
+  
+  body.mode-mobile .sidebar {
+    top: 150px !important;
+    width: 200px !important;
+  }
+  
+  body.mode-mobile .ai-launcher__fab {
+    width: 58px !important;
+    height: 58px !important;
+    min-width: 58px !important;
+  }
+  
+  body.mode-mobile .ai-launcher__icon {
+    width: 38px !important;
+    height: 38px !important;
+  }
+  
+  body.mode-mobile .header-spacer,
+  body.mode-mobile .main-content {
+    padding-top: 90px !important;
+  }
+}
+
+/* =====================================================
+   11. ECRANE EXTRA MICI (sub 320px)
+   ===================================================== */
+@media (max-width: 320px) {
+  body.mode-mobile .header {
+    height: 75px !important;
+    min-height: 75px !important;
+    max-height: 75px !important;
+  }
+  
+  body.mode-mobile .mobile-hamburger {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  
+  body.mode-mobile .mobile-nav-menu {
+    top: 75px !important;
+    grid-template-columns: 1fr !important; /* Single column */
+  }
+  
+  body.mode-mobile .sidebar-toggle-button,
+  body.mode-mobile .ai-animated-hamburger {
+    top: 88px !important;
+    width: 40px !important;
+    height: 40px !important;
+  }
+  
+  body.mode-mobile .wallet-toggle-wrapper {
+    top: 88px !important;
+  }
+  
+  body.mode-mobile .sidebar {
+    top: 140px !important;
+    width: 180px !important;
+  }
+  
+  body.mode-mobile .ai-launcher {
+    bottom: 20px !important;
+    right: 15px !important;
+  }
+  
+  body.mode-mobile .ai-launcher__fab {
+    width: 54px !important;
+    height: 54px !important;
+    min-width: 54px !important;
+  }
+  
+  body.mode-mobile .header-spacer,
+  body.mode-mobile .main-content {
+    padding-top: 85px !important;
+  }
+}
+
+/* =====================================================
+   12. LANDSCAPE MODE
+   ===================================================== */
+body.mode-mobile.orientation-landscape .header {
+  height: 60px !important;
+  min-height: 60px !important;
+  max-height: 60px !important;
+}
+
+body.mode-mobile.orientation-landscape .mobile-nav-menu {
+  top: 60px !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+}
+
+body.mode-mobile.orientation-landscape .sidebar-toggle-button,
+body.mode-mobile.orientation-landscape .ai-animated-hamburger {
+  top: 15px !important;
+  left: 10px !important;
+  width: 40px !important;
+  height: 40px !important;
+}
+
+body.mode-mobile.orientation-landscape .wallet-toggle-wrapper {
+  top: 15px !important;
+}
+
+body.mode-mobile.orientation-landscape .sidebar {
+  top: 65px !important;
+  max-height: calc(100vh - 75px) !important;
+}
+
+body.mode-mobile.orientation-landscape .ai-launcher {
+  bottom: 15px !important;
+  right: 15px !important;
+}
+
+body.mode-mobile.orientation-landscape .ai-launcher__fab {
+  width: 50px !important;
+  height: 50px !important;
+  min-width: 50px !important;
+}
+
+/* =====================================================
+   13. ANIMATIONS RE-ENABLE PENTRU COMPONENTE FIXE
+   ===================================================== */
+/* Override-uri pentru a re-activa animațiile esențiale */
+body.mode-mobile .ai-launcher,
+body.mode-mobile .ai-launcher *,
+body.mode-mobile .sidebar-toggle-button,
+body.mode-mobile .ai-animated-hamburger,
+body.mode-mobile .wallet-toggle-btn,
+body.mode-mobile .wallet-toggle-btn-minimal,
+body.mode-mobile .wallet-svg-animated,
+body.mode-mobile .mobile-hamburger {
+  transition: all 0.3s ease !important;
+  animation-duration: revert !important;
+}
+
+body.mode-mobile .ai-launcher__panel,
+body.mode-mobile .sidebar,
+body.mode-mobile .device-info-content {
+  transition: transform 0.3s ease !important;
+}
+
+/* Re-enable box-shadow pentru componente fixe */
+body.mode-mobile .ai-launcher__fab,
+body.mode-mobile .sidebar-toggle-button,
+body.mode-mobile .ai-animated-hamburger,
+body.mode-mobile .mobile-hamburger,
+body.mode-mobile .sidebar,
+body.mode-mobile .ai-launcher__panel,
+body.mode-mobile .wallet-dropdown {
+  box-shadow: revert !important;
+}
+
+/* Re-enable backdrop-filter pentru componente fixe */
+body.mode-mobile .header,
+body.mode-mobile .mobile-nav-menu,
+body.mode-mobile .sidebar,
+body.mode-mobile .ai-launcher__fab,
+body.mode-mobile .ai-launcher__panel,
+body.mode-mobile .wallet-dropdown,
+body.mode-mobile .device-info-content {
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+}
+

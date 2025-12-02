@@ -1,8 +1,11 @@
-/* Mobile Staking Page Wrapper */
+/* 📱 STAKING PAGE MOBILE - DEDICATED FILE */
+/* Folosește sistemul Modal (body.mode-mobile) pentru a forța stilurile */
+
+/* Wrapper principal - specific paginii mobile */
 .mobile-staking-page-wrapper {
   width: 100%;
   min-height: 100vh;
-  padding: 80px 0 20px 0;
+  padding: 80px 0 20px 0; /* Spațiu pentru header */
   background: transparent;
   box-sizing: border-box;
   display: flex;
@@ -10,178 +13,129 @@
   align-items: center;
 }
 
-/* Override desktop styles for mobile - TOTUL VERTICAL, 90% WIDTH */
-@media (max-width: 768px) {
-  /* STAKING SUMMARY (ANALYTICS) - REFACTOR */
-  .stakingCard {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-  }
+/* 🚀 REGULI GENERALE PENTRU MODUL MOBIL */
+/* Se aplică oricând clasa 'mode-mobile' este pe body */
 
-  .ai-summary-title {
-    font-size: 1.4rem !important;
-    text-align: center !important;
-    margin-bottom: 15px !important;
-    width: 100% !important;
-  }
-
-  /* AI STATS GRID - UNA SUB ALTA PE MOBIL! */
-  .ai-stats-grid,
-  .mobile-staking-page-wrapper .ai-stats-grid,
-  .stakingCard .ai-stats-grid {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 15px !important;
-    grid-template-columns: none !important;
-    width: 100% !important;
-    margin: 0 0 1rem 0 !important;
-    row-gap: 15px !important;
-  }
-  
-  /* PROTEJEAZĂ LOGO-URILE ȘI IMAGINILE MICI */
-  .bits-logo-mini, img[alt="BITS"], img.bits-logo-mini {
-    width: 24px !important;
-    height: 24px !important;
-    max-width: 24px !important;
-    flex: none !important;
-  }
-  
-  .mobile-section-icon {
-    width: 24px !important;
-    height: 24px !important;
-  }
-  
-  .ai-stat-item,
-  .mobile-staking-page-wrapper .ai-stat-item,
-  .stakingCard .ai-stat-item {
-    width: 100% !important;
-    padding: 20px !important;
-    background: transparent !important;
-    border: 1px solid rgba(0, 255, 163, 0.3) !important;
-    border-radius: 16px !important;
-    box-sizing: border-box !important;
-    min-height: 80px !important;
-    margin: 0 !important;
-  }
-  
-  /* LOCK PERIODS - UNA SUB ALTA! */
-  .lock-periods {
-    width: 100% !important;
-  }
-  
-  .lock-periods > div {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 15px !important;
-    grid-template-columns: none !important;
-    grid-template-rows: none !important;
-  }
-  
-  .lock-periods > div > div {
-    width: 100% !important;
-    margin: 0 !important;
-    min-width: 100% !important;
-    max-width: 100% !important;
-    flex: none !important;
-  }
-  
-  /* OVERRIDE INLINE STYLES! */
-  .stake-form [style*="grid"] {
-    display: flex !important;
-    flex-direction: column !important;
-  }
-  
-  .stake-form [style*="gridTemplateColumns"] {
-    grid-template-columns: none !important;
-  }
-  
-  .mobile-staking-page-wrapper .staking-layout {
-    width: 100%;
-  }
-  
-  .mobile-staking-page-wrapper .staking-main {
-    width: 100%;
-    padding: 0;
-    gap: 0;
-  }
-  
-  .mobile-staking-page-wrapper .staking-wrapper {
-    padding: 0;
-    margin: 0;
-    width: 100%;
-  }
-
-  .mobile-staking-page-wrapper .staking-top-row {
-    flex-direction: column;
-    gap: 15px;
-    width: 90%;
-    margin: 0 auto;
-    padding: 0;
-  }
-  
-  /* ELIMINĂ LEFT/RIGHT - TOTUL VERTICAL */
-  .mobile-staking-page-wrapper .left-side,
-  .mobile-staking-page-wrapper .right-side {
-    display: contents !important;
-  }
-  
-  .mobile-staking-page-wrapper .staking-bottom {
-    width: 90%;
-    margin: 0 auto;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  /* FIECARE CONTAINER = UN CARD, 90% WIDTH, TRANSPARENT */
-  .mobile-staking-page-wrapper .ai-container {
-    width: 100%;
-    margin: 0;
-    padding: 20px;
-    min-height: 80px;
-    background: transparent !important;
-    border: 1px solid rgba(0, 255, 163, 0.3) !important;
-    border-radius: 16px !important;
-    box-sizing: border-box;
-  }
-  
-  .mobile-staking-page-wrapper .ai-container:hover {
-    transform: none;
-    box-shadow: 0 0 15px rgba(0, 255, 163, 0.2);
-  }
-
-  .mobile-staking-page-wrapper .ai-box {
-    padding: 15px;
-    background: transparent;
-    border: 1px solid rgba(0, 255, 163, 0.3);
-    border-radius: 16px;
-  }
-  
-  .mobile-staking-page-wrapper .ai-staking-header {
-    width: 90%;
-    margin: 0 auto 20px auto;
-  }
-  
-  /* TOATE INPUT-URILE SI BUTOANELE - FULL WIDTH */
-  .mobile-staking-page-wrapper .stake-form input,
-  .mobile-staking-page-wrapper .stake-form button,
-  .mobile-staking-page-wrapper .ai-input-group {
-    width: 100% !important;
-    box-sizing: border-box;
-  }
-  
-  /* ELIMINĂ GRID-URI NESTED PE MOBIL */
-  .mobile-staking-page-wrapper .stake-form > div[style*="grid"] {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 15px !important;
-  }
+/* 1. Resetare Layout */
+body.mode-mobile .mobile-staking-page-wrapper .staking-layout,
+body.mode-mobile .mobile-staking-page-wrapper .staking-main {
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 20px !important;
 }
 
+/* 2. Containere Verticale */
+body.mode-mobile .mobile-staking-page-wrapper .staking-top-row,
+body.mode-mobile .mobile-staking-page-wrapper .staking-bottom {
+  width: 92% !important; /* Margine mică laterală */
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+}
 
+/* 3. Eliminare Layout Desktop (Left/Right) */
+body.mode-mobile .left-side,
+body.mode-mobile .right-side {
+  display: contents !important; /* Elimină div-urile wrapper */
+  width: 100% !important;
+}
+
+/* 4. Carduri AI Container - Stil "Gemini King" */
+body.mode-mobile .mobile-staking-page-wrapper .ai-container {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 20px !important;
+  background: rgba(5, 5, 8, 0.6) !important; /* Ușor fundal */
+  border: 1px solid rgba(0, 255, 163, 0.2) !important;
+  border-radius: 16px !important;
+  box-sizing: border-box !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+  backdrop-filter: blur(10px);
+}
+
+/* 5. Header Titlu */
+body.mode-mobile .ai-staking-header {
+  width: 92% !important;
+  margin: 0 auto 10px auto !important;
+  text-align: center !important;
+}
+
+body.mode-mobile .ai-staking-title {
+  font-size: 1.8rem !important;
+  line-height: 1.2 !important;
+}
+
+body.mode-mobile .ai-staking-subtitle {
+  font-size: 0.9rem !important;
+  opacity: 0.8;
+}
+
+/* 6. Componente Interne (Override la componentele shared) */
+
+/* Staking Summary Grid - Vertical */
+body.mode-mobile .ai-stats-grid,
+body.mode-mobile .stakingCard .ai-stats-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 15px !important;
+  width: 100% !important;
+}
+
+body.mode-mobile .ai-stat-item {
+  width: 100% !important;
+  min-height: auto !important;
+  padding: 15px !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+
+/* Protecție imagini mici */
+body.mode-mobile .bits-logo-mini, 
+body.mode-mobile img[alt="BITS"] {
+  width: 24px !important;
+  height: 24px !important;
+  max-width: 24px !important;
+  flex: none !important;
+}
+
+/* Formular Stake - Inputuri Full Width */
+body.mode-mobile .stake-form input,
+body.mode-mobile .stake-form button,
+body.mode-mobile .ai-input-group {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Lock Periods - Stacked Vertical */
+body.mode-mobile .lock-periods {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+body.mode-mobile .lock-option {
+  width: 100% !important;
+  margin: 0 !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  padding: 12px 15px !important;
+}
+
+/* Staking Info Box - Text mai mic */
+body.mode-mobile .staking-info-box {
+  font-size: 0.9rem !important;
+}
+
+/* Eliminare orice grid rezidual */
+body.mode-mobile [style*="gridTemplateColumns"] {
+  grid-template-columns: 1fr !important;
+}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import BrandLogo from './BrandLogo';
+import MobileUI from './MobileUI';
 import './AIStandaloneLayout.css';
 
 const AIStandaloneLayout = ({
@@ -22,58 +23,60 @@ const AIStandaloneLayout = ({
   };
 
   return (
-    <div className="ai-standalone">
-      <div className="ai-standalone__nav">
-        <button
-          type="button"
-          className="ai-standalone__control ai-standalone__control--primary"
-          onClick={handleBackHome}
-        >
-          ← Back to Home
-        </button>
-        <div className="ai-standalone__nav-actions">
+    <MobileUI>
+      <div className="ai-standalone">
+        <div className="ai-standalone__nav">
           <button
             type="button"
-            className="ai-standalone__control ai-standalone__control--neutral"
-            onClick={() => window.location.reload()}
-            title="Refresh view"
+            className="ai-standalone__control ai-standalone__control--primary"
+            onClick={handleBackHome}
           >
-            🔄 Refresh
+            ← Back to Home
           </button>
-          <button
-            type="button"
-            className="ai-standalone__control ai-standalone__control--danger"
-            onClick={handleClose}
-          >
-            ✕ Close
-          </button>
+          <div className="ai-standalone__nav-actions">
+            <button
+              type="button"
+              className="ai-standalone__control ai-standalone__control--neutral"
+              onClick={() => window.location.reload()}
+              title="Refresh view"
+            >
+              🔄 Refresh
+            </button>
+            <button
+              type="button"
+              className="ai-standalone__control ai-standalone__control--danger"
+              onClick={handleClose}
+            >
+              ✕ Close
+            </button>
+          </div>
         </div>
+
+        <main className="ai-standalone__body">
+          <header className="ai-standalone__header">
+            {eyebrow && (
+              <BrandLogo
+                size="sm"
+                text={eyebrow}
+                className="ai-standalone__brand"
+                textClassName="ai-standalone__eyebrow"
+              />
+            )}
+            <h1 className="ai-standalone__title">{title}</h1>
+            {description && (
+              <p className="ai-standalone__description">{description}</p>
+            )}
+            {actions && (
+              <div className="ai-standalone__actions">{actions}</div>
+            )}
+          </header>
+
+          <section className="ai-standalone__content">
+            {children}
+          </section>
+        </main>
       </div>
-
-      <main className="ai-standalone__body">
-        <header className="ai-standalone__header">
-          {eyebrow && (
-            <BrandLogo
-              size="sm"
-              text={eyebrow}
-              className="ai-standalone__brand"
-              textClassName="ai-standalone__eyebrow"
-            />
-          )}
-          <h1 className="ai-standalone__title">{title}</h1>
-          {description && (
-            <p className="ai-standalone__description">{description}</p>
-          )}
-          {actions && (
-            <div className="ai-standalone__actions">{actions}</div>
-          )}
-        </header>
-
-        <section className="ai-standalone__content">
-          {children}
-        </section>
-      </main>
-    </div>
+    </MobileUI>
   );
 };
 

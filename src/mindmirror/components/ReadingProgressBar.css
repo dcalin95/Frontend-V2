@@ -154,82 +154,33 @@
   -webkit-font-smoothing: antialiased;
 }
 
-/* ========== RESPONSIVE ========== */
+/* ========== RESPONSIVE - TABLET ========== */
 @media (max-width: 768px) {
   .reading-progress-container {
-    top: 60px;
-    right: 12px;
-  }
-
-  .reading-progress-bar {
-    width: 150px;
-    height: 6px;
-  }
-
-  .progress-percentage {
-    font-size: 10px;
-    top: -24px;
-  }
-
-  .stat-item {
-    padding: 8px 12px;
-  }
-
-  .stat-icon {
-    font-size: 16px;
-  }
-
-  .stat-value {
-    font-size: 14px;
-  }
-
-  .stat-label {
-    font-size: 10px;
+    /* Ascuns pe tablet și mobil - prea distragător */
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
   }
 }
 
+/* ========== RESPONSIVE - MOBILE ========== */
 @media (max-width: 480px) {
   .reading-progress-container {
-    top: 10px;
-    right: 10px;
-    left: 10px;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+    /* Ascuns pe mobil - prea distragător */
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
   }
+}
 
-  .reading-progress-bar {
-    width: 100%;
-    max-width: 120px;
-  }
-
-  .reading-stats {
-    flex-direction: row;
-    gap: 6px;
-  }
-
-  .stat-item {
-    flex-direction: column;
-    padding: 6px 10px;
-    gap: 4px;
-    min-width: 60px;
-  }
-
-  .stat-icon {
-    font-size: 14px;
-  }
-
-  .stat-value {
-    font-size: 12px;
-  }
-
-  .stat-label {
-    font-size: 9px;
-  }
-
-  .progress-percentage {
-    position: static;
-    margin-left: 8px;
+/* ========== RESPONSIVE - EXTRA SMALL ========== */
+@media (max-width: 360px) {
+  .reading-progress-container {
+    /* Ascuns pe ecrane foarte mici */
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
   }
 }
 

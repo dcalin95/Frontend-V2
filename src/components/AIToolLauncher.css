@@ -292,3 +292,124 @@
   }
 }
 
+/* =============================================
+   MOBILE STYLES - body.mode-mobile
+   Buton compact cu doar logo BITS
+   ============================================= */
+body.mode-mobile .ai-launcher {
+  bottom: 24px !important;
+  right: 20px !important;
+}
+
+body.mode-mobile .ai-launcher__fab {
+  min-width: 64px !important;
+  width: 64px !important;
+  height: 64px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  background: rgba(0, 0, 0, 0.7) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1.5px solid rgba(20, 241, 149, 0.5) !important;
+  box-shadow: 
+    0 8px 32px rgba(153, 69, 255, 0.4), 
+    0 0 24px rgba(20, 241, 149, 0.3) !important;
+  justify-content: center !important;
+}
+
+body.mode-mobile .ai-launcher__fab:hover,
+body.mode-mobile .ai-launcher__fab:active {
+  background: rgba(0, 0, 0, 0.85) !important;
+  transform: translateY(-4px) scale(1.05) !important;
+  box-shadow: 
+    0 16px 48px rgba(153, 69, 255, 0.5), 
+    0 0 40px rgba(20, 241, 149, 0.4) !important;
+}
+
+/* ASCUNDE TEXTUL PE MOBIL - DOAR LOGO */
+body.mode-mobile .ai-launcher__label {
+  display: none !important;
+}
+
+/* LOGO BITS MAI MARE PE MOBIL */
+body.mode-mobile .ai-launcher__icon {
+  width: 42px !important;
+  height: 42px !important;
+  margin: 0 !important;
+}
+
+body.mode-mobile .ai-launcher__icon-img {
+  filter: drop-shadow(0 0 15px rgba(20, 241, 149, 0.7)) !important;
+}
+
+/* Panel - Full Width pe Mobil */
+body.mode-mobile .ai-launcher__panel {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  border-radius: 24px 24px 0 0 !important;
+  transform: translateY(100%) !important;
+  background: rgba(0, 0, 0, 0.95) !important;
+  backdrop-filter: blur(30px) !important;
+  -webkit-backdrop-filter: blur(30px) !important;
+  padding: 24px 20px 32px !important;
+  border: 1px solid rgba(20, 241, 149, 0.3) !important;
+  border-bottom: none !important;
+}
+
+body.mode-mobile .ai-launcher__panel--visible {
+  transform: translateY(0) !important;
+}
+
+body.mode-mobile .ai-launcher__panel-header h3 {
+  font-size: 1.5rem !important;
+  background: linear-gradient(135deg, #14f195, #9945ff) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+body.mode-mobile .ai-launcher__tool-button {
+  padding: 20px 16px !important;
+  border-radius: 16px !important;
+  background: rgba(20, 241, 149, 0.05) !important;
+  border: 1px solid rgba(20, 241, 149, 0.2) !important;
+}
+
+body.mode-mobile .ai-launcher__tool-button:active {
+  transform: scale(0.98) !important;
+  background: rgba(20, 241, 149, 0.1) !important;
+}
+
+body.mode-mobile .ai-launcher__tool-icon {
+  font-size: 2rem !important;
+}
+
+body.mode-mobile .ai-launcher__tool-name {
+  font-size: 1rem !important;
+}
+
+body.mode-mobile .ai-launcher__tool-description {
+  font-size: 0.85rem !important;
+}
+
+body.mode-mobile .ai-launcher__close {
+  width: 44px !important;
+  height: 44px !important;
+  background: rgba(153, 69, 255, 0.2) !important;
+  font-size: 1.25rem !important;
+}
+
+body.mode-mobile .ai-launcher__close:active {
+  background: rgba(153, 69, 255, 0.4) !important;
+  transform: scale(0.95) !important;
+}
+
+body.mode-mobile .ai-launcher__backdrop {
+  background: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(4px) !important;
+}
+

@@ -1,9 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAccount as useEvmAccount, useDisconnect as useEvmDisconnect, useBalance as useEvmBalance, useReadContract, useConnect } from 'wagmi';
 import { formatEther } from "viem";
 import BitsABI from '../abi/BitsABI.js';
 import { isInAppBrowser } from '../utils/walletBrowserDetection';
-import { prepareForConnection, handleConnectionError } from '../utils/walletConnectionFix';
+import { prepareForConnection } from '../utils/walletConnectionFix';
 
 const BITS_TOKEN_ADDRESS = "0xCE056ee6ED7Ae0944f10BAfc5E7f5d160c8641fe";
 
@@ -15,14 +15,34 @@ export const UnifiedWalletProvider = ({ children }) => {
   // EVM State
   const { address: evmAddress, isConnected: isEvmConnected, connector, chainId } = useEvmAccount();
   const { disconnect: disconnectEvm } = useEvmDisconnect();
-  const { connect: connectEvm, connectAsync: connectEvmAsync, connectors, error: connectError } = useConnect();
+  const { connectAsync: connectEvmAsync, connectors, error: connectError } = useConnect();
   
   // 🛡️ Safe Disconnect Wrapper
-  const safeDisconnect = () => {
+  // Wrapped in useCallback to be used in useEffect dependency array
+  const safeDisconnect = useCallback(() => {
     try {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('wagmi.store');
+        localStorage.removeItem('wagmi.wallet');
+        localStorage.removeItem('wagmi.connected');
+        localStorage.removeItem('wagmi.io.metamask.injected'); // Specific MetaMask
+        sessionStorage.clear();
+      }
       disconnectEvm();
     } catch (error) {
       console.warn("[UnifiedWallet] Disconnect error suppressed:", error);
+    }
+  }, [disconnectEvm]);
+
+  // 🧨 HARD RESET (The Nuclear Option)
+  // Use this when user is stuck in "Request Pending" state
+  const hardReset = () => {
+    console.warn("🧨 EXECUTING HARD RESET...");
+    safeDisconnect();
+    if (typeof window !== 'undefined') {
+      localStorage.clear(); // Clear ALL local storage to be safe
+      sessionStorage.clear();
+      window.location.reload(); // Force reload to kill pending promises
     }
   };
 
@@ -76,7 +96,7 @@ export const UnifiedWalletProvider = ({ children }) => {
       
       return () => clearTimeout(timer);
     }
-  }, [connectError, disconnectEvm]); // Use safeDisconnect ideally but we define it inside
+  }, [connectError, safeDisconnect]); // ✅ Added safeDisconnect to dependency array
   
   // Auto-connect for In-App Browsers (Mobile Only - MetaMask, Trust, etc.)
   useEffect(() => {
@@ -220,6 +240,7 @@ export const UnifiedWalletProvider = ({ children }) => {
     // Actions
     connectWallet,
     disconnectWallet,
+    hardReset, // Expose hardReset for UI
     
     // Modal control
     showWalletModal,

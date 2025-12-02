@@ -9,12 +9,19 @@
   margin: 0;
 }
 
+/* AI Solana Title Style */
 .usd-title {
-  font-size: 1.4rem;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.6rem;
+  font-weight: 700;
+  font-family: 'Orbitron', 'Space Grotesk', sans-serif !important;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 12px rgba(0, 255, 163, 0.3));
   margin-bottom: 1.5rem;
   letter-spacing: 0.5px;
+  text-align: center;
 }
 
 /* USD Grid Layout - Same as other grids */

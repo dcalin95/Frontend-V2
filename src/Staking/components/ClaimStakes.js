@@ -5,6 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 import WalletContext from "../../context/WalletContext";
 import { getStakingContract } from "../../contract/getStakingContract";
 import "../styles/ClaimStakes.css";
+import "../styles/ClaimStakes.mobile.css"; // 🆕 Import Mobile CSS
 
 // --- AI GEMINI 3 ICONS ---
 const AiIcons = {
@@ -73,6 +74,16 @@ const AiIcons = {
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="20 6 9 17 4 12" />
     </svg>
+  ),
+  Trophy: ({ size = 20, color = "currentColor" }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8 21h8" />
+      <path d="M12 17v4" />
+      <path d="M7 4h10" />
+      <path d="M17 4v8a5 5 0 0 1-10 0V4" />
+      <path d="M5 9a5 5 0 0 0-1 4" />
+      <path d="M19 9a5 5 0 0 1 1 4" />
+    </svg>
   )
 };
 
@@ -81,8 +92,8 @@ const cardStyle = {
   background: "rgba(12, 16, 20, 0.35)",
   border: "1px solid rgba(255, 255, 255, 0.1)",
   borderRadius: "16px",
-  padding: "24px",
-  marginBottom: "20px",
+  padding: "16px", // COMPACT: Reduced from 24px
+  marginBottom: "12px", // COMPACT: Reduced from 20px
   backdropFilter: "blur(10px)",
   boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)"
 };
@@ -91,9 +102,9 @@ const headerStyle = {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  marginBottom: "20px",
+  marginBottom: "12px", // COMPACT: Reduced from 20px
   borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
-  paddingBottom: "15px"
+  paddingBottom: "10px" // COMPACT: Reduced from 15px
 };
 
 const labelStyle = {
@@ -226,6 +237,8 @@ const ClaimStakes = ({ signer }) => {
   const [dynamicRewards, setDynamicRewards] = useState({});
   const [hasClaimReward, setHasClaimReward] = useState(false);
   const [unstakeFeePct, setUnstakeFeePct] = useState(0);
+  const [showAPRBreakdown, setShowAPRBreakdown] = useState({}); // Store toggle state per index
+  const [showProjections, setShowProjections] = useState({}); // Store toggle state per index
   const [isLoading, setIsLoading] = useState(true);
 
   const decodeRevert = (err) => {
@@ -277,10 +290,18 @@ const ClaimStakes = ({ signer }) => {
         const iface = contract.interface;
         setHasClaimReward(!!iface.functions["claimReward(uint256)"]);
       } catch (_) { setHasClaimReward(false); }
+      
+      // 🆕 Fetch unstake fee percentage from contract
       try {
-        const feeRaw = await contract.unstakeFee();
-        setUnstakeFeePct(parseFloat(require('ethers').ethers.utils.formatUnits(feeRaw, 16)));
-      } catch(_) {}
+        const rawFee = await contract.unstakeFee?.();
+        if (rawFee) {
+          const pct = parseFloat(formatUnits(rawFee, 16)); // unstakeFee is stored as 1e16 = 1%
+          setUnstakeFeePct(pct);
+          console.log("📊 Unstake Fee from contract:", pct + "%");
+        }
+      } catch(err) {
+        console.warn("⚠️ Could not fetch unstakeFee:", err.message);
+      }
       const rawStakes = await contract.getStakeByUser(walletAddress);
       const cd = await contract.cooldown();
       const tge = await contract.tgeDate();
@@ -394,16 +415,28 @@ const ClaimStakes = ({ signer }) => {
     <>
       <style>{loaderStyles}</style>
       
-      {/* Section Title */}
-      <div style={{ marginBottom: "20px", paddingLeft: "5px", borderLeft: "4px solid #00ffa3", display: "flex", alignItems: "center", gap: "10px" }}>
+      {/* Section Title - AI Solana Style */}
+      <div style={{ marginBottom: "20px", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}>
         <AiIcons.Brain size={28} color="#00ffa3" />
-        <h3 style={{ margin: 0, fontSize: "1.5rem", fontWeight: "700", color: "#ffffff", letterSpacing: "1px", textShadow: "0 0 10px rgba(0, 255, 163, 0.3)" }}>
+        <h3 style={{ 
+          margin: 0, 
+          fontSize: "1.6rem", 
+          fontWeight: "700", 
+          fontFamily: "'Orbitron', 'Space Grotesk', sans-serif",
+          background: "linear-gradient(135deg, #00FFA3, #DC1FFF)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+          filter: "drop-shadow(0 0 12px rgba(0, 255, 163, 0.3))",
+          letterSpacing: "0.5px",
+          textAlign: "center"
+        }}>
           MY STAKED POSITIONS
         </h3>
       </div>
 
       {/* Total Claimable (Staking Protocol Style) */}
-      <div style={{
+      <div className="claim-card-total" style={{
         ...cardStyle,
         display: 'flex',
         justifyContent: 'space-between',
@@ -471,12 +504,13 @@ const ClaimStakes = ({ signer }) => {
       {!isLoading && stakes.map((s, i) => {
         const eligible = canWithdraw(s);
         const dynamicReward = dynamicRewards[i] || 0;
-        const unlockTime = s.startTime.toNumber() + cooldown;
-        const secondsLeft = Math.max(tgeDate, unlockTime) - now;
+        const lockPeriodVal = s.lockPeriod?.toNumber ? s.lockPeriod.toNumber() : cooldown;
+        const unlockTime = s.startTime.toNumber() + lockPeriodVal;
+        const secondsLeft = Math.max(0, unlockTime - now);
         
         return (
           <React.Fragment key={i}>
-            <div style={{
+            <div className="claim-card" style={{
               ...cardStyle,
               borderColor: s.withdrawn ? 'rgba(255, 255, 255, 0.1)' : (eligible ? 'rgba(0, 255, 136, 0.4)' : 'rgba(255, 255, 255, 0.1)'),
               boxShadow: eligible && !s.withdrawn ? '0 0 20px rgba(0, 255, 136, 0.15)' : 'none'
@@ -494,8 +528,24 @@ const ClaimStakes = ({ signer }) => {
                     }}>
                       <AiIcons.Chip size={16} />
                     </div>
-                    <div style={{fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '6px'}}>
-                      POSITION #{i + 1} <span style={{opacity:0.5}}>•</span> <AiIcons.Calendar size={14}/> {new Date(s.startTime.toNumber() * 1000).toLocaleDateString()}
+                    <div>
+                        <div style={{fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '6px'}}>
+                          POSITION #{i + 1} <span style={{opacity:0.5}}>•</span> <AiIcons.Calendar size={14}/> {new Date(s.startTime.toNumber() * 1000).toLocaleDateString()}
+                        </div>
+                        {/* TIER BADGE */}
+                        {(() => {
+                            const amt = parseFloat(formatUnits(s.locked, 18));
+                            let tier = { name: "Bronze", icon: "🥉", color: "#CD7F32" };
+                            if (amt >= 10001) tier = { name: "Platinum", icon: "💎", color: "#E5E4E2" };
+                            else if (amt >= 5001) tier = { name: "Gold", icon: "🥇", color: "#FFD700" };
+                            else if (amt >= 1001) tier = { name: "Silver", icon: "🥈", color: "#C0C0C0" };
+                            
+                            return !s.withdrawn && (
+                                <div className="ai-tier-badge" style={{ color: tier.color, borderColor: tier.color + '40' }}>
+                                    {tier.icon} {tier.name} Tier
+                                </div>
+                            );
+                        })()}
                     </div>
                 </div>
                 
@@ -515,7 +565,7 @@ const ClaimStakes = ({ signer }) => {
               </div>
 
               {/* 2. BODY GRID */}
-              <div style={{display: 'grid', gridTemplateColumns: '1.5fr 1.5fr 1fr', gap: '24px', alignItems: 'center'}}>
+              <div className="claim-main-grid" style={{display: 'grid', gridTemplateColumns: '1.5fr 1.5fr 1fr', gap: '24px', alignItems: 'center'}}>
                 
                 {/* COL 1: VALUE & APR */}
                 <div>
@@ -576,21 +626,245 @@ const ClaimStakes = ({ signer }) => {
                 </div>
               </div>
 
+              {/* 🆕 ADDITIONAL INFO SECTION */}
+              {!s.withdrawn && (
+                <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  
+                  {/* PROGRESS BAR */}
+                  {(() => {
+                    const lockSeconds = s.lockPeriod?.toNumber?.() || cooldown;
+                    const totalLockDays = Math.floor(lockSeconds / (24 * 60 * 60));
+                    const startTimeNum = s.startTime.toNumber();
+                    const daysStaked = Math.floor((now - startTimeNum) / (24 * 60 * 60));
+                    const isCompleted = daysStaked >= totalLockDays;
+                    const unlockDate = new Date((startTimeNum + lockSeconds) * 1000);
+                    
+                    // Calculate Total Reward at Maturity based on contract formula
+                    const amountVal = parseFloat(formatUnits(s.locked, 18));
+                    // FIX: Use aprPercentNumber which returns number directly
+                    const aprPercent = aprPercentNumber(s.apr);
+                    const aprDecimal = aprPercent / 100;
+                    
+                    // Yearly Reward = Amount * APR_Decimal
+                    // Total Reward = Yearly * (LockDuration / 365 days)
+                    const yearlyRewardEst = amountVal * aprDecimal;
+                    const totalRewardAtMaturity = yearlyRewardEst * (lockSeconds / (365 * 24 * 60 * 60));
+
+                    return (
+                      <>
+                        {totalLockDays > 0 && (
+                          <div className="ai-progress-container">
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                              <span style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', fontWeight: '600', letterSpacing: '0.5px' }}>
+                                ⏱️ STAKING PROGRESS
+                              </span>
+                              <span style={{ fontSize: '0.75rem', color: isCompleted ? '#00FFA3' : '#fff', fontWeight: '700', fontFamily: 'Orbitron, sans-serif' }}>
+                                {isCompleted ? 'COMPLETED' : `${daysStaked}/${totalLockDays} DAYS`}
+                              </span>
+                            </div>
+                            <div className="ai-progress-track">
+                              <div className="ai-progress-fill" style={{
+                                width: isCompleted ? '100%' : `${Math.min((daysStaked / totalLockDays) * 100, 100)}%`,
+                                background: isCompleted ? '#00FFA3' : undefined // Use default gradient if not completed
+                              }} />
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px' }}>
+                               <span style={{ fontSize: '0.65rem', color: 'rgba(255, 255, 255, 0.4)' }}>
+                                 {isCompleted ? '100%' : `${Math.min(Math.round((daysStaked / totalLockDays) * 100), 100)}%`}
+                               </span>
+                               <span style={{ fontSize: '0.65rem', color: 'rgba(255, 255, 255, 0.4)' }}>
+                                 Unlock: {unlockDate.toLocaleDateString()}
+                               </span>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* MATURITY REWARD INFO - ONLY IF LOCKED */}
+                        {totalLockDays > 0 && (
+                            <div className="ai-maturity-box">
+                                <span className="ai-maturity-label">
+                                    <AiIcons.Trophy size={14} color="#d8b4fe"/> 
+                                    Total Reward at Maturity:
+                                </span>
+                                <span className="ai-financial-value" style={{ fontSize: '1rem' }}>
+                                    +{totalRewardAtMaturity.toFixed(4)} $BITS
+                                </span>
+                            </div>
+                        )}
+
+                        {/* 🆕 FINANCIAL INSIGHTS GRID */}
+                        {(() => {
+                            // Calculate projections mathematically
+                            const dailyYield = yearlyRewardEst / 365;
+                            const monthlyYield = yearlyRewardEst / 12;
+                            
+                            // FIX: ROI Calculation
+                            // If locked: ROI = Total Reward / Amount
+                            // If no lock: ROI = Yearly Reward / Amount (Annualized)
+                            const rewardBasis = totalLockDays > 0 ? totalRewardAtMaturity : yearlyRewardEst;
+                            const roiPercent = amountVal > 0 ? (rewardBasis / amountVal) * 100 : 0;
+
+                            return (
+                                <div className="ai-financial-grid">
+                                    {/* Daily */}
+                                    <div className="ai-financial-card">
+                                        <div className="ai-financial-label">Daily Yield</div>
+                                        <div className="ai-financial-value ai-text-gradient">+{dailyYield.toFixed(2)}</div>
+                                    </div>
+                                    {/* Monthly */}
+                                    <div className="ai-financial-card">
+                                        <div className="ai-financial-label">Monthly</div>
+                                        <div className="ai-financial-value ai-text-gradient">+{monthlyYield.toFixed(2)}</div>
+                                    </div>
+                                    {/* ROI */}
+                                    <div className="ai-financial-card">
+                                        <div className="ai-financial-label">{totalLockDays > 0 ? "Net ROI" : "Annual ROI"}</div>
+                                        <div className="ai-financial-value ai-text-gold">{roiPercent.toFixed(2)}%</div>
+                                    </div>
+                                </div>
+                            );
+                        })()}
+
+                      </>
+                    );
+                  })()}
+
+                  
+                  {/* UNSTAKE FEE WARNING */}
+                  {(!eligible && secondsLeft > 0) && (
+                    <div className="ai-warning-box">
+                      <span className="ai-warning-icon">⚠️</span>
+                      <div style={{ flex: 1 }}>
+                        <div className="ai-warning-title">
+                          Early Unstake Fee
+                        </div>
+                        <div className="ai-warning-text">
+                          {unstakeFeePct ? (
+                              <>
+                                Withdrawing before unlock applies a <span className="ai-warning-highlight">{unstakeFeePct.toFixed(2)}%</span> penalty.
+                                You'll receive ≈ <span className="ai-warning-highlight">{(parseFloat(formatUnits(s.locked, 18)) * (1 - unstakeFeePct/100)).toFixed(2)}</span> $BITS.
+                              </>
+                          ) : (
+                              <>
+                                Warning: Unstaking before maturity may incur a penalty fee or forfeiture of rewards depending on protocol rules.
+                              </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* APR BREAKDOWN TOGGLE */}
+                  <button 
+                    onClick={() => setShowAPRBreakdown(prev => ({...prev, [i]: !prev[i]}))}
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#00FFA3',
+                      fontSize: '0.8rem',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      padding: '0'
+                    }}
+                  >
+                    <span>📊 APR Breakdown</span>
+                    <span style={{ fontSize: '0.7rem' }}>{showAPRBreakdown[i] ? '▲' : '▼'}</span>
+                  </button>
+                  
+                  {/* APR BREAKDOWN DETAILS */}
+                  {showAPRBreakdown[i] && (
+                    <div style={{
+                      background: 'rgba(255, 255, 255, 0.03)',
+                      borderRadius: '8px',
+                      padding: '10px',
+                      border: '1px solid rgba(255, 255, 255, 0.05)'
+                    }}>
+                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                         <span style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.8rem' }}>Base APR:</span>
+                         <span style={{ color: '#fff', fontWeight: '600', fontSize: '0.8rem' }}>{formatAprPercentFrom1e18(s.apr)}</span>
+                       </div>
+                       <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '6px', marginTop: '6px' }}>
+                         <div style={{ fontSize: '0.7rem', color: 'rgba(255, 255, 255, 0.5)', fontStyle: 'italic' }}>
+                           💡 Includes Tier & Lock bonuses
+                         </div>
+                       </div>
+                    </div>
+                  )}
+
+                  {/* REWARD PROJECTIONS TOGGLE */}
+                  <button 
+                    onClick={() => setShowProjections(prev => ({...prev, [i]: !prev[i]}))}
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#00FFA3',
+                      fontSize: '0.8rem',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      padding: '0'
+                    }}
+                  >
+                    <span>📈 Reward Projections</span>
+                    <span style={{ fontSize: '0.7rem' }}>{showProjections[i] ? '▲' : '▼'}</span>
+                  </button>
+
+                  {/* REWARD PROJECTIONS DETAILS */}
+                  {showProjections[i] && (
+                    <div style={{
+                      background: 'rgba(255, 255, 255, 0.03)',
+                      borderRadius: '8px',
+                      padding: '10px',
+                      border: '1px solid rgba(255, 255, 255, 0.05)'
+                    }}>
+                      {(() => {
+                        const stakedVal = parseFloat(formatUnits(s.locked, 18));
+                        const aprVal = parseFloat(formatAprPercentFrom1e18(s.apr)); // returns string like "20.00"
+                        const yearly = stakedVal * (aprVal / 100);
+                        const monthly = yearly / 12;
+                        const daily = yearly / 365;
+                        
+                        return (
+                          <>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                              <span style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.8rem' }}>Daily:</span>
+                              <span style={{ color: '#00FFA3', fontWeight: '700', fontSize: '0.8rem' }}>+{daily.toFixed(4)} $BITS</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                              <span style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.8rem' }}>Monthly:</span>
+                              <span style={{ color: '#00FFA3', fontWeight: '700', fontSize: '0.8rem' }}>+{monthly.toFixed(2)} $BITS</span>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                              <span style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.8rem' }}>Yearly:</span>
+                              <span style={{ color: '#DC1FFF', fontWeight: '700', fontSize: '0.8rem' }}>+{yearly.toFixed(2)} $BITS</span>
+                            </div>
+                          </>
+                        );
+                      })()}
+                    </div>
+                  )}
+                  
+                </div>
+              )}
+
               {/* 3. FOOTER ACTIONS - Custom Buttons */}
               {!s.withdrawn && (
                   <div style={{
-                      marginTop: '24px',
-                      paddingTop: '20px',
+                      marginTop: '10px',
+                      paddingTop: '10px',
                       borderTop: '1px solid rgba(255,255,255,0.05)',
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center',
-                      gap: '15px'
+                      gap: '10px'
                   }}>
                       {/* Warning Info */}
-                      {!eligible ? (
+                      {(!eligible && secondsLeft > 0) ? (
                           <div style={{fontSize: '0.85rem', color: '#ff9a76', display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255, 154, 118, 0.1)', padding: '6px 12px', borderRadius: '8px'}}>
-                              ⚠️ Unstake early fee: {unstakeFeePct ? `${unstakeFeePct}%` : 'Applies'}
+                              🔒 Locked until maturity
                           </div>
                       ) : (
                           <div style={{fontSize: '0.85rem', color: '#00ffa3', display: 'flex', alignItems: 'center', gap: '6px'}}>
@@ -612,9 +886,21 @@ const ClaimStakes = ({ signer }) => {
                           )}
 
                           <button
-                            onClick={() => eligible ? handleClaim(i) : handleEarlyUnstake(i)}
-                            disabled={loadingIndex === i}
-                            style={eligible ? buttonStyle : {...secondaryButtonStyle, color: '#ff9a76', borderColor: '#ff9a76', background: 'transparent'}}
+                            onClick={() => handleClaim(i)}
+                            disabled={loadingIndex === i || !eligible}
+                            style={
+                                eligible 
+                                ? buttonStyle 
+                                : {
+                                    ...secondaryButtonStyle, 
+                                    opacity: 1, 
+                                    cursor: 'not-allowed', 
+                                    borderColor: 'rgba(255, 50, 50, 0.5)', 
+                                    background: 'rgba(255, 50, 50, 0.05)',
+                                    color: '#ff6b6b',
+                                    boxShadow: '0 0 10px rgba(255, 50, 50, 0.1)'
+                                }
+                            }
                             onMouseEnter={(e) => {
                                 if(eligible) {
                                     e.target.style.transform = "translateY(-2px)";
@@ -628,7 +914,17 @@ const ClaimStakes = ({ signer }) => {
                                 }
                             }}
                           >
-                            {loadingIndex === i ? 'Processing...' : (eligible ? <><AiIcons.Rocket size={16} /> Withdraw All</> : <><AiIcons.Unlock size={16} /> Unstake Early</>)}
+                            {loadingIndex === i ? (
+                                <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                                    <div className="spinner" style={{width: '16px', height: '16px', border: '2px solid rgba(0,0,0,0.3)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 1s linear infinite'}}></div>
+                                    Processing...
+                                </div>
+                            ) : (
+                                <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                                    {eligible ? <AiIcons.Unlock size={18} /> : <AiIcons.Lock size={18} />}
+                                    {eligible ? "Unstake & Claim" : "Locked"}
+                                </div>
+                            )}
                           </button>
                       </div>
                   </div>

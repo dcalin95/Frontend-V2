@@ -43,13 +43,22 @@ body.mode-mobile .modal-subtitle {
 }
 
 /* 🔘 CLOSE BUTTON - Smaller but tappable */
-body.mode-mobile .close-button {
+body.mode-mobile .modal-close-btn {
   width: 36px;
   height: 36px;
   top: 10px;
   right: 10px;
   font-size: 1.1rem;
   background: rgba(255, 255, 255, 0.05);
+  position: absolute;
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
 }
 
 /* 📊 NETWORK GRID - Compact List */

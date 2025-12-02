@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext"; // Auth Context
 
 import { usePresaleState } from "../Presale/Timer/usePresaleState";
 import PresaleCountdownMini from "../Presale/Timer/PresaleCountdownMini";
+import PresaleLabel from "../Presale/Timer/PresaleLabel";
 import logo from "../assets/logo.png";
 import telegramLogo from "../assets/TLogo.png";
 import xLogo from "../assets/XLogo.png";
@@ -84,12 +85,14 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
           <img src={logo} alt="BIT Logo" className="logo" width={60} height={60} />
         </div>
 
-        {/* ✅ Mobile: Timer + Social compact */}
+        {/* ✅ Mobile: Timer + Slogan + Social compact */}
         <div className="right-section mobile-only" translate="no">
           {isLoaded && (
             <div className="header-mini-timer" translate="no">
-              <span className="timer-label" translate="no">$BITS Presale</span>
+              <PresaleLabel compact={true} />
               <PresaleCountdownMini endTime={endTime} />
+              {/* Slogan DIRECT sub timer */}
+              <PresaleLabel sloganOnly={true} />
             </div>
           )}
           <div className="social">
@@ -261,13 +264,15 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
           )}
         </nav>
 
-        {/* ✅ Desktop-only: Timer + Social */}
+        {/* ✅ Desktop-only: Timer + Slogan + Social */}
         {!isMenuOpen && (
           <div className="right-section desktop-only" translate="no">
             {isLoaded && (
               <div className="header-mini-timer" translate="no">
-                <span className="timer-label" translate="no">$BITS Presale - Before Price Increase</span>
+                <PresaleLabel compact={true} />
                 <PresaleCountdownMini endTime={endTime} />
+                {/* Slogan DIRECT sub timer pe desktop */}
+                <PresaleLabel sloganOnly={true} />
               </div>
             )}
             <div className="social">

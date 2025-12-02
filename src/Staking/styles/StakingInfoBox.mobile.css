@@ -1,0 +1,68 @@
+/* --- MOBILE SPECIFIC STYLES FOR STAKING INFO BOX --- */
+/* Activates only when MobileUI detects mobile screen */
+
+@media (max-width: 768px) {
+    /* === PARENT TRANSPARENT === */
+    /* Remove the outer box style on mobile, let the items float */
+    body.mode-mobile .staking-info-container {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        padding: 0 !important;
+        margin-bottom: 20px !important;
+        height: auto !important;
+        min-height: 0 !important;
+    }
+
+    body.mode-mobile .info-title {
+        font-size: 1.2rem !important;
+        text-align: center !important;
+        margin-bottom: 12px !important;
+        /* Keep the gradient text */
+    }
+
+    body.mode-mobile .info-grid {
+        display: flex !important;
+        flex-direction: row !important; /* Try 2x2 grid or scroll? No, user wants simple. */
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+    }
+
+    /* === CHILD CARDS VISIBLE === */
+    /* These are the actual cards now */
+    body.mode-mobile .info-item {
+        flex: 1 1 45% !important; /* 2 per row */
+        background: rgba(12, 16, 20, 0.7) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 12px !important;
+        padding: 10px !important;
+        min-height: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 !important;
+    }
+
+    body.mode-mobile .info-value {
+        font-size: 1.1rem !important;
+        margin: 4px 0 !important;
+    }
+
+    body.mode-mobile .info-label {
+        font-size: 0.7rem !important;
+    }
+
+    /* Refresh Button positioning */
+    body.mode-mobile .info-refresh-btn {
+        position: static !important;
+        width: 100% !important;
+        margin-top: 12px !important;
+        justify-content: center !important;
+        padding: 12px !important;
+        background: rgba(0, 255, 163, 0.1) !important;
+        border: 1px solid rgba(0, 255, 163, 0.3) !important;
+        color: #00ffa3 !important;
+    }
+}

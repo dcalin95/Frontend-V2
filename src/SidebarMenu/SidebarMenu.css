@@ -76,83 +76,122 @@
   color: #ffe066; /* Iconița devine aurie */
 }
 
-/* ===== CULOARE DIFERITĂ PENTRU FIECARE BUTON ===== */
+/* ===== CULOARE DIFERITĂ PENTRU FIECARE BUTON - FUNDAL NEGRU COMPLET ===== */
 .btn-swap {
-  background-color: black;
+  background: #000000 !important;
+  background-color: #000000 !important;
   border: 2px solid #ff6b6b;
   color: #ff6b6b;
+  box-shadow: 0 0 12px rgba(255, 107, 107, 0.5);
+  text-shadow: 0 0 8px rgba(255, 107, 107, 0.8);
 }
 
 .btn-pool {
-  background-color: black;
+  background: #000000 !important;
+  background-color: #000000 !important;
   border: 2px solid #ffa94d;
   color: #ffa94d;
+  box-shadow: 0 0 12px rgba(255, 169, 77, 0.5);
+  text-shadow: 0 0 8px rgba(255, 169, 77, 0.8);
 }
 
 .btn-buy {
-  background-color: black;
+  background: #000000 !important;
+  background-color: #000000 !important;
   border: 2px solid #ffd43b;
   color: #ffd43b;
+  box-shadow: 0 0 12px rgba(255, 212, 59, 0.5);
+  text-shadow: 0 0 8px rgba(255, 212, 59, 0.8);
 }
 
 .btn-how-to-buy {
-  background-color: black;
+  background: #000000 !important;
+  background-color: #000000 !important;
   border: 2px solid #69db7c;
   color: #69db7c;
+  box-shadow: 0 0 12px rgba(105, 219, 124, 0.5);
+  text-shadow: 0 0 8px rgba(105, 219, 124, 0.8);
 }
 
 .btn-tokenomics {
-  background-color: black;
+  background: #000000 !important;
+  background-color: #000000 !important;
   border: 2px solid #4dabf7;
   color: #4dabf7;
+  box-shadow: 0 0 12px rgba(77, 171, 247, 0.5);
+  text-shadow: 0 0 8px rgba(77, 171, 247, 0.8);
 }
 
 .btn-audit {
-  background-color: black;
+  background: #000000 !important;
+  background-color: #000000 !important;
   border: 2px solid #9775fa;
   color: #9775fa;
+  box-shadow: 0 0 12px rgba(151, 117, 250, 0.5);
+  text-shadow: 0 0 8px rgba(151, 117, 250, 0.8);
 }
 
 .btn-invite {
-  background-color: black;
+  background: #000000 !important;
+  background-color: #000000 !important;
   border: 2px solid #f783ac;
   color: #f783ac;
+  box-shadow: 0 0 12px rgba(247, 131, 172, 0.5);
+  text-shadow: 0 0 8px rgba(247, 131, 172, 0.8);
 }
 
 .btn-how-it-works {
-  background-color: black;
+  background: #000000 !important;
+  background-color: #000000 !important;
   border: 2px solid #38d9a9;
   color: #38d9a9;
+  box-shadow: 0 0 12px rgba(56, 217, 169, 0.5);
+  text-shadow: 0 0 8px rgba(56, 217, 169, 0.8);
 }
 
 .btn-roadmap {
-  background-color: black;
+  background: #000000 !important;
+  background-color: #000000 !important;
   border: 2px solid #e040fb;
   color: #e040fb;
+  box-shadow: 0 0 12px rgba(224, 64, 251, 0.5);
+  text-shadow: 0 0 8px rgba(224, 64, 251, 0.8);
 }
 
 .btn-leaderboard {
-  background-color: black;
+  background: #000000 !important;
+  background-color: #000000 !important;
   border: 2px solid #74c0fc;
   color: #74c0fc;
+  box-shadow: 0 0 12px rgba(116, 192, 252, 0.5);
+  text-shadow: 0 0 8px rgba(116, 192, 252, 0.8);
 }
 
 .btn-about {
-  background-color: black;
+  background: #000000 !important;
+  background-color: #000000 !important;
   border: 2px solid #ff922b;
   color: #ff922b;
+  box-shadow: 0 0 12px rgba(255, 146, 43, 0.5);
+  text-shadow: 0 0 8px rgba(255, 146, 43, 0.8);
 }
 
 .btn-mindmirror {
-  background-color: black;
+  background: #000000 !important;
+  background-color: #000000 !important;
   border: 2px solid #00ff9d;
   color: #00ff9d;
+  box-shadow: 0 0 12px rgba(0, 255, 157, 0.5);
+  text-shadow: 0 0 8px rgba(0, 255, 157, 0.8);
 }
 
 .btn-go-main {
-  background-color: black;
+  background: #000000 !important;
+  background-color: #000000 !important;
   border: 2px solid #f3722c;
   color: #00ffff;
+  box-shadow: 0 0 12px rgba(243, 114, 44, 0.5);
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
 }
 
 /* ===== BUTON SPECIAL: GO TO MAIN PAGE ===== */
@@ -186,47 +225,75 @@
 @media (max-width: 768px) {
   .sidebar {
     position: fixed;
-    top: 135px; /* Mutat mai jos pentru a fi SUB butonul Hamburger (85px + 42px + gap) */
-    left: 0;
-    transform: translateX(-100%);
-    height: calc(100vh - 135px); /* Ajustat inaltimea */
-    width: 280px; /* Lățime fixă pentru mobil */
-    z-index: 10000 !important; /* PESTE overlay-urile AIToolLauncher */
-    background: rgba(5, 5, 10, 0.98) !important; /* Fundal aproape negru opac pentru a ascunde continutul din spate */
-    backdrop-filter: blur(10px); /* Blur pentru un efect modern */
-    -webkit-backdrop-filter: blur(10px);
-    transition: transform 0.3s ease;
-    overflow-y: auto; /* Permite scroll vertical */
-    overflow-x: hidden; /* Ascunde scroll-ul orizontal */
-    padding: 15px;
-    backdrop-filter: none; /* Eliminat efectul de blur */
+    top: 160px;
+    left: 8px;
+    transform: translateX(-120%);
+    height: auto; /* FĂRĂ înălțime fixă */
+    width: auto;
+    max-width: 220px;
+    z-index: 11999 !important;
+    
+    /* COMPLET TRANSPARENT - FĂRĂ CONTAINER */
+    background: transparent !important;
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: visible !important;
+    padding: 0;
   }
 
   .sidebar.open {
     transform: translateX(0);
+    
+    /* COMPLET TRANSPARENT - FĂRĂ CONTAINER */
+    background: transparent !important;
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    border: none !important;
   }
 
-  /* Butoane mai mici pe mobil */
+  /* FLOATING BUTTONS - FĂRĂ FUNDAL - doar text și border */
   .sidebar button,
   .sidebar a {
-    font-size: 0.85rem; /* Redus de la 1rem */
-    padding: 8px 12px; /* Redus de la 10px 15px */
-    margin: 2px 0; /* Redus de la 3px */
-    border-radius: 8px; /* Redus de la 12px */
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 10px 14px;
+    margin: 4px 0;
+    border-radius: 12px;
+    
+    /* COMPLET TRANSPARENT - fără fundal */
+    background: transparent !important;
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    
+    /* Doar un border subtil colorat */
+    border: 1px solid currentColor !important;
+    box-shadow: 0 0 8px currentColor;
+    
+    /* Text glow pentru vizibilitate */
+    text-shadow: 0 0 10px currentColor;
   }
 
-  /* Iconițe mai mici pe mobil */
+  /* Iconițe pe mobil */
   .sidebar button i,
   .sidebar a i {
-    font-size: 1.2rem; /* Redus de la 1.5rem */
-    margin-right: 10px; /* Redus de la 15px */
+    font-size: 1.3rem;
+    margin-right: 12px;
+    filter: drop-shadow(0 0 4px currentColor);
   }
 
-  /* Buton special mai mic pe mobil */
+  /* Buton special pe mobil */
   .sidebar .go-main {
-    font-size: 0.85rem; /* Redus de la 1rem */
-    padding: 6px 10px; /* Redus de la 5px */
-    margin-top: 15px; /* Redus de la 25px */
+    font-size: 0.9rem;
+    padding: 12px 16px;
+    margin-top: 10px;
   }
 
   /* Eliminăm efectele de hover pe mobil pentru performanță */

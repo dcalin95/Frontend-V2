@@ -1,88 +1,173 @@
-/* 🌟 CYBERPUNK GLASS WALLET STYLE 🌟 */
+/* 🌟 ULTRA MODERN WALLET STYLE - CLEAN SVG ONLY 🌟 */
 
 .wallet-toggle-wrapper {
   position: fixed;
-  top: 120px; /* Schimbat de la 90px la 120px pentru a fi mai jos */
+  top: 120px;
   right: 20px;
   z-index: 9999;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ✨ Butonul Principal "Wallet" */
+/* ✨ MINIMAL BUTTON - DOAR SVG, FĂRĂ FUNDAL, FĂRĂ CHENAR */
+.wallet-toggle-btn-minimal {
+  /* COMPLET TRANSPARENT - FĂRĂ NIMIC */
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  outline: none !important;
+  
+  /* Dimensiuni mai mari pentru SVG */
+  width: 68px;
+  height: 85px;
+  
+  /* Layout */
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  cursor: pointer;
+  
+  /* Transition pentru hover */
+  transition: transform 0.3s ease, filter 0.3s ease;
+  
+  /* Overflow pentru simbolurile care cad */
+  overflow: visible;
+}
+
+.wallet-toggle-btn-minimal:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 15px rgba(20, 241, 149, 0.7));
+}
+
+.wallet-toggle-btn-minimal:active {
+  transform: scale(0.95);
+}
+
+/* 🎨 SVG ANIMAT - 100% SHARP - FĂRĂ BLUR */
+.wallet-svg-animated {
+  width: 52px;
+  height: 52px;
+  transition: transform 0.3s ease;
+  
+  /* FĂRĂ FILTER - COMPLET CLAR */
+  filter: none;
+  
+  /* Crisp rendering */
+  shape-rendering: crispEdges;
+}
+
+.wallet-toggle-btn-minimal:hover .wallet-svg-animated {
+  filter: none;
+  transform: scale(1.1);
+}
+
+/* OLD BUTTON STYLES - KEPT FOR REFERENCE */
 .wallet-toggle-btn {
-  background: rgba(10, 10, 20, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 255, 163, 0.4);
-  color: #00FFA3;
-  padding: 12px 28px;
-  font-size: 1.1rem; /* Mărit de la 1rem */
-  font-weight: 700; /* Mărit de la 600 */
+  background: linear-gradient(135deg, rgba(10, 10, 20, 0.9) 0%, rgba(20, 15, 35, 0.85) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: none;
+  position: relative;
+  padding: 8px;
   border-radius: 16px;
   cursor: pointer;
-  min-width: 160px; /* Mărit de la 140px */
-  height: 52px; /* Mărit de la 48px */
-  display: flex;
+  width: 60px;
+  height: 60px;
+  display: none; /* HIDDEN - folosim noul buton */
   align-items: center;
   justify-content: center;
-  gap: 10px; /* Mărit de la 8px */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  text-transform: uppercase;
-  letter-spacing: 1.2px; /* Mărit de la 1px */
+  box-shadow: 
+    0 4px 25px rgba(20, 241, 149, 0.3),
+    0 0 0 2px rgba(20, 241, 149, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: visible;
+}
+
+/* Gradient Border Effect - Animated */
+.wallet-toggle-btn::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg, #14F195 0%, #00D4FF 50%, #9945FF 100%);
+  border-radius: 18px;
+  z-index: -1;
+  animation: borderRotate 3s linear infinite;
+  background-size: 200% 200%;
+}
+
+@keyframes borderRotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .wallet-toggle-btn:hover {
-  background: rgba(0, 255, 163, 0.15);
-  border-color: #00FFA3;
-  box-shadow: 0 0 25px rgba(0, 255, 163, 0.4);
-  transform: translateY(-2px);
-  color: #fff;
-  text-shadow: 0 0 8px rgba(0, 255, 163, 0.8);
+  background: linear-gradient(135deg, rgba(20, 241, 149, 0.2) 0%, rgba(153, 69, 255, 0.2) 100%);
+  box-shadow: 
+    0 8px 40px rgba(20, 241, 149, 0.5),
+    0 0 0 3px rgba(20, 241, 149, 0.7),
+    0 0 60px rgba(20, 241, 149, 0.3);
+  transform: translateY(-4px) scale(1.08);
 }
 
-/* 💰 Animated Money Icon */
-.money-icon .coin-pulse {
-  animation: pulse 2s ease-in-out infinite;
+.wallet-toggle-btn:hover .wallet-premium-icon {
+  transform: scale(1.15) rotate(8deg);
+  filter: drop-shadow(0 0 15px rgba(20, 241, 149, 0.9));
 }
 
-.money-icon .spark {
-  animation: sparkle 1.5s ease-in-out infinite;
+/* 💎 Premium Wallet Icon Styles - MARE */
+.wallet-premium-icon {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 0 8px rgba(20, 241, 149, 0.6));
+}
+
+.wallet-premium-icon .wallet-body {
+  transition: all 0.3s ease;
+}
+
+.wallet-premium-icon .crypto-coin {
+  animation: coinPulse 2s ease-in-out infinite;
+}
+
+.wallet-premium-icon .sparkle {
+  animation: sparkleFloat 2s ease-in-out infinite;
   opacity: 0;
 }
 
-.money-icon .spark-1 {
+.wallet-premium-icon .sparkle-1 {
   animation-delay: 0s;
 }
 
-.money-icon .spark-2 {
-  animation-delay: 0.5s;
+.wallet-premium-icon .sparkle-2 {
+  animation-delay: 0.7s;
 }
 
-.money-icon .spark-3 {
-  animation-delay: 1s;
+.wallet-premium-icon .sparkle-3 {
+  animation-delay: 1.4s;
 }
 
-@keyframes pulse {
+@keyframes coinPulse {
   0%, 100% {
-    r: 3;
+    transform: scale(1);
     opacity: 1;
   }
   50% {
-    r: 4;
-    opacity: 0.6;
+    transform: scale(1.1);
+    opacity: 0.85;
   }
 }
 
-@keyframes sparkle {
+@keyframes sparkleFloat {
   0%, 100% {
     opacity: 0;
-    transform: translateY(0);
+    transform: translateY(0) scale(0.5);
   }
   50% {
     opacity: 1;
-    transform: translateY(-2px);
+    transform: translateY(-5px) scale(1.3);
   }
 }
 

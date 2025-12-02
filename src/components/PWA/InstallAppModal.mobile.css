@@ -114,3 +114,80 @@
     color: #fff;
 }
 
+/* === RESPONSIVE MOBILE === */
+@media (max-width: 768px) {
+    .install-modal-overlay {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+    
+    .install-content-ui {
+        padding: 20px !important;
+        padding-bottom: 60px !important;
+        box-sizing: border-box !important;
+    }
+    
+    .install-title {
+        font-size: 20px !important;
+    }
+    
+    .install-desc {
+        font-size: 13px !important;
+        max-width: 90% !important;
+        margin-bottom: 20px !important;
+    }
+    
+    .install-actions {
+        width: 90% !important;
+        max-width: 280px !important;
+        gap: 12px !important;
+    }
+    
+    .btn-install-app {
+        padding: 14px 18px !important;
+        font-size: 14px !important;
+    }
+    
+    .btn-maybe-later {
+        padding: 10px !important;
+        font-size: 13px !important;
+    }
+}
+
+/* Ecrane foarte mici */
+@media (max-width: 380px) {
+    .install-content-ui {
+        padding-bottom: 40px !important;
+    }
+    
+    .install-title {
+        font-size: 18px !important;
+    }
+    
+    .install-desc {
+        font-size: 12px !important;
+    }
+    
+    .install-actions {
+        width: 95% !important;
+        gap: 10px !important;
+    }
+    
+    .btn-install-app {
+        padding: 12px 16px !important;
+        font-size: 13px !important;
+    }
+    
+    .btn-maybe-later {
+        padding: 8px !important;
+        font-size: 12px !important;
+    }
+}
+

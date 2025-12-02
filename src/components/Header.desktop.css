@@ -13,20 +13,21 @@
   align-items: center;
   background: rgba(15, 20, 25, 0.85);
   color: white;
-  padding: 2.5rem 2rem 1rem 2rem;
-  height: 110px;
+  padding: 2.5rem 2rem 0.5rem 2rem;
+  height: 115px;
   width: 100%;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1000;
-  border-bottom: 1px solid rgba(0, 255, 163, 0.2);
+  border-bottom: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
+  box-shadow: none;
   gap: 2rem;
   font-family: 'Inter', sans-serif;
   transition: all 0.3s ease; /* Smooth transition for dynamic header */
+  overflow: visible; /* Allow slogan to overflow */
 }
 
 /* === DYNAMIC SCROLLED STATE === */
@@ -36,7 +37,7 @@
   background: rgba(10, 14, 18, 0.95);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 4px 30px rgba(0, 255, 163, 0.15);
+  box-shadow: none;
 }
 
 /* === LOGO === */
@@ -331,46 +332,93 @@
   transform: scale(1.05);
 }
 
-/* === TIMER - SOLANA/AI STYLE === */
+/* === TIMER - AI SOLANA STYLE === */
 .header-mini-timer {
-  font-size: 0.85rem;
-  font-weight: 600;
-  font-family: 'Inter', sans-serif;
-  color: #00FFA3;
-  animation: glow-solana 2.5s infinite ease-in-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
   text-align: center;
+  overflow: visible;
+  position: relative;
+  padding-bottom: 2px;
+  
+  /* Smooth transitions */
+  transition: all 0.3s ease;
 }
 
-/* Harden timer label against page-level overrides */
+.header-mini-timer:hover {
+  filter: drop-shadow(0 0 8px rgba(20, 241, 149, 0.4));
+}
+
+/* Legacy timer-label support (fallback) */
 .header-mini-timer .timer-label {
-  text-transform: none !important;
-  color: #00ffff !important;
-  letter-spacing: normal !important;
-  font-weight: 600 !important;
-  background: none !important;
-  -webkit-text-fill-color: currentColor !important;
-  -webkit-background-clip: initial !important;
+  display: none; /* Hidden - using PresaleLabel component now */
 }
 
-/* Ensure paper-trading page cannot override header timer */
-[data-page="paper-trading"] .header-mini-timer .timer-label {
-  text-transform: none !important;
-  color: #00ffff !important;
-  letter-spacing: normal !important;
-  -webkit-text-fill-color: currentColor !important;
-  background: none !important;
+/* === SLOGAN SUB TIMER - DESKTOP - MINIMAL AI STYLE === */
+.header-mini-timer > div:last-child,
+.header-mini-timer > a:last-child {
+  margin-top: 0;
+  display: flex;
+  justify-content: center;
+  text-decoration: none;
 }
 
-@keyframes glow {
-  0% { text-shadow: 0 0 5px #00ffff; }
-  50% { text-shadow: 0 0 15px #00ffff, 0 0 30px #00ffff; }
-  100% { text-shadow: 0 0 5px #00ffff; }
+.header-mini-timer > a:last-child {
+  text-decoration: none;
+  border: none;
+  outline: none;
 }
 
-@keyframes glow-solana {
-  0% { text-shadow: 0 0 5px rgba(0, 255, 163, 0.6); }
-  50% { text-shadow: 0 0 15px rgba(0, 255, 163, 0.8), 0 0 30px rgba(220, 31, 255, 0.5); }
-  100% { text-shadow: 0 0 5px rgba(0, 255, 163, 0.6); }
+.header-mini-timer > div:last-child span,
+.header-mini-timer > a:last-child span {
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-family: 'Orbitron', 'Rajdhani', system-ui, sans-serif;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  white-space: nowrap;
+  display: inline-block;
+  text-decoration: none;
+  
+  /* FĂRĂ BORDER - doar text gradient curat */
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  
+  /* SOLANA GRADIENT TEXT */
+  background-image: linear-gradient(90deg, #14F195 0%, #00D4FF 35%, #9945FF 70%, #14F195 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  
+  /* Sharp text */
+  text-shadow: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+  
+  /* Animație gradient flowing */
+  animation: desktopSloganFlow 4s linear infinite;
+  
+  transition: all 0.3s ease;
+}
+
+.header-mini-timer > a:last-child:hover span {
+  filter: brightness(1.3);
+  transform: scale(1.02);
+}
+
+@keyframes desktopSloganFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
 }
 
 /* === SOCIAL === */

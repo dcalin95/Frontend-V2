@@ -50,6 +50,14 @@ const StakingCard = ({ stake, index, signer, tgeDate, cooldown }) => {
   const [unstakeFeePct, setUnstakeFeePct] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
+  const [showAPRBreakdown, setShowAPRBreakdown] = useState(false);
+  const [aprBreakdown, setAprBreakdown] = useState(null);
+  const [daysStaked, setDaysStaked] = useState(0);
+  const [totalLockDays, setTotalLockDays] = useState(0);
+  const [dailyReward, setDailyReward] = useState(0);
+  const [monthlyReward, setMonthlyReward] = useState(0);
+  const [yearlyReward, setYearlyReward] = useState(0);
+  const [showProjections, setShowProjections] = useState(false);
 
   const circleLength = 2 * Math.PI * 50;
 
@@ -87,11 +95,37 @@ const StakingCard = ({ stake, index, signer, tgeDate, cooldown }) => {
             setUnstakeFeePct(pct);
           }
         } catch(_) {}
+        
+        // 🆕 Fetch detailed stake info
+        try {
+          const stakeInfo = await (await contract).getStakeCompleteInfo(signer._address || signer.address, index);
+          // stakeInfo returns: staked, aprPercent, currentEarnings, dailyReward, monthlyReward, yearlyReward, daysStaked, canWithdraw, isWithdrawn
+          console.log("📊 Complete Stake Info:", stakeInfo);
+          
+          setDaysStaked(stakeInfo.daysStaked?.toNumber ? stakeInfo.daysStaked.toNumber() : Number(stakeInfo.daysStaked || 0));
+          
+          // Calculate daily/monthly/yearly rewards
+          const daily = parseFloat(formatEther(stakeInfo.dailyReward || 0));
+          const monthly = parseFloat(formatEther(stakeInfo.monthlyReward || 0));
+          const yearly = parseFloat(formatEther(stakeInfo.yearlyReward || 0));
+          
+          setDailyReward(daily);
+          setMonthlyReward(monthly);
+          setYearlyReward(yearly);
+        } catch(err) {
+          console.warn("⚠️ Could not fetch complete stake info:", err.message);
+        }
+        
+        // 🆕 Calculate total lock days
+        const lockSeconds = stake.lockPeriod?.toNumber ? stake.lockPeriod.toNumber() : Number(stake.lockPeriod || cooldown);
+        const lockDays = Math.floor(lockSeconds / (24 * 60 * 60));
+        setTotalLockDays(lockDays);
+        
       } catch (_) {
         setHasClaimReward(false);
       }
     })();
-  }, [signer]);
+  }, [signer, index, stake, cooldown]);
 
   useEffect(() => {
     if (!stake.locked || !stake.apr) return;
@@ -321,6 +355,188 @@ const StakingCard = ({ stake, index, signer, tgeDate, cooldown }) => {
           <div className={styles.countdownBox}>
             <span className={styles.countdownLabel}>Unlocks in</span>
             <span className={styles.countdownValue}>{formatTimeLeft(cooldownRemaining)}</span>
+          </div>
+        )}
+        
+        {/* 🆕 DAYS STAKED PROGRESS BAR */}
+        {!stake.withdrawn && totalLockDays > 0 && (
+          <div style={{
+            background: 'rgba(0, 255, 163, 0.05)',
+            border: '1px solid rgba(0, 255, 163, 0.2)',
+            borderRadius: '8px',
+            padding: '10px 12px',
+            marginTop: '8px'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+              <span style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.7)', fontWeight: '600' }}>
+                ⏱️ Staking Progress
+              </span>
+              <span style={{ fontSize: '0.75rem', color: '#00FFA3', fontWeight: '700' }}>
+                {daysStaked}/{totalLockDays} days
+              </span>
+            </div>
+            <div style={{
+              width: '100%',
+              height: '6px',
+              background: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: '3px',
+              overflow: 'hidden',
+              position: 'relative'
+            }}>
+              <div style={{
+                width: `${Math.min((daysStaked / totalLockDays) * 100, 100)}%`,
+                height: '100%',
+                background: 'linear-gradient(90deg, #00FFA3, #DC1FFF)',
+                borderRadius: '3px',
+                transition: 'width 0.5s ease',
+                boxShadow: '0 0 10px rgba(0, 255, 163, 0.5)'
+              }} />
+            </div>
+            <div style={{ fontSize: '0.7rem', color: 'rgba(255, 255, 255, 0.5)', marginTop: '4px', textAlign: 'center' }}>
+              {Math.min(Math.round((daysStaked / totalLockDays) * 100), 100)}% completed
+            </div>
+          </div>
+        )}
+
+        {/* 🆕 UNSTAKE FEE WARNING (when locked) */}
+        {!canWithdraw && !stake.withdrawn && unstakeFeePct !== null && cooldownRemaining > 0 && (
+          <div style={{
+            background: 'rgba(255, 165, 0, 0.1)',
+            border: '1px solid rgba(255, 165, 0, 0.4)',
+            borderRadius: '8px',
+            padding: '10px 12px',
+            marginTop: '8px',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '8px'
+          }}>
+            <span style={{ fontSize: '1.2rem' }}>⚠️</span>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: '700', color: '#FFA500', marginBottom: '4px' }}>
+                Early Unstake Fee
+              </div>
+              <div style={{ fontSize: '0.7rem', color: 'rgba(255, 165, 0, 0.9)', lineHeight: '1.3' }}>
+                Withdrawing before unlock applies a <strong>{unstakeFeePct.toFixed(2)}%</strong> penalty.
+                You'll receive ≈ <strong>{(parseFloat(formatEther(stake.locked)) * (1 - unstakeFeePct/100)).toFixed(2)}</strong> $BITS.
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* 🆕 APR BREAKDOWN Toggle */}
+        {!stake.withdrawn && (
+          <button
+            onClick={() => setShowAPRBreakdown(!showAPRBreakdown)}
+            style={{
+              width: '100%',
+              marginTop: '8px',
+              background: 'transparent',
+              border: '1px solid rgba(0, 255, 163, 0.3)',
+              borderRadius: '8px',
+              padding: '8px',
+              color: '#00FFA3',
+              fontSize: '0.75rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.background = 'rgba(0, 255, 163, 0.1)';
+              e.target.style.borderColor = 'rgba(0, 255, 163, 0.5)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = 'transparent';
+              e.target.style.borderColor = 'rgba(0, 255, 163, 0.3)';
+            }}
+          >
+            <span>📊 APR Breakdown</span>
+            <span style={{ fontSize: '0.8rem' }}>{showAPRBreakdown ? '▲' : '▼'}</span>
+          </button>
+        )}
+        
+        {/* 🆕 APR BREAKDOWN Details */}
+        {showAPRBreakdown && !stake.withdrawn && (
+          <div style={{
+            background: 'rgba(0, 255, 163, 0.05)',
+            border: '1px solid rgba(0, 255, 163, 0.2)',
+            borderRadius: '8px',
+            padding: '12px',
+            marginTop: '8px',
+            fontSize: '0.75rem'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+              <span style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Base APR:</span>
+              <span style={{ color: '#fff', fontWeight: '600' }}>{aprPercentDisplayFrom1e18(stake.apr, 2)}</span>
+            </div>
+            <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '6px', marginTop: '6px' }}>
+              <div style={{ fontSize: '0.7rem', color: 'rgba(255, 255, 255, 0.5)', fontStyle: 'italic' }}>
+                💡 Tier & Lock bonuses may apply based on stake amount and lock period
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* 🆕 PROJECTIONS Toggle */}
+        {!stake.withdrawn && (dailyReward > 0 || monthlyReward > 0 || yearlyReward > 0) && (
+          <button
+            onClick={() => setShowProjections(!showProjections)}
+            style={{
+              width: '100%',
+              marginTop: '8px',
+              background: 'transparent',
+              border: '1px solid rgba(220, 31, 255, 0.3)',
+              borderRadius: '8px',
+              padding: '8px',
+              color: '#DC1FFF',
+              fontSize: '0.75rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.background = 'rgba(220, 31, 255, 0.1)';
+              e.target.style.borderColor = 'rgba(220, 31, 255, 0.5)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = 'transparent';
+              e.target.style.borderColor = 'rgba(220, 31, 255, 0.3)';
+            }}
+          >
+            <span>📈 Reward Projections</span>
+            <span style={{ fontSize: '0.8rem' }}>{showProjections ? '▲' : '▼'}</span>
+          </button>
+        )}
+        
+        {/* 🆕 PROJECTIONS Details */}
+        {showProjections && !stake.withdrawn && (
+          <div style={{
+            background: 'rgba(220, 31, 255, 0.05)',
+            border: '1px solid rgba(220, 31, 255, 0.2)',
+            borderRadius: '8px',
+            padding: '12px',
+            marginTop: '8px',
+            fontSize: '0.75rem'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+              <span style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Daily:</span>
+              <span style={{ color: '#00FFA3', fontWeight: '700' }}>+{dailyReward.toFixed(4)} $BITS</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+              <span style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Monthly:</span>
+              <span style={{ color: '#00FFA3', fontWeight: '700' }}>+{monthlyReward.toFixed(2)} $BITS</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Yearly:</span>
+              <span style={{ color: '#DC1FFF', fontWeight: '700' }}>+{yearlyReward.toFixed(2)} $BITS</span>
+            </div>
           </div>
         )}
 

@@ -1,43 +1,164 @@
+/* ============================================
+   PRESALE TIMER BOX - AI SOLANA STYLE
+   Container for the timer component
+   ============================================ */
+
 .timerBox {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 18px;
+  /* Container - Solana glass effect */
+  background: linear-gradient(
+    165deg,
+    rgba(153, 69, 255, 0.05) 0%,
+    rgba(10, 10, 15, 0.85) 50%,
+    rgba(20, 241, 149, 0.05) 100%
+  );
+  border-radius: 20px;
   padding: 1.5rem;
-  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
-  box-shadow: 0 0 30px rgba(0, 255, 255, 0.08);
+  
+  /* Solana border */
+  border: 1px solid rgba(20, 241, 149, 0.2);
+  
+  /* Glow shadow */
+  box-shadow:
+    0 0 25px rgba(20, 241, 149, 0.1),
+    0 0 50px rgba(153, 69, 255, 0.06),
+    0 4px 20px rgba(0, 0, 0, 0.2);
+  
   text-align: center;
-  border: 1px solid rgba(0, 255, 255, 0.15);
   max-width: 400px;
   margin: 1rem auto;
-  animation: fadeIn 0.5s ease-out;
-}
-
-.subtitle {
-  font-size: 1.2rem;
-  margin-bottom: 0.8rem;
-  color: #00f0ff;
-  text-shadow: 0 0 6px #00f0ff66;
-  font-family: 'system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif', sans-serif;
-}
-
-.presaleButton {
-  display: inline-block;
-  margin-top: 1.2rem;
-  padding: 0.6rem 1.2rem;
-  background: linear-gradient(90deg, #00f0ff, #0077ff);
-  color: #000;
-  font-weight: bold;
-  border-radius: 8px;
-  text-decoration: none;
-  box-shadow: 0 0 8px #00eaffaa;
+  
+  /* Smooth entrance */
+  animation: fadeInSolana 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  
+  /* Interaction */
   transition: all 0.3s ease;
 }
 
-.presaleButton:hover {
-  box-shadow: 0 0 16px #00f0ffdd;
-  transform: scale(1.05);
+.timerBox:hover {
+  transform: translateY(-3px);
+  border-color: rgba(20, 241, 149, 0.35);
+  box-shadow:
+    0 0 40px rgba(20, 241, 149, 0.15),
+    0 0 70px rgba(153, 69, 255, 0.1),
+    0 8px 30px rgba(0, 0, 0, 0.3);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Subtitle */
+.subtitle {
+  font-family: 'Orbitron', 'Rajdhani', 'Exo 2', 'Inter', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.8rem;
+  
+  /* Solana gradient */
+  background: linear-gradient(
+    135deg,
+    #14F195 0%,
+    #00D4FF 50%,
+    #9945FF 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+  /* Glow */
+  filter: drop-shadow(0 0 6px rgba(20, 241, 149, 0.4));
+}
+
+/* CTA Button */
+.presaleButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 1.2rem;
+  padding: 0.75rem 1.5rem;
+  
+  /* Solana gradient */
+  background: linear-gradient(
+    135deg,
+    #14F195 0%,
+    #00D4FF 100%
+  );
+  
+  color: #000000;
+  font-family: 'Orbitron', 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  
+  border: none;
+  border-radius: 12px;
+  text-decoration: none;
+  cursor: pointer;
+  
+  /* Glow shadow */
+  box-shadow:
+    0 0 20px rgba(20, 241, 149, 0.3),
+    0 4px 15px rgba(0, 212, 255, 0.2);
+  
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.presaleButton:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow:
+    0 0 35px rgba(20, 241, 149, 0.4),
+    0 8px 25px rgba(0, 212, 255, 0.3);
+  background: linear-gradient(
+    135deg,
+    #1FFF9E 0%,
+    #00E5FF 100%
+  );
+}
+
+.presaleButton:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes fadeInSolana {
+  from { 
+    opacity: 0; 
+    transform: translateY(15px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 480px) {
+  .timerBox {
+    padding: 1.2rem 1rem;
+    border-radius: 16px;
+    max-width: 95vw;
+  }
+  
+  .subtitle {
+    font-size: 1.05rem;
+  }
+  
+  .presaleButton {
+    padding: 0.65rem 1.3rem;
+    font-size: 0.88rem;
+    border-radius: 10px;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .timerBox,
+  .presaleButton {
+    animation: none;
+    transition: none;
+  }
 }

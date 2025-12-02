@@ -26,7 +26,6 @@ const UserDeviceInfo = ({ className = '' }) => {
     gpu: null,
     touch: '...',
     isp: '...',
-    language: '...', // 🌐 Language
     devicePrice: 'Estimating...', // 🚨 Preț estimat device
     deviceName: 'Detecting...' // 🚨 Nume device
   });
@@ -65,10 +64,10 @@ const UserDeviceInfo = ({ className = '' }) => {
 
   const getOS = () => {
     const ua = navigator.userAgent;
+    if (ua.includes('Android')) return 'Android'; // 🚨 Android PRIMUL (conține și cuvântul Linux)
     if (ua.includes('Win')) return 'Windows';
     if (ua.includes('Mac')) return 'macOS';
     if (ua.includes('Linux')) return 'Linux';
-    if (ua.includes('Android')) return 'Android';
     if (ua.includes('iOS')) return 'iOS';
     return 'Unknown';
   };
@@ -126,24 +125,26 @@ const UserDeviceInfo = ({ className = '' }) => {
       return 'Samsung';
     }
     
-    // Other Android brands
-    if (ua.includes('pixel')) return 'Google Pixel';
-    if (ua.includes('oneplus')) return 'OnePlus';
-    if (ua.includes('xiaomi') || ua.includes('redmi')) return 'Xiaomi';
-    if (ua.includes('huawei')) return 'Huawei';
-    if (ua.includes('oppo')) return 'Oppo';
-    if (ua.includes('vivo')) return 'Vivo';
+    // Other Android brands (moved UP due to Linux conflict)
+    if (ua.includes('android')) {
+        if (ua.includes('pixel')) return 'Google Pixel';
+        if (ua.includes('oneplus')) return 'OnePlus';
+        if (ua.includes('xiaomi') || ua.includes('redmi')) return 'Xiaomi';
+        if (ua.includes('huawei')) return 'Huawei';
+        if (ua.includes('oppo')) return 'Oppo';
+        if (ua.includes('vivo')) return 'Vivo';
+        return 'Android Device';
+    }
     
     // Desktop/Laptop generic
     if (ua.includes('windows')) {
       const cores = navigator.hardwareConcurrency || 0;
       const ram = navigator.deviceMemory || 0;
-      if (cores >= 8 || ram >= 16) return 'Windows Workstation';
+      if (cores >= 8 || ram >= 16) return 'Windows High-End PC'; // Workstation suna prea tehnic
       return 'Windows PC';
     }
     
-    if (ua.includes('linux')) return 'Linux PC';
-    if (ua.includes('android')) return 'Android Device';
+    if (ua.includes('linux')) return 'Linux Desktop'; // Specific Desktop
     
     return 'Unknown Device';
   };
@@ -185,16 +186,32 @@ const UserDeviceInfo = ({ className = '' }) => {
       return '$400 - $1,000'; // Samsung generic
     }
     
-    // Android High-End (based on specs)
+    // Android Analysis (More accurate tiers)
     if (ua.includes('android')) {
-      const ram = navigator.deviceMemory || 4;
-      const width = window.screen.width;
+      const ram = navigator.deviceMemory || 2; // Default to 2GB if unknown to be safe
       const pixelRatio = window.devicePixelRatio || 1;
       
-      if (ram >= 8 && pixelRatio >= 3) return '$700 - $1,200'; // Flagship
-      if (ram >= 6 && pixelRatio >= 2.5) return '$500 - $900'; // Upper mid-range
-      if (ram >= 4) return '$300 - $600'; // Mid-range
-      return '$150 - $400'; // Budget
+      // Ultra Flagship (12GB+ RAM usually reported as 8, High DPI)
+      if (ram >= 8 && pixelRatio >= 3.5) return '$800 - $1,400';
+      
+      // Flagship (8GB RAM)
+      if (ram >= 8) return '$500 - $900';
+      
+      // Upper Mid-Range (6GB RAM)
+      if (ram >= 6) return '$300 - $550';
+      
+      // Mid-Range vs Budget (The 4GB battleground)
+      if (ram >= 4) {
+         // High density screen usually means better processor/build
+         if (pixelRatio >= 3.0) return '$200 - $400'; 
+         // Standard screen (common in $100-$200 phones)
+         return '$100 - $250';
+      }
+      
+      // Entry Level / Old
+      if (ram >= 2) return '$50 - $150';
+      
+      return '$40 - $120';
     }
     
     // Windows Desktop/Laptop
@@ -371,12 +388,6 @@ const UserDeviceInfo = ({ className = '' }) => {
             </div>
 
             <div className="info-item">
-              <i className="fas fa-language"></i>
-              <span className="info-label">Language</span>
-              <span className="info-value">{info.language}</span>
-            </div>
-
-            <div className="info-item">
               <i className="fas fa-map-marker-alt"></i>
               <span className="info-label">Location (GPS)</span>
               <span 
@@ -410,12 +421,12 @@ const UserDeviceInfo = ({ className = '' }) => {
               <span className="info-label">Wallets</span>
               <span className="info-value">
                 {info.wallets.length > 0 ? (
-                  <div style={{display: 'flex', gap: '4px', alignItems: 'center'}}>
+                  <div style={{display: 'flex', gap: '4px', alignItems: 'center', flexDirection: 'column'}}>
                     {info.wallets.map(w => {
                       if (w === 'MetaMask') return <img key={w} src={metamaskLogo} alt="MM" style={{width: '16px', height: '16px'}} />;
                       if (w === 'Phantom') return <img key={w} src={phantomLogo} alt="PH" style={{width: '16px', height: '16px'}} />;
                       if (w === 'Coinbase') return <img key={w} src={coinbaseLogo} alt="CB" style={{width: '16px', height: '16px'}} />;
-                      return <span key={w} style={{fontSize: '10px'}}>{w}</span>;
+                      return <span key={w} style={{fontSize: '8px'}}>{w}</span>;
                     })}
                   </div>
                 ) : 'None'}

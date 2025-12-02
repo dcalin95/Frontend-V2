@@ -132,26 +132,61 @@
 /* Mobile responsive */
 @media (max-width: 768px) {
   .pwa-install-prompt {
-    bottom: 10px;
-    padding: 15px;
-    max-width: 350px;
+    bottom: 100px !important; /* Deasupra footer-ului și butonului AI */
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    padding: 12px !important;
+    max-width: calc(100vw - 20px) !important;
+    width: calc(100vw - 20px) !important;
+    z-index: 15000 !important; /* Deasupra tuturor componentelor */
+    box-sizing: border-box !important;
+  }
+  
+  .pwa-install-content {
+    gap: 10px;
   }
   
   .pwa-install-text h3 {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
   
   .pwa-install-text p {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
   
   .pwa-install-actions {
-    flex-direction: column;
+    flex-direction: row;
+    gap: 8px;
   }
   
   .pwa-install-btn,
   .pwa-dismiss-btn {
-    width: 100%;
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Ecrane foarte mici */
+@media (max-width: 380px) {
+  .pwa-install-prompt {
+    bottom: 90px !important;
+    padding: 10px !important;
+  }
+  
+  .pwa-install-text h3 {
+    font-size: 0.9rem;
+  }
+  
+  .pwa-install-text p {
+    font-size: 0.7rem;
+  }
+  
+  .pwa-install-btn,
+  .pwa-dismiss-btn {
+    padding: 8px 10px;
+    font-size: 0.75rem;
   }
 }
 

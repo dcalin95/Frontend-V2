@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useWallet as useSolanaWalletAdapter } from '@solana/wallet-adapter-react';
 import { useWallet } from '../context/UnifiedWalletContext';
-import { prepareForConnection, forceDisconnectAll, handleConnectionError } from '../utils/walletConnectionFix';
+import { prepareForConnection, handleConnectionError } from '../utils/walletConnectionFix';
 import walletConnectLogo from '../assets/icons/wallet-connect-logo.png'; 
 import evmIcon from '../assets/icons/evm-logo.jpg'; // Import EVM logo
 import solanaIcon from '../assets/icons/solana-logo.png'; // Import Solana logo
@@ -11,12 +11,11 @@ import './UnifiedWalletModal.css';
 import './UnifiedWalletModal.mobile.css';
 
 const UnifiedWalletModal = () => {
-  const { showWalletModal, setShowWalletModal } = useWallet();
+  const { showWalletModal, setShowWalletModal, hardReset } = useWallet(); // Get hardReset
   const { open: openEvmModal } = useWeb3Modal();
   const { select: selectSolanaWallet, wallets: solanaWallets } = useSolanaWalletAdapter();
   
   const [selectedNetwork, setSelectedNetwork] = useState(null); // "EVM" | "SOLANA" | null
-  const [isClearing, setIsClearing] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false); // ⏳ New connecting state
   const [error, setError] = useState(null);
 
@@ -39,8 +38,15 @@ const UnifiedWalletModal = () => {
       
       // Short delay to ensure UI updates
       await new Promise(resolve => setTimeout(resolve, 300));
-
+      
       setShowWalletModal(false);
+
+      // 📱 MOBILE OPTIMIZATION: If inside MetaMask/Trust/Coinbase app, auto-select injected
+      if (window.ethereum && (window.ethereum.isMetaMask || window.ethereum.isTrust || window.ethereum.isCoinbaseWallet)) {
+          console.log("📱 Detected In-App Browser - connecting directly via Web3Modal default...");
+          // Web3Modal handles this automatically usually, but let's ensure smooth transition
+      }
+
       await openEvmModal();
     } catch (err) {
       console.error('[WalletModal] EVM connection error:', err);
@@ -92,7 +98,7 @@ const UnifiedWalletModal = () => {
             <p>Initializing connection...</p>
           </div>
         )}
-
+        
         {!selectedNetwork ? (
           // Step 1: Network Selection
           <>
@@ -215,60 +221,32 @@ const UnifiedWalletModal = () => {
 
         {/* 🔧 Clear Cache & Retry Button */}
         <button
-          onClick={async () => {
-            setIsClearing(true);
-            setError(null);
-            
-            try {
-              await forceDisconnectAll();
-              await new Promise(resolve => setTimeout(resolve, 500));
-              
-              // Retry based on selected network
-              if (selectedNetwork === 'EVM') {
-                await handleEvmConnect();
-              } else if (!selectedNetwork) {
-                // If on main screen, just clear
-                setError(null);
-              }
-            } catch (err) {
-              console.error('[WalletModal] Clear & retry error:', err);
-              setError('Still unable to connect. Please refresh the page and try again.');
-            } finally {
-              setIsClearing(false);
-            }
-          }}
-          disabled={isClearing}
+          onClick={hardReset} // Use HARD RESET
           className="clear-cache-btn"
           style={{
             width: '100%',
             marginTop: '16px',
             padding: '12px',
-            background: 'rgba(255, 200, 100, 0.1)',
-            border: '1px solid rgba(255, 200, 100, 0.3)',
-            borderRadius: '8px',
-            color: '#ffc864',
+            background: 'rgba(255, 50, 50, 0.15)',
+            border: '1px solid rgba(255, 50, 50, 0.4)',
+            borderRadius: '12px',
+            color: '#ff6464',
             fontSize: '0.9rem',
-            cursor: isClearing ? 'wait' : 'pointer',
+            cursor: 'pointer',
             transition: 'all 0.2s ease',
-            fontWeight: '600'
-          }}
-          onMouseEnter={(e) => {
-            if (!isClearing) {
-              e.target.style.background = 'rgba(255, 200, 100, 0.2)';
-              e.target.style.borderColor = 'rgba(255, 200, 100, 0.5)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.background = 'rgba(255, 200, 100, 0.1)';
-            e.target.style.borderColor = 'rgba(255, 200, 100, 0.3)';
+            fontWeight: '700',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px'
           }}
         >
-          {isClearing ? '🔄 Clearing cache...' : '🔧 Clear Cache & Retry Connection'}
+          🧨 Resetare Totală Conexiune (Fix)
         </button>
 
         {/* Info text */}
-        <p style={{fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', marginTop: '12px', textAlign: 'center'}}>
-          💡 Having connection issues? Click "Clear Cache & Retry" above
+        <p style={{fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', marginTop: '12px', textAlign: 'center', lineHeight: '1.4'}}>
+          Dacă primești eroarea "Request Pending" sau nu te poți conecta, apasă butonul roșu de mai sus.
         </p>
       </div>
     </div>

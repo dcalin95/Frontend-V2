@@ -1546,42 +1546,75 @@ button[class*="wallet"]:active {
     }
   }
 
-  /* SIDEBAR MENU - Se deschide MAI JOS de butonul hamburger */
+  /* SIDEBAR MENU - FLOATING STYLE - FĂRĂ CONTAINER */
   .sidebar {
     position: fixed !important;
-    top: 130px !important;
-    left: -220px !important;
-    width: 180px !important;
-    max-height: calc(100vh - 140px) !important;
+    top: 160px !important;
+    left: -250px !important;
+    width: auto !important;
+    max-width: 220px !important;
     height: auto !important;
-    overflow-y: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
     z-index: 12000 !important;
-    background: rgba(0, 0, 0, 0.98) !important;
-    backdrop-filter: blur(30px) !important;
-    -webkit-backdrop-filter: blur(30px) !important;
-    border: 1px solid rgba(20, 241, 149, 0.3) !important;
-    border-radius: 0 16px 16px 0 !important;
-    padding: 12px 8px !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.9) !important;
-    transition: left 0.3s ease !important;
+    
+    /* COMPLET TRANSPARENT - FĂRĂ CONTAINER */
+    background: transparent !important;
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    
+    transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
     display: flex !important;
     flex-direction: column !important;
   }
 
   .sidebar.open {
-    left: 0 !important;
+    left: 8px !important;
+    
+    /* COMPLET TRANSPARENT - FĂRĂ CONTAINER */
+    background: transparent !important;
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    border: none !important;
   }
 
   .sidebar ul {
     display: flex !important;
     flex-direction: column !important;
-    gap: 3px !important;
+    gap: 5px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    list-style: none !important;
+    background: transparent !important;
   }
 
   .sidebar button,
   .sidebar a {
-    font-size: 0.8rem !important;
-    padding: 8px 10px !important;
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    padding: 10px 14px !important;
+    margin: 4px 0 !important;
+    
+    /* FUNDAL NEGRU COMPLET */
+    background: #000000 !important;
+    background-color: #000000 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    
+    /* Border și glow */
+    border: 2px solid currentColor !important;
+    border-radius: 12px !important;
+    box-shadow: 0 0 10px currentColor !important;
+    text-shadow: 0 0 8px currentColor !important;
     margin: 0 !important;
     white-space: nowrap !important;
     overflow: hidden !important;

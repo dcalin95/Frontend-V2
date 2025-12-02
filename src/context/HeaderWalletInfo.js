@@ -193,23 +193,36 @@ const HeaderWalletInfo = () => {
       <UnifiedWalletModal />
       <div className={`wallet-toggle-wrapper ${showWalletBox ? "open" : "closed"}`}>
       {!showWalletBox && (
-        <button className="wallet-toggle-btn" onClick={() => setShowWalletBox(true)}>
-          {/* ANIMATED MONEY SVG - SOLANA GRADIENT */}
-          <svg className="money-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <button className="wallet-toggle-btn-minimal" onClick={() => setShowWalletBox(true)} aria-label="Open Wallet">
+          {/* 100% SHARP WALLET SVG - NO BLUR */}
+          <svg className="wallet-svg-animated" width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <linearGradient id="solanaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#14f195" />
-                <stop offset="100%" stopColor="#9945ff" />
+              <linearGradient id="walletGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#14F195"/>
+                <stop offset="50%" stopColor="#00D4FF"/>
+                <stop offset="100%" stopColor="#9945FF"/>
+              </linearGradient>
+              <linearGradient id="coinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#FFD700"/>
+                <stop offset="100%" stopColor="#FFA500"/>
               </linearGradient>
             </defs>
-            <rect x="2" y="6" width="20" height="12" rx="2" stroke="url(#solanaGradient)" strokeWidth="2"/>
-            <circle className="coin-pulse" cx="12" cy="12" r="3" stroke="url(#solanaGradient)" strokeWidth="2" fill="none"/>
-            <text x="12" y="14.5" textAnchor="middle" fontSize="9" fontWeight="bold" fill="url(#solanaGradient)">$</text>
-            <path className="spark spark-1" d="M6 4L7 2" stroke="#14f195" strokeWidth="1.5" strokeLinecap="round"/>
-            <path className="spark spark-2" d="M18 4L17 2" stroke="#9945ff" strokeWidth="1.5" strokeLinecap="round"/>
-            <path className="spark spark-3" d="M6 20L7 22" stroke="#14f195" strokeWidth="1.5" strokeLinecap="round"/>
+            
+            {/* Wallet Body */}
+            <rect x="6" y="12" width="40" height="28" rx="4" fill="none" stroke="url(#walletGrad)" strokeWidth="2.5"/>
+            
+            {/* Wallet Top Flap */}
+            <path d="M6 16C6 13.79 7.79 12 10 12H42C44.21 12 46 13.79 46 16V18H6V16Z" fill="url(#walletGrad)"/>
+            
+            {/* Card Lines */}
+            <rect x="10" y="22" width="16" height="2" rx="1" fill="#00D4FF"/>
+            <rect x="10" y="27" width="12" height="2" rx="1" fill="#9945FF"/>
+            <rect x="10" y="32" width="8" height="2" rx="1" fill="#14F195"/>
+            
+            {/* Bitcoin Coin */}
+            <circle cx="38" cy="28" r="8" fill="none" stroke="url(#coinGrad)" strokeWidth="2"/>
+            <text x="38" y="32" fontSize="10" fontWeight="bold" fill="#FFD700" textAnchor="middle" fontFamily="Arial">₿</text>
           </svg>
-          Wallet
         </button>
       )}
 

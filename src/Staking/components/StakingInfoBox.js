@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react"; // Added useCallback
 import "../styles/StakingInfoBox.css";
+import "../styles/StakingInfoBox.mobile.css"; // 🆕 Import Mobile CSS
 import { getStakingContract } from "../../contract/getStakingContract";
 import { getContractInstance } from "../../contract/getContract";
 import WalletContext from "../../context/WalletContext";
@@ -185,15 +186,10 @@ const StakingInfoBox = ({ stakes = [] }) => {
       <div className="info-grid">
         <div className="info-item">
           <span className="info-label">Rewards</span>
-          <span className="info-value">Continuous earning available</span>
+          <span className="info-value" style={{color: '#00FFA3'}}>Continuous earning</span>
         </div>
         
-        <div className="info-item">
-          <span className="info-label">Cooldown Period</span>
-          <span className="info-value">
-            {cooldownDisplay}
-          </span>
-        </div>
+        {/* Cooldown Removed */}
         
         <div className="info-item">
           <span className="info-label">Unstake Fee</span>

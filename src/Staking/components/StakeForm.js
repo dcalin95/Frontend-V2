@@ -8,6 +8,7 @@ import WalletContext from "../../context/WalletContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/StakeForm.css";
+import "../styles/StakeForm.mobile.css"; // 🆕 Import Mobile CSS
 import useBitsPrice from "../../Presale/prices/useBitsPrice";
 import successSfx from "../../assets/sounds/success.mp3";
 

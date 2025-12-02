@@ -77,23 +77,25 @@
 
   @media (max-width: 360px) { .mobile-nav-menu { grid-template-columns: 1fr; } }
 
-  /* === FORCED OVERRIDE FOR MOBILE BUTTONS - MAXIMIZED TEXT === */
+  /* === FORCED OVERRIDE FOR MOBILE BUTTONS - FUNDAL NEGRU COMPLET === */
   .mobile-nav-menu a,
   .mobile-nav-menu button {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 4px !important; /* GAP MIC */
-    padding: 0 2px !important; /* PADDING MINIM */
-    border-radius: 6px !important;
-    background: rgba(10, 18, 22, 0.9) !important;
-    border: 1px solid rgba(20, 241, 149, 0.3) !important;
+    gap: 4px !important;
+    padding: 8px 12px !important;
+    border-radius: 10px !important;
+    background: #000000 !important;
+    background-color: #000000 !important;
+    border: 2px solid currentColor !important;
     color: #ffffff !important;
     text-decoration: none !important;
     width: 100% !important;
-    min-height: 26px !important;
+    min-height: 40px !important;
     height: auto !important;
-    box-shadow: none !important;
+    box-shadow: 0 0 10px currentColor !important;
+    text-shadow: 0 0 8px currentColor !important;
   }
 
   /* 🔧 FIX: Ensure special buttons on mobile have visible text by overriding gradient text fill if needed */
@@ -168,100 +170,154 @@
 
   .mobile-nav-menu a:hover,
   .mobile-nav-menu button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 14px rgba(0, 255, 180, 0.16), inset 0 0 12px rgba(20, 241, 149, 0.1);
-    border-color: rgba(20, 241, 149, 0.45);
-    background: rgba(20, 241, 149, 0.12) !important;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 0 15px currentColor !important;
+    background: #000000 !important;
+  }
+  
+  .mobile-nav-menu a:active,
+  .mobile-nav-menu button:active {
+    transform: scale(0.98);
+    background: rgba(20, 241, 149, 0.1) !important;
   }
 
-  /* Presale - Green Neon */
+  /* Presale - Green */
   .mobile-nav-menu a.mobile-btn-presale {
-    border-color: rgba(20, 241, 149, 0.6) !important;
+    border-color: #14f195 !important;
     color: #14f195 !important;
-    box-shadow: 0 0 8px rgba(20, 241, 149, 0.16);
-  }
-  .mobile-nav-menu a.mobile-btn-presale:hover {
-    background: rgba(20, 241, 149, 0.18) !important;
-    box-shadow: 0 0 20px rgba(20, 241, 149, 0.3);
+    box-shadow: 0 0 12px rgba(20, 241, 149, 0.5) !important;
+    text-shadow: 0 0 8px rgba(20, 241, 149, 0.8) !important;
   }
 
-  /* Staking - Purple Neon */
+  /* Staking - Purple */
   .mobile-nav-menu a.mobile-btn-staking {
-    border-color: rgba(153, 69, 255, 0.55) !important;
-    color: #b47bff !important;
-    box-shadow: 0 0 8px rgba(153, 69, 255, 0.16);
-  }
-  .mobile-nav-menu a.mobile-btn-staking:hover {
-    background: rgba(153, 69, 255, 0.18) !important;
-    box-shadow: 0 0 20px rgba(153, 69, 255, 0.3);
+    border-color: #9945ff !important;
+    color: #9945ff !important;
+    box-shadow: 0 0 12px rgba(153, 69, 255, 0.5) !important;
+    text-shadow: 0 0 8px rgba(153, 69, 255, 0.8) !important;
   }
 
-  /* Smart Staking - Pink/Magenta */
+  /* Smart Staking - Magenta */
   .mobile-nav-menu a.mobile-btn-smart {
-    border-color: rgba(255, 0, 255, 0.5) !important;
-    color: #ff63ff !important;
+    border-color: #ff00ff !important;
+    color: #ff00ff !important;
+    box-shadow: 0 0 12px rgba(255, 0, 255, 0.5) !important;
+    text-shadow: 0 0 8px rgba(255, 0, 255, 0.8) !important;
   }
 
   /* Orbit/Home - Cyan */
   .mobile-nav-menu a.mobile-btn-orbit,
   .mobile-nav-menu a.mobile-btn-home {
-    border-color: rgba(0, 255, 255, 0.5) !important;
-    color: #8bf4ff !important;
+    border-color: #00ffff !important;
+    color: #00ffff !important;
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.5) !important;
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.8) !important;
   }
 
   /* Paper Trading - Orange */
   .mobile-nav-menu a.mobile-btn-paper {
-    border-color: rgba(255, 153, 0, 0.55) !important;
-    color: #ffc37a !important;
+    border-color: #ff9900 !important;
+    color: #ff9900 !important;
+    box-shadow: 0 0 12px rgba(255, 153, 0, 0.5) !important;
+    text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important;
   }
 
   /* Analytics - Blue */
   .mobile-nav-menu a.mobile-btn-analytics {
-    border-color: rgba(0, 204, 255, 0.52) !important;
-    color: #8be4ff !important;
+    border-color: #00ccff !important;
+    color: #00ccff !important;
+    box-shadow: 0 0 12px rgba(0, 204, 255, 0.5) !important;
+    text-shadow: 0 0 8px rgba(0, 204, 255, 0.8) !important;
   }
 
   /* Rewards - Gold */
   .mobile-nav-menu a.mobile-btn-rewards {
-    border-color: rgba(255, 215, 0, 0.55) !important;
-    color: #ffe595 !important;
+    border-color: #ffd700 !important;
+    color: #ffd700 !important;
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.5) !important;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.8) !important;
   }
 
-  /* AI Tools - Deep Purple/Red */
+  /* AI Tools - Red/Pink */
   .mobile-nav-menu button.mobile-btn-ai,
   .mobile-nav-menu a.mobile-btn-ai {
-    border-color: rgba(255, 51, 102, 0.55) !important;
-    color: #ff7f9c !important;
+    border-color: #ff3366 !important;
+    color: #ff3366 !important;
+    box-shadow: 0 0 12px rgba(255, 51, 102, 0.5) !important;
+    text-shadow: 0 0 8px rgba(255, 51, 102, 0.8) !important;
   }
 
-  /* Whitepaper */
+  /* Whitepaper - Light Blue */
   .mobile-nav-menu a.mobile-btn-whitepaper {
-    border-color: rgba(116, 205, 255, 0.5) !important;
-    color: #b8e5ff !important;
+    border-color: #74cdff !important;
+    color: #74cdff !important;
+    box-shadow: 0 0 12px rgba(116, 205, 255, 0.5) !important;
+    text-shadow: 0 0 8px rgba(116, 205, 255, 0.8) !important;
   }
 
-  /* Bitcoin Academy */
+  /* Bitcoin Academy - Bitcoin Orange */
   .mobile-nav-menu a.mobile-btn-bitcoin {
-    border-color: rgba(247, 147, 30, 0.55) !important;
-    color: #ffd29f !important;
+    border-color: #f7931e !important;
+    color: #f7931e !important;
+    box-shadow: 0 0 12px rgba(247, 147, 30, 0.5) !important;
+    text-shadow: 0 0 8px rgba(247, 147, 30, 0.8) !important;
   }
 
-  /* Education */
+  /* Education - Teal */
   .mobile-nav-menu a.mobile-btn-education {
-    border-color: rgba(78, 205, 196, 0.55) !important;
-    color: #b5fff5 !important;
+    border-color: #4ecdc4 !important;
+    color: #4ecdc4 !important;
+    box-shadow: 0 0 12px rgba(78, 205, 196, 0.5) !important;
+    text-shadow: 0 0 8px rgba(78, 205, 196, 0.8) !important;
   }
 
-  /* Contact */
+  /* Contact - Green */
   .mobile-nav-menu a.mobile-btn-contact {
-    border-color: rgba(0, 255, 163, 0.5) !important;
-    color: #adffe4 !important;
+    border-color: #00ffa3 !important;
+    color: #00ffa3 !important;
+    box-shadow: 0 0 12px rgba(0, 255, 163, 0.5) !important;
+    text-shadow: 0 0 8px rgba(0, 255, 163, 0.8) !important;
   }
 
-  /* PoX */
+  /* PoX - Emerald */
   .mobile-nav-menu a.mobile-btn-pox {
-    border-color: rgba(0, 221, 153, 0.55) !important;
-    color: #8cffd8 !important;
+    border-color: #00dd99 !important;
+    color: #00dd99 !important;
+    box-shadow: 0 0 12px rgba(0, 221, 153, 0.5) !important;
+    text-shadow: 0 0 8px rgba(0, 221, 153, 0.8) !important;
+  }
+  
+  /* Login - Green */
+  .mobile-nav-menu a.mobile-btn-login {
+    border-color: #14f195 !important;
+    color: #14f195 !important;
+    box-shadow: 0 0 12px rgba(20, 241, 149, 0.5) !important;
+    text-shadow: 0 0 8px rgba(20, 241, 149, 0.8) !important;
+  }
+  
+  /* Logout - Red */
+  .mobile-nav-menu a.mobile-btn-logout,
+  .mobile-nav-menu button.mobile-btn-logout {
+    border-color: #ff5050 !important;
+    color: #ff5050 !important;
+    box-shadow: 0 0 12px rgba(255, 80, 80, 0.5) !important;
+    text-shadow: 0 0 8px rgba(255, 80, 80, 0.8) !important;
+  }
+  
+  /* AI Hub - Solana Gradient Border */
+  .mobile-nav-menu a.mobile-btn-ai-hub {
+    border-color: #9945ff !important;
+    color: #00ffa3 !important;
+    box-shadow: 0 0 12px rgba(153, 69, 255, 0.5) !important;
+    text-shadow: 0 0 8px rgba(0, 255, 163, 0.8) !important;
+  }
+  
+  /* Neural - Blue/Purple */
+  .mobile-nav-menu a.mobile-btn-neural {
+    border-color: #00d4ff !important;
+    color: #00d4ff !important;
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.5) !important;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.8) !important;
   }
 
   .header { 
@@ -273,7 +329,9 @@
     height: 95px; 
     background: rgba(0, 0, 0, 0.9); 
     gap: 0.5rem; 
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: none;
+    border: none;
+    box-shadow: none;
     transition: all 0.3s ease;
   }
   
@@ -308,52 +366,194 @@
     display: flex !important; 
     flex-direction: row; 
     align-items: center; 
-    justify-content: center; 
+    justify-content: flex-start; /* Aliniere la stânga */
     flex: 1; 
-    gap: 0.3rem; /* Reduced gap to prevent overflow */
+    gap: 0.15rem; /* Gap foarte mic */
     order: 2; 
     min-width: 0; 
-    margin-right: 4px; /* Slight push from edge */
+    margin-right: 0;
+    margin-left: -20px; /* Mai mult spre stânga */
+    padding-right: 3px;
   }
   
+  /* === TIMER - AI SOLANA STYLE (MOBILE) === */
   .header-mini-timer { 
-    font-size: 0.65rem; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
     text-align: center; 
-    line-height: 1.1; 
     
-    /* SOLANA GRAPHIC STYLE */
-    color: #00FFA3;
-    text-shadow: 0 0 8px rgba(0, 255, 163, 0.6), 0 0 15px rgba(0, 255, 163, 0.3);
-    font-family: 'Orbitron', sans-serif;
-    font-weight: 600;
-    
-    flex: 0 0 auto; 
+    /* Layout - mai compact și spre stânga */
+    flex: 0 1 auto; 
     min-width: auto; 
+    max-width: 240px; /* Lățime mai mare pentru sloganuri lungi */
     white-space: nowrap; 
-    overflow: hidden; 
-    text-overflow: ellipsis; 
-    margin-right: 4px; /* Move slightly left from social icons */
+    overflow: visible; 
+    margin-right: 2px;
+    margin-left: -5px; /* Extra stânga */
+    
+    /* Smooth transitions */
+    transition: all 0.3s ease;
   }
   
+  .header-mini-timer:hover {
+    filter: drop-shadow(0 0 6px rgba(20, 241, 149, 0.5));
+  }
+  
+  /* Legacy timer-label support (fallback) */
   .header-mini-timer .timer-label { 
-    display: block; 
-    font-size: 0.55rem; 
-    margin-bottom: 2px; 
-    color: rgba(255, 255, 255, 0.8);
-    text-shadow: none;
-    font-family: 'Inter', sans-serif;
+    display: none; /* Hidden - using PresaleLabel component now */
+  }
+  
+  /* === SLOGAN SUB TIMER - MOBIL - MINIMAL AI STYLE === */
+  .header-mini-timer > div:last-child,
+  .header-mini-timer > a:last-child {
+    margin-top: 4px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    text-decoration: none !important;
+  }
+  
+  .header-mini-timer > a:last-child {
+    text-decoration: none !important;
+    border: none !important;
+    outline: none !important;
+  }
+  
+  .header-mini-timer > div:last-child span,
+  .header-mini-timer > a:last-child span {
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    font-family: 'Orbitron', 'Rajdhani', system-ui, sans-serif !important;
+    letter-spacing: 0.1em !important;
+    padding: 3px 8px !important;
+    white-space: nowrap !important;
+    display: inline-block !important;
+    text-decoration: none !important;
+    
+    /* FĂRĂ CHENAR EVIDENT - doar text gradient */
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    
+    /* SOLANA GRADIENT TEXT - CURAT */
+    background-image: linear-gradient(90deg, #14F195 0%, #00D4FF 35%, #9945FF 70%, #14F195 100%) !important;
+    background-size: 200% 100% !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    color: transparent !important;
+    
+    /* Sharp text */
+    text-shadow: none !important;
+    -webkit-font-smoothing: antialiased !important;
+    text-rendering: geometricPrecision !important;
+    
+    /* Animație gradient flowing */
+    animation: sloganFlowMobile 4s linear infinite !important;
+  }
+  
+  .header-mini-timer > a:last-child:hover span {
+    filter: brightness(1.2);
+    transform: scale(1.02);
+  }
+  
+  @keyframes sloganFlowMobile {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 200% 50%;
+    }
   }
   
   .social { 
     display: flex; 
-    justify-content: center; 
-    gap: 6px; /* Reduced gap between icons */
+    justify-content: flex-end; /* Aliniere la dreapta */
+    align-items: center;
+    gap: 4px; /* Gap mic între iconițe */
     flex: 0 0 auto; 
     order: 3; 
+    margin-left: auto; /* Împinge spre dreapta */
+    flex-shrink: 0; /* Nu permite micșorarea */
   }
-  .social-link { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; }
-  .social-link img { width: 14px; height: 14px; }
+  .social-link { 
+    width: 22px; 
+    height: 22px; 
+    display: grid; 
+    place-items: center; 
+    border-radius: 50%; 
+    background: rgba(255,255,255,0.05); 
+    border: 1px solid rgba(255,255,255,0.1); 
+    transition: all 0.3s;
+    flex-shrink: 0; /* Nu permite micșorarea */
+  }
+  .social-link img { width: 13px; height: 13px; }
   .header-spacer { height: 12vh; }
+}
+
+/* === ECRANE FOARTE MICI (sub 380px) === */
+@media (max-width: 380px) {
+  .right-section.mobile-only {
+    margin-left: -15px !important;
+    gap: 0.15rem !important;
+  }
+  
+  .header-mini-timer {
+    max-width: 170px !important;
+  }
+  
+  /* Slogan mai mic pe ecrane mici */
+  .header-mini-timer > div:last-child span,
+  .header-mini-timer > div:last-child div {
+    font-size: 0.7rem !important;
+    padding: 4px 10px !important;
+    letter-spacing: 0.05em !important;
+  }
+  
+  .social {
+    gap: 3px !important;
+  }
+  
+  .social-link {
+    width: 20px !important;
+    height: 20px !important;
+  }
+  
+  .social-link img {
+    width: 12px !important;
+    height: 12px !important;
+  }
+}
+
+/* === ECRANE FOARTE FOARTE MICI (sub 340px) === */
+@media (max-width: 340px) {
+  .right-section.mobile-only {
+    margin-left: -20px !important;
+  }
+  
+  .header-mini-timer {
+    max-width: 150px !important;
+  }
+  
+  .header-mini-timer > div:last-child span,
+  .header-mini-timer > div:last-child div {
+    font-size: 0.6rem !important;
+    padding: 3px 8px !important;
+  }
+  
+  .social-link {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  
+  .social-link img {
+    width: 11px !important;
+    height: 11px !important;
+  }
 }
 
 /* Fallback global */

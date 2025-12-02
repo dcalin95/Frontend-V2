@@ -1,32 +1,43 @@
-import { useState, useEffect } from 'react';
+import { useState, useLayoutEffect } from 'react';
 
 /**
  * Hook pentru detectarea dispozitivului mobil
- * Returnează true dacă user-ul este pe mobil (width <= 768px)
- * Se actualizează automat la resize
+ * Folosește matchMedia și useLayoutEffect pentru precizie maximă la refresh (zero flicker)
  */
 export const useDeviceDetect = () => {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(max-width: 768px)').matches;
+    }
+    return false;
+  });
 
-  useEffect(() => {
-    const checkDevice = () => {
-      const mobileBreakpoint = 768;
-      const isMobileDevice = window.innerWidth <= mobileBreakpoint;
-      setIsMobile(isMobileDevice);
+  useLayoutEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    
+    const handleChange = (e) => {
+      setIsMobile(e.matches);
     };
 
-    // Check inițial
-    checkDevice();
+    // Setăm valoarea imediat, sincron, înainte de paint
+    setIsMobile(mediaQuery.matches);
 
-    // Listen pentru resize
-    window.addEventListener('resize', checkDevice);
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', handleChange);
+    } else {
+      mediaQuery.addListener(handleChange);
+    }
 
-    // Cleanup
-    return () => window.removeEventListener('resize', checkDevice);
+    return () => {
+      if (mediaQuery.removeEventListener) {
+        mediaQuery.removeEventListener('change', handleChange);
+      } else {
+        mediaQuery.removeListener(handleChange);
+      }
+    };
   }, []);
 
   return isMobile;
 };
 
 export default useDeviceDetect;
-

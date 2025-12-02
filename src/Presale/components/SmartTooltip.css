@@ -1,194 +1,302 @@
-/* 🌌 GEMINI AI PRO - FUTURISTIC TOOLTIP */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Roboto+Mono:wght@400;700&display=swap');
+/* 🌌 SMART TOOLTIP - AI SOLANA STYLE */
+/* Refactored for: Less sensitivity, Mobile responsive, Better readability, Close button */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 .smart-tooltip-container {
   position: fixed;
   z-index: 999999;
-  background: rgba(8, 8, 16, 0.95);
-  color: #f0f4f8;
-  padding: 12px 16px; /* Reduced padding */
-  border-radius: 12px;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.85rem; /* Slightly smaller for compactness */
-  line-height: 1.4; /* Tighter line height */
-  max-width: 340px;
-  min-width: 240px;
+  background: rgba(5, 5, 15, 0.97);
+  color: #e8ecf0;
+  padding: 16px 20px;
+  border-radius: 16px;
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 320px;
+  min-width: 200px;
   width: max-content;
   text-align: left;
-  pointer-events: auto; /* Enable interaction with speaker button */
+  pointer-events: auto;
   
-  /* Gemini-style Border Gradient */
-  border: 1px solid transparent;
+  /* Solana Gradient Border */
+  border: 1.5px solid transparent;
   background-clip: padding-box, border-box;
   background-origin: padding-box, border-box;
   background-image: 
-    linear-gradient(to bottom, rgba(8, 8, 16, 0.98), rgba(15, 15, 30, 0.99)),
-    linear-gradient(135deg, #4facfe 0%, #00f2fe 50%, #a18cd1 100%);
+    linear-gradient(to bottom, rgba(5, 5, 15, 0.98), rgba(10, 10, 25, 0.99)),
+    linear-gradient(135deg, #14F195 0%, #9945FF 50%, #00D4FF 100%);
     
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.6), 
-    0 0 0 1px rgba(255, 255, 255, 0.05),
-    0 0 20px rgba(79, 172, 254, 0.15);
+    0 12px 40px rgba(0, 0, 0, 0.7), 
+    0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 0 30px rgba(20, 241, 149, 0.15),
+    0 0 60px rgba(153, 69, 255, 0.1);
     
-  /* 🚀 Intelligent Animation */
-  animation: tooltipSmartOpen 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  /* Smooth Animation */
+  animation: tooltipFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   
-  backdrop-filter: blur(16px);
-  will-change: transform, opacity;
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  
+  /* Sharp text rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* Gemini Sparkle Icon Placeholder */
+/* Top glow accent */
 .smart-tooltip-container::before {
   content: '';
   position: absolute;
-  top: -1px;
+  top: 0;
   left: 20px;
-  width: 40px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #00f2fe, transparent);
-  box-shadow: 0 0 8px #00f2fe;
-  opacity: 1;
+  right: 20px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #14F195, #9945FF, transparent);
+  opacity: 0.8;
 }
 
-/* Speaker Button */
-.smart-tooltip-speak-btn {
+/* ========== CONTROL BUTTONS (Close + Speaker) ========== */
+.smart-tooltip-controls {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #a0a0a0;
-  cursor: pointer;
-  border-radius: 50%;
-  width: 22px;
-  height: 22px;
+  top: 10px;
+  right: 10px;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  transition: all 0.2s ease;
+  gap: 6px;
   z-index: 10;
 }
 
+.smart-tooltip-close-btn,
+.smart-tooltip-speak-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  border-radius: 8px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.smart-tooltip-close-btn:hover {
+  background: rgba(255, 77, 77, 0.2);
+  color: #ff4d4d;
+  border-color: rgba(255, 77, 77, 0.4);
+  transform: scale(1.1);
+}
+
 .smart-tooltip-speak-btn:hover {
-  background: rgba(0, 255, 163, 0.15);
-  color: #00FFA3;
-  border-color: rgba(0, 255, 163, 0.3);
+  background: rgba(20, 241, 149, 0.15);
+  color: #14F195;
+  border-color: rgba(20, 241, 149, 0.3);
   transform: scale(1.1);
 }
 
 .smart-tooltip-speak-btn.speaking {
-  color: #00FFA3;
-  border-color: #00FFA3;
-  box-shadow: 0 0 8px rgba(0, 255, 163, 0.4);
-  animation: pulseSpeaker 1.5s infinite;
+  color: #14F195;
+  border-color: #14F195;
+  box-shadow: 0 0 12px rgba(20, 241, 149, 0.5);
+  animation: pulseSpeaker 1.2s infinite;
 }
 
 @keyframes pulseSpeaker {
-  0% { box-shadow: 0 0 0 0 rgba(0, 255, 163, 0.4); }
-  70% { box-shadow: 0 0 0 6px rgba(0, 255, 163, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(0, 255, 163, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(20, 241, 149, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(20, 241, 149, 0); }
 }
 
+/* ========== CONTENT STYLING ========== */
 .smart-tooltip-content {
-    padding-right: 20px; /* Make space for speaker button */
+  padding-right: 70px; /* Space for both buttons */
 }
 
 .smart-tooltip-line {
-  margin-bottom: 4px; /* Minimal spacing between lines */
+  margin-bottom: 6px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 400;
 }
 
-/* Title Styling - First line logic */
+.smart-tooltip-line:last-child {
+  margin-bottom: 0;
+}
+
+/* Title - First line */
 .smart-tooltip-content .smart-tooltip-line:first-child {
-  font-family: 'Roboto Mono', monospace;
-  font-weight: 800;
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #fff;
-  text-shadow: 0 0 8px rgba(0, 255, 163, 0.5);
-  margin-bottom: 8px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
+  gap: 8px;
+  /* Solana gradient text */
+  background: linear-gradient(135deg, #14F195, #9945FF, #00D4FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* Badge */
-.smart-tooltip-content .smart-tooltip-line:first-child::after {
-  content: 'AI CORE';
-  margin-left: auto;
-  font-size: 0.55rem;
-  padding: 2px 6px;
-  background: rgba(0, 255, 163, 0.1);
-  border: 1px solid rgba(0, 255, 163, 0.2);
-  border-radius: 4px;
-  color: #00FFA3;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+/* AI Badge */
+.smart-tooltip-content .smart-tooltip-line:first-child::before {
+  content: '✦';
+  font-size: 12px;
+  background: linear-gradient(135deg, #14F195, #9945FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.9); }
 }
 
 /* Highlighted Values & Keywords */
 .ai-value-highlight {
-  font-family: 'Roboto Mono', monospace;
-  font-weight: 700;
-  color: #fff;
-  /* Vibrant Gradient for keywords */
-  background: linear-gradient(90deg, rgba(0, 242, 254, 0.2), rgba(79, 172, 254, 0.2));
-  padding: 0 4px;
-  border-radius: 3px;
-  border-bottom: 1px solid rgba(0, 242, 254, 0.5);
+  font-family: 'Space Grotesk', monospace;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(20, 241, 149, 0.15), rgba(153, 69, 255, 0.15));
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(20, 241, 149, 0.25);
   display: inline-block;
-  margin: 0 2px;
-  text-shadow: 0 0 8px rgba(0, 242, 254, 0.6); /* Neon glow */
+  margin: 2px 3px;
+  font-size: 13px;
+  text-shadow: 0 0 10px rgba(20, 241, 149, 0.4);
+  white-space: nowrap;
 }
 
-/* Specific color tweaks for certain keywords could be done with more specific classes, 
-   but general vibrance covers most cases well */
-
 .smart-tooltip-content strong {
-  color: #e2e8f0;
+  color: #ffffff;
   font-weight: 600;
 }
 
 .smart-tooltip-content span {
-  /* Default text color */
-  color: #cbd5e1; 
+  color: rgba(255, 255, 255, 0.75);
 }
 
+/* ========== ARROW ========== */
 .smart-tooltip-arrow {
   position: absolute;
-  width: 12px;
-  height: 12px;
-  background: #0f0f1e;
-  border: 1px solid rgba(161, 140, 209, 0.5);
+  width: 14px;
+  height: 14px;
+  background: rgba(5, 5, 15, 0.97);
+  border: 1.5px solid rgba(153, 69, 255, 0.5);
   transform: rotate(45deg);
   z-index: -1;
-  box-shadow: 0 0 10px rgba(79, 172, 254, 0.2);
+  box-shadow: 0 0 15px rgba(20, 241, 149, 0.2);
 }
 
-/* Arrow adjustments */
 .smart-tooltip-container.top .smart-tooltip-arrow {
-  bottom: -6px;
+  bottom: -8px;
   border-top-color: transparent;
   border-left-color: transparent;
 }
 
 .smart-tooltip-container.bottom .smart-tooltip-arrow {
-  top: -6px;
+  top: -8px;
   border-bottom-color: transparent;
   border-right-color: transparent;
 }
 
-@keyframes tooltipSmartOpen {
+/* ========== ANIMATION ========== */
+@keyframes tooltipFadeIn {
   0% {
     opacity: 0;
-    transform: scale(0.9) translateY(5px); 
-    filter: blur(4px);
+    transform: scale(0.95) translateY(8px);
   }
   100% {
     opacity: 1;
     transform: scale(1) translateY(0);
-    filter: blur(0);
+  }
+}
+
+/* ========== MOBILE RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .smart-tooltip-container {
+    /* Încadrare în ecran pe mobil */
+    max-width: calc(100vw - 32px) !important;
+    min-width: 180px !important;
+    left: 16px !important;
+    right: 16px !important;
+    width: auto !important;
+    
+    /* Poziționare fixă jos pe mobil pentru vizibilitate */
+    bottom: 20px !important;
+    top: auto !important;
+    
+    padding: 14px 16px;
+    font-size: 13px;
+    border-radius: 14px;
+  }
+  
+  .smart-tooltip-content {
+    padding-right: 60px;
+  }
+  
+  .smart-tooltip-content .smart-tooltip-line:first-child {
+    font-size: 14px;
+  }
+  
+  .ai-value-highlight {
+    font-size: 12px;
+    padding: 2px 6px;
+  }
+  
+  .smart-tooltip-controls {
+    top: 8px;
+    right: 8px;
+  }
+  
+  .smart-tooltip-close-btn,
+  .smart-tooltip-speak-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 15px;
+  }
+  
+  /* Ascunde săgeata pe mobil - tooltip-ul e fixat jos */
+  .smart-tooltip-arrow {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .smart-tooltip-container {
+    padding: 12px 14px;
+    font-size: 12px;
+    max-width: calc(100vw - 24px) !important;
+    left: 12px !important;
+    right: 12px !important;
+  }
+  
+  .smart-tooltip-content .smart-tooltip-line:first-child {
+    font-size: 13px;
+  }
+}
+
+/* ========== ACCESSIBILITY ========== */
+.smart-tooltip-container:focus-within {
+  outline: 2px solid rgba(20, 241, 149, 0.5);
+  outline-offset: 2px;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .smart-tooltip-container {
+    animation: none;
+  }
+  
+  .smart-tooltip-speak-btn.speaking {
+    animation: none;
   }
 }

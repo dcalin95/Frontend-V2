@@ -1,0 +1,139 @@
+/* --- MOBILE SPECIFIC STYLES FOR CLAIM STAKES --- */
+/* Activates only when MobileUI detects mobile screen */
+
+@media (max-width: 768px) {
+    /* === 1. SINGLE CONTAINER PRINCIPLE === */
+    /* Keep the main card, but make it clean */
+    body.mode-mobile .claim-card {
+        padding: 12px !important;
+        background: rgba(12, 16, 20, 0.85) !important; /* Opaque enough */
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important; /* Better performance */
+    }
+
+    body.mode-mobile .claim-card-total {
+        padding: 12px !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        text-align: center !important;
+    }
+
+    /* === 2. REMOVE INNER NESTED BORDERS/BACKGROUNDS === */
+    /* Make internal containers transparent so they merge with the parent */
+    
+    /* Financial Grid & Cards */
+    body.mode-mobile .ai-financial-grid {
+        gap: 8px !important;
+        margin-top: 8px !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+
+    body.mode-mobile .ai-financial-card {
+        background: transparent !important; /* Remove inner card background */
+        border: none !important;            /* Remove inner card border */
+        box-shadow: none !important;
+        padding: 4px 0 !important;          /* Minimal padding */
+        text-align: left !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.05) !important; /* Vertical divider instead of box */
+    }
+    
+    body.mode-mobile .ai-financial-card:last-child {
+        border-right: none !important;
+    }
+
+    /* Progress Container */
+    body.mode-mobile .ai-progress-container {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 8px 0 !important; /* Remove side padding */
+        margin-bottom: 0 !important;
+    }
+
+    /* Maturity Box */
+    body.mode-mobile .ai-maturity-box {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 8px 0 !important;
+        margin-top: 0 !important;
+        border-top: 1px dashed rgba(255, 255, 255, 0.1) !important; /* Subtle separator instead of box */
+        border-radius: 0 !important;
+    }
+
+    /* Warning Box */
+    body.mode-mobile .ai-warning-box {
+        background: rgba(255, 50, 50, 0.05) !important; /* Very subtle background for warning only */
+        border: none !important;
+        border-left: 2px solid #ff4444 !important; /* Accent line only */
+        flex-direction: row !important; /* Keep icon next to text if possible */
+        align-items: flex-start !important;
+        padding: 8px !important;
+    }
+
+    /* Dropdown details (APR, Projections) */
+    body.mode-mobile button[onClick*="setShow"] + div {
+        background: transparent !important;
+        border: none !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        border-left: 2px solid rgba(0, 255, 163, 0.3) !important; /* Indent line */
+        border-radius: 0 !important;
+        margin-left: 4px !important;
+    }
+
+
+    /* === 3. LAYOUT ADJUSTMENTS === */
+    body.mode-mobile .claim-main-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        align-items: stretch !important;
+        text-align: left !important;
+    }
+
+    /* Remove old dividers that might clutter */
+    body.mode-mobile .claim-main-grid > div {
+        border-left: none !important;
+        padding-left: 0 !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        padding-bottom: 12px;
+    }
+
+    body.mode-mobile .claim-main-grid > div:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    /* Typography adjustments */
+    body.mode-mobile .ai-financial-label {
+        font-size: 0.65rem !important;
+        color: rgba(255, 255, 255, 0.4) !important;
+    }
+
+    body.mode-mobile .ai-financial-value {
+        font-size: 0.9rem !important;
+    }
+    
+    body.mode-mobile .ai-tier-badge {
+        font-size: 0.6rem !important;
+        padding: 2px 6px !important;
+    }
+
+    /* Buttons */
+    body.mode-mobile .claim-stakes-container button {
+        width: 100% !important;
+        justify-content: center !important;
+        padding: 12px !important;
+        font-size: 0.9rem !important;
+    }
+
+    body.mode-mobile .claim-stakes-container .footer-actions {
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+}

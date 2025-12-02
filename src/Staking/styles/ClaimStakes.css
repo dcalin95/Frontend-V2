@@ -1,116 +1,169 @@
-.claim-stakes {
-    background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 1rem;
-    border-radius: 1.5rem;
-    backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
-    -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
-    box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
-    color: #fff;
-    font-family: 'Inter', sans-serif;
-  }
-  
-  .stake-item {
-    padding: 0.75rem;
-    margin-bottom: 1rem;
-    background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
-    -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
-    box-shadow: 0 2px 12px rgba(0, 255, 163, 0.05);
-    transition: all 0.3s ease;
-  }
+/* --- BASE LAYOUT STYLES --- */
+.claim-stakes-container {
+  width: 100%;
+  padding: 0;
+}
 
-  .stake-item:hover {
-    border-color: rgba(0, 255, 163, 0.3);
-    box-shadow: 0 4px 20px rgba(0, 255, 163, 0.15);
-    background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
-  }
-  
-  .stake-item button {
-    margin-top: 0.5rem;
-    background: linear-gradient(135deg, #00FFA3, #DC1FFF);
-    color: #000000;
-    font-weight: 700;
-    font-family: 'Inter', sans-serif;
-    border: 1px solid rgba(0, 255, 163, 0.3);
-    padding: 6px 12px;
-    border-radius: 12px;
-    cursor: pointer;
-    box-shadow: 0 0 8px rgba(0, 255, 163, 0.15);
-    transition: all 0.3s ease;
-  }
+/* --- AI SOLANA PREMIUM STYLES (COMPACT VERSION) --- */
 
-  .stake-item button:hover {
-    box-shadow: 0 0 15px rgba(0, 255, 163, 0.4), 0 0 30px rgba(220, 31, 255, 0.2);
-    transform: scale(1.05);
-  }
-  .stake-entry {
-    margin-bottom: 16px;
-    padding: 12px;
-    border-radius: 8px;
-    background-color: #111;
-    color: #fff;
-    border: 1px solid #333;
-  }
-  
-  .countdown {
-    color: #ffa500;
-    font-weight: 500;
-    margin-top: 4px;
-  }
-.stake-entry {
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
-  color: rgba(255, 255, 255, 0.9);
-  font-family: 'Inter', sans-serif;
-  padding: 12px;
-  border-radius: 12px;
-  margin-bottom: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
-  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
-  box-shadow: 0 2px 12px rgba(0, 255, 163, 0.05);
+/* 1. Progress Bar Container */
+.ai-progress-container {
+  background: rgba(13, 17, 23, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 255, 163, 0.15);
+  border-radius: 8px; /* Reduced radius */
+  padding: 8px 10px; /* DRASITCALLY REDUCED PADDING */
+  box-shadow: inset 0 0 20px rgba(0, 255, 163, 0.02);
   transition: all 0.3s ease;
+  margin-bottom: 4px; /* Reduced margin */
 }
 
-.stake-entry:hover {
+.ai-progress-container:hover {
   border-color: rgba(0, 255, 163, 0.3);
-  box-shadow: 0 4px 20px rgba(0, 255, 163, 0.15);
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  box-shadow: 0 0 15px rgba(0, 255, 163, 0.1);
 }
 
-.countdown {
-  color: #ffa500;
-  font-weight: bold;
+.ai-progress-track {
+  width: 100%;
+  height: 6px; /* Thinner track */
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.ai-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00FFA3, #00FFA3, #DC1FFF);
+  background-size: 200% 100%;
+  animation: aiGradientMove 3s infinite linear;
+  border-radius: 3px;
+  box-shadow: 0 0 8px rgba(0, 255, 163, 0.6);
+}
+
+@keyframes aiGradientMove {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* 2. Financial Grid Cards */
+.ai-financial-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 4px; /* TINY GAP */
   margin-top: 4px;
 }
 
-.claim-button {
-  margin-top: 10px;
-  padding: 6px 12px;
-  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
-  color: #000000;
+.ai-financial-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 6px 4px; /* COMPACT PADDING */
+  text-align: center;
+  transition: transform 0.2s, border-color 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-financial-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(0, 255, 163, 0.3);
+}
+
+.ai-financial-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.55rem; /* Smaller font */
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.ai-financial-value {
+  font-family: 'Space Grotesk', sans-serif;
   font-weight: 700;
-  font-family: 'Inter', sans-serif;
-  border: 1px solid rgba(0, 255, 163, 0.3);
+  font-size: 0.85rem; /* Adjusted size */
+  color: #fff;
+  text-shadow: 0 0 8px rgba(0, 255, 163, 0.3);
+  line-height: 1.2;
+}
+
+.ai-text-gradient {
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ai-text-gold {
+  color: #FFD700;
+  text-shadow: 0 0 6px rgba(255, 215, 0, 0.4);
+}
+
+/* 3. Maturity Box */
+.ai-maturity-box {
+  background: rgba(220, 31, 255, 0.05);
+  border: 1px solid rgba(220, 31, 255, 0.2);
+  border-radius: 8px;
+  padding: 6px 10px; /* COMPACT */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+  margin-top: 4px;
+}
+
+.ai-maturity-label {
+  font-size: 0.7rem;
+  color: #e9d5ff;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 4. Tier Badge */
+.ai-tier-badge {
+  font-size: 0.65rem;
+  padding: 2px 8px;
   border-radius: 12px;
-  cursor: pointer;
-  box-shadow: 0 0 8px rgba(0, 255, 163, 0.15);
-  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 0.5px;
 }
 
-.claim-button:hover:not(:disabled) {
-  box-shadow: 0 0 15px rgba(0, 255, 163, 0.4), 0 0 30px rgba(220, 31, 255, 0.2);
-  transform: scale(1.05);
+/* 5. Warning Box */
+.ai-warning-box {
+  background: rgba(255, 50, 50, 0.08);
+  border: 1px solid rgba(255, 50, 50, 0.3);
+  border-radius: 8px;
+  padding: 8px; /* COMPACT */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  backdrop-filter: blur(5px);
 }
 
-.claim-button:disabled {
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
-  color: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.05);
-  cursor: not-allowed;
-  filter: grayscale(0.5);
-  box-shadow: none;
+.ai-warning-icon {
+  font-size: 1rem;
 }
-    
+
+.ai-warning-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #ff6b6b;
+  margin-bottom: 0;
+  text-transform: uppercase;
+}
+
+.ai-warning-text {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.2;
+}

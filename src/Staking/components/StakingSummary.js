@@ -3,6 +3,7 @@ import WalletContext from "../../context/WalletContext";
 import { getStakingContract } from "../../contract/getStakingContract";
 import { formatUnits } from "ethers/lib/utils";
 import "../styles/StakingSummary.css";
+import "../styles/StakingSummary.mobile.css"; // 🆕 Import Mobile CSS
 import { aprPercentDisplayFrom1e18 } from "../utils/aprFormat";
 
 // AI-style number formatting function

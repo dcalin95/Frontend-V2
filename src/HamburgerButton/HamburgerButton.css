@@ -3,7 +3,7 @@
 
 .sidebar-toggle-button {
   position: fixed;
-  top: 90px;
+  top: 115px; /* Sub Header hamburger, dar nu prea jos */
   left: 15px;
   width: 44px;
   height: 44px;

@@ -1,39 +1,689 @@
+/* ============================================
+   PRESALE COUNTDOWN MINI - AI SOLANA STYLE
+   SHARP, Clear, LARGE with attention effects
+   ============================================ */
+
 .miniTimer {
-  display: flex;
-  gap: 0px; /* separatori controlați separat pentru spacing uniform */
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.95rem;
-  padding: 0.4rem 0.6rem;
-  background: rgba(0, 255, 255, 0.05);
-  color: #00f0ff;
-  border-radius: 8px;
-  border: 1px solid rgba(0, 255, 255, 0.15);
-  box-shadow: 0 0 6px rgba(0, 255, 255, 0.15);
-  text-shadow: 0 0 3px #00f0ff88;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0;
+  
+  /* Typography */
+  font-family: 'Rajdhani', 'Exo 2', 'Orbitron', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  
+  /* Container - COMPACT, DISCRETE - NO BORDER */
+  padding: 0.15rem 0.5rem;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  border: none;
+  
+  /* Minimal shadow */
+  box-shadow: none;
+  
+  transition: all 0.3s ease;
+}
+
+.miniTimer:hover {
+  border: none;
 }
 
 .miniTimer span {
   text-align: center;
+  display: inline-block;
 }
 
+/* Time blocks - Numbers - SHARP, THIN FONT, VERY LARGE */
 .block {
-  min-width: 30px;
-  padding: 0 2px;
+  min-width: 46px;
+  padding: 0 1px;
+  
+  /* SOLID COLOR - SHARP & CLEAR */
+  color: #14F195;
+  -webkit-text-fill-color: #14F195;
+  
+  /* THIN font, EXTRA LARGE size */
+  font-family: 'Rajdhani', 'Exo 2', 'Orbitron', 'Segoe UI', sans-serif;
+  font-weight: 500;
+  font-size: 2.4rem;
+  line-height: 0.8;
+  
+  /* Sharp rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+  
+  /* RAINBOW color animation - 20 colors in 10 seconds (mai rapid) */
+  animation: colorShiftSlow 10s linear infinite;
+  
+  /* For random effects */
+  position: relative;
 }
 
+/* DIVERSE motion effects - each digit has MULTIPLE effects at different times */
+.block:nth-child(1) {
+  animation: 
+    colorShiftSlow 10s linear infinite,
+    glitchEffect1 8s ease-in-out infinite,
+    flipEffect 12s ease-in-out infinite,
+    wobbleEffect 15s ease-in-out infinite;
+  animation-delay: 0s, 0s, 4s, 8s;
+}
+
+.block:nth-child(3) {
+  animation: 
+    colorShiftSlow 10s linear infinite,
+    bounceEffect 6s ease-in-out infinite,
+    spinEffect 14s ease-in-out infinite,
+    elasticEffect 10s ease-in-out infinite;
+  animation-delay: -2s, 1s, 5s, 8s;
+}
+
+.block:nth-child(5) {
+  animation: 
+    colorShiftSlow 10s linear infinite,
+    pulseGrow 5s ease-in-out infinite,
+    swingEffect 9s ease-in-out infinite,
+    flashEffect 14s ease-in-out infinite;
+  animation-delay: -4s, 2s, 6s, 10s;
+}
+
+.block:nth-child(7) {
+  animation: 
+    colorShiftSlow 10s linear infinite,
+    shakeEffect 7s ease-in-out infinite,
+    floatEffect 11s ease-in-out infinite,
+    zoomEffect 13s ease-in-out infinite;
+  animation-delay: -6s, 0.5s, 4s, 9s;
+}
+
+/* RAINBOW color shift animation - MANY COLORS */
+@keyframes colorShiftSlow {
+  0%, 100% {
+    color: #14F195;
+    -webkit-text-fill-color: #14F195;
+  }
+  5% {
+    color: #00FFB3;
+    -webkit-text-fill-color: #00FFB3;
+  }
+  10% {
+    color: #00FFEA;
+    -webkit-text-fill-color: #00FFEA;
+  }
+  15% {
+    color: #00D4FF;
+    -webkit-text-fill-color: #00D4FF;
+  }
+  20% {
+    color: #00A8FF;
+    -webkit-text-fill-color: #00A8FF;
+  }
+  25% {
+    color: #007BFF;
+    -webkit-text-fill-color: #007BFF;
+  }
+  30% {
+    color: #5B4FFF;
+    -webkit-text-fill-color: #5B4FFF;
+  }
+  35% {
+    color: #9945FF;
+    -webkit-text-fill-color: #9945FF;
+  }
+  40% {
+    color: #B83DFF;
+    -webkit-text-fill-color: #B83DFF;
+  }
+  45% {
+    color: #E040FB;
+    -webkit-text-fill-color: #E040FB;
+  }
+  50% {
+    color: #FF4081;
+    -webkit-text-fill-color: #FF4081;
+  }
+  55% {
+    color: #FF5252;
+    -webkit-text-fill-color: #FF5252;
+  }
+  60% {
+    color: #FF6E40;
+    -webkit-text-fill-color: #FF6E40;
+  }
+  65% {
+    color: #FFAB40;
+    -webkit-text-fill-color: #FFAB40;
+  }
+  70% {
+    color: #FFD740;
+    -webkit-text-fill-color: #FFD740;
+  }
+  75% {
+    color: #FFFF00;
+    -webkit-text-fill-color: #FFFF00;
+  }
+  80% {
+    color: #C6FF00;
+    -webkit-text-fill-color: #C6FF00;
+  }
+  85% {
+    color: #76FF03;
+    -webkit-text-fill-color: #76FF03;
+  }
+  90% {
+    color: #00E676;
+    -webkit-text-fill-color: #00E676;
+  }
+  95% {
+    color: #1DE9B6;
+    -webkit-text-fill-color: #1DE9B6;
+  }
+}
+
+/* Effect 1: Glitch/Distort */
+@keyframes glitchEffect1 {
+  0%, 92%, 100% {
+    transform: translate(0, 0) skewX(0deg);
+    opacity: 1;
+  }
+  93% {
+    transform: translate(-3px, 0) skewX(-5deg);
+    opacity: 0.8;
+    color: #FF0080;
+    -webkit-text-fill-color: #FF0080;
+  }
+  94% {
+    transform: translate(3px, 0) skewX(5deg);
+    opacity: 0.9;
+    color: #00FFFF;
+    -webkit-text-fill-color: #00FFFF;
+  }
+  95% {
+    transform: translate(-2px, 2px) skewX(-3deg);
+    opacity: 0.7;
+  }
+  96% {
+    transform: translate(0, 0) skewX(0deg);
+    opacity: 1;
+  }
+}
+
+/* Effect 2: Bounce/Jump */
+@keyframes bounceEffect {
+  0%, 85%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  88% {
+    transform: translateY(-8px) scale(1.1);
+    color: #FFD700;
+    -webkit-text-fill-color: #FFD700;
+  }
+  91% {
+    transform: translateY(2px) scale(0.95);
+  }
+  94% {
+    transform: translateY(-4px) scale(1.05);
+  }
+  97% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Effect 3: Pulse/Grow */
+@keyframes pulseGrow {
+  0%, 80%, 100% {
+    transform: scale(1);
+    text-shadow: none;
+  }
+  85% {
+    transform: scale(1.3);
+    color: #FF6B6B;
+    -webkit-text-fill-color: #FF6B6B;
+    text-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
+  }
+  90% {
+    transform: scale(0.9);
+  }
+  95% {
+    transform: scale(1.1);
+    text-shadow: 0 0 10px rgba(20, 241, 149, 0.5);
+  }
+}
+
+/* Effect 4: Shake/Vibrate */
+@keyframes shakeEffect {
+  0%, 88%, 100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  89% {
+    transform: translateX(-4px) rotate(-3deg);
+  }
+  90% {
+    transform: translateX(4px) rotate(3deg);
+  }
+  91% {
+    transform: translateX(-3px) rotate(-2deg);
+  }
+  92% {
+    transform: translateX(3px) rotate(2deg);
+  }
+  93% {
+    transform: translateX(-2px) rotate(-1deg);
+  }
+  94% {
+    transform: translateX(2px) rotate(1deg);
+  }
+  95% {
+    transform: translateX(0) rotate(0deg);
+  }
+}
+
+/* Effect 5: Flip 3D */
+@keyframes flipEffect {
+  0%, 90%, 100% {
+    transform: perspective(400px) rotateY(0deg);
+  }
+  93% {
+    transform: perspective(400px) rotateY(180deg);
+  }
+  96% {
+    transform: perspective(400px) rotateY(360deg);
+  }
+}
+
+/* Effect 6: Wobble */
+@keyframes wobbleEffect {
+  0%, 85%, 100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  86% {
+    transform: translateX(-6px) rotate(-5deg);
+  }
+  87% {
+    transform: translateX(5px) rotate(4deg);
+  }
+  88% {
+    transform: translateX(-4px) rotate(-3deg);
+  }
+  89% {
+    transform: translateX(3px) rotate(2deg);
+  }
+  90% {
+    transform: translateX(-2px) rotate(-1deg);
+  }
+  91% {
+    transform: translateX(0) rotate(0deg);
+  }
+}
+
+/* Effect 7: Spin 360 */
+@keyframes spinEffect {
+  0%, 92%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  94% {
+    transform: rotate(180deg) scale(1.1);
+  }
+  96% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+/* Effect 8: Elastic stretch */
+@keyframes elasticEffect {
+  0%, 88%, 100% {
+    transform: scaleX(1) scaleY(1);
+  }
+  90% {
+    transform: scaleX(1.3) scaleY(0.8);
+  }
+  92% {
+    transform: scaleX(0.8) scaleY(1.2);
+  }
+  94% {
+    transform: scaleX(1.15) scaleY(0.9);
+  }
+  96% {
+    transform: scaleX(0.95) scaleY(1.05);
+  }
+  98% {
+    transform: scaleX(1) scaleY(1);
+  }
+}
+
+/* Effect 9: Swing pendulum */
+@keyframes swingEffect {
+  0%, 85%, 100% {
+    transform: rotate(0deg);
+    transform-origin: top center;
+  }
+  87% {
+    transform: rotate(15deg);
+  }
+  89% {
+    transform: rotate(-10deg);
+  }
+  91% {
+    transform: rotate(5deg);
+  }
+  93% {
+    transform: rotate(-3deg);
+  }
+  95% {
+    transform: rotate(0deg);
+  }
+}
+
+/* Effect 10: Flash/Blink */
+@keyframes flashEffect {
+  0%, 90%, 100% {
+    opacity: 1;
+    text-shadow: none;
+  }
+  91% {
+    opacity: 0;
+  }
+  92% {
+    opacity: 1;
+    text-shadow: 0 0 30px currentColor;
+  }
+  93% {
+    opacity: 0;
+  }
+  94% {
+    opacity: 1;
+    text-shadow: 0 0 50px currentColor, 0 0 80px currentColor;
+  }
+  95% {
+    opacity: 0.5;
+  }
+  96% {
+    opacity: 1;
+    text-shadow: none;
+  }
+}
+
+/* Effect 11: Float up and down */
+@keyframes floatEffect {
+  0%, 85%, 100% {
+    transform: translateY(0);
+  }
+  87% {
+    transform: translateY(-10px);
+  }
+  89% {
+    transform: translateY(-5px);
+  }
+  91% {
+    transform: translateY(-12px);
+  }
+  93% {
+    transform: translateY(-3px);
+  }
+  95% {
+    transform: translateY(0);
+  }
+}
+
+/* Effect 12: Zoom in/out */
+@keyframes zoomEffect {
+  0%, 88%, 100% {
+    transform: scale(1);
+  }
+  90% {
+    transform: scale(1.5);
+    text-shadow: 0 0 20px currentColor;
+  }
+  92% {
+    transform: scale(0.8);
+  }
+  94% {
+    transform: scale(1.2);
+  }
+  96% {
+    transform: scale(1);
+  }
+}
+
+/* Effect 13: Jello wiggle */
+@keyframes jelloEffect {
+  0%, 89%, 100% {
+    transform: skewX(0deg) skewY(0deg);
+  }
+  90% {
+    transform: skewX(-12deg) skewY(-3deg);
+  }
+  91% {
+    transform: skewX(10deg) skewY(2deg);
+  }
+  92% {
+    transform: skewX(-8deg) skewY(-2deg);
+  }
+  93% {
+    transform: skewX(6deg) skewY(1deg);
+  }
+  94% {
+    transform: skewX(-4deg) skewY(-1deg);
+  }
+  95% {
+    transform: skewX(2deg) skewY(0deg);
+  }
+  96% {
+    transform: skewX(0deg) skewY(0deg);
+  }
+}
+
+/* Effect 14: Rubber band */
+@keyframes rubberBandEffect {
+  0%, 87%, 100% {
+    transform: scale(1);
+  }
+  88% {
+    transform: scaleX(1.25) scaleY(0.75);
+  }
+  89% {
+    transform: scaleX(0.75) scaleY(1.25);
+  }
+  90% {
+    transform: scaleX(1.15) scaleY(0.85);
+  }
+  91% {
+    transform: scaleX(0.95) scaleY(1.05);
+  }
+  92% {
+    transform: scaleX(1.05) scaleY(0.95);
+  }
+  93% {
+    transform: scale(1);
+  }
+}
+
+/* Effect 15: Heartbeat */
+@keyframes heartbeatEffect {
+  0%, 86%, 100% {
+    transform: scale(1);
+  }
+  87% {
+    transform: scale(1.3);
+  }
+  88% {
+    transform: scale(1);
+  }
+  89% {
+    transform: scale(1.2);
+  }
+  90% {
+    transform: scale(1);
+  }
+}
+
+/* Separator - Clean colon */
 .sep {
   display: inline-block;
-  width: 10px; /* fix width so colon spacing is consistent */
+  width: 8px;
   text-align: center;
+  
+  /* Solid color */
+  color: rgba(255, 255, 255, 0.5);
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.5);
+  
+  font-family: 'Rajdhani', 'Exo 2', sans-serif;
+  font-weight: 300;
+  font-size: 1.8rem;
+  line-height: 0.8;
+  
+  /* Subtle pulse */
+  animation: colonPulse 2s ease-in-out infinite;
+}
+
+@keyframes colonPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ============================================
+   MOBILE RESPONSIVE - SAME ANIMATIONS AS DESKTOP
+   ============================================ */
+@media (max-width: 768px) {
+  .miniTimer {
+    padding: 0.12rem 0.4rem;
+  }
+  
+  .block {
+    min-width: 36px;
+    font-size: 1.8rem;
+    /* Keep animations on mobile - same as desktop */
+    animation: colorShiftSlow 10s linear infinite;
+  }
+  
+  /* Mobile animations - SAME as desktop */
+  .block:nth-child(1) {
+    animation: 
+      colorShiftSlow 10s linear infinite,
+      glitchEffect1 8s ease-in-out infinite,
+      flipEffect 12s ease-in-out infinite,
+      wobbleEffect 15s ease-in-out infinite !important;
+    animation-delay: 0s, 0s, 4s, 8s !important;
+  }
+
+  .block:nth-child(3) {
+    animation: 
+      colorShiftSlow 10s linear infinite,
+      bounceEffect 6s ease-in-out infinite,
+      spinEffect 14s ease-in-out infinite,
+      elasticEffect 10s ease-in-out infinite !important;
+    animation-delay: -2s, 1s, 5s, 8s !important;
+  }
+
+  .block:nth-child(5) {
+    animation: 
+      colorShiftSlow 10s linear infinite,
+      pulseGrow 5s ease-in-out infinite,
+      swingEffect 9s ease-in-out infinite,
+      flashEffect 14s ease-in-out infinite !important;
+    animation-delay: -4s, 2s, 6s, 10s !important;
+  }
+
+  .block:nth-child(7) {
+    animation: 
+      colorShiftSlow 10s linear infinite,
+      shakeEffect 7s ease-in-out infinite,
+      floatEffect 11s ease-in-out infinite,
+      zoomEffect 13s ease-in-out infinite !important;
+    animation-delay: -6s, 0.5s, 4s, 9s !important;
+  }
+  
+  .sep {
+    width: 6px;
+    font-size: 1.5rem;
+  }
 }
 
 @media (max-width: 480px) {
   .miniTimer {
-    font-size: 0.85rem; /* puțin mai mic pe mobile */
-    padding: 0.3rem 0.5rem;
+    padding: 0.1rem 0.35rem;
   }
-  .block { min-width: 24px; }
-  .sep { width: 8px; }
+  
+  .block {
+    min-width: 30px;
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+  
+  /* Keep ALL animations on small mobile too */
+  .block:nth-child(1) {
+    animation: 
+      colorShiftSlow 10s linear infinite,
+      glitchEffect1 8s ease-in-out infinite,
+      flipEffect 12s ease-in-out infinite,
+      wobbleEffect 15s ease-in-out infinite !important;
+  }
+
+  .block:nth-child(3) {
+    animation: 
+      colorShiftSlow 10s linear infinite,
+      bounceEffect 6s ease-in-out infinite,
+      spinEffect 14s ease-in-out infinite,
+      elasticEffect 10s ease-in-out infinite !important;
+  }
+
+  .block:nth-child(5) {
+    animation: 
+      colorShiftSlow 10s linear infinite,
+      pulseGrow 5s ease-in-out infinite,
+      swingEffect 9s ease-in-out infinite,
+      flashEffect 14s ease-in-out infinite !important;
+  }
+
+  .block:nth-child(7) {
+    animation: 
+      colorShiftSlow 10s linear infinite,
+      shakeEffect 7s ease-in-out infinite,
+      floatEffect 11s ease-in-out infinite,
+      zoomEffect 13s ease-in-out infinite !important;
+  }
+  
+  .sep {
+    width: 5px;
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .block {
+    min-width: 26px;
+    font-size: 1.3rem;
+  }
+  
+  /* Keep animations even on smallest screens */
+  .block:nth-child(1),
+  .block:nth-child(3),
+  .block:nth-child(5),
+  .block:nth-child(7) {
+    animation: colorShiftSlow 10s linear infinite !important;
+  }
+  
+  .sep {
+    width: 4px;
+    font-size: 1.1rem;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .block,
+  .sep {
+    animation: none !important;
+  }
+  
+  .block {
+    color: #14F195;
+    -webkit-text-fill-color: #14F195;
+  }
 }

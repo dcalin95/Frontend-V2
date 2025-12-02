@@ -6,7 +6,7 @@
 
 /* 📱 SIDEBAR TOGGLE - Touch optimized */
 body.mode-mobile .sidebar-toggle-button {
-  top: 70px;
+  top: 105px; /* Sub Header hamburger, dar nu prea jos */
   left: 12px;
   width: 46px;
   height: 46px;
@@ -63,7 +63,7 @@ body.mode-mobile .sidebar-toggle-button.open .sidebar-icon svg {
    ======================================== */
 @media (max-width: 375px) {
   body.mode-mobile .sidebar-toggle-button {
-    top: 65px;
+    top: 100px; /* Sub Header hamburger */
     left: 10px;
     width: 44px;
     height: 44px;
@@ -80,7 +80,7 @@ body.mode-mobile .sidebar-toggle-button.open .sidebar-icon svg {
    ======================================== */
 @media (max-width: 320px) {
   body.mode-mobile .sidebar-toggle-button {
-    top: 60px;
+    top: 95px; /* Sub Header hamburger */
     left: 8px;
     width: 40px;
     height: 40px;
@@ -134,7 +134,7 @@ body.mode-mobile.slow-connection .sidebar-toggle-button {
    SAFE AREA pentru notch
    ======================================== */
 body.mode-mobile .sidebar-toggle-button {
-  top: max(70px, calc(60px + env(safe-area-inset-top)));
+  top: max(105px, calc(95px + env(safe-area-inset-top)));
   left: max(12px, env(safe-area-inset-left));
 }
 

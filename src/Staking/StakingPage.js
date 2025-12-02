@@ -108,11 +108,6 @@ const StakingPage = () => {
             </div>
           </div>
         </div>
-        <div className="staking-bottom">
-          <SmartTooltip content={`Active Stakes Portfolio\nDetailed list of all your individual staking contracts.`}>
-            <div><StakingBox stakes={stakes} signer={signer} /></div>
-          </SmartTooltip>
-        </div>
       </main>
     </div>
   );
