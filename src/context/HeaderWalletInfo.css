@@ -2,8 +2,8 @@
 
 .wallet-toggle-wrapper {
   position: fixed;
-  top: 120px;
-  right: 20px;
+  top: 260px; /* 220px + ~15% */
+  right: 60px; /* Mai depărtată de margine */
   z-index: 9999;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -61,6 +61,64 @@
 .wallet-toggle-btn-minimal:hover .wallet-svg-animated {
   filter: none;
   transform: scale(1.1);
+}
+
+/* 🖼️ WALLET LOGO IMAGE - NOU */
+.wallet-logo-img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  filter: drop-shadow(0 4px 12px rgba(153, 69, 255, 0.4));
+  position: relative;
+  z-index: 2;
+}
+
+.wallet-toggle-btn-minimal:hover .wallet-logo-img {
+  transform: scale(1.15);
+  filter: drop-shadow(0 6px 20px rgba(20, 241, 149, 0.6)) 
+          drop-shadow(0 0 15px rgba(153, 69, 255, 0.5));
+}
+
+/* 🪙 BITS LOGO - BADGE COMPLEMENTAR SUS */
+.wallet-toggle-btn-minimal {
+  position: relative;
+}
+
+.wallet-bits-bg {
+  position: absolute;
+  top: -12px;
+  right: -8px;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  transform: scale(0) rotate(-20deg);
+  opacity: 0;
+  z-index: 3;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: drop-shadow(0 2px 8px rgba(20, 241, 149, 0.6));
+  pointer-events: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 3px;
+}
+
+.wallet-toggle-btn-minimal:hover .wallet-bits-bg {
+  transform: scale(1) rotate(0deg);
+  opacity: 1;
+  animation: bitsBounce 0.5s ease-out;
+}
+
+@keyframes bitsBounce {
+  0% {
+    transform: scale(0) rotate(-20deg);
+  }
+  50% {
+    transform: scale(1.2) rotate(5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
 }
 
 /* OLD BUTTON STYLES - KEPT FOR REFERENCE */
@@ -373,6 +431,52 @@
   filter: brightness(1.15);
   transform: translateY(-2px);
   box-shadow: 0 6px 25px rgba(20, 241, 149, 0.6);
+}
+
+/* 🔗 BUTON CONNECT FLOATING - FĂRĂ CONTAINER */
+.connect-wallet-button-floating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 14px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  
+  /* Stil dark cu accent */
+  background: rgba(10, 10, 20, 0.95);
+  border: 1px solid rgba(153, 69, 255, 0.5);
+  
+  /* Tranziții */
+  transition: all 0.3s ease;
+}
+
+.connect-wallet-button-floating i {
+  font-size: 1rem;
+  color: #9945FF;
+}
+
+.connect-wallet-button-floating span {
+  /* Text gradient mov-cyan */
+  background: linear-gradient(90deg, #9945FF 0%, #00D4FF 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.15em;
+  font-family: 'Orbitron', 'Rajdhani', sans-serif;
+}
+
+.connect-wallet-button-floating:hover {
+  background: rgba(20, 20, 40, 0.98);
+  border-color: #9945FF;
+  box-shadow: 0 0 25px rgba(153, 69, 255, 0.5);
+  transform: scale(1.03);
+}
+
+.connect-wallet-button-floating:active {
+  transform: scale(0.97);
 }
 
 .disconnect-button {

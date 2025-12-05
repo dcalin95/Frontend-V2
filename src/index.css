@@ -32,6 +32,20 @@
   --font-size-hero: clamp(2.5rem, 8vw, 4.5rem);
   
   --container-padding: clamp(1rem, 5vw, 2rem);
+  
+  /* 🔗 WEB3MODAL - Compact pe mobil */
+  --w3m-z-index: 99999;
+  --w3m-accent-color: #14F195;
+  --w3m-background-color: #0a0a14;
+  --wcm-z-index: 99999;
+}
+
+/* Web3Modal Mobile Override - Mai sus și mai compact */
+@media (max-width: 768px) {
+  :root {
+    --w3m-modal-margin: 40px auto auto auto;
+    --wcm-modal-margin: 40px auto auto auto;
+  }
 }
 
 /* === HTML Scaling === */
@@ -65,7 +79,7 @@ body.mode-mobile * {
 
 /* Disable heavy effects on mobile for performance */
 /* EXCEPȚIE: Componentele fixe (header, sidebar, ai-launcher, wallet) au stiluri separate în MobileFixedComponents.css */
-body.mode-mobile *:not(.header):not(.header *):not(.mobile-hamburger):not(.mobile-hamburger *):not(.mobile-nav-menu):not(.mobile-nav-menu *):not(.sidebar):not(.sidebar *):not(.sidebar-toggle-button):not(.sidebar-toggle-button *):not(.ai-animated-hamburger):not(.ai-animated-hamburger *):not(.ai-launcher):not(.ai-launcher *):not(.wallet-toggle-wrapper):not(.wallet-toggle-wrapper *):not(.wallet-toggle-btn):not(.wallet-toggle-btn *):not(.wallet-toggle-btn-minimal):not(.wallet-toggle-btn-minimal *):not(.device-info-content):not(.device-info-content *):not(.footer-container):not(.footer-container *) {
+body.mode-mobile *:not(.header):not(.header *):not(.mobile-hamburger):not(.mobile-hamburger *):not(.mobile-nav-menu):not(.mobile-nav-menu *):not(.sidebar):not(.sidebar *):not(.sidebar-toggle-button):not(.sidebar-toggle-button *):not(.ai-animated-hamburger):not(.ai-animated-hamburger *):not(.ai-launcher):not(.ai-launcher *):not(.wallet-toggle-wrapper):not(.wallet-toggle-wrapper *):not(.wallet-toggle-btn):not(.wallet-toggle-btn *):not(.wallet-toggle-btn-minimal):not(.wallet-toggle-btn-minimal *):not(.device-info-content):not(.device-info-content *):not(.footer-container):not(.footer-container *):not(.laser-orbit):not(.laser-orbit *) {
   box-shadow: none !important; /* Reduce rendering cost */
   text-shadow: none !important; /* Reduce rendering cost */
   backdrop-filter: none !important; /* Heavy on GPU */

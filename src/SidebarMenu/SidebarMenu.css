@@ -35,10 +35,10 @@
   margin: 3px 0;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
-  -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   box-shadow: 0 2px 12px rgba(0, 255, 163, 0.05);
 }
 
@@ -46,7 +46,7 @@
 .sidebar button:hover,
 .sidebar a:hover {
   transform: translateY(-3px) scale(1.05);
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  background: transparent;
   border-color: rgba(0, 255, 163, 0.3);
   box-shadow: 0 4px 20px rgba(0, 255, 163, 0.15);
 }
@@ -76,122 +76,124 @@
   color: #ffe066; /* Iconița devine aurie */
 }
 
-/* ===== CULOARE DIFERITĂ PENTRU FIECARE BUTON - FUNDAL NEGRU COMPLET ===== */
-.sidebar .btn-swap {
+/* ===== CULOARE DIFERITĂ PENTRU FIECARE BUTON - FUNDAL NEGRU COMPLET & SPECIFICITATE MAXIMĂ ===== */
+/* Folosim body .sidebar .clasa pentru a suprascrie orice alt stil global */
+
+body .sidebar .btn-swap {
   background: #000000 !important;
   background-color: #000000 !important;
-  border: 2px solid #ff6b6b;
-  color: #ff6b6b;
-  box-shadow: 0 0 12px rgba(255, 107, 107, 0.5);
-  text-shadow: 0 0 8px rgba(255, 107, 107, 0.8);
+  border: 2px solid #ff6b6b !important;
+  color: #ff6b6b !important;
+  box-shadow: 0 0 12px rgba(255, 107, 107, 0.5) !important;
+  text-shadow: 0 0 8px rgba(255, 107, 107, 0.8) !important;
 }
 
-.sidebar .btn-pool {
+body .sidebar .btn-pool {
   background: #000000 !important;
   background-color: #000000 !important;
-  border: 2px solid #ffa94d;
-  color: #ffa94d;
-  box-shadow: 0 0 12px rgba(255, 169, 77, 0.5);
-  text-shadow: 0 0 8px rgba(255, 169, 77, 0.8);
+  border: 2px solid #ffa94d !important;
+  color: #ffa94d !important;
+  box-shadow: 0 0 12px rgba(255, 169, 77, 0.5) !important;
+  text-shadow: 0 0 8px rgba(255, 169, 77, 0.8) !important;
 }
 
-.sidebar .btn-buy {
+body .sidebar .btn-buy {
   background: #000000 !important;
   background-color: #000000 !important;
-  border: 2px solid #ffd43b;
-  color: #ffd43b;
-  box-shadow: 0 0 12px rgba(255, 212, 59, 0.5);
-  text-shadow: 0 0 8px rgba(255, 212, 59, 0.8);
+  border: 2px solid #ffd43b !important;
+  color: #ffd43b !important;
+  box-shadow: 0 0 12px rgba(255, 212, 59, 0.5) !important;
+  text-shadow: 0 0 8px rgba(255, 212, 59, 0.8) !important;
 }
 
-.sidebar .btn-how-to-buy {
+body .sidebar .btn-how-to-buy {
   background: #000000 !important;
   background-color: #000000 !important;
-  border: 2px solid #69db7c;
-  color: #69db7c;
-  box-shadow: 0 0 12px rgba(105, 219, 124, 0.5);
-  text-shadow: 0 0 8px rgba(105, 219, 124, 0.8);
+  border: 2px solid #69db7c !important;
+  color: #69db7c !important;
+  box-shadow: 0 0 12px rgba(105, 219, 124, 0.5) !important;
+  text-shadow: 0 0 8px rgba(105, 219, 124, 0.8) !important;
 }
 
-.sidebar .btn-tokenomics {
+body .sidebar .btn-tokenomics {
   background: #000000 !important;
   background-color: #000000 !important;
-  border: 2px solid #4dabf7;
-  color: #4dabf7;
-  box-shadow: 0 0 12px rgba(77, 171, 247, 0.5);
-  text-shadow: 0 0 8px rgba(77, 171, 247, 0.8);
+  border: 2px solid #4dabf7 !important;
+  color: #4dabf7 !important;
+  box-shadow: 0 0 12px rgba(77, 171, 247, 0.5) !important;
+  text-shadow: 0 0 8px rgba(77, 171, 247, 0.8) !important;
 }
 
-.sidebar .btn-audit {
+body .sidebar .btn-audit {
   background: #000000 !important;
   background-color: #000000 !important;
-  border: 2px solid #9775fa;
-  color: #9775fa;
-  box-shadow: 0 0 12px rgba(151, 117, 250, 0.5);
-  text-shadow: 0 0 8px rgba(151, 117, 250, 0.8);
+  border: 2px solid #9775fa !important;
+  color: #9775fa !important;
+  box-shadow: 0 0 12px rgba(151, 117, 250, 0.5) !important;
+  text-shadow: 0 0 8px rgba(151, 117, 250, 0.8) !important;
 }
 
-.sidebar .btn-invite {
+body .sidebar .btn-invite {
   background: #000000 !important;
   background-color: #000000 !important;
-  border: 2px solid #f783ac;
-  color: #f783ac;
-  box-shadow: 0 0 12px rgba(247, 131, 172, 0.5);
-  text-shadow: 0 0 8px rgba(247, 131, 172, 0.8);
+  border: 2px solid #f783ac !important;
+  color: #f783ac !important;
+  box-shadow: 0 0 12px rgba(247, 131, 172, 0.5) !important;
+  text-shadow: 0 0 8px rgba(247, 131, 172, 0.8) !important;
 }
 
-.sidebar .btn-how-it-works {
+body .sidebar .btn-how-it-works {
   background: #000000 !important;
   background-color: #000000 !important;
-  border: 2px solid #38d9a9;
-  color: #38d9a9;
-  box-shadow: 0 0 12px rgba(56, 217, 169, 0.5);
-  text-shadow: 0 0 8px rgba(56, 217, 169, 0.8);
+  border: 2px solid #38d9a9 !important;
+  color: #38d9a9 !important;
+  box-shadow: 0 0 12px rgba(56, 217, 169, 0.5) !important;
+  text-shadow: 0 0 8px rgba(56, 217, 169, 0.8) !important;
 }
 
-.sidebar .btn-roadmap {
+body .sidebar .btn-roadmap {
   background: #000000 !important;
   background-color: #000000 !important;
-  border: 2px solid #e040fb;
-  color: #e040fb;
-  box-shadow: 0 0 12px rgba(224, 64, 251, 0.5);
-  text-shadow: 0 0 8px rgba(224, 64, 251, 0.8);
+  border: 2px solid #e040fb !important;
+  color: #e040fb !important;
+  box-shadow: 0 0 12px rgba(224, 64, 251, 0.5) !important;
+  text-shadow: 0 0 8px rgba(224, 64, 251, 0.8) !important;
 }
 
-.sidebar .btn-leaderboard {
+body .sidebar .btn-leaderboard {
   background: #000000 !important;
   background-color: #000000 !important;
-  border: 2px solid #74c0fc;
-  color: #74c0fc;
-  box-shadow: 0 0 12px rgba(116, 192, 252, 0.5);
-  text-shadow: 0 0 8px rgba(116, 192, 252, 0.8);
+  border: 2px solid #74c0fc !important;
+  color: #74c0fc !important;
+  box-shadow: 0 0 12px rgba(116, 192, 252, 0.5) !important;
+  text-shadow: 0 0 8px rgba(116, 192, 252, 0.8) !important;
 }
 
-.sidebar .btn-about {
+body .sidebar .btn-about {
   background: #000000 !important;
   background-color: #000000 !important;
-  border: 2px solid #ff922b;
-  color: #ff922b;
-  box-shadow: 0 0 12px rgba(255, 146, 43, 0.5);
-  text-shadow: 0 0 8px rgba(255, 146, 43, 0.8);
+  border: 2px solid #ff922b !important;
+  color: #ff922b !important;
+  box-shadow: 0 0 12px rgba(255, 146, 43, 0.5) !important;
+  text-shadow: 0 0 8px rgba(255, 146, 43, 0.8) !important;
 }
 
-.sidebar .btn-mindmirror {
+body .sidebar .btn-mindmirror {
   background: #000000 !important;
   background-color: #000000 !important;
-  border: 2px solid #00ff9d;
-  color: #00ff9d;
-  box-shadow: 0 0 12px rgba(0, 255, 157, 0.5);
-  text-shadow: 0 0 8px rgba(0, 255, 157, 0.8);
+  border: 2px solid #00ff9d !important;
+  color: #00ff9d !important;
+  box-shadow: 0 0 12px rgba(0, 255, 157, 0.5) !important;
+  text-shadow: 0 0 8px rgba(0, 255, 157, 0.8) !important;
 }
 
-.sidebar .btn-go-main {
+body .sidebar .btn-go-main {
   background: #000000 !important;
   background-color: #000000 !important;
-  border: 2px solid #f3722c;
-  color: #00ffff;
-  box-shadow: 0 0 12px rgba(243, 114, 44, 0.5);
-  text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
+  border: 2px solid #f3722c !important;
+  color: #00ffff !important;
+  box-shadow: 0 0 12px rgba(243, 114, 44, 0.5) !important;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.8) !important;
 }
 
 /* ===== BUTON SPECIAL: GO TO MAIN PAGE ===== */
@@ -267,18 +269,12 @@
     margin: 4px 0;
     border-radius: 12px;
     
-    /* COMPLET TRANSPARENT - fără fundal */
-    background: transparent !important;
-    background-color: transparent !important;
+    /* ELIMINAT REGULILE GENERICE CARE FORȚAU CULOAREA ALBĂ */
+    /* background: transparent !important; */
+    /* border: 1px solid currentColor !important; */
+    
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    
-    /* Doar un border subtil colorat */
-    border: 1px solid currentColor !important;
-    box-shadow: 0 0 8px currentColor;
-    
-    /* Text glow pentru vizibilitate */
-    text-shadow: 0 0 10px currentColor;
   }
 
   /* Iconițe pe mobil */
@@ -286,7 +282,7 @@
   .sidebar a i {
     font-size: 1.3rem;
     margin-right: 12px;
-    filter: drop-shadow(0 0 4px currentColor);
+    /* filter: drop-shadow(0 0 4px currentColor); */ /* Eliminat pentru a nu face glow alb */
   }
 
   /* Buton special pe mobil */
@@ -381,4 +377,20 @@
   50% {
     transform: scale(1.4) rotate(10deg);
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   📱 IN-APP BROWSER & MOBILE OPTIMIZATIONS
+   Sidebar rămâne VIZIBIL pe desktop
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* Touch-friendly pentru butoane în sidebar */
+body.in-app-browser .sidebar button,
+body.in-app-browser .sidebar a {
+  min-height: 48px !important;
+  padding: 14px 16px !important;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
 }

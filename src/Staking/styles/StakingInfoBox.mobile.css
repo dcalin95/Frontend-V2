@@ -36,22 +36,29 @@
         background: rgba(12, 16, 20, 0.7) !important;
         border: 1px solid rgba(255, 255, 255, 0.08) !important;
         border-radius: 12px !important;
-        padding: 10px !important;
+        padding: 8px 4px !important; /* Padding redus pentru a face loc textului */
         min-height: auto !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
         margin: 0 !important;
+        overflow: hidden !important; /* Previne debordarea */
     }
 
     body.mode-mobile .info-value {
-        font-size: 1.1rem !important;
+        font-size: 0.9rem !important; /* Font micșorat */
         margin: 4px 0 !important;
+        word-break: break-word !important; /* Rupere cuvinte lungi */
+        overflow-wrap: break-word !important;
+        white-space: normal !important; /* Permite wrap */
+        line-height: 1.2 !important;
+        text-align: center !important;
     }
 
     body.mode-mobile .info-label {
         font-size: 0.7rem !important;
+        white-space: nowrap !important; /* Label pe un singur rând dacă e scurt */
     }
 
     /* Refresh Button positioning */

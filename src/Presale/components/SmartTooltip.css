@@ -8,41 +8,34 @@
   z-index: 999999;
   background: rgba(5, 5, 15, 0.97);
   color: #e8ecf0;
-  padding: 16px 20px;
-  border-radius: 16px;
+  padding: 12px 16px;
+  border-radius: 12px;
   font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 14px;
-  line-height: 1.6;
-  max-width: 320px;
-  min-width: 200px;
-  width: max-content;
+  font-size: 13px;
+  line-height: 1.5;
+  max-width: 260px;
+  min-width: auto; /* Permite să fie mic */
+  width: fit-content; /* Doar cât conținutul */
   text-align: left;
   pointer-events: auto;
   
   /* Solana Gradient Border */
-  border: 1.5px solid transparent;
+  border: 1px solid rgba(20, 241, 149, 0.3);
   background-clip: padding-box, border-box;
   background-origin: padding-box, border-box;
   background-image: 
     linear-gradient(to bottom, rgba(5, 5, 15, 0.98), rgba(10, 10, 25, 0.99)),
-    linear-gradient(135deg, #14F195 0%, #9945FF 50%, #00D4FF 100%);
+    linear-gradient(135deg, rgba(20, 241, 149, 0.5) 0%, rgba(153, 69, 255, 0.5) 100%);
     
   box-shadow: 
-    0 12px 40px rgba(0, 0, 0, 0.7), 
-    0 0 0 1px rgba(255, 255, 255, 0.03),
-    0 0 30px rgba(20, 241, 149, 0.15),
-    0 0 60px rgba(153, 69, 255, 0.1);
+    0 8px 30px rgba(0, 0, 0, 0.8), 
+    0 0 0 1px rgba(255, 255, 255, 0.05);
     
   /* Smooth Animation */
-  animation: tooltipFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: tooltipFadeIn 0.2s ease-out forwards;
   
-  backdrop-filter: blur(20px) saturate(150%);
-  -webkit-backdrop-filter: blur(20px) saturate(150%);
-  
-  /* Sharp text rendering */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 /* Top glow accent */
@@ -223,20 +216,22 @@
 /* ========== MOBILE RESPONSIVE ========== */
 @media (max-width: 768px) {
   .smart-tooltip-container {
-    /* Încadrare în ecran pe mobil */
-    max-width: calc(100vw - 32px) !important;
-    min-width: 180px !important;
-    left: 16px !important;
-    right: 16px !important;
-    width: auto !important;
+    /* Centrat elegant jos pe mobil */
+    max-width: 90vw !important;
+    min-width: auto !important;
+    width: max-content !important; /* Doar cât textul */
     
-    /* Poziționare fixă jos pe mobil pentru vizibilitate */
-    bottom: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%);
+    right: auto !important;
+    
+    bottom: 30px !important;
     top: auto !important;
     
-    padding: 14px 16px;
+    padding: 12px 16px;
     font-size: 13px;
-    border-radius: 14px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.9);
   }
   
   .smart-tooltip-content {
@@ -299,4 +294,40 @@
   .smart-tooltip-speak-btn.speaking {
     animation: none;
   }
+}
+
+/* ========== 📱 IN-APP BROWSER OPTIMIZATIONS ========== */
+/* (MetaMask, TrustWallet, Coinbase, etc.) */
+
+body.in-app-browser .smart-tooltip-container {
+  max-width: calc(100vw - 24px) !important;
+  left: 12px !important;
+  right: 12px !important;
+  bottom: 80px !important; /* Higher to avoid wallet browser controls */
+  padding: 16px 18px;
+}
+
+body.in-app-browser .smart-tooltip-close-btn,
+body.in-app-browser .smart-tooltip-speak-btn {
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important; /* Touch-friendly */
+  font-size: 18px !important;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+body.in-app-browser .smart-tooltip-controls {
+  gap: 10px;
+}
+
+body.mode-mobile .smart-tooltip-container {
+  bottom: 70px !important;
+}
+
+body.mode-mobile .smart-tooltip-close-btn,
+body.mode-mobile .smart-tooltip-speak-btn {
+  width: 32px !important;
+  height: 32px !important;
 }

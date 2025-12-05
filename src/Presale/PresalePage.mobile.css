@@ -176,3 +176,29 @@
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════════
+   📱 IN-APP BROWSER OPTIMIZATIONS (MetaMask, TrustWallet, Coinbase, etc.)
+   Fixes for overlays, safe-areas, and hidden content.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+body.in-app-browser .presale-page {
+  /* Asigurăm transparența pentru a vedea Starfield și padding corect */
+  background: transparent !important;
+  padding-top: 120px !important; 
+  padding-bottom: 100px !important;
+  min-height: 100vh;
+}
+
+body.in-app-browser .presale-wrapper {
+  margin-top: 20px !important;
+}
+
+/* Fix pentru carduri în in-app browser - să nu fie tăiate */
+body.in-app-browser .grid-payment,
+body.in-app-browser .grid-panel,
+body.in-app-browser .grid-claim,
+body.in-app-browser .grid-summary {
+  max-width: 95vw !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}

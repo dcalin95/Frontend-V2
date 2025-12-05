@@ -17,24 +17,26 @@
   transform: translateY(-5px);
 }
 
-/* Slogan Only Container - LINK TO PRESALE */
+/* Slogan Only Container - FĂRĂ BACKGROUND, FĂRĂ SUBLINIERE */
 .sloganContainer {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
   cursor: pointer;
   min-height: 24px;
-  text-decoration: none;
+  text-decoration: none !important;
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
-.sloganContainer:hover {
-  transform: scale(1.05);
-}
-
-.sloganContainer.animating {
-  opacity: 0.5;
-  transform: translateY(-2px);
+.sloganContainer:hover,
+.sloganContainer:visited,
+.sloganContainer:active,
+.sloganContainer:focus {
+  text-decoration: none !important;
+  transform: none;
+  outline: none;
 }
 
 /* Animație gradient flow pentru slogan */
@@ -47,139 +49,7 @@
   }
 }
 
-/* === LOGO MODE - Exchange logos animation === */
-.logoMode {
-  gap: 4px;
-  padding: 2px 8px;
-  background: rgba(0, 0, 0, 0.6);
-  border-radius: 12px;
-  backdrop-filter: blur(4px);
-  border: none;
-}
-
-.logoMode:hover {
-  background: rgba(20, 241, 149, 0.1);
-  box-shadow: 0 0 15px rgba(20, 241, 149, 0.3);
-}
-
-/* === EXCHANGE MODE - Un exchange cu logo + nume === */
-.exchangeMode {
-  gap: 6px;
-  padding: 3px 10px;
-  background: rgba(0, 0, 0, 0.7);
-  border-radius: 10px;
-  backdrop-filter: blur(4px);
-  border: none;
-  animation: exchangeFadeIn 0.5s ease-out;
-}
-
-.exchangeMode:hover {
-  background: rgba(20, 241, 149, 0.15);
-  box-shadow: 0 0 20px rgba(20, 241, 149, 0.4);
-  border: none;
-}
-
-/* Animație fade in pentru exchange */
-@keyframes exchangeFadeIn {
-  0% {
-    opacity: 0;
-    transform: translateY(-5px) scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* Animație glow pentru logo exchange */
-@keyframes logoGlow {
-  0%, 100% {
-    filter: drop-shadow(0 0 4px rgba(20, 241, 149, 0.5));
-    transform: scale(1);
-  }
-  50% {
-    filter: drop-shadow(0 0 10px rgba(20, 241, 149, 0.9)) drop-shadow(0 0 20px rgba(153, 69, 255, 0.5));
-    transform: scale(1.1);
-  }
-}
-
-/* Animație pentru logo-uri - float up/down - MAI LENTĂ */
-@keyframes logoFloat {
-  0% {
-    transform: translateY(0) scale(1);
-  }
-  100% {
-    transform: translateY(-4px) scale(1.05);
-  }
-}
-
-/* Animație pentru logo-uri - slide - MAI LENTĂ */
-@keyframes logoSlide {
-  0% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(-3px);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
-/* Animație pentru logo-uri - pulse glow - MAI LENTĂ */
-@keyframes logoPulse {
-  0%, 100% {
-    filter: drop-shadow(0 0 2px rgba(20, 241, 149, 0.3));
-  }
-  50% {
-    filter: drop-shadow(0 0 10px rgba(20, 241, 149, 0.9));
-  }
-}
-
-/* Animație pentru logo-uri - gather (adunare) - MAI LENTĂ */
-@keyframes logoGather {
-  0% {
-    transform: translateX(var(--start-x, 0)) scale(0.5);
-    opacity: 0;
-  }
-  50% {
-    transform: translateX(0) scale(1.1);
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(0) scale(1);
-    opacity: 1;
-  }
-}
-
-/* Animație pentru logo-uri - scatter (împrăștiere) - MAI LENTĂ */
-@keyframes logoScatter {
-  0% {
-    transform: translateX(0) scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: translateX(var(--end-x, 15px)) scale(0.9);
-    opacity: 0.6;
-  }
-  100% {
-    transform: translateX(0) scale(1);
-    opacity: 1;
-  }
-}
-
-/* Animație pentru logo-uri - spin - MAI LENTĂ */
-@keyframes logoSpin {
-  0% {
-    transform: rotate(0deg) scale(1);
-  }
-  50% {
-    transform: rotate(180deg) scale(1.1);
-  }
-  100% {
-    transform: rotate(360deg) scale(1);
-  }
-}
+/* Logo și Exchange mode eliminate - doar text */
 
 /* Main row: Logo + $BITS + PRESALE */
 .mainRow {
@@ -199,396 +69,104 @@
 }
 
 /* ============================================
-   SUFFIX ROW - SPECTACULAR EFFECTS - ULTRA SHARP
+   SUFFIX ROW - TEXT MARE, CLAR, FĂRĂ EFECTE
    ============================================ */
 .suffixRow {
   font-family: 'Orbitron', 'Rajdhani', system-ui, sans-serif;
-  font-size: 0.7rem;
+  font-size: 1rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   text-align: center;
-  padding: 3px 10px;
-  border-radius: 4px;
+  padding: 0;
   white-space: nowrap;
-  max-width: 280px;
+  max-width: 320px;
   overflow: visible;
+  margin-top: 4px;
   
-  /* ULTRA SHARP - Solid color base */
-  color: #14F195;
-  -webkit-text-fill-color: #14F195;
+  /* SOLANA GRADIENT TEXT - CLAR */
+  background: linear-gradient(90deg, #14F195 0%, #00D4FF 50%, #9945FF 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
   
-  /* Glow shadow for visibility */
-  text-shadow: 
-    0 0 10px currentColor,
-    0 0 20px currentColor,
-    0 1px 2px rgba(0, 0, 0, 0.9);
-  
-  /* Subtle dark background - NO BORDER */
-  background: rgba(0, 0, 0, 0.7);
-  border: none;
-  
-  /* Rainbow color animation ONLY - efectele de mișcare vin din clase specifice */
-  animation: suffixRainbow 10s linear infinite;
+  /* FĂRĂ EFECTE - FĂRĂ SUBLINIERE */
+  text-shadow: none !important;
+  text-decoration: none !important;
+  border: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
   
   /* ULTRA SHARP rendering */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: geometricPrecision;
-  font-variant-numeric: tabular-nums;
   
-  /* Transform origin pentru animații */
-  transform-origin: center center;
-  will-change: transform, opacity, filter;
+  /* Tranziție lină pentru fade și blur */
+  transition: opacity 0.8s ease-in-out, filter 0.8s ease-in-out;
+  will-change: opacity, filter;
+}
+
+.suffixRow:hover,
+.suffixRow:visited,
+.suffixRow:active,
+.suffixRow:focus {
+  text-decoration: none !important;
+  border: none !important;
+  border-bottom: none !important;
 }
 
 .suffixRow.hovered {
-  transform: scale(1.1);
-  text-shadow: 
-    0 0 10px currentColor,
-    0 0 20px currentColor,
-    0 0 40px currentColor;
+  filter: brightness(1.1);
+  text-decoration: none !important;
 }
 
-/* Rainbow color animation */
-@keyframes suffixRainbow {
-  0% { color: #FFD700; -webkit-text-fill-color: #FFD700; border-color: rgba(255, 215, 0, 0.5); }
-  10% { color: #FF6B6B; -webkit-text-fill-color: #FF6B6B; border-color: rgba(255, 107, 107, 0.5); }
-  20% { color: #FF1493; -webkit-text-fill-color: #FF1493; border-color: rgba(255, 20, 147, 0.5); }
-  30% { color: #9945FF; -webkit-text-fill-color: #9945FF; border-color: rgba(153, 69, 255, 0.5); }
-  40% { color: #7B68EE; -webkit-text-fill-color: #7B68EE; border-color: rgba(123, 104, 238, 0.5); }
-  50% { color: #00D4FF; -webkit-text-fill-color: #00D4FF; border-color: rgba(0, 212, 255, 0.5); }
-  60% { color: #00CED1; -webkit-text-fill-color: #00CED1; border-color: rgba(0, 206, 209, 0.5); }
-  70% { color: #14F195; -webkit-text-fill-color: #14F195; border-color: rgba(20, 241, 149, 0.5); }
-  80% { color: #00FF7F; -webkit-text-fill-color: #00FF7F; border-color: rgba(0, 255, 127, 0.5); }
-  90% { color: #ADFF2F; -webkit-text-fill-color: #ADFF2F; border-color: rgba(173, 255, 47, 0.5); }
-  100% { color: #FFD700; -webkit-text-fill-color: #FFD700; border-color: rgba(255, 215, 0, 0.5); }
+.suffixRow.typing {
+  opacity: 1;
+  filter: blur(0px);
 }
 
-/* suffixGlow removed - efectele de glow sunt acum în animațiile specifice */
-
-/* ============================================
-   ANIMATION EFFECTS FOR SUFFIX - SPECTACULAR!
-   ============================================ */
-
-/* Glitch Effect - CYBERPUNK STYLE */
-.suffixRow.glitch {
-  animation: 
-    suffixRainbow 8s linear infinite,
-    glitchEffect 0.2s ease-in-out infinite !important;
+.suffixRow.fadeOut {
+  opacity: 0;
+  filter: blur(8px); /* Efect de dizolvare în ceață */
 }
 
-@keyframes glitchEffect {
-  0%, 100% { 
-    transform: translate(0) skewX(0deg);
-    text-shadow: 0 0 8px currentColor, 0 0 15px currentColor;
-  }
-  10% { 
-    transform: translate(-4px, 3px) skewX(-5deg);
-    text-shadow: 4px 0 #FF0000, -4px 0 #00FFFF, 0 0 20px currentColor;
-  }
-  20% { 
-    transform: translate(4px, -3px) skewX(5deg);
-    text-shadow: -4px 0 #FF0000, 4px 0 #00FFFF, 0 0 20px currentColor;
-  }
-  30% { 
-    transform: translate(-3px, -2px) skewX(-3deg);
-    text-shadow: 3px 0 #FF0000, -3px 0 #00FFFF;
-  }
-  40% { 
-    transform: translate(3px, 2px) skewX(3deg);
-    text-shadow: -3px 0 #FF0000, 3px 0 #00FFFF;
-  }
-  50% { 
-    transform: translate(-2px, -1px) skewX(-2deg);
-    text-shadow: 2px 0 #9945FF, -2px 0 #14F195;
-  }
-  60% { 
-    transform: translate(2px, 1px) skewX(2deg);
-    text-shadow: -2px 0 #9945FF, 2px 0 #14F195;
-  }
-  70% { 
-    transform: translate(-1px, 2px) skewX(-1deg);
-    text-shadow: 1px 0 #FF0000, -1px 0 #00FFFF;
-  }
-  80% { 
-    transform: translate(1px, -2px) skewX(1deg);
-    text-shadow: -1px 0 #FF0000, 1px 0 #00FFFF;
-  }
-  90% { 
-    transform: translate(0, 1px) skewX(0deg);
-  }
-}
-
-/* Bounce Effect - ENERGETIC JUMP */
-.suffixRow.bounce {
-  animation: 
-    suffixRainbow 8s linear infinite,
-    bounceEffect 0.6s ease-in-out infinite !important;
-}
-
-@keyframes bounceEffect {
-  0%, 100% { 
-    transform: translateY(0) scale(1); 
-    filter: brightness(1);
-  }
-  20% { 
-    transform: translateY(-12px) scale(1.1); 
-    filter: brightness(1.3);
-    text-shadow: 0 8px 15px rgba(0,0,0,0.4);
-  }
-  40% { 
-    transform: translateY(0) scale(0.95); 
-    filter: brightness(1);
-  }
-  60% { 
-    transform: translateY(-6px) scale(1.05); 
-    filter: brightness(1.2);
-    text-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  }
-  80% { 
-    transform: translateY(0) scale(0.98); 
-    filter: brightness(1);
-  }
-}
-
-/* Shake Effect - EARTHQUAKE INTENSITY */
-.suffixRow.shake {
-  animation: 
-    suffixRainbow 8s linear infinite,
-    shakeEffect 0.3s ease-in-out infinite !important;
-}
-
-@keyframes shakeEffect {
-  0%, 100% { transform: translateX(0) rotate(0deg) scale(1); }
-  10% { transform: translateX(-5px) rotate(-4deg) scale(1.02); }
-  20% { transform: translateX(5px) rotate(4deg) scale(1.02); }
-  30% { transform: translateX(-5px) rotate(-4deg) scale(1.01); }
-  40% { transform: translateX(5px) rotate(4deg) scale(1.01); }
-  50% { transform: translateX(-3px) rotate(-2deg) scale(1); }
-  60% { transform: translateX(3px) rotate(2deg) scale(1); }
-  70% { transform: translateX(-3px) rotate(-2deg) scale(0.99); }
-  80% { transform: translateX(3px) rotate(2deg) scale(0.99); }
-  90% { transform: translateX(-1px) rotate(-1deg) scale(1); }
-}
-
-/* Pulse Effect - HEARTBEAT POWER */
-.suffixRow.pulse {
-  animation: 
-    suffixRainbow 8s linear infinite,
-    pulseEffect 0.8s ease-in-out infinite !important;
-}
-
-@keyframes pulseEffect {
-  0%, 100% { 
-    transform: scale(1);
-    filter: brightness(1);
-    text-shadow: 0 0 5px currentColor;
-  }
-  25% { 
-    transform: scale(1.25);
-    filter: brightness(1.6);
-    text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
-  }
-  50% { 
-    transform: scale(0.95);
-    filter: brightness(1.1);
-    text-shadow: 0 0 10px currentColor;
-  }
-  75% { 
-    transform: scale(1.15);
-    filter: brightness(1.4);
-    text-shadow: 0 0 15px currentColor, 0 0 30px currentColor;
-  }
-}
-
-/* Wave Effect - OCEAN FLOW */
-.suffixRow.wave {
-  animation: 
-    suffixRainbow 8s linear infinite,
-    waveEffect 1.2s ease-in-out infinite !important;
-}
-
-@keyframes waveEffect {
-  0%, 100% { 
-    transform: translateY(0) skewX(0deg) rotateZ(0deg); 
-    filter: brightness(1);
-  }
-  25% { 
-    transform: translateY(-8px) skewX(8deg) rotateZ(2deg); 
-    filter: brightness(1.2);
-  }
-  50% { 
-    transform: translateY(0) skewX(0deg) rotateZ(0deg); 
-    filter: brightness(1);
-  }
-  75% { 
-    transform: translateY(-8px) skewX(-8deg) rotateZ(-2deg); 
-    filter: brightness(1.2);
-  }
-}
-
-/* Flicker Effect - NEON LIGHT */
-.suffixRow.flicker {
-  animation: 
-    suffixRainbow 8s linear infinite,
-    flickerEffect 0.1s ease-in-out infinite !important;
-}
-
-@keyframes flickerEffect {
-  0%, 100% { 
-    opacity: 1; 
-    filter: brightness(1);
-    text-shadow: 0 0 10px currentColor;
-  }
-  25% { 
-    opacity: 0.4; 
-    filter: brightness(2);
-    text-shadow: 0 0 30px currentColor, 0 0 60px currentColor;
-  }
-  50% { 
-    opacity: 1; 
-    filter: brightness(1.5);
-    text-shadow: 0 0 15px currentColor;
-  }
-  75% { 
-    opacity: 0.6; 
-    filter: brightness(1.8);
-    text-shadow: 0 0 25px currentColor, 0 0 50px currentColor;
-  }
-}
-
-/* Zoom Effect - 3D PERSPECTIVE */
-.suffixRow.zoom {
-  animation: 
-    suffixRainbow 8s linear infinite,
-    zoomEffect 1.5s ease-in-out infinite !important;
-}
-
-@keyframes zoomEffect {
-  0%, 100% { 
-    transform: scale(1) perspective(500px) translateZ(0) rotateX(0deg);
-    filter: brightness(1);
-  }
-  50% { 
-    transform: scale(1.35) perspective(500px) translateZ(50px) rotateX(5deg);
-    filter: brightness(1.5);
-    text-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  }
-}
-
-/* Spin Effect - 3D ROTATION */
-.suffixRow.spin {
-  animation: 
-    suffixRainbow 8s linear infinite,
-    spinEffect 2s linear infinite !important;
-  transform-style: preserve-3d;
-}
-
-@keyframes spinEffect {
-  0% { 
-    transform: rotateY(0deg) scale(1); 
-    filter: brightness(1);
-  }
-  25% { 
-    transform: rotateY(90deg) scale(0.8); 
-    filter: brightness(0.7);
-  }
-  50% { 
-    transform: rotateY(180deg) scale(1); 
-    filter: brightness(1);
-  }
-  75% { 
-    transform: rotateY(270deg) scale(0.8); 
-    filter: brightness(0.7);
-  }
-  100% { 
-    transform: rotateY(360deg) scale(1); 
-    filter: brightness(1);
-  }
-}
-
-/* Float Effect - LEVITATION */
-.suffixRow.float {
-  animation: 
-    suffixRainbow 8s linear infinite,
-    floatEffect 2s ease-in-out infinite !important;
-}
-
-@keyframes floatEffect {
-  0%, 100% { 
-    transform: translateY(0) translateX(0) rotate(0deg);
-    text-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  }
-  25% { 
-    transform: translateY(-10px) translateX(5px) rotate(2deg);
-    text-shadow: 0 15px 25px rgba(0,0,0,0.4);
-  }
-  50% { 
-    transform: translateY(0) translateX(8px) rotate(0deg);
-    text-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  }
-  75% { 
-    transform: translateY(-10px) translateX(5px) rotate(-2deg);
-    text-shadow: 0 15px 25px rgba(0,0,0,0.4);
-  }
-}
-
-/* Explode Effect - SUPERNOVA */
+/* TOATE EFECTELE DE ANIMAȚIE DEZACTIVATE - Clean & Simple */
+/* Clasele rămân pentru compatibilitate dar nu fac nimic */
+.suffixRow.glitch,
+.suffixRow.bounce,
+.suffixRow.shake,
+.suffixRow.pulse,
+.suffixRow.wave,
+.suffixRow.flicker,
+.suffixRow.zoom,
+.suffixRow.spin,
+.suffixRow.float,
 .suffixRow.explode {
-  animation: 
-    suffixRainbow 8s linear infinite,
-    explodeEffect 1.2s ease-in-out infinite !important;
-}
-
-@keyframes explodeEffect {
-  0%, 100% { 
-    transform: scale(1);
-    filter: brightness(1) blur(0);
-    letter-spacing: 0.1em;
-    text-shadow: 0 0 5px currentColor;
-  }
-  25% { 
-    transform: scale(1.5);
-    filter: brightness(2.5) blur(0);
-    letter-spacing: 0.3em;
-    text-shadow: 0 0 30px currentColor, 0 0 60px currentColor, 0 0 90px currentColor;
-  }
-  50% { 
-    transform: scale(0.8);
-    filter: brightness(0.8) blur(1px);
-    letter-spacing: 0em;
-    text-shadow: 0 0 10px currentColor;
-  }
-  75% { 
-    transform: scale(1.2);
-    filter: brightness(1.5) blur(0);
-    letter-spacing: 0.15em;
-    text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
-  }
+  /* Toate folosesc același stil simplu */
+  animation: simpleGradientFlow 6s linear infinite;
 }
 
 /* ============================================
-   BITS LOGO
+   BITS LOGO - MAI MARE, CRISTAL CLAR
    ============================================ */
 .bitsLogo {
-  width: 20px;
-  height: 20px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   object-fit: cover;
   
-  /* Glow effect */
-  box-shadow: 
-    0 0 8px rgba(20, 241, 149, 0.5),
-    0 0 16px rgba(20, 241, 149, 0.3);
+  /* FĂRĂ EFECTE - Complet clar */
+  box-shadow: none;
+  filter: none;
   
-  /* Slow rotation */
-  animation: logoSpin 15s linear infinite;
-}
-
-@keyframes logoSpin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  /* FĂRĂ ANIMAȚIE */
+  animation: none;
+  
+  /* CRISP RENDERING */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
 /* $BITS text */
@@ -619,154 +197,87 @@
 }
 
 /* ============================================
-   MOBILE RESPONSIVE
+   MOBILE RESPONSIVE - TEXT MARE, LOGO CLAR
    ============================================ */
 @media (max-width: 768px) {
   .mainRow {
-    font-size: 0.8rem;
-    gap: 4px;
+    font-size: 0.85rem;
+    gap: 5px;
   }
   
   .bitsLogo {
-    width: 16px;
-    height: 16px;
+    width: 22px;
+    height: 22px;
   }
   
   .bitsText,
   .presaleText {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
   
-  /* LOGO MODE - Mai mic pe mobil sau ascuns */
-  .logoMode {
-    gap: 2px !important;
-    padding: 2px 6px !important;
-  }
-  
-  .logoMode img {
-    width: 12px !important;
-    height: 12px !important;
-  }
-  
-  /* EXCHANGE MODE - Mai compact pe mobil */
-  .exchangeMode {
-    gap: 4px !important;
-    padding: 2px 8px !important;
-    font-size: 0.65rem !important;
-  }
-  
-  .exchangeMode img {
-    width: 14px !important;
-    height: 14px !important;
-  }
-  
-  /* SLOGAN MAI MARE PE MOBIL - SOLANA STYLE */
+  /* SLOGAN TEXT - MARE ȘI CLAR PE MOBIL */
   .suffixRow {
-    font-size: 0.75rem !important;
-    font-weight: 800 !important;
-    letter-spacing: 0.08em;
-    padding: 5px 12px;
-    margin-top: 3px;
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em;
+    padding: 0 !important;
+    margin-top: 5px !important;
     
     /* SOLANA GRADIENT TEXT */
-    background: linear-gradient(135deg, #14F195 0%, #00D4FF 50%, #9945FF 100%) !important;
+    background: linear-gradient(90deg, #14F195 0%, #00D4FF 50%, #9945FF 100%) !important;
     -webkit-background-clip: text !important;
     background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
-    color: transparent !important;
     
-    /* Sharp - fără neon/glow */
     text-shadow: none !important;
-    -webkit-font-smoothing: antialiased !important;
-    text-rendering: geometricPrecision !important;
-    
-    /* NO Border */
     border: none !important;
-    border-radius: 10px !important;
-    position: relative !important;
+    box-shadow: none !important;
   }
   
   .sloganContainer {
-    margin-top: 2px;
+    margin-top: 3px;
+    background: transparent !important;
   }
 }
 
 @media (max-width: 480px) {
+  .mainRow {
+    font-size: 0.75rem;
+    gap: 4px;
+  }
+  
+  .bitsLogo {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .bitsText,
+  .presaleText {
+    font-size: 0.8rem;
+  }
+  
+  .suffixRow {
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    margin-top: 4px !important;
+  }
+}
+
+@media (max-width: 360px) {
   .mainRow {
     font-size: 0.7rem;
     gap: 3px;
   }
   
   .bitsLogo {
-    width: 14px;
-    height: 14px;
+    width: 18px;
+    height: 18px;
   }
   
-  .bitsText,
-  .presaleText {
-    font-size: 0.75rem;
-  }
-  
-  /* LOGO MODE - Ascuns pe ecrane mici (prea multe logo-uri) */
-  .logoMode {
-    display: none !important;
-  }
-  
-  /* EXCHANGE MODE - Foarte compact pe ecrane mici */
-  .exchangeMode {
-    gap: 3px !important;
-    padding: 2px 6px !important;
-    font-size: 0.6rem !important;
-  }
-  
-  .exchangeMode img {
-    width: 12px !important;
-    height: 12px !important;
-  }
-  
-  /* SLOGAN VIZIBIL SI PE ECRANE MICI - SOLANA STYLE */
   .suffixRow {
-    font-size: 0.7rem !important;
-    font-weight: 800 !important;
-    padding: 4px 10px;
-    display: inline-block !important;
-    
-    /* SOLANA GRADIENT TEXT */
-    background: linear-gradient(135deg, #14F195 0%, #00D4FF 50%, #9945FF 100%) !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    text-shadow: none !important;
-  }
-}
-
-@media (max-width: 360px) {
-  .mainRow {
-    font-size: 0.6rem;
-    gap: 2px;
-  }
-  
-  .bitsLogo {
-    width: 12px;
-    height: 12px;
-  }
-  
-  /* PĂSTRĂM SLOGANUL VIZIBIL CHIAR ȘI PE ECRANE FOARTE MICI - SOLANA STYLE */
-  .suffixRow {
-    font-size: 0.6rem !important;
-    font-weight: 800 !important;
-    padding: 3px 8px;
-    display: inline-block !important;
-    max-width: 180px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    
-    /* SOLANA GRADIENT TEXT */
-    background: linear-gradient(135deg, #14F195 0%, #00D4FF 50%, #9945FF 100%) !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    text-shadow: none !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    max-width: 220px;
   }
 }
 
@@ -791,4 +302,40 @@
     color: #FFD700;
     -webkit-text-fill-color: #FFD700;
   }
+}
+
+/* ============================================
+   📱 IN-APP BROWSER OPTIMIZATIONS
+   (MetaMask, TrustWallet, Coinbase, etc.)
+   ============================================ */
+
+:global(body.in-app-browser) .labelContainer {
+  gap: 2px;
+}
+
+:global(body.in-app-browser) .mainRow {
+  font-size: 0.85rem;
+  gap: 4px;
+}
+
+:global(body.in-app-browser) .bitsLogo {
+  width: 20px;
+  height: 20px;
+}
+
+:global(body.in-app-browser) .suffixRow {
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+}
+
+:global(body.mode-mobile) .labelContainer {
+  gap: 2px;
+}
+
+:global(body.mode-mobile) .mainRow {
+  font-size: 0.9rem;
+}
+
+:global(body.mode-mobile) .suffixRow {
+  font-size: 0.85rem !important;
 }

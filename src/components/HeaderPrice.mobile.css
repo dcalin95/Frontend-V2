@@ -1,0 +1,68 @@
+@media (max-width: 1580px) {
+  .header-price-display {
+    position: fixed !important;
+    top: 210px !important; 
+    
+    /* MUTAT ÎN STÂNGA (Left Side) */
+    left: 20px !important; 
+    right: auto !important;
+    
+    z-index: 999 !important;
+    
+    /* FĂRĂ CONTAINER */
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    
+    padding: 0 !important;
+    margin: 0 !important;
+    
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important; /* Aliniat la stânga */
+    gap: 6px !important;
+    white-space: nowrap !important;
+    pointer-events: none;
+    
+    width: auto !important;
+    max-width: none !important;
+  }
+
+  .price-label {
+    font-size: 1.35rem !important; /* Aceeași mărime */
+    color: #ffffff !important; 
+    font-weight: 800 !important; /* Aceeași grosime */
+    letter-spacing: 1px !important;
+    font-family: 'Orbitron', sans-serif !important; /* Același font */
+    text-shadow: 3px 3px 0px #000000 !important; /* Aceeași umbră */
+    margin-right: 4px !important;
+  }
+
+  .price-value {
+    font-size: 1.35rem !important; /* Aceeași mărime */
+    color: #00FFEA !important; 
+    font-weight: 800 !important; /* Aceeași grosime */
+    font-family: 'Orbitron', sans-serif !important; /* Același font */
+    text-shadow: 3px 3px 0px #000000 !important; /* Aceeași umbră */
+    letter-spacing: 1px !important;
+  }
+  
+  /* === ECRANE MICI (sub 380px) === */
+  @media (max-width: 380px) {
+      .header-price-display {
+          top: 195px !important; 
+          left: 15px !important;
+      }
+      .price-label { font-size: 1.1rem !important; }
+      .price-value { font-size: 1.1rem !important; }
+  }
+  
+  /* === IN-APP BROWSER === */
+  body.in-app-browser .header-price-display {
+      top: 180px !important;
+      left: 20px !important;
+  }
+}

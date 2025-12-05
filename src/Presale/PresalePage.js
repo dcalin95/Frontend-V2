@@ -231,7 +231,7 @@ const PresalePage = () => {
   };
 
   return (
-    <div className="presale-page" style={darkMode ? { background: '#000000' } : {}}>
+    <div className="presale-page">
       {/* 🎨 Switcher (3 poziții) - MOVED BOTTOM LEFT */}
       <div
         onClick={handleToggle}

@@ -30,11 +30,14 @@
 
 @media (max-width: 768px) {
   .staking-main {
-    padding: 0 0 140px 0 !important; /* Safety padding for MetaMask/Trust Wallet bottom bar */
+    /* Safety padding standard pentru mobil */
+    padding: 80px 0 140px 0 !important; 
     gap: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100% !important;
+    overflow-x: hidden !important;
   }
 
   /* ELIMINĂM LEFT/RIGHT - TOTUL VERTICAL! */
@@ -42,9 +45,10 @@
     display: flex;
     flex-direction: column;
     gap: 15px;
-    width: 90%;
+    width: 100% !important; /* FULL WIDTH */
     margin: 0 auto;
-    padding: 0;
+    padding: 0 10px !important; /* Padding minim lateral */
+    box-sizing: border-box !important;
   }
 
   /* LEFT/RIGHT DEVIN INVIZIBILE - DOAR STACK VERTICAL! */
@@ -54,17 +58,20 @@
   }
   
   .staking-bottom {
-    width: 90%;
+    width: 100% !important;
     margin: 0 auto;
-    padding: 0;
+    padding: 0 10px !important;
     display: flex;
     flex-direction: column;
     gap: 15px;
+    box-sizing: border-box !important;
   }
 
   .ai-staking-header {
-    width: 90%;
+    width: 100% !important;
     margin: 0 auto 20px auto;
+    padding: 0 10px !important;
+    box-sizing: border-box !important;
   }
 
   .ai-staking-title {
@@ -82,7 +89,11 @@
     margin: 0;
     padding: 20px;
     min-height: 80px;
-    background: transparent !important;
+    /* Semi-transparent pentru a vedea stelele dar a păstra lizibilitatea */
+    background: rgba(10, 10, 20, 0.6) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    
     border: 1px solid rgba(0, 255, 163, 0.3) !important;
     border-radius: 16px !important;
     box-sizing: border-box;
@@ -99,13 +110,14 @@
 
 @media (max-width: 480px) {
   .staking-main {
-    padding: 0;
+    padding: 70px 0 140px 0 !important;
     gap: 0;
   }
 
   .staking-top-row {
     gap: 15px;
-    width: 90%;
+    width: 100% !important;
+    padding: 0 8px !important;
   }
 
   /* ELIMINĂ COMPLET LEFT/RIGHT PE MOBILE MIC */
@@ -115,12 +127,14 @@
   }
   
   .staking-bottom {
-    width: 90%;
+    width: 100% !important;
     gap: 15px;
+    padding: 0 8px !important;
   }
   
   .ai-staking-header {
-    width: 90%;
+    width: 100% !important;
+    padding: 0 8px !important;
   }
 
   .ai-staking-title {
@@ -133,10 +147,30 @@
 
   .ai-container {
     width: 100%;
-    padding: 20px;
+    padding: 15px;
     min-height: 80px;
-    background: transparent !important;
+    background: rgba(10, 10, 20, 0.6) !important;
     border: 1px solid rgba(0, 255, 163, 0.3) !important;
     border-radius: 16px !important;
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   📱 IN-APP BROWSER OPTIMIZATIONS (MetaMask, TrustWallet, Coinbase, etc.)
+   Fixes for overlays, safe-areas, and hidden content.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+body.in-app-browser .staking-main {
+  /* Extra padding sus pentru a compensa header-ul wallet-ului */
+  padding-top: 120px !important;
+  /* Extra padding jos pentru bara de navigare a wallet-ului */
+  padding-bottom: 100px !important;
+  min-height: 100vh;
+}
+
+body.in-app-browser .ai-container {
+  /* Asigură lățimea corectă în in-app browser */
+  max-width: 100% !important; /* Full width în browser-ul intern */
+  margin-left: auto !important;
+  margin-right: auto !important;
 }

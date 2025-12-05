@@ -7,6 +7,7 @@ import { useAuth } from "../context/AuthContext"; // Auth Context
 import { usePresaleState } from "../Presale/Timer/usePresaleState";
 import PresaleCountdownMini from "../Presale/Timer/PresaleCountdownMini";
 import PresaleLabel from "../Presale/Timer/PresaleLabel";
+import HeaderPrice from "./HeaderPrice";
 import logo from "../assets/logo.png";
 import telegramLogo from "../assets/TLogo.png";
 import xLogo from "../assets/XLogo.png";
@@ -106,6 +107,7 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
               <img src={youtubeLogo} alt="YouTube" width={24} height={24} />
             </a>
           </div>
+          <HeaderPrice />
         </div>
 
         {/* Mobile Hamburger Button - DOAR PE MOBILE - Gemini 3 King Style */}
@@ -148,7 +150,7 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
         {/* ✅ Desktop Navigation - DOAR PE DESKTOP */}
         <nav className="navigation desktop-only">
           <SmartTooltip content={`Project Orbit\nVisual representation of the BitSwapDEX ecosystem.`}>
-            <Link to="/orbit" className="btn-home laser-sharp">
+            <Link to="/orbit" className="btn-orbit laser-sharp">
               <i className="fas fa-bullseye"></i> Orbit
             </Link>
           </SmartTooltip>
@@ -275,6 +277,7 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
                 <PresaleLabel sloganOnly={true} />
               </div>
             )}
+            <HeaderPrice />
             <div className="social">
               <a href="https://t.me/BitSwapDEX_AI/" target="_blank" rel="noopener noreferrer" className="social-link">
                 <img src={telegramLogo} alt="Telegram" width={24} height={24} />

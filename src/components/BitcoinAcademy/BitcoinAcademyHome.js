@@ -22,6 +22,17 @@ const BitcoinAcademyHome = () => {
     }
   }, []);
 
+  // 🔙 BACK BUTTON HANDLER (Browser History Support)
+  useEffect(() => {
+    const handlePopState = (event) => {
+      // Când userul dă back din browser/telefon, închidem modalul
+      setCurrentPage(null);
+    };
+    
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   const bitcoinFundamentals = [
     {
       id: 'satoshi-nakamoto',
@@ -250,6 +261,8 @@ const BitcoinAcademyHome = () => {
   ];
 
   const handleTopicSelect = (topicId) => {
+    // Push state to history for back button support
+    window.history.pushState({ modalOpen: true }, '', window.location.pathname);
     setCurrentPage(topicId);
     setProgress(prev => Math.min(prev + 1, allTopics.length));
     // Scroll to top when selecting a topic
@@ -257,9 +270,11 @@ const BitcoinAcademyHome = () => {
   };
 
   const handleBackToHome = () => {
-    setCurrentPage(null);
-    // Scroll to top when returning to home
-    setTimeout(scrollToTop, 100);
+    if (window.history.state?.modalOpen) {
+      window.history.back();
+    } else {
+      setCurrentPage(null);
+    }
   };
 
   // Scroll to top whenever currentPage changes
@@ -271,11 +286,61 @@ const BitcoinAcademyHome = () => {
 
   if (currentPage) {
     return (
-      <PageRouter 
-        currentPage={currentPage} 
-        onBack={handleBackToHome}
-        onNext={(nextPage) => setCurrentPage(nextPage)}
-      />
+      <div className="active-topic-container" style={{ 
+        position: 'fixed', 
+        top: 0, 
+        left: 0, 
+        width: '100vw', 
+        height: '100vh', 
+        zIndex: 999999, 
+        background: '#050508', 
+        overflowY: 'auto',
+        paddingTop: '0',
+        animation: 'fadeIn 0.3s ease'
+      }}>
+        {/* Floating Close Button */}
+        <button 
+            onClick={handleBackToHome}
+            className="academy-close-btn"
+            aria-label="Close topic"
+            style={{
+              position: 'fixed',
+              top: '20px', /* MUTAT SUS PENTRU FULLSCREEN */
+              right: '20px',
+              width: '44px',
+              height: '44px',
+              borderRadius: '50%',
+              background: 'rgba(10, 10, 20, 0.8)',
+              border: '1px solid rgba(255, 80, 80, 0.5)',
+              color: '#ff5050',
+              fontSize: '1.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 1000000, /* Z-Index MAXIM */
+              cursor: 'pointer',
+              backdropFilter: 'blur(8px)',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.6)',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.1)';
+              e.currentTarget.style.background = 'rgba(255, 80, 80, 0.2)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
+              e.currentTarget.style.background = 'rgba(10, 10, 20, 0.8)';
+            }}
+        >
+            ✕
+        </button>
+
+        <PageRouter 
+          currentPage={currentPage} 
+          onBack={handleBackToHome}
+          onNext={(nextPage) => setCurrentPage(nextPage)}
+        />
+      </div>
     );
   }
 

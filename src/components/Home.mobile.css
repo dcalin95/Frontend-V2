@@ -2,7 +2,15 @@
 
 /* Tablet & Mobile Global Fixes */
 @media (max-width: 1024px) {
-  .home-container {
+  /* ELIMINARE BACKGROUND GLOBAL PENTRU A VEDEA STARFIELD */
+  .home-container,
+  .home-section {
+    background: transparent !important;
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    border: none !important;
     overflow-x: hidden;
     width: 100%;
     padding: 0;
@@ -12,9 +20,6 @@
     padding: var(--container-padding);
     max-width: 100vw;
     overflow: hidden;
-    border: none !important;
-    border-top: none !important;
-    border-bottom: none !important;
   }
   
   /* Elimină toate liniile de separare */
@@ -115,4 +120,44 @@
     margin: 0 -5%; /* Pull back to center if scaled */
     width: 110%;
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   📱 IN-APP BROWSER OPTIMIZATIONS (MetaMask, TrustWallet, Coinbase, etc.)
+   Fixes for overlays, safe-areas, and hidden content.
+   These rules apply when body has class 'in-app-browser' (added by MobileUI.js).
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+body.in-app-browser .home-container {
+  /* Extra padding sus pentru a compensa header-ul wallet-ului care poate fi peste content */
+  padding-top: 120px !important; 
+  /* Extra padding jos pentru bara de navigare a wallet-ului */
+  padding-bottom: 100px !important; 
+  min-height: 100vh;
+}
+
+/* Hero section adjustments for in-app browsers */
+body.in-app-browser .hero {
+  margin-top: 20px !important;
+  min-height: auto !important; /* Evită 100vh fix care poate fi tăiat */
+  padding-bottom: 40px !important;
+}
+
+/* Asigură că butoanele sunt accesibile (nu sunt prea jos) */
+body.in-app-browser .hero-actions {
+  padding-bottom: 20px;
+}
+
+/* Fix pentru video/background care ar putea fi tăiat */
+body.in-app-browser .video-section {
+  margin-bottom: 40px;
+}
+
+/* Asigură vizibilitatea textului în browserele dark mode forțate */
+body.in-app-browser h1,
+body.in-app-browser h2,
+body.in-app-browser h3,
+body.in-app-browser p {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }

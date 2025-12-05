@@ -207,6 +207,7 @@
 }
 
 /* === ICON COLORS === */
+.navigation .btn-orbit i       { color: #00ffff; }
 .navigation .btn-home i        { color: #69db7c; }
 .navigation .btn-buy i         { color: #ffd43b; }
 .navigation .btn-tokenomics i  { color: #4dabf7; }
@@ -223,6 +224,7 @@
 .navigation .btn-claude4-ai i  { color: #00D4FF; }
 
 /* === BORDERS TO MATCH === */
+.btn-orbit       { border-color: #00ffff; }
 .btn-home        { border-color: #69db7c; }
 .btn-buy         { border-color: #ffd43b; }
 .btn-tokenomics  { border-color: #4dabf7; }
@@ -342,6 +344,8 @@
   overflow: visible;
   position: relative;
   padding-bottom: 2px;
+  margin-right: 15px; /* Distanță față de social */
+  margin-left: -10px; /* Tragere ușoară spre stânga */
   
   /* Smooth transitions */
   transition: all 0.3s ease;
@@ -365,46 +369,56 @@
   text-decoration: none;
 }
 
-.header-mini-timer > a:last-child {
-  text-decoration: none;
-  border: none;
-  outline: none;
+.header-mini-timer a,
+.header-mini-timer a *,
+.header-mini-timer > a:last-child,
+.header-mini-timer > a:last-child *,
+.header-mini-timer > a:last-child:hover,
+.header-mini-timer > a:last-child:hover *,
+.header-mini-timer > a:last-child:visited,
+.header-mini-timer > a:last-child:visited *,
+.header-mini-timer > a:last-child:active,
+.header-mini-timer > a:last-child:focus {
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+  border: none !important;
+  border-bottom: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .header-mini-timer > div:last-child span,
 .header-mini-timer > a:last-child span {
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: 700;
   font-family: 'Orbitron', 'Rajdhani', system-ui, sans-serif;
-  letter-spacing: 0.1em;
-  padding: 2px 8px;
+  letter-spacing: 0.05em;
+  padding: 0;
   white-space: nowrap;
   display: inline-block;
-  text-decoration: none;
+  text-decoration: none !important;
   
-  /* FĂRĂ BORDER - doar text gradient curat */
+  /* FĂRĂ BORDER - FĂRĂ SUBLINIERE */
   background: transparent;
-  border: none;
+  border: none !important;
+  border-bottom: none !important;
   border-radius: 0;
-  box-shadow: none;
+  box-shadow: none !important;
   
   /* SOLANA GRADIENT TEXT */
-  background-image: linear-gradient(90deg, #14F195 0%, #00D4FF 35%, #9945FF 70%, #14F195 100%);
-  background-size: 200% 100%;
+  background-image: linear-gradient(90deg, #14F195 0%, #00D4FF 50%, #9945FF 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
   
   /* Sharp text */
-  text-shadow: none;
+  text-shadow: none !important;
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricPrecision;
   
-  /* Animație gradient flowing */
-  animation: desktopSloganFlow 4s linear infinite;
-  
-  transition: all 0.3s ease;
+  /* FĂRĂ animație */
+  animation: none;
 }
 
 .header-mini-timer > a:last-child:hover span {

@@ -557,3 +557,20 @@
     display: none;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   📱 IN-APP BROWSER OPTIMIZATIONS (MetaMask, TrustWallet, Coinbase, etc.)
+   Sidebar rămâne VIZIBIL pe desktop, doar pe mobil se ascunde
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* Touch-friendly pentru in-app browsers PE DESKTOP */
+body.in-app-browser .sidebar-btn,
+body.in-app-browser .sidebar-ambassador-btn,
+body.in-app-browser .sidebar-user-btn {
+  min-height: 48px !important;
+  padding: 12px 16px !important;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}

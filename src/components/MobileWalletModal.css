@@ -13,8 +13,9 @@
   -webkit-backdrop-filter: blur(8px);
   z-index: 99999;
   display: flex;
-  align-items: flex-end; /* Slide from bottom */
+  align-items: flex-start; /* Poziționat mai sus */
   justify-content: center;
+  padding-top: 60px; /* Spațiu de sus */
   animation: mobileOverlayIn 0.3s ease-out;
 }
 
@@ -29,15 +30,15 @@
 
 .mobile-wallet-modal {
   background: linear-gradient(180deg, #0a0a0f 0%, #050508 100%);
-  border-radius: 24px 24px 0 0;
-  width: 100%;
-  max-width: 100vw;
-  max-height: 85vh;
+  border-radius: 20px;
+  width: 98%; /* Lățime maximă pe mobil */
+  max-width: 420px; /* Puțin mai lat */
+  max-height: 80vh; /* Mai mult spațiu vertical */
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.8),
-              0 0 0 1px rgba(20, 241, 149, 0.2);
-  animation: mobileModalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8),
+              0 0 0 1px rgba(20, 241, 149, 0.3);
+  animation: mobileModalFadeIn 0.3s ease-out;
   
   /* Safe area for iPhone notch/home indicator */
   padding-bottom: env(safe-area-inset-bottom, 20px);
@@ -50,6 +51,17 @@
   }
   to {
     transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes mobileModalFadeIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
     opacity: 1;
   }
 }
@@ -245,16 +257,17 @@
 
 /* Wallet List */
 .mobile-wallet-list {
-  padding: 20px;
+  padding: 15px 10px; /* Padding redus pe lateral */
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .mobile-wallet-item {
   display: flex;
   gap: 8px;
   align-items: stretch;
+  width: 100%; /* Full width */
 }
 
 .mobile-wallet-btn {
@@ -262,13 +275,13 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 16px;
+  padding: 14px; /* Padding ușor redus */
   background: rgba(20, 241, 149, 0.05);
   border: 2px solid rgba(20, 241, 149, 0.2);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
-  min-height: 64px;
+  min-height: auto; /* Lăsăm conținutul să dicteze înălțimea */
 }
 
 .mobile-wallet-btn.installed {
@@ -306,17 +319,23 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  overflow: hidden; /* Previne ieșirea textului */
 }
 
 .wallet-info strong {
   font-size: 1rem;
   font-weight: 700;
   color: #ffffff;
+  white-space: normal; /* Permite wrap */
+  word-break: break-word;
+  line-height: 1.2;
 }
 
 .wallet-status {
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.5);
+  white-space: normal;
+  word-break: break-word;
 }
 
 .wallet-status.installed-badge {
@@ -403,8 +422,13 @@
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 body.in-app-browser .mobile-wallet-modal {
-  max-height: 90vh; /* Mai mult spațiu în in-app browsers */
-  border-radius: 20px 20px 0 0;
+  max-height: 70vh; /* Compact în in-app browsers */
+  border-radius: 20px;
+  padding-bottom: 40px !important; /* Spațiu extra jos pentru bara de navigare */
+}
+
+body.in-app-browser .mobile-wallet-overlay {
+  padding-top: 50px;
 }
 
 body.in-app-browser .mobile-wallet-header {
@@ -426,6 +450,14 @@ body.in-app-browser .mobile-install-btn {
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 @media (max-width: 360px) {
+  .mobile-wallet-overlay {
+    padding-top: 40px;
+  }
+  
+  .mobile-wallet-modal {
+    max-height: 80vh;
+  }
+
   body.mode-mobile .mobile-wallet-header h3 {
     font-size: 1.1rem;
   }
@@ -470,8 +502,12 @@ body.in-app-browser .mobile-install-btn {
    ═══════════════════════════════════════════════════════════════════════════════ */
 
 body.orientation-landscape .mobile-wallet-modal {
-  max-height: 95vh;
-  border-radius: 16px 16px 0 0;
+  max-height: 85vh;
+  border-radius: 16px;
+}
+
+body.orientation-landscape .mobile-wallet-overlay {
+  padding-top: 20px;
 }
 
 body.orientation-landscape .mobile-wallet-header {

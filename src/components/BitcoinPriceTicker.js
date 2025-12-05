@@ -35,12 +35,12 @@ const BitcoinPriceTicker = () => {
       if (!response.ok) {
         throw new Error('Failed to fetch Bitcoin price');
       }
-
+      
       const data = await response.json();
       const currentPrice = data.bitcoin.usd;
       const change = data.bitcoin.usd_24h_change;
-
-      setPrevPrice(price); 
+      
+        setPrevPrice(price);
       setPrice(currentPrice);
       setChange24h(change);
       setIsLoading(false);
@@ -133,7 +133,7 @@ const BitcoinPriceTicker = () => {
             <div className="gemini-logo-ring"></div>
             <span className="gemini-logo-text">₿</span>
           </div>
-
+          
           {/* Price Section */}
           <div className="gemini-price-section">
             <div className="gemini-label">Bitcoin (BTC)</div>
@@ -141,16 +141,16 @@ const BitcoinPriceTicker = () => {
             <div className={`gemini-price-display ${isPriceUp ? 'flash-green' : ''} ${isPriceDown ? 'flash-red' : ''}`}>
               {isLoading ? (
                 <span className="gemini-loading-text">Analyzing...</span>
-              ) : (
+            ) : (
                 formatPrice(price)
-              )}
-            </div>
-
+            )}
+          </div>
+          
             {/* Change Pill */}
             <div className={`gemini-change-pill ${isPositive ? 'positive' : 'negative'}`}>
               {isPositive ? '↗' : '↘'} {formatChange(change24h)} (24h)
-            </div>
           </div>
+        </div>
 
         </div>
 
@@ -159,10 +159,10 @@ const BitcoinPriceTicker = () => {
           <div className="gemini-ai-insight">
              <span className="gemini-spark-icon">✨</span>
              {isPositive ? "Market Sentiment: Bullish" : "Market Sentiment: Bearish"}
-          </div>
-          <div className="gemini-source">CoinGecko API</div>
         </div>
-
+          <div className="gemini-source">CoinGecko API</div>
+      </div>
+      
       </div>
     </div>
   );

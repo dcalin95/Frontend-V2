@@ -15,11 +15,11 @@ const AppWrapper = () => {
     <AuthProvider>
       <WalletProvider>
         <SolanaProvider>
-          <GeoLocationProvider>
-            <ThemeProvider>
-              <App />
-            </ThemeProvider>
-          </GeoLocationProvider>
+            <GeoLocationProvider>
+              <ThemeProvider>
+                <App />
+              </ThemeProvider>
+            </GeoLocationProvider>
         </SolanaProvider>
       </WalletProvider>
     </AuthProvider>

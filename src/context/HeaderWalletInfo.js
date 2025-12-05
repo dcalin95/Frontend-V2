@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useWallet } from "../context/WalletContext";
 import { useGeoLocation } from "../context/GeoLocationContext"; // 🌍 Import Geo
-import UnifiedWalletModal from "../components/UnifiedWalletModal";
+// UnifiedWalletModal ELIMINAT - SmartWalletModal din App.js gestionează automat
 import SwapModal from "../components/SwapModal";
 import HistoryModal from "../components/HistoryModal";
 import axios from "axios"; // For API calls
@@ -11,6 +11,7 @@ import "./HeaderWalletInfo.mobile.css"; // 📱 Mobile Compact Styles
 import ethIcon from "../assets/icons/evm-logo.jpg";
 import bitsIcon from "../assets/logo.png"; // Updated to use the correct project logo
 import phantomLogo from "../assets/icons/phantom-logo.png"; // Import local Phantom logo
+import walletLogo from "../assets/icons/wallet.png"; // Wallet button logo
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
 const CURRENT_STAGE_PRICE = 0.00065; // Defined presale price constant
@@ -50,6 +51,7 @@ const HeaderWalletInfo = () => {
     connectWallet,
     walletName,
     walletType,
+    setShowWalletModal,
   } = useWallet();
 
   const { countryCode, country, city, ip } = useGeoLocation(); // 🌍 Get Geo Data
@@ -190,43 +192,30 @@ const HeaderWalletInfo = () => {
 
   return (
     <>
-      <UnifiedWalletModal />
+      {/* SmartWalletModal se randează global în App.js - elimină duplicatul */}
       <div className={`wallet-toggle-wrapper ${showWalletBox ? "open" : "closed"}`}>
       {!showWalletBox && (
         <button className="wallet-toggle-btn-minimal" onClick={() => setShowWalletBox(true)} aria-label="Open Wallet">
-          {/* SHARP CRYPTO WALLET SVG - NO BLUR - HIGH CONTRAST */}
-          <svg className="wallet-svg-animated" width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="sharpGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#00FFA3"/> {/* Neon Green */}
-                <stop offset="100%" stopColor="#00D4FF"/> {/* Cyan */}
-              </linearGradient>
-            </defs>
-            
-            {/* Main Wallet Body - Sharp Vectors */}
-            <path d="M10 16H54C56.2 16 58 17.8 58 20V50C58 52.2 56.2 54 54 54H10C7.8 54 6 52.2 6 50V20C6 17.8 7.8 16 10 16Z" fill="#0a0a0a" stroke="url(#sharpGrad)" strokeWidth="2.5" />
-            
-            {/* Top Flap / Fold */}
-            <path d="M10 16V12C10 9.8 11.8 8 14 8H50C52.2 8 54 9.8 54 12V16" stroke="url(#sharpGrad)" strokeWidth="2.5" fill="none" />
-            
-            {/* Digital Chip / Circuit */}
-            <rect x="14" y="24" width="12" height="18" rx="2" fill="none" stroke="#9945FF" strokeWidth="2" />
-            <path d="M14 28H26 M14 33H26 M14 38H26" stroke="#9945FF" strokeWidth="1.5" />
-            
-            {/* Coin/Lock Mechanism - High Contrast */}
-            <circle cx="46" cy="35" r="9" fill="#0a0a0a" stroke="#FFD700" strokeWidth="2.5" />
-            <path d="M46 31V39 M42 35H50" stroke="#FFD700" strokeWidth="2.5" strokeLinecap="square" />
-            
-            {/* Connection Dot */}
-            <circle cx="46" cy="35" r="3" fill="#FFD700" />
-          </svg>
+          <img src={bitsIcon} alt="BITS" className="wallet-bits-bg" />
+          <img src={walletLogo} alt="Wallet" className="wallet-logo-img" />
         </button>
       )}
 
-      {showWalletBox && (
+      {/* Când NU e conectat - buton direct fără container */}
+      {showWalletBox && !walletAddress && (
+        <button
+          className="connect-wallet-button-floating"
+          onClick={() => { setShowWalletModal(true); setShowWalletBox(false); }}
+        >
+          <i className="fa-solid fa-link"></i>
+          <span>CONNECT</span>
+        </button>
+      )}
+
+      {/* Când E conectat - container cu info */}
+      {showWalletBox && walletAddress && (
         <div className="wallet-header-info">
           <button className="wallet-close-btn" onClick={() => setShowWalletBox(false)}>✖</button>
-          {walletAddress ? (
             <>
               {/* Wallet Name & Address with Icon */}
               <div className="wallet-identifier">
@@ -304,16 +293,6 @@ const HeaderWalletInfo = () => {
                 🔓 Disconnect
               </button>
             </>
-          ) : (
-            <div className="wallet-dropdown">
-              <button
-                className="connect-wallet-button"
-                onClick={() => connectWallet()}
-              >
-                🔌 Connect Wallet
-              </button>
-            </div>
-          )}
         </div>
       )}
     </div>

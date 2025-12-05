@@ -201,16 +201,21 @@ const SmartTooltip = ({ children, content, className = '' }) => {
   // Desktop: 4 secunde delay
   // Mobile: doar pe click
   const handleMouseEnter = () => {
-    if (isMobile) return; // Pe mobil, doar click funcționează
+    // Pe mobil: DISABLE TOTAL HOVER (doar click)
+    if (isMobile) return; 
     
     if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
     
     if (!isVisible) {
       openTimerRef.current = setTimeout(() => {
+        // Verifică dacă mouse-ul mai e pe element (preventiv)
+        if (!targetRef.current) return;
+        
         setIsVisible(true);
+        // Sunet discret, doar dacă nu e deja vizibil
         const soundParams = generateSoundParams(content);
         playHoverSound(soundParams);
-      }, 4000); // ⏳ 4 SECUNDE DELAY - mai puțin sensibil
+      }, 800); // ⏳ 0.8 SECUNDE DELAY (Standard UX)
     }
   };
 

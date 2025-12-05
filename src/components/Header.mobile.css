@@ -89,7 +89,7 @@
     background: #000000 !important;
     background-color: #000000 !important;
     border: 2px solid currentColor !important;
-    color: #ffffff !important;
+    /* color: #ffffff !important; REMOVED TO FIX WHITE BUTTONS */
     text-decoration: none !important;
     width: 100% !important;
     min-height: 40px !important;
@@ -128,7 +128,7 @@
     color: #ff5050 !important;
   }
 
-  /* TEXT OPTIMIZAT (micsorat cu 15%, fara bold excesiv, SOLANA GRADIENT) */
+  /* TEXT OPTIMIZAT (micsorat cu 15%, fara bold excesiv, CULOARE MOSTENITA) */
   .mobile-text {
     font-size: 0.81rem !important; /* Redus de la 0.9rem cu ~10% */
     font-weight: 600 !important; /* Putin mai bold pentru ca gradientul sa se vada bine */
@@ -141,31 +141,28 @@
     -webkit-font-smoothing: antialiased !important;
     text-shadow: none !important;
     
-    /* SOLANA GRADIENT TEXT */
-    background: linear-gradient(135deg, #00FFA3 0%, #DC1FFF 100%) !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    color: transparent !important; /* Fallback */
+    /* FIX: Inherit color from parent button to ensure specific button colors work */
+    color: inherit !important;
+    background: none !important;
+    -webkit-text-fill-color: initial !important;
+    text-shadow: inherit !important;
   }
 
-  /* ICON OPTIMIZAT - SOLANA COLOR */
+  /* ICON OPTIMIZAT - CULOARE MOSTENITA */
   .mobile-nav-menu a i,
   .mobile-nav-menu button i { 
     font-size: 1.1rem !important;
     opacity: 1 !important;
     filter: none !important;
-    text-shadow: 0 0 10px rgba(0, 255, 163, 0.3) !important;
+    text-shadow: inherit !important;
     margin: 0 !important;
     padding: 0 !important;
     line-height: 1 !important;
     
-    /* Gradient si pe iconite pentru consistenta */
-    background: linear-gradient(135deg, #00FFA3 0%, #DC1FFF 100%) !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    color: transparent !important;
+    /* FIX: Inherit color from parent */
+    color: inherit !important;
+    background: none !important;
+    -webkit-text-fill-color: initial !important;
   }
 
   .mobile-nav-menu a:hover,
@@ -205,13 +202,22 @@
     text-shadow: 0 0 8px rgba(255, 0, 255, 0.8) !important;
   }
 
-  /* Orbit/Home - Cyan */
-  .mobile-nav-menu a.mobile-btn-orbit,
-  .mobile-nav-menu a.mobile-btn-home {
-    border-color: #00ffff !important;
+  /* Orbit - Cyan Clean */
+  .mobile-nav-menu a.mobile-btn-orbit {
+    border-color: rgba(0, 255, 255, 0.4) !important;
     color: #00ffff !important;
-    box-shadow: 0 0 12px rgba(0, 255, 255, 0.5) !important;
-    text-shadow: 0 0 8px rgba(0, 255, 255, 0.8) !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    background: rgba(0, 255, 255, 0.05) !important;
+  }
+
+  /* Home - Green Clean */
+  .mobile-nav-menu a.mobile-btn-home {
+    border-color: rgba(105, 219, 124, 0.4) !important;
+    color: #69db7c !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    background: rgba(105, 219, 124, 0.05) !important;
   }
 
   /* Paper Trading - Orange */
@@ -350,15 +356,6 @@
     height: 28px !important;
   }
 
-  /* Update mobile menu top position when scrolled */
-  .header.scrolled + .mobile-nav-container .mobile-nav-menu, 
-  body.mobile-menu-open .header.scrolled ~ div .mobile-nav-menu {
-     /* This needs JS inline style update or !important override if possible, but JS handled top logic is cleaner. 
-        However, since the menu is fixed top, we might just want it to push down.
-        Actually, since the menu overlays everything, maybe we don't change it dynamically or we accept a gap.
-     */
-  }
-
   /* Hide old hamburger styles if any remain */
   .hamburger { display: none !important; }
 
@@ -368,12 +365,12 @@
     align-items: center; 
     justify-content: flex-start; /* Aliniere la stânga */
     flex: 1; 
-    gap: 0.15rem; /* Gap foarte mic */
+    gap: 0; 
     order: 2; 
     min-width: 0; 
     margin-right: 0;
-    margin-left: -20px; /* Mai mult spre stânga */
-    padding-right: 3px;
+    margin-left: 0; /* Reset - nu mai tragem stânga */
+    padding-right: 0;
   }
   
   /* === TIMER - AI SOLANA STYLE (MOBILE) === */
@@ -381,22 +378,24 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
+    gap: 1px;
     text-align: center; 
     
-    /* Layout - mai compact și spre stânga */
+    /* Layout - Mărit cu încă 5% (Total 10%) */
     flex: 0 1 auto; 
     min-width: auto; 
-    max-width: 240px; /* Lățime mai mare pentru sloganuri lungi */
+    max-width: none; 
     white-space: nowrap; 
     overflow: visible; 
-    margin-right: 2px;
-    margin-left: -5px; /* Extra stânga */
+    margin-right: 0;
+    margin-left: -10px; 
+    transform: scale(1.10); /* Mărire 10% */
+    transform-origin: center center; /* Mărire din centru */
     
     /* Smooth transitions */
     transition: all 0.3s ease;
   }
-  
+
   .header-mini-timer:hover {
     filter: drop-shadow(0 0 6px rgba(20, 241, 149, 0.5));
   }
@@ -416,32 +415,42 @@
     text-decoration: none !important;
   }
   
-  .header-mini-timer > a:last-child {
+  .header-mini-timer a,
+  .header-mini-timer a *,
+  .header-mini-timer > a:last-child,
+  .header-mini-timer > a:last-child *,
+  .header-mini-timer > a:last-child:hover,
+  .header-mini-timer > a:last-child:hover *,
+  .header-mini-timer > a:last-child:visited,
+  .header-mini-timer > a:last-child:visited * {
     text-decoration: none !important;
+    text-decoration-line: none !important;
     border: none !important;
+    border-bottom: none !important;
     outline: none !important;
+    box-shadow: none !important;
   }
   
   .header-mini-timer > div:last-child span,
   .header-mini-timer > a:last-child span {
-    font-size: 0.72rem !important;
+    font-size: 0.9rem !important; /* Mărit de la 0.85rem */
     font-weight: 700 !important;
     font-family: 'Orbitron', 'Rajdhani', system-ui, sans-serif !important;
-    letter-spacing: 0.1em !important;
-    padding: 3px 8px !important;
+    letter-spacing: 0.05em !important;
+    padding: 0 !important;
     white-space: nowrap !important;
     display: inline-block !important;
     text-decoration: none !important;
     
-    /* FĂRĂ CHENAR EVIDENT - doar text gradient */
+    /* FĂRĂ CHENAR - FĂRĂ SUBLINIERE */
     background: transparent !important;
     border: none !important;
+    border-bottom: none !important;
     border-radius: 0 !important;
     box-shadow: none !important;
     
     /* SOLANA GRADIENT TEXT - CURAT */
-    background-image: linear-gradient(90deg, #14F195 0%, #00D4FF 35%, #9945FF 70%, #14F195 100%) !important;
-    background-size: 200% 100% !important;
+    background-image: linear-gradient(90deg, #14F195 0%, #00D4FF 50%, #9945FF 100%) !important;
     -webkit-background-clip: text !important;
     background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
@@ -452,8 +461,8 @@
     -webkit-font-smoothing: antialiased !important;
     text-rendering: geometricPrecision !important;
     
-    /* Animație gradient flowing */
-    animation: sloganFlowMobile 4s linear infinite !important;
+    /* FĂRĂ animație */
+    animation: none !important;
   }
   
   .header-mini-timer > a:last-child:hover span {
@@ -471,39 +480,49 @@
   }
   
   .social { 
-    display: flex; 
-    justify-content: flex-end; /* Aliniere la dreapta */
+    display: flex !important; 
+    justify-content: center;
     align-items: center;
-    gap: 4px; /* Gap mic între iconițe */
-    flex: 0 0 auto; 
-    order: 3; 
-    margin-left: auto; /* Împinge spre dreapta */
-    flex-shrink: 0; /* Nu permite micșorarea */
+    gap: 20px; /* Spațiu și mai mare (20px) */
+    
+    /* POZIȚIONARE ABSOLUTĂ LÂNGĂ WALLET */
+    position: fixed !important;
+    top: 172px !important; 
+    right: 180px !important; /* Și mai spre stânga (180px) */
+    z-index: 990 !important; 
+    
+    margin: 0 !important;
+    width: auto !important;
+    flex-shrink: 0;
   }
   .social-link { 
-    width: 22px; 
-    height: 22px; 
+    width: 28px; /* Puțin mai mari pentru claritate */
+    height: 28px; 
     display: grid; 
     place-items: center; 
     border-radius: 50%; 
-    background: rgba(255,255,255,0.05); 
-    border: 1px solid rgba(255,255,255,0.1); 
+    background: #000000 !important; /* Fundal negru solid pentru claritate maximă */
+    border: 1px solid rgba(255,255,255,0.25); /* Bordură mai vizibilă */
     transition: all 0.3s;
-    flex-shrink: 0; /* Nu permite micșorarea */
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5); /* Umbră pentru contrast */
   }
-  .social-link img { width: 13px; height: 13px; }
+  .social-link img { 
+    width: 15px; 
+    height: 15px; 
+    filter: drop-shadow(0 0 1px rgba(255,255,255,0.5)); /* Iconiță mai "sharp" */
+  }
   .header-spacer { height: 170px; }
 }
 
 /* === ECRANE FOARTE MICI (sub 380px) === */
 @media (max-width: 380px) {
   .right-section.mobile-only {
-    margin-left: -15px !important;
-    gap: 0.15rem !important;
+    margin-left: 0 !important;
   }
   
   .header-mini-timer {
-    max-width: 170px !important;
+    max-width: none !important;
   }
   
   /* Slogan mai mic pe ecrane mici */
@@ -514,46 +533,31 @@
     letter-spacing: 0.05em !important;
   }
   
+  /* Social adjust for small screens */
   .social {
-    gap: 3px !important;
+    right: 160px !important; /* Ajustat */
+    top: 160px !important;
+    gap: 14px !important; 
   }
   
   .social-link {
-    width: 20px !important;
-    height: 20px !important;
-  }
-  
-  .social-link img {
-    width: 12px !important;
-    height: 12px !important;
+    width: 24px !important;
+    height: 24px !important;
   }
 }
 
 /* === ECRANE FOARTE FOARTE MICI (sub 340px) === */
 @media (max-width: 340px) {
-  .right-section.mobile-only {
-    margin-left: -20px !important;
+  .social {
+    right: 140px !important; /* Ajustat */
+    gap: 10px !important;
   }
-  
-  .header-mini-timer {
-    max-width: 150px !important;
-  }
-  
-  .header-mini-timer > div:last-child span,
-  .header-mini-timer > div:last-child div {
-    font-size: 0.6rem !important;
-    padding: 3px 8px !important;
-  }
-  
-  .social-link {
-    width: 18px !important;
-    height: 18px !important;
-  }
-  
-  .social-link img {
-    width: 11px !important;
-    height: 11px !important;
-  }
+}
+
+/* In-App Browser Adjustments for Social Icons */
+body.in-app-browser .social {
+  top: 140px !important; 
+  right: 180px !important; /* Sincronizat */
 }
 
 /* Fallback global */

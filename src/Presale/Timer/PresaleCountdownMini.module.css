@@ -659,12 +659,41 @@
     font-size: 1.3rem;
   }
   
-  /* Keep animations even on smallest screens */
-  .block:nth-child(1),
-  .block:nth-child(3),
-  .block:nth-child(5),
+  /* FULL ANIMATIONS on smallest screens too */
+  .block:nth-child(1) {
+    animation: 
+      colorShiftSlow 10s linear infinite,
+      glitchEffect1 8s ease-in-out infinite,
+      flipEffect 12s ease-in-out infinite,
+      wobbleEffect 15s ease-in-out infinite !important;
+    animation-delay: 0s, 0s, 4s, 8s !important;
+  }
+
+  .block:nth-child(3) {
+    animation: 
+      colorShiftSlow 10s linear infinite,
+      bounceEffect 6s ease-in-out infinite,
+      spinEffect 14s ease-in-out infinite,
+      elasticEffect 10s ease-in-out infinite !important;
+    animation-delay: -2s, 1s, 5s, 8s !important;
+  }
+
+  .block:nth-child(5) {
+    animation: 
+      colorShiftSlow 10s linear infinite,
+      pulseGrow 5s ease-in-out infinite,
+      swingEffect 9s ease-in-out infinite,
+      flashEffect 14s ease-in-out infinite !important;
+    animation-delay: -4s, 2s, 6s, 10s !important;
+  }
+
   .block:nth-child(7) {
-    animation: colorShiftSlow 10s linear infinite !important;
+    animation: 
+      colorShiftSlow 10s linear infinite,
+      shakeEffect 7s ease-in-out infinite,
+      floatEffect 11s ease-in-out infinite,
+      zoomEffect 13s ease-in-out infinite !important;
+    animation-delay: -6s, 0.5s, 4s, 9s !important;
   }
   
   .sep {
@@ -686,4 +715,70 @@
     color: #14F195;
     -webkit-text-fill-color: #14F195;
   }
+}
+
+/* ============================================
+   📱 IN-APP BROWSER OPTIMIZATIONS
+   (MetaMask, TrustWallet, Coinbase, etc.)
+   ============================================ */
+
+:global(body.in-app-browser) .miniTimer {
+  padding: 0.15rem 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+:global(body.in-app-browser) .block {
+  min-width: 32px;
+  font-size: 1.6rem;
+}
+
+/* FULL ANIMATIONS for in-app browsers */
+:global(body.in-app-browser) .block:nth-child(1) {
+  animation: 
+    colorShiftSlow 10s linear infinite,
+    glitchEffect1 8s ease-in-out infinite,
+    flipEffect 12s ease-in-out infinite,
+    wobbleEffect 15s ease-in-out infinite !important;
+  animation-delay: 0s, 0s, 4s, 8s !important;
+}
+
+:global(body.in-app-browser) .block:nth-child(3) {
+  animation: 
+    colorShiftSlow 10s linear infinite,
+    bounceEffect 6s ease-in-out infinite,
+    spinEffect 14s ease-in-out infinite,
+    elasticEffect 10s ease-in-out infinite !important;
+  animation-delay: -2s, 1s, 5s, 8s !important;
+}
+
+:global(body.in-app-browser) .block:nth-child(5) {
+  animation: 
+    colorShiftSlow 10s linear infinite,
+    pulseGrow 5s ease-in-out infinite,
+    swingEffect 9s ease-in-out infinite,
+    flashEffect 14s ease-in-out infinite !important;
+  animation-delay: -4s, 2s, 6s, 10s !important;
+}
+
+:global(body.in-app-browser) .block:nth-child(7) {
+  animation: 
+    colorShiftSlow 10s linear infinite,
+    shakeEffect 7s ease-in-out infinite,
+    floatEffect 11s ease-in-out infinite,
+    zoomEffect 13s ease-in-out infinite !important;
+  animation-delay: -6s, 0.5s, 4s, 9s !important;
+}
+
+:global(body.in-app-browser) .sep {
+  font-size: 1.4rem;
+  width: 5px;
+}
+
+:global(body.mode-mobile) .miniTimer {
+  padding: 0.12rem 0.4rem;
+}
+
+:global(body.mode-mobile) .block {
+  min-width: 34px;
+  font-size: 1.7rem;
 }

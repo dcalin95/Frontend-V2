@@ -1,6 +1,7 @@
 import React from 'react';
 import BitcoinAcademyHome from './BitcoinAcademyHome';
 import './BitcoinAcademy.css';
+import './BitcoinAcademy.mobile.css';
 import useGoogleAnalytics from '../../hooks/useGoogleAnalytics';
 
 const BitcoinAcademy = () => {

@@ -170,15 +170,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-}
+  }
 
 .gemini-label {
-  font-size: 0.85rem;
+    font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.5);
   letter-spacing: 0.1em;
   margin-bottom: 4px;
   text-transform: uppercase;
-}
+  }
 
 .gemini-price-display {
   font-size: 3.2rem;
@@ -189,7 +189,7 @@
   margin-bottom: 12px;
   letter-spacing: -0.02em;
   text-shadow: 0 0 30px rgba(78, 117, 246, 0.2);
-}
+  }
 
 .gemini-change-pill {
   display: inline-flex;
@@ -199,7 +199,7 @@
   font-size: 1rem;
   font-weight: 600;
   backdrop-filter: blur(4px);
-}
+  }
 
 .gemini-change-pill.positive {
   background: rgba(20, 241, 149, 0.15);
@@ -223,15 +223,15 @@
   align-items: center;
   padding-top: 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
+  }
 
 .gemini-ai-insight {
   font-size: 0.8rem;
   color: #E0E7FF;
   display: flex;
-  align-items: center;
+    align-items: center;
   gap: 6px;
-}
+  }
 
 .gemini-source {
   font-size: 0.7rem;
@@ -241,7 +241,7 @@
 /* 💥 Effects */
 .flash-green {
   animation: flashGreen 0.5s ease-out;
-}
+  }
 .flash-red {
   animation: flashRed 0.5s ease-out;
 }

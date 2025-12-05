@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import UserDeviceInfo from './UserDeviceInfo';
+import { detectInAppBrowser } from '../utils/walletDetection';
 import './MobileUI.css';
 
 const MobileUI = ({ children }) => {
@@ -50,6 +51,14 @@ const MobileUI = ({ children }) => {
       } else {
         document.body.classList.remove('orientation-landscape');
       }
+
+      // 📱 Detectare In-App Browser (MetaMask, TrustWallet, etc.)
+      const { isInApp } = detectInAppBrowser();
+      if (isInApp) {
+        document.body.classList.add('in-app-browser');
+      } else {
+        document.body.classList.remove('in-app-browser');
+      }
     };
 
     updateClasses();
@@ -81,6 +90,14 @@ const MobileUI = ({ children }) => {
         document.body.classList.add('orientation-landscape');
       } else {
         document.body.classList.remove('orientation-landscape');
+      }
+
+      // 📱 Detectare In-App Browser (MetaMask, TrustWallet, etc.)
+      const { isInApp } = detectInAppBrowser();
+      if (isInApp) {
+        document.body.classList.add('in-app-browser');
+      } else {
+        document.body.classList.remove('in-app-browser');
       }
     };
 

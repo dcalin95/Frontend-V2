@@ -51,13 +51,40 @@ const MobileWalletModal = () => {
     setIsConnecting(false);
   };
 
-  const handleEvmConnect = async () => {
+  // 🔗 Conectare DIRECTĂ la wallet instalat (fără Web3Modal intermediar)
+  const handleDirectConnect = async () => {
+    try {
+      setIsConnecting(true);
+      
+      if (window.ethereum) {
+        console.log('📱 [MobileWalletModal] Direct connection via window.ethereum');
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+        setShowWalletModal(false);
+      } else {
+        // Fallback la Web3Modal dacă nu există ethereum provider
+        setShowWalletModal(false);
+        await openEvmModal();
+      }
+    } catch (err) {
+      console.error('[MobileWalletModal] Direct connect error:', err);
+      // Dacă user reject, nu afișa eroare
+      if (err.code !== 4001) {
+        setShowWalletModal(false);
+        await openEvmModal(); // Fallback
+      }
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  // 🌐 Deschide Web3Modal pentru WalletConnect și alte opțiuni
+  const handleWalletConnectOpen = async () => {
     try {
       setIsConnecting(true);
       setShowWalletModal(false);
       await openEvmModal();
     } catch (err) {
-      console.error('[MobileWalletModal] EVM error:', err);
+      console.error('[MobileWalletModal] WalletConnect error:', err);
       setIsConnecting(false);
     }
   };
@@ -156,14 +183,14 @@ const MobileWalletModal = () => {
           </div>
 
           <div className="mobile-wallet-list">
-            {/* MetaMask */}
+            {/* MetaMask - CONECTARE DIRECTĂ */}
             <div className="mobile-wallet-item">
               {installedWallets.metamask ? (
-                <button className="mobile-wallet-btn installed" onClick={handleEvmConnect}>
+                <button className="mobile-wallet-btn installed" onClick={handleDirectConnect}>
                   <span className="wallet-icon">🦊</span>
                   <div className="wallet-info">
                     <strong>MetaMask</strong>
-                    <span className="wallet-status installed-badge">✓ Installed</span>
+                    <span className="wallet-status installed-badge">✓ Tap to Connect</span>
                   </div>
                 </button>
               ) : (
@@ -185,14 +212,14 @@ const MobileWalletModal = () => {
               )}
             </div>
 
-            {/* Trust Wallet */}
+            {/* Trust Wallet - CONECTARE DIRECTĂ */}
             <div className="mobile-wallet-item">
               {installedWallets.trustWallet ? (
-                <button className="mobile-wallet-btn installed" onClick={handleEvmConnect}>
+                <button className="mobile-wallet-btn installed" onClick={handleDirectConnect}>
                   <span className="wallet-icon">🛡️</span>
                   <div className="wallet-info">
                     <strong>Trust Wallet</strong>
-                    <span className="wallet-status installed-badge">✓ Installed</span>
+                    <span className="wallet-status installed-badge">✓ Tap to Connect</span>
                   </div>
                 </button>
               ) : (
@@ -214,14 +241,14 @@ const MobileWalletModal = () => {
               )}
             </div>
 
-            {/* Coinbase Wallet */}
+            {/* Coinbase Wallet - CONECTARE DIRECTĂ */}
             <div className="mobile-wallet-item">
               {installedWallets.coinbase ? (
-                <button className="mobile-wallet-btn installed" onClick={handleEvmConnect}>
+                <button className="mobile-wallet-btn installed" onClick={handleDirectConnect}>
                   <span className="wallet-icon">🪙</span>
                   <div className="wallet-info">
                     <strong>Coinbase Wallet</strong>
-                    <span className="wallet-status installed-badge">✓ Installed</span>
+                    <span className="wallet-status installed-badge">✓ Tap to Connect</span>
                   </div>
                 </button>
               ) : (
@@ -243,8 +270,8 @@ const MobileWalletModal = () => {
               )}
             </div>
 
-            {/* WalletConnect - Always available */}
-            <button className="mobile-wallet-btn installed" onClick={handleEvmConnect}>
+            {/* WalletConnect - Deschide Web3Modal pentru alte wallet-uri */}
+            <button className="mobile-wallet-btn installed" onClick={handleWalletConnectOpen}>
               <span className="wallet-icon">🔗</span>
               <div className="wallet-info">
                 <strong>WalletConnect</strong>

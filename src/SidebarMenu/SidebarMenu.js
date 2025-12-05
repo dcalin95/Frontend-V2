@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./SidebarMenu.css";
+import "./SidebarMenu.mobile.css";
 import SmartTooltip from "../Presale/components/SmartTooltip"; // Import SmartTooltip
 
 // Load click sound

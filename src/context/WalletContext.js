@@ -22,14 +22,14 @@ export const WALLET_TYPES = {
 // Adresa Contractului BITS Token (BSC Mainnet)
 const BITS_TOKEN_ADDRESS = CONTRACT_MAP.BITS_TOKEN.address;
 
-// 🎨 Web3Modal (AppKit) Initialization - Modern Interface
+// 🎨 Web3Modal (AppKit) Initialization - DARK THEME
 createWeb3Modal({
   wagmiConfig: config,
   projectId,
-  enableAnalytics: true,
+  enableAnalytics: false,
   themeMode: 'dark',
   themeVariables: {
-    '--w3m-accent': '#00FFA3', // Brand Color
+    '--w3m-accent': '#14F195',
     '--w3m-border-radius-master': '12px',
     '--w3m-font-family': 'Inter, sans-serif',
     '--w3m-z-index': 99999

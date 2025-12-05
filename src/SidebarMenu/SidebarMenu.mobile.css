@@ -1,0 +1,259 @@
+/* === Sidebar Menu - MOBILE ONLY === */
+/* Fix specific pentru butoanele din Sidebar pe mobil, respectând sistemul de fișiere separate */
+
+@media (max-width: 768px) {
+  
+  .sidebar {
+    position: fixed;
+    top: 100px !important; /* RIDICAT MAI SUS (era 160px) pentru a încăpea în ecran */
+    left: 8px;
+    transform: translateX(-120%);
+    height: auto;
+    max-height: calc(100vh - 110px) !important; /* Limită înălțime pentru scroll */
+    width: auto;
+    max-width: 280px; /* Mărit puțin pentru a acomoda 2 coloane */
+    z-index: 11999 !important;
+    
+    /* COMPLET TRANSPARENT - FĂRĂ CONTAINER */
+    background: transparent !important;
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto !important; /* ACTIVAT SCROLL dacă lista e prea lungă */
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 0 20px 0 !important; /* Spațiu jos */
+    scrollbar-width: none; /* Ascunde scrollbar */
+    
+    /* GRUPARE PE DOUĂ COLOANE */
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 6px !important;
+    align-content: start !important;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+    /* Repetă stilurile pentru siguranță */
+    background: transparent !important;
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .sidebar::-webkit-scrollbar {
+    display: none; /* Ascunde scrollbar Chrome/Safari */
+  }
+
+  /* Resetare stiluri generice pentru a permite culorile specifice */
+  /* ȘI COMPACTARE BUTOANE */
+  .sidebar button,
+  .sidebar a {
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    
+    font-size: 0.9rem !important; /* Text puțin mai mic */
+    font-weight: 700;
+    padding: 8px 12px !important; /* Padding redus pentru compactare */
+    margin: 3px 0 !important; /* Spațiu redus între butoane */
+    border-radius: 12px;
+  }
+
+  /* Iconițe pe mobil - ajustate */
+  .sidebar button i,
+  .sidebar a i {
+    font-size: 1.2rem !important;
+    margin-right: 10px !important;
+  }
+
+  /* Buton special pe mobil */
+  .sidebar .go-main {
+    font-size: 0.85rem !important;
+    padding: 10px 14px !important;
+    margin-top: 8px !important;
+  }
+
+  /* Eliminăm efectele de hover pe mobil pentru performanță */
+  .sidebar button:hover,
+  .sidebar a:hover {
+    transform: none;
+    scale: 1;
+  }
+
+  .sidebar button:hover i,
+  .sidebar a:hover i {
+    transform: none;
+  }
+
+  /* === CULORI SPECIFICE PENTRU MOBIL (Suprascriere cu specificitate maximă și text-fill) === */
+  
+  body.mode-mobile .sidebar .btn-swap,
+  body .sidebar .btn-swap {
+    background: #000000 !important;
+    border: 2px solid #ff6b6b !important;
+    color: #ff6b6b !important;
+    -webkit-text-fill-color: #ff6b6b !important;
+    box-shadow: 0 0 12px rgba(255, 107, 107, 0.5) !important;
+    text-shadow: 0 0 8px rgba(255, 107, 107, 0.8) !important;
+  }
+
+  body.mode-mobile .sidebar .btn-pool,
+  body .sidebar .btn-pool {
+    background: #000000 !important;
+    border: 2px solid #ffa94d !important;
+    color: #ffa94d !important;
+    -webkit-text-fill-color: #ffa94d !important;
+    box-shadow: 0 0 12px rgba(255, 169, 77, 0.5) !important;
+    text-shadow: 0 0 8px rgba(255, 169, 77, 0.8) !important;
+  }
+
+  body.mode-mobile .sidebar .btn-buy,
+  body .sidebar .btn-buy {
+    background: #000000 !important;
+    border: 2px solid #ffd43b !important;
+    color: #ffd43b !important;
+    -webkit-text-fill-color: #ffd43b !important;
+    box-shadow: 0 0 12px rgba(255, 212, 59, 0.5) !important;
+    text-shadow: 0 0 8px rgba(255, 212, 59, 0.8) !important;
+  }
+
+  body.mode-mobile .sidebar .btn-how-to-buy,
+  body .sidebar .btn-how-to-buy {
+    background: #000000 !important;
+    border: 2px solid #69db7c !important;
+    color: #69db7c !important;
+    -webkit-text-fill-color: #69db7c !important;
+    box-shadow: 0 0 12px rgba(105, 219, 124, 0.5) !important;
+    text-shadow: 0 0 8px rgba(105, 219, 124, 0.8) !important;
+  }
+
+  body.mode-mobile .sidebar .btn-tokenomics,
+  body .sidebar .btn-tokenomics {
+    background: #000000 !important;
+    border: 2px solid #4dabf7 !important;
+    color: #4dabf7 !important;
+    -webkit-text-fill-color: #4dabf7 !important;
+    box-shadow: 0 0 12px rgba(77, 171, 247, 0.5) !important;
+    text-shadow: 0 0 8px rgba(77, 171, 247, 0.8) !important;
+  }
+
+  body.mode-mobile .sidebar .btn-audit,
+  body .sidebar .btn-audit {
+    background: #000000 !important;
+    border: 2px solid #9775fa !important;
+    color: #9775fa !important;
+    -webkit-text-fill-color: #9775fa !important;
+    box-shadow: 0 0 12px rgba(151, 117, 250, 0.5) !important;
+    text-shadow: 0 0 8px rgba(151, 117, 250, 0.8) !important;
+  }
+
+  body.mode-mobile .sidebar .btn-invite,
+  body .sidebar .btn-invite {
+    background: #000000 !important;
+    border: 2px solid #f783ac !important;
+    color: #f783ac !important;
+    -webkit-text-fill-color: #f783ac !important;
+    box-shadow: 0 0 12px rgba(247, 131, 172, 0.5) !important;
+    text-shadow: 0 0 8px rgba(247, 131, 172, 0.8) !important;
+  }
+
+  body.mode-mobile .sidebar .btn-how-it-works,
+  body .sidebar .btn-how-it-works {
+    background: #000000 !important;
+    border: 2px solid #38d9a9 !important;
+    color: #38d9a9 !important;
+    -webkit-text-fill-color: #38d9a9 !important;
+    box-shadow: 0 0 12px rgba(56, 217, 169, 0.5) !important;
+    text-shadow: 0 0 8px rgba(56, 217, 169, 0.8) !important;
+  }
+
+  body.mode-mobile .sidebar .btn-roadmap,
+  body .sidebar .btn-roadmap {
+    background: #000000 !important;
+    border: 2px solid #e040fb !important;
+    color: #e040fb !important;
+    -webkit-text-fill-color: #e040fb !important;
+    box-shadow: 0 0 12px rgba(224, 64, 251, 0.5) !important;
+    text-shadow: 0 0 8px rgba(224, 64, 251, 0.8) !important;
+  }
+
+  body.mode-mobile .sidebar .btn-leaderboard,
+  body .sidebar .btn-leaderboard {
+    background: #000000 !important;
+    border: 2px solid #74c0fc !important;
+    color: #74c0fc !important;
+    -webkit-text-fill-color: #74c0fc !important;
+    box-shadow: 0 0 12px rgba(116, 192, 252, 0.5) !important;
+    text-shadow: 0 0 8px rgba(116, 192, 252, 0.8) !important;
+  }
+
+  body.mode-mobile .sidebar .btn-about,
+  body .sidebar .btn-about {
+    background: #000000 !important;
+    border: 2px solid #ff922b !important;
+    color: #ff922b !important;
+    -webkit-text-fill-color: #ff922b !important;
+    box-shadow: 0 0 12px rgba(255, 146, 43, 0.5) !important;
+    text-shadow: 0 0 8px rgba(255, 146, 43, 0.8) !important;
+  }
+
+  body.mode-mobile .sidebar .btn-mindmirror,
+  body .sidebar .btn-mindmirror {
+    background: #000000 !important;
+    border: 2px solid #00ff9d !important;
+    color: #00ff9d !important;
+    -webkit-text-fill-color: #00ff9d !important;
+    box-shadow: 0 0 12px rgba(0, 255, 157, 0.5) !important;
+    text-shadow: 0 0 8px rgba(0, 255, 157, 0.8) !important;
+  }
+
+  body.mode-mobile .sidebar .btn-go-main,
+  body .sidebar .btn-go-main {
+    background: #000000 !important;
+    border: 2px solid #f3722c !important;
+    color: #00ffff !important;
+    -webkit-text-fill-color: #00ffff !important;
+    box-shadow: 0 0 12px rgba(243, 114, 44, 0.5) !important;
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.8) !important;
+  }
+}
+
+/* ===== ECRANE FOARTE MICI (sub 480px) ===== */
+@media (max-width: 480px) {
+  body.mode-mobile .sidebar,
+  .sidebar {
+    width: 260px !important;
+    padding: 10px 0 !important; /* Mai puțin padding lateral */
+  }
+
+  body.mode-mobile .sidebar button,
+  body.mode-mobile .sidebar a,
+  .sidebar button,
+  .sidebar a {
+    font-size: 0.8rem !important;
+    padding: 6px 10px !important;
+    margin: 2px 0 !important;
+  }
+
+  body.mode-mobile .sidebar button i,
+  body.mode-mobile .sidebar a i,
+  .sidebar button i,
+  .sidebar a i {
+    font-size: 1.1rem !important;
+    margin-right: 8px !important;
+  }
+
+  body.mode-mobile .sidebar .go-main,
+  .sidebar .go-main {
+    font-size: 0.8rem !important;
+    padding: 5px 8px !important;
+    margin-top: 10px !important;
+  }
+}

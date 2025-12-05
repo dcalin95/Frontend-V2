@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import ReactDOM from 'react-dom';
 import BITS_LOGO from '../../assets/logo.png';
 import './LaserOrbit.css';
 import useCellManagerData from '../../Presale/hooks/useCellManagerData';
@@ -1033,7 +1034,7 @@ export default function LaserOrbit({
         
         </div>
 
-        {mega.active && (
+        {mega.active && ReactDOM.createPortal(
           <div className="orbit-mega-panel">
             <div className="mega-card">
               <div className="mega-close" onClick={() => setMega({ ...mega, active: false })} aria-label="Close">×</div>
@@ -1074,14 +1075,144 @@ export default function LaserOrbit({
                 })()
               ) : (
                 <>
-                  <div className="mega-price">{tooltip.price != null ? `$${tooltip.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'n/a'}</div>
-                  <div className="mega-volume">{tooltip.volume24h != null ? `24h Volume: $${Math.round(tooltip.volume24h).toLocaleString('en-US')}` : ''}</div>
-                  <div className="mega-cap">{tooltip.marketCap != null ? `Market Cap: $${Math.round(tooltip.marketCap).toLocaleString('en-US')}` : ''}</div>
-                  <div className="mega-rank">{tooltip.rank != null ? `Rank: #${tooltip.rank}` : ''}</div>
+                  <div className="mega-price">{tooltip.loading ? 'Loading…' : (tooltip.price != null ? `${tooltip.symbolName || ''} $${tooltip.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'n/a')}{tooltip.refreshedAt ? <span className="live-badge" title={`updated ${new Date(tooltip.refreshedAt).toLocaleTimeString()}`}>LIVE</span> : null}</div>
+                  <div className="mega-volume">{tooltip.loading ? '' : (tooltip.volume24h != null ? `24h Volume: $${Math.round(tooltip.volume24h).toLocaleString('en-US')}` : '')}</div>
+                  <div className="mega-cap">{tooltip.loading ? '' : (tooltip.marketCap != null ? `Market Cap: $${Math.round(tooltip.marketCap).toLocaleString('en-US')}` : '')}</div>
+                  <div className="mega-rank">{tooltip.loading ? '' : (tooltip.rank != null ? `Rank: #${tooltip.rank}` : '')}</div>
+                  {tooltip.high24h != null && tooltip.low24h != null && (
+                    <div className="mega-cap">Day Range: ${Number(tooltip.low24h).toLocaleString('en-US')} — ${Number(tooltip.high24h).toLocaleString('en-US')}</div>
+                  )}
+                  {tooltip.change24hPct != null && (
+                    <div className="mega-cap">Change 24h: {(Number(tooltip.change24hPct)).toFixed(2)}%</div>
+                  )}
+                  {tooltip.change7dPct != null && (
+                    <div className="mega-cap">Change 7d: {(Number(tooltip.change7dPct)).toFixed(2)}%</div>
+                  )}
+                  {tooltip.maxSupply != null && (
+                    <div className="mega-cap">Max Supply: {Math.round(Number(tooltip.maxSupply)).toLocaleString('en-US')}</div>
+                  )}
+                  {tooltip.btcFees && (
+                    <div className="mega-cap">Fees (sat/vB): {tooltip.btcFees.fastestFee}/{tooltip.btcFees.halfHourFee}/{tooltip.btcFees.hourFee}</div>
+                  )}
+                  {tooltip.btcStats && (
+                    <div className="mega-cap">Hashrate: {Math.round((tooltip.btcStats.hash_rate||0)).toLocaleString('en-US')} EH/s • Blocks/day: {tooltip.btcStats.n_btc_mined || ''}</div>
+                  )}
+                  {mega.symbol === 'SOL' && (tooltip.solSlot != null || tooltip.solTps != null) && (
+                    <div className="mega-list plain" style={{marginTop:8}}>
+                      {tooltip.solSlot != null && (
+                        <div className="mega-row"><span className="label">Slot</span><span className="value">{Number(tooltip.solSlot).toLocaleString('en-US')}</span></div>
+                      )}
+                      {tooltip.solTps != null && (
+                        <div className="mega-row"><span className="label">TPS</span><span className="value">{Number(tooltip.solTps).toFixed(1)}</span></div>
+                      )}
+                      {tooltip.solAvgBlockTimeSec != null && (
+                        <div className="mega-row"><span className="label">Avg Block Time</span><span className="value">{Number(tooltip.solAvgBlockTimeSec).toFixed(2)}s</span></div>
+                      )}
+                    </div>
+                  )}
+                  {/* Explorer buttons */}
+                  <div style={{ marginTop: 10, display:'flex', gap:8, flexWrap:'wrap' }}>
+                    {mega.symbol === 'BTC' && (
+                      <a className="mega-action" href="https://mempool.space/" target="_blank" rel="noopener noreferrer">Mempool Explorer</a>
+                    )}
+                    {mega.symbol === 'MATIC' && (
+                      <a className="mega-action" href="https://polygonscan.com/" target="_blank" rel="noopener noreferrer">PolygonScan</a>
+                    )}
+                    {(mega.symbol === 'STK' || mega.symbol === 'STX') && (
+                      <a className="mega-action" href="https://explorer.stacks.co/" target="_blank" rel="noopener noreferrer">Stacks Explorer</a>
+                    )}
+                    {mega.symbol === 'SOL' && (
+                      <a className="mega-action" href="https://solscan.io/" target="_blank" rel="noopener noreferrer">Solscan</a>
+                    )}
+                    {mega.symbol === 'ARB' && (
+                      <a className="mega-action" href="https://arbiscan.io/" target="_blank" rel="noopener noreferrer">Arbiscan</a>
+                    )}
+                    {mega.symbol === 'OP' && (
+                      <a className="mega-action" href="https://optimistic.etherscan.io/" target="_blank" rel="noopener noreferrer">Optimistic Etherscan</a>
+                    )}
+                    {mega.symbol === 'STRK' && (
+                      <a className="mega-action" href="https://starkscan.co/" target="_blank" rel="noopener noreferrer">Starkscan</a>
+                    )}
+                  </div>
+                  {tooltip.fdv != null && (
+                    <div className="mega-cap">FDV: ${Math.round(Number(tooltip.fdv)).toLocaleString('en-US')}</div>
+                  )}
+                  {tooltip.circulating != null && (
+                    <div className="mega-cap">Circulating: {Math.round(Number(tooltip.circulating)).toLocaleString('en-US')}</div>
+                  )}
+                  {tooltip.dexLiquidity != null && (
+                    <div className="mega-cap">Liquidity (TVL): ${Math.round(Number(tooltip.dexLiquidity)).toLocaleString('en-US')}</div>
+                  )}
+                  {tooltip.dexVolume24h != null && (
+                    <div className="mega-cap">DEX Vol 24h: ${Math.round(Number(tooltip.dexVolume24h)).toLocaleString('en-US')}</div>
+                  )}
+                  {Array.isArray(tooltip.topDexPools) && tooltip.topDexPools.length > 0 && (
+                    <div className="mega-list plain" style={{marginTop:8}}>
+                      <div className="mega-row"><span className="label">Top Pools</span><span className="value">ALEX/Stackswap</span></div>
+                      {tooltip.topDexPools.map((p, idx) => (
+                        <div className="mega-row" key={`pool-${idx}`}>
+                          <span className="label">{p.symbol}</span>
+                          <span className="value">${Math.round(p.tvlUsd).toLocaleString('en-US')}{p.apy!=null ? ` • APY ${(p.apy).toFixed(2)}%` : ''}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {(mega.symbol === 'STK' || mega.symbol === 'STX') && (
+                    <div style={{ marginTop: 10, display:'flex', gap:8 }}>
+                      <a className="mega-action" href={tooltip.alexUrl || 'https://app.alexlab.co/'} target="_blank" rel="noopener noreferrer">Open ALEX</a>
+                    </div>
+                  )}
+                  {mega.symbol === 'MATIC' && tooltip.gasStation && (
+                    <div className="mega-list plain" style={{marginTop:8}}>
+                      <div className="mega-row"><span className="label">Gas (gwei)</span><span className="value">Fast {Math.round(tooltip.gasStation.fast.maxFee)} • Std {Math.round(tooltip.gasStation.standard.maxFee)} • Low {Math.round(tooltip.gasStation.safeLow.maxFee)}</span></div>
+                    </div>
+                  )}
+                  {tooltip.stacksInfo && (
+                    <div className="mega-list plain" style={{marginTop:8}}>
+                      <div className="mega-row"><span className="label">Stacks Tip</span><span className="value">{String(tooltip.stacksInfo?.stacks_tip_height ?? '-') }</span></div>
+                      <div className="mega-row"><span className="label">Burn Height</span><span className="value">{String(tooltip.stacksInfo?.burn_block_height ?? '-') }</span></div>
+                      <div className="mega-row"><span className="label">Network</span><span className="value">{String(tooltip.stacksInfo?.network_id ?? '-') }</span></div>
+                      <div className="mega-row"><span className="label">Chain Tip</span><span className="value">{String(tooltip.stacksInfo?.chain_tip ?? '-') }</span></div>
+                    </div>
+                  )}
+                  {tooltip.poxInfo && (
+                    <div className="mega-list plain" style={{marginTop:8}}>
+                      <div className="mega-row"><span className="label">PoX Cycle</span><span className="value">{String(tooltip.poxInfo?.current_cycle?.id ?? '-') }</span></div>
+                      <div className="mega-row"><span className="label">Stackers</span><span className="value">{String(tooltip.poxInfo?.current_cycle?.reward_set_size ?? '-') }</span></div>
+                      <div className="mega-row"><span className="label">Min STX</span><span className="value">{String(tooltip.poxInfo?.min_amount_ustx ? (tooltip.poxInfo.min_amount_ustx/1e6).toLocaleString() : '-') }</span></div>
+                    </div>
+                  )}
+                  {Array.isArray(tooltip.contractFns) && tooltip.contractFns.length>0 && (
+                    <div className="mega-list plain" style={{marginTop:8}}>
+                      <div className="mega-row"><span className="label">PoX-4 Fns</span><span className="value">{tooltip.contractFns.join(', ')}</span></div>
+                    </div>
+                  )}
+                  {(typeof tooltip.stacksSource === 'string' && tooltip.stacksSource) || tooltip.sourceLink ? (
+                  <div style={{ marginTop: 10 }}>
+                    <div className="mega-section-title">PoX-4 source constants (not runtime errors)</div>
+                    {tooltip.stacksSource && (() => {
+                      const src = String(tooltip.stacksSource || '');
+                      const lines = src.split(/\r?\n/);
+                      const preview = lines.slice(0, 3).join('\n');
+                      return (
+                        <details>
+                          <summary className="mega-action" style={{cursor:'pointer'}}>Show more</summary>
+                          <div className="mega-code" aria-label="PoX-4 Source Code" style={{marginTop:6}}>
+                            {src}
+                          </div>
+                        </details>
+                      );
+                    })()}
+                    {!tooltip.stacksSource && tooltip.sourceLink ? (
+                      <a className="mega-action" href={tooltip.sourceLink} target="_blank" rel="noopener noreferrer">View full source</a>
+                    ) : null}
+                  </div>
+                  ) : null}
                 </>
               )}
             </div>
-          </div>
+          </div>,
+          document.body
         )}
 
       </div>
