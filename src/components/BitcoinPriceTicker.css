@@ -1,0 +1,264 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   💎 BITCOIN PRICE TICKER - GEMINI AI STYLE
+   Clean, futuristic, deep blue/purple aesthetics. No overlap.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.btc-gemini-wrapper {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 0;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  font-family: 'Inter', 'Roobert', sans-serif; /* Clean font */
+}
+
+.btc-gemini-card {
+  position: relative;
+  background: linear-gradient(180deg, rgba(10, 15, 30, 0.95) 0%, #000000 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 24px;
+  overflow: hidden;
+  box-shadow: 
+    0 20px 40px -10px rgba(0, 0, 0, 0.8),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btc-gemini-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 30px 60px -12px rgba(0, 0, 0, 0.9),
+    inset 0 0 0 1px rgba(78, 117, 246, 0.3);
+  border-color: rgba(78, 117, 246, 0.4);
+}
+
+/* 🌟 Background Glow (Gemini Aura) */
+.gemini-bg-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(78, 117, 246, 0.15),
+    rgba(153, 69, 255, 0.05),
+    transparent 60%
+  );
+  animation: geminiRotate 20s linear infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes geminiRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ✨ Sparkles */
+.gemini-sparkle {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  color: #fff;
+  opacity: 0.6;
+  z-index: 1;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+  animation: sparklePulse 3s ease-in-out infinite;
+}
+
+.sparkle-tl { top: 20px; left: 20px; animation-delay: 0s; }
+.sparkle-br { bottom: 20px; right: 20px; width: 18px; height: 18px; animation-delay: 1.5s; }
+
+@keyframes sparklePulse {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.4; }
+  50% { transform: scale(1.2) rotate(45deg); opacity: 0.9; }
+}
+
+/* 🧢 Header */
+.gemini-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.gemini-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #4E75F6; /* Gemini Blue */
+  background: rgba(78, 117, 246, 0.1);
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(78, 117, 246, 0.2);
+}
+
+.gemini-badge-dot {
+  width: 6px;
+  height: 6px;
+  background: #4E75F6;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #4E75F6;
+  animation: blink 2s infinite;
+}
+
+.gemini-timer {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-family: monospace;
+}
+
+/* 📦 Main Content */
+.gemini-content {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 16px;
+}
+
+/* 🪙 Logo */
+.gemini-logo-container {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.gemini-logo-ring {
+  position: absolute;
+  inset: 0;
+  border: 2px solid transparent;
+  border-top-color: #f7931e;
+  border-right-color: #4E75F6;
+  border-radius: 50%;
+  animation: ringSpin 3s linear infinite;
+}
+
+.gemini-logo-text {
+  font-size: 2.5rem;
+  color: #f7931e;
+  filter: drop-shadow(0 0 15px rgba(247, 147, 30, 0.5));
+}
+
+@keyframes ringSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 💰 Price */
+.gemini-price-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gemini-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.gemini-price-display {
+  font-size: 3.2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #FFFFFF 0%, #A5B4FC 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 30px rgba(78, 117, 246, 0.2);
+}
+
+.gemini-change-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+}
+
+.gemini-change-pill.positive {
+  background: rgba(20, 241, 149, 0.15);
+  color: #14F195;
+  border: 1px solid rgba(20, 241, 149, 0.3);
+}
+
+.gemini-change-pill.negative {
+  background: rgba(255, 80, 80, 0.15);
+  color: #FF5050;
+  border: 1px solid rgba(255, 80, 80, 0.3);
+}
+
+/* 🦶 Footer */
+.gemini-footer {
+  position: relative;
+  z-index: 2;
+  margin-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.gemini-ai-insight {
+  font-size: 0.8rem;
+  color: #E0E7FF;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gemini-source {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* 💥 Effects */
+.flash-green {
+  animation: flashGreen 0.5s ease-out;
+}
+.flash-red {
+  animation: flashRed 0.5s ease-out;
+}
+
+@keyframes flashGreen {
+  0% { filter: drop-shadow(0 0 0px rgba(20, 241, 149, 0)); }
+  50% { filter: drop-shadow(0 0 20px rgba(20, 241, 149, 0.8)); color: #14F195; }
+  100% { filter: drop-shadow(0 0 0px rgba(20, 241, 149, 0)); }
+}
+
+@keyframes flashRed {
+  0% { filter: drop-shadow(0 0 0px rgba(255, 80, 80, 0)); }
+  50% { filter: drop-shadow(0 0 20px rgba(255, 80, 80, 0.8)); color: #FF5050; }
+  100% { filter: drop-shadow(0 0 0px rgba(255, 80, 80, 0)); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}

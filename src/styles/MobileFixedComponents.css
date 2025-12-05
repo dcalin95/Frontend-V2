@@ -423,16 +423,16 @@ body.mode-mobile .ai-launcher__backdrop {
    ===================================================== */
 body.mode-mobile .wallet-toggle-wrapper {
   position: fixed !important;
-  top: 100px !important; /* 85px header + 15px gap */
-  right: 12px !important;
+  top: 260px !important;
+  right: 35% !important; /* Moved much more to the left (towards center) */
   z-index: 12000 !important;
 }
 
 body.mode-mobile .wallet-toggle-btn,
 body.mode-mobile .wallet-toggle-btn-minimal {
-  width: 52px !important;
-  height: 52px !important;
-  min-width: 52px !important;
+  width: 64px !important;
+  height: 64px !important;
+  min-width: 64px !important;
   padding: 6px !important;
   border-radius: 14px !important;
   background: transparent !important;
@@ -445,9 +445,9 @@ body.mode-mobile .wallet-toggle-btn-minimal {
 }
 
 body.mode-mobile .wallet-svg-animated {
-  width: 52px !important;
-  height: 52px !important;
-  filter: drop-shadow(0 0 10px rgba(20, 241, 149, 0.5)) !important;
+  width: 64px !important;
+  height: 64px !important;
+  filter: drop-shadow(0 0 15px rgba(20, 241, 149, 0.6)) !important;
   transition: all 0.3s ease !important;
 }
 

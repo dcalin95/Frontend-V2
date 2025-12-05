@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useWallet } from "../context/UnifiedWalletContext";
+import { useWallet } from "../context/WalletContext";
 import { useGeoLocation } from "../context/GeoLocationContext"; // 🌍 Import Geo
 import UnifiedWalletModal from "../components/UnifiedWalletModal";
 import SwapModal from "../components/SwapModal";
@@ -194,34 +194,31 @@ const HeaderWalletInfo = () => {
       <div className={`wallet-toggle-wrapper ${showWalletBox ? "open" : "closed"}`}>
       {!showWalletBox && (
         <button className="wallet-toggle-btn-minimal" onClick={() => setShowWalletBox(true)} aria-label="Open Wallet">
-          {/* 100% SHARP WALLET SVG - NO BLUR */}
-          <svg className="wallet-svg-animated" width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* SHARP CRYPTO WALLET SVG - NO BLUR - HIGH CONTRAST */}
+          <svg className="wallet-svg-animated" width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <linearGradient id="walletGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#14F195"/>
-                <stop offset="50%" stopColor="#00D4FF"/>
-                <stop offset="100%" stopColor="#9945FF"/>
-              </linearGradient>
-              <linearGradient id="coinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#FFD700"/>
-                <stop offset="100%" stopColor="#FFA500"/>
+              <linearGradient id="sharpGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#00FFA3"/> {/* Neon Green */}
+                <stop offset="100%" stopColor="#00D4FF"/> {/* Cyan */}
               </linearGradient>
             </defs>
             
-            {/* Wallet Body */}
-            <rect x="6" y="12" width="40" height="28" rx="4" fill="none" stroke="url(#walletGrad)" strokeWidth="2.5"/>
+            {/* Main Wallet Body - Sharp Vectors */}
+            <path d="M10 16H54C56.2 16 58 17.8 58 20V50C58 52.2 56.2 54 54 54H10C7.8 54 6 52.2 6 50V20C6 17.8 7.8 16 10 16Z" fill="#0a0a0a" stroke="url(#sharpGrad)" strokeWidth="2.5" />
             
-            {/* Wallet Top Flap */}
-            <path d="M6 16C6 13.79 7.79 12 10 12H42C44.21 12 46 13.79 46 16V18H6V16Z" fill="url(#walletGrad)"/>
+            {/* Top Flap / Fold */}
+            <path d="M10 16V12C10 9.8 11.8 8 14 8H50C52.2 8 54 9.8 54 12V16" stroke="url(#sharpGrad)" strokeWidth="2.5" fill="none" />
             
-            {/* Card Lines */}
-            <rect x="10" y="22" width="16" height="2" rx="1" fill="#00D4FF"/>
-            <rect x="10" y="27" width="12" height="2" rx="1" fill="#9945FF"/>
-            <rect x="10" y="32" width="8" height="2" rx="1" fill="#14F195"/>
+            {/* Digital Chip / Circuit */}
+            <rect x="14" y="24" width="12" height="18" rx="2" fill="none" stroke="#9945FF" strokeWidth="2" />
+            <path d="M14 28H26 M14 33H26 M14 38H26" stroke="#9945FF" strokeWidth="1.5" />
             
-            {/* Bitcoin Coin */}
-            <circle cx="38" cy="28" r="8" fill="none" stroke="url(#coinGrad)" strokeWidth="2"/>
-            <text x="38" y="32" fontSize="10" fontWeight="bold" fill="#FFD700" textAnchor="middle" fontFamily="Arial">₿</text>
+            {/* Coin/Lock Mechanism - High Contrast */}
+            <circle cx="46" cy="35" r="9" fill="#0a0a0a" stroke="#FFD700" strokeWidth="2.5" />
+            <path d="M46 31V39 M42 35H50" stroke="#FFD700" strokeWidth="2.5" strokeLinecap="square" />
+            
+            {/* Connection Dot */}
+            <circle cx="46" cy="35" r="3" fill="#FFD700" />
           </svg>
         </button>
       )}

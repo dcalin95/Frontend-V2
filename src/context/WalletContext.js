@@ -8,6 +8,17 @@ import { providers } from "ethers";
 import BitsABI from '../abi/BitsABI.js';
 import { CONTRACT_MAP } from '../contract/contractMap';
 
+// 🔑 Wallet Types Constants
+export const WALLET_TYPES = {
+  EVM: 'evm',
+  METAMASK: 'metamask',
+  WALLETCONNECT: 'walletconnect',
+  COINBASE: 'coinbase',
+  RAINBOW: 'rainbow',
+  SOLANA: 'solana',
+  PHANTOM: 'phantom'
+};
+
 // Adresa Contractului BITS Token (BSC Mainnet)
 const BITS_TOKEN_ADDRESS = CONTRACT_MAP.BITS_TOKEN.address;
 
@@ -43,6 +54,9 @@ const InnerWalletProvider = ({ children }) => {
   });
   const { switchChain } = useSwitchChain();
   const { open } = useWeb3Modal();
+
+  // 🎨 Modal Control State
+  const [showWalletModal, setShowWalletModal] = useState(false);
 
   // Debug logs
   console.log("🔍 [Wallet Debug] Address:", address);
@@ -197,6 +211,40 @@ const InnerWalletProvider = ({ children }) => {
     }
   };
 
+  // 🧨 HARD RESET (Nuclear Option for stuck connections)
+  const hardReset = () => {
+    console.warn("🧨 [WalletContext] EXECUTING HARD RESET...");
+    safeDisconnect();
+    if (typeof window !== 'undefined') {
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.reload();
+    }
+  };
+
+  // 🔧 Clear pending connection state on mount
+  useEffect(() => {
+    const clearPendingConnections = async () => {
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('wagmi.store');
+          localStorage.removeItem('wagmi.wallet');
+          localStorage.removeItem('wagmi.connected');
+          sessionStorage.removeItem('wagmi.connector');
+        }
+        
+        // Clear MetaMask pending requests
+        if (window.ethereum && window.ethereum._metamask) {
+          await window.ethereum._metamask.isUnlocked().catch(() => {});
+        }
+      } catch (error) {
+        console.warn("[WalletContext] Error clearing pending connections:", error);
+      }
+    };
+    
+    clearPendingConnections();
+  }, []);
+
   return (
     <WalletContext.Provider
       value={{
@@ -217,6 +265,7 @@ const InnerWalletProvider = ({ children }) => {
         // Functions
         connectWallet,
         disconnectWallet: safeDisconnect, // ✅ Use safe wrapper
+        hardReset, // 🧨 Nuclear option for stuck connections
         
         // Legacy Functions (Mapped)
         connectViaMetamask,
@@ -228,7 +277,11 @@ const InnerWalletProvider = ({ children }) => {
 
         // New Utility Functions
         switchNetwork: (id) => switchChain({ chainId: id }),
-        chainId
+        chainId,
+
+        // Modal Control
+        showWalletModal,
+        setShowWalletModal
       }}
     >
       {children}

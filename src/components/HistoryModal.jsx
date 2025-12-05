@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useWallet } from '../context/UnifiedWalletContext';
+import { useWallet } from '../context/WalletContext';
 import logo from '../assets/logo.png';
 import './HistoryModal.css';
 import './HistoryModal.mobile.css'; // 📱 Mobile Optimizations

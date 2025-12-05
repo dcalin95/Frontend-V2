@@ -1,17 +1,26 @@
 .tokenomics-page {
   min-height: 100vh;
   background: transparent;
-  padding: 0;
+  padding-top: 250px; /* Content moved down significantly */
   margin: 0;
   position: relative;
 }
 
+/* Controls Container - Fixed on Desktop */
+.tokenomics-controls {
+  position: fixed;
+  top: 170px; /* Clear 150px header + 20px gap */
+  left: 280px; /* Move to left but clear Sidebar (240px) */
+  right: auto;
+  z-index: 990;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
 /* Toggle Button */
 .tokenomics-toggle {
-  position: fixed;
-  top: 100px;
-  right: 320px; /* Moved further left */
-  z-index: 990; /* Lower z-index than wallet (9999) */
+  position: static; /* Inside flex container */
   padding: 10px 20px;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(10px);

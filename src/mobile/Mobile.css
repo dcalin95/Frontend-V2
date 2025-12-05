@@ -24,7 +24,7 @@
   min-height: 100vh;
   background: transparent;
   color: var(--text-primary);
-  padding: 0;
+  padding: 0 0 120px 0; /* Critical Padding for MetaMask/Trust Wallet */
   margin: 0;
   overflow-x: hidden;
 }

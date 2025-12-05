@@ -1,0 +1,527 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   📱 MOBILE WALLET MODAL - OPTIMIZED FOR TOUCH & IN-APP BROWSERS
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.mobile-wallet-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 99999;
+  display: flex;
+  align-items: flex-end; /* Slide from bottom */
+  justify-content: center;
+  animation: mobileOverlayIn 0.3s ease-out;
+}
+
+@keyframes mobileOverlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.mobile-wallet-modal {
+  background: linear-gradient(180deg, #0a0a0f 0%, #050508 100%);
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  max-width: 100vw;
+  max-height: 85vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.8),
+              0 0 0 1px rgba(20, 241, 149, 0.2);
+  animation: mobileModalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Safe area for iPhone notch/home indicator */
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+@keyframes mobileModalSlideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Header */
+.mobile-wallet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 20px 16px 20px;
+  border-bottom: 1px solid rgba(20, 241, 149, 0.1);
+  position: sticky;
+  top: 0;
+  background: linear-gradient(180deg, #0a0a0f 0%, rgba(10, 10, 15, 0.95) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 10;
+}
+
+.mobile-wallet-header h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #14F195 0%, #9945FF 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+  flex: 1;
+  text-align: center;
+}
+
+.mobile-wallet-back {
+  width: 40px;
+  height: 40px;
+  background: rgba(20, 241, 149, 0.1);
+  border: 1px solid rgba(20, 241, 149, 0.3);
+  border-radius: 12px;
+  color: #14F195;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mobile-wallet-back:active {
+  transform: scale(0.95);
+  background: rgba(20, 241, 149, 0.2);
+}
+
+.mobile-wallet-close {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 80, 80, 0.1);
+  border: 1px solid rgba(255, 80, 80, 0.3);
+  border-radius: 12px;
+  color: #ff5050;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mobile-wallet-close:active {
+  transform: scale(0.95);
+  background: rgba(255, 80, 80, 0.2);
+}
+
+/* Info Banner (In-App Browser) */
+.mobile-wallet-info-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 20px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, rgba(20, 241, 149, 0.1), rgba(153, 69, 255, 0.1));
+  border: 1px solid rgba(20, 241, 149, 0.3);
+  border-radius: 12px;
+  animation: bannerPulse 2s ease-in-out infinite;
+}
+
+@keyframes bannerPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 rgba(20, 241, 149, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(20, 241, 149, 0.4);
+  }
+}
+
+.banner-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.banner-text {
+  flex: 1;
+}
+
+.banner-text strong {
+  color: #14F195;
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.banner-text p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.75rem;
+  margin: 0;
+}
+
+/* Network Selection Cards */
+.mobile-wallet-networks {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-network-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: rgba(20, 241, 149, 0.05);
+  border: 2px solid rgba(20, 241, 149, 0.2);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 80px;
+}
+
+.mobile-network-card:active {
+  transform: scale(0.98);
+  background: rgba(20, 241, 149, 0.15);
+  border-color: #14F195;
+}
+
+.mobile-network-card.solana-card {
+  background: rgba(153, 69, 255, 0.05);
+  border-color: rgba(153, 69, 255, 0.2);
+}
+
+.mobile-network-card.solana-card:active {
+  background: rgba(153, 69, 255, 0.15);
+  border-color: #9945FF;
+}
+
+.network-icon {
+  font-size: 2.5rem;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(20, 241, 149, 0.1);
+  border-radius: 12px;
+}
+
+.solana-card .network-icon {
+  background: rgba(153, 69, 255, 0.1);
+}
+
+.network-info {
+  flex: 1;
+  text-align: left;
+}
+
+.network-info h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+}
+
+.network-info p {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.network-arrow {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.4);
+  flex-shrink: 0;
+}
+
+/* Wallet List */
+.mobile-wallet-list {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-wallet-item {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.mobile-wallet-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(20, 241, 149, 0.05);
+  border: 2px solid rgba(20, 241, 149, 0.2);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 64px;
+}
+
+.mobile-wallet-btn.installed {
+  background: rgba(20, 241, 149, 0.08);
+  border-color: rgba(20, 241, 149, 0.3);
+}
+
+.mobile-wallet-btn.installed:active {
+  transform: scale(0.98);
+  background: rgba(20, 241, 149, 0.2);
+  border-color: #14F195;
+  box-shadow: 0 0 20px rgba(20, 241, 149, 0.3);
+}
+
+.mobile-wallet-btn.not-installed {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.1);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.wallet-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wallet-info {
+  flex: 1;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wallet-info strong {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.wallet-status {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.wallet-status.installed-badge {
+  color: #14F195;
+  font-weight: 600;
+}
+
+.wallet-status.universal-badge {
+  color: #00D4FF;
+  font-weight: 600;
+}
+
+/* Install Button */
+.mobile-install-btn {
+  flex: 0 0 auto;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #14F195, #00D4FF);
+  border: none;
+  border-radius: 12px;
+  color: #000;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(20, 241, 149, 0.3);
+}
+
+.mobile-install-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 8px rgba(20, 241, 149, 0.5);
+}
+
+/* Empty State */
+.mobile-wallet-empty {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.mobile-wallet-empty h4 {
+  font-size: 1.2rem;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+}
+
+.mobile-wallet-empty p {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+/* Tip Box */
+.mobile-wallet-tip {
+  margin: 0 20px 20px 20px;
+  padding: 12px 16px;
+  background: rgba(0, 212, 255, 0.05);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.tip-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.mobile-wallet-tip p {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   📱 IN-APP BROWSER OPTIMIZATIONS
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+body.in-app-browser .mobile-wallet-modal {
+  max-height: 90vh; /* Mai mult spațiu în in-app browsers */
+  border-radius: 20px 20px 0 0;
+}
+
+body.in-app-browser .mobile-wallet-header {
+  padding: 16px 16px 12px 16px;
+}
+
+body.in-app-browser .mobile-wallet-btn {
+  min-height: 56px; /* Mai scurt pentru in-app */
+  padding: 12px;
+}
+
+body.in-app-browser .mobile-install-btn {
+  padding: 12px 16px;
+  font-size: 0.85rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   📱 RESPONSIVE - VERY SMALL SCREENS
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 360px) {
+  body.mode-mobile .mobile-wallet-header h3 {
+    font-size: 1.1rem;
+  }
+
+  body.mode-mobile .mobile-wallet-btn {
+    padding: 12px;
+    min-height: 56px;
+  }
+
+  body.mode-mobile .wallet-icon {
+    font-size: 1.5rem;
+    width: 32px;
+    height: 32px;
+  }
+
+  body.mode-mobile .wallet-info strong {
+    font-size: 0.9rem;
+  }
+
+  body.mode-mobile .mobile-install-btn {
+    padding: 12px 14px;
+    font-size: 0.8rem;
+  }
+
+  body.mode-mobile .network-icon {
+    font-size: 2rem;
+    width: 40px;
+    height: 40px;
+  }
+
+  body.mode-mobile .network-info h4 {
+    font-size: 1rem;
+  }
+
+  body.mode-mobile .network-info p {
+    font-size: 0.75rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🌄 LANDSCAPE MODE
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+body.orientation-landscape .mobile-wallet-modal {
+  max-height: 95vh;
+  border-radius: 16px 16px 0 0;
+}
+
+body.orientation-landscape .mobile-wallet-header {
+  padding: 12px 16px;
+}
+
+body.orientation-landscape .mobile-wallet-networks,
+body.orientation-landscape .mobile-wallet-list {
+  padding: 12px 16px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   ⚡ TOUCH OPTIMIZATIONS
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* Larger touch targets */
+.mobile-wallet-btn,
+.mobile-network-card,
+.mobile-install-btn {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Active state feedback */
+.mobile-wallet-btn:active,
+.mobile-network-card:active,
+.mobile-install-btn:active {
+  opacity: 0.9;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   🎨 SCROLLBAR STYLING
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+.mobile-wallet-modal::-webkit-scrollbar {
+  width: 4px;
+}
+
+.mobile-wallet-modal::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mobile-wallet-modal::-webkit-scrollbar-thumb {
+  background: rgba(20, 241, 149, 0.3);
+  border-radius: 2px;
+}
+
+.mobile-wallet-modal::-webkit-scrollbar-thumb:hover {
+  background: rgba(20, 241, 149, 0.5);
+}
+

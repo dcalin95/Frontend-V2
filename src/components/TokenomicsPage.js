@@ -15,19 +15,10 @@ const TokenomicsPage = ({
     <div className="tokenomics-page">
       {/* Toggle Button - doar dacă showToggle = true */}
       {showToggle && (
-        <div className="tokenomics-controls" style={{
-          position: 'fixed',
-          top: '100px',
-          right: '320px',
-          zIndex: 990,
-          display: 'flex',
-          gap: '1rem',
-          alignItems: 'center'
-        }}>
+        <div className="tokenomics-controls">
           <button 
             className="tokenomics-toggle"
             onClick={() => setViewMode(viewMode === "ring" ? "hexagon" : "ring")}
-            style={{ position: 'static' }} // Override fixed pos from css
           >
             {viewMode === "ring" ? "Switch to Hexagon View" : "Switch to Ring View"}
           </button>

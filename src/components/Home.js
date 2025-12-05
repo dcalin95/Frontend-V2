@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import ThreeBackground from "./StarfieldBackground";
+// import ThreeBackground from "./StarfieldBackground";
 import LaserOrbit from "./Education/LaserOrbit";
 import HomeAISection from "./HomeAISection";
 import TokenomicsPage from "./TokenomicsPage";
@@ -10,6 +10,7 @@ import bits17Video from "../assets/bits17.mp4";
 import BrandLogo from "./BrandLogo";
 import AddTokenButton from "./AddTokenButton"; // Import AddTokenButton
 import SmartTooltip from "../Presale/components/SmartTooltip"; // Import SmartTooltip
+import BitcoinPriceTicker from "./BitcoinPriceTicker"; // Import Bitcoin Live Price Ticker
 
 import "./Home.desktop.css";
 import "./Home.mobile.css";
@@ -24,9 +25,8 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      {/* Fundalul și Timer-ul */}
-      <section className="home-section">
-        <ThreeBackground />
+      {/* Fundalul este gestionat global în App.js */}
+      <section className="home-section" style={{ height: 0, overflow: 'hidden' }}>
       </section>
 
       {/* Secțiunea Hero */}
@@ -54,6 +54,18 @@ const Home = () => {
           </SmartTooltip>
         </div>
       </motion.section>
+
+      {/* Bitcoin Live Price Ticker - Cosmic Design */}
+      <section className="home-section" style={{ display:'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', padding:'60px 0 40px 0', margin: '0', position: 'relative', zIndex: 15, minHeight: '350px' }}>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          style={{ width: '100%', maxWidth: '420px', position: 'relative', zIndex: 20 }}
+        >
+          <BitcoinPriceTicker />
+        </motion.div>
+      </section>
 
       {/* 🎓 Education Portal Gateway - New Section */}
       <section className="home-section education-gateway" style={{ padding: '2rem 0', textAlign: 'center' }}>

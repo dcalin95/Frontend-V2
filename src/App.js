@@ -15,6 +15,7 @@ import Footer from "./components/Footer";
 import BoostedBanner from "./components/BoostedBanner";
 import HeaderWalletInfo from "./context/HeaderWalletInfo";
 import StarfieldBackground from "./components/StarfieldBackground";
+import SmartWalletModal from "./components/SmartWalletModal";
 // import CustomCursor from "./components/CustomCursor"; // 🚫 DISABLED - Performance optimization
 import ErrorBoundary from "./components/ErrorBoundary";
 import SidebarMenu from "./SidebarMenu/SidebarMenu";
@@ -139,7 +140,6 @@ const TermsPart3 = lazy(() => import("./Legal/TermsPart3"));
 const Privacy = lazy(() => import("./Legal/Privacy"));
 const ContactPage = lazy(() => import("./components/contact/ContactPage"));
 
-const WalletTestComponent = lazy(() => import("./context/wallet/WalletTestComponent"));
 const MindMirror = lazy(() => import("./mindmirror/MindMirrorDashboard"));
 const ThankYouPage = lazy(() => import("./components/ThankYouPage"));
 const RegisteredUsers = lazy(() => import("./components/Admin/RegisteredUsers")); // Import nou
@@ -418,7 +418,6 @@ const App = () => {
                       />
                       <Route path="/privacy-policy" element={<Privacy />} />
                       <Route path="/contact" element={<ContactPage />} />
-                      <Route path="/wallet-test" element={<WalletTestComponent />} />
                       <Route path="/mind-mirror" element={<MindMirror />} />
                       <Route path="/thank-you" element={<ThankYouPage />} />
                       <Route path="/admin/users" element={<RegisteredUsers />} /> {/* Rută secretă */}
@@ -459,6 +458,9 @@ const App = () => {
           </ErrorBoundary>
         </GoogleAnalyticsWrapper>
       </Router>
+      
+      {/* 🎯 Smart Wallet Modal - Auto-switches Desktop/Mobile */}
+      <SmartWalletModal />
     </>
   );
 };

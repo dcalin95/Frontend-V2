@@ -1,8 +1,9 @@
 // src/context/Web3AuthConnect.js
+// 🔐 Web3Auth - Social Login for Crypto (Google, Facebook, Email)
 import { Web3Auth } from "@web3auth/web3auth";
 import { ethers } from "ethers";
 
-// 🔑 Client ID Web3Auth (produs de tine)
+// 🔑 Client ID Web3Auth
 const clientId = "BES8kujJeBgfBvVa1a9TLtNGuKUqVFTIXGfgOlEyB4sJv51AxncNougD4ImDK6qYVWVjGYtrrRBO5MKteOzmdA8";
 
 // Web3Auth singleton
@@ -15,8 +16,8 @@ export const initWeb3Auth = async () => {
     clientId,
     chainConfig: {
       chainNamespace: "eip155",
-      chainId: "0x61", // BSC Testnet
-      rpcTarget: "https://data-seed-prebsc-1-s1.binance.org:8545/", // BSC TESTNET endpoint
+      chainId: "0x38", // BSC Mainnet (0x61 pentru testnet)
+      rpcTarget: "https://bsc-dataseed1.binance.org", // BSC Mainnet
     },
   });
 

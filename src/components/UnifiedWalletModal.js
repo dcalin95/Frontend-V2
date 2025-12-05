@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useWallet as useSolanaWalletAdapter } from '@solana/wallet-adapter-react';
-import { useWallet } from '../context/UnifiedWalletContext';
+import { useWallet } from '../context/WalletContext';
 import { prepareForConnection, handleConnectionError } from '../utils/walletConnectionFix';
 import walletConnectLogo from '../assets/icons/wallet-connect-logo.png'; 
 import evmIcon from '../assets/icons/evm-logo.jpg'; // Import EVM logo

@@ -42,8 +42,8 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
   const [headerHeight, setHeaderHeight] = useState('12vh');
   
   useEffect(() => {
-     if (isScrolled) setHeaderHeight('70px');
-     else setHeaderHeight('12vh');
+     if (isScrolled) setHeaderHeight('100px');
+     else setHeaderHeight('140px');
   }, [isScrolled]);
 
   const { endTime, isLoaded } = usePresaleState();

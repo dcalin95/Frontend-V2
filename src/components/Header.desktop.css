@@ -14,7 +14,7 @@
   background: rgba(15, 20, 25, 0.85);
   color: white;
   padding: 2.5rem 2rem 0.5rem 2rem;
-  height: 115px;
+  height: 150px;
   width: 100%;
   position: fixed;
   top: 0;
@@ -33,7 +33,7 @@
 /* === DYNAMIC SCROLLED STATE === */
 .header.scrolled {
   padding: 1rem 2rem;
-  height: 80px;
+  height: 110px;
   background: rgba(10, 14, 18, 0.95);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -506,7 +506,7 @@
 
 /* === HEADER SPACER === */
 .header-spacer {
-  height: 12vh; /* Spatiu relativ la inaltimea ecranului pentru a compensa header-ul */
+  height: 180px; /* Fixed height to ensure content is not hidden */
   width: 100%;
 }
 

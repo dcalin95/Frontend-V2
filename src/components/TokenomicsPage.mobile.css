@@ -2,20 +2,37 @@
 
 @media (max-width: 768px) {
   .tokenomics-page {
-    padding: 0.5rem; /* Reduce padding */
+    padding: 0.5rem;
+    padding-top: 140px; /* Move content down on mobile too */
     overflow-x: hidden;
     width: 100%;
+    margin-top: 0;
+  }
+
+  /* Controls Container - Flow on Mobile */
+  .tokenomics-controls {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    gap: 15px;
+    align-items: center;
+    z-index: 1;
   }
 
   /* Hide heavy fixed toggle on mobile - use inline if needed or hide */
   .tokenomics-toggle {
     position: static !important; /* Force static flow */
-    margin: 10px auto;
-    width: 90%;
-    max-width: 100%;
+    margin: 0;
+    width: 100%;
+    max-width: 300px;
     transform: none;
     font-size: 0.9rem;
-    padding: 10px;
+    padding: 12px;
   }
   
   /* Scale down charts to fit screen */

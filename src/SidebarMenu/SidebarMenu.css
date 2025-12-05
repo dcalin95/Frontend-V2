@@ -77,7 +77,7 @@
 }
 
 /* ===== CULOARE DIFERITĂ PENTRU FIECARE BUTON - FUNDAL NEGRU COMPLET ===== */
-.btn-swap {
+.sidebar .btn-swap {
   background: #000000 !important;
   background-color: #000000 !important;
   border: 2px solid #ff6b6b;
@@ -86,7 +86,7 @@
   text-shadow: 0 0 8px rgba(255, 107, 107, 0.8);
 }
 
-.btn-pool {
+.sidebar .btn-pool {
   background: #000000 !important;
   background-color: #000000 !important;
   border: 2px solid #ffa94d;
@@ -95,7 +95,7 @@
   text-shadow: 0 0 8px rgba(255, 169, 77, 0.8);
 }
 
-.btn-buy {
+.sidebar .btn-buy {
   background: #000000 !important;
   background-color: #000000 !important;
   border: 2px solid #ffd43b;
@@ -104,7 +104,7 @@
   text-shadow: 0 0 8px rgba(255, 212, 59, 0.8);
 }
 
-.btn-how-to-buy {
+.sidebar .btn-how-to-buy {
   background: #000000 !important;
   background-color: #000000 !important;
   border: 2px solid #69db7c;
@@ -113,7 +113,7 @@
   text-shadow: 0 0 8px rgba(105, 219, 124, 0.8);
 }
 
-.btn-tokenomics {
+.sidebar .btn-tokenomics {
   background: #000000 !important;
   background-color: #000000 !important;
   border: 2px solid #4dabf7;
@@ -122,7 +122,7 @@
   text-shadow: 0 0 8px rgba(77, 171, 247, 0.8);
 }
 
-.btn-audit {
+.sidebar .btn-audit {
   background: #000000 !important;
   background-color: #000000 !important;
   border: 2px solid #9775fa;
@@ -131,7 +131,7 @@
   text-shadow: 0 0 8px rgba(151, 117, 250, 0.8);
 }
 
-.btn-invite {
+.sidebar .btn-invite {
   background: #000000 !important;
   background-color: #000000 !important;
   border: 2px solid #f783ac;
@@ -140,7 +140,7 @@
   text-shadow: 0 0 8px rgba(247, 131, 172, 0.8);
 }
 
-.btn-how-it-works {
+.sidebar .btn-how-it-works {
   background: #000000 !important;
   background-color: #000000 !important;
   border: 2px solid #38d9a9;
@@ -149,7 +149,7 @@
   text-shadow: 0 0 8px rgba(56, 217, 169, 0.8);
 }
 
-.btn-roadmap {
+.sidebar .btn-roadmap {
   background: #000000 !important;
   background-color: #000000 !important;
   border: 2px solid #e040fb;
@@ -158,7 +158,7 @@
   text-shadow: 0 0 8px rgba(224, 64, 251, 0.8);
 }
 
-.btn-leaderboard {
+.sidebar .btn-leaderboard {
   background: #000000 !important;
   background-color: #000000 !important;
   border: 2px solid #74c0fc;
@@ -167,7 +167,7 @@
   text-shadow: 0 0 8px rgba(116, 192, 252, 0.8);
 }
 
-.btn-about {
+.sidebar .btn-about {
   background: #000000 !important;
   background-color: #000000 !important;
   border: 2px solid #ff922b;
@@ -176,7 +176,7 @@
   text-shadow: 0 0 8px rgba(255, 146, 43, 0.8);
 }
 
-.btn-mindmirror {
+.sidebar .btn-mindmirror {
   background: #000000 !important;
   background-color: #000000 !important;
   border: 2px solid #00ff9d;
@@ -185,7 +185,7 @@
   text-shadow: 0 0 8px rgba(0, 255, 157, 0.8);
 }
 
-.btn-go-main {
+.sidebar .btn-go-main {
   background: #000000 !important;
   background-color: #000000 !important;
   border: 2px solid #f3722c;
@@ -359,15 +359,19 @@
 
 .sidebar button.selected,
 .sidebar a.selected {
-  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
   filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.3));
+  border-color: rgba(0, 255, 163, 0.8) !important;
 }
 /* ===== Efect BOUNCE pentru butonul selectat ===== */
 .sidebar button.selected i {
-  animation: bounceIcon 1.4s infinite ease-in-out;
+  color: #00FFA3 !important; /* Solid Neon Green for visibility */
+  -webkit-text-fill-color: #00FFA3 !important;
+  background: none !important;
+  animation: bounceIcon 1.4s infinite ease-in-out; /* Kept bounce but fixed color */
 }
 
 @keyframes bounceIcon {

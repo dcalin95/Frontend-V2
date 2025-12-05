@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useAccount, useBalance, useWriteContract, useWaitForTransactionReceipt, useReadContract } from 'wagmi';
 import { parseEther, parseUnits, formatUnits } from 'viem';
-import { useWallet } from '../context/UnifiedWalletContext';
+import { useWallet } from '../context/WalletContext';
 import { TOKENS, getToken, getSwapPath } from '../utils/tokenList';
 import useCellManagerData from '../Presale/hooks/useCellManagerData';
 import logo from '../assets/logo.png';

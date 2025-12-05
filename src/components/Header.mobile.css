@@ -57,7 +57,7 @@
   /* Mobile Navigation Menu */
   .mobile-nav-menu {
     position: fixed;
-    top: calc(95px + env(safe-area-inset-top, 0px));
+    top: calc(140px + env(safe-area-inset-top, 0px));
     left: 0;
     right: 0;
     bottom: 0;
@@ -326,7 +326,7 @@
     align-items: center; 
     justify-content: space-between; 
     padding: 2rem 1rem 0.5rem 1rem; 
-    height: 95px; 
+    height: 140px; 
     background: rgba(0, 0, 0, 0.9); 
     gap: 0.5rem; 
     border-bottom: none;
@@ -337,7 +337,7 @@
   
   .header.scrolled {
     padding: 0.5rem 1rem;
-    height: 70px;
+    height: 100px;
     background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(10px);
   }
@@ -492,7 +492,7 @@
     flex-shrink: 0; /* Nu permite micșorarea */
   }
   .social-link img { width: 13px; height: 13px; }
-  .header-spacer { height: 12vh; }
+  .header-spacer { height: 170px; }
 }
 
 /* === ECRANE FOARTE MICI (sub 380px) === */

@@ -1,6 +1,6 @@
 .total-boosted-banner {
   position: fixed;
-  top: 110px; /* Schimbat de la 80px la 110px pentru a fi mai jos */
+  top: 160px; /* Moved down to clear larger header */
   left: 35%; 
   transform: translateX(-50%);
   z-index: 9999;
@@ -368,7 +368,7 @@
 /* ✅ Mobile fix */
 @media (max-width: 768px) {
   .total-boosted-banner {
-    top: 114px;
+    top: 150px;
     left: 55%;
     transform: translateX(-50%);
     width: fit-content;
@@ -405,7 +405,7 @@
   /* Când meniul mobil este deschis, împinge bannerul în fluxul paginii */
   body.mobile-menu-open .total-boosted-banner {
     position: sticky; /* rămâne sus, sub header, când meniul e deschis */
-    top: 72px; /* sub headerul de 70px */
+    top: 105px; /* sub headerul de 100px */
     left: 50%;
     transform: translateX(-50%);
     width: fit-content;

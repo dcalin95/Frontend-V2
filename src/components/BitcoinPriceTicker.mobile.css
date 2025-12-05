@@ -1,0 +1,485 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   📱 BITCOIN PRICE TICKER - MOBILE & IN-APP BROWSER STYLES
+   
+   IMPORTANT: All selectors MUST be prefixed with body.mode-mobile to prevent
+   mobile styles from overriding desktop styles!
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   TABLET & MOBILE (768px and below)
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  body.mode-mobile .btc-cosmic-card-wrapper {
+    max-width: 100%;
+    padding: 0 12px;
+  }
+
+  body.mode-mobile .btc-cosmic-card {
+    padding: 28px 20px;
+    border-radius: 20px;
+  }
+
+  body.mode-mobile .btc-price-zone {
+    margin-top: 90px;
+  }
+
+  body.mode-mobile .btc-price-display {
+    font-size: 2rem;
+  }
+
+  body.mode-mobile .btc-logo-orbital {
+    width: 70px;
+    height: 70px;
+  }
+
+  body.mode-mobile .btc-logo-text {
+    font-size: 2.5rem;
+  }
+
+  body.mode-mobile .btc-orbit-1 {
+    width: 160px;
+    height: 160px;
+  }
+
+  body.mode-mobile .btc-orbit-2 {
+    width: 220px;
+    height: 220px;
+  }
+
+  body.mode-mobile .btc-orbit-3 {
+    width: 280px;
+    height: 280px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   SMALL MOBILE (480px and below)
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+  body.mode-mobile .btc-cosmic-card-wrapper {
+    padding: 0 8px;
+  }
+
+  body.mode-mobile .btc-cosmic-card {
+    padding: 24px 16px;
+    border-radius: 16px;
+  }
+
+  body.mode-mobile .btc-ai-badge {
+    top: 12px;
+    left: 12px;
+    padding: 4px 10px;
+    font-size: 0.65rem;
+  }
+
+  body.mode-mobile .btc-ai-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  body.mode-mobile .btc-live-indicator {
+    top: 12px;
+    right: 12px;
+  }
+
+  body.mode-mobile .btc-price-zone {
+    margin-top: 80px;
+  }
+
+  body.mode-mobile .btc-asset-label {
+    font-size: 0.7rem;
+    margin-bottom: 10px;
+  }
+
+  body.mode-mobile .btc-price-display {
+    font-size: 1.75rem;
+    margin-bottom: 14px;
+  }
+
+  body.mode-mobile .btc-stats-row {
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  body.mode-mobile .btc-change-badge {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
+
+  body.mode-mobile .btc-timeframe {
+    font-size: 0.65rem;
+  }
+
+  body.mode-mobile .btc-logo-orbital {
+    width: 60px;
+    height: 60px;
+  }
+
+  body.mode-mobile .btc-logo-text {
+    font-size: 2rem;
+  }
+
+  body.mode-mobile .btc-trend-orb {
+    width: 42px;
+    height: 42px;
+    font-size: 1.3rem;
+  }
+
+  body.mode-mobile .btc-trend-label {
+    font-size: 0.8rem;
+  }
+
+  body.mode-mobile .btc-cosmic-footer {
+    padding-top: 14px;
+  }
+
+  body.mode-mobile .btc-footer-tag,
+  body.mode-mobile .btc-sync-status {
+    font-size: 0.65rem;
+  }
+
+  body.mode-mobile .btc-orbit-1 {
+    width: 140px;
+    height: 140px;
+  }
+
+  body.mode-mobile .btc-orbit-2 {
+    width: 190px;
+    height: 190px;
+  }
+
+  body.mode-mobile .btc-orbit-3 {
+    width: 240px;
+    height: 240px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   VERY SMALL MOBILE (360px and below)
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 360px) {
+  body.mode-mobile .btc-cosmic-card {
+    padding: 20px 12px;
+  }
+
+  body.mode-mobile .btc-price-zone {
+    margin-top: 70px;
+  }
+
+  body.mode-mobile .btc-price-display {
+    font-size: 1.5rem;
+  }
+
+  body.mode-mobile .btc-logo-orbital {
+    width: 50px;
+    height: 50px;
+  }
+
+  body.mode-mobile .btc-logo-text {
+    font-size: 1.75rem;
+  }
+
+  body.mode-mobile .btc-stats-row {
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+
+  body.mode-mobile .btc-trend-orb {
+    width: 38px;
+    height: 38px;
+    font-size: 1.2rem;
+  }
+
+  body.mode-mobile .btc-trend-label {
+    font-size: 0.75rem;
+  }
+
+  body.mode-mobile .btc-orbit-1 {
+    width: 120px;
+    height: 120px;
+  }
+
+  body.mode-mobile .btc-orbit-2 {
+    width: 160px;
+    height: 160px;
+  }
+
+  body.mode-mobile .btc-orbit-3 {
+    width: 200px;
+    height: 200px;
+  }
+
+  body.mode-mobile .btc-cosmic-footer {
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   ULTRA SMALL MOBILE (340px and below)
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 340px) {
+  body.mode-mobile .btc-cosmic-card {
+    padding: 18px 10px;
+  }
+
+  body.mode-mobile .btc-price-display {
+    font-size: 1.35rem;
+  }
+
+  body.mode-mobile .btc-ai-badge {
+    padding: 3px 8px;
+    font-size: 0.6rem;
+  }
+
+  body.mode-mobile .btc-change-badge {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   IN-APP BROWSER OPTIMIZATIONS (MetaMask, Trust Wallet, Coinbase, etc.)
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+body.in-app-browser .btc-cosmic-card-wrapper {
+  padding: 0 8px;
+}
+
+body.in-app-browser .btc-cosmic-card {
+  padding: 20px 14px;
+  border-radius: 16px;
+}
+
+body.in-app-browser .btc-price-zone {
+  margin-top: 75px;
+}
+
+body.in-app-browser .btc-price-display {
+  font-size: 1.6rem;
+}
+
+body.in-app-browser .btc-logo-orbital {
+  width: 55px;
+  height: 55px;
+}
+
+body.in-app-browser .btc-logo-text {
+  font-size: 2rem;
+}
+
+/* Reduce blur for better performance in in-app browsers */
+body.in-app-browser .btc-cosmic-card {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Simplify animations for in-app browsers */
+body.in-app-browser .btc-orbit-1 {
+  animation-duration: 16s; /* Slower */
+}
+
+body.in-app-browser .btc-orbit-2 {
+  animation-duration: 22s; /* Slower */
+}
+
+body.in-app-browser .btc-orbit-3 {
+  animation-duration: 30s; /* Slower */
+}
+
+body.in-app-browser .btc-particle-1 {
+  animation-duration: 12s;
+}
+
+body.in-app-browser .btc-particle-2 {
+  animation-duration: 16s;
+}
+
+body.in-app-browser .btc-particle-3 {
+  animation-duration: 20s;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   SHORT VIEWPORT (max-height optimizations)
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@media (max-height: 700px) {
+  body.mode-mobile .btc-cosmic-card {
+    padding: 18px 14px;
+  }
+
+  body.mode-mobile .btc-price-zone {
+    margin-top: 65px;
+  }
+
+  body.mode-mobile .btc-price-display {
+    font-size: 1.6rem;
+    margin-bottom: 12px;
+  }
+
+  body.mode-mobile .btc-stats-row {
+    margin-bottom: 16px;
+  }
+
+  body.mode-mobile .btc-trend-zone {
+    margin-bottom: 14px;
+  }
+
+  body.mode-mobile .btc-logo-orbital {
+    width: 55px;
+    height: 55px;
+  }
+
+  body.mode-mobile .btc-logo-text {
+    font-size: 2rem;
+  }
+}
+
+@media (max-height: 600px) {
+  body.mode-mobile .btc-cosmic-card {
+    padding: 16px 12px;
+  }
+
+  body.mode-mobile .btc-price-zone {
+    margin-top: 60px;
+  }
+
+  body.mode-mobile .btc-price-display {
+    font-size: 1.5rem;
+  }
+
+  body.mode-mobile .btc-logo-orbital {
+    width: 50px;
+    height: 50px;
+  }
+
+  body.mode-mobile .btc-logo-text {
+    font-size: 1.75rem;
+  }
+
+  body.mode-mobile .btc-orbit-1,
+  body.mode-mobile .btc-orbit-2,
+  body.mode-mobile .btc-orbit-3 {
+    display: none; /* Hide orbits on very short screens */
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   LANDSCAPE ORIENTATION
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@media (orientation: landscape) and (max-height: 500px) {
+  body.mode-mobile .btc-cosmic-card {
+    padding: 14px 16px;
+  }
+
+  body.mode-mobile .btc-price-zone {
+    margin-top: 55px;
+  }
+
+  body.mode-mobile .btc-price-display {
+    font-size: 1.4rem;
+  }
+
+  body.mode-mobile .btc-logo-orbital {
+    width: 45px;
+    height: 45px;
+  }
+
+  body.mode-mobile .btc-logo-text {
+    font-size: 1.5rem;
+  }
+
+  body.mode-mobile .btc-trend-zone {
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  body.mode-mobile .btc-trend-orb {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+  }
+
+  body.mode-mobile .btc-ai-badge,
+  body.mode-mobile .btc-live-indicator {
+    top: 8px;
+  }
+
+  body.mode-mobile .btc-ai-badge {
+    left: 8px;
+    padding: 3px 8px;
+    font-size: 0.6rem;
+  }
+
+  body.mode-mobile .btc-live-indicator {
+    right: 8px;
+  }
+
+  body.mode-mobile .btc-cosmic-footer {
+    padding-top: 10px;
+  }
+
+  /* Hide decorative elements in landscape */
+  body.mode-mobile .btc-orbit-particle {
+    display: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   IOS SAFE AREA SUPPORT
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  body.mode-mobile .btc-cosmic-card-wrapper {
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   TOUCH OPTIMIZATIONS
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+body.mode-mobile .btc-retry-btn {
+  min-height: 44px; /* iOS minimum touch target */
+  padding: 12px 28px;
+}
+
+body.mode-mobile .btc-cosmic-card:hover {
+  transform: none; /* Disable hover effects on mobile */
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   PERFORMANCE: Reduce animation complexity on very small devices
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 360px) {
+  body.mode-mobile .btc-orbital-bg {
+    opacity: 0.2; /* Reduce opacity for better readability */
+  }
+
+  body.mode-mobile .btc-orbit-particle {
+    display: none; /* Hide particles to improve performance */
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   DARK MODE ADJUSTMENTS (if needed)
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@media (prefers-color-scheme: dark) {
+  body.mode-mobile .btc-cosmic-card {
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.8),
+      0 0 0 1px rgba(20, 241, 149, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+}
+

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './Sidebar.css';
 import './Sidebar.mobile.css';
 import { useAuth } from '../contexts/AuthContext';
-import { useWallet } from '../context/UnifiedWalletContext';
+import { useWallet } from '../context/WalletContext';
 import cardIcon from '../assets/icons/card-logo.jpg';
 import logo from '../assets/logo.png';
 import SwapModal from './SwapModal';

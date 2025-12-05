@@ -9,7 +9,7 @@ import "../CrystalClear.css"; // 💎 Crystal clear text
 import DashboardHeader from "./components/DashboardHeader";
 import { useStakingData } from "../../Staking/useStakingData";
 import { executeStakingCall } from "../../contract/getStakingContract";
-import { WALLET_TYPES } from "../../context/wallet/walletTypes";
+import { WALLET_TYPES } from "../../context/WalletContext";
 import solanaLogo from "../../assets/icons/solana-logo.png";
 import telegramLogo from "../../assets/TLogo.png";
 import {
