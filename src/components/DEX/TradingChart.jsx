@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { createChart, ColorType, CrosshairMode, CandlestickSeries, HistogramSeries } from 'lightweight-charts';
+import { createChart, ColorType, CrosshairMode } from 'lightweight-charts';
 import axios from 'axios';
 import { Activity, RefreshCw, BarChart3, Maximize2, Minimize2 } from 'lucide-react';
 import SmartTooltip from '../../Presale/components/SmartTooltip';
@@ -400,7 +400,7 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
       },
     });
 
-    const candles = chart.addSeries(CandlestickSeries, {
+    const candles = chart.addCandlestickSeries({
       upColor: '#30C371',
       downColor: '#E6444D',
       borderVisible: false,
@@ -409,7 +409,7 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
     });
     candlestickSeries.current = candles;
 
-    const volumes = chart.addSeries(HistogramSeries, {
+    const volumes = chart.addHistogramSeries({
       color: '#26a69a', // Base color, overriden by data
       priceFormat: { type: 'volume' },
       priceScaleId: '', 

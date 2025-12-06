@@ -42,7 +42,7 @@
     "http-browserify": "^1.7.0",
     "https-browserify": "^1.0.0",
     "jsonwebtoken": "^9.0.2",
-    "lightweight-charts": "^5.0.9",
+    "lightweight-charts": "^4.2.3",
     "lucide-react": "^0.554.0",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",

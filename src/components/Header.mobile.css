@@ -251,6 +251,21 @@
     color: #ff3366 !important;
     box-shadow: 0 0 12px rgba(255, 51, 102, 0.5) !important;
     text-shadow: 0 0 8px rgba(255, 51, 102, 0.8) !important;
+    
+    /* FIX: Permit text lung pe mai multe rânduri */
+    height: auto !important;
+    min-height: 44px !important;
+    padding: 6px 4px !important;
+  }
+  
+  /* FIX SPECIFIC PENTRU TEXT LUNG (Neural Investment...) */
+  .mobile-nav-menu a.mobile-btn-ai .mobile-text {
+    white-space: normal !important;
+    font-size: 0.7rem !important;
+    line-height: 1.1 !important;
+    text-align: center;
+    max-width: 100%;
+    display: block;
   }
 
   /* Whitepaper - Light Blue */

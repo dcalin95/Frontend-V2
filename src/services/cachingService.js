@@ -21,20 +21,24 @@ class CachingService {
 
   // 🔧 Setup service worker for caching
   async setupServiceWorker() {
-    // 🛑 DISABLE SW IN DEVELOPMENT (LOCALHOST)
-    if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-        console.log('🚧 [CachingService] SW disabled on localhost.');
-        return;
-    }
-
-    if ('serviceWorker' in navigator) {
-      try {
-        const registration = await navigator.serviceWorker.register('/sw.js');
-        console.log('✅ Service Worker registered:', registration);
-      } catch (error) {
-        console.warn('⚠️ Service Worker registration failed:', error);
-      }
-    }
+    // 🛑 SERVICE WORKER COMPLETELY DISABLED (sw.js deleted)
+    console.log('🚧 [CachingService] Service Worker DISABLED - file deleted.');
+    return;
+    
+    // OLD CODE (DISABLED):
+    // if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    //     console.log('🚧 [CachingService] SW disabled on localhost.');
+    //     return;
+    // }
+    //
+    // if ('serviceWorker' in navigator) {
+    //   try {
+    //     const registration = await navigator.serviceWorker.register('/sw.js');
+    //     console.log('✅ Service Worker registered:', registration);
+    //   } catch (error) {
+    //     console.warn('⚠️ Service Worker registration failed:', error);
+    //   }
+    // }
   }
 
   // 🧠 Setup memory cache

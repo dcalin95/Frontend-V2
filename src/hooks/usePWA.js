@@ -34,26 +34,39 @@ export const usePWA = () => {
 
     // Register service worker
     const registerServiceWorker = async () => {
-      // 🛑 DISABLE SW IN DEVELOPMENT (LOCALHOST) TO PREVENT CACHING ISSUES
-      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        console.log('🚧 Service Worker disabled on localhost to prevent caching issues.');
-        // Attempt to unregister existing ones
-        if ('serviceWorker' in navigator) {
-           navigator.serviceWorker.getRegistrations().then(registrations => {
-             for(let registration of registrations) { registration.unregister(); }
-           });
-        }
-        return;
-      }
-
+      // 🛑 SERVICE WORKER COMPLETELY DISABLED (sw.js file deleted)
+      console.log('🚧 Service Worker DISABLED - file deleted.');
+      
+      // Unregister ANY existing service workers
       if ('serviceWorker' in navigator) {
-        try {
-          const registration = await navigator.serviceWorker.register('/sw.js');
-          console.log('Service Worker registered:', registration);
-        } catch (error) {
-          console.error('Service Worker registration failed:', error);
-        }
+         navigator.serviceWorker.getRegistrations().then(registrations => {
+           for(let registration of registrations) {
+             console.log('💀 Unregistering SW:', registration);
+             registration.unregister();
+           }
+         });
       }
+      return;
+      
+      // OLD CODE (DISABLED):
+      // if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      //   console.log('🚧 Service Worker disabled on localhost to prevent caching issues.');
+      //   if ('serviceWorker' in navigator) {
+      //      navigator.serviceWorker.getRegistrations().then(registrations => {
+      //        for(let registration of registrations) { registration.unregister(); }
+      //      });
+      //   }
+      //   return;
+      // }
+      //
+      // if ('serviceWorker' in navigator) {
+      //   try {
+      //     const registration = await navigator.serviceWorker.register('/sw.js');
+      //     console.log('Service Worker registered:', registration);
+      //   } catch (error) {
+      //     console.error('Service Worker registration failed:', error);
+      //   }
+      // }
     };
 
     // Initialize

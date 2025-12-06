@@ -10,7 +10,7 @@ export default function Claude4AIPortfolioDemo() {
   return (
       <div style={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #0A0A1A 0%, #050510 100%)',
+        background: 'transparent', /* 🗑️ REMOVED BACKGROUND */
         padding: '0',
         margin: '0'
       }}>

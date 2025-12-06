@@ -7,7 +7,9 @@
     position: fixed;
     top: 100px !important; /* RIDICAT MAI SUS (era 160px) pentru a încăpea în ecran */
     left: 0 !important; /* Fixat la margine, nu la 8px */
-    transform: translateX(-150%); /* Împins MULT în stânga */
+    transform: translateX(-120vw); /* Împins MULT în stânga (120% din lățimea ecranului) */
+    visibility: hidden; /* ASCUNS COMPLET */
+    opacity: 0;
     height: auto;
     max-height: calc(100vh - 110px) !important; /* Limită înălțime pentru scroll */
     width: auto;
@@ -38,6 +40,8 @@
 
   .sidebar.open {
     transform: translateX(0);
+    visibility: visible; /* DEVINE VIZIBIL */
+    opacity: 1;
     /* Repetă stilurile pentru siguranță */
     background: transparent !important;
     background-color: transparent !important;

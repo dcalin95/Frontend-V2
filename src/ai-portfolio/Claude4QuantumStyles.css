@@ -54,8 +54,7 @@
 
 /* Main Container */
 .claude4-quantum-container {
-  background: radial-gradient(circle at 50% 50%, rgba(0, 212, 255, 0.03) 0%, rgba(7, 5, 16, 0.98) 100%),
-              linear-gradient(135deg, var(--claude4-darker) 0%, var(--claude4-dark) 100%);
+  background: transparent; /* 🗑️ REMOVED BACKGROUND */
   min-height: 100vh;
   color: #ffffff;
   font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -1532,58 +1531,110 @@
 
 @media (max-width: 768px) {
   .claude4-quantum-container {
-    padding: 15px;
+    padding: 10px !important;
   }
   
   .claude4-header {
-    padding: 20px;
+    padding: 20px 15px !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  .claude4-logo {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  
+  .claude4-brain-icon {
+    font-size: 2.5rem !important;
+    margin-bottom: 10px !important;
+  }
+
+  .claude4-title {
+    align-items: center !important;
   }
   
   .claude4-gradient-text {
-    font-size: 2rem;
+    font-size: 1.8rem !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+  }
+
+  .claude4-sub-text {
+    font-size: 0.95rem !important;
+    text-align: center !important;
+  }
+
+  .claude4-status-grid {
+    grid-template-columns: 1fr !important; /* Stack vertical pe mobil */
+    gap: 10px !important;
+    width: 100% !important;
   }
   
   .claude4-insights-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
   }
   
   .claude4-blockchain-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr !important; /* O singură coloană pentru carduri */
+  }
+
+  .claude4-bits-panel > div {
+    flex-direction: column !important;
   }
   
   .claude4-risk-selector {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr) !important;
   }
   
   .claude4-button-group {
-    flex-direction: column;
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  .claude4-generate-btn {
+    width: 100% !important;
   }
   
   .claude4-thinking-stats {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr !important;
+  }
+
+  .claude4-panel {
+    padding: 20px 15px !important; /* Padding mai mic pe panel-uri */
+  }
+
+  .claude4-input-group {
+    margin-bottom: 15px !important;
+  }
+
+  .claude4-chart-wrapper {
+    height: 300px !important; /* Grafic mai mic pe înălțime */
   }
 }
 
 @media (max-width: 480px) {
-  .claude4-status-grid {
-    grid-template-columns: 1fr;
+  .claude4-gradient-text {
+    font-size: 1.5rem !important;
   }
-  
-  .claude4-blockchain-grid {
-    grid-template-columns: 1fr;
-  }
-  
+
   .claude4-risk-selector {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important; /* Butoane full width */
   }
   
   .claude4-quantum-field {
-    width: 150px;
-    height: 150px;
+    width: 120px !important;
+    height: 120px !important;
   }
   
   .claude4-neural-network-advanced {
-    width: 200px;
-    height: 120px;
+    width: 100% !important;
+    max-width: 200px !important;
+    height: 120px !important;
+  }
+
+  .claude4-actions-grid {
+    grid-template-columns: 1fr !important;
   }
 }

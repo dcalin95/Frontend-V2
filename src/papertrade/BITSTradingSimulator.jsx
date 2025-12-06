@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useContext, useRef, useMemo } from 'react';
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { toast } from 'react-toastify';
 import WalletContext from '../context/WalletContext';
+import CandlestickChart from './CandlestickChart';
 import './BITSTradingSimulator.css';
 import './CompactStyles.css';
 import './ChartPlaceholder.css';
@@ -660,18 +660,8 @@ const BITSTradingSimulator = () => {
               )}
             </div>
             
-            {/* Lightweight line chart (Recharts) */}
-            <div className="chart-container" style={{ background: 'transparent', border: '1px solid rgba(43,49,57,0.35)', borderRadius: 12, height: 360 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData} margin={{ top: 20, right: 20, left: 10, bottom: 10 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#2b3139" />
-                  <XAxis dataKey="time" tick={{ fill: '#848e9c', fontSize: 12 }} tickLine={false} axisLine={{ stroke: '#2b3139' }} minTickGap={20} />
-                  <YAxis tick={{ fill: '#848e9c', fontSize: 12 }} tickLine={false} axisLine={{ stroke: '#2b3139' }} domain={['auto', 'auto']} />
-                  <Tooltip contentStyle={{ background: '#1e2329', border: '1px solid #2b3139', color: '#eaecef' }} />
-                  <Line type="monotone" dataKey="price" stroke="#f0b90b" strokeWidth={2} dot={false} isAnimationActive={false} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
+            {/* Professional Candlestick Chart with Real Binance Data */}
+            <CandlestickChart symbol={selectedPair} />
           </div>
 
           {/* Market Overview Compact */}

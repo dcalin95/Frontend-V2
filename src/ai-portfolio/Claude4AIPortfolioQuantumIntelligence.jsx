@@ -550,27 +550,9 @@ export default function Claude4AIPortfolioQuantumIntelligence() {
 
   return (
     <Claude4ErrorBoundary>
-        <div className="neural-investment-optimizer-container" style={{
-        background: 'linear-gradient(135deg, #0A0A1A 0%, #050510 100%)',
-        minHeight: '100vh',
-        color: '#ffffff',
-        padding: '20px',
-        position: 'relative'
-      }}>
+      <div className="claude4-quantum-container">
         {/* Enhanced Claude 4 Header with Quantum Status */}
-        <div className="claude4-header" style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '40px',
-          padding: '30px',
-          background: 'rgba(0, 212, 255, 0.05)',
-          backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(0, 212, 255, 0.2)',
-          borderRadius: '20px',
-          position: 'relative',
-          overflow: 'hidden'
-        }}>
+        <div className="claude4-header">
           <div className="claude4-logo">
             <div className="claude4-brain-icon">
               <div className="claude4-neural-animation"></div>

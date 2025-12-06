@@ -11,6 +11,7 @@ import BrandLogo from "./BrandLogo";
 import AddTokenButton from "./AddTokenButton"; // Import AddTokenButton
 import SmartTooltip from "../Presale/components/SmartTooltip"; // Import SmartTooltip
 import BitcoinPriceTicker from "./BitcoinPriceTicker"; // Import Bitcoin Live Price Ticker
+import CandlestickChart from "../papertrade/CandlestickChart"; // Import Professional Chart
 
 import "./Home.desktop.css";
 import "./Home.mobile.css";
@@ -159,6 +160,90 @@ const Home = () => {
       >
         <HomeAISection />
       </motion.div>
+
+      {/* Live Bitcoin Market Chart */}
+      <motion.section
+        className="home-section live-market-section"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 0.3 }}
+        viewport={{ once: true }}
+        style={{ padding: '3rem 2rem', maxWidth: '1400px', margin: '0 auto' }}
+      >
+        {/* Header with Logo & Slogan */}
+        <div style={{ 
+          textAlign: 'center', 
+          marginBottom: '2rem',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '1rem'
+        }}>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            gap: '1rem',
+            flexWrap: 'wrap'
+          }}>
+            <BrandLogo size="md" />
+            <SmartTooltip content="Real-time Bitcoin price chart powered by Binance API.\nProfessional candlestick chart with volume bars.\nUse zoom controls (+/-) to resize.\nClick fullscreen for maximum view.">
+              <h2 className="section-title" style={{ margin: 0 }}>
+                <i className="fas fa-chart-candlestick" style={{ marginRight: '1rem' }}></i>
+                Live Bitcoin Market
+                <span style={{ 
+                  marginLeft: '1rem', 
+                  fontSize: '0.8rem', 
+                  color: '#26a69a',
+                  background: 'rgba(38, 166, 154, 0.1)',
+                  padding: '0.3rem 0.8rem',
+                  borderRadius: '4px',
+                  fontWeight: '700'
+                }}>🔴 LIVE</span>
+              </h2>
+            </SmartTooltip>
+          </div>
+          
+          {/* Professional Slogan */}
+          <SmartTooltip content="BitSwapDEX AI Mission\nFrom Bits to Bitcoin - Every transaction powered by Neural Networks.\nReal-time market intelligence at your fingertips.">
+            <p style={{
+              fontSize: '1.1rem',
+              fontWeight: '600',
+              background: 'linear-gradient(135deg, #00FFA3, #DC1FFF)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              color: 'transparent',
+              letterSpacing: '0.5px',
+              margin: 0,
+              padding: '0.5rem 1rem',
+              maxWidth: '800px'
+            }}>
+              🚀 From Bits to Bitcoin – Powering the Future of Decentralized Trading 📊
+            </p>
+          </SmartTooltip>
+          
+          <p style={{
+            fontSize: '0.95rem',
+            color: '#848e9c',
+            margin: 0,
+            fontStyle: 'italic',
+            letterSpacing: '0.3px'
+          }}>
+            "Where AI meets DeFi - Professional trading tools for everyone"
+          </p>
+        </div>
+        
+        <CandlestickChart 
+          symbol="BTCUSDT"
+          defaultTimeframe="1h"
+          height={450}
+          showFullscreen={true}
+          showHeader={true}
+          autoUpdate={true}
+          updateInterval={30000}
+        />
+      </motion.section>
 
       {/* BitPulse Orbit Dashboard on Home */}
       <section className="home-section" style={{ display:'grid', placeItems:'center', padding:'24px 0' }}>
