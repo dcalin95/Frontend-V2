@@ -215,7 +215,7 @@ const SmartTooltip = ({ children, content, className = '' }) => {
         // Sunet discret, doar dacă nu e deja vizibil
         const soundParams = generateSoundParams(content);
         playHoverSound(soundParams);
-      }, 800); // ⏳ 0.8 SECUNDE DELAY (Standard UX)
+      }, 1500); // ⏳ 1.5 SECUNDE DELAY (Mai puțin invaziv)
     }
   };
 

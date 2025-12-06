@@ -34,6 +34,18 @@ export const usePWA = () => {
 
     // Register service worker
     const registerServiceWorker = async () => {
+      // 🛑 DISABLE SW IN DEVELOPMENT (LOCALHOST) TO PREVENT CACHING ISSUES
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        console.log('🚧 Service Worker disabled on localhost to prevent caching issues.');
+        // Attempt to unregister existing ones
+        if ('serviceWorker' in navigator) {
+           navigator.serviceWorker.getRegistrations().then(registrations => {
+             for(let registration of registrations) { registration.unregister(); }
+           });
+        }
+        return;
+      }
+
       if ('serviceWorker' in navigator) {
         try {
           const registration = await navigator.serviceWorker.register('/sw.js');

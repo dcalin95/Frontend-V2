@@ -339,7 +339,15 @@
     border: none;
     box-shadow: none;
     transition: all 0.3s ease;
+    /* Asigură că elementele fixed din interior se mișcă cu header-ul */
+    transform: translateY(0); 
+    width: 100%;
+    z-index: 1000;
+    position: fixed;
+    top: 0;
+    left: 0;
   }
+  
   
   .header.scrolled {
     padding: 0.5rem 1rem;

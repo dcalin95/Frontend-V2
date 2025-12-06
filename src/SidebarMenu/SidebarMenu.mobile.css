@@ -6,8 +6,8 @@
   .sidebar {
     position: fixed;
     top: 100px !important; /* RIDICAT MAI SUS (era 160px) pentru a încăpea în ecran */
-    left: 8px;
-    transform: translateX(-120%);
+    left: 0 !important; /* Fixat la margine, nu la 8px */
+    transform: translateX(-150%); /* Împins MULT în stânga */
     height: auto;
     max-height: calc(100vh - 110px) !important; /* Limită înălțime pentru scroll */
     width: auto;

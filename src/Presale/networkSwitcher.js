@@ -1,55 +1,59 @@
 import { toast } from "react-toastify";
-import { getNetworkConfig } from "../../config/config";
+import { switchChain } from '@wagmi/core';
+import { config } from '../../context/wagmiConfig';
 
-const isMainnet = process.env.REACT_APP_ENV === "mainnet";
-
+// 🌐 Network Definitions (Wagmi Compatible)
+// Note: We use numeric Chain IDs for Wagmi v2 compatibility
 const NETWORKS = {
   BNB_TEST: {
-    chainId: "0x61",
+    chainId: 97, // 0x61
     chainName: "BSC Testnet",
-    rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545"],
-    nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
-    blockExplorerUrls: ["https://testnet.bscscan.com"],
   },
   BNB_MAIN: {
-    chainId: "0x38", // BSC Mainnet
+    chainId: 56, // 0x38
     chainName: "BSC Mainnet",
-    rpcUrls: ["https://bsc-dataseed.binance.org"],
-    nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
-    blockExplorerUrls: ["https://bscscan.com"],
   },
   ETH: {
-    chainId: "0xaa36a7", // Sepolia
-    chainName: "Ethereum Sepolia Testnet",
-    rpcUrls: ["https://rpc2.sepolia.org"],
-    nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
-    blockExplorerUrls: ["https://sepolia.etherscan.io"],
+    chainId: 1, // Ethereum Mainnet
+    chainName: "Ethereum Mainnet",
+  },
+  ETH_TEST: {
+    chainId: 11155111, // Sepolia
+    chainName: "Sepolia Testnet",
   },
   MATIC: {
-    chainId: "0x13882", // Polygon Amoy Testnet
-    chainName: "Polygon Amoy Testnet",
-    rpcUrls: ["https://rpc-amoy.polygon.technology"],
-    nativeCurrency: { name: "MATIC", symbol: "MATIC", decimals: 18 },
-    blockExplorerUrls: ["https://www.oklink.com/amoy"],
+    chainId: 137, // Polygon Mainnet
+    chainName: "Polygon Mainnet",
+  },
+  MATIC_TEST: {
+    chainId: 80002, // Amoy
+    chainName: "Polygon Amoy",
   },
 };
+
+const isMainnet = process.env.REACT_APP_ENV === "mainnet";
 
 const TOKEN_TO_NETWORK = {
   BNB: isMainnet ? "BNB_MAIN" : "BNB_TEST",
   USDT: isMainnet ? "BNB_MAIN" : "BNB_TEST",
   USDC: isMainnet ? "BNB_MAIN" : "BNB_TEST",
-  ETH: "ETH",
-  SHIB: "ETH",
-  MATIC: "MATIC",
+  ETH: isMainnet ? "ETH" : "ETH_TEST",
+  SHIB: isMainnet ? "ETH" : "ETH_TEST",
+  MATIC: isMainnet ? "MATIC" : "MATIC_TEST",
 };
 
-const isCurrentChain = async (targetChainId) => {
-  const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
-  return currentChainId.toLowerCase() === targetChainId.toLowerCase();
-};
-
+/**
+ * 🔄 Switch Network using Wagmi Core (Provider Agnostic)
+ * This prevents Phantom hijacking by using the actual connected connector via Wagmi.
+ */
 export const switchNetwork = async (selectedToken) => {
   const networkKey = TOKEN_TO_NETWORK[selectedToken];
+  
+  if (!networkKey) {
+    // If token is not mapped (e.g. SOL), we might be on Solana which is handled differently
+    return;
+  }
+
   const network = NETWORKS[networkKey];
 
   if (!network) {
@@ -58,38 +62,30 @@ export const switchNetwork = async (selectedToken) => {
   }
 
   try {
-    const alreadyOnTarget = await isCurrentChain(network.chainId);
-    if (alreadyOnTarget) {
-      toast.info(`✅ Already on ${network.chainName}`);
+    const currentChainId = config.state.chainId;
+    
+    if (currentChainId === network.chainId) {
+      // ✅ Already on correct chain
       return;
     }
 
     toast.info(`🔄 Switching to ${network.chainName}...`);
-    await window.ethereum.request({
-      method: "wallet_switchEthereumChain",
-      params: [{ chainId: network.chainId }],
-    });
-
+    
+    // 🚀 USE WAGMI CORE - Uses the ACTIVE connector (MetaMask, WalletConnect, etc.)
+    await switchChain(config, { chainId: network.chainId });
+    
     toast.success(`✅ Switched to ${network.chainName}`);
   } catch (err) {
-    if (err.code === 4902) {
-      toast.info(`➕ Adding ${network.chainName} to Metamask...`);
-      try {
-        await window.ethereum.request({
-          method: "wallet_addEthereumChain",
-          params: [network],
-        });
-        toast.success(`✅ ${network.chainName} added to Metamask`);
-      } catch (addErr) {
-        console.error("❌ Failed to add network:", addErr.message);
-        toast.error("❌ Failed to add network. Please add it manually.");
-      }
-    } else if (err.code === 4001) {
-      toast.warn("⚠️ Network switch cancelled by user.");
-    } else {
-      console.error("❌ Network switch error:", err.message);
-      toast.error(`❌ Failed to switch network: ${err.message}`);
+    console.error("❌ Network switch error:", err);
+    
+    // Handle user rejection
+    if (err.message?.includes("User rejected") || err.code === 4001) {
+      toast.warn("⚠️ Network switch cancelled.");
+      return;
     }
+
+    // If switch fails (e.g. chain not added), Wagmi handles basic errors.
+    // For custom "Add Chain" logic, Wagmi usually handles it automatically for supported chains.
+    toast.error(`❌ Failed to switch: ${err.message?.substring(0, 50)}...`);
   }
 };
-

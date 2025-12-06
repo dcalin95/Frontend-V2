@@ -172,7 +172,6 @@ body.mode-mobile .unified-wallet-modal {
    ═══════════════════════════════════════════════════════════════ */
 
 /* Detectare browser intern - overlay optimizat */
-body.in-app-browser .unified-wallet-modal-overlay,
 body.mode-mobile.in-app-browser .unified-wallet-modal-overlay {
   background: rgba(0, 0, 0, 0.98) !important;
   backdrop-filter: blur(4px) !important;
@@ -180,7 +179,6 @@ body.mode-mobile.in-app-browser .unified-wallet-modal-overlay {
 }
 
 /* Modal în browsere interne - mai mare și mai lizibil */
-body.in-app-browser .unified-wallet-modal,
 body.mode-mobile.in-app-browser .unified-wallet-modal {
   max-width: 100% !important;
   width: 100% !important;
@@ -208,7 +206,6 @@ body.mode-mobile.in-app-browser .unified-wallet-modal {
 }
 
 /* Butoane wallet mai mari pentru touch în browsere interne */
-body.in-app-browser .wallet-option,
 body.mode-mobile.in-app-browser .wallet-option {
   padding: 18px 20px !important;
   min-height: 64px !important;
@@ -219,13 +216,11 @@ body.mode-mobile.in-app-browser .wallet-option {
   touch-action: manipulation !important;
 }
 
-body.in-app-browser .wallet-option:active,
 body.mode-mobile.in-app-browser .wallet-option:active {
   transform: scale(0.98) !important;
   background: linear-gradient(135deg, rgba(20, 241, 149, 0.15) 0%, rgba(153, 69, 255, 0.15) 100%) !important;
 }
 
-body.in-app-browser .wallet-option img,
 body.mode-mobile.in-app-browser .wallet-option img {
   width: 36px !important;
   height: 36px !important;
@@ -233,44 +228,37 @@ body.mode-mobile.in-app-browser .wallet-option img {
 }
 
 /* Network cards mai mari în browsere interne */
-body.in-app-browser .network-card,
 body.mode-mobile.in-app-browser .network-card {
   padding: 1.2rem 1rem !important;
   min-height: 70px !important;
   border-radius: 14px !important;
 }
 
-body.in-app-browser .network-card:active,
 body.mode-mobile.in-app-browser .network-card:active {
   transform: scale(0.98) !important;
 }
 
 /* Icon-uri mai mari în browsere interne */
-body.in-app-browser .network-icon-wrapper,
 body.mode-mobile.in-app-browser .network-icon-wrapper {
   width: 48px !important;
   height: 48px !important;
 }
 
-body.in-app-browser .network-icon-img,
 body.mode-mobile.in-app-browser .network-icon-img {
   width: 28px !important;
   height: 28px !important;
 }
 
 /* Text mai mare în browsere interne */
-body.in-app-browser .network-name,
 body.mode-mobile.in-app-browser .network-name {
   font-size: 1.1rem !important;
 }
 
-body.in-app-browser .network-chains,
 body.mode-mobile.in-app-browser .network-chains {
   font-size: 0.8rem !important;
 }
 
 /* Close button mai mare pentru touch */
-body.in-app-browser .modal-close-btn,
 body.mode-mobile.in-app-browser .modal-close-btn {
   width: 44px !important;
   height: 44px !important;
@@ -280,7 +268,6 @@ body.mode-mobile.in-app-browser .modal-close-btn {
 }
 
 /* Back button mai mare */
-body.in-app-browser .back-btn,
 body.mode-mobile.in-app-browser .back-btn {
   padding: 12px 20px !important;
   font-size: 1rem !important;

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
+import { useConnect } from 'wagmi'; // 🔌 IMPORT CRITIC: Direct Connection Hook
 import { useWallet as useSolanaWalletAdapter } from '@solana/wallet-adapter-react';
 import { useWallet } from '../context/WalletContext';
 import { prepareForConnection, handleConnectionError } from '../utils/walletConnectionFix';
@@ -11,8 +12,9 @@ import './UnifiedWalletModal.css';
 import './UnifiedWalletModal.mobile.css';
 
 const UnifiedWalletModal = () => {
-  const { showWalletModal, setShowWalletModal, hardReset } = useWallet(); // Get hardReset
+  const { showWalletModal, setShowWalletModal, hardReset } = useWallet(); 
   const { open: openEvmModal } = useWeb3Modal();
+  const { connect, connectors } = useConnect(); // 🔌 Get direct connectors
   const { select: selectSolanaWallet, wallets: solanaWallets } = useSolanaWalletAdapter();
   
   const [selectedNetwork, setSelectedNetwork] = useState(null); // "EVM" | "SOLANA" | null
@@ -28,23 +30,60 @@ const UnifiedWalletModal = () => {
     setIsConnecting(false);
   };
 
-  const handleEvmConnect = async () => {
+  // 🎯 DIRECT CONNECT FUNCTION (Bypasses generic modal to avoid Phantom conflict)
+  const connectToSpecificWallet = async (walletName) => {
     try {
       setError(null);
-      setIsConnecting(true); // Start loading
-      
-      // 🔧 FIX: Prepare connection before opening modal
+      setIsConnecting(true);
       await prepareForConnection();
+
+      // 1. Find the specific connector
+      const connector = connectors.find(c => 
+        c.name.toLowerCase().includes(walletName.toLowerCase()) || 
+        (walletName === 'WalletConnect' && c.id === 'walletConnect')
+      );
+
+      if (connector) {
+        console.log(`🔌 Connecting directly to ${connector.name}...`);
+        connect({ connector });
+        setShowWalletModal(false);
+      } else {
+        // Fallback to generic modal if specific connector not found
+        console.warn(`⚠️ Connector ${walletName} not found, falling back to Web3Modal...`);
+        await openEvmModal();
+      }
+    } catch (err) {
+      console.error(`❌ Connection to ${walletName} failed:`, err);
+      // Fallback to generic modal on error
+      await openEvmModal();
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  const handleEvmConnect = async (preferredWallet = null) => {
+    try {
+      // If a specific wallet is requested, try direct connection first
+      if (preferredWallet) {
+        await connectToSpecificWallet(preferredWallet);
+        return;
+      }
+
+      // Default generic behavior
+      setError(null);
+      setIsConnecting(true); 
       
-      // Short delay to ensure UI updates
+      // 🕵️‍♂️ DETECT PHANTOM INTERFERENCE
+      if (window.ethereum?.isPhantom) {
+        console.warn("⚠️ Phantom Wallet is intercepting EVM calls. This might cause it to open instead of MetaMask/Binance.");
+      }
+      
+      await prepareForConnection();
       await new Promise(resolve => setTimeout(resolve, 300));
-      
       setShowWalletModal(false);
 
-      // 📱 MOBILE OPTIMIZATION: If inside MetaMask/Trust/Coinbase app, auto-select injected
       if (window.ethereum && (window.ethereum.isMetaMask || window.ethereum.isTrust || window.ethereum.isCoinbaseWallet)) {
           console.log("📱 Detected In-App Browser - connecting directly via Web3Modal default...");
-          // Web3Modal handles this automatically usually, but let's ensure smooth transition
       }
 
       await openEvmModal();
@@ -143,31 +182,35 @@ const UnifiedWalletModal = () => {
             <p className="modal-subtitle">Supports 7+ blockchains - Auto-switch enabled</p>
             
             <div className="wallet-list">
-              <button className="wallet-option" onClick={handleEvmConnect}>
+              <button className="wallet-option" onClick={() => handleEvmConnect('MetaMask')}>
                 <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask" />
                 <span>MetaMask</span>
               </button>
-              <button className="wallet-option" onClick={handleEvmConnect}>
+              <button className="wallet-option" onClick={() => handleEvmConnect('WalletConnect')}>
                 <img src={walletConnectLogo} alt="WalletConnect" />
                 <span>WalletConnect</span>
               </button>
-              <button className="wallet-option" onClick={handleEvmConnect}>
+              <button className="wallet-option" onClick={() => handleEvmConnect('Coinbase')}>
                 <img src="https://avatars.githubusercontent.com/u/18060234?s=200&v=4" alt="Coinbase" />
                 <span>Coinbase Wallet</span>
               </button>
-              <button className="wallet-option" onClick={handleEvmConnect}>
+              <button className="wallet-option" onClick={() => handleEvmConnect('Rainbow')}>
                 <img src="https://avatars.githubusercontent.com/u/48327834?s=200&v=4" alt="Rainbow" />
                 <span>Rainbow</span>
               </button>
-               <button className="wallet-option" onClick={handleEvmConnect}>
+               <button className="wallet-option" onClick={() => handleEvmConnect('Trust Wallet')}>
                 <img src="https://trustwallet.com/assets/images/media/assets/TWT.png" alt="Trust Wallet" />
                 <span>Trust Wallet</span>
               </button>
-              <button className="wallet-option" onClick={handleEvmConnect}>
+              <button className="wallet-option" onClick={() => handleEvmConnect('Ledger')}>
+                <img src="https://www.ledger.com/wp-content/uploads/2021/11/logo-ledger.png" style={{background: '#fff', padding: '2px'}} alt="Ledger" />
+                <span>Ledger</span>
+              </button>
+              <button className="wallet-option" onClick={() => handleEvmConnect('Binance')}>
                 <img src={binanceLogo} alt="Binance Web3" />
                 <span>Binance Web3</span>
               </button>
-               <button className="wallet-option" onClick={handleEvmConnect}>
+               <button className="wallet-option" onClick={() => handleEvmConnect()}>
                 <div style={{width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.1)', borderRadius: 8}}>➕</div>
                 <span>All Wallets (350+)</span>
               </button>

@@ -21,7 +21,16 @@
   box-sizing: border-box;
 }
 
-/* FORCE CRISP TEXT ON HOME PAGE */
+/* FORCE TRANSPARENCY FOR STARS */
+.home-container,
+.home-section {
+  background: transparent !important;
+  background-color: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* FORCE CRISP TEXT - Corectat selector */
 .home-container *,
 .hero *,
 .welcome-section * {
@@ -130,10 +139,10 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-primary);
   font-weight: 700;
-  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
   text-shadow: 0 0 30px rgba(0, 255, 163, 0.3);
 }
 

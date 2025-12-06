@@ -1,10 +1,13 @@
 /* 🌟 ULTRA MODERN WALLET STYLE - CLEAN SVG ONLY 🌟 */
 
+/* DESKTOP SPECIFIC OVERRIDE - Fără selector complex */
 .wallet-toggle-wrapper {
-  position: fixed;
-  top: 260px; /* 220px + ~15% */
-  right: 60px; /* Mai depărtată de margine */
-  z-index: 9999;
+  position: fixed; /* Fără !important la position */
+  /* Top și Right sunt controlate de JS pentru Drag & Drop */
+  /* top: 250px !important;  <- SCOS */
+  /* right: 220px !important; <- SCOS */
+  left: auto;
+  z-index: 2147483647 !important;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -13,9 +16,9 @@
 .wallet-toggle-btn-minimal {
   /* COMPLET TRANSPARENT - FĂRĂ NIMIC */
   background: transparent !important;
-  border: none !important;
+  border: none !important; /* Fără chenar roșu */
   box-shadow: none !important;
-  padding: 0 !important;
+  padding: 5px !important; /* Padding mic să nu fie lipit */
   margin: 0 !important;
   outline: none !important;
   
@@ -545,4 +548,3 @@
     font-size: 0.9rem;
   }
 }
-

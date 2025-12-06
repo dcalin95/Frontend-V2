@@ -14,10 +14,15 @@ import './Presale/CrystalClear.css'; // 💎 Crystal clear text - NO BLUR, NO SH
 import AppWrapper from './AppWrapper';
 import reportWebVitals from './reportWebVitals';
 
-// 🔧 Wallet Browser Optimization - DISABLED for desktop
-// import './utils/walletBrowserDetection';
-
-// 📊 Măsurare performanță
+// 🔧 KILL SWITCH: UNREGISTER ALL SERVICE WORKERS IMMEDIATELY
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(function(registrations) {
+    for(let registration of registrations) {
+      console.log('💀 Killing Service Worker:', registration);
+      registration.unregister();
+    }
+  }).catch(err => console.log('SW cleanup failed (harmless):', err));
+}
 
 // 🔗 Montare aplicație în DOM
 const root = ReactDOM.createRoot(document.getElementById('root'));

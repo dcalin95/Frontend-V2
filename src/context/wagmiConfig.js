@@ -3,7 +3,7 @@ import { mainnet, bsc, polygon, arbitrum, optimism, base, avalanche } from "wagm
 
 // ⚙️ WALLET CONNECT CONFIGURATION (Modern Setup)
 // NOTE: Get a free projectId from https://cloud.walletconnect.com
-export const projectId = "a699c0c2623f235c0373506d45f16284"; 
+export const projectId = "3a8170812b534d0ff9d794f19a901d64"; // ID Public de test Web3Modal 
 
 const metadata = {
   name: "BitSwapDEX AI",

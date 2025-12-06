@@ -24,14 +24,17 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 20) {
+      const currentScrollY = window.scrollY;
+      
+      // Logică background
+      if (currentScrollY > 20) {
         setIsScrolled(true);
       } else {
         setIsScrolled(false);
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 

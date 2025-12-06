@@ -1,5 +1,6 @@
 {
   "name": "frontend",
+  "homepage": ".",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -59,9 +60,9 @@
     "three": "^0.179.1",
     "url": "^0.11.4",
     "util": "^0.12.5",
-    "viem": "^2.39.3",
+    "viem": "^2.23.5",
     "vm-browserify": "^1.1.2",
-    "wagmi": "^3.0.1",
+    "wagmi": "^2.14.11",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -93,6 +94,7 @@
   "devDependencies": {
     "ajv": "^6.12.6",
     "ajv-keywords": "^3.5.2",
-    "react-app-rewired": "^2.2.1"
+    "react-app-rewired": "^2.2.1",
+    "workbox-build": "^7.3.0"
   }
 }

@@ -57,6 +57,18 @@ export const detectInAppBrowser = () => {
 
   const ua = navigator.userAgent.toLowerCase();
   
+  // 🛑 FIX CRITIC: Pe Desktop (Windows/Mac/Linux), NU suntem în In-App Browser
+  // Chiar dacă avem MetaMask Extension, asta nu înseamnă In-App Browser UI (Bottom Sheet)
+  const isMobileDevice = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua);
+  
+  if (!isMobileDevice) {
+    return { 
+        isInApp: false, 
+        detectedBrowser: 'desktop-browser',
+        isMetaMask: false, isTrust: false, isCoinbase: false, isPhantom: false
+    };
+  }
+  
   const browsers = {
     isMetaMask: window.ethereum?.isMetaMask || ua.includes('metamask'),
     isTrust: window.ethereum?.isTrust || ua.includes('trust'),
