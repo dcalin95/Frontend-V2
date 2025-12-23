@@ -1395,7 +1395,7 @@ const AdminPanel = () => {
           {activeTab === "solana-payments" && (
             <>
               <div className={styles["section"]}>
-                <h3>🧾 Solana Payments (Auto Fulfilment)</h3>
+                <h3>🧾 Solana Payments (Manual fulfilment)</h3>
                 {solanaApiStatus.ok === false && solanaApiStatus.msg ? (
                   <div style={{
                     marginTop: 10,
@@ -1415,10 +1415,11 @@ const AdminPanel = () => {
                   </div>
                 ) : null}
                 <div style={{ fontSize: '12px', color: '#ccc', lineHeight: 1.5 }}>
+                  <div><strong>Backend:</strong> <span style={{ wordBreak: 'break-all' }}>{API_URL}</span></div>
                   <div><strong>Destination (Solana):</strong> <span style={{ wordBreak: 'break-all' }}>{solanaDestination || '—'}</span></div>
                   <div><strong>Treasury (BSC):</strong> <span style={{ wordBreak: 'break-all' }}>{solanaTreasury || '—'}</span></div>
                   <div style={{ marginTop: 6, opacity: 0.9 }}>
-                    This table shows: <strong>Solana tx signature → verified SOL transfer → BITS sent from treasury (BSC tx hash)</strong>.
+                    This table shows: <strong>Solana signature → cron verifies SOL transfer → you send BITS manually → paste BSC tx hash (Mark fulfilled)</strong>.
                   </div>
                 </div>
                 <button onClick={fetchSolanaPayments} disabled={solanaPaymentsLoading} style={{ marginTop: 10 }}>
