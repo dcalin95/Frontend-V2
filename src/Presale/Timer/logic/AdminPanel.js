@@ -49,9 +49,8 @@ const AdminPanel = () => {
   const [solanaTreasury, setSolanaTreasury] = useState("");
   const [solanaStatusFilter, setSolanaStatusFilter] = useState("all"); // all | pending | confirmed | failed
   const [solanaSearch, setSolanaSearch] = useState(""); // wallet or signature
-  const [solanaRetryingSig, setSolanaRetryingSig] = useState(null);
-  const [solanaBatchRetrying, setSolanaBatchRetrying] = useState(false);
-  const [solanaBatchLimit, setSolanaBatchLimit] = useState(10);
+  const [solanaMarkingSig, setSolanaMarkingSig] = useState(null);
+  const [solanaApiStatus, setSolanaApiStatus] = useState({ ok: null, msg: "" }); // ok: true|false|null
 
   // ===== Leaderboard demo (marketing) =====
   const [leaderboardDemoRows, setLeaderboardDemoRows] = useState([]);
@@ -76,11 +75,19 @@ const AdminPanel = () => {
       fetchSimulationStatus();
       fetchPresaleState();
       fetchTreasuryInfo();
-      fetchSolanaPayments();
       fetchLeaderboardDemo();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthorized]);
+
+  // Load Solana payments only when the user opens the tab (prevents 404/toast spam)
+  useEffect(() => {
+    if (!isAuthorized) return;
+    if (activeTab === "solana-payments") {
+      fetchSolanaPayments();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, isAuthorized]);
 
   const fetchLeaderboardDemo = async () => {
     setLeaderboardLoading(true);
@@ -172,54 +179,53 @@ const AdminPanel = () => {
         setSolanaPayments(res.data.rows || []);
         setSolanaDestination(res.data.destination || "");
         setSolanaTreasury(res.data.treasury || "");
+        setSolanaApiStatus({ ok: true, msg: "" });
       } else {
+        setSolanaApiStatus({ ok: false, msg: "Solana payments API returned ok=false." });
         toast.error("❌ Failed to load Solana payments");
       }
     } catch (e) {
-      toast.error("❌ Failed to load Solana payments: " + (e.response?.data?.error || e.message));
+      const apiErr = e.response?.data?.error || e.response?.data?.message || e.message || "unknown";
+      const isNotFound =
+        e.response?.status === 404 ||
+        String(apiErr).toLowerCase().includes("api route not found") ||
+        String(apiErr).toLowerCase().includes("not found");
+
+      if (isNotFound) {
+        // Don't toast-loop; show inline message in the tab instead.
+        setSolanaApiStatus({
+          ok: false,
+          msg: `Solana payments endpoint not found on backend (${API_URL}). If you want this feature, deploy backend routes /api/solana/admin/*.`,
+        });
+      } else {
+        setSolanaApiStatus({ ok: false, msg: String(apiErr) });
+        toast.error("❌ Failed to load Solana payments: " + apiErr);
+      }
     } finally {
       setSolanaPaymentsLoading(false);
     }
   };
 
-  const retrySolanaFulfilment = async (signature) => {
-    const sig = String(signature || '').trim();
+  const markSolanaFulfilled = async (signature) => {
+    const sig = String(signature || "").trim();
     if (!sig) return;
-    setSolanaRetryingSig(sig);
+    const txh = window.prompt("Paste BSC tx hash (0x...) for this Solana signature:", "");
+    const txHashOnChain = String(txh || "").trim();
+    if (!txHashOnChain) return;
+
+    setSolanaMarkingSig(sig);
     try {
-      const res = await axios.post(`${API_URL}/api/solana/admin/retry`, { password: ADMIN_PASS, signature: sig });
+      const res = await axios.post(`${API_URL}/api/solana/admin/mark-fulfilled`, { password: ADMIN_PASS, signature: sig, txHashOnChain });
       if (res.data?.ok) {
-        toast.success(`✅ Retry OK: ${res.data.evmTxHash ? res.data.evmTxHash.slice(0, 10) + '…' : 'confirmed'}`);
+        toast.success("✅ Marked as fulfilled");
         await fetchSolanaPayments();
       } else {
-        toast.error("❌ Retry failed");
+        toast.error("❌ Mark failed");
       }
     } catch (e) {
-      toast.error("❌ Retry failed: " + (e.response?.data?.error || e.message));
+      toast.error("❌ Mark failed: " + (e.response?.data?.error || e.message));
     } finally {
-      setSolanaRetryingSig(null);
-    }
-  };
-
-  const retrySolanaBatch = async (mode = "failed", limit = 10) => {
-    const m = String(mode || "failed").toLowerCase();
-    const lim = Math.max(1, Math.min(50, Number(limit || 10)));
-    const ok = window.confirm(`Retry ${m.toUpperCase()} Solana fulfilments?\n\nLimit: ${lim}\n\nThis will send BITS from treasury (gas + tokens).`);
-    if (!ok) return;
-
-    setSolanaBatchRetrying(true);
-    try {
-      const res = await axios.post(`${API_URL}/api/solana/admin/retry-batch`, { password: ADMIN_PASS, mode: m, limit: lim });
-      if (res.data?.ok) {
-        toast.success(`✅ Batch done: ${res.data.success}/${res.data.attempted} successful`);
-        await fetchSolanaPayments();
-      } else {
-        toast.error("❌ Batch retry failed");
-      }
-    } catch (e) {
-      toast.error("❌ Batch retry failed: " + (e.response?.data?.error || e.message));
-    } finally {
-      setSolanaBatchRetrying(false);
+      setSolanaMarkingSig(null);
     }
   };
 
@@ -927,21 +933,6 @@ const AdminPanel = () => {
               📊 Overview
             </button>
             <button 
-              onClick={() => setActiveTab("solana-rewards")}
-              className={activeTab === "solana-rewards" ? styles["tab-active"] : styles["tab-inactive"]}
-              style={{
-                padding: '10px 20px',
-                border: 'none',
-                borderRadius: '6px 6px 0 0',
-                background: activeTab === "solana-rewards" ? '#14F195' : '#444',
-                color: activeTab === "solana-rewards" ? '#000' : '#fff',
-                cursor: 'pointer',
-                fontWeight: 'bold'
-              }}
-            >
-              🟣 Solana Rewards
-            </button>
-            <button 
               onClick={() => setActiveTab("treasury")}
               className={activeTab === "treasury" ? styles["tab-active"] : styles["tab-inactive"]}
               style={{
@@ -955,6 +946,21 @@ const AdminPanel = () => {
               }}
             >
               💳 USDT Payouts
+            </button>
+            <button 
+              onClick={() => setActiveTab("solana-rewards")}
+              className={activeTab === "solana-rewards" ? styles["tab-active"] : styles["tab-inactive"]}
+              style={{
+                padding: '10px 20px',
+                border: 'none',
+                borderRadius: '6px 6px 0 0',
+                background: activeTab === "solana-rewards" ? '#14F195' : '#444',
+                color: activeTab === "solana-rewards" ? '#000' : '#fff',
+                cursor: 'pointer',
+                fontWeight: 'bold'
+              }}
+            >
+              🟣 Solana Rewards
             </button>
             <button 
               onClick={() => setActiveTab("solana-payments")}
@@ -1406,6 +1412,24 @@ const AdminPanel = () => {
             <>
               <div className={styles["section"]}>
                 <h3>🧾 Solana Payments (Auto Fulfilment)</h3>
+                {solanaApiStatus.ok === false && solanaApiStatus.msg ? (
+                  <div style={{
+                    marginTop: 10,
+                    padding: '10px 12px',
+                    borderRadius: 10,
+                    border: '1px solid rgba(255, 165, 0, 0.35)',
+                    background: 'rgba(255, 165, 0, 0.08)',
+                    color: '#ffd7a3',
+                    fontSize: 12,
+                    lineHeight: 1.4
+                  }}>
+                    <div style={{ fontWeight: 900, marginBottom: 6 }}>⚠️ Solana API not available</div>
+                    <div>{solanaApiStatus.msg}</div>
+                    <div style={{ marginTop: 6, opacity: 0.9 }}>
+                      You can still use your manual flow once backend exposes Solana payments from DB.
+                    </div>
+                  </div>
+                ) : null}
                 <div style={{ fontSize: '12px', color: '#ccc', lineHeight: 1.5 }}>
                   <div><strong>Destination (Solana):</strong> <span style={{ wordBreak: 'break-all' }}>{solanaDestination || '—'}</span></div>
                   <div><strong>Treasury (BSC):</strong> <span style={{ wordBreak: 'break-all' }}>{solanaTreasury || '—'}</span></div>
@@ -1443,40 +1467,7 @@ const AdminPanel = () => {
                       <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center' }}>
                         <div><strong>Pending:</strong> {pendingCount}</div>
                         <div><strong>Failed:</strong> {failedCount}</div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <strong>Batch limit:</strong>
-                          <select
-                            value={String(solanaBatchLimit)}
-                            onChange={(e) => setSolanaBatchLimit(Number(e.target.value) || 10)}
-                            style={{ padding: '4px 6px' }}
-                            title="How many rows to retry per click"
-                          >
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                        <button
-                          type="button"
-                          onClick={() => retrySolanaBatch("failed", solanaBatchLimit)}
-                          disabled={solanaBatchRetrying || failedCount === 0}
-                          style={{ padding: '6px 10px', borderRadius: 10 }}
-                          title={`Retry up to ${solanaBatchLimit} failed fulfilments`}
-                        >
-                          {solanaBatchRetrying ? "⏳ Retrying..." : `🔁 Retry failed (max ${solanaBatchLimit})`}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => retrySolanaBatch("pending", solanaBatchLimit)}
-                          disabled={solanaBatchRetrying || pendingCount === 0}
-                          style={{ padding: '6px 10px', borderRadius: 10 }}
-                          title={`Retry up to ${solanaBatchLimit} pending fulfilments`}
-                        >
-                          {solanaBatchRetrying ? "⏳ Retrying..." : `🔁 Retry pending (max ${solanaBatchLimit})`}
-                        </button>
+                        <div style={{ opacity: 0.9 }}>Cron verifies SOL on-chain; you fulfil BITS manually and then mark tx hash.</div>
                       </div>
                     </div>
                   );
@@ -1541,14 +1532,16 @@ const AdminPanel = () => {
                         if (solanaStatusFilter !== "all" && st !== solanaStatusFilter) return false;
                         const q = solanaSearch.trim().toLowerCase();
                         if (!q) return true;
-                        const w = String(tx.wallet_address || '').toLowerCase();
+                        const w = String((tx.evm_wallet || tx.wallet_address) || '').toLowerCase();
+                        const solFrom = String(tx.wallet_address || '').toLowerCase();
                         const sig = String(tx.tx_signature || '').toLowerCase();
-                        return w.includes(q) || sig.includes(q);
+                        return w.includes(q) || sig.includes(q) || solFrom.includes(q);
                       })
                       .slice(0, 200)
                       .map((tx) => {
-                      const wallet = String(tx.wallet_address || '');
-                      const shortW = wallet ? `${wallet.slice(0, 6)}...${wallet.slice(-4)}` : '—';
+                      const buyer = String((tx.evm_wallet || tx.wallet_address) || '');
+                      const solFrom = String(tx.wallet_address || '');
+                      const shortW = buyer ? `${buyer.slice(0, 6)}...${buyer.slice(-4)}` : '—';
                       const sig = String(tx.tx_signature || '');
                       const shortSig = sig ? `${sig.slice(0, 8)}...${sig.slice(-6)}` : '—';
                       const evm = String(tx.tx_hash_on_chain || '');
@@ -1558,7 +1551,7 @@ const AdminPanel = () => {
                       const createdAt = tx.created_at ? new Date(tx.created_at).toLocaleString() : '—';
                       const solAmount = Number(tx.amount || 0);
                       const bits = Number(tx.bits_received || 0);
-                      const canRetry = (status === 'failed' || status === 'pending') && !evm && !!sig;
+                      const canMark = status === 'confirmed' && !evm && !!sig;
 
                       return (
                         <div key={tx.id || sig} style={{
@@ -1571,7 +1564,7 @@ const AdminPanel = () => {
                         }}>
                           <div>{createdAt}</div>
                           <div style={{ color: statusColor, fontWeight: 800 }}>{(tx.status || 'pending')}</div>
-                          <div title={wallet}>{shortW}</div>
+                          <div title={`Buyer: ${buyer}\nSOL From: ${solFrom}`}>{shortW}</div>
                           <div>{Number.isFinite(solAmount) ? solAmount.toFixed(4) : '—'}</div>
                           <div>{Number.isFinite(bits) ? Math.floor(bits).toLocaleString() : '—'}</div>
                           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
@@ -1589,11 +1582,11 @@ const AdminPanel = () => {
                             ) : (
                               <span style={{ opacity: 0.6 }}>BscScan —</span>
                             )}
-                            {canRetry && (
+                            {canMark && (
                               <button
                                 type="button"
-                                onClick={() => retrySolanaFulfilment(sig)}
-                                disabled={solanaRetryingSig === sig}
+                                onClick={() => markSolanaFulfilled(sig)}
+                                disabled={solanaMarkingSig === sig}
                                 style={{
                                   padding: '3px 8px',
                                   borderRadius: 8,
@@ -1602,9 +1595,9 @@ const AdminPanel = () => {
                                   color: '#fff',
                                   cursor: 'pointer'
                                 }}
-                                title="Retry sending BITS from treasury for this Solana signature"
+                                title="After you manually send BITS, paste the BSC tx hash to link it here"
                               >
-                                {solanaRetryingSig === sig ? '⏳ Retrying…' : '🔁 Retry'}
+                                {solanaMarkingSig === sig ? '⏳ Marking…' : '✅ Mark fulfilled'}
                               </button>
                             )}
                           </div>
