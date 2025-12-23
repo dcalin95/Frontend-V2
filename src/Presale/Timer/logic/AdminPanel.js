@@ -222,16 +222,16 @@ const AdminPanel = () => {
     }
   };
 
-  const markSolanaFulfilled = async (signature) => {
-    const sig = String(signature || "").trim();
-    if (!sig) return;
-    const txh = window.prompt("Paste BSC tx hash (0x...) for this Solana signature:", "");
+  const markSolanaFulfilled = async (transactionId) => {
+    const id = parseInt(transactionId, 10);
+    if (!id || isNaN(id)) return;
+    const txh = window.prompt("Paste BSC tx hash (0x...) after you sent BITS from MetaMask:", "");
     const txHashOnChain = String(txh || "").trim();
     if (!txHashOnChain) return;
 
-    setSolanaMarkingSig(sig);
+    setSolanaMarkingSig(id);
     try {
-      const res = await axios.post(`${API_URL}/api/solana/admin/mark-fulfilled`, { password: ADMIN_PASS, signature: sig, txHashOnChain });
+      const res = await axios.post(`${API_URL}/api/solana/admin/mark-fulfilled`, { password: ADMIN_PASS, transactionId: id, txHashOnChain });
       if (res.data?.ok) {
         toast.success("✅ Marked as fulfilled");
         await fetchSolanaPayments();
@@ -1618,8 +1618,8 @@ const AdminPanel = () => {
                             {canMark && (
                               <button
                                 type="button"
-                                onClick={() => markSolanaFulfilled(sig)}
-                                disabled={solanaMarkingSig === sig}
+                                onClick={() => markSolanaFulfilled(tx.id)}
+                                disabled={solanaMarkingSig === tx.id}
                                 style={{
                                   padding: '3px 8px',
                                   borderRadius: 8,
@@ -1630,7 +1630,7 @@ const AdminPanel = () => {
                                 }}
                                 title="After you manually send BITS, paste the BSC tx hash to link it here"
                               >
-                                {solanaMarkingSig === sig ? '⏳ Marking…' : '✅ Mark fulfilled'}
+                                {solanaMarkingSig === tx.id ? '⏳ Marking…' : '✅ Mark fulfilled'}
                               </button>
                             )}
                           </div>
