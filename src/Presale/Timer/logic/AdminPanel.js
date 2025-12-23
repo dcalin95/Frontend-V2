@@ -47,6 +47,7 @@ const AdminPanel = () => {
   const [solanaPaymentsLoading, setSolanaPaymentsLoading] = useState(false);
   const [solanaDestination, setSolanaDestination] = useState("");
   const [solanaTreasury, setSolanaTreasury] = useState("");
+  const [solanaDbInfo, setSolanaDbInfo] = useState(null);
   const [solanaStatusFilter, setSolanaStatusFilter] = useState("all"); // all | pending | confirmed | failed
   const [solanaSearch, setSolanaSearch] = useState(""); // wallet or signature
   const [solanaMarkingSig, setSolanaMarkingSig] = useState(null);
@@ -180,6 +181,7 @@ const AdminPanel = () => {
         setSolanaDestination(res.data.destination || "");
         setSolanaTreasury(res.data.treasury || "");
         setSolanaApiStatus({ ok: true, msg: "" });
+        setSolanaDbInfo(null);
       } else {
         setSolanaApiStatus({ ok: false, msg: "Solana payments API returned ok=false." });
         toast.error("❌ Failed to load Solana payments");
@@ -203,6 +205,20 @@ const AdminPanel = () => {
       }
     } finally {
       setSolanaPaymentsLoading(false);
+    }
+  };
+
+  const fetchSolanaDbInfo = async () => {
+    try {
+      const res = await axios.post(`${API_URL}/api/solana/admin/db-info`, { password: ADMIN_PASS });
+      if (res.data?.ok) {
+        setSolanaDbInfo(res.data);
+        toast.success("✅ Loaded DB diagnostics");
+      } else {
+        toast.error("❌ DB diagnostics failed");
+      }
+    } catch (e) {
+      toast.error("❌ DB diagnostics failed: " + (e.response?.data?.error || e.message));
     }
   };
 
@@ -1445,6 +1461,18 @@ const AdminPanel = () => {
                 <button onClick={fetchSolanaPayments} disabled={solanaPaymentsLoading} style={{ marginTop: 10 }}>
                   {solanaPaymentsLoading ? "⏳ Refreshing..." : "🔄 Refresh"}
                 </button>
+                <button onClick={fetchSolanaDbInfo} style={{ marginTop: 10, marginLeft: 10 }}>
+                  🧩 DB diagnostics
+                </button>
+                {solanaDbInfo?.ok && (
+                  <div style={{ marginTop: 10, fontSize: 12, color: "#ccc", lineHeight: 1.5 }}>
+                    <div><strong>DB:</strong> {solanaDbInfo.db?.host || "—"} / {solanaDbInfo.db?.name || "—"}</div>
+                    <div style={{ opacity: 0.9 }}>
+                      <strong>Counts:</strong>{" "}
+                      {(solanaDbInfo.countsByNetwork || []).map((x) => `${x.network || "∅"}=${x.count}`).join(", ") || "—"}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className={styles["section"]}>
