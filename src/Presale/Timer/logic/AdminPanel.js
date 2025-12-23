@@ -1519,7 +1519,7 @@ const AdminPanel = () => {
                         if (!q) return true;
                         const w = String((tx.evm_wallet || tx.wallet_address) || '').toLowerCase();
                         const solFrom = String(tx.wallet_address || '').toLowerCase();
-                        const sig = String(tx.tx_signature || '').toLowerCase();
+                        const sig = String((tx.tx_signature || tx.signature) || '').toLowerCase();
                         return w.includes(q) || sig.includes(q) || solFrom.includes(q);
                       })
                       .slice(0, 200)
@@ -1527,7 +1527,7 @@ const AdminPanel = () => {
                       const buyer = String((tx.evm_wallet || tx.wallet_address) || '');
                       const solFrom = String(tx.wallet_address || '');
                       const shortW = buyer ? `${buyer.slice(0, 6)}...${buyer.slice(-4)}` : '—';
-                      const sig = String(tx.tx_signature || '');
+                      const sig = String((tx.tx_signature || tx.signature) || '');
                       const shortSig = sig ? `${sig.slice(0, 8)}...${sig.slice(-6)}` : '—';
                       const evm = String(tx.tx_hash_on_chain || '');
                       const shortEvm = evm ? `${evm.slice(0, 8)}...${evm.slice(-6)}` : '—';
