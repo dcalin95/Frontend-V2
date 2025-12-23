@@ -1421,6 +1421,26 @@ const AdminPanel = () => {
                   <div style={{ marginTop: 6, opacity: 0.9 }}>
                     This table shows: <strong>Solana signature → cron verifies SOL transfer → you send BITS manually → paste BSC tx hash (Mark fulfilled)</strong>.
                   </div>
+                  <div style={{ marginTop: 8, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                    <a
+                      href={`${API_URL}/api/transactions/debug/solana`}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ color: '#7dd3fc' }}
+                      title="Raw Solana transactions from DB (debug endpoint)"
+                    >
+                      Open /api/transactions/debug/solana
+                    </a>
+                    <a
+                      href={`${API_URL}/api/telegram-rewards/payout`}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ color: '#a7f3d0' }}
+                      title="Quick sanity check that backend responds"
+                    >
+                      Backend health (payout page)
+                    </a>
+                  </div>
                 </div>
                 <button onClick={fetchSolanaPayments} disabled={solanaPaymentsLoading} style={{ marginTop: 10 }}>
                   {solanaPaymentsLoading ? "⏳ Refreshing..." : "🔄 Refresh"}
