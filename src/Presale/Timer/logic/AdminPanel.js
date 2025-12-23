@@ -8,7 +8,7 @@ import PresaleHistory from "../PresaleHistory";
 import RoundEndDisplay from "../RoundEndDisplay";
 import useCellManagerData from "../../hooks/useCellManagerData";
 import { CONTRACTS } from "../../../contract/contracts";
-import SolanaRewardsManager from "../../../components/Admin/SolanaRewardsManager";
+// NOTE: SolanaRewardsManager is legacy (old endpoints + contract-based). We use Solana Payments (DB + cron verify + manual fulfilment).
 import { getBackendUrl } from "../../../utils/getBackendUrl";
 
 const API_URL = getBackendUrl();
@@ -947,21 +947,7 @@ const AdminPanel = () => {
             >
               💳 USDT Payouts
             </button>
-            <button 
-              onClick={() => setActiveTab("solana-rewards")}
-              className={activeTab === "solana-rewards" ? styles["tab-active"] : styles["tab-inactive"]}
-              style={{
-                padding: '10px 20px',
-                border: 'none',
-                borderRadius: '6px 6px 0 0',
-                background: activeTab === "solana-rewards" ? '#14F195' : '#444',
-                color: activeTab === "solana-rewards" ? '#000' : '#fff',
-                cursor: 'pointer',
-                fontWeight: 'bold'
-              }}
-            >
-              🟣 Solana Rewards
-            </button>
+            {/* 🟣 Solana Rewards (legacy) removed */}
             <button 
               onClick={() => setActiveTab("solana-payments")}
               className={activeTab === "solana-payments" ? styles["tab-active"] : styles["tab-inactive"]}
@@ -1404,9 +1390,7 @@ const AdminPanel = () => {
             </>
           )}
 
-          {activeTab === "solana-rewards" && (
-            <SolanaRewardsManager onBack={() => setActiveTab("overview")} />
-          )}
+          {/* Solana Rewards (legacy) removed */}
 
           {activeTab === "solana-payments" && (
             <>
