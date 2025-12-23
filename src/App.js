@@ -6,7 +6,7 @@ import "./toastStyle.css";
 
 // 🧠 Core React
 import React, { useState, Suspense, lazy, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom"; // Imported useLocation
+import { HashRouter as Router, Routes, Route, useLocation } from "react-router-dom"; // HashRouter for S3/CloudFront compatibility
 import { ToastContainer } from "react-toastify";
 
 // 🧩 Layout & UI
@@ -149,7 +149,7 @@ const SwapPage = lazy(() => import("./components/DEX/SwapPage")); // 🔄 Import
 // 🧠 Main Layout Component
 const MainLayout = ({ children, isMobile, menuOpen, setMenuOpen, headerMenuOpen, setHeaderMenuOpen, currentSection, handleSidebarSelect, toggleSidebarMenu, toggleHeaderMenu }) => {
   const location = useLocation();
-  const isDexDemo = location.pathname === '/dex-demo';
+  const isDexDemo = location.pathname === '/dex';
 
   // If it's the DEX Demo page, render ONLY the children (SwapPage) without the wrapper
   if (isDexDemo) {
@@ -431,7 +431,7 @@ const App = () => {
                       <Route path="/ai-hub/smart-audit" element={<SmartAudit />} />
                       <Route path="/ai-hub/gem-hunter" element={<GemHunter />} />
                       <Route path="/ai-hub/admin-neural" element={<AdminNeuralLink />} />
-                      <Route path="/dex-demo" element={<SwapPage />} /> {/* 🔄 Rută DEX Demo */}
+                      <Route path="/dex" element={<SwapPage />} /> {/* 🔄 Rută DEX */}
                       <Route
                         path="/test-payment"
                         element={

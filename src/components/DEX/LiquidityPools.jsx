@@ -4,9 +4,10 @@ import WalletContext from '../../context/WalletContext';
 import './DEX.css';
 import './LiquidityPools.css';
 import bitsLogo from '../../assets/logo.png';
+import usdtLogo from '../../assets/icons/tether-usdt-logo.png';
 
 const pools = [
-  { id: 1, pair: 'BITS/USDT', apy: '145.2%', tvl: '$12.5M', risk: 'Medium', icon1: bitsLogo, icon2: 'https://cryptologos.cc/logos/tether-usdt-logo.png' },
+  { id: 1, pair: 'BITS/USDT', apy: '145.2%', tvl: '$12.5M', risk: 'Medium', icon1: bitsLogo, icon2: usdtLogo },
   { id: 2, pair: 'BTC/ETH', apy: '12.4%', tvl: '$450M', risk: 'Low', icon1: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png', icon2: 'https://cryptologos.cc/logos/ethereum-eth-logo.png' },
   { id: 3, pair: 'SOL/USDC', apy: '24.8%', tvl: '$85M', risk: 'Medium', icon1: 'https://cryptologos.cc/logos/solana-sol-logo.png', icon2: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.png' },
   { id: 4, pair: 'BITS/SOL', apy: '280.5%', tvl: '$5.2M', risk: 'High', icon1: bitsLogo, icon2: 'https://cryptologos.cc/logos/solana-sol-logo.png' }

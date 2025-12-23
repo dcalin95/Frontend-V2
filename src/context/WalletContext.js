@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
 import { createWeb3Modal, useWeb3Modal } from "@web3modal/wagmi/react";
 import { WagmiProvider, useAccount, useDisconnect, useBalance, useSwitchChain, useReadContract, useWalletClient } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -7,6 +7,7 @@ import { formatEther } from "viem";
 import { providers } from "ethers";
 import BitsABI from '../abi/BitsABI.js';
 import { CONTRACT_MAP } from '../contract/contractMap';
+import { logDetectedWallets } from '../utils/walletFilter';
 
 // 🔑 Wallet Types Constants
 export const WALLET_TYPES = {
@@ -61,11 +62,13 @@ const InnerWalletProvider = ({ children }) => {
   // Debug logs
   console.log("🔍 [Wallet Debug] Address:", address);
   console.log("🔍 [Wallet Debug] Chain ID:", chainId);
+  console.log("🔍 [Wallet Debug] IsConnected:", isConnected);
+  console.log("🔍 [Wallet Debug] Connector:", connector?.name);
   console.log("🔍 [Wallet Debug] Balance Loading:", isLoading);
   console.log("🔍 [Wallet Debug] Balance Error:", isError);
 
   // Reading BITS Token Balance (Wagmi v2)
-  const { data: bitsRawBalance, error: bitsError, isLoading: bitsLoading } = useReadContract({
+  const { data: bitsRawBalance, error: bitsError } = useReadContract({
     address: BITS_TOKEN_ADDRESS,
     abi: BitsABI,
     functionName: 'balanceOf',
@@ -101,6 +104,73 @@ const InnerWalletProvider = ({ children }) => {
     return clientToSigner(walletClient);
   }, [walletClient]);
 
+  // Safe Disconnect Wrapper (defined early to be used in useEffect)
+  // Disconnects BOTH EVM and Solana wallets completely
+  const safeDisconnect = useCallback(async () => {
+    try {
+      console.log("🔌 [WalletContext] Starting complete disconnect...");
+      
+      // 1. Disconnect EVM wallet (Wagmi)
+      try {
+        await disconnect();
+        console.log("✅ [WalletContext] EVM wallet disconnected");
+      } catch (e) {
+        console.warn("[WalletContext] EVM disconnect error:", e);
+      }
+      
+      // 2. Disconnect Solana wallet (if connected) - FORCE DISCONNECT
+      try {
+        // Try to disconnect via window.solana if available (Phantom)
+        if (typeof window !== 'undefined' && window.solana) {
+          try {
+            if (window.solana.isPhantom && window.solana.isConnected) {
+              await window.solana.disconnect();
+              console.log("✅ [WalletContext] Phantom wallet disconnected via window.solana");
+            }
+          } catch (solanaErr) {
+            console.warn("[WalletContext] Phantom disconnect error:", solanaErr);
+          }
+        }
+        
+        // Also try window.phantom if it exists
+        if (typeof window !== 'undefined' && window.phantom?.solana) {
+          try {
+            if (window.phantom.solana.isConnected) {
+              await window.phantom.solana.disconnect();
+              console.log("✅ [WalletContext] Phantom wallet disconnected via window.phantom");
+            }
+          } catch (phantomErr) {
+            console.warn("[WalletContext] Phantom (window.phantom) disconnect error:", phantomErr);
+          }
+        }
+        
+        // Clear ALL Solana-related localStorage keys
+        Object.keys(localStorage).forEach(key => {
+          if (key.toLowerCase().includes('solana') || key.toLowerCase().includes('phantom')) {
+            localStorage.removeItem(key);
+            console.log(`🗑️ [WalletContext] Removed localStorage key: ${key}`);
+          }
+        });
+      } catch (e) {
+        console.warn("[WalletContext] Solana disconnect error:", e);
+      }
+      
+      // 3. Clear all connection states
+      try {
+        localStorage.removeItem('wagmi.connected');
+        localStorage.removeItem('wagmi.store');
+        sessionStorage.removeItem('wagmi.connector');
+        console.log("✅ [WalletContext] All connection states cleared");
+      } catch (e) {
+        console.warn("[WalletContext] State clear error:", e);
+      }
+      
+      console.log("✅ [WalletContext] Complete disconnect finished");
+    } catch (e) {
+        console.warn("[WalletContext] Disconnect failed suppressed:", e);
+    }
+  }, [disconnect]);
+
   // Debug logs for BITS balance
   useEffect(() => {
     if (address) {
@@ -123,13 +193,34 @@ const InnerWalletProvider = ({ children }) => {
 
   // Automatic sync: Wagmi -> Local State
   useEffect(() => {
+    // Log detected wallets on mount for debugging
+    if (!isConnected && !address) {
+      logDetectedWallets();
+    }
+    
     if (isConnected && address) {
+      // 🛑 CRITICAL: Filter out Phantom from EVM connections ONLY
+      // Phantom injects window.ethereum but it's a Solana wallet, not EVM
+      // Only check this for EVM connections (Wagmi), not for Solana connections
+      if (connector?.id === 'injected' && window.ethereum?.isPhantom) {
+        // Check if this is actually an EVM connection attempt (not Solana)
+        // Phantom should only be used via window.solana for Solana, not window.ethereum for EVM
+        console.warn("⚠️ [ModernWallet] Phantom detected as EVM connector - this is wrong, disconnecting");
+        console.warn("💡 [ModernWallet] Use Phantom via Solana network, not EVM");
+        console.warn("💡 [ModernWallet] This should not happen if walletFilter is working correctly");
+        safeDisconnect();
+        return;
+      }
+      
       console.log("✅ [ModernWallet] Connected:", address);
       console.log("✅ [ModernWallet] Chain ID:", chainId);
       console.log("✅ [ModernWallet] Connector:", connector?.name);
       setWalletAddress(address);
       setWalletType(connector?.name || "WalletConnect");
       setWalletName(connector?.name || "Wallet");
+      
+      // Mark that we just connected (for auto-opening wallet box)
+      sessionStorage.setItem('wallet_just_connected', 'true');
       
       // Set icon (simple fallback)
       if (connector?.name?.toLowerCase().includes("metamask")) {
@@ -140,10 +231,14 @@ const InnerWalletProvider = ({ children }) => {
         setWalletIcon(null);
       }
 
-      // Set network (simplified)
-      if (chainId === 56) setNetwork("Binance Smart Chain");
-      else if (chainId === 1) setNetwork("Ethereum");
-      else setNetwork(`Chain ID: ${chainId}`);
+      // Set network (simplified - no auto-switch here to avoid errors)
+      if (chainId === 56) {
+        setNetwork("Binance Smart Chain");
+      } else if (chainId === 1) {
+        setNetwork("Ethereum");
+      } else {
+        setNetwork(`Chain ID: ${chainId}`);
+      }
 
     } else {
       setWalletAddress(null);
@@ -152,7 +247,8 @@ const InnerWalletProvider = ({ children }) => {
       setNetwork(null);
       setEthBalance("0");
     }
-  }, [isConnected, address, connector, chainId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isConnected, address, connector, chainId, safeDisconnect]);
 
   // Balance Sync (Native Token - BNB/ETH)
   useEffect(() => {
@@ -202,48 +298,96 @@ const InnerWalletProvider = ({ children }) => {
   const connectViaCoinbase = connectWallet;
   const connectViaRainbow = connectWallet;
 
-  // Safe Disconnect Wrapper
-  const safeDisconnect = async () => {
-    try {
-        await disconnect();
-    } catch (e) {
-        console.warn("[WalletContext] Disconnect failed suppressed:", e);
-    }
-  };
-
-  // 🧨 HARD RESET (Nuclear Option for stuck connections)
-  const hardReset = () => {
-    console.warn("🧨 [WalletContext] EXECUTING HARD RESET...");
-    safeDisconnect();
+  // 🧨 HARD RESET (Nuclear Option for stuck connections) - COMPLETE DISCONNECT
+  const hardReset = async () => {
+    console.warn("🧨 [WalletContext] EXECUTING HARD RESET - COMPLETE DISCONNECT...");
+    
+    // 1. Disconnect EVM
+    await safeDisconnect();
+    
+    // 2. Force disconnect Solana/Phantom COMPLETELY
     if (typeof window !== 'undefined') {
+      // Disconnect Phantom directly via window.solana
+      if (window.solana?.isPhantom) {
+        try {
+          if (window.solana.isConnected) {
+            await window.solana.disconnect();
+            console.log("✅ [HardReset] Phantom disconnected via window.solana");
+          }
+        } catch (e) {
+          console.warn("[HardReset] Phantom (window.solana) disconnect error:", e);
+        }
+      }
+      
+      // Disconnect Phantom via window.phantom
+      if (window.phantom?.solana) {
+        try {
+          if (window.phantom.solana.isConnected) {
+            await window.phantom.solana.disconnect();
+            console.log("✅ [HardReset] Phantom disconnected via window.phantom");
+          }
+        } catch (e) {
+          console.warn("[HardReset] Phantom (window.phantom) disconnect error:", e);
+        }
+      }
+      
+      // 3. Clear ALL storage - NO RESTORE (complete clean)
       localStorage.clear();
       sessionStorage.clear();
-      window.location.reload();
+      
+      // 4. Clear IndexedDB for Solana/Phantom
+      if (window.indexedDB) {
+        try {
+          const dbs = await window.indexedDB.databases();
+          dbs.forEach(db => {
+            if (db.name?.toLowerCase().includes('solana') || 
+                db.name?.toLowerCase().includes('phantom') ||
+                db.name?.toLowerCase().includes('wallet')) {
+              window.indexedDB.deleteDatabase(db.name);
+              console.log(`🗑️ [HardReset] Deleted IndexedDB: ${db.name}`);
+            }
+          });
+        } catch (e) {
+          console.warn("[HardReset] IndexedDB clear error:", e);
+        }
+      }
+      
+      // 5. Reload page to ensure clean state
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     }
   };
 
-  // 🔧 Clear pending connection state on mount
+  // 🔧 Prevent auto-connect on mount - clear stale connections
   useEffect(() => {
-    const clearPendingConnections = async () => {
+    const preventAutoConnect = async () => {
       try {
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem('wagmi.store');
-          localStorage.removeItem('wagmi.wallet');
-          localStorage.removeItem('wagmi.connected');
-          sessionStorage.removeItem('wagmi.connector');
+        console.log('🔍 [WalletContext] Initializing with clean state...');
+        
+        // 🛑 CRITICAL: Always disconnect on mount to prevent any auto-connect
+        // This ensures the site is 100% disconnected until user clicks "Connect"
+        if (isConnected) {
+          console.log('🧹 [WalletContext] Disconnecting auto-connected wallet on mount');
+          await disconnect();
         }
         
-        // Clear MetaMask pending requests
-        if (window.ethereum && window.ethereum._metamask) {
-          await window.ethereum._metamask.isUnlocked().catch(() => {});
-        }
+        // Clear all session/local flags
+        localStorage.removeItem('wagmi.recentConnectorId');
+        localStorage.removeItem('wagmi.store');
+        localStorage.removeItem('wagmi.connected');
+        sessionStorage.removeItem('wagmi.connector');
+        sessionStorage.removeItem('wallet_just_connected');
+        
+        console.log('✅ [WalletContext] Fresh state ready');
       } catch (error) {
-        console.warn("[WalletContext] Error clearing pending connections:", error);
+        console.warn('[WalletContext] Error ensuring clean state:', error);
       }
     };
     
-    clearPendingConnections();
-  }, []);
+    preventAutoConnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run ONLY once on mount
 
   return (
     <WalletContext.Provider
@@ -258,6 +402,7 @@ const InnerWalletProvider = ({ children }) => {
         walletName,
         walletIcon,
         network,
+        chainId, // ✅ Expose chainId for network detection
         provider: signer?.provider || null, // ✅ Expose ethers provider, not connector
         signer, // Adapter for ethers.js signer
         connector, // ✅ Expose connector separately (read-only)
@@ -277,7 +422,6 @@ const InnerWalletProvider = ({ children }) => {
 
         // New Utility Functions
         switchNetwork: (id) => switchChain({ chainId: id }),
-        chainId,
 
         // Modal Control
         showWalletModal,

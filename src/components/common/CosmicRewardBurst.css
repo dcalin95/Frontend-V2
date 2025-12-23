@@ -1,0 +1,246 @@
+.cosmic-burst-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 20% 20%, rgba(0,255,195,0.10), rgba(0,0,0,0.70) 55%),
+              radial-gradient(circle at 80% 60%, rgba(220,31,255,0.12), rgba(0,0,0,0.70) 55%),
+              rgba(0,0,0,0.72);
+  backdrop-filter: blur(2px);
+}
+
+.cosmic-burst-overlay.closing {
+  animation: burst-overlay-fade 0.46s ease both;
+}
+
+.cosmic-burst-sky {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.7) 50%, transparent 51%),
+    radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.6) 50%, transparent 51%),
+    radial-gradient(1px 1px at 70% 30%, rgba(255,255,255,0.5) 50%, transparent 51%),
+    radial-gradient(1px 1px at 85% 80%, rgba(255,255,255,0.6) 50%, transparent 51%),
+    radial-gradient(1px 1px at 25% 85%, rgba(255,255,255,0.55) 50%, transparent 51%);
+  opacity: 0.65;
+  animation: cosmic-float 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.cosmic-burst-card {
+  position: relative;
+  width: min(720px, calc(100vw - 24px));
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: linear-gradient(135deg, rgba(0,0,0,0.55), rgba(0,0,0,0.25));
+  box-shadow: 0 22px 120px rgba(0,255,195,0.18), 0 22px 120px rgba(220,31,255,0.14);
+  overflow: hidden;
+  padding: 22px 20px;
+  animation: burst-enter 0.55s cubic-bezier(.2,.9,.2,1) both, burst-shake 0.9s ease-in-out 0.55s 2;
+}
+
+.cosmic-burst-card.closing {
+  animation: burst-exit-to-wallet 0.46s ease both;
+}
+
+.cosmic-burst-card::before {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background: radial-gradient(circle at center, rgba(0,255,195,0.18), rgba(0,0,0,0) 55%);
+  transform: rotate(12deg);
+  filter: blur(0.2px);
+  pointer-events: none;
+}
+
+.cosmic-burst-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent);
+  transform: translateX(-120%);
+  animation: burst-scan 1.6s ease-in-out 0.35s both;
+  pointer-events: none;
+}
+
+.cosmic-burst-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.cosmic-burst-title {
+  font-family: 'Orbitron', 'Space Grotesk', sans-serif;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.92);
+}
+
+.cosmic-burst-close {
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(0,0,0,0.22);
+  color: rgba(255,255,255,0.85);
+  border-radius: 12px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.cosmic-burst-close:hover {
+  border-color: rgba(0,255,195,0.28);
+  box-shadow: 0 0 16px rgba(0,255,195,0.12);
+}
+
+.cosmic-burst-body {
+  margin-top: 12px;
+  display: grid;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.cosmic-burst-amounts {
+  display: grid;
+  gap: 6px;
+}
+
+.cosmic-burst-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.cosmic-burst-row.secondary {
+  opacity: 0.92;
+}
+
+.cosmic-burst-number {
+  font-size: clamp(34px, 6vw, 64px);
+  font-weight: 1000;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 18px rgba(0,255,163,0.20));
+  line-height: 1;
+}
+
+.cosmic-burst-number-sm {
+  font-size: clamp(16px, 2.2vw, 20px);
+  font-weight: 950;
+  letter-spacing: 0.1px;
+  color: rgba(255,255,255,0.90);
+}
+
+.cosmic-burst-sub {
+  color: rgba(255,255,255,0.78);
+  line-height: 1.35;
+  font-size: 0.98rem;
+}
+
+.cosmic-burst-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.18);
+  color: rgba(255,255,255,0.85);
+  font-weight: 800;
+}
+
+.cosmic-burst-hint .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  padding: 3px 10px;
+  border: 1px solid rgba(255, 215, 0, 0.30);
+  background: linear-gradient(135deg, rgba(255,215,0,0.16), rgba(0,0,0,0.18));
+  box-shadow: 0 0 14px rgba(255,215,0,0.10);
+}
+
+@keyframes burst-enter {
+  0% { transform: scale(0.78); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes burst-exit-to-wallet {
+  0% { transform: translateY(0) scale(1); opacity: 1; filter: drop-shadow(0 0 18px rgba(0,255,163,0.18)); }
+  100% { transform: translateY(90px) scale(0.92); opacity: 0; filter: drop-shadow(0 0 40px rgba(0,255,163,0.22)); }
+}
+
+@keyframes burst-overlay-fade {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes burst-shake {
+  0%, 100% { transform: translateX(0) scale(1); }
+  20% { transform: translateX(-2px) scale(1.01); }
+  40% { transform: translateX(2px) scale(1.01); }
+  60% { transform: translateX(-1px) scale(1.01); }
+  80% { transform: translateX(1px) scale(1.01); }
+}
+
+@keyframes burst-scan {
+  0% { transform: translateX(-120%); opacity: 0; }
+  25% { opacity: 1; }
+  100% { transform: translateX(120%); opacity: 0; }
+}
+
+@keyframes cosmic-float {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(-6px); opacity: 0.75; }
+}
+
+@media (max-width: 768px) {
+  .cosmic-burst-overlay {
+    place-items: center;
+    padding: 10px;
+    backdrop-filter: none;
+  }
+
+  .cosmic-burst-sky {
+    animation: none;
+    opacity: 0.45;
+  }
+
+  .cosmic-burst-card {
+    width: min(560px, calc(100vw - 20px));
+    padding: 16px 14px;
+    max-height: calc(100vh - 24px);
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .cosmic-burst-title {
+    font-size: 1rem;
+  }
+
+  .cosmic-burst-close {
+    padding: 7px 9px;
+    border-radius: 10px;
+  }
+
+  .cosmic-burst-sub {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .cosmic-burst-card {
+    padding: 14px 12px;
+    border-radius: 16px;
+  }
+}
+
+

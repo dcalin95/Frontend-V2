@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { useWallet } from "../context/WalletContext";
 import { useGeoLocation } from "../context/GeoLocationContext"; 
 import SwapModal from "../components/SwapModal";
@@ -8,6 +9,7 @@ import "./HeaderWalletInfo.css";
 import "./HeaderWalletInfo.mobile.css"; 
 
 import ethIcon from "../assets/icons/evm-logo.jpg";
+import binanceLogo from "../assets/exchanges/binance.png"; // Import Binance/BSC logo
 import bitsIcon from "../assets/logo.png"; 
 import phantomLogo from "../assets/icons/phantom-logo.png"; 
 import walletLogo from "../assets/icons/wallet.png"; 
@@ -45,10 +47,10 @@ const HeaderWalletInfo = () => {
     ethBalance,
     nativeSymbol,
     bitsBalance,
-    connectWallet,
     walletName,
     walletType,
     setShowWalletModal,
+    chainId, // 🔍 Get chainId to detect network
   } = useWallet();
 
   const { countryCode, country, city, ip } = useGeoLocation();
@@ -68,6 +70,7 @@ const HeaderWalletInfo = () => {
   });
 
   const [isDragging, setIsDragging] = useState(false);
+  const [showWalletBox, setShowWalletBox] = useState(false); // ✅ Define showWalletBox early
   const dragOffset = useRef({ x: 0, y: 0 });
   const wrapperRef = useRef(null);
 
@@ -95,6 +98,38 @@ const HeaderWalletInfo = () => {
     // Prevenim selecția textului în timpul drag-ului
     e.preventDefault();
   };
+
+  // 🎯 AUTO-OPEN WALLET BOX AFTER CONNECTION
+  useEffect(() => {
+    const handleOpenWalletBox = () => {
+      console.log('📦 [HeaderWalletInfo] Received openWalletBox event, opening wallet box...');
+      // Small delay to ensure wallet data is loaded
+      setTimeout(() => {
+        setShowWalletBox(true);
+        console.log('✅ [HeaderWalletInfo] Wallet box opened');
+      }, 300);
+    };
+    
+    window.addEventListener('openWalletBox', handleOpenWalletBox);
+    return () => {
+      window.removeEventListener('openWalletBox', handleOpenWalletBox);
+    };
+  }, []);
+
+  // 🎯 ALSO AUTO-OPEN WHEN WALLET ADDRESS BECOMES AVAILABLE (fallback)
+  useEffect(() => {
+    if (walletAddress && !showWalletBox) {
+      // Only auto-open if we just connected (not if wallet was already connected)
+      const justConnected = sessionStorage.getItem('wallet_just_connected');
+      if (justConnected === 'true') {
+        console.log('📦 [HeaderWalletInfo] Wallet address available, auto-opening wallet box...');
+        setTimeout(() => {
+          setShowWalletBox(true);
+          sessionStorage.removeItem('wallet_just_connected');
+        }, 500);
+      }
+    }
+  }, [walletAddress, showWalletBox]);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -161,7 +196,6 @@ const HeaderWalletInfo = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const [showWalletBox, setShowWalletBox] = useState(false);
   const [swapModalOpen, setSwapModalOpen] = useState(false);
   const [historyModalOpen, setHistoryModalOpen] = useState(false);
 
@@ -267,7 +301,29 @@ const HeaderWalletInfo = () => {
             <div style={{width: '40px', height: '4px', background: 'rgba(255,255,255,0.3)', borderRadius: '2px'}}></div>
           </div>
 
-          <button className="wallet-close-btn" onClick={() => setShowWalletBox(false)}>✖</button>
+          {/* 🎯 SLOGAN LINK - $BITS Presale */}
+          <Link 
+            to="/presale" 
+            className="wallet-presale-slogan"
+            onClick={() => setShowWalletBox(false)}
+            title="Go to Presale"
+          >
+            <span className="slogan-text">$BITS Presale</span>
+          </Link>
+
+          {/* ➖ Buton Minimize - Poziție originală (sus dreapta ferestrei) */}
+          <button 
+            className="wallet-minimize-btn" 
+            onClick={() => setShowWalletBox(false)}
+            aria-label="Minimize wallet window"
+            title="Minimize"
+          >
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <line x1="1" y1="6" x2="11" y2="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+            <span className="minimize-text">Minimize</span>
+          </button>
+
             <>
               <div className="wallet-identifier">
                 <div className="wallet-name-row">
@@ -289,7 +345,13 @@ const HeaderWalletInfo = () => {
               
               <div className="token-balance">
                 <div className="balance-left">
-                  {walletType === "SOLANA" ? <SolanaIcon /> : <img src={ethIcon} alt={nativeSymbol} />}
+                  {walletType === "SOLANA" ? (
+                    <SolanaIcon />
+                  ) : chainId === 56 ? (
+                    <img src={binanceLogo} alt="BSC" style={{ width: '20px', height: '20px', borderRadius: '50%' }} />
+                  ) : (
+                    <img src={ethIcon} alt={nativeSymbol} />
+                  )}
                   <span>{nativeSymbol}</span>
                 </div>
                 <span className="balance-amount">

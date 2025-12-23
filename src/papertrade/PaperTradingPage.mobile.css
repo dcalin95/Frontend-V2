@@ -9,7 +9,7 @@
     padding: var(--spacing-sm);
     background: var(--bg-primary);
   }
-  
+
   /* Header */
   .paper-trading-header h1 {
     font-size: 1.6rem;

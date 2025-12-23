@@ -21,12 +21,13 @@ const useAdditionalBonus = (walletAddress) => {
   const [canClaim, setCanClaim] = useState(false);
 
   useEffect(() => {
-    if (!walletAddress || !window.ethereum) return;
+    if (!walletAddress) return;
 
     const fetchData = async () => {
       setLoading(true);
       try {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        // 🛑 READ-ONLY: use public RPC for reads
+        const provider = new ethers.providers.JsonRpcProvider("https://bsc-dataseed1.binance.org");
         const rewardContract = new ethers.Contract(
           CONTRACTS.ADDITIONAL_REWARD.address,
           CONTRACTS.ADDITIONAL_REWARD.abi,

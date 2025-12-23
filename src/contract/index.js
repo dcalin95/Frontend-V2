@@ -9,3 +9,6 @@ export * from "./CellManager";
 // Export new centralized contract map
 export * from "./contractMap";
 
+// Export Solana global config (addresses + RPC)
+export * from "./solanaConfig";
+

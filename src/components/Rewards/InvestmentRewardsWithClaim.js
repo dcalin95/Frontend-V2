@@ -4,6 +4,7 @@ import contractABI from "../../abi/nodeABI.js";
 import nodeRewardsService, { formatBitsAmount, validateWalletConnection } from "../../services/nodeRewardsService.js";
 
 const contractAddress = "0xe447db49E8e031d38c291E7e499c71a00aB80347";
+const BSC_RPC_URL = "https://bsc-dataseed1.binance.org"; // read-only (no popup)
 
 const InvestmentRewardsWithClaim = () => {
   const [currentInvestment, setCurrentInvestment] = useState(0);
@@ -11,6 +12,7 @@ const InvestmentRewardsWithClaim = () => {
   const [nowWorth, setNowWorth] = useState(0);
   const [walletAddress, setWalletAddress] = useState("");
   const [isConnected, setIsConnected] = useState(false);
+  const [connectionMsg, setConnectionMsg] = useState("");
   
   // 🎯 HYBRID: Node.sol reward data
   const [nodeRewardBalance, setNodeRewardBalance] = useState("0");
@@ -22,26 +24,52 @@ const InvestmentRewardsWithClaim = () => {
     const checkWalletConnection = async () => {
       if (window.ethereum) {
         try {
-          const accounts = await window.ethereum.request({
-            method: "eth_requestAccounts",
-          });
+          // 🛑 CRITICAL: do NOT prompt on mount. Silent check only.
+          const accounts = await window.ethereum.request({ method: "eth_accounts" });
           if (accounts.length > 0) {
             setWalletAddress(accounts[0]);
             setIsConnected(true);
+            setConnectionMsg("");
             fetchInvestmentData(accounts[0]);
             // 🎯 HYBRID: Fetch Node.sol rewards
             await fetchNodeRewards(accounts[0]);
+          } else {
+            setIsConnected(false);
+            setWalletAddress("");
+            setConnectionMsg("ℹ️ Connect your wallet to load investment & rewards.");
           }
         } catch (error) {
           console.error("Error connecting to wallet:", error);
+          setIsConnected(false);
         }
       } else {
-        alert("MetaMask not detected. Please install it!");
+        setConnectionMsg("❌ No EVM wallet detected. Please install MetaMask/Trust/Coinbase.");
       }
     };
 
     checkWalletConnection();
   }, []);
+
+  const connectWallet = async () => {
+    if (!window.ethereum) {
+      setConnectionMsg("❌ No EVM wallet detected. Please install MetaMask/Trust/Coinbase.");
+      return;
+    }
+    try {
+      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+      if (accounts.length > 0) {
+        setWalletAddress(accounts[0]);
+        setIsConnected(true);
+        setConnectionMsg("");
+        fetchInvestmentData(accounts[0]);
+        await fetchNodeRewards(accounts[0]);
+      }
+    } catch (error) {
+      if (error?.code === 4001) return; // user rejected
+      console.error("Error connecting to wallet:", error);
+      setConnectionMsg("⚠️ Wallet connection failed. Please try again.");
+    }
+  };
 
   // 🎯 HYBRID: Fetch rewards from Node.sol
   const fetchNodeRewards = async (wallet) => {
@@ -70,7 +98,8 @@ const InvestmentRewardsWithClaim = () => {
 
   const fetchInvestmentData = async (wallet) => {
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      // 🛑 READ-ONLY: do not touch window.ethereum for reads (prevents popup / injected conflicts)
+      const provider = new ethers.providers.JsonRpcProvider(BSC_RPC_URL);
       const contract = new ethers.Contract(contractAddress, contractABI, provider);
 
       const cellsCount = await contract.getCellsCount();
@@ -126,6 +155,13 @@ const InvestmentRewardsWithClaim = () => {
   return (
     <div className="investment-rewards-container">
       <h4>🎯 Investment Rewards (HYBRID)</h4>
+
+      {!isConnected && (
+        <div style={{ marginBottom: 12 }}>
+          {connectionMsg && <p>{connectionMsg}</p>}
+          <button onClick={connectWallet}>🔗 Connect Wallet</button>
+        </div>
+      )}
       
       {/* 👛 Wallet Info */}
       <div className="wallet-section">
@@ -221,7 +257,8 @@ export const setAdditionalInfo = async () => {
 
 export const getAdditionalRewards = async () => {
   try {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    // 🛑 READ-ONLY: do not touch window.ethereum for reads
+    const provider = new ethers.providers.JsonRpcProvider(BSC_RPC_URL);
     const contract = new ethers.Contract(contractAddress, contractABI, provider);
 
     const additionalRewards = await contract.getAdditionalRewardInfo();

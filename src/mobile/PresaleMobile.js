@@ -1,7 +1,7 @@
 import React, { useState, useEffect, lazy, Suspense } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import useGoogleAnalytics from "../hooks/useGoogleAnalytics";
+import { useWallet } from "../context/WalletContext";
 import { trackTikTokEvent } from "../utils/tiktok";
 import { useSelectedToken } from "../Presale/hooks/useSelectedToken";
 import useTokenPrices from "../Presale/prices/useTokenPrices";
@@ -26,7 +26,7 @@ const MobileLoading = () => (
 const PresaleMobile = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { trackPresaleEvent } = useGoogleAnalytics();
+  const { walletAddress } = useWallet();
   const {
     selectedToken,
     selectedChain,
@@ -39,7 +39,6 @@ const PresaleMobile = () => {
 
   const { prices: tokenPrices } = useTokenPrices();
   const [amountPay, setAmountPay] = useState(0);
-  const [walletAddress, setWalletAddress] = useState(null);
   const [stripeFeedback, setStripeFeedback] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
 
@@ -49,19 +48,8 @@ const PresaleMobile = () => {
 
   // Detect wallet
   useEffect(() => {
-    const detectWallet = async () => {
-      if (window.ethereum) {
-        try {
-          const accounts = await window.ethereum.request({ method: "eth_accounts" });
-          if (accounts.length > 0) {
-            setWalletAddress(accounts[0]);
-          }
-        } catch (err) {
-          console.warn("Wallet not connected");
-        }
-      }
-    };
-    detectWallet();
+    // 🛑 CRITICAL FIX: Removed automatic wallet detection on mount
+    console.log("ℹ️ [PresaleMobile] Auto-detection disabled.");
   }, []);
 
   // Track TikTok event

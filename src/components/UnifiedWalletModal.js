@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { useWeb3Modal } from '@web3modal/wagmi/react';
-import { useConnect } from 'wagmi'; // 🔌 IMPORT CRITIC: Direct Connection Hook
+import React, { useState, useEffect, useMemo } from 'react';
+import { useConnect, useAccount } from 'wagmi'; // 🔌 IMPORT CRITIC: Direct Connection Hook
 import { useWallet as useSolanaWalletAdapter } from '@solana/wallet-adapter-react';
 import { useWallet } from '../context/WalletContext';
 import { prepareForConnection, handleConnectionError } from '../utils/walletConnectionFix';
+import { prioritizeEVMWallets, logDetectedWallets } from '../utils/walletFilter';
+import Web3ModalHandler from './Web3ModalHandler'; // 🔐 Separate Web3Modal component
 import walletConnectLogo from '../assets/icons/wallet-connect-logo.png'; 
 import evmIcon from '../assets/icons/evm-logo.jpg'; // Import EVM logo
 import solanaIcon from '../assets/icons/solana-logo.png'; // Import Solana logo
@@ -13,13 +14,109 @@ import './UnifiedWalletModal.mobile.css';
 
 const UnifiedWalletModal = () => {
   const { showWalletModal, setShowWalletModal, hardReset } = useWallet(); 
-  const { open: openEvmModal } = useWeb3Modal();
-  const { connect, connectors } = useConnect(); // 🔌 Get direct connectors
-  const { select: selectSolanaWallet, wallets: solanaWallets } = useSolanaWalletAdapter();
+  const { connect, disconnect: disconnectEVM, connectors } = useConnect(); // 🔌 Get direct connectors
+  const { isConnected, address } = useAccount(); // 🔍 Monitor connection status
   
-  const [selectedNetwork, setSelectedNetwork] = useState(null); // "EVM" | "SOLANA" | null
+  // 🛡️ Filter and prioritize EVM connectors (exclude Phantom and other non-EVM wallets)
+  const filteredConnectors = useMemo(() => {
+    const filtered = prioritizeEVMWallets(connectors);
+    
+    // Log detected wallets for debugging
+    if (showWalletModal) {
+      console.log('🛡️ [UnifiedWalletModal] ========== CONNECTOR FILTERING ==========');
+      console.log('🛡️ [UnifiedWalletModal] ALL connectors:', connectors.map(c => `${c.name} (${c.id})`));
+      logDetectedWallets();
+      console.log('✅ [UnifiedWalletModal] FILTERED EVM connectors:', filtered.map(c => c.name));
+      console.log('🛡️ [UnifiedWalletModal] ====================================');
+    }
+    
+    return filtered;
+  }, [connectors, showWalletModal]);
+  const { 
+    select: selectSolanaWallet, 
+    connect: connectSolanaWallet,
+    disconnect: disconnectSolanaWallet,
+    wallets: solanaWallets,
+    connected: isSolanaConnected,
+    publicKey: solanaPublicKey,
+    wallet: selectedSolanaWallet
+  } = useSolanaWalletAdapter();
+  
+  const [selectedNetwork, setSelectedNetwork] = useState(null); // "EVM" | "SOLANA" | "WEB3" | null
   const [isConnecting, setIsConnecting] = useState(false); // ⏳ New connecting state
   const [error, setError] = useState(null);
+  const [web3Context, setWeb3Context] = useState(null); // e.g. "binance_walletconnect"
+
+  // (Debug panel removed)
+
+  // Check if Solana wallet is already connected when modal opens
+  useEffect(() => {
+    if (showWalletModal && isSolanaConnected && solanaPublicKey && selectedSolanaWallet) {
+      console.log('✅ Solana wallet already connected:', {
+        wallet: selectedSolanaWallet.adapter.name,
+        publicKey: solanaPublicKey.toBase58()
+      });
+    }
+  }, [showWalletModal, isSolanaConnected, solanaPublicKey, selectedSolanaWallet]);
+
+  // 🎯 AUTO-CLOSE MODAL AFTER SUCCESSFUL CONNECTION
+  useEffect(() => {
+    // 🛑 CRITICAL: Only check EVM if we're on EVM network (not Solana)
+    if (isConnecting && isConnected && address && selectedNetwork !== "SOLANA") {
+      console.log('✅ [UnifiedWalletModal] EVM wallet connected successfully, closing modal...');
+      setIsConnecting(false);
+      setError(null);
+      
+      // 🛑 CRITICAL: Ensure Solana is disconnected
+      if (isSolanaConnected || solanaPublicKey) {
+        console.log('🔌 [EVM] Disconnecting Solana after EVM connection...');
+        try {
+          if (typeof window !== 'undefined' && window.solana?.isPhantom) {
+            window.solana.disconnect().catch(() => {});
+          }
+        } catch (e) {
+          console.warn('⚠️ [EVM] Error disconnecting Solana:', e);
+        }
+      }
+      
+      // Close modal after a short delay to show success
+      setTimeout(() => {
+        setShowWalletModal(false);
+        setSelectedNetwork(null);
+        
+        // Open wallet info box automatically (always on first connection)
+        console.log('📦 [UnifiedWalletModal] Triggering openWalletBox event...');
+        window.dispatchEvent(new CustomEvent('openWalletBox'));
+      }, 500);
+    }
+    
+    // 🛑 CRITICAL: Only check Solana if we're on Solana network (not EVM)
+    if (isConnecting && isSolanaConnected && solanaPublicKey && selectedNetwork !== "EVM") {
+      console.log('✅ [UnifiedWalletModal] Solana wallet connected successfully, closing modal...');
+      setIsConnecting(false);
+      setError(null);
+      
+      // 🛑 CRITICAL: Ensure EVM is disconnected
+      if (isConnected || address) {
+        console.log('🔌 [Solana] Disconnecting EVM after Solana connection...');
+        try {
+          disconnectEVM().catch(() => {});
+        } catch (e) {
+          console.warn('⚠️ [Solana] Error disconnecting EVM:', e);
+        }
+      }
+      
+      // Close modal after a short delay
+      setTimeout(() => {
+        setShowWalletModal(false);
+        setSelectedNetwork(null);
+        
+        // Open wallet info box automatically (always on first connection)
+        console.log('📦 [UnifiedWalletModal] Triggering openWalletBox event for Solana...');
+        window.dispatchEvent(new CustomEvent('openWalletBox'));
+      }, 500);
+    }
+  }, [isConnecting, isConnected, address, isSolanaConnected, solanaPublicKey, selectedNetwork, setShowWalletModal, disconnectEVM]);
 
   if (!showWalletModal) return null;
 
@@ -37,56 +134,590 @@ const UnifiedWalletModal = () => {
       setIsConnecting(true);
       await prepareForConnection();
 
-      // 1. Find the specific connector
-      const connector = connectors.find(c => 
-        c.name.toLowerCase().includes(walletName.toLowerCase()) || 
-        (walletName === 'WalletConnect' && c.id === 'walletConnect')
-      );
+      console.log(`🔥🔥🔥 [CONNECT START] ========================================`);
+      console.log(`🔥 Wallet requested: ${walletName}`);
+      console.log(`🔥 window.solana exists: ${typeof window !== 'undefined' && !!window.solana}`);
+      console.log(`🔥 window.solana.isPhantom: ${typeof window !== 'undefined' && window.solana?.isPhantom}`);
+      console.log(`🔥 window.solana.isConnected: ${typeof window !== 'undefined' && window.solana?.isConnected}`);
+      console.log(`🔥 window.ethereum.isPhantom: ${typeof window !== 'undefined' && window.ethereum?.isPhantom}`);
+      console.log(`🔥 window.ethereum.isMetaMask: ${typeof window !== 'undefined' && window.ethereum?.isMetaMask}`);
+      console.log(`🔥🔥🔥 ========================================`);
+
+      // 🔧 Helper: safely connect to a specific injected provider (Trust/Coinbase/Rainbow/etc.)
+      const connectViaInjectedProvider = async ({
+        label,
+        providerPredicate,
+        connectorPredicate,
+        notDetectedMessage,
+        ambiguousMessage,
+      }) => {
+        if (typeof window === 'undefined' || !window.ethereum) {
+          setError(notDetectedMessage);
+          setIsConnecting(false);
+          return true; // handled
+        }
+
+        const providers = Array.isArray(window.ethereum?.providers) ? window.ethereum.providers : null;
+        const provider = providers ? providers.find(providerPredicate) : (providerPredicate(window.ethereum) ? window.ethereum : null);
+
+        if (!provider) {
+          setError(notDetectedMessage);
+          setIsConnecting(false);
+          return true; // handled
+        }
+
+        // Try provider request first (forces the right wallet popup)
+        await provider.request({ method: 'eth_requestAccounts' });
+
+        // Prefer an explicit connector if available (EIP-6963 / dedicated SDK)
+        const explicit = connectors.find(connectorPredicate);
+        if (explicit) {
+          console.log(`🧩 [${label}] Using explicit connector: ${explicit.name} (${explicit.id})`);
+          await connect({ connector: explicit });
+          return true; // handled
+        }
+
+        // Fallback to injected connector ONLY if we can safely bind window.ethereum to this provider
+        const injected = connectors.find(c => c.id === 'injected');
+        if (!injected) {
+          setError(ambiguousMessage);
+          setIsConnecting(false);
+          return true; // handled
+        }
+
+        // In multi-provider environments, injected is ambiguous unless we can swap window.ethereum
+        const canSwapEthereum = (() => {
+          try {
+            const desc = Object.getOwnPropertyDescriptor(window, 'ethereum');
+            return !desc || !!desc.writable;
+          } catch (_) {
+            return false;
+          }
+        })();
+
+        if (!canSwapEthereum) {
+          setError(ambiguousMessage);
+          setIsConnecting(false);
+          return true; // handled
+        }
+
+        const originalEthereum = window.ethereum;
+        try {
+          window.ethereum = provider;
+          console.log(`🧩 [${label}] Using injected with temporary provider binding...`);
+          await connect({ connector: injected });
+        } finally {
+          window.ethereum = originalEthereum;
+        }
+
+        return true; // handled
+      };
+
+      // Special handling for Trust Wallet - check if installed
+      if (walletName.toLowerCase().includes('trust')) {
+        try {
+          const handled = await connectViaInjectedProvider({
+            label: 'Trust',
+            providerPredicate: (p) => !!p?.isTrust,
+            connectorPredicate: (c) => String(c.id || '').toLowerCase().includes('trust') || String(c.name || '').toLowerCase().includes('trust'),
+            notDetectedMessage: 'Trust Wallet is not detected. Please install/enable Trust Wallet extension and refresh.',
+            ambiguousMessage: 'Trust Wallet detected but cannot bind it safely (multiple injected wallets). Please use Web3Modal → WalletConnect.',
+          });
+          if (handled) return;
+        } catch (trustErr) {
+          console.error('❌ Trust Wallet connection error:', trustErr);
+          if (trustErr?.code === 4001) {
+            setIsConnecting(false);
+            return;
+          }
+          setError(`Trust Wallet connection failed: ${trustErr?.message || 'Unknown error'}`);
+          setIsConnecting(false);
+          return;
+        }
+      }
+
+      // 🔵 Coinbase Wallet: prefer dedicated connector, fallback to provider binding if needed
+      if (walletName === 'Coinbase') {
+        try {
+          // Prefer CoinbaseWalletSDK connector first (doesn't rely on injected ambiguity)
+          const coinbaseSdk = connectors.find(c => c.id === 'coinbaseWalletSDK');
+          if (coinbaseSdk) {
+            console.log(`🪙 [Coinbase] Using coinbaseWalletSDK connector`);
+            await connect({ connector: coinbaseSdk });
+            return;
+          }
+
+          const handled = await connectViaInjectedProvider({
+            label: 'Coinbase',
+            providerPredicate: (p) => !!p?.isCoinbaseWallet,
+            connectorPredicate: (c) => String(c.id || '').toLowerCase().includes('coinbase') || String(c.name || '').toLowerCase().includes('coinbase'),
+            notDetectedMessage: 'Coinbase Wallet is not detected. Please install/enable Coinbase Wallet extension and refresh.',
+            ambiguousMessage: 'Coinbase Wallet detected but cannot bind it safely (multiple injected wallets). Please use Web3Modal → WalletConnect.',
+          });
+          if (handled) return;
+        } catch (coinbaseErr) {
+          console.error('❌ Coinbase connection error:', coinbaseErr);
+          if (coinbaseErr?.code === 4001) {
+            setIsConnecting(false);
+            return;
+          }
+          setError(`Coinbase connection failed: ${coinbaseErr?.message || 'Unknown error'}`);
+          setIsConnecting(false);
+          return;
+        }
+      }
+
+      // 🌈 Rainbow: injected-only in most environments; bind to provider if detectable, otherwise recommend WalletConnect
+      if (walletName === 'Rainbow') {
+        try {
+          const handled = await connectViaInjectedProvider({
+            label: 'Rainbow',
+            providerPredicate: (p) => !!p?.isRainbow || String(p?.name || '').toLowerCase().includes('rainbow'),
+            connectorPredicate: (c) => String(c.id || '').toLowerCase().includes('rainbow') || String(c.name || '').toLowerCase().includes('rainbow'),
+            notDetectedMessage: 'Rainbow Wallet provider was not found. Rainbow is best connected via Web3Modal → WalletConnect.',
+            ambiguousMessage: 'Rainbow detected but cannot bind it safely (multiple injected wallets). Please use Web3Modal → WalletConnect.',
+          });
+          if (handled) return;
+        } catch (rainbowErr) {
+          console.error('❌ Rainbow connection error:', rainbowErr);
+          if (rainbowErr?.code === 4001) {
+            setIsConnecting(false);
+            return;
+          }
+          setError(`Rainbow connection failed: ${rainbowErr?.message || 'Unknown error'}`);
+          setIsConnecting(false);
+          return;
+        }
+      }
+
+      // 🛑 CRITICAL: Check if MetaMask is actually installed and NOT hijacked
+      if (walletName === 'MetaMask') {
+        const isPhantom = typeof window !== 'undefined' && !!window.ethereum?.isPhantom;
+        const isMetaMask = typeof window !== 'undefined' && !!window.ethereum?.isMetaMask;
+        const hasProviders = typeof window !== 'undefined' && !!window.ethereum?.providers;
+
+        console.log(`🔍 [MetaMask Check] isMetaMask: ${isMetaMask}, isPhantom: ${isPhantom}, hasProviders: ${hasProviders}`);
+
+        // If ONLY Phantom is present and it claims to be MetaMask (hijacking)
+        // AND we don't have multiple providers (where MetaMask would be separate)
+        if (isPhantom && !hasProviders) {
+          setError(`MetaMask is not detected. Phantom has taken over your EVM connection. Please install MetaMask or disable "EVM Support" in Phantom settings.`);
+          setIsConnecting(false);
+          return;
+        }
+      }
+
+      // 🟡 BINANCE WEB3 WALLET: handle explicitly (Phantom can hijack injected provider)
+      if (walletName === 'Binance') {
+        try {
+          if (typeof window === 'undefined' || !window.ethereum) {
+            setError('Binance Web3 Wallet is not detected. Please install the Binance Web3 Wallet extension and refresh the page.');
+            setIsConnecting(false);
+            return;
+          }
+
+          const providers = Array.isArray(window.ethereum?.providers) ? window.ethereum.providers : null;
+          const binanceProvider =
+            (providers && providers.find(p =>
+              // common flags/names seen in injected providers
+              p?.isBinance || p?.isBinanceWallet || p?.isBinanceChain ||
+              String(p?.name || '').toLowerCase().includes('binance')
+            )) ||
+            // fallback: some envs expose BinanceChain
+            (typeof window !== 'undefined' ? window.BinanceChain : null);
+
+          if (!binanceProvider) {
+            setError('Binance Web3 Wallet provider was not found. Please ensure Binance Web3 Wallet extension is installed, enabled, unlocked, then refresh.');
+            setIsConnecting(false);
+            return;
+          }
+
+          console.log('🟡 [Binance] Provider detected. Requesting accounts via Binance provider...');
+          await binanceProvider.request({ method: 'eth_requestAccounts' });
+          const binanceAccounts = await binanceProvider.request({ method: 'eth_accounts' }).catch(() => []);
+          if (!binanceAccounts || binanceAccounts.length === 0) {
+            setError('Binance is detected, but no accounts are available. Please unlock Binance Web3 Wallet and approve this site, then try again.');
+            setIsConnecting(false);
+            return;
+          }
+
+          // Prefer explicit Binance connector (EIP-6963). Only fallback to injected if we can safely bind window.ethereum.
+          const explicitBinanceConnector = connectors.find(
+            c =>
+              String(c.id || '').toLowerCase().includes('binance') ||
+              String(c.name || '').toLowerCase().includes('binance')
+          );
+
+          if (explicitBinanceConnector) {
+            console.log(`🟡 [Binance] Using explicit connector: ${explicitBinanceConnector.name} (${explicitBinanceConnector.id})`);
+            try {
+              await connect({ connector: explicitBinanceConnector });
+              return; // Let the existing useEffect close modal when connected
+            } catch (e) {
+              const msg = String(e?.message || '');
+              if (msg.toLowerCase().includes('no active wallet found')) {
+                setError('Binance is detected, but Wagmi cannot bind it as an active wallet. Please use Web3Modal → WalletConnect, or temporarily disable other injected wallets (Trust/others) and refresh.');
+                setIsConnecting(false);
+                return;
+              }
+              throw e;
+            }
+          }
+
+          // Fallback: injected connector (ambiguous when multiple providers exist)
+          const injectedConnector = connectors.find(c => c.id === 'injected');
+          if (!injectedConnector) {
+            setError('Binance connector not found. Please use WalletConnect/Web3Modal or install a compatible Binance Web3 Wallet extension.');
+            setIsConnecting(false);
+            return;
+          }
+
+          // Try binding injected to Binance provider by swapping window.ethereum if possible
+          const canSwapEthereum = (() => {
+            try {
+              const desc = Object.getOwnPropertyDescriptor(window, 'ethereum');
+              return !desc || !!desc.writable;
+            } catch (_) {
+              return false;
+            }
+          })();
+
+          if (!canSwapEthereum) {
+            setError('Binance detected, but cannot bind injected provider safely. Please use Web3Modal/WalletConnect, or temporarily disable other injected wallets and refresh.');
+            setIsConnecting(false);
+            return;
+          }
+
+          console.log(`🟡 [Binance] No explicit connector found. Using injected with temporary provider binding...`);
+          const originalEthereum2 = window.ethereum;
+          try {
+            window.ethereum = binanceProvider;
+            try {
+              await connect({ connector: injectedConnector });
+            } catch (e) {
+              const msg = String(e?.message || '');
+              if (msg.toLowerCase().includes('no active wallet found')) {
+                setError('Binance provider is present, but injected connection is ambiguous (multiple wallets installed). Best option: Web3Modal → WalletConnect.');
+                setIsConnecting(false);
+                return;
+              }
+              throw e;
+            }
+          } finally {
+            window.ethereum = originalEthereum2;
+          }
+
+          return; // Let the existing useEffect close modal when connected
+        } catch (binanceErr) {
+          console.error('❌ [Binance] Connection error:', binanceErr);
+          if (binanceErr?.code === 4001) {
+            // User rejected
+            setIsConnecting(false);
+            return;
+          }
+          setError(`Binance connection failed: ${binanceErr?.message || 'Unknown error'}`);
+          setIsConnecting(false);
+          return;
+        }
+      }
+
+      // For other wallets, find the specific connector
+      const connector = filteredConnectors.find(c => {
+        const id = c.id.toLowerCase();
+
+        if (walletName === 'MetaMask') {
+          const hasMultipleProviders =
+            typeof window !== 'undefined' &&
+            Array.isArray(window.ethereum?.providers) &&
+            window.ethereum.providers.length > 1;
+
+          // 🛑 CRITICAL: Only allow connectors that are explicitly MetaMask
+          // EIP-6963 IDs: 'io.metamask', 'metamask'
+          // We EXPLICITLY REJECT 'injected' if Phantom is around to avoid hijack
+          const isExplicitMetaMask = id === 'io.metamask' || id === 'metamask';
+          // 🛑 CRITICAL: If there are multiple injected providers, "injected" is ambiguous (Trust/Rabby/etc can hijack)
+          // Only allow injected when it's the ONLY provider (simple environments).
+          const isInjectedWithoutPhantom =
+            id === 'injected' &&
+            typeof window !== 'undefined' &&
+            !window.ethereum?.isPhantom &&
+            !hasMultipleProviders;
+          
+          if (isExplicitMetaMask || isInjectedWithoutPhantom) {
+            console.log(`✅ [MetaMask] Found safe connector: ${c.name} (ID: ${c.id})`);
+            return true;
+          }
+          return false;
+        }
+        
+        if (walletName === 'Coinbase') {
+          const hasEthereum = typeof window !== 'undefined' && window.ethereum;
+          return c.id === 'coinbaseWalletSDK' || 
+                 (c.id === 'injected' && hasEthereum && window.ethereum.isCoinbaseWallet && !window.ethereum.isPhantom) ||
+                 (c.name.toLowerCase().includes('coinbase') && !c.name.toLowerCase().includes('phantom'));
+        }
+        
+        if (walletName === 'WalletConnect') {
+          return c.id === 'walletConnect' || c.name.toLowerCase().includes('walletconnect');
+        }
+
+        if (walletName === 'Binance') {
+          // Prefer explicit Binance connectors (if any). Otherwise handled above.
+          return id.includes('binance') || c.name.toLowerCase().includes('binance');
+        }
+        
+        // For other wallets, match by name (exclude Phantom)
+        const nameLower = c.name.toLowerCase();
+        const walletNameLower = walletName.toLowerCase();
+        return nameLower.includes(walletNameLower) && !nameLower.includes('phantom');
+      });
 
       if (connector) {
-        console.log(`🔌 Connecting directly to ${connector.name}...`);
-        connect({ connector });
+        console.log(`🔌 Connecting directly to ${connector.name} (ID: ${connector.id})...`);
+        
+        // 🛑 CRITICAL: Final check - verify this is NOT Phantom
+        const connectorName = (connector.name || '').toLowerCase();
+        if (connectorName.includes('phantom') && !connectorName.includes('metamask')) {
+          console.error(`❌ [CRITICAL] Connector is Phantom! Rejecting connection.`);
+          setError(`Cannot connect to Phantom via EVM. Please use Solana network for Phantom.`);
+          setIsConnecting(false);
+          return;
+        }
+        
+        // 🛑 CRITICAL: If connector is "injected" and Phantom is present, REJECT completely
+        if (connector.id === 'injected' && typeof window !== 'undefined' && window.ethereum?.isPhantom) {
+          console.error(`❌ [CRITICAL] Cannot use "injected" connector when Phantom is present!`);
+          setError(`Cannot connect via injected connector when Phantom is present. Please ensure MetaMask is installed and try again, or use Solana network for Phantom.`);
+          setIsConnecting(false);
+          return;
+        }
+        
+        try {
+          // 🛑 CRITICAL: DO NOT call window.solana.disconnect() here!
+          // Calling disconnect() on Phantom can trigger a popup or a re-connection event
+          // Instead, we just proceed with EVM connection and ignore Solana state
+          console.log(`✅ [EVM] Proceeding with EVM connection (ignoring Solana state to avoid Phantom popup)`);
+          
+          // 🛑 CRITICAL: Final verification before connect
+          if (typeof window !== 'undefined' && window.ethereum?.isPhantom && !window.ethereum.isMetaMask) {
+            console.error(`❌ [CRITICAL] Only Phantom detected, no MetaMask! Cannot connect via EVM.`);
+            setError(`Cannot connect to Phantom via EVM. Please use Solana network for Phantom.`);
+            setIsConnecting(false);
+            return;
+          }
+          
+          // 🛑 CRITICAL: If connector is "injected" and Phantom is present, we MUST have MetaMask too
+          if (connector.id === 'injected' && typeof window !== 'undefined' && window.ethereum?.isPhantom) {
+            // Check if MetaMask is ALSO present
+            if (!window.ethereum.isMetaMask) {
+              console.error(`❌ [CRITICAL] Cannot use "injected" connector - only Phantom detected, no MetaMask!`);
+              setError(`Cannot connect via injected connector. Only Phantom is detected. Please install MetaMask or use Solana network for Phantom.`);
+              setIsConnecting(false);
+              return;
+            }
+            // MetaMask is present, but we should prefer EIP6963 connector if available
+            console.warn(`⚠️ [MetaMask] Using "injected" connector but Phantom is also present - this might cause conflicts!`);
+          }
+          
+          console.log(`🔌 [EVM] Calling connect({ connector: ${connector.name}, id: ${connector.id} })...`);
+          
+          // 🛑 CRITICAL: DO NOT try to disconnect Phantom from window.ethereum!
+          // Calling window.ethereum.disconnect() OPENS Phantom popup even if not connected
+          // Instead, just connect to MetaMask and let wagmi handle the provider selection
+          console.log(`🛡️ [MetaMask] Skipping Phantom disconnect - will rely on connector to use MetaMask`);
+          
+          console.log(`🔥🔥🔥 [BEFORE WAGMI CONNECT] ========================================`);
+          console.log(`🔥 About to call await connect({ connector })`);
+          console.log(`🔥 Connector: ${connector.name} (${connector.id})`);
+          
+          // 🛡️ [PHANTOM-KILLER] Final check before we let Wagmi handle it
+          if (walletName === 'MetaMask' && typeof window !== 'undefined') {
+            try {
+              let targetProvider = null;
+              
+              // 1. Try to find the real MetaMask in the providers array (Standard EIP-6963)
+              if (window.ethereum?.providers) {
+                // Prefer the REAL MetaMask provider: it usually exposes the _metamask namespace.
+                targetProvider =
+                  window.ethereum.providers.find(p => p?._metamask && p.isMetaMask && !p.isPhantom) ||
+                  window.ethereum.providers.find(p => p.isMetaMask && !p.isPhantom);
+              } 
+              // 2. Fallback to window.ethereum ONLY if it's NOT Phantom
+              else if (window.ethereum?.isMetaMask && !window.ethereum?.isPhantom) {
+                targetProvider = window.ethereum;
+              }
+              
+              if (targetProvider) {
+                console.log('🛡️ [MetaMask] Explicit MetaMask provider found. Forcing popup...');
+                // Force MetaMask to open FIRST using its own request method
+                // This bypasses Wagmi's logic which might be hijacked by Phantom
+                await targetProvider.request({ method: 'eth_requestAccounts' });
+                console.log('🛡️ [MetaMask] Explicit popup triggered.');
+                
+                // Now that MetaMask is open and connected, we can call connect({ connector })
+                // Wagmi will see that MetaMask is already active
+              } else {
+                console.warn('⚠️ [MetaMask] Real MetaMask provider not found. Phantom might be overriding everything.');
+                // If we don't have a reliable MetaMask provider, we STOP here to avoid Phantom popup
+                if (window.ethereum?.isPhantom) {
+                  setError("MetaMask is not detected. Phantom is blocking the connection. Please go to Phantom Settings > 'EVM Support' and disable it to use MetaMask.");
+                  setIsConnecting(false);
+                  return;
+                }
+              }
+            } catch (primeErr) {
+              console.warn('⚠️ [MetaMask] Pre-connection check failed:', primeErr);
+              if (primeErr.code === 4001) {
+                setIsConnecting(false);
+                return; // User rejected MetaMask
+              }
+            }
+          }
+          
+          console.log(`🔌 [EVM] Calling final Wagmi connect({ connector: ${connector.name} })...`);
+          await connect({ connector });
+          
+          console.log(`🔥🔥🔥 [AFTER WAGMI CONNECT] ========================================`);
+          console.log(`🔥 connect() call finished - DID PHANTOM OPEN?`);
+          console.log(`🔥🔥🔥 ========================================`);
+          
+          console.log(`✅ [UnifiedWalletModal] Connected to ${connector.name}`);
+          
+          // 🛑 CRITICAL: Verify after connection that we didn't connect to Phantom
+          await new Promise(resolve => setTimeout(resolve, 500)); // Wait for connection to settle
+          if (typeof window !== 'undefined' && window.ethereum?.isPhantom && !window.ethereum.isMetaMask) {
+            console.error(`❌ [CRITICAL] Connected to Phantom instead of MetaMask! Disconnecting...`);
+            try {
+              await disconnectEVM();
+              setError(`Phantom was connected instead of MetaMask. Please use Solana network for Phantom.`);
+              setIsConnecting(false);
+              return;
+            } catch (e) {
+              console.error(`❌ Error disconnecting Phantom:`, e);
+            }
+          }
+          
+          // 🔄 FORCE SWITCH TO BSC after connection (CRITICAL for BITS token)
+          if (typeof window !== 'undefined' && window.ethereum) {
+            try {
+              // Wait a bit for connection to settle
+              await new Promise(resolve => setTimeout(resolve, 500));
+              
+              const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+              const bscChainId = '0x38'; // BSC Mainnet (56)
+              
+              console.log(`🔍 [UnifiedWalletModal] Current chain: ${currentChainId}, Target: ${bscChainId}`);
+              
+              if (currentChainId !== bscChainId) {
+                console.log(`🔄 [UnifiedWalletModal] FORCING switch to BSC (${bscChainId})...`);
+                try {
+                  await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: bscChainId }],
+                  });
+                  console.log(`✅ [UnifiedWalletModal] Successfully switched to BSC`);
+                  
+                  // Wait for chain switch to complete
+                  await new Promise(resolve => setTimeout(resolve, 1000));
+                } catch (switchErr) {
+                  if (switchErr.code === 4902) {
+                    // Chain not added, add it
+                    console.log(`➕ [UnifiedWalletModal] BSC not in wallet, adding it...`);
+                    await window.ethereum.request({
+                      method: 'wallet_addEthereumChain',
+                      params: [{
+                        chainId: bscChainId,
+                        chainName: 'Binance Smart Chain',
+                        nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
+                        rpcUrls: ['https://bsc-dataseed.binance.org/'],
+                        blockExplorerUrls: ['https://bscscan.com'],
+                      }],
+                    });
+                    console.log(`✅ [UnifiedWalletModal] Added and switched to BSC`);
+                  } else if (switchErr.code === 4001) {
+                    console.warn(`⚠️ [UnifiedWalletModal] User rejected BSC switch`);
+                  } else {
+                    console.warn(`⚠️ [UnifiedWalletModal] Failed to switch to BSC:`, switchErr);
+                  }
+                }
+              } else {
+                console.log(`✅ [UnifiedWalletModal] Already on BSC`);
+              }
+            } catch (err) {
+              console.warn(`⚠️ [UnifiedWalletModal] Error checking/switching chain:`, err);
+            }
+          }
+          
+          // Modal will close automatically via useEffect when isConnected becomes true
+          // Don't close here to allow useEffect to handle it
+        } catch (connectErr) {
+          console.error(`❌ Connection error for ${walletName}:`, connectErr);
+          setIsConnecting(false);
+          if (connectErr.code === 4001) {
+            // User rejected
         setShowWalletModal(false);
       } else {
-        // Fallback to generic modal if specific connector not found
-        console.warn(`⚠️ Connector ${walletName} not found, falling back to Web3Modal...`);
-        await openEvmModal();
+            setError(`${walletName} connection failed. Please try again.`);
+          }
+        }
+      } else {
+        // 🛑 CRITICAL: DO NOT fallback to Web3Modal - it will open Phantom!
+        // Instead, show clear error message
+        console.error(`❌ [CRITICAL] Connector ${walletName} not found! Cannot connect.`);
+        setIsConnecting(false);
+        
+        if (walletName === 'MetaMask') {
+          // Special error for MetaMask
+          if (typeof window !== 'undefined' && window.ethereum?.isPhantom && !window.ethereum.isMetaMask) {
+            setError(`MetaMask connector not found. Phantom is detected but MetaMask is not installed. Please install MetaMask extension first, or use Solana network for Phantom.`);
+          } else {
+            setError(`MetaMask connector not found. Please ensure MetaMask extension is installed and refresh the page.`);
+          }
+        } else {
+          setError(`${walletName} connector not found. Please ensure the wallet extension is installed and refresh the page.`);
+        }
       }
     } catch (err) {
       console.error(`❌ Connection to ${walletName} failed:`, err);
-      // Fallback to generic modal on error
-      await openEvmModal();
-    } finally {
       setIsConnecting(false);
+      const errorInfo = await handleConnectionError(err);
+      
+      if (errorInfo.retry) {
+        setError(`${walletName} connection failed. Try "Clear Cache & Retry" button below.`);
+      } else if (errorInfo.reason === 'user_rejected') {
+        setShowWalletModal(false);
+      } else {
+        setError(`${walletName} connection failed. Please try again.`);
+      }
     }
   };
 
   const handleEvmConnect = async (preferredWallet = null) => {
     try {
+      // 🛑 CRITICAL: Verify we're on EVM network, not Solana
+      if (selectedNetwork !== "EVM" && selectedNetwork !== null) {
+        console.error(`❌ [EVM] ERROR: selectedNetwork is not EVM! It is: ${selectedNetwork}`);
+        setError(`Invalid network selection. Please select EVM first.`);
+        return;
+      }
+
+      console.log(`🔌 [handleEvmConnect] Called with wallet: ${preferredWallet}`);
+      
+      // 🛑 CRITICAL: We NO LONGER call disconnect() on Solana here to avoid triggering Phantom popup
+      // The application state will be updated naturally once EVM connects
+      
       // If a specific wallet is requested, try direct connection first
       if (preferredWallet) {
+        console.log(`🔌 [handleEvmConnect] Calling connectToSpecificWallet('${preferredWallet}')...`);
         await connectToSpecificWallet(preferredWallet);
         return;
       }
 
-      // Default generic behavior
-      setError(null);
-      setIsConnecting(true); 
-      
-      // 🕵️‍♂️ DETECT PHANTOM INTERFERENCE
-      if (window.ethereum?.isPhantom) {
-        console.warn("⚠️ Phantom Wallet is intercepting EVM calls. This might cause it to open instead of MetaMask/Binance.");
-      }
-      
-      await prepareForConnection();
-      await new Promise(resolve => setTimeout(resolve, 300));
-      setShowWalletModal(false);
-
-      if (window.ethereum && (window.ethereum.isMetaMask || window.ethereum.isTrust || window.ethereum.isCoinbaseWallet)) {
-          console.log("📱 Detected In-App Browser - connecting directly via Web3Modal default...");
-      }
-
-      await openEvmModal();
+      // 🛑 CRITICAL: DO NOT open Web3Modal directly - it will open Phantom!
+      // Instead, show error that user must select a specific wallet
+      console.error('❌ [CRITICAL] handleEvmConnect called without preferredWallet - this should not happen!');
+      setError('Please select a specific wallet from the list above.');
+      setIsConnecting(false);
     } catch (err) {
       console.error('[WalletModal] EVM connection error:', err);
       const errorInfo = await handleConnectionError(err);
@@ -103,25 +734,428 @@ const UnifiedWalletModal = () => {
     }
   };
 
+  // Helper function to get installation link for each wallet
+  const getWalletInstallLink = (walletName) => {
+    const walletNameLower = walletName.toLowerCase();
+    const installLinks = {
+      'phantom': 'https://phantom.app/',
+      'solflare': 'https://solflare.com/',
+      'torus': 'https://wallet.web3auth.io/', // Torus migrated to Web3Auth
+      'nightly': 'https://wallet.nightly.app/',
+      'mathwallet': 'https://mathwallet.org/',
+      'coin98': 'https://chromewebstore.google.com/detail/coin98-wallet-extension-c/aeachknmefphepccionboohckonoeemg',
+      'clover': 'https://chrome.google.com/webstore/detail/clover-wallet/nhnkbkgjikgcigadomkphalanndcapjk',
+      'coinbase': 'https://www.coinbase.com/wallet',
+      'trust': 'https://trustwallet.com/',
+      'metamask': 'https://metamask.io/',
+      'rainbow': 'https://rainbow.me/',
+      'binance': 'https://www.binance.com/en/web3wallet'
+    };
+    
+    // Try exact match first
+    if (installLinks[walletNameLower]) {
+      return installLinks[walletNameLower];
+    }
+    
+    // Try partial match
+    for (const [key, value] of Object.entries(installLinks)) {
+      if (walletNameLower.includes(key) || key.includes(walletNameLower)) {
+        return value;
+      }
+    }
+    
+    // Default fallback
+    return null;
+  };
+
   const handleSolanaConnect = async (walletName) => {
     try {
+      // 🛑 CRITICAL: Prevent any Web3Modal calls for Solana
+      console.log(`🔌 [Solana] ===== STARTING SOLANA CONNECTION =====`);
+      console.log(`🔌 [Solana] Wallet: ${walletName}`);
+      console.log(`🔌 [Solana] Selected Network: ${selectedNetwork}`);
+      
+      // Declare walletNameLower once at the start
+      const walletNameLower = walletName.toLowerCase();
+      
+      // 🛑 CRITICAL: Double-check we're not accidentally on EVM or WEB3 network
+      if (selectedNetwork !== "SOLANA") {
+        console.error(`❌ [Solana] ERROR: selectedNetwork is not SOLANA! It is: ${selectedNetwork}`);
+        setError(`Invalid network selection. Please select Solana first.`);
+        setIsConnecting(false);
+        return;
+      }
+      
+      // 🛑 CRITICAL: Ensure we're not accidentally calling EVM functions
+      if (typeof window !== 'undefined' && window.ethereum && !window.ethereum.isPhantom) {
+        console.warn(`⚠️ [Solana] window.ethereum detected but we're connecting to Solana - this is OK`);
+      }
+      
+      // 🛑 CRITICAL: Ensure Web3Modal is NOT opened for Solana
+      console.log(`🛡️ [Solana] Ensuring Web3Modal is NOT opened for Solana connection...`);
+      
       setError(null);
-      setIsConnecting(true); // Start loading
+      setIsConnecting(true);
+      
+      console.log(`🔌 [Solana] Attempting to connect to: ${walletName}`);
+      console.log(`🔌 [Solana] Available wallets:`, solanaWallets.map(w => w.adapter.name));
       
       const wallet = solanaWallets.find(w => w.adapter.name === walletName);
-      if (wallet) {
-        console.log("Connecting to Solana wallet:", walletName);
-        await selectSolanaWallet(wallet.adapter.name);
-        // Delay closing modal to allow connection to initialize
+      if (!wallet) {
+        console.error(`❌ [Solana] Wallet ${walletName} not found in list`);
+        setError(`${walletName} wallet not found.`);
+        setIsConnecting(false);
+        return;
+      }
+
+      // Check if already connected to this wallet
+      if (isSolanaConnected && selectedSolanaWallet?.adapter?.name === walletName && solanaPublicKey) {
+        console.log(`✅ [Solana] Already connected to ${walletName}:`, solanaPublicKey.toBase58());
+        setShowWalletModal(false);
+        setSelectedNetwork(null);
+        setIsConnecting(false);
+        return;
+      }
+
+      // Check wallet state
+      const isInstalled = wallet.readyState === 'Installed';
+      const isLoadable = wallet.readyState === 'Loadable';
+      const isNotDetected = wallet.readyState === 'NotDetected';
+      
+      console.log(`🔌 [Solana] Wallet state: ${wallet.readyState} (Installed: ${isInstalled}, Loadable: ${isLoadable}, NotDetected: ${isNotDetected})`);
+      
+      // For Phantom, also check window.solana directly
+      if (walletName.toLowerCase() === 'phantom') {
+        const hasPhantom = typeof window !== 'undefined' && (window.solana?.isPhantom || window.phantom?.solana);
+        console.log(`🔌 [Phantom] Direct detection: window.solana=${!!window.solana}, window.phantom=${!!window.phantom}`);
+        
+        if (!hasPhantom && isNotDetected) {
+          setError(`Phantom is not available. Please install the Phantom extension first.`);
+          setIsConnecting(false);
+          return;
+        }
+      } else {
+        // For all other wallets, check if they're available
+        // If NotDetected, show helpful message with install link
+        if (!isInstalled && !isLoadable && isNotDetected) {
+          console.warn(`⚠️ [${walletName}] Wallet not detected - may not be installed`);
+          const installLink = getWalletInstallLink(walletName);
+          
+          if (installLink) {
+            setError(`${walletName} extension is not installed. Please install ${walletName} from ${installLink}, unlock it, refresh the page, and try again.`);
+          } else {
+            setError(`${walletName} is not available. Please install the ${walletName} extension first, unlock it, refresh the page, and try again.`);
+          }
+          setIsConnecting(false);
+          return;
+        }
+      }
+
+      console.log(`🔌 [Solana] Connecting to ${walletName} (State: ${wallet.readyState})`);
+      
+      // 🛑 CRITICAL: First, disconnect any existing EVM connection to avoid conflicts
+      try {
+        if (isConnected || address) {
+          await disconnectEVM();
+          console.log(`🔌 [Solana] Disconnected EVM wallet to avoid conflicts`);
+          await new Promise(resolve => setTimeout(resolve, 300)); // Wait a bit
+        } else {
+          console.log(`ℹ️ [Solana] No EVM wallet to disconnect`);
+        }
+      } catch (e) {
+        // Ignore if not connected
+        console.log(`ℹ️ [Solana] Error disconnecting EVM (may not be connected):`, e);
+      }
+      
+      // 🛑 CRITICAL: Also disconnect any Phantom connection via window.ethereum if it exists
+      if (typeof window !== 'undefined' && window.ethereum?.isPhantom) {
+        try {
+          // Phantom might be connected via window.ethereum - disconnect it
+          if (window.ethereum._state && window.ethereum._state.accounts && window.ethereum._state.accounts.length > 0) {
+            console.log(`🔌 [Solana] Disconnecting Phantom from window.ethereum...`);
+            // Request disconnect (some wallets support this)
+            if (window.ethereum.disconnect) {
+              await window.ethereum.disconnect();
+            }
+          }
+        } catch (e) {
+          console.warn(`⚠️ [Solana] Error disconnecting Phantom from window.ethereum:`, e);
+        }
+      }
+      
+      // For Phantom, try adapter connection first (more reliable for popup)
+      if (walletName.toLowerCase() === 'phantom') {
+        console.log(`🔌 [Phantom] Starting connection process...`);
+        console.log(`🔌 [Phantom] Checking window.solana availability...`);
+        console.log(`🔌 [Phantom] window.solana exists:`, typeof window !== 'undefined' && !!window.solana);
+        console.log(`🔌 [Phantom] window.solana.isPhantom:`, typeof window !== 'undefined' && window.solana?.isPhantom);
+        
+        // Check if already connected via window.solana
+        if (typeof window !== 'undefined' && window.solana?.isPhantom && window.solana.isConnected) {
+          console.log(`✅ [Phantom] Already connected via window.solana, getting publicKey...`);
+          try {
+            const publicKey = window.solana.publicKey;
+            if (publicKey) {
+              console.log(`✅ [Phantom] Already connected with publicKey:`, publicKey.toString());
+              
+              // Close modal and open wallet box
         setTimeout(() => {
             setShowWalletModal(false);
             setSelectedNetwork(null);
             setIsConnecting(false);
-        }, 1000);
+                window.dispatchEvent(new CustomEvent('openWalletBox'));
+              }, 500);
+              return;
+            }
+          } catch (e) {
+            console.warn(`⚠️ [Phantom] Error getting publicKey from existing connection:`, e);
+          }
+        }
+        
+        // Use DIRECT connection via window.solana - EXACTLY like handleSOLPayment.js (lines 18-25)
+        console.log("🟣 [Phantom] Starting connection (same as handleSOLPayment.js)...");
+        
+        if (!window.solana || !window.solana.isPhantom) {
+          const errorMsg = "⚠️ Phantom Wallet not detected.";
+          console.error(errorMsg);
+          setError(errorMsg);
+          setIsConnecting(false);
+          return;
+        }
+        
+        try {
+          // EXACT same code as handleSOLPayment.js line 24
+          console.log("🟣 [Phantom] Calling window.solana.connect()...");
+          const { publicKey } = await window.solana.connect();
+          console.log("👛 [Phantom] Connected! PublicKey:", publicKey.toBase58());
+          
+          // Close modal and open wallet box
+          setTimeout(() => {
+            setShowWalletModal(false);
+            setSelectedNetwork(null);
+            setIsConnecting(false);
+            window.dispatchEvent(new CustomEvent('openWalletBox'));
+          }, 500);
+          return;
+        } catch (err) {
+          console.error("❌ [Phantom] Connection error:", err);
+          
+          // Extract error message exactly like handleSOLPayment.js line 119
+          const errorMsg = err?.message || "Connection failed";
+          console.error("❌ [Phantom] Error message:", errorMsg);
+          
+          // Check for user rejection
+          if (errorMsg.includes('User rejected') || errorMsg.includes('user rejected') || 
+              errorMsg.includes('User cancelled') || errorMsg.includes('user cancelled') ||
+              err?.code === 4001) {
+            console.log("ℹ️ [Phantom] User rejected connection");
+            setShowWalletModal(false);
+            setIsConnecting(false);
+            return;
+          }
+          
+          setError(`Phantom connection failed: ${errorMsg}`);
+          setIsConnecting(false);
+          return;
+        }
+      }
+      
+      // For other wallets, use adapter connection
+      console.log(`🔌 [Solana] Selecting wallet: ${wallet.adapter.name}`);
+      console.log(`🔌 [Solana] Wallet adapter:`, wallet.adapter);
+      console.log(`🔌 [Solana] Wallet readyState:`, wallet.readyState);
+      
+      // Special handling for wallets that might have detection issues
+      if (walletNameLower === 'clover' || walletNameLower === 'coin98' || walletNameLower === 'torus' || 
+          walletNameLower === 'nightly' || walletNameLower === 'mathwallet') {
+        console.log(`🟢 [${walletName}] Special handling for ${walletName} wallet...`);
+        console.log(`🔍 [${walletName}] Wallet readyState: ${wallet.readyState}`);
+        
+        // If wallet is NotDetected, it's likely not installed
+        // Prevent adapter from opening external sites by showing error early
+        if (wallet.readyState === 'NotDetected') {
+          console.warn(`⚠️ [${walletName}] ${walletName} not detected - likely not installed`);
+          const installLink = getWalletInstallLink(walletName);
+          
+          // Special message for Torus (uses social login, not extension)
+          if (walletNameLower === 'torus') {
+            if (installLink) {
+              setError(`Torus wallet is not available. Torus uses social login (Google, Facebook, Email) and has migrated to ${installLink}. Please visit the site to create an account, then try connecting again.`);
+            } else {
+              setError(`Torus wallet is not available. Torus uses social login (Google, Facebook, Email). Please visit wallet.web3auth.io to create an account, then try connecting again.`);
+            }
+          } else {
+            if (installLink) {
+              setError(`${walletName} extension is not installed. Please install ${walletName} from ${installLink}, unlock it, refresh the page, and try again.`);
+            } else {
+              setError(`${walletName} extension is not installed. Please install the ${walletName} extension, unlock it, refresh the page, and try again.`);
+            }
+          }
+          setIsConnecting(false);
+          return; // Stop here to prevent adapter from opening external sites
+        } else if (wallet.readyState === 'Loadable') {
+          console.log(`⏳ [${walletName}] ${walletName} is loadable, waiting for it to be ready...`);
+          // Wait a bit longer for wallet to be ready
+          // Torus might need more time as it uses social login
+          const waitTime = walletNameLower === 'torus' ? 2000 : 1500;
+          await new Promise(resolve => setTimeout(resolve, waitTime));
+        } else if (wallet.readyState === 'Installed') {
+          console.log(`✅ [${walletName}] ${walletName} is installed and ready`);
+          // For Torus, even if "Installed", it might need account setup
+          if (walletNameLower === 'torus') {
+            console.log(`ℹ️ [Torus] Torus is detected - make sure you have a Web3Auth account set up`);
+          }
+        }
+      }
+      
+      // Select the wallet (UI/state), but DO NOT rely on selectedSolanaWallet immediately (async state update)
+      selectSolanaWallet(wallet.adapter.name);
+
+      // ✅ CRITICAL FIX (Torus/others): connect the EXACT adapter the user clicked
+      // This avoids a race condition where connectSolanaWallet() might connect the previously selected wallet (often Phantom).
+      try {
+        console.log(`🔌 [Solana] Connecting via adapter directly for: ${wallet.adapter.name}`);
+
+        // Some adapters need a tiny delay after selection
+        const needsMoreTime = ['clover', 'coin98', 'torus', 'nightly', 'mathwallet'].includes(walletNameLower);
+        const waitTime = walletNameLower === 'torus' ? 800 : (needsMoreTime ? 300 : 100);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+
+        // 🛑 CRITICAL: Prevent infinite loading if Torus/Web3Auth popup is blocked or never resolves
+        const connectTimeoutMs = walletNameLower === 'torus' ? 45000 : 20000;
+        const connectWithTimeout = Promise.race([
+          wallet.adapter.connect(),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('WALLET_CONNECT_TIMEOUT')), connectTimeoutMs)
+          ),
+        ]);
+
+        await connectWithTimeout;
+
+        const pk = wallet.adapter.publicKey;
+        if (!pk) {
+          setError(`Connected to ${walletName} but publicKey is not available. Please try again.`);
+          setIsConnecting(false);
+          return;
+        }
+
+        console.log(`✅ [Solana] Connected to ${walletName}. PublicKey: ${pk.toBase58()}`);
+
+        setTimeout(() => {
+          setShowWalletModal(false);
+          setSelectedNetwork(null);
+          setIsConnecting(false);
+          window.dispatchEvent(new CustomEvent('openWalletBox'));
+        }, 500);
+      } catch (connectError) {
+        // Ensure we never stay stuck in the loading overlay
+        setIsConnecting(false);
+
+        // Timeout hint (common with Torus: popup blocked / login not completed)
+        const msg = String(connectError?.message || '');
+        if (msg === 'WALLET_CONNECT_TIMEOUT') {
+          setError(
+            walletNameLower === 'torus'
+              ? 'Torus connection timed out. Please allow popups, complete the Web3Auth login window, then try again.'
+              : `${walletName} connection timed out. Please try again.`
+          );
+          return;
+        }
+
+        // Handle connection errors - LOG EVERYTHING
+        console.error(`❌ Connection error for ${walletName}:`, connectError);
+        console.error(`❌ Error details:`, {
+          message: connectError?.message,
+          code: connectError?.code,
+          name: connectError?.name,
+          stack: connectError?.stack,
+          toString: connectError?.toString(),
+          fullError: connectError
+        });
+        
+        // Extract error message
+        let errorMessage = 'Unknown error';
+        if (connectError?.message) {
+          errorMessage = connectError.message;
+        } else if (connectError?.toString) {
+          errorMessage = connectError.toString();
+        } else if (typeof connectError === 'string') {
+          errorMessage = connectError;
+        }
+        
+        console.log(`🔍 [Solana] Extracted error message: "${errorMessage}"`);
+        
+        // Special handling for WalletNotReadyError (common with various wallets)
+        if (errorMessage.includes('WalletNotReadyError') || errorMessage.includes('not ready') || 
+            connectError?.name === 'WalletNotReadyError' || connectError?.constructor?.name === 'WalletNotReadyError') {
+          console.warn(`⚠️ [Solana] WalletNotReadyError detected for ${walletName}`);
+          
+          const installLink = getWalletInstallLink(walletName);
+          
+          // For wallets that commonly have this issue, show helpful message with install link
+          if (walletNameLower === 'clover' || walletNameLower === 'coin98' || walletNameLower === 'torus' || 
+              walletNameLower === 'nightly' || walletNameLower === 'mathwallet') {
+            console.error(`❌ [${walletName}] WalletNotReadyError - ${walletName} extension likely not installed or not ready`);
+            
+            // Special message for Torus (uses social login)
+            if (walletNameLower === 'torus') {
+              if (installLink) {
+                setError(`Torus wallet is not ready. Torus uses social login (Google, Facebook, Email) and has migrated to ${installLink}. Please visit the site to create an account, then refresh the page and try connecting again. If the problem persists, Torus may not be fully compatible with this dApp.`);
+              } else {
+                setError(`Torus wallet is not ready. Torus uses social login (Google, Facebook, Email). Please visit wallet.web3auth.io to create an account, then refresh the page and try connecting again. If the problem persists, Torus may not be fully compatible with this dApp.`);
+              }
+            } else {
+              if (installLink) {
+                setError(`${walletName} extension is not installed or not ready. Please install ${walletName} from ${installLink}, unlock it, refresh the page, and try again. If the problem persists, ${walletName} may not be fully compatible with this dApp.`);
+              } else {
+                setError(`${walletName} extension is not installed or not ready. Please install the ${walletName} extension, unlock it, refresh the page, and try again. If the problem persists, ${walletName} may not be fully compatible with this dApp.`);
+              }
+            }
+            setIsConnecting(false);
+            return;
+          } else {
+            // For other wallets, show generic message with install link if available
+            if (installLink) {
+              setError(`${walletName} wallet is not ready. Please ensure ${walletName} extension is installed from ${installLink}, unlocked, and refresh the page, then try again.`);
+            } else {
+              setError(`${walletName} wallet is not ready. Please ensure the ${walletName} extension is installed and unlocked, refresh the page, then try again.`);
+            }
+            setIsConnecting(false);
+            return;
+          }
+        }
+        
+        if (errorMessage.includes('User rejected') || connectError?.code === 4001 || errorMessage.includes('user rejected')) {
+          // User rejected - don't show error
+          console.log(`ℹ️ [Solana] User rejected connection`);
+          setShowWalletModal(false);
+          setIsConnecting(false);
+        } else if (errorMessage.includes('not installed') || errorMessage.includes('not found') || errorMessage.includes('not available')) {
+          setError(`${walletName} extension not found. Please install it first.`);
+          setIsConnecting(false);
+        } else if (walletNameLower === 'torus' && 
+                   (errorMessage.includes('Unable to find any account') || errorMessage.includes('account') || 
+                    errorMessage.includes('no account') || errorMessage.includes('account not found'))) {
+          // Special handling for Torus - requires social login setup
+          const installLink = getWalletInstallLink('torus');
+          if (installLink) {
+            setError(`Torus requires social login (Google, Facebook, Email). Please visit ${installLink} to create an account first, then refresh the page and try connecting again.`);
+          } else {
+            setError(`Torus requires social login (Google, Facebook, Email). Please visit wallet.web3auth.io to create an account first, then refresh the page and try connecting again.`);
+          }
+          setIsConnecting(false);
+        } else {
+          // Show the actual error message
+          const cleanMsg = errorMessage.includes('Unable to find any account') 
+            ? 'Please complete the authentication process first.'
+            : errorMessage;
+          setError(`${walletName} connection failed: ${cleanMsg}`);
+          setIsConnecting(false);
+        }
       }
     } catch (error) {
-      console.error("Error connecting Solana wallet:", error);
-      setError("Solana connection failed. Please try again.");
+      console.error("❌ Error in handleSolanaConnect:", error);
+      setError(`Failed to connect to ${walletName}. Please try again.`);
       setIsConnecting(false);
     }
   };
@@ -148,28 +1182,129 @@ const UnifiedWalletModal = () => {
               <button 
                 className="network-card evm-card"
                 onClick={() => setSelectedNetwork("EVM")}
+                title="Direct EVM wallet connections - Fast & secure"
               >
                 <div className="network-icon-wrapper">
                   <img src={evmIcon} alt="EVM" className="network-icon-img" />
                 </div>
                 <div className="network-info">
-                  <div className="network-name">EVM Networks</div>
-                  <div className="network-chains">BSC • ETH • Polygon • Arbitrum</div>
-                  <div className="network-chains">Optimism • Base • Avalanche</div>
+                  <div className="network-name">EVM Direct</div>
+                  <div className="network-chains">MetaMask, Trust, Coinbase</div>
+                  <div className="network-chains">Rainbow, Binance</div>
+                  <div 
+                    className="network-tooltip"
+                    onMouseEnter={(e) => {
+                      const tooltip = e.currentTarget.querySelector('.tooltip-content');
+                      const icon = e.currentTarget.querySelector('.info-icon');
+                      if (tooltip && icon) {
+                        const iconRect = icon.getBoundingClientRect();
+                        tooltip.style.left = `${iconRect.left + iconRect.width / 2}px`;
+                        tooltip.style.top = `${iconRect.top - 8}px`;
+                        tooltip.style.transform = 'translate(-50%, -100%)';
+                      }
+                    }}
+                  >
+                    <span className="info-icon">ℹ️</span>
+                    <div className="tooltip-content">
+                      <div className="tooltip-header">
+                        <div className="tooltip-icons">
+                          <span className="tooltip-icon">🔷</span>
+                          <span className="tooltip-icon">💎</span>
+                          <span className="tooltip-icon">🔵</span>
+                        </div>
+                        <strong>EVM Direct Connections</strong>
+                      </div>
+                      <div className="tooltip-body">
+                        Connect directly to popular EVM wallets. Supports BSC, Ethereum, Polygon, Arbitrum, Optimism, Base, and Avalanche. Auto-switches to BSC after connection.
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </button>
 
               <button 
                 className="network-card solana-card"
                 onClick={() => setSelectedNetwork("SOLANA")}
+                title="Direct Solana wallet connections"
               >
                 <div className="network-icon-wrapper">
                    <img src={solanaIcon} alt="Solana" className="network-icon-img" />
                 </div>
                 <div className="network-info">
-                  <div className="network-name">Solana</div>
-                  <div className="network-chains">Mainnet Beta</div>
-                  <div className="network-chains">Fast & Low Fees</div>
+                  <div className="network-name">Solana Direct</div>
+                  <div className="network-chains">Phantom, Solflare</div>
+                  <div className="network-chains">Torus, Nightly, Math</div>
+                  <div 
+                    className="network-tooltip"
+                    onMouseEnter={(e) => {
+                      const tooltip = e.currentTarget.querySelector('.tooltip-content');
+                      const icon = e.currentTarget.querySelector('.info-icon');
+                      if (tooltip && icon) {
+                        const iconRect = icon.getBoundingClientRect();
+                        tooltip.style.left = `${iconRect.left + iconRect.width / 2}px`;
+                        tooltip.style.top = `${iconRect.top - 8}px`;
+                        tooltip.style.transform = 'translate(-50%, -100%)';
+                      }
+                    }}
+                  >
+                    <span className="info-icon">ℹ️</span>
+                    <div className="tooltip-content">
+                      <div className="tooltip-header">
+                        <div className="tooltip-icons">
+                          <span className="tooltip-icon">⚡</span>
+                          <span className="tooltip-icon">💜</span>
+                          <span className="tooltip-icon">🚀</span>
+                        </div>
+                        <strong>Solana Direct Connections</strong>
+                      </div>
+                      <div className="tooltip-body">
+                        Connect directly to Solana wallets. Supports SPL tokens, Solana Pay, and fast transactions with low fees on Solana Mainnet.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </button>
+
+              <button 
+                className="network-card web3-card"
+                onClick={() => setSelectedNetwork("WEB3")}
+                title="All wallets via Web3Modal"
+              >
+                <div className="network-icon-wrapper">
+                  <img src={walletConnectLogo} alt="Web3" className="network-icon-img" />
+                </div>
+                <div className="network-info">
+                  <div className="network-name">Web3Modal</div>
+                  <div className="network-chains">350+ Wallets</div>
+                  <div className="network-chains">All Networks</div>
+                  <div 
+                    className="network-tooltip"
+                    onMouseEnter={(e) => {
+                      const tooltip = e.currentTarget.querySelector('.tooltip-content');
+                      const icon = e.currentTarget.querySelector('.info-icon');
+                      if (tooltip && icon) {
+                        const iconRect = icon.getBoundingClientRect();
+                        tooltip.style.left = `${iconRect.left + iconRect.width / 2}px`;
+                        tooltip.style.top = `${iconRect.top - 8}px`;
+                        tooltip.style.transform = 'translate(-50%, -100%)';
+                      }
+                    }}
+                  >
+                    <span className="info-icon">ℹ️</span>
+                    <div className="tooltip-content">
+                      <div className="tooltip-header">
+                        <div className="tooltip-icons">
+                          <span className="tooltip-icon">🔐</span>
+                          <span className="tooltip-icon">🌐</span>
+                          <span className="tooltip-icon">⭐</span>
+                        </div>
+                        <strong>Web3Modal - Universal Wallet</strong>
+                      </div>
+                      <div className="tooltip-body">
+                        Access 350+ wallets including Ledger, Trezor, WalletConnect, and more. Supports all EVM chains and Solana. Best for hardware wallets and advanced users.
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </button>
             </div>
@@ -180,9 +1315,27 @@ const UnifiedWalletModal = () => {
             <button className="back-btn" onClick={() => setSelectedNetwork(null)}>← Back</button>
             <h2 className="modal-title">Connect EVM Wallet</h2>
             <p className="modal-subtitle">Supports 7+ blockchains - Auto-switch enabled</p>
+
+            
             
             <div className="wallet-list">
-              <button className="wallet-option" onClick={() => handleEvmConnect('MetaMask')}>
+              <button 
+                className="wallet-option" 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (selectedNetwork !== "EVM") {
+                    console.error(`❌ [MetaMask] Wrong network selected: ${selectedNetwork}`);
+                    setError('Please select EVM network first');
+                    return;
+                  }
+                  if (isConnecting) {
+                    console.warn(`⚠️ [MetaMask] Already connecting, ignoring click`);
+                    return;
+                  }
+                  handleEvmConnect('MetaMask');
+                }}
+              >
                 <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask" />
                 <span>MetaMask</span>
               </button>
@@ -202,19 +1355,51 @@ const UnifiedWalletModal = () => {
                 <img src="https://trustwallet.com/assets/images/media/assets/TWT.png" alt="Trust Wallet" />
                 <span>Trust Wallet</span>
               </button>
-              <button className="wallet-option" onClick={() => handleEvmConnect('Ledger')}>
-                <img src="https://www.ledger.com/wp-content/uploads/2021/11/logo-ledger.png" style={{background: '#fff', padding: '2px'}} alt="Ledger" />
-                <span>Ledger</span>
-              </button>
               <button className="wallet-option" onClick={() => handleEvmConnect('Binance')}>
                 <img src={binanceLogo} alt="Binance Web3" />
                 <span>Binance Web3</span>
               </button>
-               <button className="wallet-option" onClick={() => handleEvmConnect()}>
-                <div style={{width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.1)', borderRadius: 8}}>➕</div>
-                <span>All Wallets (350+)</span>
+              <button
+                className="wallet-option"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setWeb3Context('binance_walletconnect');
+                  setSelectedNetwork('WEB3');
+                }}
+                title="Recommended: connect Binance via WalletConnect (QR)"
+              >
+                <img src={walletConnectLogo} alt="WalletConnect" />
+                <span>Binance (WalletConnect)</span>
               </button>
             </div>
+          </>
+        ) : selectedNetwork === "WEB3" ? (
+          // Step 2c: Web3Modal - Separate component
+          <>
+            <button className="back-btn" onClick={() => setSelectedNetwork(null)}>← Back</button>
+            {web3Context === 'binance_walletconnect' && (
+              <div style={{
+                margin: '10px 0 14px',
+                padding: '12px 14px',
+                borderRadius: 12,
+                border: '1px solid rgba(255,255,255,0.12)',
+                background: 'rgba(255,255,255,0.05)',
+                color: 'rgba(255,255,255,0.9)',
+                fontSize: 13,
+                lineHeight: 1.4
+              }}>
+                <div style={{ fontWeight: 800, marginBottom: 6 }}>Binance via WalletConnect</div>
+                <div>1) In Web3Modal, select <b>WalletConnect</b>.</div>
+                <div>2) Scan QR with <b>Binance Web3 Wallet</b> (in the Binance app) and approve.</div>
+                <div style={{ opacity: 0.85, marginTop: 6 }}>This avoids injected-provider conflicts (No active wallet found).</div>
+              </div>
+            )}
+            <Web3ModalHandler onClose={() => {
+              setSelectedNetwork(null);
+              setShowWalletModal(false);
+              setWeb3Context(null);
+            }} />
           </>
         ) : (
           // Step 2b: Solana Wallet Selection
@@ -224,17 +1409,99 @@ const UnifiedWalletModal = () => {
             <p className="modal-subtitle">Supports SPL tokens & Solana Pay</p>
             
             <div className="wallet-list">
-              {solanaWallets.filter(w => w.readyState === 'Installed' || w.readyState === 'Loadable').map((wallet) => (
+              {(() => {
+                // Debug: Log all wallets
+                console.log(`🔍 [Solana] Total wallets in list: ${solanaWallets.length}`);
+                console.log(`🔍 [Solana] All wallets:`, solanaWallets.map(w => ({
+                  name: w.adapter.name,
+                  readyState: w.readyState,
+                  icon: w.adapter.icon
+                })));
+                
+                return solanaWallets
+                  .filter(w => {
+                    // Only show real Solana wallets (Phantom, Solflare, etc.)
+                    // Exclude EVM wallets that might appear in the list
+                    const walletName = w.adapter.name.toLowerCase();
+                    
+                    // List of known Solana wallets
+                    const solanaWalletNames = ['phantom', 'solflare', 'solana', 'torus', 'nightly', 'mathwallet', 'coin98', 'clover'];
+                    
+                    // List of EVM wallets to exclude
+                    const evmWalletNames = ['trust', 'metamask', 'coinbase', 'rainbow', 'binance'];
+                    
+                    const isSolanaWallet = solanaWalletNames.some(name => walletName.includes(name));
+                    const isEvmWallet = evmWalletNames.some(name => walletName.includes(name));
+                    
+                    // For Phantom, also check window.solana directly if readyState is NotDetected
+                    if (walletName.includes('phantom')) {
+                      const hasPhantom = typeof window !== 'undefined' && (window.solana?.isPhantom || window.phantom?.solana);
+                      if (hasPhantom) {
+                        console.log(`✅ [Solana] Phantom detected directly via window.solana`);
+                        return true; // Show Phantom even if readyState is NotDetected
+                      }
+                    }
+                    
+                    // For Clover, always show it even if NotDetected (some wallets have detection issues)
+                    // User can try to connect and we'll show a clear error if extension is not installed
+                    if (walletName.includes('clover')) {
+                      console.log(`✅ [Solana] Showing Clover wallet (detection may be unreliable, but user can try)`);
+                      return isSolanaWallet && !isEvmWallet; // Show Clover regardless of readyState
+                    }
+                    
+                    // Only show if it's a Solana wallet and not an EVM wallet
+                    // Accept Installed, Loadable, or NotDetected (some wallets may not be detected correctly)
+                    const shouldShow = (w.readyState === 'Installed' || w.readyState === 'Loadable' || w.readyState === 'NotDetected') && 
+                                     isSolanaWallet && !isEvmWallet;
+                    
+                    if (shouldShow) {
+                      console.log(`✅ [Solana] Showing wallet: ${w.adapter.name} (${w.readyState})`);
+                    }
+                    
+                    return shouldShow;
+                  });
+              })()
+                .map((wallet) => (
                 <button 
                   key={wallet.adapter.name}
                   className="wallet-option" 
-                  onClick={() => handleSolanaConnect(wallet.adapter.name)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log(`🔌 [Solana] Clicked on wallet: ${wallet.adapter.name}`);
+                    if (selectedNetwork !== "SOLANA") {
+                      console.error(`❌ [Solana] Wrong network selected: ${selectedNetwork}`);
+                      setError('Please select Solana network first');
+                      return;
+                    }
+                    if (isConnecting) {
+                      console.warn(`⚠️ [Solana] Already connecting, ignoring click`);
+                      return;
+                    }
+                    handleSolanaConnect(wallet.adapter.name);
+                  }}
                 >
                   <img src={wallet.adapter.icon} alt={wallet.adapter.name} />
                   <span>{wallet.adapter.name}</span>
                 </button>
               ))}
-              {solanaWallets.filter(w => w.readyState === 'Installed' || w.readyState === 'Loadable').length === 0 && (
+              {solanaWallets
+                .filter(w => {
+                  const walletName = w.adapter.name.toLowerCase();
+                  const solanaWalletNames = ['phantom', 'solflare', 'solana', 'torus', 'nightly', 'mathwallet', 'coin98', 'clover'];
+                  const evmWalletNames = ['trust', 'metamask', 'coinbase', 'rainbow', 'binance'];
+                  const isSolanaWallet = solanaWalletNames.some(name => walletName.includes(name));
+                  const isEvmWallet = evmWalletNames.some(name => walletName.includes(name));
+                  
+                  // For Phantom, check window.solana directly
+                  if (walletName.includes('phantom')) {
+                    const hasPhantom = typeof window !== 'undefined' && (window.solana?.isPhantom || window.phantom?.solana);
+                    if (hasPhantom) return false; // Don't show "no wallets" if Phantom exists
+                  }
+                  
+                  return (w.readyState === 'Installed' || w.readyState === 'Loadable' || w.readyState === 'NotDetected') && 
+                         isSolanaWallet && !isEvmWallet;
+                }).length === 0 && (
                 <div className="no-wallets">
                   <p>No Solana wallets detected</p>
                   <a href="https://phantom.app/" target="_blank" rel="noopener noreferrer" className="install-link">
@@ -256,10 +1523,64 @@ const UnifiedWalletModal = () => {
             marginTop: '16px',
             color: '#ff6464',
             fontSize: '0.9rem',
-            textAlign: 'center'
+            textAlign: 'left',
+            lineHeight: '1.5'
           }}>
-            ⚠️ {error}
+            ⚠️ <span dangerouslySetInnerHTML={{ __html: error.replace(/(https?:\/\/[^\s)]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: #14F195; text-decoration: underline; word-break: break-all;">$1</a>') }} />
           </div>
+        )}
+
+        {/* 🔧 Disconnect Solana/Phantom Button (if connected) */}
+        {isSolanaConnected && (
+          <button
+            onClick={async () => {
+              try {
+                console.log('🔌 [UnifiedWalletModal] Disconnecting Solana wallet...');
+                await disconnectSolanaWallet();
+                
+                // Also disconnect via window.solana directly
+                if (typeof window !== 'undefined' && window.solana?.isPhantom && window.solana.isConnected) {
+                  try {
+                    await window.solana.disconnect();
+                    console.log('✅ [UnifiedWalletModal] Phantom disconnected via window.solana');
+                  } catch (e) {
+                    console.warn('⚠️ [UnifiedWalletModal] Phantom disconnect error:', e);
+                  }
+                }
+                
+                // Clear all Solana-related localStorage
+                Object.keys(localStorage).forEach(key => {
+                  if (key.toLowerCase().includes('solana') || key.toLowerCase().includes('phantom')) {
+                    localStorage.removeItem(key);
+                  }
+                });
+                
+                console.log('✅ [UnifiedWalletModal] Solana wallet disconnected');
+              } catch (e) {
+                console.error('❌ [UnifiedWalletModal] Error disconnecting Solana:', e);
+              }
+            }}
+            className="clear-cache-btn"
+            style={{
+              width: '100%',
+              marginTop: '16px',
+              padding: '12px',
+              background: 'rgba(153, 69, 255, 0.15)',
+              border: '1px solid rgba(153, 69, 255, 0.4)',
+              borderRadius: '12px',
+              color: '#9965ff',
+              fontSize: '0.9rem',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              fontWeight: '700',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px'
+            }}
+          >
+            🔓 Disconnect Solana/Phantom
+          </button>
         )}
 
         {/* 🔧 Clear Cache & Retry Button */}
@@ -284,12 +1605,13 @@ const UnifiedWalletModal = () => {
             gap: '8px'
           }}
         >
-          🧨 Resetare Totală Conexiune (Fix)
+          🧨 Total Connection Reset (Fix)
         </button>
 
         {/* Info text */}
         <p style={{fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', marginTop: '12px', textAlign: 'center', lineHeight: '1.4'}}>
-          Dacă primești eroarea "Request Pending" sau nu te poți conecta, apasă butonul roșu de mai sus.
+          {isSolanaConnected ? 'Click "Disconnect Solana/Phantom" to disconnect. ' : ''}
+          If you receive the "Request Pending" error or cannot connect, click the red button above.
         </p>
       </div>
     </div>

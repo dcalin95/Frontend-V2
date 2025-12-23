@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { ethers } from "ethers";
 import { getContractInstance } from "../../contract/getContract";
 
 const useAvailableBits = () => {
@@ -19,7 +18,9 @@ const useAvailableBits = () => {
           return;
         }
 
-        const contract = await getContractInstance("CELL_MANAGER");
+        // 🛑 CRITICAL FIX: Use read-only mode (needsSigner = false)
+        // This prevents Phantom/MetaMask from opening a popup on mount
+        const contract = await getContractInstance("CELL_MANAGER", false);
         const cellId = await contract.getCurrentOpenCellId();
         const remaining = await contract.getRemainingSupply(cellId);
 
@@ -39,13 +40,21 @@ const useAvailableBits = () => {
     };
 
     fetchAvailableBits();
-
-    window.ethereum?.on("chainChanged", fetchAvailableBits);
-    window.ethereum?.on("accountsChanged", fetchAvailableBits);
+    
+    // 🛑 CRITICAL FIX: Only add listeners if window.ethereum is REAL MetaMask
+    // This prevents Phantom from being triggered by listener attachment
+    const isMetaMask = typeof window !== 'undefined' && window.ethereum?.isMetaMask && !window.ethereum?.isPhantom;
+    
+    if (isMetaMask) {
+      window.ethereum?.on("chainChanged", fetchAvailableBits);
+      window.ethereum?.on("accountsChanged", fetchAvailableBits);
+    }
 
     return () => {
-      window.ethereum?.removeListener("chainChanged", fetchAvailableBits);
-      window.ethereum?.removeListener("accountsChanged", fetchAvailableBits);
+      if (isMetaMask) {
+        window.ethereum?.removeListener("chainChanged", fetchAvailableBits);
+        window.ethereum?.removeListener("accountsChanged", fetchAvailableBits);
+      }
     };
   }, []);
 

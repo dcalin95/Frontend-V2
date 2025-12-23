@@ -73,7 +73,7 @@ export const switchNetwork = async (selectedToken) => {
     
     // 🚀 USE WAGMI CORE - Uses the ACTIVE connector (MetaMask, WalletConnect, etc.)
     await switchChain(config, { chainId: network.chainId });
-    
+
     toast.success(`✅ Switched to ${network.chainName}`);
   } catch (err) {
     console.error("❌ Network switch error:", err);

@@ -6,10 +6,9 @@ const ExplorerLink = ({ walletAddress }) => {
 
   useEffect(() => {
     const detectExplorer = async () => {
-      if (!window.ethereum || !walletAddress) return;
-
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const { chainId } = await provider.getNetwork();
+      if (!walletAddress) return;
+      // 🛑 READ-ONLY: do not touch window.ethereum; default to BSC explorer for this app
+      const chainId = 56;
 
       let baseUrl;
 

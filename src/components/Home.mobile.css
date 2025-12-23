@@ -177,3 +177,156 @@ body.in-app-browser p {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
 }
+
+/* === FAB WHALE TRACKER - MOBILE SIMETRIC === */
+
+/* Tablets & Small Laptops */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .fab-whale-tracker {
+    bottom: 10rem !important;
+    right: 3rem !important;
+    width: 70px !important;
+    height: 70px !important;
+    gap: 0.25rem !important;
+    padding: 0.45rem 0.3rem !important;
+  }
+
+  .fab-whale-tracker i {
+    font-size: 1.8rem !important;
+    line-height: 1 !important;
+  }
+
+  .fab-label {
+    gap: 0.05rem !important;
+    line-height: 1.1 !important;
+  }
+
+  .fab-btc {
+    font-size: 0.7rem !important;
+    line-height: 1 !important;
+  }
+
+  .fab-divider {
+    line-height: 0.8 !important;
+  }
+
+  .fab-crypto {
+    font-size: 0.52rem !important;
+    line-height: 1 !important;
+  }
+}
+
+/* Mobile - Medium Screens */
+@media (max-width: 768px) and (min-width: 481px) {
+  .fab-whale-tracker {
+    bottom: 10rem !important;
+    right: 1.5rem !important;
+    width: 60px !important;
+    height: 60px !important;
+    border-width: 2.5px !important;
+    gap: 0.2rem !important;
+    padding: 0.4rem 0.25rem !important;
+  }
+
+  .fab-whale-tracker i {
+    font-size: 1.5rem !important;
+    line-height: 1 !important;
+  }
+
+  .fab-label {
+    gap: 0.05rem !important;
+    line-height: 1.1 !important;
+  }
+
+  .fab-btc {
+    font-size: 0.6rem !important;
+    line-height: 1 !important;
+  }
+
+  .fab-divider {
+    font-size: 0.4rem !important;
+    line-height: 0.8 !important;
+  }
+
+  .fab-crypto {
+    font-size: 0.48rem !important;
+    line-height: 1 !important;
+  }
+}
+
+/* Mobile - Small Screens */
+@media (max-width: 480px) {
+  .fab-whale-tracker {
+    bottom: 9rem !important;
+    right: 1rem !important;
+    width: 55px !important;
+    height: 55px !important;
+    border-width: 2px !important;
+    gap: 0.18rem !important;
+    padding: 0.35rem 0.2rem !important;
+  }
+
+  .fab-whale-tracker i {
+    font-size: 1.3rem !important;
+    line-height: 1 !important;
+  }
+
+  .fab-label {
+    gap: 0.03rem !important;
+    line-height: 1.05 !important;
+  }
+
+  .fab-btc {
+    font-size: 0.55rem !important;
+    line-height: 1 !important;
+  }
+
+  .fab-divider {
+    font-size: 0.35rem !important;
+    line-height: 0.8 !important;
+  }
+
+  .fab-crypto {
+    font-size: 0.45rem !important;
+    line-height: 1 !important;
+  }
+}
+
+/* Mobile - Extra Small Screens */
+@media (max-width: 360px) {
+  .fab-whale-tracker {
+    bottom: 8rem !important;
+    right: 0.75rem !important;
+    width: 50px !important;
+    height: 50px !important;
+    border-width: 2px !important;
+    gap: 0.15rem !important;
+    padding: 0.3rem 0.15rem !important;
+  }
+
+  .fab-whale-tracker i {
+    font-size: 1.2rem !important;
+    line-height: 1 !important;
+  }
+
+  .fab-label {
+    gap: 0.02rem !important;
+    line-height: 1 !important;
+  }
+
+  .fab-btc {
+    font-size: 0.5rem !important;
+    line-height: 1 !important;
+  }
+
+  .fab-divider {
+    font-size: 0.3rem !important;
+    line-height: 0.8 !important;
+    display: none !important;
+  }
+
+  .fab-crypto {
+    font-size: 0.4rem !important;
+    line-height: 1 !important;
+  }
+}

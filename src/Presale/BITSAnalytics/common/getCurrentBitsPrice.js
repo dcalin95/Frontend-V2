@@ -81,15 +81,12 @@ export const useBitsPrice = (walletAddress) => {
  */
 const getCurrentBitsPrice = async (provider, walletAddress) => {
   console.log("💰 [getCurrentBitsPrice] COPYING GPT2 CHILD EXACTLY! 🤖");
-  console.log("💰 [getCurrentBitsPrice] Wallet:", walletAddress);
+  console.log("💰 [getCurrentBitsPrice] Wallet:", walletAddress || 'READ-ONLY MODE (no wallet needed)');
   console.log("💰 [getCurrentBitsPrice] CellManager address:", CONTRACT_MAP.CELL_MANAGER.address);
 
   try {
-    if (!walletAddress) {
-      console.warn("⚠️ [getCurrentBitsPrice] Missing wallet");
-      return 0; // No hardcoded price!
-    }
-
+    // ✅ NO WALLET CHECK - This is a read-only contract call!
+    
     // 🎯 EXACT COPY FROM GPT2 CHILD - CREATE OWN PROVIDER!
     console.log("💰 [getCurrentBitsPrice] Creating DIRECT PROVIDER like GPT2 child...");
     const IS_TESTNET = false; // BSC MAINNET

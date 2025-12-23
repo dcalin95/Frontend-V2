@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { default as axios } from "axios";
 import { ethers } from "ethers";
@@ -9,8 +9,9 @@ import RoundEndDisplay from "../RoundEndDisplay";
 import useCellManagerData from "../../hooks/useCellManagerData";
 import { CONTRACTS } from "../../../contract/contracts";
 import SolanaRewardsManager from "../../../components/Admin/SolanaRewardsManager";
+import { getBackendUrl } from "../../../utils/getBackendUrl";
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+const API_URL = getBackendUrl();
 const ADMIN_PASS = process.env.REACT_APP_ADMIN_PASS || "fallback123";
 
 const AdminPanel = () => {
@@ -27,6 +28,36 @@ const AdminPanel = () => {
   const [presaleInfo, setPresaleInfo] = useState(null);
   const [showRoundEndStats, setShowRoundEndStats] = useState(false);
   const [roundEndData, setRoundEndData] = useState(null);
+
+  // ===== Treasury / USDT payouts admin =====
+  const [treasuryAddress, setTreasuryAddress] = useState("");
+  const [treasuryBalances, setTreasuryBalances] = useState(null);
+  const [usdtSpent, setUsdtSpent] = useState(null);
+  const [usdtCap, setUsdtCap] = useState(null);
+  const [newUsdtCap, setNewUsdtCap] = useState("");
+  const [recentPayouts, setRecentPayouts] = useState([]);
+  const [loadingPayouts, setLoadingPayouts] = useState(false);
+  const [showTreasuryGuide, setShowTreasuryGuide] = useState(false);
+  const [panelPreset, setPanelPreset] = useState("normal"); // normal | half | large
+  const [panelResizable, setPanelResizable] = useState(true);
+  const treasuryToastGateRef = useRef({ at: 0 });
+
+  // ===== Solana payments monitor (auto-fulfilment) =====
+  const [solanaPayments, setSolanaPayments] = useState([]);
+  const [solanaPaymentsLoading, setSolanaPaymentsLoading] = useState(false);
+  const [solanaDestination, setSolanaDestination] = useState("");
+  const [solanaTreasury, setSolanaTreasury] = useState("");
+  const [solanaStatusFilter, setSolanaStatusFilter] = useState("all"); // all | pending | confirmed | failed
+  const [solanaSearch, setSolanaSearch] = useState(""); // wallet or signature
+  const [solanaRetryingSig, setSolanaRetryingSig] = useState(null);
+  const [solanaBatchRetrying, setSolanaBatchRetrying] = useState(false);
+  const [solanaBatchLimit, setSolanaBatchLimit] = useState(10);
+
+  // ===== Leaderboard demo (marketing) =====
+  const [leaderboardDemoRows, setLeaderboardDemoRows] = useState([]);
+  const [leaderboardLoading, setLeaderboardLoading] = useState(false);
+  const [leaderboardSaving, setLeaderboardSaving] = useState(false);
+  const [leaderboardJitterEnabled, setLeaderboardJitterEnabled] = useState(true);
   
   // Get data directly from CellManager contract
   const cellManagerData = useCellManagerData();
@@ -44,8 +75,258 @@ const AdminPanel = () => {
     if (isAuthorized) {
       fetchSimulationStatus();
       fetchPresaleState();
+      fetchTreasuryInfo();
+      fetchSolanaPayments();
+      fetchLeaderboardDemo();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthorized]);
+
+  const fetchLeaderboardDemo = async () => {
+    setLeaderboardLoading(true);
+    try {
+      const res = await axios.get(`${API_URL}/api/leaderboard/demo`);
+      if (res.data?.ok) {
+        setLeaderboardDemoRows(res.data.rows || []);
+        if (typeof res.data.jitterEnabled === "boolean") {
+          setLeaderboardJitterEnabled(res.data.jitterEnabled);
+        }
+      }
+    } catch (e) {
+      console.warn("⚠️ Leaderboard demo fetch failed:", e.message);
+    } finally {
+      setLeaderboardLoading(false);
+    }
+  };
+
+  const saveLeaderboardDemo = async () => {
+    setLeaderboardSaving(true);
+    try {
+      const res = await axios.post(`${API_URL}/api/leaderboard/admin/demo`, {
+        password: ADMIN_PASS,
+        rows: leaderboardDemoRows
+      });
+      if (res.data?.ok) {
+        setLeaderboardDemoRows(res.data.rows || []);
+        toast.success("✅ Leaderboard saved");
+      } else {
+        toast.error("❌ Failed to save leaderboard");
+      }
+    } catch (e) {
+      toast.error("❌ Failed to save leaderboard: " + (e.response?.data?.error || e.message));
+    } finally {
+      setLeaderboardSaving(false);
+    }
+  };
+
+  const resetLeaderboardDemo = async () => {
+    const ok = window.confirm("Reset leaderboard demo to default 5 rows?");
+    if (!ok) return;
+    setLeaderboardSaving(true);
+    try {
+      const res = await axios.post(`${API_URL}/api/leaderboard/admin/reset`, { password: ADMIN_PASS });
+      if (res.data?.ok) {
+        setLeaderboardDemoRows(res.data.rows || []);
+        toast.success("✅ Leaderboard reset");
+      } else {
+        toast.error("❌ Failed to reset leaderboard");
+      }
+    } catch (e) {
+      toast.error("❌ Failed to reset leaderboard: " + (e.response?.data?.error || e.message));
+    } finally {
+      setLeaderboardSaving(false);
+    }
+  };
+
+  const saveLeaderboardJitter = async (enabled) => {
+    setLeaderboardSaving(true);
+    try {
+      const res = await axios.post(`${API_URL}/api/leaderboard/admin/jitter`, { password: ADMIN_PASS, enabled });
+      if (res.data?.ok) {
+        setLeaderboardJitterEnabled(!!res.data.jitterEnabled);
+        toast.success(`✅ Daily variation: ${res.data.jitterEnabled ? "ON" : "OFF"}`);
+      } else {
+        toast.error("❌ Failed to update daily variation");
+      }
+    } catch (e) {
+      toast.error("❌ Failed to update daily variation: " + (e.response?.data?.error || e.message));
+    } finally {
+      setLeaderboardSaving(false);
+    }
+  };
+
+  const updateLeaderboardRow = (idx, patch) => {
+    setLeaderboardDemoRows((prev) => {
+      const rows = Array.isArray(prev) ? [...prev] : [];
+      const row = rows[idx] || {};
+      rows[idx] = { ...row, ...patch };
+      return rows;
+    });
+  };
+
+  const fetchSolanaPayments = async () => {
+    setSolanaPaymentsLoading(true);
+    try {
+      const res = await axios.post(`${API_URL}/api/solana/admin/payments`, { password: ADMIN_PASS, limit: 100 });
+      if (res.data?.ok) {
+        setSolanaPayments(res.data.rows || []);
+        setSolanaDestination(res.data.destination || "");
+        setSolanaTreasury(res.data.treasury || "");
+      } else {
+        toast.error("❌ Failed to load Solana payments");
+      }
+    } catch (e) {
+      toast.error("❌ Failed to load Solana payments: " + (e.response?.data?.error || e.message));
+    } finally {
+      setSolanaPaymentsLoading(false);
+    }
+  };
+
+  const retrySolanaFulfilment = async (signature) => {
+    const sig = String(signature || '').trim();
+    if (!sig) return;
+    setSolanaRetryingSig(sig);
+    try {
+      const res = await axios.post(`${API_URL}/api/solana/admin/retry`, { password: ADMIN_PASS, signature: sig });
+      if (res.data?.ok) {
+        toast.success(`✅ Retry OK: ${res.data.evmTxHash ? res.data.evmTxHash.slice(0, 10) + '…' : 'confirmed'}`);
+        await fetchSolanaPayments();
+      } else {
+        toast.error("❌ Retry failed");
+      }
+    } catch (e) {
+      toast.error("❌ Retry failed: " + (e.response?.data?.error || e.message));
+    } finally {
+      setSolanaRetryingSig(null);
+    }
+  };
+
+  const retrySolanaBatch = async (mode = "failed", limit = 10) => {
+    const m = String(mode || "failed").toLowerCase();
+    const lim = Math.max(1, Math.min(50, Number(limit || 10)));
+    const ok = window.confirm(`Retry ${m.toUpperCase()} Solana fulfilments?\n\nLimit: ${lim}\n\nThis will send BITS from treasury (gas + tokens).`);
+    if (!ok) return;
+
+    setSolanaBatchRetrying(true);
+    try {
+      const res = await axios.post(`${API_URL}/api/solana/admin/retry-batch`, { password: ADMIN_PASS, mode: m, limit: lim });
+      if (res.data?.ok) {
+        toast.success(`✅ Batch done: ${res.data.success}/${res.data.attempted} successful`);
+        await fetchSolanaPayments();
+      } else {
+        toast.error("❌ Batch retry failed");
+      }
+    } catch (e) {
+      toast.error("❌ Batch retry failed: " + (e.response?.data?.error || e.message));
+    } finally {
+      setSolanaBatchRetrying(false);
+    }
+  };
+
+  const fetchTreasuryInfo = async () => {
+    try {
+      const results = await Promise.allSettled([
+        axios.get(`${API_URL}/api/rewards/treasury-address`),
+        axios.get(`${API_URL}/api/rewards/usdt-spent-today`),
+        axios.post(`${API_URL}/api/rewards/admin/treasury-status`, { password: ADMIN_PASS }),
+        axios.post(`${API_URL}/api/rewards/admin/payouts/recent`, { password: ADMIN_PASS, limit: 50 })
+      ]);
+
+      const addrRes = results[0].status === "fulfilled" ? results[0].value : null;
+      const spentRes = results[1].status === "fulfilled" ? results[1].value : null;
+      const treasRes = results[2].status === "fulfilled" ? results[2].value : null;
+      const payoutsRes = results[3].status === "fulfilled" ? results[3].value : null;
+
+      // Always set address if we can (even if admin endpoints fail)
+      if (addrRes?.data?.ok && addrRes.data?.address) {
+        setTreasuryAddress(addrRes.data.address);
+      } else if (addrRes?.data?.ok === false) {
+        setTreasuryAddress("");
+        toast.error("❌ Treasury address error: " + (addrRes.data?.error || "unknown"));
+      } else if (!addrRes && results[0].status === "rejected") {
+        toast.error("❌ Treasury address fetch failed: " + (results[0].reason?.response?.data?.error || results[0].reason?.message || "unknown"));
+      }
+
+      if (spentRes?.data?.ok) {
+        setUsdtSpent(spentRes.data.spent);
+        setUsdtCap(spentRes.data.cap);
+        setNewUsdtCap(String(spentRes.data.cap ?? ""));
+      }
+
+      if (treasRes?.data?.ok) {
+        setTreasuryBalances(treasRes.data.balances);
+      } else if (results[2].status === "rejected") {
+        const err = results[2].reason?.response?.data?.error || results[2].reason?.message || "Not authorized";
+        const now = Date.now();
+        if (now - (treasuryToastGateRef.current.at || 0) > 15000) {
+          treasuryToastGateRef.current.at = now;
+          toast.error("❌ Treasury balances (admin) failed: " + err);
+        }
+      }
+
+      if (payoutsRes?.data?.ok) {
+        setRecentPayouts(payoutsRes.data.rows || []);
+      } else if (results[3].status === "rejected") {
+        const err = results[3].reason?.response?.data?.error || results[3].reason?.message || "Not authorized";
+        toast.error("❌ Recent payouts (admin) failed: " + err);
+      }
+    } catch (e) {
+      console.warn("⚠️ Treasury info fetch failed:", e.message);
+      toast.error("❌ Treasury info fetch failed: " + (e.response?.data?.error || e.message));
+    }
+  };
+
+  const refreshPayouts = async () => {
+    setLoadingPayouts(true);
+    try {
+      const results = await Promise.allSettled([
+        axios.get(`${API_URL}/api/rewards/usdt-spent-today`),
+        axios.post(`${API_URL}/api/rewards/admin/treasury-status`, { password: ADMIN_PASS }),
+        axios.post(`${API_URL}/api/rewards/admin/payouts/recent`, { password: ADMIN_PASS, limit: 50 })
+      ]);
+
+      const spentRes = results[0].status === "fulfilled" ? results[0].value : null;
+      const treasRes = results[1].status === "fulfilled" ? results[1].value : null;
+      const payoutsRes = results[2].status === "fulfilled" ? results[2].value : null;
+
+      if (spentRes?.data?.ok) {
+        setUsdtSpent(spentRes.data.spent);
+        setUsdtCap(spentRes.data.cap);
+      }
+      if (treasRes?.data?.ok) setTreasuryBalances(treasRes.data.balances);
+      if (payoutsRes?.data?.ok) setRecentPayouts(payoutsRes.data.rows || []);
+
+      if (results[1].status === "rejected") {
+        toast.error("❌ Treasury balances (admin) failed: " + (results[1].reason?.response?.data?.error || results[1].reason?.message));
+      }
+      if (results[2].status === "rejected") {
+        toast.error("❌ Recent payouts (admin) failed: " + (results[2].reason?.response?.data?.error || results[2].reason?.message));
+      }
+    } catch (e) {
+      toast.error("❌ Failed to refresh payouts: " + (e.response?.data?.error || e.message));
+    } finally {
+      setLoadingPayouts(false);
+    }
+  };
+
+  const handleSetUsdtCap = async () => {
+    const n = Number(newUsdtCap);
+    if (!Number.isFinite(n) || n <= 0) {
+      toast.error("⚠️ Enter a valid cap > 0");
+      return;
+    }
+    try {
+      const res = await axios.post(`${API_URL}/api/rewards/usdt-cap`, { password: ADMIN_PASS, cap: n });
+      if (res.data?.ok) {
+        toast.success(`✅ USDT cap updated: ${n} / day`);
+        setUsdtCap(n);
+      } else {
+        toast.error("❌ Failed to set cap");
+      }
+    } catch (e) {
+      toast.error("❌ Failed to set cap: " + (e.response?.data?.error || e.message));
+    }
+  };
 
   const handleLogin = () => {
     const input = prompt("🔐 Enter Admin Password:");
@@ -106,6 +387,22 @@ const AdminPanel = () => {
     localStorage.removeItem("admin_token");
     setIsAuthorized(false);
     toast.info("🛑 Logged out successfully.");
+  };
+
+  const getPanelStyle = () => {
+    if (panelPreset === "half") {
+      return {
+        width: '50%',
+        maxWidth: '900px',
+      };
+    }
+    if (panelPreset === "large") {
+      return {
+        width: '90%',
+        maxWidth: '1200px',
+      };
+    }
+    return {}; // normal (CSS default)
   };
 
   // Fetch current presale state
@@ -306,6 +603,8 @@ const AdminPanel = () => {
   };
 
   // Reset presale data - PRODUCTION SAFETY
+  // NOTE: kept for emergency use; may not be wired in UI in some builds.
+  // eslint-disable-next-line no-unused-vars
   const handleResetPresale = async () => {
     // 🚨 TRIPLE CONFIRMATION FOR PRODUCTION SAFETY
     const firstConfirm = window.confirm("🚨 DANGER: Reset ALL presale data?\n\nThis will DELETE:\n- All sales data\n- All round history\n- All user transactions\n- Timer will restart\n\nThis CANNOT be undone!\n\nAre you absolutely sure?");
@@ -347,7 +646,7 @@ const AdminPanel = () => {
     }
 
     try {
-      const response = await axios.post(`${API_URL}/api/presale/start-round`, {
+      await axios.post(`${API_URL}/api/presale/start-round`, {
         password: ADMIN_PASS,
         round: cellManagerData.roundNumber,
         price: Math.round(cellManagerData.currentPrice * 100),
@@ -554,17 +853,52 @@ const AdminPanel = () => {
 
 
   return (
-    <>
-      <div
-        className={styles["status-badge"]}
-        style={{ background: isAuthorized ? "#0f0" : "#f00" }}
-      />
+    <div className={styles["admin-page"]}>
       {!isAuthorized ? (
-        <button onClick={handleLogin} className={styles["login-btn"]}>
-          🔐 Login
-        </button>
+        <div className={styles["admin-panel"]} style={getPanelStyle()}>
+          <div
+            className={styles["status-badge"]}
+            title="Admin auth status"
+            style={{ background: "#f00" }}
+          />
+          <div style={{ textAlign: "center", paddingTop: "10px" }}>
+            <h2 style={{ margin: "6px 0 10px", fontSize: "18px" }}>Admin Panel</h2>
+            <p style={{ margin: "0 0 12px", opacity: 0.85 }}>
+              Autentificare necesară pentru acces.
+            </p>
+            <button onClick={handleLogin} className={styles["login-btn"]}>
+              🔐 Login
+            </button>
+          </div>
+        </div>
       ) : (
-        <div className={styles["admin-panel"]}>
+        <div
+          className={`${styles["admin-panel"]} ${panelResizable ? styles["resizable"] : ""}`}
+          style={getPanelStyle()}
+        >
+          <div
+            className={styles["status-badge"]}
+            title="Admin auth status"
+            style={{ background: "#0f0" }}
+          />
+          <div className={styles["panel-controls"]}>
+            <button
+              type="button"
+              className={styles["panel-control-btn"]}
+              onClick={() => setPanelPreset((p) => (p === "normal" ? "half" : p === "half" ? "large" : "normal"))}
+              title="Toggle size: normal → 50% → large"
+            >
+              ↔ Resize
+            </button>
+            <button
+              type="button"
+              className={styles["panel-control-btn"]}
+              onClick={() => setPanelResizable((v) => !v)}
+              title="Enable/disable manual resize by dragging the corner"
+            >
+              {panelResizable ? "🖐 Manual: ON" : "🖐 Manual: OFF"}
+            </button>
+          </div>
           <button onClick={handleLogout} className={styles["logout-btn"]}>
             🛑 Logout
           </button>
@@ -606,6 +940,51 @@ const AdminPanel = () => {
               }}
             >
               🟣 Solana Rewards
+            </button>
+            <button 
+              onClick={() => setActiveTab("treasury")}
+              className={activeTab === "treasury" ? styles["tab-active"] : styles["tab-inactive"]}
+              style={{
+                padding: '10px 20px',
+                border: 'none',
+                borderRadius: '6px 6px 0 0',
+                background: activeTab === "treasury" ? '#14F195' : '#444',
+                color: activeTab === "treasury" ? '#000' : '#fff',
+                cursor: 'pointer',
+                fontWeight: 'bold'
+              }}
+            >
+              💳 USDT Payouts
+            </button>
+            <button 
+              onClick={() => setActiveTab("solana-payments")}
+              className={activeTab === "solana-payments" ? styles["tab-active"] : styles["tab-inactive"]}
+              style={{
+                padding: '10px 20px',
+                border: 'none',
+                borderRadius: '6px 6px 0 0',
+                background: activeTab === "solana-payments" ? '#14F195' : '#444',
+                color: activeTab === "solana-payments" ? '#000' : '#fff',
+                cursor: 'pointer',
+                fontWeight: 'bold'
+              }}
+            >
+              🧾 Solana Payments
+            </button>
+            <button 
+              onClick={() => setActiveTab("leaderboard")}
+              className={activeTab === "leaderboard" ? styles["tab-active"] : styles["tab-inactive"]}
+              style={{
+                padding: '10px 20px',
+                border: 'none',
+                borderRadius: '6px 6px 0 0',
+                background: activeTab === "leaderboard" ? '#14F195' : '#444',
+                color: activeTab === "leaderboard" ? '#000' : '#fff',
+                cursor: 'pointer',
+                fontWeight: 'bold'
+              }}
+            >
+              🏆 Leaderboard
             </button>
           </div>
 
@@ -1023,6 +1402,678 @@ const AdminPanel = () => {
             <SolanaRewardsManager onBack={() => setActiveTab("overview")} />
           )}
 
+          {activeTab === "solana-payments" && (
+            <>
+              <div className={styles["section"]}>
+                <h3>🧾 Solana Payments (Auto Fulfilment)</h3>
+                <div style={{ fontSize: '12px', color: '#ccc', lineHeight: 1.5 }}>
+                  <div><strong>Destination (Solana):</strong> <span style={{ wordBreak: 'break-all' }}>{solanaDestination || '—'}</span></div>
+                  <div><strong>Treasury (BSC):</strong> <span style={{ wordBreak: 'break-all' }}>{solanaTreasury || '—'}</span></div>
+                  <div style={{ marginTop: 6, opacity: 0.9 }}>
+                    This table shows: <strong>Solana tx signature → verified SOL transfer → BITS sent from treasury (BSC tx hash)</strong>.
+                  </div>
+                </div>
+                <button onClick={fetchSolanaPayments} disabled={solanaPaymentsLoading} style={{ marginTop: 10 }}>
+                  {solanaPaymentsLoading ? "⏳ Refreshing..." : "🔄 Refresh"}
+                </button>
+              </div>
+
+              <div className={styles["section"]}>
+                <h3>📄 Recent Solana Payments</h3>
+                {(() => {
+                  const rows = solanaPayments || [];
+                  const pendingCount = rows.filter(r => String(r.status || '').toLowerCase() === 'pending' && !r.tx_hash_on_chain).length;
+                  const failedCount = rows.filter(r => String(r.status || '').toLowerCase() === 'failed' && !r.tx_hash_on_chain).length;
+                  if (pendingCount === 0 && failedCount === 0) return null;
+                  return (
+                    <div style={{
+                      marginTop: 8,
+                      padding: '10px 12px',
+                      borderRadius: 10,
+                      border: '1px solid rgba(255, 165, 0, 0.25)',
+                      background: 'rgba(255, 165, 0, 0.08)',
+                      color: '#ffd7a3',
+                      fontSize: 12,
+                      display: 'flex',
+                      gap: 12,
+                      flexWrap: 'wrap',
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
+                    }}>
+                      <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center' }}>
+                        <div><strong>Pending:</strong> {pendingCount}</div>
+                        <div><strong>Failed:</strong> {failedCount}</div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <strong>Batch limit:</strong>
+                          <select
+                            value={String(solanaBatchLimit)}
+                            onChange={(e) => setSolanaBatchLimit(Number(e.target.value) || 10)}
+                            style={{ padding: '4px 6px' }}
+                            title="How many rows to retry per click"
+                          >
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                        <button
+                          type="button"
+                          onClick={() => retrySolanaBatch("failed", solanaBatchLimit)}
+                          disabled={solanaBatchRetrying || failedCount === 0}
+                          style={{ padding: '6px 10px', borderRadius: 10 }}
+                          title={`Retry up to ${solanaBatchLimit} failed fulfilments`}
+                        >
+                          {solanaBatchRetrying ? "⏳ Retrying..." : `🔁 Retry failed (max ${solanaBatchLimit})`}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => retrySolanaBatch("pending", solanaBatchLimit)}
+                          disabled={solanaBatchRetrying || pendingCount === 0}
+                          style={{ padding: '6px 10px', borderRadius: 10 }}
+                          title={`Retry up to ${solanaBatchLimit} pending fulfilments`}
+                        >
+                          {solanaBatchRetrying ? "⏳ Retrying..." : `🔁 Retry pending (max ${solanaBatchLimit})`}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })()}
+                <div style={{
+                  display: 'flex',
+                  gap: 10,
+                  flexWrap: 'wrap',
+                  alignItems: 'center',
+                  marginTop: 8
+                }}>
+                  <label style={{ fontSize: 12, color: '#ccc' }}>
+                    <strong>Status:</strong>{" "}
+                    <select
+                      value={solanaStatusFilter}
+                      onChange={(e) => setSolanaStatusFilter(e.target.value)}
+                      style={{ marginLeft: 6 }}
+                    >
+                      <option value="all">All</option>
+                      <option value="pending">Pending</option>
+                      <option value="confirmed">Confirmed</option>
+                      <option value="failed">Failed</option>
+                    </select>
+                  </label>
+                  <label style={{ fontSize: 12, color: '#ccc', flex: '1 1 280px' }}>
+                    <strong>Search:</strong>{" "}
+                    <input
+                      value={solanaSearch}
+                      onChange={(e) => setSolanaSearch(e.target.value)}
+                      placeholder="wallet 0x… or signature…"
+                      style={{ marginLeft: 6, width: 'min(520px, 100%)' }}
+                    />
+                  </label>
+                </div>
+                <div style={{
+                  marginTop: 10,
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  borderRadius: 10,
+                  overflow: 'hidden'
+                }}>
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 0.9fr 1fr 0.9fr 0.9fr 1.4fr',
+                    gap: 8,
+                    padding: '10px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    background: 'rgba(255,255,255,0.04)'
+                  }}>
+                    <div>Time</div>
+                    <div>Status</div>
+                    <div>Buyer (BSC)</div>
+                    <div>SOL</div>
+                    <div>BITS</div>
+                    <div>Links / Actions</div>
+                  </div>
+
+                  <div style={{ maxHeight: 520, overflow: 'auto' }}>
+                    {(solanaPayments || [])
+                      .filter((tx) => {
+                        const st = String(tx.status || '').toLowerCase();
+                        if (solanaStatusFilter !== "all" && st !== solanaStatusFilter) return false;
+                        const q = solanaSearch.trim().toLowerCase();
+                        if (!q) return true;
+                        const w = String(tx.wallet_address || '').toLowerCase();
+                        const sig = String(tx.tx_signature || '').toLowerCase();
+                        return w.includes(q) || sig.includes(q);
+                      })
+                      .slice(0, 200)
+                      .map((tx) => {
+                      const wallet = String(tx.wallet_address || '');
+                      const shortW = wallet ? `${wallet.slice(0, 6)}...${wallet.slice(-4)}` : '—';
+                      const sig = String(tx.tx_signature || '');
+                      const shortSig = sig ? `${sig.slice(0, 8)}...${sig.slice(-6)}` : '—';
+                      const evm = String(tx.tx_hash_on_chain || '');
+                      const shortEvm = evm ? `${evm.slice(0, 8)}...${evm.slice(-6)}` : '—';
+                      const status = String(tx.status || '').toLowerCase();
+                      const statusColor = status === 'confirmed' ? '#00ff88' : status === 'failed' ? '#ff3366' : '#ffaa00';
+                      const createdAt = tx.created_at ? new Date(tx.created_at).toLocaleString() : '—';
+                      const solAmount = Number(tx.amount || 0);
+                      const bits = Number(tx.bits_received || 0);
+                      const canRetry = (status === 'failed' || status === 'pending') && !evm && !!sig;
+
+                      return (
+                        <div key={tx.id || sig} style={{
+                          display: 'grid',
+                          gridTemplateColumns: '1fr 0.9fr 1fr 0.9fr 0.9fr 1.4fr',
+                          gap: 8,
+                          padding: '10px',
+                          fontSize: '11px',
+                          borderTop: '1px solid rgba(255,255,255,0.06)'
+                        }}>
+                          <div>{createdAt}</div>
+                          <div style={{ color: statusColor, fontWeight: 800 }}>{(tx.status || 'pending')}</div>
+                          <div title={wallet}>{shortW}</div>
+                          <div>{Number.isFinite(solAmount) ? solAmount.toFixed(4) : '—'}</div>
+                          <div>{Number.isFinite(bits) ? Math.floor(bits).toLocaleString() : '—'}</div>
+                          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                            {sig ? (
+                              <a href={`https://solscan.io/tx/${sig}`} target="_blank" rel="noreferrer" title={sig} style={{ color: '#7dd3fc' }}>
+                                Solscan ({shortSig})
+                              </a>
+                            ) : (
+                              <span style={{ opacity: 0.6 }}>Solscan —</span>
+                            )}
+                            {evm ? (
+                              <a href={`https://bscscan.com/tx/${evm}`} target="_blank" rel="noreferrer" title={evm} style={{ color: '#facc15' }}>
+                                BscScan ({shortEvm})
+                              </a>
+                            ) : (
+                              <span style={{ opacity: 0.6 }}>BscScan —</span>
+                            )}
+                            {canRetry && (
+                              <button
+                                type="button"
+                                onClick={() => retrySolanaFulfilment(sig)}
+                                disabled={solanaRetryingSig === sig}
+                                style={{
+                                  padding: '3px 8px',
+                                  borderRadius: 8,
+                                  border: '1px solid rgba(255,255,255,0.18)',
+                                  background: 'rgba(0,0,0,0.25)',
+                                  color: '#fff',
+                                  cursor: 'pointer'
+                                }}
+                                title="Retry sending BITS from treasury for this Solana signature"
+                              >
+                                {solanaRetryingSig === sig ? '⏳ Retrying…' : '🔁 Retry'}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    {(solanaPayments || []).length === 0 && (
+                      <div style={{ padding: 12, fontSize: 12, color: '#aaa' }}>
+                        No Solana payments found yet.
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {activeTab === "leaderboard" && (
+            <>
+              <div className={styles["section"]}>
+                <h3>🏆 Leaderboard (Demo / Marketing)</h3>
+                <div style={{ fontSize: 12, color: '#ccc', lineHeight: 1.5 }}>
+                  This leaderboard is <strong>demo</strong> for marketing (5 rows). You can edit it manually here.
+                  RewardsHub will display it publicly (even without wallet connected).
+                </div>
+                <div style={{
+                  marginTop: 10,
+                  padding: '10px 12px',
+                  borderRadius: 10,
+                  border: '1px solid rgba(255, 215, 0, 0.22)',
+                  background: 'rgba(255, 215, 0, 0.06)',
+                  color: '#ffd7a3',
+                  fontSize: 12,
+                  display: 'flex',
+                  gap: 12,
+                  flexWrap: 'wrap',
+                  alignItems: 'center',
+                  justifyContent: 'space-between'
+                }}>
+                  <div>
+                    <strong>Daily variation (jitter):</strong>{" "}
+                    <span style={{ fontWeight: 900 }}>{leaderboardJitterEnabled ? "ON" : "OFF"}</span>
+                    <div style={{ opacity: 0.9, marginTop: 4 }}>
+                      When ON, RewardsHub shows a small ±2.5% daily variation for “alive” marketing effect.
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => saveLeaderboardJitter(!leaderboardJitterEnabled)}
+                    disabled={leaderboardSaving || leaderboardLoading}
+                    style={{
+                      background: leaderboardJitterEnabled ? 'rgba(255, 51, 102, 0.22)' : 'rgba(0, 255, 163, 0.18)',
+                      border: '1px solid rgba(255,255,255,0.16)',
+                      borderRadius: 10,
+                      padding: '8px 12px',
+                      cursor: 'pointer',
+                      color: '#fff',
+                      fontWeight: 900
+                    }}
+                    title="Toggle daily variation on RewardsHub"
+                  >
+                    {leaderboardSaving ? "⏳ Updating..." : (leaderboardJitterEnabled ? "Turn OFF" : "Turn ON")}
+                  </button>
+                </div>
+                <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 10 }}>
+                  <button onClick={fetchLeaderboardDemo} disabled={leaderboardLoading || leaderboardSaving}>
+                    {leaderboardLoading ? "⏳ Loading..." : "🔄 Refresh"}
+                  </button>
+                  <button onClick={saveLeaderboardDemo} disabled={leaderboardLoading || leaderboardSaving}>
+                    {leaderboardSaving ? "⏳ Saving..." : "💾 Save"}
+                  </button>
+                  <button onClick={resetLeaderboardDemo} disabled={leaderboardLoading || leaderboardSaving}>
+                    ♻️ Reset default
+                  </button>
+                </div>
+              </div>
+
+              <div className={styles["section"]}>
+                <h3>✍️ Edit Rows</h3>
+                <div style={{
+                  marginTop: 10,
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  borderRadius: 10,
+                  overflow: 'hidden'
+                }}>
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '80px 1fr 1fr 1fr 1fr',
+                    gap: 8,
+                    padding: '10px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    background: 'rgba(255,255,255,0.04)'
+                  }}>
+                    <div>Rank</div>
+                    <div>Name</div>
+                    <div>Wallet (masked)</div>
+                    <div>Reward (BITS)</div>
+                    <div>Source</div>
+                  </div>
+
+                  {(leaderboardDemoRows || []).slice(0, 10).map((r, idx) => (
+                    <div key={idx} style={{
+                      display: 'grid',
+                      gridTemplateColumns: '80px 1fr 1fr 1fr 1fr',
+                      gap: 8,
+                      padding: '10px',
+                      borderTop: '1px solid rgba(255,255,255,0.06)'
+                    }}>
+                      <input
+                        type="number"
+                        value={r.rank ?? (idx + 1)}
+                        onChange={(e) => updateLeaderboardRow(idx, { rank: Number(e.target.value) })}
+                        style={{ width: '100%' }}
+                      />
+                      <input
+                        value={r.name || ''}
+                        onChange={(e) => updateLeaderboardRow(idx, { name: e.target.value })}
+                        placeholder="Nova"
+                        style={{ width: '100%' }}
+                      />
+                      <input
+                        value={r.wallet || ''}
+                        onChange={(e) => updateLeaderboardRow(idx, { wallet: e.target.value })}
+                        placeholder="0xABCD…1234"
+                        style={{ width: '100%' }}
+                      />
+                      <input
+                        type="number"
+                        value={r.rewardBits ?? 0}
+                        onChange={(e) => updateLeaderboardRow(idx, { rewardBits: Number(e.target.value) })}
+                        placeholder="12000"
+                        style={{ width: '100%' }}
+                      />
+                      <input
+                        value={r.source || ''}
+                        onChange={(e) => updateLeaderboardRow(idx, { source: e.target.value })}
+                        placeholder="Telegram + Referral"
+                        style={{ width: '100%' }}
+                      />
+                    </div>
+                  ))}
+
+                  {(leaderboardDemoRows || []).length === 0 && (
+                    <div style={{ padding: 12, fontSize: 12, color: '#aaa' }}>
+                      No rows yet. Press “Reset default” to generate 5 demo rows.
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+
+          {activeTab === "treasury" && (
+            <>
+              {/* Quick checklist + warnings */}
+              <div className={styles["section"]}>
+                <h3>✅ Quick Top-up Checklist</h3>
+                <div style={{ marginTop: 8, fontSize: 11, color: '#aaa', lineHeight: 1.4 }}>
+                  <div><strong>Backend API:</strong> <span style={{ wordBreak: 'break-all' }}>{API_URL}</span></div>
+                  <button
+                    onClick={() => window.open(`${API_URL}/api/rewards/treasury-address`, "_blank")}
+                    style={{ marginTop: 6 }}
+                    title="Open the treasury endpoint to verify which backend is used"
+                  >
+                    🔎 Test Treasury Endpoint
+                  </button>
+                </div>
+                <button
+                  onClick={() => setShowTreasuryGuide(true)}
+                  style={{ marginTop: 6 }}
+                >
+                  📘 Open Treasury Guide (How to manage everything)
+                </button>
+                <div style={{ fontSize: '12px', color: '#ccc', lineHeight: 1.5 }}>
+                  <div><strong>1)</strong> Send <strong>USDT (BEP-20 on BSC Mainnet)</strong> to the treasury address.</div>
+                  <div><strong>2)</strong> Send <strong>BNB</strong> for gas (required for every payout tx).</div>
+                  <div style={{ marginTop: 8, opacity: 0.9 }}>
+                    <div><strong>Recommended minimums (safe):</strong></div>
+                    <div>• BNB: <strong>0.01</strong> (gas buffer)</div>
+                    <div>• USDT: at least <strong>{usdtCap != null ? Number(usdtCap).toFixed(2) : '30.00'}</strong> to cover today’s cap</div>
+                  </div>
+                </div>
+
+                {treasuryBalances && (
+                  (() => {
+                    const bnb = Number(treasuryBalances.bnb || 0);
+                    const usdt = Number(treasuryBalances.usdt || 0);
+                    const spent = Number(usdtSpent || 0);
+                    const cap = Number(usdtCap || 30);
+                    const remaining = Math.max(0, cap - spent);
+
+                    const bnbLow = bnb < 0.003;
+                    const bnbWarn = bnb < 0.01;
+                    const usdtLow = usdt < Math.max(1, remaining);
+
+                    if (!bnbLow && !bnbWarn && !usdtLow) return null;
+                    return (
+                      <div style={{
+                        marginTop: 10,
+                        padding: '10px 12px',
+                        borderRadius: 10,
+                        border: '1px solid rgba(255, 165, 0, 0.35)',
+                        background: 'rgba(255, 165, 0, 0.08)',
+                        color: '#ffd7a3',
+                        fontSize: '12px'
+                      }}>
+                        <div style={{ fontWeight: 800, marginBottom: 6 }}>⚠️ Treasury Warnings</div>
+                        {bnbLow && (<div>• <strong>BNB is very low</strong> ({bnb.toFixed(4)}). Payouts may fail due to gas.</div>)}
+                        {!bnbLow && bnbWarn && (<div>• <strong>BNB is low</strong> ({bnb.toFixed(4)}). Recommended ≥ 0.01 BNB.</div>)}
+                        {usdtLow && (<div>• <strong>USDT may be insufficient</strong> ({usdt.toFixed(4)}). Remaining cap today ≈ {remaining.toFixed(4)} USDT.</div>)}
+                        <div style={{ marginTop: 6, opacity: 0.9 }}>
+                          Tip: top up treasury and press <strong>Refresh</strong>.
+                        </div>
+                      </div>
+                    );
+                  })()
+                )}
+              </div>
+
+              <div className={styles["section"]}>
+                <h3>🏦 Treasury Wallet (Top-up USDT/BNB)</h3>
+                <div style={{ fontSize: '12px', color: '#ccc', lineHeight: 1.4 }}>
+                  <div><strong>Address:</strong> <span style={{ wordBreak: 'break-all' }}>{treasuryAddress || '—'}</span></div>
+                  <div style={{ marginTop: 6 }}>
+                    <button
+                      onClick={() => {
+                        if (!treasuryAddress) return;
+                        navigator.clipboard.writeText(treasuryAddress);
+                        toast.success("✅ Treasury address copied");
+                      }}
+                      style={{ marginTop: 6 }}
+                    >
+                      📋 Copy Address
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (!treasuryAddress) return;
+                        window.open(`https://bscscan.com/address/${treasuryAddress}`, "_blank");
+                      }}
+                      style={{ marginTop: 6 }}
+                    >
+                      🔎 View on BscScan
+                    </button>
+                  </div>
+                  <div style={{ marginTop: 10, opacity: 0.9 }}>
+                    <div>✅ Top up this address with:</div>
+                    <div>• <strong>USDT (BEP-20 on BSC Mainnet)</strong> — used for payouts</div>
+                    <div>• <strong>BNB</strong> — gas for transfers</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles["section"]}>
+                <h3>📊 Treasury Balances</h3>
+                <div style={{ fontSize: '12px', color: '#ccc' }}>
+                  <div><strong>BNB:</strong> {treasuryBalances ? Number(treasuryBalances.bnb || 0).toFixed(4) : '—'}</div>
+                  <div><strong>USDT:</strong> {treasuryBalances ? Number(treasuryBalances.usdt || 0).toFixed(4) : '—'}</div>
+                  <div><strong>BITS:</strong> {treasuryBalances ? Number(treasuryBalances.bits || 0).toFixed(2) : '—'}</div>
+                </div>
+                <button onClick={refreshPayouts} disabled={loadingPayouts}>
+                  {loadingPayouts ? "⏳ Refreshing..." : "🔄 Refresh"}
+                </button>
+              </div>
+
+              <div className={styles["section"]}>
+                <h3>🚦 USDT Daily Cap</h3>
+                <div style={{ fontSize: '12px', color: '#ccc' }}>
+                  <div><strong>Spent today:</strong> {usdtSpent != null ? `${Number(usdtSpent).toFixed(4)} USDT` : '—'}</div>
+                  <div><strong>Cap:</strong> {usdtCap != null ? `${Number(usdtCap).toFixed(2)} USDT/day` : '—'}</div>
+                  <div><strong>Remaining:</strong> {(usdtSpent != null && usdtCap != null) ? `${Math.max(0, Number(usdtCap) - Number(usdtSpent)).toFixed(4)} USDT` : '—'}</div>
+                </div>
+                <input
+                  type="number"
+                  placeholder="Set new cap (e.g. 30, 100)"
+                  value={newUsdtCap}
+                  onChange={(e) => setNewUsdtCap(e.target.value)}
+                />
+                <button onClick={handleSetUsdtCap}>
+                  ✅ Update Cap
+                </button>
+                <div style={{ fontSize: '11px', color: '#aaa', marginTop: 6 }}>
+                  Cap is enforced globally (Telegram + Referral). If cap is reached, UI auto-switches to BITS.
+                </div>
+              </div>
+
+              <div className={styles["section"]}>
+                <h3>🧾 Recent Payouts (Treasury)</h3>
+                <button onClick={refreshPayouts} disabled={loadingPayouts}>
+                  {loadingPayouts ? "⏳ Refreshing..." : "🔄 Refresh Payouts"}
+                </button>
+                <div style={{
+                  marginTop: 10,
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  borderRadius: 10,
+                  overflow: 'hidden'
+                }}>
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr 0.9fr 0.9fr 1.2fr',
+                    gap: 8,
+                    padding: '10px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    background: 'rgba(255,255,255,0.04)'
+                  }}>
+                    <div>Type</div>
+                    <div>Wallet</div>
+                    <div>Currency</div>
+                    <div>Amount</div>
+                    <div>Tx</div>
+                  </div>
+                  {(recentPayouts || []).slice(0, 50).map((p) => {
+                    const w = String(p.wallet || '');
+                    const shortW = w ? `${w.slice(0, 6)}...${w.slice(-4)}` : '—';
+                    const tx = p.tx_hash || '';
+                    const txShort = tx ? `${tx.slice(0, 10)}...` : '—';
+                    const cur = String(p.payout_currency || '').toUpperCase();
+                    const amt = cur === 'USDT' ? p.payout_usdt : p.payout_bits;
+                    return (
+                      <div key={p.id} style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr 0.9fr 0.9fr 1.2fr',
+                        gap: 8,
+                        padding: '10px',
+                        fontSize: '11px',
+                        borderTop: '1px solid rgba(255,255,255,0.08)'
+                      }}>
+                        <div>{p.reward_type}</div>
+                        <div title={w} style={{ wordBreak: 'break-all' }}>{shortW}</div>
+                        <div>{cur || '—'}</div>
+                        <div>{amt != null ? Number(amt).toFixed(cur === 'USDT' ? 4 : 0) : '—'}</div>
+                        <div>
+                          {tx ? (
+                            <a
+                              href={`https://bscscan.com/tx/${tx}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              style={{ color: '#00d4ff', textDecoration: 'none' }}
+                            >
+                              {txShort}
+                            </a>
+                          ) : '—'}
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {(!recentPayouts || recentPayouts.length === 0) && (
+                    <div style={{ padding: '10px', fontSize: '12px', opacity: 0.8 }}>
+                      No treasury payouts yet.
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+
+        </div>
+      )}
+
+      {/* Treasury Guide Modal */}
+      {showTreasuryGuide && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          background: 'rgba(0, 0, 0, 0.85)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 10001
+        }}
+        onClick={() => setShowTreasuryGuide(false)}
+        >
+          <div
+            style={{
+              background: '#10131a',
+              border: '1px solid rgba(0, 255, 163, 0.25)',
+              borderRadius: '12px',
+              padding: '16px',
+              width: 'min(92vw, 720px)',
+              maxHeight: '85vh',
+              overflowY: 'auto',
+              color: '#e6f5ff',
+              boxShadow: '0 8px 32px rgba(0, 255, 163, 0.15)'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+              <h2 style={{ margin: 0, color: '#00ffc3', fontSize: '16px' }}>📘 Treasury Guide (USDT/BITS Rewards)</h2>
+              <button
+                onClick={() => setShowTreasuryGuide(false)}
+                style={{
+                  background: '#ff4444',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '8px 10px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold'
+                }}
+              >
+                ✕ Close
+              </button>
+            </div>
+
+            <div style={{ marginTop: 12, fontSize: '12px', lineHeight: 1.6, color: 'rgba(255,255,255,0.85)' }}>
+              <div style={{ marginBottom: 10 }}>
+                <div style={{ fontWeight: 800, color: '#14F195' }}>1) Where to send funds</div>
+                <div>Send funds to this <strong>Treasury Address</strong> (derived from <code>BACKEND_PRIVATE_KEY</code>):</div>
+                <div style={{ marginTop: 6, padding: '8px 10px', border: '1px dashed rgba(255,255,255,0.18)', borderRadius: 10, wordBreak: 'break-all' }}>
+                  {treasuryAddress || '—'}
+                </div>
+                <div style={{ marginTop: 6, opacity: 0.95 }}>
+                  <div>✅ Network: <strong>BSC Mainnet</strong></div>
+                  <div>✅ Token: <strong>USDT (BEP-20)</strong> for USDT payouts</div>
+                  <div>✅ Also send: <strong>BNB</strong> (gas for every transfer)</div>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: 10 }}>
+                <div style={{ fontWeight: 800, color: '#14F195' }}>2) Recommended top-up amounts</div>
+                <div>For smooth payouts:</div>
+                <div>• BNB: <strong>0.01</strong> (gas buffer)</div>
+                <div>• USDT: <strong>cap/day × 2</strong> (safe buffer)</div>
+                <div style={{ opacity: 0.9, marginTop: 6 }}>
+                  Example: cap = {usdtCap != null ? Number(usdtCap).toFixed(2) : '30.00'} → top-up {usdtCap != null ? (Number(usdtCap) * 2).toFixed(2) : '60.00'} USDT + 0.01 BNB
+                </div>
+              </div>
+
+              <div style={{ marginBottom: 10 }}>
+                <div style={{ fontWeight: 800, color: '#14F195' }}>3) How “automatic claim” works</div>
+                <div>User goes to <strong>Rewards Hub</strong> and chooses payout currency:</div>
+                <div>• Telegram Activity Reward → Claim in <strong>BITS</strong> or <strong>USDT</strong></div>
+                <div>• Invite/Referral Reward → Claim in <strong>BITS</strong> or <strong>USDT</strong></div>
+                <div style={{ marginTop: 6 }}>
+                  Backend then:
+                  <div>• Calculates pending reward server-side</div>
+                  <div>• For USDT: converts using live price from <code>/api/presale/current</code> (CellManager)</div>
+                  <div>• Sends tokens from treasury: <strong>USDT.transfer()</strong> or <strong>BITS.transfer()</strong></div>
+                  <div>• Writes tx + snapshot into DB and updates claimed counters</div>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: 10 }}>
+                <div style={{ fontWeight: 800, color: '#14F195' }}>4) How to increase the 30 USDT/day cap</div>
+                <div>In this tab:</div>
+                <div>• Change “USDT Daily Cap” and press <strong>Update Cap</strong></div>
+                <div>Cap is global (Telegram + Referral combined).</div>
+              </div>
+
+              <div style={{ marginBottom: 10 }}>
+                <div style={{ fontWeight: 800, color: '#14F195' }}>5) How to monitor payouts</div>
+                <div>Use:</div>
+                <div>• <strong>Treasury Balances</strong> (BNB/USDT/BITS)</div>
+                <div>• <strong>Spent today / Remaining</strong></div>
+                <div>• <strong>Recent Payouts</strong> (tx links to BscScan)</div>
+              </div>
+
+              <div style={{ marginBottom: 0 }}>
+                <div style={{ fontWeight: 800, color: '#ffcc66' }}>Troubleshooting</div>
+                <div>• If USDT cap reached, UI auto-switches to BITS.</div>
+                <div>• If transfers fail: usually <strong>BNB too low</strong> or <strong>USDT insufficient</strong> in treasury.</div>
+                <div>• Always top up on <strong>BSC Mainnet</strong> (wrong network = funds won’t be usable here).</div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -1136,7 +2187,7 @@ const AdminPanel = () => {
           onStartNewRound={handleStartNewRound}
         />
       )}
-    </>
+    </div>
   );
 };
 

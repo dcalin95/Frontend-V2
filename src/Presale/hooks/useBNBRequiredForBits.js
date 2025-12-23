@@ -28,8 +28,10 @@ const useBNBRequiredForBits = (bitsDesired, walletAddress) => {
           return;
         }
 
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
+        // 🛑 CRITICAL FIX: DO NOT use window.ethereum for estimation
+        // Use a public RPC provider to avoid Phantom/MetaMask popup
+        const rpcUrl = "https://bsc-dataseed1.binance.org"; // BSC Mainnet
+        const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
 
         const cellManagerAbi = [
           "function getCurrentOpenCellId() view returns (uint256)",
@@ -50,7 +52,9 @@ const useBNBRequiredForBits = (bitsDesired, walletAddress) => {
           ethers.utils.parseUnits(bitsDesired.toString(), 18)
         );
 
-        const bitsPriceRaw = await cellManager.getCurrentOpenCellPrice(walletAddress); // USD * 1000
+        // Use a dummy address if walletAddress is not available, but since it's a view call, dummy is fine
+        const dummyWallet = walletAddress || "0x0000000000000000000000000000000000000001";
+        const bitsPriceRaw = await cellManager.getCurrentOpenCellPrice(dummyWallet); // USD * 1000
         let bitsPriceUSD = parseFloat(bitsPriceRaw.toString()) / 1000;
         
         // 🎯 FIX: Force $1.00 BITS price if contract returns wrong value

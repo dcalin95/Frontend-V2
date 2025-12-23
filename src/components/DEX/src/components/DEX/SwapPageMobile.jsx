@@ -5,6 +5,7 @@ import PositionsTable from './PositionsTable';
 import CosmicLoader from './CosmicLoader';
 import './DEX.css';
 import bitsLogo from '../../assets/logo.png';
+import usdtLogo from '../../assets/icons/tether-usdt-logo.png';
 import { 
   LayoutDashboard, 
   ArrowRightLeft, 
@@ -50,7 +51,7 @@ const SwapPageMobile = () => {
       { symbol: 'SOL', balance: '145.2', icon: 'https://cryptologos.cc/logos/solana-sol-logo.png' },
       { symbol: 'BITS', balance: '5000.00', icon: bitsLogo },
       { symbol: 'bBNB', balance: '0.00', icon: 'https://cryptologos.cc/logos/bnb-bnb-logo.png' },
-      { symbol: 'USDT', balance: '45230.00', icon: 'https://cryptologos.cc/logos/tether-usdt-logo.png' }
+      { symbol: 'USDT', balance: '45230.00', icon: usdtLogo }
   ];
 
   useEffect(() => {

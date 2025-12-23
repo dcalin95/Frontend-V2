@@ -10,6 +10,7 @@ import AIIntelligencePage from './AIIntelligencePage'; // New Page
 import CosmicLoader from './CosmicLoader';
 import './DEX.css';
 import bitsLogo from '../../assets/logo.png';
+import usdtLogo from '../../assets/icons/tether-usdt-logo.png';
 import { 
   LayoutDashboard, 
   ArrowRightLeft, 
@@ -57,7 +58,7 @@ const SwapPageMobile = () => {
       { id: 'SOL', symbol: 'SOL', balance: '145.2', icon: 'https://cryptologos.cc/logos/solana-sol-logo.png' },
       { id: 'BITS', symbol: 'BITS', balance: '5000.00', icon: bitsLogo },
       { id: 'bBNB', symbol: 'bBNB', balance: '0.00', icon: 'https://cryptologos.cc/logos/bnb-bnb-logo.png' },
-      { id: 'USDT', symbol: 'USDT', balance: '45230.00', icon: 'https://cryptologos.cc/logos/tether-usdt-logo.png' }
+      { id: 'USDT', symbol: 'USDT', balance: '45230.00', icon: usdtLogo }
   ];
 
   useEffect(() => {

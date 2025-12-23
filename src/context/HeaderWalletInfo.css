@@ -10,6 +10,7 @@
   z-index: 2147483647 !important;
   font-family: 'Inter', 'Segoe UI', sans-serif;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: visible; /* ✅ Permite butonului Minimize să fie vizibil în exterior */
 }
 
 /* ✨ MINIMAL BUTTON - DOAR SVG, FĂRĂ FUNDAL, FĂRĂ CHENAR */
@@ -234,6 +235,7 @@
 
 /* 📦 Containerul Info Wallet (Deschis) - SOLANA STYLE +7% */
 .wallet-header-info {
+  position: relative; /* ✅ Necesar pentru poziționarea absolută a butoanelor */
   background: rgba(7, 7, 15, 0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -251,6 +253,7 @@
   gap: 10px; /* Mărit de la 7px */
   animation: slideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   transform-origin: top right;
+  overflow: visible; /* ✅ Permite butonului Minimize să fie vizibil în exterior */
 }
 
 @keyframes slideIn {
@@ -341,28 +344,97 @@
   margin-left: 28px; /* Ajustat pentru iconița mai mare */
 }
 
-/* ✖ Buton Închidere */
-.wallet-close-btn {
+/* 🎯 SLOGAN LINK - $BITS Presale */
+.wallet-presale-slogan {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border: none;
-  color: #ff4d4d;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
+  top: 6px;
+  left: 6px;
+  background: linear-gradient(135deg, rgba(20, 241, 149, 0.1) 0%, rgba(153, 69, 255, 0.1) 100%);
+  border: 1px solid rgba(20, 241, 149, 0.3);
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
+  padding: 3px 8px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-decoration: none;
+  z-index: 10;
+  white-space: nowrap;
 }
 
-.wallet-close-btn:hover {
-  background: rgba(255, 77, 77, 0.2);
-  transform: rotate(90deg);
+.wallet-presale-slogan:hover {
+  background: linear-gradient(135deg, rgba(20, 241, 149, 0.2) 0%, rgba(153, 69, 255, 0.2) 100%);
+  border-color: rgba(20, 241, 149, 0.5);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(20, 241, 149, 0.3);
+}
+
+.wallet-presale-slogan:active {
+  transform: translateY(0);
+  background: linear-gradient(135deg, rgba(20, 241, 149, 0.15) 0%, rgba(153, 69, 255, 0.15) 100%);
+}
+
+.wallet-presale-slogan .slogan-text {
+  background: linear-gradient(135deg, #14f195 0%, #9945ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  font-size: 0.65rem;
+}
+
+/* ➖ Buton Minimizare (nu închidere) - POZIȚIE ORIGINALĂ (colț dreapta sus ferestrei - ÎN INTERIOR) */
+.wallet-minimize-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  border-radius: 0 15px 0 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 3px 8px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  white-space: nowrap;
+  width: auto;
+  height: auto;
+  z-index: 10001;
+}
+
+.wallet-minimize-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.9);
+  transform: translateY(-1px);
+}
+
+.wallet-minimize-btn:active {
+  transform: translateY(0);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.wallet-minimize-btn svg {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+}
+
+.wallet-minimize-btn .minimize-text {
+  font-size: 0.65rem;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 /* 💰 Liniile de Balanță - SOLANA STYLE +7% */

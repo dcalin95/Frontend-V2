@@ -1,6 +1,7 @@
 .invite-page-container {
   padding: 20px;
-  max-width: 600px;
+  max-width: 980px;
+  width: min(980px, 100%);
   margin: 0 auto;
   min-height: 100vh;
   background: transparent;
@@ -29,7 +30,7 @@
 @media (max-width: 1024px) {
   .invite-page-container {
     padding: 15px;
-    max-width: 500px;
+    max-width: 760px;
   }
   
   .invite-page-title {

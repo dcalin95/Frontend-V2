@@ -16,8 +16,30 @@ const SwapRoute = ({ fromToken, toToken }) => {
       { token: 'STX', label: 'Stacks', color: '#5546FF', logo: 'https://assets.coingecko.com/coins/images/2069/small/stacks.png' },
       { token: 'bBNB', label: 'BSC', color: '#F0B90B', logo: 'https://assets.coingecko.com/coins/images/825/small/binance-coin-logo.png' }
     ];
+  } else if (toToken.symbol === 'BITS') {
+    // 🎯 PRESALE ROUTE - Direct purchase via CellManager
+    steps = [
+      { 
+        token: fromToken.symbol, 
+        label: 'Pay', 
+        color: '#888', 
+        logo: fromToken.icon 
+      },
+      { 
+        token: 'PRESALE', 
+        label: 'CellManager', 
+        color: '#DC1FFF', 
+        logo: 'https://cdn-icons-png.flaticon.com/128/2920/2920277.png' // Contract icon
+      },
+      { 
+        token: toToken.symbol, 
+        label: 'Receive', 
+        color: '#00FFA3', 
+        logo: toToken.icon 
+      }
+    ];
   } else {
-    // Dynamic Route for any other pair
+    // Dynamic Route for any other pair (PancakeSwap)
     steps = [
       { 
         token: fromToken.symbol, 
@@ -45,7 +67,7 @@ const SwapRoute = ({ fromToken, toToken }) => {
     <div className="dex-route-wrapper">
       <div className="dex-route-header">
         <span className="dex-route-title">Smart Route</span>
-        <span className="dex-route-badge">Best Price</span>
+        <span className="dex-route-badge">{toToken.symbol === 'BITS' ? 'Presale' : 'Best Price'}</span>
       </div>
       
       <div className="dex-route-viz-horizontal">

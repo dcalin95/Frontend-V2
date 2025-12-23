@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { CONTRACTS } from "../contract/contracts";
 
+const BSC_RPC_URL = "https://bsc-dataseed1.binance.org"; // read-only (no popup)
+
 const BonusClaimer = () => {
   const [wallet, setWallet] = useState(null);
   const [bonus, setBonus] = useState("0.00");
@@ -13,7 +15,8 @@ const BonusClaimer = () => {
   const fetchBonus = async (address) => {
     try {
       setLoading(true);
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      // 🛑 READ-ONLY: do not touch window.ethereum for reads (prevents popup / injected conflicts)
+      const provider = new ethers.providers.JsonRpcProvider(BSC_RPC_URL);
       const contract = new ethers.Contract(
         CONTRACTS.ADDITIONAL_REWARD.address,
         CONTRACTS.ADDITIONAL_REWARD.abi,

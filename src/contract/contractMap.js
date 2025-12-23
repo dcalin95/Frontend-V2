@@ -23,8 +23,10 @@ const NETWORK_CONFIG = {
   }
 };
 
-// Set active network (change to MAINNET for production)
-const ACTIVE_NETWORK = 'MAINNET';
+// Prefer env config; fallback to MAINNET
+const ACTIVE_NETWORK = String(process.env.REACT_APP_NETWORK || "bsc-mainnet").toLowerCase().includes("test")
+  ? "TESTNET"
+  : "MAINNET";
 
 /**
  * Maparea centralizată a contractelor active pe BSC
@@ -34,38 +36,38 @@ const ACTIVE_NETWORK = 'MAINNET';
 export const CONTRACT_MAP = {
   BITS_TOKEN: {
     name: "BitsToken",
-    address: "0xCE056ee6ED7Ae0944f10BAfc5E7f5d160c8641fe",
+    address: String(process.env.REACT_APP_BITS_TOKEN || process.env.REACT_APP_TOKEN_CONTRACT_ADDRESS || "0xCE056ee6ED7Ae0944f10BAfc5E7f5d160c8641fe").toLowerCase(),
     abi: BitsABI,
   },
   // Alias for backward compatibility
   BITS: {
     name: "BitsToken",
-    address: "0xCE056ee6ED7Ae0944f10BAfc5E7f5d160c8641fe",
+    address: String(process.env.REACT_APP_BITS_TOKEN || process.env.REACT_APP_TOKEN_CONTRACT_ADDRESS || "0xCE056ee6ED7Ae0944f10BAfc5E7f5d160c8641fe").toLowerCase(),
     abi: BitsABI,
   },
   STAKING: {
     name: "TokenStaking", 
-    address: "0xF1fd04dB28545C5d5d2f2a7709135839B22984de",
+    address: String(process.env.REACT_APP_STAKING || "0xF1fd04dB28545C5d5d2f2a7709135839B22984de").toLowerCase(),
     abi: stakingABI,
   },
   NODE: {
     name: "NodeContract",
-    address: "0xE6536756d73F0771d9a317F49453de96541C352F",
+    address: String(process.env.REACT_APP_NODE || process.env.REACT_APP_NODE_ADDRESS || "0xE6536756d73F0771d9a317F49453de96541C352F").toLowerCase(),
     abi: nodeABI,
   },
   ADDITIONAL_REWARD: {
     name: "AdditionalReward",
-    address: "0x15473d61a9c8F866eb1a3a5b24e2B520acdb0Fc6",
+    address: String(process.env.REACT_APP_ADDITIONAL_REWARD || "0x15473d61a9c8F866eb1a3a5b24e2B520acdb0Fc6").toLowerCase(),
     abi: AdditionalRewardABI,
   },
   CELL_MANAGER: {
     name: "CellManager", 
-    address: "0x957B858cc0684c8a91ec3C7f8A9E3DA2Df9F3bC6",
+    address: String(process.env.REACT_APP_CELL_MANAGER || "0x957B858cc0684c8a91ec3C7f8A9E3DA2Df9F3bC6").toLowerCase(),
     abi: CellManagerABI,
   },
   TELEGRAM_REWARD: {
     name: "TelegramRewardContract",
-    address: "0x5b861fbB5b40a04eb943428d2bD395B4c87D837e",
+    address: String(process.env.REACT_APP_TELEGRAM_REWARD || "0x5b861fbB5b40a04eb943428d2bD395B4c87D837e").toLowerCase(),
     abi: TelegramRewardContractABI,
   },
   

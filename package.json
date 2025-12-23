@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "homepage": ".",
+  "homepage": "/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -71,7 +71,10 @@
     "prebuild": "node scripts/check-env.js",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy:s3": "powershell -ExecutionPolicy Bypass -File ./scripts/deploy-s3.ps1",
+    "deploy:s3:bash": "bash ./scripts/deploy-s3.sh",
+    "setup:s3": "bash ./scripts/setup-s3-bucket.sh"
   },
   "eslintConfig": {
     "extends": [

@@ -1,14 +1,31 @@
 /* RewardsHub.mobile.css - Gemini 3 King Style */
 
 @media (max-width: 768px) {
+  .rewards-hub {
+    padding-top: 95px; /* spațiu pentru header/timer pe mobile */
+  }
+
   .hub-container {
-    padding-top: 20px;
+    padding-top: 0;
     max-width: 95vw;
   }
-  
-  .hub-container h1 {
-    font-size: 1.8em;
-    margin-bottom: 15px;
+
+  .hub-header {
+    justify-content: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .hub-brand {
+    justify-content: flex-start;
+  }
+
+  .hub-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .hub-title {
+    font-size: 1.55em;
   }
   
   .rewards-summary-card {
@@ -41,9 +58,96 @@
     min-height: 60px;
     font-size: 1rem;
   }
+
+  .payout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .payout-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .payout-toggle {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .payout-toggle-btn {
+    width: 100%;
+    height: 54px;
+    justify-content: center;
+  }
+
+  .payout-card,
+  .rewards-summary-card,
+  .usdt-callout {
+    width: 100%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .public-preview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .leaderboard-row {
+    grid-template-columns: 56px 1fr;
+    grid-auto-rows: auto;
+  }
+
+  .lb-reward {
+    grid-column: 1 / -1;
+  }
+
+  .lb-source {
+    grid-column: 1 / -1;
+    text-align: left;
+    opacity: 0.85;
+  }
+
+  .usdt-callout {
+    padding: 12px;
+  }
+  
+  .usdt-callout-title {
+    font-size: 0.95em;
+  }
+
+  .usdt-callout-list {
+    padding-left: 18px;
+  }
   
   .info-grid {
     grid-template-columns: 1fr;
+  }
+
+  /* History → match leaderboard mobile style */
+  .history-header {
+    display: none;
+  }
+
+  .history-row {
+    grid-template-columns: 56px 1fr;
+    grid-auto-rows: auto;
+    align-items: start;
+    gap: 8px;
+  }
+
+  .col-amount,
+  .col-usd,
+  .col-date,
+  .col-tx {
+    grid-column: 1 / -1;
+  }
+
+  .col-tx a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
   
   .mobile-rewards-hub-wrapper .rewards-hub-wrapper {
@@ -76,6 +180,10 @@
   .action-btn {
     padding: 15px;
     min-height: 60px;
+  }
+
+  .payout-estimate {
+    white-space: normal;
   }
   
   .bonus-stats {

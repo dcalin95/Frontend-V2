@@ -6,12 +6,14 @@ import {
   Transaction,
   SystemProgram,
 } from "@solana/web3.js";
+import { SOLANA_CONFIG } from "../../contract/solanaConfig";
+import { getBackendUrl } from "../../utils/getBackendUrl";
 
-const SOLANA_NETWORK = process.env.REACT_APP_SOL_RPC_HTTP || "https://api.devnet.solana.com";
-const SOLANA_WS = process.env.REACT_APP_SOL_RPC_WS || "wss://api.devnet.solana.com";
-const DESTINATION_WALLET = new PublicKey("63u6aWZJdFd1vh6VfCya5DJkXTUEmHBbs14SiqHNt4GQ");
+const SOLANA_NETWORK = SOLANA_CONFIG.rpcHttp;
+const SOLANA_WS = SOLANA_CONFIG.rpcWs;
+const DESTINATION_WALLET = new PublicKey(SOLANA_CONFIG.destinationWallet);
 
-const handleSOLPayment = async ({ amount, bitsToReceive, walletAddress }) => {
+const handleSOLPayment = async ({ amount, bitsToReceive, walletAddress, referralCode }) => {
   try {
     console.log("🟣 [handleSOLPayment] Start SOL payment...");
 
@@ -70,7 +72,7 @@ const handleSOLPayment = async ({ amount, bitsToReceive, walletAddress }) => {
     }
 
     // 🔥 Trimitem informația către backend (INCLUDE USD FOR LOYALTY BONUS)
-    const backendURL = process.env.REACT_APP_BACKEND_URL || "http://localhost:4000";
+    const backendURL = getBackendUrl();
     
     // 🎁 Calculate USD value for loyalty bonus using live SOL price (fallback to 150 if fetch fails)
     let estimatedSOLPrice = 150;
@@ -88,11 +90,17 @@ const handleSOLPayment = async ({ amount, bitsToReceive, walletAddress }) => {
     
     console.log("🎁 [SOL LOYALTY] Estimated USD investment for bonus:", usdInvested);
     
+    // ✅ IMPORTANT:
+    // - walletAddress = user BSC/EVM wallet (0x...) where BITS should be delivered / referral should be attributed
+    // - publicKey = user Solana wallet (sender) used only as proof-of-payment
     const response = await fetch(`${backendURL}/api/solana/payment`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        userWallet: publicKey.toBase58(),
+        // 🚀 Use EVM wallet as the "userWallet" so backend can attribute & (optionally) fulfil on BSC
+        userWallet: walletAddress,
+        // 🟣 Keep Solana sender for audit/debug (backend should store if it supports it)
+        solanaFrom: publicKey.toBase58(),
         amount,
         bitsReceived: Number(bitsToReceive),
         signature,
@@ -100,6 +108,9 @@ const handleSOLPayment = async ({ amount, bitsToReceive, walletAddress }) => {
         network: "Solana",
         bonusPercentage: 0,
         bonusBits: 0,
+        // 🎯 Referral support (invite rewards)
+        referralCode: referralCode || null,
+        // ✅ Backend now does automatic fulfilment (verify SOL tx on-chain + send BITS from treasury)
         // 🎁 CRITICAL: Add USD investment for cross-chain loyalty bonus processing
         usdInvested: usdInvested,
         loyaltyEligible: true,

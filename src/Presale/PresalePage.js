@@ -12,10 +12,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import useGoogleAnalytics from "../hooks/useGoogleAnalytics";
 import { trackTikTokEvent } from "../utils/tiktok";
-import { ethers } from "ethers";
 import SelectPaymentMethod from "./SelectPaymentMethod";
 import { useSelectedToken } from "./hooks/useSelectedToken";
 import useTokenPrices from "./prices/useTokenPrices";
+import { useWallet } from "../context/WalletContext";
 import AdjustFontButton from "../components/AdjustFontButton";
 import RecentBTCFeed from "./BITSAnalytics/RecentBTCFeed";
 import RecentStacksFeed from "./BITSAnalytics/RecentStacksFeed";
@@ -46,6 +46,7 @@ const PresalePage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { trackPresaleEvent, trackPageView } = useGoogleAnalytics();
+  const { walletAddress } = useWallet();
   const {
     selectedToken,
     selectedChain,
@@ -55,7 +56,6 @@ const PresalePage = () => {
 
   const { prices: tokenPrices } = useTokenPrices();
   const [amountPay, setAmountPay] = useState(0);
-  const [walletAddress, setWalletAddress] = useState(null);
   const [showTikTokDebug, setShowTikTokDebug] = useState(false);
   const [stripeFeedback, setStripeFeedback] = useState(null);
   const [particleCount, setParticleCount] = useState(40);
@@ -63,18 +63,10 @@ const PresalePage = () => {
   const [darkMode, setDarkMode] = useState(true); // 🌑 Dark mode - Apple Super Dark
 
   useEffect(() => {
-    const detectWallet = async () => {
-      if (window.ethereum) {
-        try {
-          const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-          setWalletAddress(accounts[0]);
-        } catch (err) {
-          console.warn("🦊 Wallet not connected");
-        }
-      }
-    };
-
-    detectWallet();
+    // 🛑 CRITICAL FIX: Removed automatic wallet detection on mount
+    // This prevents TrustWallet/MetaMask/Phantom from showing as connected automatically
+    // The user must now MANUALLY connect via the UI
+    console.log("ℹ️ [PresalePage] Auto-detection disabled. Waiting for manual connection.");
   }, []);
 
   // 🔎 TikTok ViewContent (non-sensibil): doar semnal că utilizatorul a vizitat Presale
@@ -167,8 +159,8 @@ const PresalePage = () => {
           left: p.left,
           top: p.top,
           animationDelay: p.delay,
-          ['--dur']: p.dur,
-          ['--dx']: p.dx
+          '--dur': p.dur,
+          '--dx': p.dx
         }}
       >
         {p.text}
@@ -222,12 +214,6 @@ const PresalePage = () => {
       setShowParticles(true);
       setDarkMode(false);
     }
-  };
-
-  const getToggleLabel = () => {
-    if (showParticles && !darkMode) return "🌟 Particles ON";
-    if (!showParticles && !darkMode) return "🌟 Particles OFF";
-    return "🌑 Dark Mode";
   };
 
   return (

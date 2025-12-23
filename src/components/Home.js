@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 // import ThreeBackground from "./StarfieldBackground";
 import LaserOrbit from "./Education/LaserOrbit";
@@ -12,6 +12,7 @@ import AddTokenButton from "./AddTokenButton"; // Import AddTokenButton
 import SmartTooltip from "../Presale/components/SmartTooltip"; // Import SmartTooltip
 import BitcoinPriceTicker from "./BitcoinPriceTicker"; // Import Bitcoin Live Price Ticker
 import CandlestickChart from "../papertrade/CandlestickChart"; // Import Professional Chart
+import WhaleTransactions from "../papertrade/WhaleTransactions"; // Import Whale Tracker
 
 import "./Home.desktop.css";
 import "./Home.mobile.css";
@@ -19,9 +20,27 @@ import { motion } from "framer-motion";
 
 const Home = () => {
   const navigate = useNavigate();
+  const whaleRef = useRef(null);
 
   const handleExplorePlatform = () => {
     navigate("/about");
+  };
+
+  const openWhaleTracker = () => {
+    if (whaleRef.current) {
+      // Scroll to WhaleTransactions
+      whaleRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      // Trigger 3/4 screen mode after scroll
+      setTimeout(() => {
+        if (whaleRef.current) {
+          const expandBtn = whaleRef.current.querySelector('.fullscreen-btn-whale');
+          if (expandBtn) {
+            expandBtn.click(); // Open in 3/4 mode
+          }
+        }
+      }, 800);
+    }
   };
 
   return (
@@ -161,7 +180,7 @@ const Home = () => {
         <HomeAISection />
       </motion.div>
 
-      {/* Live Bitcoin Market Chart */}
+      {/* Live Bitcoin Market Chart + Whale Tracker */}
       <motion.section
         className="home-section live-market-section"
         initial={{ opacity: 0, y: 50 }}
@@ -170,79 +189,22 @@ const Home = () => {
         viewport={{ once: true }}
         style={{ padding: '3rem 2rem', maxWidth: '1400px', margin: '0 auto' }}
       >
-        {/* Header with Logo & Slogan */}
-        <div style={{ 
-          textAlign: 'center', 
-          marginBottom: '2rem',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '1rem'
-        }}>
-          <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center',
-            gap: '1rem',
-            flexWrap: 'wrap'
-          }}>
-            <BrandLogo size="md" />
-            <SmartTooltip content="Real-time Bitcoin price chart powered by Binance API.\nProfessional candlestick chart with volume bars.\nUse zoom controls (+/-) to resize.\nClick fullscreen for maximum view.">
-              <h2 className="section-title" style={{ margin: 0 }}>
-                <i className="fas fa-chart-candlestick" style={{ marginRight: '1rem' }}></i>
-                Live Bitcoin Market
-                <span style={{ 
-                  marginLeft: '1rem', 
-                  fontSize: '0.8rem', 
-                  color: '#26a69a',
-                  background: 'rgba(38, 166, 154, 0.1)',
-                  padding: '0.3rem 0.8rem',
-                  borderRadius: '4px',
-                  fontWeight: '700'
-                }}>🔴 LIVE</span>
-              </h2>
-            </SmartTooltip>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+          <CandlestickChart 
+            symbol="BTCUSDT"
+            defaultTimeframe="1h"
+            height={450}
+            showFullscreen={true}
+            showHeader={true}
+            autoUpdate={true}
+            updateInterval={30000}
+          />
+          
+          {/* Whale Transactions Tracker (>10K USD) - Real Large Trades */}
+          <div ref={whaleRef}>
+            <WhaleTransactions minAmount={10000} />
           </div>
-          
-          {/* Professional Slogan */}
-          <SmartTooltip content="BitSwapDEX AI Mission\nFrom Bits to Bitcoin - Every transaction powered by Neural Networks.\nReal-time market intelligence at your fingertips.">
-            <p style={{
-              fontSize: '1.1rem',
-              fontWeight: '600',
-              background: 'linear-gradient(135deg, #00FFA3, #DC1FFF)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              color: 'transparent',
-              letterSpacing: '0.5px',
-              margin: 0,
-              padding: '0.5rem 1rem',
-              maxWidth: '800px'
-            }}>
-              🚀 From Bits to Bitcoin – Powering the Future of Decentralized Trading 📊
-            </p>
-          </SmartTooltip>
-          
-          <p style={{
-            fontSize: '0.95rem',
-            color: '#848e9c',
-            margin: 0,
-            fontStyle: 'italic',
-            letterSpacing: '0.3px'
-          }}>
-            "Where AI meets DeFi - Professional trading tools for everyone"
-          </p>
         </div>
-        
-        <CandlestickChart 
-          symbol="BTCUSDT"
-          defaultTimeframe="1h"
-          height={450}
-          showFullscreen={true}
-          showHeader={true}
-          autoUpdate={true}
-          updateInterval={30000}
-        />
       </motion.section>
 
       {/* BitPulse Orbit Dashboard on Home */}
@@ -316,6 +278,20 @@ const Home = () => {
           </SmartTooltip>
         </div>
       </section>
+
+      {/* Floating Action Button - Bitcoin & Crypto Whale Tracker */}
+      <button 
+        className="fab-whale-tracker" 
+        onClick={openWhaleTracker}
+        title="🐋 Bitcoin & Crypto Whale Tracker - Real-time large transactions across 7 blockchains"
+      >
+        <i className="fab fa-bitcoin"></i>
+        <span className="fab-label">
+          <span className="fab-btc">BTC</span>
+          <span className="fab-divider">+</span>
+          <span className="fab-crypto">Whales</span>
+        </span>
+      </button>
     </div>
   );
 };

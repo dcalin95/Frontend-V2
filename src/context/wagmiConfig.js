@@ -32,5 +32,42 @@ export const config = defaultWagmiConfig({
   enableEIP6963: true, // Detects multiple injected wallets (MetaMask, Trust, Phantom, etc.)
   enableInjected: true, // Essential for dApp browsers (Trust Wallet Browser, MetaMask Browser)
   enableWalletConnect: true, // Standard connection for external wallets
+  
+  // 🛑 CRITICAL: DISABLE AUTO-CONNECT to prevent automatic reconnection at refresh
+  // User MUST manually connect each time - no automatic reconnection
+  ssr: false, // Disable server-side rendering features that might trigger auto-connect
+  
+  // 🛑 CRITICAL: Configure storage to BLOCK auto-reconnect completely
+  storage: {
+    getItem(key) {
+      const value = localStorage.getItem(key);
+      console.log(`🔍 [Wagmi Storage] GET ${key}:`, value);
+      
+      // 🛑 CRITICAL: BLOCK ALL auto-reconnect attempts
+      // Only allow manual connections initiated by user
+      if (key === 'wagmi.recentConnectorId' || key === 'wagmi.store' || key.includes('connector')) {
+        console.warn(`🛑 [Wagmi Storage] BLOCKED auto-reconnect for key: ${key}`);
+        console.warn(`🛑 [Wagmi Storage] User MUST manually connect - no automatic reconnection allowed`);
+        return null; // Return null to prevent ANY auto-reconnect
+      }
+      
+      return value;
+    },
+    setItem(key, value) {
+      console.log(`🔍 [Wagmi Storage] SET ${key}:`, value);
+      
+      // 🛑 CRITICAL: Don't save connector IDs that might trigger auto-reconnect
+      if (key === 'wagmi.recentConnectorId') {
+        console.warn(`🛑 [Wagmi Storage] NOT saving recent connector ID to prevent auto-reconnect`);
+        return; // Don't save
+      }
+      
+      localStorage.setItem(key, value);
+    },
+    removeItem(key) {
+      console.log(`🔍 [Wagmi Storage] REMOVE ${key}`);
+      localStorage.removeItem(key);
+    },
+  },
 });
 

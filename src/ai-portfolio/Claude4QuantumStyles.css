@@ -1608,7 +1608,7 @@
   .claude4-input-group {
     margin-bottom: 15px !important;
   }
-
+  
   .claude4-chart-wrapper {
     height: 300px !important; /* Grafic mai mic pe înălțime */
   }
@@ -1618,7 +1618,7 @@
   .claude4-gradient-text {
     font-size: 1.5rem !important;
   }
-
+  
   .claude4-risk-selector {
     grid-template-columns: 1fr !important; /* Butoane full width */
   }

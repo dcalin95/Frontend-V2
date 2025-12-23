@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import confetti from "canvas-confetti";
 import "./InviteButton.css";
-import nodeRewardsService, { validateWalletConnection } from "../../services/nodeRewardsService.js";
+import { getBackendUrl } from "../../utils/getBackendUrl";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+const BACKEND_URL = getBackendUrl();
 
 const InviteButton = () => {
   const [walletAddress, setWalletAddress] = useState("");
@@ -13,6 +13,27 @@ const InviteButton = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [referrerCode, setReferrerCode] = useState("");
+  const [friendCodeStatus, setFriendCodeStatus] = useState(null); // { ok: true|false|null, msg: string }
+
+  const connectWallet = async () => {
+    if (!window.ethereum) {
+      setError("❌ Please install MetaMask to continue.");
+      return;
+    }
+    try {
+      setError("");
+      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+      if (accounts.length > 0) {
+        setWalletAddress(accounts[0]);
+      } else {
+        setError("⚠️ No wallet connected.");
+      }
+    } catch (err) {
+      console.error(err);
+      if (err?.code === 4001) return; // user rejected
+      setError("⚠️ Wallet access denied.");
+    }
+  };
 
   // 1️⃣ Detectează wallet + cod referral din URL
   useEffect(() => {
@@ -24,15 +45,17 @@ const InviteButton = () => {
       }
 
       try {
-        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        // 🛑 CRITICAL: do NOT prompt on mount. Silent check only.
+        const accounts = await window.ethereum.request({ method: "eth_accounts" });
         if (accounts.length > 0) {
           setWalletAddress(accounts[0]);
         } else {
-          setError("⚠️ No wallet connected.");
+          // Don't show scary error; user can connect manually.
+          setError("");
         }
       } catch (err) {
-        setError("⚠️ Wallet access denied.");
         console.error(err);
+        // Silent failure on mount
       }
 
       // Referral code from URL
@@ -44,16 +67,8 @@ const InviteButton = () => {
     detectWalletAndReferrer();
   }, []);
 
-  // 2️⃣ AUTO-LOAD existing invite code when wallet is detected
-  useEffect(() => {
-    if (walletAddress && !inviteCode) {
-      console.log("🔍 Auto-checking for existing invite code for wallet:", walletAddress);
-      checkExistingInviteCode();
-    }
-  }, [walletAddress]);
-
   // 🔍 Check if wallet already has an invite code
-  const checkExistingInviteCode = async () => {
+  const checkExistingInviteCode = useCallback(async () => {
     if (!walletAddress) return;
 
     try {
@@ -76,7 +91,15 @@ const InviteButton = () => {
       console.log("⚠️ Could not auto-load invite code, will require manual generation:", err.message);
       // Don't show error to user - just silently fail for auto-check
     }
-  };
+  }, [walletAddress]);
+
+  // 2️⃣ AUTO-LOAD existing invite code when wallet is detected
+  useEffect(() => {
+    if (walletAddress && !inviteCode) {
+      console.log("🔍 Auto-checking for existing invite code for wallet:", walletAddress);
+      checkExistingInviteCode();
+    }
+  }, [walletAddress, inviteCode, checkExistingInviteCode]);
 
   // 🎯 HYBRID: Generate code with Node.sol direct integration
   const handleCheckOrGenerateCode = async () => {
@@ -92,36 +115,12 @@ const InviteButton = () => {
     }
 
     try {
-      // 🔗 METHOD 1: Node.sol Direct Generation (NEW!)
-      console.log("🎯 Attempting Node.sol direct generation...");
-      
-      // Validate wallet connection first
-      const validation = await validateWalletConnection();
-      if (validation.valid) {
-        const result = await nodeRewardsService.generateInviteCode(walletAddress, referrerCode);
-        
-        if (result.success) {
-          setInviteCode(result.code);
-          setMessage(`🎉 ${result.message}!`);
-          handleConfetti();
-          
-          console.log("✅ Node.sol direct generation successful:", result);
-          return;
-        } else {
-          console.warn("⚠️ Node.sol generation failed:", result.error);
-          // Continue to backend fallback
-        }
-      }
-      
-      // 🔄 METHOD 2: Backend fallback
-      console.log("🔄 Falling back to backend generation...");
       const response = await fetch(`${BACKEND_URL}/api/invite/generate-code`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           walletAddress,
-          firstName: "FrontendUser",
-          referrerCode: referrerCode || null,
+          firstName: "User",
         }),
       });
 
@@ -132,7 +131,7 @@ const InviteButton = () => {
         if (data.alreadyExists) {
           setMessage("ℹ️ You already have an invite code (from backend).");
         } else {
-          setMessage("🎉 Invite code generated (backend fallback)!");
+          setMessage("🎉 Invite code generated!");
           handleConfetti();
         }
       } else {
@@ -141,19 +140,39 @@ const InviteButton = () => {
       }
       
     } catch (err) {
-      console.error("All generation methods failed:", err);
-      
-      // 🚨 METHOD 3: Emergency local generation
-      console.log("🚨 Emergency local generation...");
-      const emergencyCode = `EMERGENCY-${walletAddress.slice(-6).toUpperCase()}-${Date.now().toString().slice(-4)}`;
-      setInviteCode(emergencyCode);
-      setMessage("⚠️ Emergency code generated locally. Limited functionality.");
-      setError("Backend unavailable. Code generated locally for testing purposes.");
-      
-      // Still show confetti for better UX
-      handleConfetti();
+      console.error("Invite code generation failed:", err);
+      setError(err.message || "Failed to generate invite code.");
+      setMessage("❌ Could not generate invite code. Please try again.");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const applyFriendCode = async () => {
+    if (!walletAddress) {
+      setFriendCodeStatus({ ok: false, msg: "Connect wallet first." });
+      return;
+    }
+    const code = String(referrerCode || "").trim();
+    if (!code) {
+      setFriendCodeStatus({ ok: false, msg: "Enter a friend code." });
+      return;
+    }
+    setFriendCodeStatus({ ok: null, msg: "Applying..." });
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/invite/use-friend-code`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ walletAddress, friendCode: code })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data?.success === false) {
+        setFriendCodeStatus({ ok: false, msg: data?.message || "Failed to apply code." });
+        return;
+      }
+      setFriendCodeStatus({ ok: true, msg: data?.message || "Friend code applied!" });
+    } catch (e) {
+      setFriendCodeStatus({ ok: false, msg: e.message });
     }
   };
 
@@ -180,7 +199,7 @@ const InviteButton = () => {
   return (
     <div className="invite-section">
       <div className="invite-button-container">
-        <h2 className="invite-title">Your Cosmic Journey Starts Here (HYBRID)</h2>
+        <h2 className="invite-title">Your Invite Code</h2>
         <p className="invite-description">
           Invite your friends and earn <span className="highlight">rewards</span>! Together we grow the $BITS universe.
         </p>
@@ -192,6 +211,12 @@ const InviteButton = () => {
           disabled
           className="wallet-input"
         />
+
+        {!walletAddress && (
+          <button onClick={connectWallet} disabled={isLoading} className="generate-button">
+            🔗 Connect Wallet
+          </button>
+        )}
 
         <button onClick={handleCheckOrGenerateCode} disabled={isLoading || !walletAddress} className="generate-button">
           {isLoading ? "Processing..." : inviteCode ? "🔄 Regenerate Code" : "🚀 Get Invite Code"}
@@ -228,6 +253,30 @@ const InviteButton = () => {
         <p className="invite-card-footer">
           Share your code and grow the $BITS galaxy!
         </p>
+      </div>
+
+      <div className="invite-card invite-card-small">
+        <h2 className="invite-card-title">🤝 Use a Friend's Code</h2>
+        <p className="invite-card-text">
+          If someone invited you, paste their code here <span className="highlight">before buying</span>.
+        </p>
+        <div className="friend-code-row">
+          <input
+            type="text"
+            className="wallet-input"
+            placeholder="Friend code (e.g. CODE-ABC123)"
+            value={referrerCode}
+            onChange={(e) => setReferrerCode(e.target.value)}
+          />
+          <button onClick={applyFriendCode} disabled={!walletAddress || isLoading} className="generate-button">
+            Apply
+          </button>
+        </div>
+        {friendCodeStatus?.msg && (
+          <p className={`message ${friendCodeStatus.ok === false ? "error" : ""}`}>
+            {friendCodeStatus.msg}
+          </p>
+        )}
       </div>
     </div>
   );

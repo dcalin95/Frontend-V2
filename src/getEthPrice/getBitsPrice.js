@@ -8,18 +8,22 @@ import { getContractInstance } from "../contract/getContract";
  */
 export const fetchBitsPrice = async () => {
   try {
-    const cellManager = await getContractInstance("CELL_MANAGER");
+    // 🛑 CRITICAL FIX: Use read-only instance (needsSigner = false)
+    // This prevents the wallet popup from appearing during price fetch
+    const cellManager = await getContractInstance("CELL_MANAGER", false);
 
-    const signer = new ethers.providers.Web3Provider(window.ethereum).getSigner();
-    const wallet = await signer.getAddress();
+    // 🌐 Use a dummy address for the price query to avoid requesting wallet access
+    const dummyWallet = "0x0000000000000000000000000000000000000001";
 
-    const rawPrice = await cellManager.getCurrentOpenCellPrice(wallet); // uint256
+    const rawPrice = await cellManager.getCurrentBitsPriceUSD(dummyWallet); // uint256
     const price = parseFloat(ethers.utils.formatUnits(rawPrice, 18));
 
+    console.log("💰 [fetchBitsPrice] BITS Price from contract:", price);
     return price;
   } catch (err) {
     console.error("❌ Error in fetchBitsPrice:", err);
-    return null;
+    // Fallback to a safe default if contract call fails
+    return 0.00065; 
   }
 };
 

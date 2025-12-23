@@ -2,6 +2,7 @@ import React from "react";
 import useCellManagerData from "../Presale/hooks/useCellManagerData";
 import "./HeaderPrice.css";
 import "./HeaderPrice.mobile.css";
+import TokenInline from "./common/TokenInline";
 
 const HeaderPrice = () => {
   const { currentPrice } = useCellManagerData();
@@ -12,7 +13,9 @@ const HeaderPrice = () => {
 
   return (
     <div className="header-price-display">
-      <span className="price-label">1 BITS = </span>
+      <span className="price-label">
+        1 <TokenInline token="BITS" /> =
+      </span>
       <span className="price-value">${displayPrice}</span>
     </div>
   );

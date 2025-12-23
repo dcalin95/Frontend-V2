@@ -1,9 +1,9 @@
 /* SOLANA/AI STYLE */
 .claim-invite-container {
-  margin: 2rem auto;
-  padding: 2rem;
+  margin: 0 auto;
+  padding: 22px;
   width: 100%;
-  max-width: 500px;
+  max-width: 700px;
   background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 1.5rem;
@@ -15,6 +15,62 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+}
+
+.invite-claim-usdt-callout {
+  margin: 10px 0 14px;
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(0, 0, 0, 0.16);
+  text-align: center;
+}
+
+.invite-claim-usdt-title {
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  margin-bottom: 6px;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.invite-claim-usdt-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 255, 163, 0.30);
+  background: linear-gradient(135deg, rgba(0,255,163,0.18), rgba(220,31,255,0.12));
+  color: #00ffc3;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.invite-claim-usdt-text {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.95rem;
+  line-height: 1.35;
+  margin-bottom: 10px;
+}
+
+.invite-claim-usdt-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 255, 163, 0.30);
+  background: linear-gradient(135deg, rgba(0,255,163,0.85), rgba(220,31,255,0.80));
+  color: #000;
+  font-weight: 900;
+  text-decoration: none;
+  box-shadow: 0 0 12px rgba(0, 255, 163, 0.18);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.invite-claim-usdt-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 18px rgba(0, 255, 163, 0.35), 0 0 36px rgba(220, 31, 255, 0.20);
 }
 
 .claim-invite-container::before {
@@ -156,8 +212,25 @@
   text-align: center;
   font-size: 1rem;
   font-family: 'Inter', sans-serif;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.message.error {
   color: #ff6b6b;
   filter: drop-shadow(0 0 8px rgba(255, 107, 107, 0.4));
+}
+
+.message.success {
+  color: #00ffc3;
+  filter: drop-shadow(0 0 10px rgba(0, 255, 195, 0.35));
+}
+
+.reward-info {
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  background: rgba(0,0,0,0.18);
 }
 
 /* ===== Responsive Design ===== */
@@ -165,9 +238,8 @@
 /* Tablet */
 @media (max-width: 1024px) {
   .claim-invite-container {
-    margin: 1.5rem auto;
     padding: 1.5rem;
-    max-width: 450px;
+    max-width: 700px;
   }
   
   .claim-invite-container h2 {
@@ -193,11 +265,13 @@
 /* Mobile Large */
 @media (max-width: 768px) {
   .claim-invite-container {
-    margin: 1rem auto;
-    margin-top: 100px !important; /* Spațiu extra pentru timer pe mobil */
     padding: 1.2rem;
     max-width: 100%;
     border-radius: 12px;
+  }
+
+  .invite-claim-usdt-callout {
+    padding: 10px;
   }
   
   .claim-invite-container h2 {

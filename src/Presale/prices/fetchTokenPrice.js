@@ -34,12 +34,14 @@ const fetchTokenPrice = async (tokenAddress, key = "") => {
   const isBNB = !tokenAddress || tokenAddress === ethers.constants.AddressZero || key === "BNB";
 
   try {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const wallet = await signer.getAddress();
-    const contract = await getContractInstance("CELL_MANAGER");
+    // 🛑 CRITICAL FIX: DO NOT use window.ethereum for price fetching
+    // Use read-only instance (needsSigner = false)
+    const contract = await getContractInstance("CELL_MANAGER", false);
+    
+    // 🌐 Use a dummy address for the query to avoid requesting wallet access
+    const dummyWallet = "0x0000000000000000000000000000000000000001";
 
-    console.log("📄 CELL_MANAGER contract loaded");
+    console.log(`📄 CELL_MANAGER contract loaded for ${key} price fetch`);
 
     if (isBNB) {
       const rawBNBPrice = await contract.checkBNBPrice(); // 18 decimals
@@ -50,10 +52,10 @@ const fetchTokenPrice = async (tokenAddress, key = "") => {
 
     const cellId = await contract.getCurrentOpenCellId();
     const amountIn = ethers.utils.parseEther("1");
-    const bits = await contract.getExpectedBITSFromToken(cellId, tokenAddress, amountIn, wallet);
+    const bits = await contract.getExpectedBITSFromToken(cellId, tokenAddress, amountIn, dummyWallet);
 
     const bitsPerToken = parseFloat(ethers.utils.formatEther(bits));
-    const rawBitsPriceUSD = await contract.getCurrentBitsPriceUSD(wallet);
+    const rawBitsPriceUSD = await contract.getCurrentBitsPriceUSD(dummyWallet);
 
     let bitsPriceUSD =
       rawBitsPriceUSD.toString().length >= 18

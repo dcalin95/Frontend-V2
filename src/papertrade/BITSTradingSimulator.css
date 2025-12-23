@@ -843,10 +843,10 @@
   .order-side {
     width: 100%;
   }
-}
-
+  }
+  
 @media (max-width: 480px) {
   .market-grid-compact {
     grid-template-columns: 1fr;
-  }
+}
 }

@@ -49,6 +49,8 @@
 
 .invite-button-container {
   text-align: center;
+  width: 100%;
+  max-width: 700px;
   background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 20px;
@@ -119,6 +121,10 @@
   color: #f0f0f0;
 }
 
+.message.error {
+  color: #ff6b6b;
+}
+
 .code-section {
   margin-top: 20px;
 }
@@ -153,6 +159,7 @@
 }
 
 .invite-card {
+  width: 100%;
   max-width: 700px;
   text-align: center;
   padding: 30px;
@@ -164,6 +171,24 @@
   box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
   transition: all 0.3s ease;
   font-family: 'Inter', sans-serif;
+}
+
+.invite-card-small {
+  max-width: 700px;
+  padding: 22px;
+}
+
+.friend-code-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.friend-code-row .wallet-input {
+  width: min(420px, 100%);
+  margin-bottom: 0;
 }
 
 .invite-card:hover {
@@ -323,6 +348,13 @@
 }
 /* REGULA GENERALĂ PENTRU ECRANE MICI */
 @media (max-width: 768px) {
+  .invite-button-container,
+  .invite-card,
+  .invite-card-small {
+    width: 100%;
+    max-width: 100%;
+  }
+
   .invite-section {
     gap: 20px; /* Reduce spațiul între secțiuni */
     padding: 10px; /* Adaugă spațiu în jur */

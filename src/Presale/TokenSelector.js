@@ -1,5 +1,6 @@
 import React from "react";
 import "./TokenSelector.css";
+import TokenInline from "../components/common/TokenInline";
 
 // poți importa imagini dacă vrei: import BNBLogo from "../assets/icons/bnb.logo.png";
 
@@ -16,7 +17,7 @@ const TokenSelector = ({ selectedToken, setSelectedToken }) => {
             className={`token-button ${selectedToken === token ? "active" : ""}`}
             onClick={() => setSelectedToken(token)}
           >
-            {token}
+            {token === "USDT" ? <TokenInline token="USDT" /> : token}
           </button>
         ))}
       </div>

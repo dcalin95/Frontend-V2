@@ -20,33 +20,42 @@
   background: rgba(10, 10, 20, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 24px;
-  padding: 32px;
-  /* 🛑 STRICT WIDTH CONTROL FOR DESKTOP */
-  max-width: 450px !important; 
-  width: 450px !important;     
+  padding: 20px 16px; /* Padding redus */
+  /* 🛑 FIXED SIZE: Optimizat pentru texte uniforme și estetice */
+  width: 100%;
+  max-width: 650px !important; /* Lățime redusă pentru mai puțin spațiu */
   min-width: 320px !important;
   max-height: 90vh;
   overflow-y: auto;
+  overflow-x: hidden !important;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8),
               inset 0 0 60px rgba(20, 241, 149, 0.02);
   animation: slideUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
   position: relative;
   margin: auto;
+  box-sizing: border-box;
 }
 
-/* Network Selection Grid - Refactored Layout */
+/* Network Selection - Horizontal Layout (one next to another) */
 .network-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px; 
-  margin-top: 24px;
+  display: flex;
+  flex-direction: row;
+  gap: 12px; /* Gap optim pentru distribuție uniformă */
+  margin-top: 20px;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: stretch;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
 }
 
 .network-card {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  padding: 20px; 
+  border-radius: 14px;
+  padding: 14px 12px; /* Padding optim pentru texte uniforme */
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: center;
@@ -55,9 +64,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-  min-height: 160px; 
+  justify-content: flex-start;
+  gap: 6px;
+  min-height: 170px;
+  flex: 1 1 0; /* Distribuție uniformă */
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+.network-card:hover {
+  z-index: 10;
 }
 
 /* Specific Themes for Cards */
@@ -73,16 +91,27 @@
   box-shadow: 0 10px 30px rgba(153, 69, 255, 0.2), inset 0 0 20px rgba(20, 241, 149, 0.1);
 }
 
+.web3-card:hover {
+  background: linear-gradient(145deg, rgba(59, 153, 252, 0.1) 0%, rgba(20, 241, 149, 0.05) 100%);
+  border-color: rgba(59, 153, 252, 0.5);
+  box-shadow: 0 10px 30px rgba(59, 153, 252, 0.2), inset 0 0 20px rgba(20, 241, 149, 0.1);
+}
+
+.web3-card:hover .network-icon-wrapper {
+  box-shadow: 0 0 30px rgba(59, 153, 252, 0.4);
+  border-color: rgba(59, 153, 252, 0.6);
+}
+
 /* Icon Wrapper with Glow */
 .network-icon-wrapper {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.05);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   transition: transform 0.4s ease, box-shadow 0.4s ease;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -113,29 +142,172 @@
 .network-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   width: 100%;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
 }
 
 .network-name {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: #fff;
   margin-bottom: 8px;
   letter-spacing: 0.5px;
   text-transform: uppercase;
+  text-align: center;
+  width: 100%;
 }
 
 .network-chains {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
   line-height: 1.4;
   font-weight: 500;
   transition: color 0.3s ease;
+  margin-bottom: 0;
+  text-align: center;
+  width: 100%;
 }
 
 .network-card:hover .network-chains {
   color: rgba(255, 255, 255, 0.9);
+}
+
+/* Tooltip Styles - Similar to Web3Modal */
+.network-tooltip {
+  position: relative;
+  margin-top: auto;
+  padding-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.info-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(59, 153, 252, 0.2);
+  border: 1px solid rgba(59, 153, 252, 0.4);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: rgba(59, 153, 252, 1);
+  cursor: help;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+.network-card:hover .info-icon {
+  opacity: 1;
+  background: rgba(59, 153, 252, 0.3);
+  border-color: rgba(59, 153, 252, 0.6);
+  transform: scale(1.1);
+}
+
+.tooltip-content {
+  position: fixed;
+  background: rgba(20, 20, 30, 0.98);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 14px 16px;
+  width: 260px;
+  max-width: calc(100vw - 60px);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6),
+              0 0 0 1px rgba(255, 255, 255, 0.05);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 100000;
+  text-align: left;
+  white-space: normal;
+  word-wrap: break-word;
+  box-sizing: border-box;
+}
+
+.tooltip-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tooltip-icons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.tooltip-icon {
+  font-size: 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.tooltip-content:hover .tooltip-icon {
+  transform: scale(1.1);
+}
+
+.tooltip-header strong {
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: block;
+  margin-top: 4px;
+}
+
+.tooltip-body {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.network-tooltip:hover .tooltip-content {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.tooltip-content::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(20, 20, 30, 0.98);
+}
+
+.tooltip-content strong {
+  color: #fff;
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.network-tooltip:hover .tooltip-content {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(-2px);
 }
 
 /* Modal Title & Subtitle */
@@ -154,8 +326,9 @@
 
 .modal-subtitle {
   color: rgba(255, 255, 255, 0.5);
-  font-size: 1rem;
+  font-size: 0.85rem;
   text-align: center;
+  margin-bottom: 8px;
   margin-bottom: 10px;
 }
 
@@ -208,26 +381,31 @@
 .wallet-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px; /* Redus gap pentru mai compact */
   margin-top: 10px;
+  align-items: flex-start; /* Aliniere la stânga pentru butoane cu width: auto */
 }
 
 /* Wallet Option Button */
 .wallet-option {
-  display: flex;
+  display: inline-flex; /* Se adaptează la conținut */
   align-items: center;
-  gap: 16px;
+  gap: 10px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  padding: 16px 20px;
+  border-radius: 10px;
+  padding: 8px 12px; /* Mai compact */
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 500;
   color: #fff;
-  width: 100%;
+  width: auto; /* Se adaptează la text */
+  min-width: fit-content; /* Minim cât textul */
   text-align: left;
+  min-height: 44px; /* Mai compact */
+  max-height: 44px; /* Mai compact */
+  justify-content: flex-start;
 }
 
 /* Wallet Option Hover Effect */
@@ -240,33 +418,38 @@
 
 /* Wallet Icon inside button */
 .wallet-option img {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 24px; /* Mai mic */
+  height: 24px; /* Mai mic */
+  border-radius: 6px;
   object-fit: cover;
   flex-shrink: 0; /* Prevents squishing */
 }
 
 /* Back Button */
 .back-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   color: #fff;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 0.9rem;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
   margin-bottom: 20px;
+  margin-top: 0;
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  position: relative;
+  z-index: 10;
 }
 
 .back-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(20, 241, 149, 0.3);
-  transform: translateX(-2px);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(20, 241, 149, 0.5);
+  transform: translateX(-3px);
+  box-shadow: 0 4px 12px rgba(20, 241, 149, 0.2);
 }
 
 /* Close Button (Global) */
@@ -338,6 +521,57 @@
   to { transform: translateY(0); opacity: 1; }
 }
 
+/* Error Message Box */
+.wallet-error-box {
+  background: rgba(255, 100, 100, 0.1) !important;
+  border: 1px solid rgba(255, 100, 100, 0.3) !important;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 16px;
+  color: #ff6464;
+  font-size: 0.9rem;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Clear Cache / Reset Button */
+.clear-cache-btn {
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px;
+  background: rgba(255, 50, 50, 0.15);
+  border: 1px solid rgba(255, 50, 50, 0.4);
+  border-radius: 12px;
+  color: #ff6464;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+}
+
+.clear-cache-btn:hover {
+  background: rgba(255, 50, 50, 0.25);
+  border-color: rgba(255, 50, 50, 0.6);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 50, 50, 0.3);
+}
+
+.clear-cache-btn:active {
+  transform: translateY(0);
+  background: rgba(255, 50, 50, 0.2);
+}
+
+.clear-cache-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
 /* Mobile Responsive Updates */
 @media (max-width: 768px) {
   .unified-wallet-modal {
@@ -383,10 +617,17 @@
   }
 }
 
-/* 🛑 SAFETY NET: FORCE DESKTOP SIZE */
-@media (min-width: 769px) {
+/* 🛑 SAFETY NET: FORCE DESKTOP SIZE - Optimizat pentru texte uniforme */
+@media (min-width: 769px) and (max-width: 1200px) {
   .unified-wallet-modal {
-    width: 450px !important;
-    max-width: 450px !important;
+    width: 650px !important; /* Lățime redusă */
+    max-width: 650px !important;
+  }
+}
+
+@media (min-width: 1201px) {
+  .unified-wallet-modal {
+    width: 650px !important; /* Lățime redusă */
+    max-width: 650px !important;
   }
 }

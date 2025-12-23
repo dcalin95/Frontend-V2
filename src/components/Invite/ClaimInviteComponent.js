@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { ethers } from "ethers";
 import "./ClaimInviteComponent.css";
 import nodeRewardsService, { formatBitsAmount, validateWalletConnection } from "../../services/nodeRewardsService.js";
+import { CONTRACT_MAP } from "../../contract/contractMap";
+import TokenInline from "../common/TokenInline";
+import CosmicRewardBurst from "../common/CosmicRewardBurst";
+import { getBackendUrl } from "../../utils/getBackendUrl";
 
-const FULL_BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
-const API_ROOT = FULL_BACKEND_URL.replace("/api/invite", "");
-
-const NODE_CONTRACT_ADDRESS = process.env.REACT_APP_NODE_CONTRACT_ADDRESS || process.env.REACT_APP_NODE;
-const TOKEN_CONTRACT_ADDRESS = process.env.REACT_APP_TOKEN_CONTRACT_ADDRESS || process.env.REACT_APP_BITS_TOKEN;
+const TOKEN_CONTRACT_ADDRESS =
+  process.env.REACT_APP_TOKEN_CONTRACT_ADDRESS ||
+  process.env.REACT_APP_BITS_TOKEN ||
+  CONTRACT_MAP?.BITS_TOKEN?.address;
 
 const ClaimInviteComponent = () => {
   const [referralCode, setReferralCode] = useState("");
@@ -16,32 +18,69 @@ const ClaimInviteComponent = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [claiming, setClaiming] = useState(false);
+  const [showBurst, setShowBurst] = useState(false);
+  const [burstAmount, setBurstAmount] = useState(0);
+  const [burstUsdt, setBurstUsdt] = useState(null);
+  const [bitsPriceMillicents, setBitsPriceMillicents] = useState(null);
+
+  useEffect(() => {
+    const fetchBitsPrice = async () => {
+      try {
+        const BACKEND_URL = getBackendUrl();
+        const res = await fetch(`${BACKEND_URL}/api/presale/current`);
+        if (!res.ok) return;
+        const data = await res.json().catch(() => ({}));
+        const p = Number(data?.price);
+        if (Number.isFinite(p) && p > 0) setBitsPriceMillicents(p);
+      } catch (_) {}
+    };
+    fetchBitsPrice();
+  }, []);
+
+  const connectWallet = async () => {
+    if (!window.ethereum) {
+      setMessage("❌ Please install MetaMask to claim your reward.");
+      return;
+    }
+    try {
+      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+      if (accounts.length > 0) {
+        setWalletAddress(accounts[0]);
+        setMessage("");
+      } else {
+        setMessage("⚠️ Please connect your wallet.");
+      }
+    } catch (err) {
+      if (err?.code === 4001) return; // user rejected
+      console.error("Wallet Error:", err);
+      setMessage("❌ Wallet access denied.");
+    }
+  };
 
   // 1️⃣ Detectare automată a wallet-ului conectat
   useEffect(() => {
     const detectWallet = async () => {
-      if (!window.ethereum) {
-        setMessage("❌ Please install MetaMask to claim your reward.");
-        return;
-      }
+      if (!window.ethereum) return;
 
       try {
-        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        // 🛑 CRITICAL: do NOT prompt on mount. Silent check only.
+        const accounts = await window.ethereum.request({ method: "eth_accounts" });
         if (accounts.length > 0) {
           setWalletAddress(accounts[0]);
+          setMessage("");
         } else {
-          setMessage("⚠️ Please connect your wallet.");
+          setMessage("");
         }
       } catch (err) {
         console.error("Wallet Error:", err);
-        setMessage("❌ Wallet access denied.");
+        // Silent failure on mount
       }
     };
 
     detectWallet();
   }, []);
 
-  // 🎯 HYBRID: Check code directly from Node.sol
+  // 🔎 Check code directly from Node.sol
   const handleCheckCode = async () => {
     setLoading(true);
     setMessage("");
@@ -60,55 +99,43 @@ const ClaimInviteComponent = () => {
     }
 
     try {
-      // 🔗 Read directly from Node.sol contract
       await nodeRewardsService.initialize();
-      const codeInfo = await nodeRewardsService.getCodeRewardInfo(referralCode);
+      const codeInfo = await nodeRewardsService.getCodeRewardInfo(referralCode, TOKEN_CONTRACT_ADDRESS);
       
+      if (!codeInfo?.success) {
+        setMessage(`❌ ${codeInfo?.error || "Failed to read from Node.sol"}`);
+        return;
+      }
+
       if (codeInfo.hasRewards) {
-        // Calculate reward (assuming 10% as in old backend)
-        const rewardAmount = parseFloat(codeInfo.codeBalance) * 0.10;
-        
+        const bitsDisplay = formatBitsAmount(codeInfo.codeBalance);
+        const bitsNum = Number(bitsDisplay || 0);
+        const priceUsd = bitsPriceMillicents ? (Number(bitsPriceMillicents) / 1000) : null;
+        const estUsdt = (priceUsd && Number.isFinite(priceUsd) && priceUsd > 0)
+          ? (Math.floor(bitsNum * priceUsd * 1e6) / 1e6)
+          : null;
+
         setRewardInfo({
-          rewardPercentage: 10,
-          amountPurchased: formatBitsAmount(codeInfo.codeBalance),
-          rewardAmount: formatBitsAmount(rewardAmount.toString()),
+          codeBalance: bitsDisplay,
           firstReferralRate: codeInfo.firstReferralRate,
           secondReferralRate: codeInfo.secondReferralRate
         });
-        setMessage("✅ Reward available from blockchain!");
+        setMessage("✅ Rewards found on-chain for this code.");
+        setBurstAmount(bitsDisplay);
+        setBurstUsdt(estUsdt != null ? Number(estUsdt).toFixed(4) : null);
+        setShowBurst(true);
       } else {
-        setMessage("❌ No rewards available for this referral code.");
+        setMessage("❌ No on-chain rewards available for this code.");
       }
     } catch (error) {
       console.error("❌ Error checking code from Node.sol:", error);
-      
-      // 🔄 Fallback to backend API if Node.sol fails
-      try {
-        console.log("🔄 Fallback to backend API...");
-        const response = await fetch(`${API_ROOT}/api/claim/check`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ referralCode, wallet: walletAddress }),
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-          setRewardInfo(result);
-          setMessage("✅ Reward available (via backend)!");
-        } else {
-          setMessage(`❌ ${result.message}`);
-        }
-      } catch (backendError) {
-        console.error("❌ Backend also failed:", backendError);
-        setMessage("❌ Could not check reward. Please try again.");
-      }
+      setMessage("❌ Could not check reward. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  // 🎯 HYBRID: Claim directly via Node.sol service
+  // ✅ Claim via Node.sol (MetaMask tx)
   const handleClaim = async () => {
     setClaiming(true);
     setMessage("");
@@ -122,70 +149,15 @@ const ClaimInviteComponent = () => {
         return;
       }
 
-      // 🔗 Use Node.sol service for claiming
-      const result = await nodeRewardsService.claimReferralReward(
-        referralCode, 
-        [TOKEN_CONTRACT_ADDRESS]
-      );
-
-      if (result.success) {
-        setMessage(`🎉 ${result.message} (TX: ${result.txHash?.slice(0, 10)}...)`);
-        setRewardInfo(null);
-        setReferralCode("");
-      } else {
-        // 🔄 Fallback to backend API if Node.sol fails
-        console.log("🔄 Fallback to backend claim...");
-        
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        const userAddress = await signer.getAddress();
-        const deadline = Math.floor(Date.now() / 1000) + 3600;
-
-        const domain = {
-          name: "Node",
-          version: "1",
-          chainId: 97,
-          verifyingContract: NODE_CONTRACT_ADDRESS,
-        };
-
-        const types = {
-          Claim: [
-            { name: "tokens", type: "address[]" },
-            { name: "code", type: "string" },
-            { name: "user", type: "address" },
-            { name: "deadline", type: "uint256" },
-          ],
-        };
-
-        const value = {
-          tokens: [TOKEN_CONTRACT_ADDRESS],
-          code: referralCode,
-          user: userAddress,
-          deadline,
-        };
-
-        const signature = await signer._signTypedData(domain, types, value);
-        const { r, s, v } = ethers.utils.splitSignature(signature);
-
-        const claimResponse = await fetch(`${API_ROOT}/api/claim/claim`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            referralCode,
-            signature: { r, s, v },
-          }),
-        });
-
-        const claimResult = await claimResponse.json();
-
-        if (claimResponse.ok) {
-          setMessage("🎉 Reward claimed successfully (via backend)!");
-          setRewardInfo(null);
-          setReferralCode("");
-        } else {
-          setMessage(`❌ ${claimResult.message || result.message}`);
-        }
+      const result = await nodeRewardsService.claimReferralReward(referralCode, [TOKEN_CONTRACT_ADDRESS]);
+      if (!result?.success) {
+        setMessage(`❌ ${result?.error || "Failed to claim"}`);
+        return;
       }
+
+      setMessage(`🎉 Claimed successfully! (TX: ${String(result.txHash || "").slice(0, 10)}...)`);
+      setRewardInfo(null);
+      setReferralCode("");
     } catch (error) {
       console.error("❌ Claim Error:", error);
       setMessage("❌ Failed to claim reward. Please try again.");
@@ -196,7 +168,40 @@ const ClaimInviteComponent = () => {
 
   return (
     <div className="claim-invite-container">
-      <h2>🎁 Claim Your Invite Reward (HYBRID)</h2>
+      <CosmicRewardBurst
+        open={showBurst}
+        onClose={() => setShowBurst(false)}
+        amount={burstAmount}
+        token="BITS"
+        title="Invite reward detected"
+        secondaryAmount={burstUsdt}
+        secondaryToken="USDT"
+        subtitle="On-chain reward detected. Claim now, or use Rewards Hub to claim in USDT."
+        autoCloseMs={6500}
+      />
+      <h2>🎁 Claim Invite Reward (Node.sol)</h2>
+      <div className="invite-claim-usdt-callout">
+        <div className="invite-claim-usdt-title">
+          Want to claim in{" "}
+          <span className="invite-claim-usdt-badge">
+            <TokenInline token="USDT" size={14} />
+          </span>
+          ?
+        </div>
+        <div className="invite-claim-usdt-text">
+          Open <strong>Rewards Hub</strong> to claim Invite + Telegram rewards in{" "}
+          <strong><TokenInline token="BITS" /></strong> or <strong><TokenInline token="USDT" /></strong>.
+        </div>
+        <a className="invite-claim-usdt-link" href="/#/rewards-hub">
+          Open Rewards Hub →
+        </a>
+      </div>
+
+      {!walletAddress && (
+        <button onClick={connectWallet} className="claim-button">
+          🔗 Connect Wallet
+        </button>
+      )}
 
       <input
         type="text"
@@ -210,14 +215,22 @@ const ClaimInviteComponent = () => {
         {loading ? "Checking..." : "Check Code"}
       </button>
 
-      {message && <p className="message">{message}</p>}
+      {message && (
+        <p className={`message ${(message.startsWith("✅") || message.startsWith("🎉")) ? "success" : "error"}`}>
+          {message}
+        </p>
+      )}
 
       {rewardInfo && (
         <div className="reward-info">
           <p>
-            You have <strong>{rewardInfo.rewardPercentage}%</strong> to claim from{" "}
-            <strong>{rewardInfo.amountPurchased} $BITS</strong>, which is{" "}
-            <strong>{rewardInfo.rewardAmount} $BITS</strong>.
+            Code balance:{" "}
+            <strong>
+              {rewardInfo.codeBalance} <TokenInline token="BITS" dollar />
+            </strong>
+            {typeof rewardInfo.firstReferralRate === "number" ? (
+              <> • Rates: <strong>{rewardInfo.firstReferralRate}%</strong> / <strong>{rewardInfo.secondReferralRate}%</strong></>
+            ) : null}
           </p>
           <button onClick={handleClaim} className="claim-button" disabled={claiming}>
             {claiming ? "Claiming..." : "Claim Now"}

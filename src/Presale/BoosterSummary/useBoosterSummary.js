@@ -43,7 +43,8 @@ export const useBoosterSummary = () => {
     try {
       setLoading(true);
 
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      // 🛑 READ-ONLY: use public RPC for reads to avoid wallet popups / injected conflicts
+      const provider = new ethers.providers.JsonRpcProvider("https://bsc-dataseed1.binance.org");
       const nodeContract = new ethers.Contract(CONTRACTS.NODE.address, CONTRACTS.NODE.abi, provider);
       const referralContract = new ethers.Contract(CONTRACTS.REFERRAL?.address || "", CONTRACTS.REFERRAL?.abi || [], provider);
       const telegramRewardContract = new ethers.Contract(CONTRACTS.TELEGRAM_REWARD.address, CONTRACTS.TELEGRAM_REWARD.abi, provider);
@@ -135,13 +136,9 @@ export const useBoosterSummary = () => {
   useEffect(() => {
     if (walletAddress) {
       fetchData();
-      window.ethereum?.on("chainChanged", fetchData);
-      window.ethereum?.on("accountsChanged", fetchData);
     }
 
     return () => {
-      window.ethereum?.removeListener("chainChanged", fetchData);
-      window.ethereum?.removeListener("accountsChanged", fetchData);
     };
   }, [walletAddress, fetchData]);
 

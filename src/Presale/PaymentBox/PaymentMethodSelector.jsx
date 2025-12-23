@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './PaymentMethodSelector.css';
 import './PaymentMethodSelector.mobile.css'; // 📱 Separate Mobile System
+import TokenInline from '../../components/common/TokenInline';
 
 // Icons (you can replace with actual imports)
 const icons = {
@@ -83,7 +84,11 @@ const PaymentMethodSelector = ({
       methods.push({
         id: 'crypto',
         name: 'Crypto Payment',
-        description: 'Pay with BNB, ETH, USDT, SOL, etc.',
+        description: (
+          <>
+            Pay with BNB, ETH, <TokenInline token="USDT" />, SOL, etc.
+          </>
+        ),
         icon: icons.crypto,
         fees: '0-0.5%',
         processingTime: '1-5 min',
@@ -121,7 +126,9 @@ const PaymentMethodSelector = ({
     >
       <div className="payment-selector-header">
         <h3>Choose Payment Method</h3>
-        <p>Select how you'd like to purchase ${amount} worth of $BITS</p>
+        <p>
+          Select how you'd like to purchase ${amount} worth of <TokenInline token="BITS" dollar />
+        </p>
       </div>
 
       {loading ? (

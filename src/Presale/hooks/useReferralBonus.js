@@ -11,14 +11,15 @@ const useReferralBonus = (walletAddress) => {
 
   useEffect(() => {
     const fetchReferralBonus = async () => {
-      if (!walletAddress || !window.ethereum) {
+      if (!walletAddress) {
         setLoading(false);
         return;
       }
 
       try {
         setLoading(true);
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        // 🛑 READ-ONLY: use public RPC for reads
+        const provider = new ethers.providers.JsonRpcProvider("https://bsc-dataseed1.binance.org");
         const nodeContract = new ethers.Contract(
           CONTRACTS.NODE.address,
           CONTRACTS.NODE.abi,

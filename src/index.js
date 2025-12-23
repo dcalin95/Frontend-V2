@@ -14,6 +14,16 @@ import './Presale/CrystalClear.css'; // 💎 Crystal clear text - NO BLUR, NO SH
 import AppWrapper from './AppWrapper';
 import reportWebVitals from './reportWebVitals';
 
+// 🛑 CRITICAL: CLEAR ALL WALLET STORAGE ON LOAD TO PREVENT AUTO-CONNECT
+(function() {
+  if (typeof window !== 'undefined') {
+    console.log('🚀 [FINAL_FIX_DEBUG] Clearing all storage now!');
+    localStorage.clear();
+    sessionStorage.clear();
+    console.log('✅ [FINAL_FIX_DEBUG] Storage wiped clean');
+  }
+})();
+
 // 🔧 KILL SWITCH: UNREGISTER ALL SERVICE WORKERS IMMEDIATELY
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then(function(registrations) {

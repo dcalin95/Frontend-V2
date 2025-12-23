@@ -194,6 +194,9 @@ export const hasPendingConnection = () => {
 export const prepareForConnection = async () => {
   console.log("🔧 [WalletFix] Preparing wallet connection...");
   
+  // 🛑 CRITICAL: We skip resetMetaMaskRequests() here because it touches window.ethereum
+  // If Phantom is hijacking window.ethereum, touching it will trigger a Phantom popup
+  
   // Check for pending connections
   if (hasPendingConnection()) {
     console.log("⚠️ [WalletFix] Detected pending connection, clearing...");
@@ -208,9 +211,6 @@ export const prepareForConnection = async () => {
     clearWalletCache();
     localStorage.setItem('wagmi.lastCacheClear', now.toString());
   }
-  
-  // Reset MetaMask
-  await resetMetaMaskRequests();
   
   console.log("✅ [WalletFix] Ready for connection");
 };
@@ -252,7 +252,7 @@ export const handleConnectionError = async (error) => {
 };
 
 // Export all utilities
-export default {
+const walletConnectionFix = {
   clearWalletCache,
   resetMetaMaskRequests,
   forceDisconnectAll,
@@ -261,4 +261,6 @@ export default {
   prepareForConnection,
   handleConnectionError,
 };
+
+export default walletConnectionFix;
 

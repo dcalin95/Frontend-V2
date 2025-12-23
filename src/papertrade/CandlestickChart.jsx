@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createChart, ColorType } from 'lightweight-charts';
+import BrandLogo from '../components/BrandLogo';
 import './CandlestickChart.css';
 
 const CandlestickChart = ({ 
@@ -264,21 +265,15 @@ const CandlestickChart = ({
     >
       {/* Professional Header (Binance-style) - Optional */}
       {showHeader && (
+      <>
       <div className="chart-header-pro">
-        <div className="chart-title-section">
-          <h3 className="chart-symbol">{symbol.replace('USDT', '/USDT')}</h3>
-          {currentPrice && (
-            <div className="price-info-pro">
-              <span className="current-price-big">
-                ${currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </span>
-              {priceChange !== null && (
-                <span className={`price-change-pro ${priceChange >= 0 ? 'positive' : 'negative'}`}>
-                  {priceChange >= 0 ? '+' : ''}{priceChange.toFixed(2)}%
-                </span>
-              )}
-            </div>
-          )}
+        {/* Logo BITS + Slogan */}
+        <div className="chart-branding">
+          <BrandLogo size="sm" />
+          <div className="chart-slogan">
+            <span className="slogan-main">From Bits to Bitcoin</span>
+            <span className="slogan-sub">Powering DeFi Trading</span>
+          </div>
         </div>
         
         <div className="chart-actions">
@@ -307,6 +302,40 @@ const CandlestickChart = ({
           )}
         </div>
       </div>
+      
+      {/* Price & Stats Bar (Second Row) */}
+      <div className="chart-price-bar">
+        <div className="price-stats-left">
+          <span className="stat-label">Symbol:</span>
+          <span className="stat-value">{symbol.replace('USDT', '/USDT')}</span>
+          
+          {currentPrice && (
+            <>
+              <div className="stat-divider"></div>
+              <span className="stat-label">Price:</span>
+              <span className="stat-value price-highlight">
+                ${currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </span>
+              
+              <div className="stat-divider"></div>
+              <span className="stat-label">24h Change:</span>
+              {priceChange !== null && (
+                <span className={`stat-value ${priceChange >= 0 ? 'positive' : 'negative'}`}>
+                  {priceChange >= 0 ? '+' : ''}{priceChange.toFixed(2)}%
+                </span>
+              )}
+            </>
+          )}
+        </div>
+        
+        <div className="price-stats-right">
+          <span className="data-source-badge">
+            <i className="fas fa-database"></i>
+            Binance API
+          </span>
+        </div>
+      </div>
+      </>
       )}
       {/* End Header */}
 

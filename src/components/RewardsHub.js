@@ -3,11 +3,20 @@ import WalletContext from "../context/WalletContext";
 import unifiedRewardsService from "../services/unifiedRewardsService";
 import { ethers } from "ethers";
 import { CONTRACT_MAP as CONTRACTS } from "../contract/contractMap";
-import { toBitsInteger, formatBITS, logBITSConversion } from "../utils/bitsUtils";
+import { toBitsInteger, formatBITS } from "../utils/bitsUtils";
+import bitsLogo from "../assets/logo.png";
+import usdtLogo from "../assets/icons/tether-usdt-logo.png";
+import TokenInline from "./common/TokenInline";
+import CosmicRewardBurst from "./common/CosmicRewardBurst";
+import RealLeaderboard from "./RealLeaderboard";
+import ChampionsLeaderboard from "./ChampionsLeaderboard";
+import HistoryLeaderboard from "./HistoryLeaderboard";
+import { getBackendUrl } from "../utils/getBackendUrl";
 import "./RewardsHub.desktop.css";
 import "./RewardsHub.mobile.css";
 
 const RewardsHub = () => {
+  // signer is still needed for AdditionalReward on-chain actions (claim/stake additional bonus)
   const { signer, walletAddress } = useContext(WalletContext);
   const [rewards, setRewards] = useState({
     totalPending: 0,
@@ -26,16 +35,63 @@ const RewardsHub = () => {
   const [claiming, setClaiming] = useState(false);
   const [claimingAdditional, setClaimingAdditional] = useState(false);
   const [stakingAdditional, setStakingAdditional] = useState(false);
-  const [staking, setStaking] = useState(false);
   const [statusMsg, setStatusMsg] = useState("");
   const [activeTab, setActiveTab] = useState('summary');
   const [showModal, setShowModal] = useState(false);
   const [modalPayload, setModalPayload] = useState(null);
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+  const [showRealLeaderboard, setShowRealLeaderboard] = useState(false);
+  const [showChampionsLeaderboard, setShowChampionsLeaderboard] = useState(false);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const BACKEND_URL = getBackendUrl();
+  const [bitsPriceMillicents, setBitsPriceMillicents] = useState(null);
+  const [telegramPayoutCurrency, setTelegramPayoutCurrency] = useState("BITS");
+  const [referralPayoutCurrency, setReferralPayoutCurrency] = useState("BITS");
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [confirmPayload, setConfirmPayload] = useState(null);
+  const [showBurst, setShowBurst] = useState(false);
+  const [burstAmount, setBurstAmount] = useState(0);
+  const [burstUsdt, setBurstUsdt] = useState(null);
+  const [burstTitle, setBurstTitle] = useState("Reward detected ✨");
 
   const formatUSD = (v) => {
     const n = Number(v || 0);
     return `$${n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
+  const TokenAmount = ({ value, token, dollar }) => (
+    <span className="token-amount">
+      <span className="token-amount-value">{value}</span>{" "}
+      <TokenInline token={token} dollar={dollar} />
+    </span>
+  );
+
+  const openWalletBox = () => {
+    try {
+      window.dispatchEvent(new CustomEvent('openWalletBox'));
+    } catch (_) {}
+  };
+
+  const [leaderboardJitterEnabled, setLeaderboardJitterEnabled] = useState(true);
+
+  const fetchLeaderboardDemo = async () => {
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/leaderboard/demo`);
+      if (!res.ok) return;
+      const data = await res.json();
+      if (typeof data?.jitterEnabled === "boolean") {
+        setLeaderboardJitterEnabled(data.jitterEnabled);
+      }
+    } catch (_) {}
+  };
+
+  const fetchBitsPrice = async () => {
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/presale/current`);
+      if (!res.ok) return;
+      const data = await res.json();
+      const p = Number(data?.price);
+      if (Number.isFinite(p) && p > 0) setBitsPriceMillicents(p);
+    } catch (_) {}
   };
 
   // Inline SVGs (same neon accent as sidebar)
@@ -60,11 +116,38 @@ const RewardsHub = () => {
 
   // Load rewards data
   useEffect(() => {
+    // Always fetch live BITS price for public preview / USDT estimates copy.
+    fetchBitsPrice();
+    fetchLeaderboardDemo();
     if (walletAddress) {
       loadRewards();
       loadAdditionalBonus();
     }
+    // We intentionally trigger on wallet changes only; functions are stable enough for this component.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletAddress]);
+
+  // Cosmic burst when we detect pending rewards (once per page load).
+  useEffect(() => {
+    if (!walletAddress) return;
+    if (rewards.loading) return;
+    if (showBurst) return;
+
+    const tPending = Number(rewards.telegram?.pending || 0);
+    const rPending = Number(rewards.unified?.byType?.referral?.pending || 0);
+    const total = tPending + rPending;
+    if (!(total > 0)) return;
+
+    const topType = tPending >= rPending ? "Telegram Activity" : "Invite / Referral";
+    const topAmt = Math.max(tPending, rPending);
+
+    setBurstTitle(`${topType} reward found`);
+    setBurstAmount(toBitsInteger(topAmt));
+    const est = estimateUsdt(topAmt);
+    setBurstUsdt(est != null ? Number(est).toFixed(4) : null);
+    setShowBurst(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [walletAddress, rewards.loading, rewards.telegram?.pending, rewards.unified?.byType?.referral?.pending]);
 
   const loadAdditionalBonus = async () => {
     try {
@@ -142,7 +225,7 @@ const RewardsHub = () => {
       // Get Telegram rewards separately
       let telegramRewards = { pending: 0, claimed: 0 };
       try {
-        const telegramResponse = await fetch(`https://backend-server-f82y.onrender.com/api/telegram-rewards/reward/${walletAddress}`);
+        const telegramResponse = await fetch(`${BACKEND_URL}/api/telegram-rewards/reward/${walletAddress}`);
         if (telegramResponse.ok) {
           const telegramData = await telegramResponse.json();
           console.log("💬 RewardsHub: Telegram rewards data:", telegramData);
@@ -160,7 +243,7 @@ const RewardsHub = () => {
       // Get Invite/Referral code info
       let inviteRewards = { pending: 0, claimed: 0, hasCode: false };
       try {
-        const inviteResponse = await fetch(`https://backend-server-f82y.onrender.com/api/invite/check-code/${walletAddress}`);
+        const inviteResponse = await fetch(`${BACKEND_URL}/api/invite/check-code/${walletAddress}`);
         if (inviteResponse.ok) {
           const inviteData = await inviteResponse.json();
           console.log("👥 RewardsHub: Invite data:", inviteData);
@@ -220,94 +303,192 @@ const RewardsHub = () => {
     }
   };
 
-  // Claim rewards to wallet
-  const handleClaimToWallet = async () => {
-    // 1) Dacă există Telegram pending, facem credit on-chain apoi claim din contract cu user signer
+  const parseBackendError = async (res) => {
+    const rawText = await res.text().catch(() => "");
+    let json;
+    try { json = rawText ? JSON.parse(rawText) : {}; } catch (_) { json = null; }
+    const msg = json?.error || json?.message || rawText || `HTTP ${res.status}`;
+    return { msg, json };
+  };
+
+  const estimateUsdt = (bits) => {
+    if (!bitsPriceMillicents) return null;
+    const priceUsd = Number(bitsPriceMillicents) / 1000;
+    if (!Number.isFinite(priceUsd) || priceUsd <= 0) return null;
+    const b = Number(bits || 0);
+    if (!Number.isFinite(b) || b <= 0) return 0;
+    return Math.floor(b * priceUsd * 1e6) / 1e6;
+  };
+
+  const openConfirmForTelegram = async () => {
+    if (!walletAddress) return;
+    setStatusMsg("");
+    setConfirmPayload(null);
+    setShowConfirm(true);
     try {
-      const pendingTelegram = rewards.telegram?.pending || 0;
-      if (pendingTelegram > 0) {
-        try {
-          setStatusMsg("🔄 Crediting Telegram reward on-chain...");
-          console.log("[RewardsHub] credit-bits →", {
-            url: `${BACKEND_URL}/api/telegram-rewards/credit-bits`,
-            wallet: walletAddress,
-            bits: pendingTelegram
-          });
-          const res = await fetch(`${BACKEND_URL}/api/telegram-rewards/credit-bits`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ wallet: walletAddress, bits: pendingTelegram })
-          });
-          const rawText = await res.text().catch(() => "");
-          let json;
-          try { json = rawText ? JSON.parse(rawText) : {}; } catch (_) { json = { rawText }; }
-          console.log("[RewardsHub] credit-bits ←", res.status, json);
-          if (!res.ok) throw new Error(json?.error || rawText || `HTTP ${res.status}`);
-        } catch (creditErr) {
-          setStatusMsg(`❌ Credit failed: ${creditErr.message}`);
-          console.error("[RewardsHub] Credit error", creditErr);
-          return;
-        }
-
-        if (!signer) {
-          setStatusMsg("❌ Connect wallet first to sign the claim");
-          return;
-        }
-
-        try {
-          setStatusMsg("⏳ Claiming from TelegramReward contract...");
-          const telegramContract = new ethers.Contract(
-            CONTRACTS.TELEGRAM_REWARD.address,
-            CONTRACTS.TELEGRAM_REWARD.abi,
-            signer
-          );
-          const signerAddr = await signer.getAddress();
-          console.log("[RewardsHub] claimAll() with signer", signerAddr, "contract", CONTRACTS.TELEGRAM_REWARD.address);
-          const tx = await telegramContract.claimAll();
-          await tx.wait();
-          setStatusMsg(`✅ Claimed Telegram rewards. Tx: ${tx.hash.slice(0, 10)}…`);
-          console.log("[RewardsHub] claimAll confirmed", tx.hash);
-          setModalPayload({
-            title: 'Telegram Claim Successful',
-            lines: [
-              `Amount: ${toBitsInteger(pendingTelegram)} $BITS`,
-              `USD (approx): ${formatUSD((rewards?.unified?.price||1)/1000 * pendingTelegram)}`,
-              `Tx: ${tx.hash}`,
-              `How it works: Your Telegram activity (time + messages) unlocks bundles of rewards. Credit happens on-chain, then you can claim or stake.`
-            ],
-            tx: tx.hash
-          });
-          setShowModal(true);
-
-          // Notify backend to sync DB counters
-          try {
-            await fetch(`${BACKEND_URL}/api/telegram-rewards/mark-claimed`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ wallet: walletAddress, amountBits: pendingTelegram, txHash: tx.hash })
-            });
-            console.log("[RewardsHub] mark-claimed sent");
-          } catch (e) {
-            console.warn("[RewardsHub] mark-claimed failed", e);
-          }
-        } catch (claimErr) {
-          setStatusMsg(`❌ On-chain claim failed: ${claimErr.message}`);
-          console.error("[RewardsHub] Claim error", claimErr);
-          return;
-        }
+      const res = await fetch(`${BACKEND_URL}/api/telegram-rewards/quote`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ wallet: walletAddress, payoutCurrency: telegramPayoutCurrency })
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data?.ok) {
+        const msg = data?.error || `HTTP ${res.status}`;
+        setConfirmPayload({ ok: false, title: "Telegram Claim (pre-check failed)", lines: [msg], canPay: false });
+        return;
       }
+      const lines = [
+        `Wallet: ${walletAddress}`,
+        `Reward: ${toBitsInteger(Number(data.pending_bits || 0))} $BITS`,
+        telegramPayoutCurrency === "USDT"
+          ? `Estimated payout: ${Number(data.payout_usdt || 0)} USDT (rate: $${(Number(data.price_millicents || 0) / 1000).toFixed(6)} / BITS)`
+          : `Payout: ${toBitsInteger(Number(data.pending_bits || 0))} $BITS`,
+        telegramPayoutCurrency === "USDT"
+          ? `USDT cap: ${Number(data.usdt_spent_today || 0)} / ${Number(data.usdt_daily_cap || 0)} spent today`
+          : null,
+        data?.reason ? `Status: ${data.reason}` : "Status: OK"
+      ].filter(Boolean);
+      setConfirmPayload({
+        ok: true,
+        kind: "telegram",
+        title: "Confirm Telegram Claim",
+        lines,
+        canPay: !!data.canPay
+      });
+    } catch (e) {
+      setConfirmPayload({ ok: false, title: "Telegram Claim (pre-check error)", lines: [e.message], canPay: false });
+    }
+  };
 
-      // 2) Refresh UI
+  const executeTelegramPayout = async () => {
+    if (!walletAddress) return;
+    setClaiming(true);
+    setStatusMsg(`⏳ Paying Telegram rewards in ${telegramPayoutCurrency}...`);
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/telegram-rewards/payout`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ wallet: walletAddress, payoutCurrency: telegramPayoutCurrency })
+      });
+      if (!res.ok) {
+        const { msg, json } = await parseBackendError(res);
+        if (res.status === 403 && (msg || "").toLowerCase().includes("cap")) {
+          setTelegramPayoutCurrency("BITS");
+          setStatusMsg(`⚠️ USDT daily cap reached. Switched to BITS — please claim again.`);
+        } else {
+          setStatusMsg(`❌ Telegram payout failed: ${msg}`);
+        }
+        console.warn("[RewardsHub] telegram payout failed", res.status, json || msg);
+        return;
+      }
+      const data = await res.json();
+      const paidBits = Number(data?.payout_bits || 0);
+      const paidUsdt = data?.payout_usdt;
+      setStatusMsg(`✅ Telegram payout sent. Tx: ${(data?.tx_hash || "").slice(0, 10)}…`);
+      setModalPayload({
+        title: "Telegram Payout Successful",
+        lines: [
+          `Payout: ${telegramPayoutCurrency === "USDT" ? `${paidUsdt} USDT` : `${toBitsInteger(paidBits)} $BITS`}`,
+          telegramPayoutCurrency === "USDT" && data?.price_millicents ? `Rate: $${(Number(data.price_millicents) / 1000).toFixed(6)} per BITS` : null,
+          `Tx: ${data?.tx_hash}`
+        ].filter(Boolean),
+        tx: data?.tx_hash
+      });
+      setShowModal(true);
       await loadRewards();
-    } catch (error) {
-      console.error("❌ Claim failed:", error);
-      setStatusMsg(`❌ Claim failed: ${error.message}`);
+    } catch (e) {
+      setStatusMsg(`❌ Telegram payout error: ${e.message}`);
+    } finally {
+      setClaiming(false);
+    }
+  };
+
+  const openConfirmForReferral = async () => {
+    if (!walletAddress) return;
+    setStatusMsg("");
+    setConfirmPayload(null);
+    setShowConfirm(true);
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/rewards/quote-referral`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ wallet: walletAddress, payoutCurrency: referralPayoutCurrency })
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data?.ok) {
+        const msg = data?.error || `HTTP ${res.status}`;
+        setConfirmPayload({ ok: false, title: "Referral Claim (pre-check failed)", lines: [msg], canPay: false });
+        return;
+      }
+      const lines = [
+        `Wallet: ${walletAddress}`,
+        `Reward: ${toBitsInteger(Number(data.pending_bits || 0))} $BITS`,
+        referralPayoutCurrency === "USDT"
+          ? `Estimated payout: ${Number(data.payout_usdt || 0)} USDT (rate: $${(Number(data.price_millicents || 0) / 1000).toFixed(6)} / BITS)`
+          : `Payout: ${toBitsInteger(Number(data.pending_bits || 0))} $BITS`,
+        referralPayoutCurrency === "USDT"
+          ? `USDT cap: ${Number(data.usdt_spent_today || 0)} / ${Number(data.usdt_daily_cap || 0)} spent today`
+          : null,
+        data?.reason ? `Status: ${data.reason}` : "Status: OK"
+      ].filter(Boolean);
+      setConfirmPayload({
+        ok: true,
+        kind: "referral",
+        title: "Confirm Referral Claim",
+        lines,
+        canPay: !!data.canPay
+      });
+    } catch (e) {
+      setConfirmPayload({ ok: false, title: "Referral Claim (pre-check error)", lines: [e.message], canPay: false });
+    }
+  };
+
+  const executeReferralPayout = async () => {
+    if (!walletAddress) return;
+    setClaiming(true);
+    setStatusMsg(`⏳ Paying referral rewards in ${referralPayoutCurrency}...`);
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/rewards/payout-referral`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ wallet: walletAddress, payoutCurrency: referralPayoutCurrency })
+      });
+      if (!res.ok) {
+        const { msg, json } = await parseBackendError(res);
+        if (res.status === 403 && (msg || "").toLowerCase().includes("cap")) {
+          setReferralPayoutCurrency("BITS");
+          setStatusMsg(`⚠️ USDT daily cap reached. Switched to BITS — please claim again.`);
+        } else {
+          setStatusMsg(`❌ Referral payout failed: ${msg}`);
+        }
+        console.warn("[RewardsHub] referral payout failed", res.status, json || msg);
+        return;
+      }
+      const data = await res.json();
+      const paidBits = Number(data?.payout_bits || 0);
+      const paidUsdt = data?.payout_usdt;
+      setStatusMsg(`✅ Referral payout sent. Tx: ${(data?.tx_hash || "").slice(0, 10)}…`);
+      setModalPayload({
+        title: "Referral Payout Successful",
+        lines: [
+          `Payout: ${referralPayoutCurrency === "USDT" ? `${paidUsdt} USDT` : `${toBitsInteger(paidBits)} $BITS`}`,
+          referralPayoutCurrency === "USDT" && data?.price_millicents ? `Rate: $${(Number(data.price_millicents) / 1000).toFixed(6)} per BITS` : null,
+          `Tx: ${data?.tx_hash}`
+        ].filter(Boolean),
+        tx: data?.tx_hash
+      });
+      setShowModal(true);
+      await loadRewards();
+    } catch (e) {
+      setStatusMsg(`❌ Referral payout error: ${e.message}`);
     } finally {
       setClaiming(false);
     }
   };
 
   const handleClaimAdditionalBonus = async () => {
+    // AdditionalReward still requires signer (user tx). Leave as-is.
+    // This feature is separate from Telegram/Invite treasury payouts.
     if (!signer || additionalBonus.claimable <= 0) return;
 
     setClaimingAdditional(true);
@@ -411,177 +592,62 @@ const RewardsHub = () => {
     }
   };
 
-  // Stake rewards directly
-  const handleStakeRewards = async () => {
-    // Prefer Telegram on-chain stake if Telegram pending exists
-    const telegramPending = rewards.telegram?.pending || 0;
-    if (telegramPending > 0) {
-      try {
-        setStaking(true);
-        setStatusMsg("🔄 Crediting Telegram reward and staking...");
-
-        // 1) Credit on-chain based on pending amount
-        console.log("[RewardsHub] credit-bits for staking →", { bits: telegramPending });
-        const res = await fetch(`${BACKEND_URL}/api/telegram-rewards/credit-bits`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ wallet: walletAddress, bits: telegramPending })
-        });
-        const rawText = await res.text().catch(() => "");
-        let json;
-        try { json = rawText ? JSON.parse(rawText) : {}; } catch (_) { json = { rawText }; }
-        console.log("[RewardsHub] credit-bits (stake) ←", res.status, json);
-        if (!res.ok) throw new Error(json?.error || rawText || `HTTP ${res.status}`);
-
-        if (!signer) {
-          setStatusMsg("❌ Connect wallet first to sign the staking");
-          setStaking(false);
-          return;
-        }
-
-        // 2) Transfer all to staking via contract
-        const telegramContract = new ethers.Contract(
-          CONTRACTS.TELEGRAM_REWARD.address,
-          CONTRACTS.TELEGRAM_REWARD.abi,
-          signer
-        );
-        setStatusMsg("⏳ Transferring Telegram rewards to staking...");
-        const tx = await telegramContract.transferAllToStaking();
-        await tx.wait();
-        console.log("[RewardsHub] transferAllToStaking confirmed", tx.hash);
-        setStatusMsg("✅ Telegram rewards staked successfully!");
-        setModalPayload({
-          title: 'Telegram Stake Successful',
-          lines: [
-            `Amount staked: ${toBitsInteger(telegramPending)} $BITS`,
-            `Tx: ${tx.hash}`,
-            `Your rewards were transferred directly to the staking contract.`
-          ],
-          tx: tx.hash
-        });
-        setShowModal(true);
-
-        // 3) Notify backend to sync DB (mark claimed)
-        try {
-          await fetch(`${BACKEND_URL}/api/telegram-rewards/mark-claimed`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ wallet: walletAddress, amountBits: telegramPending, txHash: tx.hash })
-          });
-        } catch (e) { console.warn("[RewardsHub] mark-claimed (stake) failed", e); }
-
-        await loadRewards();
-      } catch (error) {
-        console.error("❌ Stake Telegram failed:", error);
-        setStatusMsg(`❌ Stake failed: ${error.message}`);
-      } finally {
-        setStaking(false);
-      }
-      return;
-    }
-
-    if (rewards.pendingRewards.length === 0) {
-      setStatusMsg("❌ No pending rewards to stake");
-      return;
-    }
-
-    try {
-      setStaking(true);
-      setStatusMsg("🔄 Claiming and staking your rewards...");
-
-      // First claim rewards
-      const claimResult = await unifiedRewardsService.claimAllRewards(walletAddress);
-      
-      if (!claimResult.success) {
-        throw new Error(claimResult.error || "Claim failed");
-      }
-
-      // Then redirect to staking with the claimed amount
-      const claimedAmount = parseFloat(claimResult.totalAmount);
-      setStatusMsg(`✅ Claimed ${claimedAmount} $BITS! Redirecting to staking...`);
-      
-      // Redirect to staking page with pre-filled amount
-      setTimeout(() => {
-        window.location.href = `/staking?amount=${claimedAmount}&source=rewards`;
-      }, 2000);
-
-    } catch (error) {
-      console.error("❌ Stake rewards failed:", error);
-      setStatusMsg(`❌ Stake failed: ${error.message}`);
-    } finally {
-      setStaking(false);
-    }
-  };
-
-  const renderHistory = () => {
-    const claimed = (rewards.unified?.allRewards || []).filter(r => r.status === 'claimed');
-    // Try to compute USD from presale price if missing
-    const priceMilli = rewards?.unified?.price ?? 1; // fallback milicents
-    const usdPerBits = Number(priceMilli) / 1000;
-    return (
-      <div className="history-section">
-        <h3>🧾 Claim History</h3>
-        {claimed.length === 0 ? (
-          <div className="empty">No claims yet</div>
-        ) : (
-          <div className="history-card">
-            <div className="history-header history-row">
-              <div>Type</div>
-              <div>Amount</div>
-              <div>USD</div>
-              <div>Date</div>
-              <div>Tx</div>
-            </div>
-            {claimed.map((r) => {
-              let usd = (r.source_info && r.source_info.usd_value) ? Number(r.source_info.usd_value) : null;
-              if (usd == null && r.amount != null) {
-                const amt = Number(r.amount);
-                if (!Number.isNaN(amt)) usd = amt * usdPerBits;
-              }
-              const dateStr = new Date(r.claimed_at || r.created_at).toLocaleString();
-              const typeBadge = r.reward_type === 'telegram'
-                ? (<span className="badge badge-telegram"><Icon name="telegram"/> Telegram</span>)
-                : r.reward_type === 'referral'
-                ? (<span className="badge badge-referral">👥 Referral</span>)
-                : (<span className="badge badge-additional">🎁 Bonus</span>);
-              return (
-                <div key={r.id || r.created_at} className="history-row">
-                  <div className="col-type">{typeBadge}</div>
-                  <div className="col-amount">{toBitsInteger(r.amount)} $BITS</div>
-                  <div className="col-usd">{usd != null ? `$${usd.toFixed(2)}` : '—'}</div>
-                  <div className="col-date">{dateStr}</div>
-                  <div className="col-tx">{r.tx_hash ? <a href={`https://bscscan.com/tx/${r.tx_hash}`} target="_blank" rel="noreferrer"><Icon name="tx"/> View</a> : '—'}</div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    );
-  };
-
-  if (!walletAddress) {
-    return (
-      <div className="rewards-hub">
-        <div className="hub-container">
-          <h1>🎁 Rewards Hub</h1>
-          <div className="connect-wallet-prompt">
-            <p>🔌 Please connect your wallet to view and manage your rewards.</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // (removed unused legacy helpers: stake-all flow + inline history renderer)
 
   return (
     <div className="rewards-hub">
+      <CosmicRewardBurst
+        open={showBurst}
+        onClose={() => setShowBurst(false)}
+        amount={burstAmount}
+        token="BITS"
+        secondaryAmount={burstUsdt}
+        secondaryToken="USDT"
+        title={burstTitle}
+        subtitle="Rewards detected. Open the claim section to send to your wallet (choose BITS or USDT)."
+        autoCloseMs={6500}
+      />
       <div className="hub-container">
-        <h1>🎁 Rewards Hub</h1>
-        <p className="hub-subtitle">Claim your rewards directly to wallet or stake them for additional yield</p>
+        <div className="hub-header">
+          <div className="hub-brand">
+            <img className="hub-logo" src={bitsLogo} alt="BITS Logo" />
+            <div className="hub-title-wrap">
+              <h1 className="hub-title">Rewards Hub</h1>
+              <div className="hub-badges">
+                <span className="hub-badge hub-badge-usdt" title="A rare presale feature: instant USDT payouts from treasury">
+                  <img className="badge-icon" src={usdtLogo} alt="USDT" />
+                  USDT payout (new)
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p className="hub-subtitle">
+          {walletAddress
+            ? "Claim your rewards directly to wallet or stake them for additional yield"
+            : "Preview the active reward programs. Connect wallet only when you want to claim."}
+        </p>
 
         <div className="tabs">
           <button onClick={()=>setActiveTab('summary')} className={`tab-btn ${activeTab==='summary' ? 'active' : ''}`}>📊 Summary</button>
-          <button onClick={()=>setActiveTab('history')} className={`tab-btn ${activeTab==='history' ? 'active' : ''}`}>🧾 History</button>
+          {walletAddress && (
+            <button
+              type="button"
+              onClick={() => setShowHistoryModal(true)}
+              className="tab-btn"
+              title="Open claim history"
+            >
+              🧾 History
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => setShowChampionsLeaderboard(true)}
+            className="tab-btn"
+            title="Open Champions Leaderboard"
+          >
+            🏆 Champions
+          </button>
         </div>
 
         <div style={{display: activeTab==='summary' ? 'block' : 'none'}}>
@@ -590,7 +656,36 @@ const RewardsHub = () => {
         <div className="rewards-summary-card">
           <h2>💰 Your Rewards Summary</h2>
           
-          {rewards.loading ? (
+          {!walletAddress ? (
+            <div className="public-preview">
+              <div className="public-preview-title">✅ Rewards are LIVE</div>
+              <div className="public-preview-body">
+                Connect wallet to see your personal amounts and claim instantly.
+              </div>
+              <div className="public-preview-cta">
+                <button className="connect-cta-btn" type="button" onClick={openWalletBox}>
+                  🔌 Connect Wallet
+                </button>
+                <div className="connect-cta-hint">
+                  No auto-saving wallets. You control connections.
+                </div>
+              </div>
+              <div className="public-preview-grid">
+                <div className="public-preview-card">
+                  <div className="public-preview-card-title">💬 Telegram Activity Reward</div>
+                  <div className="public-preview-card-desc">
+                    Earn rewards for activity inside the Telegram group (time + messages).
+                  </div>
+                </div>
+                <div className="public-preview-card">
+                  <div className="public-preview-card-title">👥 Invite / Referral Reward</div>
+                  <div className="public-preview-card-desc">
+                    Earn rewards when people you invite buy BITS.
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : rewards.loading ? (
             <div className="loading-state">
               <p>⏳ Loading your rewards...</p>
             </div>
@@ -671,7 +766,7 @@ const RewardsHub = () => {
                 )}
               </div>
 
-              {/* Pending Rewards List - always show Telegram info box */}
+              {/* Pending Rewards List */}
               <div className="pending-rewards-section">
                 <h3><span className="icon icon-calendar"/>Pending Rewards</h3>
                 <div className="rewards-list">
@@ -683,71 +778,195 @@ const RewardsHub = () => {
                            reward.reward_type === 'referral' ? '👥' : '🎁'} 
                           {reward.reward_type.charAt(0).toUpperCase() + reward.reward_type.slice(1)}
                         </span>
-                        <span className="reward-amount">{toBitsInteger(reward.amount)} $BITS</span>
+                        <span className="reward-amount">
+                          <TokenAmount value={toBitsInteger(reward.amount)} token="BITS" dollar />
+                        </span>
                       </div>
                       <div className="reward-date">
                         {new Date(reward.created_at).toLocaleDateString()}
                       </div>
                     </div>
                   ))}
-
-                  {/* Telegram info card */}
-                  <div className="reward-item info">
-                    <div className="reward-info">
-                      <span className="reward-type">💬 Telegram Reward</span>
-                      <span className="reward-amount">{toBitsInteger(rewards.telegram?.pending || 0)} $BITS</span>
-                    </div>
-                    <div className="reward-date" style={{maxWidth:'650px'}}>
-                      Earn BITS by being active in our Telegram group. Time + messages unlock milestone bundles. Rewards are <strong>credited on-chain</strong> and can be <strong>claimed</strong> or <strong>staked</strong> directly.
-                    </div>
-                  </div>
                 </div>
               </div>
 
               {/* Action Buttons */}
               <div className="action-section">
-                <h3>🚀 What would you like to do?</h3>
-                <div style={{ 
-                  background: "rgba(0, 170, 255, 0.1)", 
-                  border: "1px solid rgba(0, 170, 255, 0.3)", 
-                  borderRadius: "8px", 
-                  padding: "12px", 
-                  marginBottom: "15px",
-                  fontSize: "0.9em",
-                  textAlign: "center"
-                }}>
-                  💡 <strong>Pro Tip:</strong> $BITS can always be staked later! Claim now or stake directly - both options keep your staking flexibility.
+                <h3>🚀 Claim your rewards (choose BITS or USDT)</h3>
+                <div className="usdt-callout">
+                  <div className="usdt-callout-title">
+                    <img className="badge-icon" src={usdtLogo} alt="USDT" />
+                    USDT payout during presale
+                  </div>
+                  <div className="usdt-callout-body">
+                    <div className="usdt-callout-lead">
+                      Choose payout <strong>per reward</strong>:
+                      <span className="pill pill-usdt">
+                        <img className="pill-icon" src={usdtLogo} alt="USDT" /> USDT
+                      </span>
+                      <span className="pill pill-bits">
+                        <img className="pill-icon" src={bitsLogo} alt="BITS" /> $BITS
+                      </span>
+                    </div>
+
+                    <ul className="usdt-callout-list">
+                      <li><strong>USDT:</strong> paid instantly from treasury, using CellManager live price at claim (fixed snapshot).</li>
+                      <li><strong>$BITS:</strong> always available; value can increase over time (not guaranteed).</li>
+                      <li><strong>Limits:</strong> USDT depends on daily cap + treasury balance.</li>
+                    </ul>
+                  </div>
                 </div>
-                
-                {rewards.totalPending > 0 ? (
-                  <div className="action-buttons">
-                    <button
-                      onClick={handleClaimToWallet}
-                      disabled={claiming || staking}
-                      className="action-btn claim-btn"
-                    >
-                      {claiming ? "🔄 Claiming..." : "💳 Claim to Wallet"}
-                      <span className="btn-subtitle">Receive {Math.round(rewards.totalPending)} $BITS directly</span>
-                    </button>
-                    
-                    <button
-                      onClick={handleStakeRewards}
-                      disabled={claiming || staking}
-                      className="action-btn stake-btn"
-                    >
-                      {staking ? "🔄 Processing..." : "🏦 Claim & Stake"}
-                      <span className="btn-subtitle">Auto-stake for additional yield</span>
-                    </button>
+
+                <div style={{ marginTop: 12, display: 'flex', justifyContent: 'flex-end', gap: 10, flexWrap: 'wrap' }}>
+                  <button
+                    type="button"
+                    className="secondary-btn"
+                    onClick={() => setShowChampionsLeaderboard(true)}
+                    title="Open Champions Leaderboard"
+                  >
+                    🏆 Champions Leaderboard
+                  </button>
+                  <button
+                    type="button"
+                    className="secondary-btn"
+                    onClick={() => setShowRealLeaderboard(true)}
+                    title="Open the live leaderboard (from backend reward logs)"
+                  >
+                    📈 View Live Leaderboard
+                  </button>
+                </div>
+
+                <div className="payout-grid">
+                  <div className={`payout-card ${telegramPayoutCurrency === "USDT" ? "payout-card-usdt" : ""}`}>
+                    <h4>💬 Telegram Activity Reward</h4>
+                    <div className="payout-row">
+                      <div className="payout-amount">
+                        {walletAddress ? (
+                          <TokenAmount value={toBitsInteger(rewards.telegram?.pending || 0)} token="BITS" dollar />
+                        ) : (
+                          "Connect wallet to see your amount"
+                        )}
+                      </div>
+                      <div className="payout-estimate">
+                        {!walletAddress ? (
+                          bitsPriceMillicents ? (
+                            <span className="live-rate">
+                              Live rate: <strong>${(Number(bitsPriceMillicents) / 1000).toFixed(6)}</strong> /{" "}
+                              <TokenInline token="BITS" />
+                            </span>
+                          ) : ""
+                        ) : telegramPayoutCurrency === "USDT"
+                          ? (estimateUsdt(rewards.telegram?.pending) != null ? (
+                              <span className="estimate">
+                                ≈ <strong>{estimateUsdt(rewards.telegram?.pending)}</strong> <TokenInline token="USDT" />
+                              </span>
+                            ) : (
+                              <span className="estimate">
+                                ≈ <TokenInline token="USDT" /> (loading price...)
+                              </span>
+                            ))
+                          : (bitsPriceMillicents ? `≈ ${formatUSD((Number(bitsPriceMillicents) / 1000) * Number(rewards.telegram?.pending || 0))}` : "")}
+                      </div>
+                    </div>
+                    <div className="payout-controls">
+                      <div className="payout-toggle" aria-label="Telegram payout currency">
+                        <button
+                          type="button"
+                          className={`payout-toggle-btn ${telegramPayoutCurrency === "BITS" ? "active" : ""}`}
+                          onClick={() => setTelegramPayoutCurrency("BITS")}
+                          disabled={!walletAddress}
+                          title="Claim in BITS"
+                        >
+                          <img className="toggle-icon" src={bitsLogo} alt="BITS" />
+                          BITS
+                        </button>
+                        <button
+                          type="button"
+                          className={`payout-toggle-btn usdt ${telegramPayoutCurrency === "USDT" ? "active" : ""}`}
+                          onClick={() => setTelegramPayoutCurrency("USDT")}
+                          disabled={!walletAddress}
+                          title="Claim in USDT"
+                        >
+                          <img className="toggle-icon" src={usdtLogo} alt="USDT" />
+                          USDT
+                        </button>
+                      </div>
+                      <button
+                        className="action-btn claim-btn"
+                        disabled={!walletAddress || claiming || (Number(rewards.telegram?.pending || 0) <= 0)}
+                        onClick={openConfirmForTelegram}
+                      >
+                        {!walletAddress ? "Connect wallet to claim" : (claiming ? "⏳ Processing..." : "Claim")}
+                      </button>
+                    </div>
+                    <div className="payout-help">Paid instantly from treasury. USDT is limited daily.</div>
                   </div>
-                ) : (
-                  <div className="no-rewards">
-                    <p>🎯 No pending rewards to claim</p>
-                    <p style={{ fontSize: "0.9em", opacity: 0.8 }}>
-                      Keep participating in Telegram activities and referrals to earn more rewards!
-                    </p>
-                    <a href="/presale" className="back-link">← Back to Presale</a>
+
+                  <div className={`payout-card ${referralPayoutCurrency === "USDT" ? "payout-card-usdt" : ""}`}>
+                    <h4>👥 Invite / Referral Reward</h4>
+                    <div className="payout-row">
+                      <div className="payout-amount">
+                        {walletAddress ? (
+                          <TokenAmount value={toBitsInteger(rewards.unified?.byType?.referral?.pending || 0)} token="BITS" dollar />
+                        ) : (
+                          "Connect wallet to see your amount"
+                        )}
+                      </div>
+                      <div className="payout-estimate">
+                        {!walletAddress ? (
+                          bitsPriceMillicents ? (
+                            <span className="live-rate">
+                              Live rate: <strong>${(Number(bitsPriceMillicents) / 1000).toFixed(6)}</strong> /{" "}
+                              <TokenInline token="BITS" />
+                            </span>
+                          ) : ""
+                        ) : referralPayoutCurrency === "USDT"
+                          ? (estimateUsdt(rewards.unified?.byType?.referral?.pending) != null ? (
+                              <span className="estimate">
+                                ≈ <strong>{estimateUsdt(rewards.unified?.byType?.referral?.pending)}</strong> <TokenInline token="USDT" />
+                              </span>
+                            ) : (
+                              <span className="estimate">
+                                ≈ <TokenInline token="USDT" /> (loading price...)
+                              </span>
+                            ))
+                          : (bitsPriceMillicents ? `≈ ${formatUSD((Number(bitsPriceMillicents) / 1000) * Number(rewards.unified?.byType?.referral?.pending || 0))}` : "")}
+                      </div>
+                    </div>
+                    <div className="payout-controls">
+                      <div className="payout-toggle" aria-label="Referral payout currency">
+                        <button
+                          type="button"
+                          className={`payout-toggle-btn ${referralPayoutCurrency === "BITS" ? "active" : ""}`}
+                          onClick={() => setReferralPayoutCurrency("BITS")}
+                          disabled={!walletAddress}
+                          title="Claim in BITS"
+                        >
+                          <img className="toggle-icon" src={bitsLogo} alt="BITS" />
+                          BITS
+                        </button>
+                        <button
+                          type="button"
+                          className={`payout-toggle-btn usdt ${referralPayoutCurrency === "USDT" ? "active" : ""}`}
+                          onClick={() => setReferralPayoutCurrency("USDT")}
+                          disabled={!walletAddress}
+                          title="Claim in USDT"
+                        >
+                          <img className="toggle-icon" src={usdtLogo} alt="USDT" />
+                          USDT
+                        </button>
+                      </div>
+                      <button
+                        className="action-btn claim-btn"
+                        disabled={!walletAddress || claiming || (Number(rewards.unified?.byType?.referral?.pending || 0) <= 0)}
+                        onClick={openConfirmForReferral}
+                      >
+                        {!walletAddress ? "Connect wallet to claim" : (claiming ? "⏳ Processing..." : "Claim")}
+                      </button>
+                    </div>
+                    <div className="payout-help">Referral rewards are earned from invite purchases.</div>
                   </div>
-                )}
+                </div>
               </div>
 
               {/* Status Message */}
@@ -780,9 +999,7 @@ const RewardsHub = () => {
         </div>
         </div>
       </div>
-      <div style={{display: activeTab==='history' ? 'block' : 'none'}}>
-        {renderHistory()}
-      </div>
+      {/* History is now a modal (same UX as leaderboards) */}
       {showModal && (
         <div className="modal-overlay" onClick={()=>setShowModal(false)}>
           <div className="modal" onClick={(e)=>e.stopPropagation()}>
@@ -794,6 +1011,74 @@ const RewardsHub = () => {
               <a className="tx-link" href={`https://bscscan.com/tx/${modalPayload.tx}`} target="_blank" rel="noreferrer"><Icon name="tx"/> View on BscScan</a>
             )}
             <button className="action-btn claim-btn" onClick={()=>setShowModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
+
+      {showRealLeaderboard && (
+        <div className="modal-overlay" onClick={() => setShowRealLeaderboard(false)}>
+          <div className="modal lb-modal" onClick={(e) => e.stopPropagation()}>
+            <RealLeaderboard limit={25} />
+            <button className="action-btn claim-btn" onClick={() => setShowRealLeaderboard(false)} style={{ marginTop: 12 }}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showChampionsLeaderboard && (
+        <div className="modal-overlay" onClick={() => setShowChampionsLeaderboard(false)}>
+          <div className="modal lb-modal" onClick={(e) => e.stopPropagation()}>
+            <ChampionsLeaderboard limit={10} />
+            <button className="action-btn claim-btn" onClick={() => setShowChampionsLeaderboard(false)} style={{ marginTop: 12 }}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showHistoryModal && (
+        <div className="modal-overlay" onClick={() => setShowHistoryModal(false)}>
+          <div className="modal lb-modal" onClick={(e) => e.stopPropagation()}>
+            <HistoryLeaderboard
+              claimed={(rewards.unified?.allRewards || []).filter(r => r.status === 'claimed')}
+              bitsPriceMillicents={bitsPriceMillicents}
+            />
+            <button className="action-btn claim-btn" onClick={() => setShowHistoryModal(false)} style={{ marginTop: 12 }}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showConfirm && (
+        <div className="modal-overlay" onClick={() => setShowConfirm(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <h3>{confirmPayload?.title || "Confirm Claim"}</h3>
+            <ul>
+              {(confirmPayload?.lines || []).map((l, idx) => (<li key={idx}>{l}</li>))}
+            </ul>
+            {!confirmPayload ? (
+              <div style={{ opacity: 0.8, marginTop: 6 }}>Loading pre-check…</div>
+            ) : (
+              <div className="confirm-actions">
+                <button className="action-btn" onClick={() => setShowConfirm(false)}>Cancel</button>
+                <button
+                  className="action-btn claim-btn"
+                  disabled={!confirmPayload?.canPay || claiming}
+                  onClick={async () => {
+                    setShowConfirm(false);
+                    if (confirmPayload?.kind === "telegram") {
+                      await executeTelegramPayout();
+                    } else if (confirmPayload?.kind === "referral") {
+                      await executeReferralPayout();
+                    }
+                  }}
+                >
+                  {confirmPayload?.canPay ? "Confirm & Send" : "Not Ready"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

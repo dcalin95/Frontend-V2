@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { CONTRACTS } from "../../contract/contracts";
 import ERC20ABI from "../../abi/erc20ABI.js";
-import { Connection, PublicKey } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 import { getAssociatedTokenAddress } from "@solana/spl-token";
 
 const useFetchBalances = (walletAddress, selectedToken) => {
@@ -26,9 +26,15 @@ const useFetchBalances = (walletAddress, selectedToken) => {
           }
 
           try {
-            // Connect Phantom
-            const { publicKey } = await window.solana.connect();
-            console.log("👛 Phantom connected:", publicKey.toBase58());
+            // 🛑 CRITICAL FIX: DO NOT call connect() for balance fetch
+            // Balance should only be fetched if the wallet is already connected
+            if (!window.solana.isConnected || !window.solana.publicKey) {
+              console.log("ℹ️ Phantom not connected, skipping SOL balance fetch");
+              return;
+            }
+
+            const publicKey = window.solana.publicKey;
+            console.log("👛 Fetching SOL balance for:", publicKey.toBase58());
             
             // 🚀 BYPASS WebSocket issues - Use HTTP-only RPC call
             const solAddress = publicKey.toBase58();
@@ -92,7 +98,13 @@ const useFetchBalances = (walletAddress, selectedToken) => {
           }
 
           try {
-            const { publicKey } = await window.solana.connect();
+            // 🛑 CRITICAL FIX: DO NOT call connect() for balance fetch
+            if (!window.solana.isConnected || !window.solana.publicKey) {
+              console.log("ℹ️ Phantom not connected, skipping USDC-Solana balance fetch");
+              return;
+            }
+
+            const publicKey = window.solana.publicKey;
             const USDC_MINT = new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v");
             
             // Get associated token account
@@ -133,8 +145,9 @@ const useFetchBalances = (walletAddress, selectedToken) => {
           return;
         }
 
-        // 🔗 ETH/BSC chains via MetaMask
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        // 🔗 ETH/BSC chains via Public RPC (avoid window.ethereum popup)
+        const rpcUrl = "https://bsc-dataseed1.binance.org"; // BSC Mainnet
+        const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
 
         if (selectedToken === "BNB") {
           // Native BNB balance

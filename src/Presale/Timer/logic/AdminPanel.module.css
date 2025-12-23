@@ -1,20 +1,22 @@
 /* ✅ Badge sus-dreapta */
 .status-badge {
-  position: fixed;
-  top: 10px;
-  right: 10px;
+  position: absolute;
+  top: 12px;
+  right: 12px;
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  z-index: 10000;
+  z-index: 5;
   box-shadow: 0 0 8px currentColor;
 }
 
 /* ✅ Login button - SOLANA/AI STYLE */
 .login-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
+  position: static;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 12px auto 0;
   padding: 0.5rem 1rem;
   background: linear-gradient(135deg, #00FFA3, #DC1FFF);
   color: #000000;
@@ -25,7 +27,7 @@
   cursor: pointer;
   box-shadow: 0 0 12px rgba(0, 255, 163, 0.2);
   transition: all 0.3s ease;
-  z-index: 9999;
+  z-index: 1;
   font-size: 0.9rem;
 }
 
@@ -36,31 +38,74 @@
 
 /* ✅ Admin Panel - SOLANA/AI STYLE */
 .admin-panel {
-  position: fixed;
-  top: 12%;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
   padding: 1rem;
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 12, 20, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 1.5rem;
   backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
   -webkit-backdrop-filter: none /* 🔙 REVERTED FROM BLUR */;
-  z-index: 9999;
-  width: 45%;
-  max-width: 500px;
+  z-index: 1;
+  width: 100%;
+  max-width: 1100px;
+  margin: 18px auto;
   font-family: 'Inter', sans-serif;
-  box-shadow: 0 4px 24px rgba(0, 255, 163, 0.1);
-  max-height: 82vh;
-  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  max-height: none;
+  overflow: visible;
   color: rgba(255, 255, 255, 0.9);
   transition: all 0.3s ease;
+}
+
+/* ✅ Optional manual resize mode (drag corner) */
+.admin-panel.resizable {
+  resize: both;
+  overflow: auto;
+  min-width: 340px;
+  min-height: 320px;
+  max-width: 96vw;
+  max-height: 92vh;
+}
+
+/* ✅ Top-right panel controls */
+.panel-controls {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  display: flex;
+  gap: 8px;
+  z-index: 10002;
+}
+
+.panel-control-btn {
+  padding: 0.35rem 0.55rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.panel-control-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(0, 255, 163, 0.35);
+  box-shadow: 0 0 12px rgba(0, 255, 163, 0.15);
 }
 
 .admin-panel:hover {
   border-color: rgba(0, 255, 163, 0.3);
   box-shadow: 0 8px 32px rgba(0, 255, 163, 0.2);
-  background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
+  background: rgba(10, 12, 20, 0.94);
+}
+
+/* ✅ Page wrapper (independent page layout) */
+.admin-page {
+  width: 100%;
+  padding: 18px 14px 80px;
+  min-height: 80vh;
 }
 
 /* ✅ Sections - SOLANA/AI STYLE */
@@ -245,11 +290,10 @@
 /* ✅ Responsive */
 @media (max-width: 600px) {
   .admin-panel {
-    width: 90%;
+    width: 100%;
     padding: 0.8rem;
-    top: 10%;
-    max-height: 85vh;
-    max-width: 400px;
+    max-width: 100%;
+    margin: 14px auto;
   }
   
   .tab-navigation {
@@ -276,9 +320,8 @@
 
 @media (max-width: 400px) {
   .admin-panel {
-    width: 95%;
-    max-width: 350px;
-    top: 8%;
-    max-height: 88vh;
+    width: 100%;
+    max-width: 100%;
+    margin: 12px auto;
   }
 }

@@ -1,0 +1,681 @@
+/* ============================================
+   WHALE TRANSACTIONS - MOBILE RESPONSIVE
+   Multi-breakpoint system for ALL mobile screens
+   ============================================ */
+
+/* === TABLETS & LARGE MOBILE (481px - 768px) === */
+@media (max-width: 768px) and (min-width: 481px) {
+  /* === CONTAINER === */
+  .whale-transactions {
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  /* === HEADER - Optimized for large mobile === */
+  .whale-header {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 1rem !important;
+    padding: 1.2rem 1rem !important;
+  }
+
+  .whale-branding {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0.5rem 1rem !important;
+  }
+
+  .whale-slogan {
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.25rem !important;
+  }
+
+  .slogan-whale {
+    font-size: 1rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .slogan-whale-sub {
+    font-size: 0.75rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .whale-badge {
+    font-size: 0.85rem !important;
+    padding: 0.35rem 0.7rem !important;
+  }
+
+  /* SOURCE BADGES */
+  .whale-sources {
+    gap: 0.55rem !important;
+  }
+
+  .source-badge {
+    font-size: 0.75rem !important;
+    padding: 0.4rem 0.7rem !important;
+  }
+
+  .source-badge i {
+    font-size: 0.8rem !important;
+  }
+
+  /* COUNT & TIME */
+  .whale-count {
+    font-size: 0.85rem !important;
+  }
+
+  .time-filter-btn {
+    font-size: 0.75rem !important;
+    padding: 0.4rem 0.8rem !important;
+  }
+
+  .live-timer {
+    font-size: 0.75rem !important;
+    padding: 0.4rem 0.9rem !important;
+  }
+
+  /* ACTIONS */
+  .fullscreen-btn-whale {
+    font-size: 1.1rem !important;
+    width: 38px !important;
+    height: 38px !important;
+  }
+
+  .close-whale-btn {
+    width: 38px !important;
+    height: 38px !important;
+    font-size: 1.05rem !important;
+  }
+}
+
+/* === MEDIUM MOBILE - Samsung Galaxy S20/S21 (361px - 480px) === */
+@media (max-width: 480px) and (min-width: 361px) {
+  /* === CONTAINER === */
+  .whale-transactions {
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  /* === HEADER - Samsung Galaxy optimized === */
+  .whale-header {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.9rem !important;
+    padding: 1rem !important;
+  }
+
+  .whale-branding {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0.45rem 0.9rem !important;
+  }
+
+  .whale-slogan {
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.2rem !important;
+  }
+
+  .slogan-whale {
+    font-size: 0.95rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .slogan-whale-sub {
+    font-size: 0.72rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .whale-badge {
+    font-size: 0.82rem !important;
+    padding: 0.32rem 0.65rem !important;
+  }
+
+  /* SOURCE BADGES */
+  .whale-sources {
+    gap: 0.5rem !important;
+  }
+
+  .source-badge {
+    font-size: 0.7rem !important;
+    padding: 0.35rem 0.6rem !important;
+  }
+
+  .source-badge i {
+    font-size: 0.75rem !important;
+  }
+
+  /* COUNT & TIME */
+  .whale-count {
+    font-size: 0.8rem !important;
+  }
+
+  .time-filter-btn {
+    font-size: 0.7rem !important;
+    padding: 0.35rem 0.7rem !important;
+  }
+
+  .live-timer {
+    font-size: 0.7rem !important;
+    padding: 0.35rem 0.8rem !important;
+  }
+
+  /* ACTIONS */
+  .fullscreen-btn-whale {
+    font-size: 1rem !important;
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .close-whale-btn {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 1rem !important;
+  }
+}
+
+/* === SMALL MOBILE - iPhone SE, Galaxy A (321px - 360px) === */
+@media (max-width: 360px) and (min-width: 321px) {
+  /* === CONTAINER === */
+  .whale-transactions {
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  /* === HEADER - Small screen optimized === */
+  .whale-header {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.8rem !important;
+    padding: 0.9rem 0.75rem !important;
+  }
+
+  .whale-branding {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0.4rem 0.8rem !important;
+  }
+
+  .whale-slogan {
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.18rem !important;
+  }
+
+  .slogan-whale {
+    font-size: 0.88rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .slogan-whale-sub {
+    font-size: 0.68rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .whale-badge {
+    font-size: 0.78rem !important;
+    padding: 0.28rem 0.6rem !important;
+  }
+
+  /* SOURCE BADGES */
+  .whale-sources {
+    gap: 0.45rem !important;
+  }
+
+  .source-badge {
+    font-size: 0.65rem !important;
+    padding: 0.3rem 0.55rem !important;
+  }
+
+  .source-badge i {
+    font-size: 0.7rem !important;
+  }
+
+  /* COUNT & TIME */
+  .whale-count {
+    font-size: 0.75rem !important;
+  }
+
+  .time-filter-btn {
+    font-size: 0.65rem !important;
+    padding: 0.3rem 0.65rem !important;
+  }
+
+  .live-timer {
+    font-size: 0.65rem !important;
+    padding: 0.3rem 0.75rem !important;
+  }
+
+  /* ACTIONS */
+  .fullscreen-btn-whale {
+    font-size: 0.95rem !important;
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  .close-whale-btn {
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 0.95rem !important;
+  }
+}
+
+/* === EXTRA SMALL MOBILE - Older devices (≤320px) === */
+@media (max-width: 320px) {
+  /* === CONTAINER === */
+  .whale-transactions {
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  /* === HEADER - Compact mode === */
+  .whale-header {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.7rem !important;
+    padding: 0.8rem 0.5rem !important;
+  }
+
+  .whale-branding {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0.35rem 0.7rem !important;
+  }
+
+  .whale-slogan {
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.15rem !important;
+  }
+
+  .slogan-whale {
+    font-size: 0.82rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .slogan-whale-sub {
+    font-size: 0.62rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .whale-badge {
+    font-size: 0.72rem !important;
+    padding: 0.25rem 0.55rem !important;
+  }
+
+  /* SOURCE BADGES */
+  .whale-sources {
+    gap: 0.4rem !important;
+  }
+
+  .source-badge {
+    font-size: 0.6rem !important;
+    padding: 0.28rem 0.5rem !important;
+  }
+
+  .source-badge i {
+    font-size: 0.65rem !important;
+  }
+
+  /* COUNT & TIME */
+  .whale-count {
+    font-size: 0.7rem !important;
+  }
+
+  .time-filter-btn {
+    font-size: 0.6rem !important;
+    padding: 0.28rem 0.6rem !important;
+  }
+
+  .live-timer {
+    font-size: 0.6rem !important;
+    padding: 0.28rem 0.7rem !important;
+  }
+
+  /* ACTIONS */
+  .fullscreen-btn-whale {
+    font-size: 0.9rem !important;
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .close-whale-btn {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 0.9rem !important;
+  }
+}
+
+/* === SHARED STYLES FOR ALL MOBILE (max-width: 768px) === */
+@media (max-width: 768px) {
+
+  /* === SOURCE BADGES - ALL MOBILE === */
+  .whale-sources {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+  }
+
+  .source-badge {
+    font-size: 0.7rem !important;
+    padding: 0.35rem 0.6rem !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+  }
+
+  .source-badge i {
+    font-size: 0.75rem !important;
+  }
+
+  /* === COUNT & TIME - ALL MOBILE === */
+  .whale-count {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    font-size: 0.8rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .whale-time-controls {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.8rem !important;
+  }
+
+  .time-filter-buttons {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+  }
+
+  .time-filter-btn {
+    font-size: 0.7rem !important;
+    padding: 0.35rem 0.7rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .live-timer {
+    font-size: 0.7rem !important;
+    padding: 0.35rem 0.8rem !important;
+    line-height: 1.2 !important;
+  }
+
+  /* === ACTIONS - ALL MOBILE === */
+  .whale-actions {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 0.8rem !important;
+  }
+
+  .view-mode-wrapper {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.6rem !important;
+  }
+
+  .view-mode-badge {
+    font-size: 0.6rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .fullscreen-btn-whale {
+    font-size: 1rem !important;
+    width: 36px !important;
+    height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .close-whale-btn {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 1rem !important;
+  }
+
+  /* === GRID === */
+  .whale-list {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+    padding: 1rem !important;
+    max-height: calc(100vh - 400px) !important;
+  }
+
+  /* === WHALE ITEMS === */
+  .whale-item {
+    padding: 1rem !important;
+  }
+
+  .crypto-symbol {
+    font-size: 1rem !important;
+  }
+
+  .crypto-amount {
+    font-size: 0.75rem !important;
+  }
+
+  .usd-amount {
+    font-size: 1rem !important;
+  }
+
+  .whale-type {
+    font-size: 0.65rem !important;
+  }
+
+  .whale-route {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    align-items: flex-start !important;
+  }
+
+  .whale-from, .whale-to {
+    width: 100% !important;
+  }
+
+  .transfer-arrow {
+    transform: rotate(90deg) !important;
+    margin: 0.25rem 0 !important;
+  }
+
+  .blockchain-badge {
+    font-size: 0.65rem !important;
+  }
+
+  .timestamp {
+    font-size: 0.65rem !important;
+  }
+
+  /* === THREE QUARTER MODE ON MOBILE === */
+  .whale-transactions.threequarter {
+    width: 95vw !important;
+    height: 90vh !important;
+    max-width: 95vw !important;
+    max-height: 90vh !important;
+  }
+
+  .whale-transactions.threequarter .whale-list {
+    max-height: calc(90vh - 280px) !important;
+  }
+
+  /* === FULLSCREEN MODE ON MOBILE === */
+  .whale-transactions.fullscreen .whale-list {
+    max-height: calc(100vh - 280px) !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  /* === MODAL ON MOBILE === */
+  .whale-modal {
+    max-width: 95vw !important;
+    max-height: 90vh !important;
+    margin: 1rem !important;
+  }
+
+  .modal-header {
+    padding: 0.75rem 1rem !important;
+  }
+
+  .modal-header h3 {
+    font-size: 1rem !important;
+  }
+
+  .modal-close {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .modal-content {
+    padding: 1rem !important;
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  /* === TX HERO ON MOBILE === */
+  .tx-hero {
+    flex-direction: column !important;
+    padding: 1rem !important;
+    gap: 1rem !important;
+    align-items: flex-start !important;
+  }
+
+  .tx-hero-usd {
+    font-size: 1.8rem !important;
+  }
+
+  .tx-hero-crypto {
+    font-size: 0.85rem !important;
+  }
+
+  .tx-hero-meta {
+    width: 100% !important;
+    align-items: flex-start !important;
+  }
+
+  .tx-meta-item {
+    font-size: 0.75rem !important;
+  }
+
+  /* === TX FLOW ON MOBILE === */
+  .tx-flow {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+    padding: 1rem !important;
+  }
+
+  .tx-flow-arrow {
+    transform: rotate(90deg) !important;
+    padding: 0.5rem 0 !important;
+  }
+
+  .tx-flow-arrow i {
+    font-size: 1.5rem !important;
+  }
+
+  .flow-amount {
+    font-size: 0.8rem !important;
+  }
+
+  .flow-node-address {
+    font-size: 0.75rem !important;
+    padding: 0.4rem !important;
+  }
+
+  .flow-badge {
+    font-size: 0.65rem !important;
+    padding: 0.3rem 0.5rem !important;
+  }
+
+  /* === TX ID ON MOBILE === */
+  .tx-id-section {
+    padding: 0.75rem 1rem !important;
+  }
+
+  .tx-id-value {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+    align-items: stretch !important;
+  }
+
+  .tx-id-text {
+    font-size: 0.7rem !important;
+  }
+
+  .tx-id-copy {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* === SEARCHING MORE ON MOBILE === */
+  .whale-searching-more {
+    padding: 1rem !important;
+  }
+
+  .whale-searching-more i {
+    font-size: 1.5rem !important;
+  }
+
+  .whale-searching-more p {
+    font-size: 0.85rem !important;
+  }
+
+  .whale-searching-more span {
+    font-size: 0.75rem !important;
+  }
+
+  /* === FOOTER ON MOBILE === */
+  .whale-footer {
+    padding: 1rem !important;
+  }
+
+  .motivational-slogan {
+    font-size: 0.85rem !important;
+  }
+
+  .motivational-slogan i {
+    font-size: 1rem !important;
+  }
+}
+
