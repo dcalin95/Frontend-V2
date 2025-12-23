@@ -1432,13 +1432,13 @@ const AdminPanel = () => {
                       Open /api/transactions/debug/solana
                     </a>
                     <a
-                      href={`${API_URL}/api/telegram-rewards/payout`}
+                      href={`${API_URL}/api/rewards/treasury-address`}
                       target="_blank"
                       rel="noreferrer"
                       style={{ color: '#a7f3d0' }}
-                      title="Quick sanity check that backend responds"
+                      title="Quick sanity check (GET endpoint) that backend responds"
                     >
-                      Backend health (payout page)
+                      Backend health (treasury-address)
                     </a>
                   </div>
                 </div>
