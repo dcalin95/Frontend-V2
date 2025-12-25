@@ -1,5 +1,4 @@
 import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react';
-import { createPortal } from 'react-dom';
 import { AI_TOOLS_PRICING } from './pricingConfig';
 import useBitsBalance from '../../hooks/useBitsBalance';
 import { useWallet } from '../../context/WalletContext';
@@ -40,11 +39,32 @@ const makeSparkPoints = (values, w = 160, h = 42) => {
 };
 
 const ASSET_FEEDS = [
-  { id: 'binance', label: 'BINANCE', sub: 'Exchange Health', colorUp: '#00ff66', colorDown: '#ff0033' },
-  { id: 'bnb', label: 'BNB', sub: 'Binance Coin', colorUp: '#f3ba2f', colorDown: '#ff0033' },
-  { id: 'btc', label: 'BTC', sub: 'Bitcoin', colorUp: '#f7931a', colorDown: '#ff0033' },
-  { id: 'eth', label: 'ETH', sub: 'Ethereum', colorUp: '#627eea', colorDown: '#ff0033' }
+  { id: 'binance', label: 'BINANCE', sub: 'Exchange Health', colorUp: '#0ECB81', colorDown: '#F6465D' },
+  { id: 'bnb', label: 'BNB', sub: 'Binance Coin', colorUp: '#0ECB81', colorDown: '#F6465D' },
+  { id: 'btc', label: 'BTC', sub: 'Bitcoin', colorUp: '#0ECB81', colorDown: '#F6465D' },
+  { id: 'eth', label: 'ETH', sub: 'Ethereum', colorUp: '#0ECB81', colorDown: '#F6465D' }
 ];
+
+const BINANCE_SYMBOL_BY_FEED = {
+  btc: 'BTCUSDT',
+  eth: 'ETHUSDT',
+  bnb: 'BNBUSDT'
+};
+
+const parseBinanceKlines = (klines) => {
+  // Binance kline format: [openTime, open, high, low, close, volume, closeTime, ...]
+  if (!Array.isArray(klines)) return [];
+  return klines
+    .map((k) => ({
+      o: Number(k?.[1]),
+      h: Number(k?.[2]),
+      l: Number(k?.[3]),
+      c: Number(k?.[4])
+    }))
+    .filter((c) => [c.o, c.h, c.l, c.c].every(Number.isFinite));
+};
+
+const pctChange = (from, to) => ((to - from) / Math.max(1e-9, from)) * 100;
 
 const WALLET_SKINS = [
   { id: 'metamask', name: 'MetaMask', badge: '🦊', accent: '#ff7a00', sub: 'EVM Wallet' },
@@ -124,10 +144,11 @@ const buildEmbedUrl = (ch, muted = true) => {
 const buildOEmbedProbeUrl = (ch) => {
   // Lightweight "does this embed exist?" check without API keys.
   // NOTE: This does not guarantee "LIVE right now", but it detects removed/unembeddable videos
-  // and often detects broken live_stream endpoints.
+  // and detects channels that are not currently live (via /live probe).
   if (!ch) return '';
   if (ch.kind === 'youtube' && ch.channelId) {
-    const url = `https://www.youtube.com/embed/live_stream?channel=${encodeURIComponent(ch.channelId)}`;
+    // Probe the channel live page: if the channel isn't live, oEmbed typically fails.
+    const url = `https://www.youtube.com/channel/${encodeURIComponent(ch.channelId)}/live`;
     return `https://www.youtube.com/oembed?format=json&url=${encodeURIComponent(url)}`;
   }
   if (ch.kind === 'youtube_video' && ch.videoId) {
@@ -402,6 +423,9 @@ const StressTest = () => {
     engagementScore: 0,
     note: ''
   });
+  const [bioRingOpen, setBioRingOpen] = useState(false);
+  const bioRingTimerRef = useRef(null);
+  const bioRingRef = useRef(null);
   const [humanoidStatus, setHumanoidStatus] = useState("Awaiting sacrifice... I mean, input.");
   const [glitchLevel, setGlitchLevel] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(false);
@@ -414,6 +438,8 @@ const StressTest = () => {
   const [feedCandles, setFeedCandles] = useState([]);
   const [feedPrice, setFeedPrice] = useState(0);
   const [feedDeltaPct, setFeedDeltaPct] = useState(0);
+  const [useRealBinanceData, setUseRealBinanceData] = useState(true);
+  const [realDataError, setRealDataError] = useState('');
   const cyberNoiseInterval = useRef(null);
   const [walletSkinIdx, setWalletSkinIdx] = useState(0);
   const walletRotateInterval = useRef(null);
@@ -477,7 +503,17 @@ const StressTest = () => {
   const exchangeInterval = useRef(null);
   const [newsCaption, setNewsCaption] = useState('');
   const newsTimerRef = useRef(null);
-  const newsGateRef = useRef({ t: 0, speaking: false });
+  const newsGateRef = useRef({ t: 0, speaking: false, musicDiffuse: false });
+  const [musicDiffuse, setMusicDiffuse] = useState(false);
+  const newsAudioRef = useRef({
+    ambVol: null,
+    despairVol: null,
+    ambRate: null,
+    despairRate: null,
+    ambWasPlaying: false,
+    despairWasPlaying: false,
+    prevTvMute: null
+  });
   
   const ambientTrackIdxRef = useRef(0);
   const ambientTracks = useMemo(() => ([
@@ -731,6 +767,19 @@ const StressTest = () => {
     }
   }, [tvChannels, tvCheck.running]);
 
+  useEffect(() => {
+    // Keep TV list clean automatically while TV is ON:
+    // remove channels that currently show "Unavailable" (not live / restricted / removed).
+    if (!tvPower) return;
+    // Don't spam: run once shortly after power-on, then every 2 minutes.
+    const t0 = window.setTimeout(() => { recheckTvChannels(); }, 2500);
+    const t = window.setInterval(() => { recheckTvChannels(); }, 120_000);
+    return () => {
+      window.clearTimeout(t0);
+      window.clearInterval(t);
+    };
+  }, [tvPower, recheckTvChannels]);
+
   const tvTitlesRanRef = useRef(false);
   useEffect(() => {
     // Replace "WAR ..." placeholders with real YouTube titles (oEmbed) and create compact labels.
@@ -789,18 +838,38 @@ const StressTest = () => {
     if (!a && !d) return;
     try {
       if (tvPower && !tvMute && soundEnabled) {
-        // TV voice should dominate: stop music (pause) instead of just ducking.
+        // TV dominates. When TV is fullscreen, keep music barely audible (~2%).
         musicMixRef.current.ambVol = a?.volume ?? musicMixRef.current.ambVol;
         musicMixRef.current.despairVol = d?.volume ?? musicMixRef.current.despairVol;
-        if (a) {
-          a.volume = 0;
-          a.pause();
-          musicMixRef.current.ambPaused = true;
-        }
-        if (d) {
-          d.volume = 0;
-          d.pause();
-          musicMixRef.current.despairPaused = true;
+        const baseA = musicMixRef.current.ambVol ?? 0.22;
+        const baseD = musicMixRef.current.despairVol ?? 0.24;
+        const isFullscreen = tvSize === 'fullscreen';
+        if (isFullscreen) {
+          if (a) {
+            a.volume = Math.max(0.0005, baseA * 0.02);
+            if (musicMixRef.current.ambPaused) {
+              a.play().catch(() => {});
+              musicMixRef.current.ambPaused = false;
+            }
+          }
+          if (d) {
+            d.volume = Math.max(0.0005, baseD * 0.02);
+            if (musicMixRef.current.despairPaused) {
+              d.play().catch(() => {});
+              musicMixRef.current.despairPaused = false;
+            }
+          }
+        } else {
+          if (a) {
+            a.volume = 0;
+            a.pause();
+            musicMixRef.current.ambPaused = true;
+          }
+          if (d) {
+            d.volume = 0;
+            d.pause();
+            musicMixRef.current.despairPaused = true;
+          }
         }
       } else {
         // Restore normal background mix
@@ -820,7 +889,7 @@ const StressTest = () => {
         }
       }
     } catch (_) {}
-  }, [tvPower, tvMute, soundEnabled]);
+  }, [tvPower, tvMute, soundEnabled, tvSize]);
 
   useEffect(() => {
     // Music switching across stages (keep it dynamic).
@@ -831,37 +900,46 @@ const StressTest = () => {
     if (!a || !d) return;
 
     try {
+      const diffuse = !!musicDiffuse;
+      const vCalm = diffuse ? 0.015 : 0.20;
+      const vUnrest = diffuse ? 0.015 : 0.22;
+      const vBlendA = diffuse ? 0.010 : 0.12;
+      const vBlendD = diffuse ? 0.015 : 0.20;
+      const vAnnih = diffuse ? 0.015 : 0.28;
+      const vAgony = diffuse ? 0.018 : 0.34;
+
       // Stage-based palette: swap sources + playbackRate to feel evolving
       if (simStage <= 1) {
         // calm/false euphoria
         if (a.src && !a.src.includes('ambient-hell-2')) a.src = '/sounds/ambient-hell-2.wav';
-        a.playbackRate = 1.0;
-        safePlay(ambientAudio, 0.20, true, 1);
+        a.playbackRate = diffuse ? 0.92 : 1.0;
+        safePlay(ambientAudio, vCalm, true, 1);
         safeStop(despairAudio);
       } else if (simStage === 2) {
         // unrest
         if (a.src && !a.src.includes('ambient-hell')) a.src = '/sounds/ambient-hell.mp3';
-        a.playbackRate = 1.03;
-        safePlay(ambientAudio, 0.22, true, 1);
+        a.playbackRate = diffuse ? 0.92 : 1.03;
+        safePlay(ambientAudio, vUnrest, true, 1);
         safeStop(despairAudio);
       } else if (simStage === 3) {
         // panic -> blend
-        safePlay(ambientAudio, 0.12, true, 1);
-        d.playbackRate = 0.62;
-        safePlay(despairAudio, 0.20, true, 0.8);
+        a.playbackRate = diffuse ? 0.90 : 1.0;
+        safePlay(ambientAudio, vBlendA, true, 1);
+        d.playbackRate = diffuse ? 0.55 : 0.62;
+        safePlay(despairAudio, vBlendD, true, 0.8);
       } else if (simStage === 4) {
         // annihilation
         safeStop(ambientAudio);
-        d.playbackRate = 0.78;
-        safePlay(despairAudio, 0.28, true, 0.95);
+        d.playbackRate = diffuse ? 0.70 : 0.78;
+        safePlay(despairAudio, vAnnih, true, 0.95);
       } else if (simStage >= 5) {
         // agony
         safeStop(ambientAudio);
-        d.playbackRate = 0.92;
-        safePlay(despairAudio, 0.34, true, 1);
+        d.playbackRate = diffuse ? 0.82 : 0.92;
+        safePlay(despairAudio, vAgony, true, 1);
       }
     } catch (_) {}
-  }, [soundEnabled, loading, simStage, safePlay, safeStop]);
+  }, [soundEnabled, loading, simStage, safePlay, safeStop, musicDiffuse]);
 
   useEffect(() => {
     // Fullscreen takeover without touching other components: we overlay the entire viewport.
@@ -963,8 +1041,16 @@ const StressTest = () => {
 
   const toggleTvPower = useCallback(() => {
     playTvZap();
-    setTvPower(v => !v);
+    // TV should be implicitly ON in any situation (locked ON).
+    setTvPower(true);
+    setTvOn(true);
   }, [playTvZap]);
+
+  useEffect(() => {
+    // Enforce TV always ON (per UX requirement).
+    if (!tvPower) setTvPower(true);
+    if (!tvOn) setTvOn(true);
+  }, [tvPower, tvOn]);
 
   const ensureAudioCtx = useCallback(() => {
     if (audioCtxRef.current) return audioCtxRef.current;
@@ -1276,6 +1362,7 @@ const StressTest = () => {
 
   useEffect(() => {
     // Ensure candles are always visible (even before/at start)
+    if (useRealBinanceData && BINANCE_SYMBOL_BY_FEED[selectedFeed.id]) return;
     if (feedCandles.length < 6) {
       const seeded = seedCandles(selectedFeed.id, 60);
       setFeedCandles(seeded);
@@ -1290,6 +1377,7 @@ const StressTest = () => {
 
   useEffect(() => {
     // While running: if switching feed or at start, ensure enough candles exist
+    if (useRealBinanceData && BINANCE_SYMBOL_BY_FEED[selectedFeed.id]) return;
     if (!loading) return;
     if (feedCandles.length < 20) {
       setFeedCandles(seedCandles(selectedFeed.id, 80));
@@ -1298,8 +1386,52 @@ const StressTest = () => {
   }, [loading, selectedFeed.id, simStage, selectedScenario?.id]);
 
   useEffect(() => {
+    // Real Binance candles + price (BTC/ETH/BNB). Keeps the chart aligned with real market levels.
+    const symbol = BINANCE_SYMBOL_BY_FEED[selectedFeed.id];
+    if (!useRealBinanceData || !symbol) return;
+
+    let cancelled = false;
+    let t = null;
+
+    const fetchOnce = async () => {
+      try {
+        // 1m candles, last 120 minutes
+        const klRes = await fetch(`https://api.binance.com/api/v3/klines?symbol=${encodeURIComponent(symbol)}&interval=1m&limit=120`);
+        if (!klRes.ok) throw new Error(`Binance klines HTTP ${klRes.status}`);
+        const kl = await klRes.json();
+        const candles = parseBinanceKlines(kl);
+        if (!candles.length) throw new Error('No klines returned');
+
+        // price (last close) + delta (vs previous close)
+        const last = candles[candles.length - 1];
+        const prev = candles[candles.length - 2] || last;
+
+        if (cancelled) return;
+        setRealDataError('');
+        setFeedCandles(candles);
+        setFeedPrice(last.c);
+        setFeedDeltaPct(clamp(pctChange(prev.c, last.c), -99.99, 99.99));
+      } catch (e) {
+        // If Binance is blocked (CORS/network), keep previous candles and allow simulation to work.
+        if (cancelled) return;
+        setRealDataError(String(e?.message || e));
+      }
+    };
+
+    fetchOnce();
+    t = window.setInterval(fetchOnce, 12_000);
+
+    return () => {
+      cancelled = true;
+      if (t) window.clearInterval(t);
+    };
+  }, [selectedFeed.id, useRealBinanceData]);
+
+  useEffect(() => {
     // Build candlestick feed (BINANCE / BNB / BTC / ETH) once per second while running
     if (!loading) return;
+    // If real data is active for BTC/ETH/BNB, do NOT overwrite candles with synthetic drift.
+    if (useRealBinanceData && BINANCE_SYMBOL_BY_FEED[selectedFeed.id] && !realDataError) return;
 
     const scenarioSeverity = clamp((selectedScenario?.severity || 80) / 100, 0.2, 1);
     const stageFactor =
@@ -1377,7 +1509,7 @@ const StressTest = () => {
     setFeedPrice(candle.c);
     const delta = ((candle.c - candle.o) / Math.max(1e-9, candle.o)) * 100;
     setFeedDeltaPct(clamp(delta, -99.99, 99.99));
-  }, [loading, simStage, selectedScenario, selectedFeed, exchangeBoard, simTime, feedCandles, chartTakeover, chartShock]);
+  }, [loading, simStage, selectedScenario, selectedFeed, exchangeBoard, simTime, feedCandles, chartTakeover, chartShock, useRealBinanceData, realDataError]);
 
   // (moved выше & memoized) playSound / triggerChaos / triggerHellScream
 
@@ -1805,6 +1937,45 @@ const StressTest = () => {
     } catch (_) {}
   }, []);
 
+  useEffect(() => {
+    // Auto-close ring info after a short read window
+    if (!bioRingOpen) {
+      if (bioRingTimerRef.current) window.clearTimeout(bioRingTimerRef.current);
+      bioRingTimerRef.current = null;
+      return;
+    }
+    if (bioRingTimerRef.current) window.clearTimeout(bioRingTimerRef.current);
+    bioRingTimerRef.current = window.setTimeout(() => {
+      setBioRingOpen(false);
+    }, 12000);
+    return () => {
+      if (bioRingTimerRef.current) window.clearTimeout(bioRingTimerRef.current);
+      bioRingTimerRef.current = null;
+    };
+  }, [bioRingOpen]);
+
+  useEffect(() => {
+    // Close "Read more" when attention moves away: click/tap outside, focus outside, or ESC.
+    if (!bioRingOpen) return;
+    const onOutside = (e) => {
+      const root = bioRingRef.current;
+      if (!root) return;
+      if (root.contains(e.target)) return;
+      setBioRingOpen(false);
+    };
+    const onKey = (e) => {
+      if (e.key === 'Escape') setBioRingOpen(false);
+    };
+    window.addEventListener('pointerdown', onOutside, true);
+    window.addEventListener('focusin', onOutside, true);
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('pointerdown', onOutside, true);
+      window.removeEventListener('focusin', onOutside, true);
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [bioRingOpen]);
+
   const speakFinalCollapse = useCallback(() => {
     if (!soundEnabled) return;
     if (typeof window === 'undefined') return;
@@ -1823,21 +1994,55 @@ const StressTest = () => {
     duckAmbient(4500);
     playSound(glitchAudio, 1.0);
 
+    // Make the final lines clearly audible: stop music and mute TV briefly.
+    try {
+      const a0 = ambientAudio.current;
+      const d0 = despairAudio.current;
+      if (a0) { a0.volume = 0; a0.pause(); }
+      if (d0) { d0.volume = 0; d0.pause(); }
+    } catch (_) {}
+    let prevMute = null;
+    try {
+      prevMute = tvMute;
+      if (!tvMute) setTvMute(true);
+    } catch (_) {}
+
     let i = 0;
     const speakNext = () => {
       if (i >= lines.length) return;
       const utter = new SpeechSynthesisUtterance(lines[i]);
+      try { setNewsCaption(lines[i]); } catch (_) {}
       utter.lang = 'en-US';
       utter.rate = 1.12 + Math.random() * 0.08;
       utter.pitch = 0.72 + Math.random() * 0.06;
       utter.volume = 1.0;
       if (voice) utter.voice = voice;
-      utter.onend = () => { i += 1; window.setTimeout(speakNext, 420); };
-      utter.onerror = () => { i += 1; window.setTimeout(speakNext, 420); };
+      utter.onend = () => {
+        i += 1;
+        if (i >= lines.length) {
+          window.setTimeout(() => setNewsCaption(''), 2400);
+          try {
+            if (typeof prevMute === 'boolean') setTvMute(prevMute);
+          } catch (_) {}
+        } else {
+          window.setTimeout(speakNext, 420);
+        }
+      };
+      utter.onerror = () => {
+        i += 1;
+        if (i >= lines.length) {
+          window.setTimeout(() => setNewsCaption(''), 2400);
+          try {
+            if (typeof prevMute === 'boolean') setTvMute(prevMute);
+          } catch (_) {}
+        } else {
+          window.setTimeout(speakNext, 420);
+        }
+      };
       try { synth.speak(utter); } catch (_) {}
     };
     speakNext();
-  }, [soundEnabled, duckAmbient, playSound, glitchAudio]);
+  }, [soundEnabled, duckAmbient, playSound, glitchAudio, tvMute]);
 
   const speakBreakingNews = useCallback((text) => {
     if (!soundEnabled || !loading) return;
@@ -1850,6 +2055,28 @@ const StressTest = () => {
     if (newsGateRef.current.speaking) return;
     newsGateRef.current.t = now;
     newsGateRef.current.speaking = true;
+    newsGateRef.current.musicDiffuse = true;
+    setMusicDiffuse(true);
+
+    // Stop music completely while the voice speaks (user requirement)
+    try {
+      const a0 = ambientAudio.current;
+      const d0 = despairAudio.current;
+      newsAudioRef.current.ambVol = a0?.volume ?? null;
+      newsAudioRef.current.despairVol = d0?.volume ?? null;
+      newsAudioRef.current.ambRate = a0?.playbackRate ?? null;
+      newsAudioRef.current.despairRate = d0?.playbackRate ?? null;
+      newsAudioRef.current.ambWasPlaying = !!(a0 && !a0.paused);
+      newsAudioRef.current.despairWasPlaying = !!(d0 && !d0.paused);
+      if (a0) { a0.volume = 0; a0.pause(); }
+      if (d0) { d0.volume = 0; d0.pause(); }
+    } catch (_) {}
+
+    // Mute TV temporarily so the negative news voice is actually audible.
+    try {
+      newsAudioRef.current.prevTvMute = tvMute;
+      if (!tvMute) setTvMute(true);
+    } catch (_) {}
 
     const utter = new SpeechSynthesisUtterance(text);
     utter.lang = 'en-US';
@@ -1864,7 +2091,7 @@ const StressTest = () => {
       if (v) utter.voice = v;
     } catch (_) {}
 
-    const triggerTvTakeover = (ms = 5200) => {
+    const triggerTvTakeover = (ms = 7000) => {
       const nowT = Date.now();
       if (nowT - (tvTakeoverRef.current.t || 0) < 12000) return; // don't spam fullscreen
       tvTakeoverRef.current.t = nowT;
@@ -1918,11 +2145,9 @@ const StressTest = () => {
     // When negative news voice speaks: keep music very diffuse (low volume), not fully stopped.
     const a = ambientAudio.current;
     const d = despairAudio.current;
-    const prevA = a?.volume;
-    const prevD = d?.volume;
     try {
-      if (a) a.volume = 0.02;
-      if (d) d.volume = 0.02;
+      if (a) a.volume = 0.015;
+      if (d) d.volume = 0.015;
     } catch (_) {}
 
     // Make it audible: extra ducking + siren/glitch cue + zap cue
@@ -1935,19 +2160,40 @@ const StressTest = () => {
     if (Math.random() < 0.65) triggerTvTakeover(7000 + Math.random() * 2500);
     if (Math.random() < 0.40) triggerChartTakeover(4200 + Math.random() * 2400);
 
+    utter.onstart = () => {
+      // Immediate audible duck + slight slowdown while the voice speaks
+      try {
+        const a2 = ambientAudio.current;
+        const d2 = despairAudio.current;
+        if (a2) {
+          a2.volume = Math.min(a2.volume || 1, 0.015);
+          a2.playbackRate = Math.min(a2.playbackRate || 1, 0.92);
+        }
+        if (d2) {
+          d2.volume = Math.min(d2.volume || 1, 0.020);
+          d2.playbackRate = Math.min(d2.playbackRate || 1, 0.82);
+        }
+      } catch (_) {}
+    };
+
     utter.onend = () => {
       newsGateRef.current.speaking = false;
+      newsGateRef.current.musicDiffuse = false;
+      setMusicDiffuse(false);
       window.setTimeout(() => setNewsCaption(''), 2600);
+      // restore TV mute state
       try {
-        if (a && typeof prevA === 'number') a.volume = prevA;
-        if (d && typeof prevD === 'number') d.volume = prevD;
+        const prev = newsAudioRef.current.prevTvMute;
+        if (typeof prev === 'boolean') setTvMute(prev);
       } catch (_) {}
     };
     utter.onerror = () => {
       newsGateRef.current.speaking = false;
+      newsGateRef.current.musicDiffuse = false;
+      setMusicDiffuse(false);
       try {
-        if (a && typeof prevA === 'number') a.volume = prevA;
-        if (d && typeof prevD === 'number') d.volume = prevD;
+        const prev = newsAudioRef.current.prevTvMute;
+        if (typeof prev === 'boolean') setTvMute(prev);
       } catch (_) {}
     };
 
@@ -1956,6 +2202,12 @@ const StressTest = () => {
       synth.speak(utter);
     } catch (_) {
       newsGateRef.current.speaking = false;
+      newsGateRef.current.musicDiffuse = false;
+      setMusicDiffuse(false);
+      try {
+        const prev = newsAudioRef.current.prevTvMute;
+        if (typeof prev === 'boolean') setTvMute(prev);
+      } catch (_) {}
     }
   }, [soundEnabled, loading, duckAmbient, playTvZap, playSound, tvSize, tvMute, tvPower, selectedFeed, globalReveal]);
 
@@ -2340,8 +2592,9 @@ const StressTest = () => {
                           e.stopPropagation();
                           toggleTvPower();
                         }}
+                        title={tvPower ? 'Power off TV' : 'Power on TV'}
                       >
-                        {tvPower ? 'POWER OFF' : 'POWER ON'}
+                        {tvPower ? 'PWR: OFF' : 'PWR: ON'}
                       </button>
                       <button
                         type="button"
@@ -2353,7 +2606,7 @@ const StressTest = () => {
                         }}
                         title="YouTube iframe volume can't be smoothly controlled; this toggles mute on the embedded player."
                       >
-                        {tvMute ? 'TV: MUTED' : 'TV: SOUND'}
+                        {tvMute ? 'SND: OFF' : 'SND: ON'}
                       </button>
                       <button
                         type="button"
@@ -2362,8 +2615,9 @@ const StressTest = () => {
                           e.stopPropagation();
                           setTvSize((s) => (s === 'normal' ? 'large' : s === 'large' ? 'popup' : s === 'popup' ? 'fullscreen' : 'normal'));
                         }}
+                        title="Resize TV (Normal → Large → Popup → Fullscreen)"
                       >
-                        {tvSize === 'normal' ? 'VIEW: N' : tvSize === 'large' ? 'VIEW: L' : tvSize === 'popup' ? 'VIEW: POP' : 'VIEW: FULL'}
+                        {tvSize === 'normal' ? 'SIZE: N' : tvSize === 'large' ? 'SIZE: L' : tvSize === 'popup' ? 'SIZE: POP' : 'SIZE: FULL'}
                       </button>
                       <button
                         type="button"
@@ -2594,10 +2848,83 @@ const StressTest = () => {
                       </button>
                     </div>
                     <div className="cta-sub">
-                      Certificate issuance requires face detection during the test.
+                      You can run the Stress Test without the camera, but you cannot receive a certificate unless the camera is enabled and a face is detected during the run.
                     </div>
                   </div>
                 )}
+
+                <div className="bio-ring-soon" ref={bioRingRef}>
+                  <div className="br-title">BioSignal Ring Integration (coming soon)</div>
+                  <div className="br-sub">
+                    Optional advanced module for pulse + nervous system monitoring during Stress Test.
+                    <br />
+                    Certificate add-on cost: <strong>20,000 BITS</strong> (future release).
+                  </div>
+                  <div className="br-actions">
+                    <button
+                      type="button"
+                      className="br-toggle"
+                      onClick={() => setBioRingOpen(v => !v)}
+                    >
+                      {bioRingOpen ? 'Hide details' : 'Learn more'}
+                    </button>
+                    <div className="br-chip">Planned</div>
+                  </div>
+
+                  <div
+                    className={`br-details ${bioRingOpen ? 'open' : ''}`}
+                    onMouseLeave={() => { if (bioRingOpen) setBioRingOpen(false); }}
+                  >
+                    <div className="br-sub" style={{ marginTop: 8 }}>
+                      <strong>Example supported devices (planned):</strong>
+                    </div>
+                    <ul className="br-list">
+                      <li>
+                        <strong>Samsung Galaxy Ring</strong> — HR/HRV/sleep signals via Samsung Health ecosystem.
+                        <span className="br-links">
+                          <a href="https://www.samsung.com/" target="_blank" rel="noreferrer noopener">Official</a>
+                        </span>
+                      </li>
+                      <li>
+                        <strong>Oura Ring (Gen 3/4)</strong> — HR/HRV/temp/sleep readiness (typically via cloud export/API or app bridge).
+                        <span className="br-links">
+                          <a href="https://ouraring.com/" target="_blank" rel="noreferrer noopener">Official / Buy</a>
+                        </span>
+                      </li>
+                      <li>
+                        <strong>Ultrahuman Ring Air</strong> — HR/HRV/sleep &amp; recovery metrics (app bridge/export).
+                        <span className="br-links">
+                          <a href="https://www.ultrahuman.com/ring/" target="_blank" rel="noreferrer noopener">Official / Buy</a>
+                        </span>
+                      </li>
+                      <li>
+                        <strong>RingConn (Gen 2)</strong> — HR/HRV/sleep metrics (app bridge/export).
+                        <span className="br-links">
+                          <a href="https://ringconn.com/" target="_blank" rel="noreferrer noopener">Official / Buy</a>
+                        </span>
+                      </li>
+                      <li>
+                        <strong>Circular Ring</strong> — HR/HRV/sleep metrics (app bridge/export).
+                        <span className="br-links">
+                          <a href="https://www.circular.xyz/" target="_blank" rel="noreferrer noopener">Official / Buy</a>
+                        </span>
+                      </li>
+                      <li>
+                        <strong>Huawei wearables (Watch/Band)</strong> — alternative pathway via BLE/app export (Huawei ring model is TBD).
+                        <span className="br-links">
+                          <a href="https://consumer.huawei.com/" target="_blank" rel="noreferrer noopener">Official</a>
+                        </span>
+                      </li>
+                    </ul>
+                    <div className="br-footnote">
+                      Note: device support depends on available SDK/BLE characteristics and/or export APIs.
+                    </div>
+                  </div>
+                  <label className="cert-consent disabled">
+                    <input type="checkbox" disabled checked={false} readOnly />
+                    <span>Enable Ring Monitor (requires compatible device) — Coming soon</span>
+                  </label>
+                </div>
 
                 <div className="cert-row">
                   <label className="cert-label">Full Name (required)</label>
@@ -2707,6 +3034,36 @@ const StressTest = () => {
                       <div className={`av-d ${feedDeltaPct >= 0 ? 'pos' : 'neg'}`}>{feedDeltaPct >= 0 ? '+' : ''}{feedDeltaPct.toFixed(2)}%</div>
                     </div>
                   </div>
+
+                  {BINANCE_SYMBOL_BY_FEED[selectedFeed.id] && (
+                    <div className="gmp-caption" style={{ marginTop: 10 }}>
+                      <strong>DATA:</strong>{' '}
+                      <button
+                        type="button"
+                        className="asset-pill"
+                        style={{ padding: '6px 10px', marginRight: 8 }}
+                        onClick={() => setUseRealBinanceData(true)}
+                        disabled={useRealBinanceData}
+                      >
+                        REAL (BINANCE)
+                      </button>
+                      <button
+                        type="button"
+                        className="asset-pill"
+                        style={{ padding: '6px 10px' }}
+                        onClick={() => setUseRealBinanceData(false)}
+                        disabled={!useRealBinanceData}
+                      >
+                        SIM
+                      </button>
+                      {useRealBinanceData && (
+                        <span style={{ marginLeft: 10, opacity: 0.75 }}>
+                          {BINANCE_SYMBOL_BY_FEED[selectedFeed.id]} • 1m candles
+                          {realDataError ? ` • FALLBACK (${realDataError})` : ''}
+                        </span>
+                      )}
+                    </div>
+                  )}
 
                   <svg viewBox="0 0 900 180" preserveAspectRatio="none" className="global-spark">
                     {/* grid */}
