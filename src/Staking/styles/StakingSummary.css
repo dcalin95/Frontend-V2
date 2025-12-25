@@ -25,7 +25,7 @@
 /* AI Stats Container - Discrete */
 .ai-stats-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
   margin: 1rem 0;
 }
@@ -41,6 +41,7 @@
   box-shadow: 0 2px 12px rgba(0, 255, 163, 0.05);
   transition: all 0.3s ease;
   font-family: 'Inter', sans-serif;
+  min-width: 0; /* allow grid children to shrink; prevents overflow */
 }
 
 .ai-stat-item:hover {
@@ -58,7 +59,7 @@
 }
 
 .ai-stat-value {
-  font-size: 2.4rem;
+  font-size: clamp(1.35rem, 2.6vw, 2.4rem);
   font-weight: 800;
   font-family: 'Inter', sans-serif;
   background: linear-gradient(135deg, #00FFA3, #DC1FFF);
@@ -66,6 +67,10 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   filter: drop-shadow(0 0 10px rgba(0, 255, 163, 0.4));
+  line-height: 1.05;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Clean - No aggressive animations */

@@ -6,8 +6,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 1.5rem auto;
-  gap: 1.5rem;
+  margin: 0.4rem auto 1.5rem auto; /* Ajustat de la 1.2rem la 0.4rem pentru a ridica puțin */
+  gap: 0.8rem;
 }
 
 /* ✅ HEADER */
@@ -35,15 +35,30 @@
 }
 
 .priceLine {
-  margin: 8px 0;
+  margin: 12px auto;
   font-size: 1.3rem;
   font-family: 'system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif', sans-serif;
   color: #ffffff;
   text-align: center;
-  display: flex;
+  display: inline-flex; /* Schimbat în inline-flex pentru a se mula pe conținut */
   align-items: center;
   justify-content: center;
   gap: 8px;
+  
+  /* Chenar suav și discret */
+  background: rgba(0, 240, 255, 0.03);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  padding: 0.6rem 1.5rem;
+  border-radius: 50px; /* Aspect de pastilă */
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), inset 0 0 10px rgba(0, 240, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.priceLine:hover {
+  border-color: rgba(0, 240, 255, 0.4);
+  background: rgba(0, 240, 255, 0.06);
+  box-shadow: 0 4px 20px rgba(0, 240, 255, 0.1);
 }
 
 .priceLogo {
@@ -112,11 +127,22 @@
   font-family: 'system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif', sans-serif;
   color: #00f0ff;
   text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.3rem; /* Redus de la 0.8rem */
   font-weight: bold;
   letter-spacing: 1px;
   text-align: center;
   line-height: 1.2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.roundLogo {
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(0 0 8px #00f0ffcc);
+  animation: logoPulse 3s infinite ease-in-out;
 }
 
 .currentRound {
@@ -146,32 +172,59 @@
   justify-content: center;
   align-items: center;
   margin-bottom: 0.5rem;
+  gap: 15px;
 }
 
 .timeBox {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
-  padding: 1rem;
-  min-width: 80px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  margin: 0 0.5rem;
+  background: rgba(0, 240, 255, 0.03);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 15px; /* Schimbat în stil pastilă/suav */
+  padding: 0.8rem;
+  min-width: 85px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.timeBox:hover {
+  border-color: rgba(0, 240, 255, 0.5);
+  box-shadow: 0 4px 20px rgba(0, 240, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Efectul de Scanare AI / Grid digital discret */
+.countdownFlip::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 255, 255, 0.02) 50%),
+    linear-gradient(90deg, rgba(255, 0, 0, 0), rgba(0, 255, 255, 0.02), rgba(255, 0, 0, 0));
+  background-size: 100% 4px, 4px 100%;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.5;
 }
 
 .timeValue {
-  font-size: 2.5rem;
+  font-size: 2.2rem; /* Ajustat ușor */
   font-weight: bold;
   color: #00f0ff;
-  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
-  font-family: 'system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif', sans-serif;
+  text-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
+  font-family: 'Roboto Mono', monospace; /* Font tip digital */
 }
 
 .timeLabel {
-  font-size: 0.9rem;
-  color: #ffffff;
-  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 0.3rem;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  font-family: 'system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif', sans-serif;
+  letter-spacing: 2px;
 }
 
 /* ✅ ANIMAȚII */
@@ -459,6 +512,39 @@
   font-size: 1.1rem;
   margin-bottom: 1rem;
   color: #ffd700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+}
+
+/* Status LED effect */
+.remainingText::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: #00ff00;
+  border-radius: 50%;
+  margin-left: 10px;
+  box-shadow: 0 0 10px #00ff00;
+  animation: statusBlink 1.5s infinite;
+}
+
+@keyframes statusBlink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.8); }
+}
+
+.hourglass {
+  display: inline-block;
+  animation: hourglassFlip 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.4));
+}
+
+@keyframes hourglassFlip {
+  0%, 80% { transform: rotate(0deg); }
+  90%, 100% { transform: rotate(180deg); }
 }
 
 .finalRound {

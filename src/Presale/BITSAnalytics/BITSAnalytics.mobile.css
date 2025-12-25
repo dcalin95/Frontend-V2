@@ -6,9 +6,28 @@
   .portfolio-header-icon-img { width: 48px; height: 48px; }
 
   /* Feed Adjustments */
-  .btc-feed-list, .stx-feed-list { max-height: 160px; }
-  .btc-feed-row { grid-template-columns: 1fr auto; }
-  .btc-feed-row .meta { grid-column: 1 / -1; }
+  .terminal-feed { margin-top: -10px !important; }
+  .terminal-list { max-height: none; overflow: visible; }
+  .terminal-row { 
+    grid-template-columns: 0.8fr 1.2fr 1fr; 
+    font-size: 0.65rem;
+    padding: 4px 6px;
+    width: 100%;
+  }
+  .terminal-table-head {
+    grid-template-columns: 0.8fr 1.2fr 1fr;
+    font-size: 0.55rem;
+    text-align: right;
+  }
+  .terminal-table-head span:first-child { text-align: left; }
+  .terminal-table-head span:nth-child(2) { text-align: left; }
+  .terminal-table-head span:last-child { text-align: right; }
+
+  .t-txid { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .t-meta { justify-content: flex-end; }
+  .t-meta { gap: 4px; }
+  .terminal-label { font-size: 0.75rem; }
+  .pulse-text { display: none; } /* Hide branding text on small mobile to save space */
 
   /* Widget Grid - Single Column, Full Width */
   .widget-grid {
@@ -84,4 +103,3 @@
     font-size: 0.75rem; 
   }
 }
-

@@ -283,9 +283,34 @@
 .modal ul {
   margin: 10px 0 20px;
   padding-left: 18px;
+  /* prevent long tx hashes/addresses from overflowing modal */
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
-.tx-link { color: #00aaff; text-decoration: none; }
+.modal li {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.tx-link {
+  color: #00aaff;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+.modal-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
 
 .confirm-actions {
   margin-top: 12px;

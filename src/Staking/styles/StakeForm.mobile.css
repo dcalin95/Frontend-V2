@@ -71,4 +71,48 @@
         font-size: 1rem !important;
         margin-top: 10px !important;
     }
+
+    /* ✅ Current StakeForm markup (fix overflow for big numbers like 58,509.84) */
+    body.mode-mobile .stake-form .ai-stats-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    body.mode-mobile .stake-form .ai-stat-item {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    body.mode-mobile .stake-form .ai-stat-value {
+        font-size: 1.15rem !important;
+        line-height: 1.05 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        background: none !important;
+        -webkit-text-fill-color: unset !important;
+        color: rgba(0, 255, 200, 0.95) !important;
+    }
+
+    body.mode-mobile .stake-form .stake-protocol-apr {
+        font-size: 1.05rem !important;
+    }
+
+    /* ✅ Fix: keep the small APR info button circular (mobile global CSS forces stake-form buttons to 100% width) */
+    body.mode-mobile .stake-form button[aria-label="APR info"] {
+        width: 24px !important;
+        height: 24px !important;
+        min-width: 24px !important;
+        max-width: 24px !important;
+        padding: 0 !important;
+        border-radius: 50% !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex: 0 0 24px !important;
+    }
 }

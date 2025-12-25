@@ -13,7 +13,15 @@ const SOLANA_NETWORK = SOLANA_CONFIG.rpcHttp;
 const SOLANA_WS = SOLANA_CONFIG.rpcWs;
 const DESTINATION_WALLET = new PublicKey(SOLANA_CONFIG.destinationWallet);
 
-const handleSOLPayment = async ({ amount, bitsToReceive, walletAddress, referralCode }) => {
+const handleSOLPayment = async ({
+  amount,
+  bitsToReceive,
+  walletAddress,
+  referralCode,
+  usdInvested: usdInvestedFromUI,
+  bonusAmount,
+  bonusPercentage,
+}) => {
   try {
     console.log("🟣 [handleSOLPayment] Start SOL payment...");
 
@@ -74,19 +82,22 @@ const handleSOLPayment = async ({ amount, bitsToReceive, walletAddress, referral
     // 🔥 Trimitem informația către backend (INCLUDE USD FOR LOYALTY BONUS)
     const backendURL = getBackendUrl();
     
-    // 🎁 Calculate USD value for loyalty bonus using live SOL price (fallback to 150 if fetch fails)
-    let estimatedSOLPrice = 150;
-    try {
-      const coingecko = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd');
-      if (coingecko.ok) {
-        const data = await coingecko.json();
-        const live = Number(data?.solana?.usd);
-        if (Number.isFinite(live) && live > 0) estimatedSOLPrice = live;
+    // Prefer USD computed in UI (same basis as BNB flow), fallback to CoinGecko if missing.
+    let usdInvested = Number(usdInvestedFromUI);
+    if (!Number.isFinite(usdInvested) || usdInvested <= 0) {
+      let estimatedSOLPrice = 150;
+      try {
+        const coingecko = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd');
+        if (coingecko.ok) {
+          const data = await coingecko.json();
+          const live = Number(data?.solana?.usd);
+          if (Number.isFinite(live) && live > 0) estimatedSOLPrice = live;
+        }
+      } catch (e) {
+        console.warn('⚠️ [handleSOLPayment] Could not fetch SOL price from CoinGecko, using fallback 150 USD');
       }
-    } catch (e) {
-      console.warn('⚠️ [handleSOLPayment] Could not fetch SOL price from CoinGecko, using fallback 150 USD');
+      usdInvested = amount * estimatedSOLPrice;
     }
-    const usdInvested = amount * estimatedSOLPrice;
     
     console.log("🎁 [SOL LOYALTY] Estimated USD investment for bonus:", usdInvested);
     
@@ -106,8 +117,8 @@ const handleSOLPayment = async ({ amount, bitsToReceive, walletAddress, referral
         signature,
         type: "buy_bits",
         network: "Solana",
-        bonusPercentage: 0,
-        bonusBits: 0,
+        bonusPercentage: Number.isFinite(Number(bonusPercentage)) ? Number(bonusPercentage) : 0,
+        bonusBits: Number.isFinite(Number(bonusAmount)) ? Number(bonusAmount) : 0,
         // 🎯 Referral support (invite rewards)
         referralCode: referralCode || null,
         // ✅ Backend now does automatic fulfilment (verify SOL tx on-chain + send BITS from treasury)

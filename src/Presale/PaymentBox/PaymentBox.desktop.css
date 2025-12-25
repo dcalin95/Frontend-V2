@@ -42,7 +42,7 @@
   /* 🔙 REVIN LA ORIGINAL - TRANSPARENT */
   background: transparent;
   border: none;
-  padding: 1.5rem;
+  padding: 0.2rem 1.5rem 1.5rem 1.5rem;
   border-radius: 1.5rem;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
@@ -50,7 +50,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
   width: 100%;
   max-width: 540px;
   margin: 0 auto;
@@ -99,9 +99,10 @@
 
 .payment-title {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.3rem;
+  gap: 0.45rem;
   font-size: 1.8rem;
   font-family: 'Orbitron', 'Space Grotesk', sans-serif;
   font-weight: 700;
@@ -112,10 +113,245 @@
   -webkit-text-fill-color: currentColor;
   background-clip: border-box;
   filter: none !important;
-  margin-bottom: 0.5rem;
+  margin-top: -2.8rem;
+  margin-bottom: 0rem;
+  padding-top: 0;
   position: relative;
   z-index: 5;
   text-shadow: none !important;
+}
+
+/* BUY title layout: YOU PAY / swap / YOU RECEIVE */
+.payment-title-top {
+  width: 100%;
+  display: grid;
+  /* make side columns hug their content so the bridge gets closer to logos */
+  grid-template-columns: max-content max-content max-content;
+  align-items: center;
+  justify-items: center;
+  gap: 0; /* remove physical gap */
+}
+
+/* Pull left/right groups toward the bridge (kills the perceived whitespace) */
+.payment-title-top > .payment-title-side:first-child {
+  justify-self: end;
+  align-items: flex-end; /* move icon/text to the edge near the bridge */
+  text-align: right;
+}
+.payment-title-top > .payment-title-side:last-child {
+  justify-self: start;
+  align-items: flex-start; /* move icon/text to the edge near the bridge */
+  text-align: left;
+}
+
+/* Simple arrow between the two logos (requested) */
+.payment-exchange-arrow {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin: 0 -8px; /* eat leftover whitespace */
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: rgba(0, 255, 163, 1);
+  text-shadow: 0 0 20px rgba(0, 255, 163, 0.65);
+  line-height: 1;
+  user-select: none;
+  /* Make it 100% visible */
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.payment-title-bottom {
+  width: 100%;
+  text-align: center;
+}
+
+.payment-title-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.payment-title-side-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1;
+}
+
+.payment-title-side-token {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Exchange (swap) icon before token-flow */
+.payment-exchange-icon {
+  width: 32px;
+  height: 32px;
+  margin-right: 10px;
+  vertical-align: middle;
+  flex: 0 0 auto;
+}
+
+/* Animated swap bridge between the two logos (no SVG) */
+.payment-swap-bridge {
+  position: relative;
+  width: 100%;
+  max-width: 100%; /* let bridge fill the middle column (removes side whitespace) */
+  height: 38px;
+  justify-self: stretch;
+  /* visually eat the leftover whitespace between bridge and side icons */
+  margin: 0 -10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.22);
+  /* ultra-visible motion fallback (so it can NEVER look static) */
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(20, 241, 149, 0.00) 0px,
+    rgba(20, 241, 149, 0.00) 10px,
+    rgba(153, 69, 255, 0.18) 10px,
+    rgba(153, 69, 255, 0.18) 20px
+  );
+  background-size: 140px 140px;
+  animation: paymentSwapStripes 1.05s linear infinite;
+  border: 1px solid rgba(0, 255, 163, 0.22);
+  overflow: hidden;
+  isolation: isolate; /* ensure predictable layering for pseudo-elements + marquee */
+  box-shadow:
+    0 0 0 1px rgba(153, 69, 255, 0.10) inset,
+    0 0 18px rgba(0, 255, 163, 0.14);
+}
+
+.payment-swap-bridge::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(90deg,
+    rgba(0, 255, 163, 0) 0%,
+    rgba(0, 255, 163, 0.55) 20%,
+    rgba(220, 31, 255, 0.55) 50%,
+    rgba(0, 241, 255, 0.55) 80%,
+    rgba(0, 255, 163, 0) 100%
+  );
+  transform: translateX(-120%);
+  animation: paymentSwapSweep 1.35s ease-in-out infinite;
+}
+
+.payment-swap-bridge::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 13px;
+  height: 13px;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  background: rgba(0, 255, 163, 0.9);
+  box-shadow: 0 0 22px rgba(0, 255, 163, 0.65);
+  z-index: 3;
+  animation: paymentSwapPulse 1.35s ease-in-out infinite;
+}
+
+.payment-swap-bridge__marquee {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  overflow: hidden;
+  z-index: 2;
+  /* subtle mask so text fades near edges (mask uses luminance: white=visible, black=hidden) */
+  mask-image: linear-gradient(90deg, transparent 0%, #fff 14%, #fff 86%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #fff 14%, #fff 86%, transparent 100%);
+  pointer-events: none;
+}
+
+.payment-swap-bridge__marquee-inner {
+  display: inline-block;
+  white-space: nowrap;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 0 22px rgba(0, 255, 163, 0.42);
+  transform: translateX(0);
+  animation: paymentSwapMarquee 4.4s linear infinite;
+}
+
+.payment-swap-bridge__icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -52%);
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 0 14px rgba(0, 255, 163, 0.35);
+  letter-spacing: 0.02em;
+  z-index: 4;
+  animation: paymentSwapIcon 1.35s ease-in-out infinite;
+}
+
+@keyframes paymentSwapSweep {
+  0% { transform: translateX(-120%); opacity: 0.35; }
+  45% { opacity: 0.85; }
+  100% { transform: translateX(120%); opacity: 0.35; }
+}
+
+@keyframes paymentSwapPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.55; }
+  50% { transform: translate(-50%, -50%) scale(1.35); opacity: 1; }
+}
+
+@keyframes paymentSwapIcon {
+  0%, 100% { transform: translate(-50%, -52%) scale(0.95); opacity: 0.8; }
+  50% { transform: translate(-50%, -52%) scale(1.1); opacity: 1; }
+}
+
+@keyframes paymentSwapMarquee {
+  0% { transform: translateX(0); opacity: 0.75; }
+  100% { transform: translateX(-50%); opacity: 0.75; }
+}
+
+@keyframes paymentSwapStripes {
+  0% { background-position: 0px 0px; }
+  100% { background-position: 70px 70px; }
+}
+
+/* If the app enables reduced-motion globally, still keep this swap indicator animated (user explicitly wants it). */
+.reduced-motion .payment-swap-bridge::before,
+.reduced-motion .payment-swap-bridge::after,
+.reduced-motion .payment-swap-bridge__icon,
+.reduced-motion .payment-swap-bridge__marquee-inner {
+  animation-duration: 1.35s !important;
+  animation-iteration-count: infinite !important;
+}
+
+.reduced-motion .payment-swap-bridge__marquee-inner {
+  animation-duration: 5.2s !important;
+}
+
+/* Arrow between token icons (make it readable and not "lost") */
+.payment-title .arrow-text {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: rgba(255,255,255,0.75);
+  line-height: 1;
+  margin: 0 4px;
 }
 
 /* @keyframes cosmicPulse REMOVED to prevent egg glow */
@@ -191,6 +427,24 @@
   font-size: 1.3rem;
   color: #00c7ff;
   align-items: center;
+}
+
+/* Horizontal header row: token → BITS */
+.price-info-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 0.5rem;
+}
+
+.price-info-header-arrow {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: rgba(0, 255, 163, 1);
+  text-shadow: 0 0 20px rgba(0, 255, 163, 0.65);
+  line-height: 1;
+  user-select: none;
 }
 
 .price-line {

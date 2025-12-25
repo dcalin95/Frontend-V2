@@ -4,24 +4,67 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 0.5rem;
-  width: 100%;
+  gap: 0.3rem;
+  padding: 1.2rem 2.5rem;
+  background: rgba(0, 240, 255, 0.05);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 60px; /* Stil pastilă mare */
+  width: fit-content;
+  margin: 1rem auto;
+  backdrop-filter: blur(8px);
+  box-shadow: 
+    0 0 20px rgba(0, 240, 255, 0.1),
+    inset 0 0 15px rgba(0, 240, 255, 0.05);
+  animation: floating 4s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efect de strălucire care trece peste cifre */
+.totalRaised::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  animation: shine 6s infinite;
+}
+
+@keyframes shine {
+  0% { left: -100%; }
+  20% { left: 150%; }
+  100% { left: 150%; }
+}
+
+@keyframes floating {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 
 .totalRaisedLabel {
-  font-size: 1.2rem;
-  color: #fff;
-  font-weight: 500;
+  font-size: 0.85rem;
+  color: #00f0ff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  opacity: 0.8;
 }
 
 .totalRaisedAmount {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #00ff00;
-  text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: #ffd700; /* Auriu spectaculos */
+  text-shadow: 
+    0 0 10px rgba(255, 215, 0, 0.5),
+    0 0 20px rgba(255, 215, 0, 0.2);
+  font-family: 'Roboto Mono', monospace;
 }
 
 .analyticsBox {

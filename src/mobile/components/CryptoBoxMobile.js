@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import usePaymentState from "../../Presale/PaymentBox/hooks/usePaymentState";
 import useHandleTransaction from "../../Presale/PaymentBox/useHandleTransaction";
+import PaymentTitleBridgeMobile from "./PaymentTitleBridgeMobile";
 
 const CRYPTO_TOKENS = [
   { key: "ETH", name: "Ethereum", img: "https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=026", color: "#627eea" },
@@ -98,6 +99,7 @@ const CryptoBoxMobile = ({
   const bitsToReceive = paymentState.pureBits || 0;
   const bonusAmount = paymentState.bonusAmount || 0;
   const totalBits = bitsToReceive + bonusAmount;
+  const selectedMeta = CRYPTO_TOKENS.find((t) => t.key === selectedToken);
 
   return (
     <>
@@ -244,6 +246,10 @@ const CryptoBoxMobile = ({
         padding: '20px'
       }}>
         <div className="mobile-payment-content" style={{flex: 1}}>
+          <PaymentTitleBridgeMobile
+            payTokenLabel={selectedToken}
+            payTokenIconSrc={selectedMeta?.img}
+          />
           <label className="mobile-payment-title" style={{display: 'flex', justifyContent: 'space-between', marginBottom: '12px', color: '#14f195'}}>
             <span>How much {selectedToken}?</span>
             <span style={{fontSize: '12px', color: 'rgba(255,255,255,0.6)'}}>Min: $10 USD</span>

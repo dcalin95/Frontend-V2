@@ -9,33 +9,175 @@ body {
   min-height: 100vh;
 }
 
-/* Live BTC feed */
-.btc-feed { background: transparent; border:none; border-radius:0; padding:0; margin-top:10px; }
-.btc-feed-head { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
-.btc-feed-icon { font-size:18px; color:#f7931a; text-shadow:0 0 8px rgba(247,147,26,0.5); }
-.btc-feed-title { font-weight:800; color:#e6f5ff; margin-right:8px; }
-.btc-feed-error { margin-left:auto; color:#ff6b6b; font-size:0.85rem; }
-.btc-feed-list { display:grid; gap:4px; max-height:180px; overflow:hidden; }
-.btc-feed-empty { opacity:0.8; font-size:0.9rem; text-align:center; padding:8px 0; }
-.btc-feed-row { display:grid; grid-template-columns: 1fr auto auto; align-items:center; gap:8px; padding:4px 0; border-radius:6px; }
-.btc-feed-row .txid { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color:#b3d9ff; font-size:0.9rem; }
-.btc-feed-row .val { font-weight:700; color:#00ffc3; font-size:0.9rem; }
-.btc-feed-row .meta { opacity:0.9; font-size:0.8rem; color:#a8ffd6; }
-.spark-line { height:2px; border-radius:2px; background: linear-gradient(90deg, rgba(0,255,195,.6), rgba(0,255,195,0)); width: var(--w, 30%); justify-self: end; }
-.spark-line.btc { background: linear-gradient(90deg, rgba(0,255,195,.7), rgba(0,255,195,0)); }
+/* 🖥️ UNIFIED TERMINAL HUD FEEDS */
+.terminal-feed {
+  background: rgba(0, 20, 30, 0.4);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-top: -15px; /* Ridicat mult mai sus pentru a elimina spațiul */
+  font-family: 'Roboto Mono', monospace;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+}
 
-/* Live STX feed */
-.stx-feed { background: transparent; border:none; border-radius:0; padding:0; margin-top:8px; }
-.stx-feed-head { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
-.stx-feed-icon { font-size:16px; color:#f37329; text-shadow:0 0 6px rgba(243,115,41,0.5); }
-.stx-feed-title { font-weight:800; color:#e6f5ff; margin-right:8px; }
-.stx-feed-error { margin-left:auto; color:#ff6b6b; font-size:0.85rem; }
-.stx-feed-list { display:grid; gap:4px; max-height:160px; overflow:hidden; }
-.stx-feed-empty { opacity:0.8; font-size:0.9rem; text-align:center; padding:8px 0; }
-.stx-feed-row { display:grid; grid-template-columns: 1fr auto; align-items:center; gap:8px; padding:4px 0; border-radius:6px; }
-.stx-feed-row .txid { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color:#b3d9ff; font-size:0.9rem; }
-.stx-feed-row .meta { opacity:0.9; font-size:0.8rem; color:#ffd6b8; }
-.spark-line.stx { height:2px; border-radius:2px; background: linear-gradient(90deg, rgba(243,115,41,.6), rgba(243,115,41,0)); width: var(--w, 30%); justify-self: end; }
+.terminal-feed.btc { border-color: rgba(247, 147, 26, 0.3); }
+.terminal-feed.stx { border-color: rgba(243, 115, 41, 0.3); margin-top: 10px; } /* Spațiu între ele */
+
+.terminal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.terminal-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.terminal-icon { font-size: 1.2rem; }
+.terminal-label {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.terminal-branding {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 240, 255, 0.1);
+  padding: 4px 8px;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+}
+
+.bits-logo-pulse {
+  width: 14px;
+  height: 14px;
+  animation: logoPulse 2s infinite;
+}
+
+.pulse-text {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #00f0ff;
+  letter-spacing: 1px;
+}
+
+.terminal-table-head {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr 1fr;
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 700;
+  margin-bottom: 6px;
+  padding: 0 8px;
+  text-transform: uppercase;
+}
+
+.terminal-table-head span:last-child {
+  text-align: right; /* Aliniem FEE / SIZE la dreapta deasupra coloanei corespunzătoare */
+}
+
+.terminal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: none;
+  overflow: visible;
+}
+
+.terminal-row {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr 1fr;
+  align-items: center;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  position: relative;
+  transition: all 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.terminal-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: scale(1.01);
+}
+
+.t-txid {
+  color: #6cf;
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.t-val {
+  color: #00ffc3;
+  font-weight: 700;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.t-val.stx-method {
+  color: #ffd6b8;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.t-meta {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.t-progress-bg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.t-progress-fill {
+  height: 100%;
+  background: #00ffc3;
+  box-shadow: 0 0 10px #00ffc3;
+  transition: width 1s ease-in-out;
+}
+
+.t-progress-fill.stx {
+  background: #f37329;
+  box-shadow: 0 0 10px #f37329;
+}
+
+.terminal-loading {
+  font-size: 0.8rem;
+  color: #00f0ff;
+  text-align: center;
+  padding: 20px;
+  letter-spacing: 2px;
+  animation: textPulse 1.5s infinite;
+}
+
+@keyframes logoPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.7; }
+}
 
 /* NETWORK & WALLET CONTROLS */
 .network-wallet-inline {
@@ -409,4 +551,3 @@ body {
   50% { opacity: 0.6; }
   100% { opacity: 0.3; }
 }
-

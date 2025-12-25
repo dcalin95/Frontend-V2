@@ -7,12 +7,41 @@ import { toast } from "react-toastify";
 import PresaleHistory from "../PresaleHistory";
 import RoundEndDisplay from "../RoundEndDisplay";
 import useCellManagerData from "../../hooks/useCellManagerData";
+import useAdditionalBonus from "../../hooks/useAdditionalBonus";
 import { CONTRACTS } from "../../../contract/contracts";
 // NOTE: SolanaRewardsManager is legacy (old endpoints + contract-based). We use Solana Payments (DB + cron verify + manual fulfilment).
 import { getBackendUrl } from "../../../utils/getBackendUrl";
 
 const API_URL = getBackendUrl();
 const ADMIN_PASS = process.env.REACT_APP_ADMIN_PASS || "fallback123";
+
+// AdditionalReward tiers (aligned with RewardsHub + backend SOL loyalty tiers)
+const SOL_BONUS_TIERS = [
+  { threshold: 100, rate: 3 },
+  { threshold: 250, rate: 5 },
+  { threshold: 500, rate: 7 },
+  { threshold: 1000, rate: 10 },
+  { threshold: 2500, rate: 15 }
+];
+
+function toNum(v) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function getTierForUsd(totalUsd) {
+  const usd = toNum(totalUsd);
+  let picked = { threshold: 0, rate: 0 };
+  for (const t of SOL_BONUS_TIERS) {
+    if (usd >= t.threshold) picked = t;
+  }
+  return { ...picked, label: `${picked.rate || 0}%` };
+}
+
+function fmt(n, digits = 2) {
+  const x = toNum(n);
+  return x.toLocaleString(undefined, { maximumFractionDigits: digits });
+}
 
 const AdminPanel = () => {
   const navigate = useNavigate();
@@ -52,6 +81,12 @@ const AdminPanel = () => {
   const [solanaSearch, setSolanaSearch] = useState(""); // wallet or signature
   const [solanaMarkingSig, setSolanaMarkingSig] = useState(null);
   const [solanaApiStatus, setSolanaApiStatus] = useState({ ok: null, msg: "" }); // ok: true|false|null
+  const [solanaLastFetchAt, setSolanaLastFetchAt] = useState(null);
+  const [solanaDebugOpen, setSolanaDebugOpen] = useState(false);
+  const [solanaSelectedEvmWallet, setSolanaSelectedEvmWallet] = useState("");
+  const [solanaLastRawResponse, setSolanaLastRawResponse] = useState(null);
+  const [solanaLoyaltyCurrency, setSolanaLoyaltyCurrency] = useState("BITS"); // BITS | USDT
+  const [solanaLoyaltyLast, setSolanaLoyaltyLast] = useState(null);
 
   // ===== Leaderboard demo (marketing) =====
   const [leaderboardDemoRows, setLeaderboardDemoRows] = useState([]);
@@ -89,6 +124,17 @@ const AdminPanel = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, isAuthorized]);
+
+  // Auto-pick an EVM wallet from SOL rows for on-chain AdditionalReward debug
+  useEffect(() => {
+    if (solanaSelectedEvmWallet) return;
+    const w = (solanaPayments || [])
+      .map((r) => String(r?.evm_wallet || r?.evmWallet || "").trim())
+      .find((x) => x && x.startsWith("0x") && x.length >= 10);
+    if (w) setSolanaSelectedEvmWallet(w);
+  }, [solanaPayments, solanaSelectedEvmWallet]);
+
+  const additionalBonus = useAdditionalBonus(solanaSelectedEvmWallet);
 
   const fetchLeaderboardDemo = async () => {
     setLeaderboardLoading(true);
@@ -180,14 +226,24 @@ const AdminPanel = () => {
         setSolanaPayments(res.data.rows || []);
         setSolanaDestination(res.data.destination || "");
         setSolanaTreasury(res.data.treasury || "");
+        setSolanaLastFetchAt(Date.now());
+        setSolanaLastRawResponse(res.data);
         setSolanaApiStatus({ ok: true, msg: "" });
         setSolanaDbInfo(null);
       } else {
+        setSolanaLastFetchAt(Date.now());
+        setSolanaLastRawResponse(res.data);
         setSolanaApiStatus({ ok: false, msg: "Solana payments API returned ok=false." });
         toast.error("❌ Failed to load Solana payments");
       }
     } catch (e) {
       const apiErr = e.response?.data?.error || e.response?.data?.message || e.message || "unknown";
+      setSolanaLastFetchAt(Date.now());
+      setSolanaLastRawResponse({
+        ok: false,
+        error: String(apiErr),
+        status: e.response?.status || null
+      });
       const isNotFound =
         e.response?.status === 404 ||
         String(apiErr).toLowerCase().includes("api route not found") ||
@@ -1434,6 +1490,7 @@ const AdminPanel = () => {
                   <div><strong>Backend:</strong> <span style={{ wordBreak: 'break-all' }}>{API_URL}</span></div>
                   <div><strong>Destination (Solana):</strong> <span style={{ wordBreak: 'break-all' }}>{solanaDestination || '—'}</span></div>
                   <div><strong>Treasury (BSC):</strong> <span style={{ wordBreak: 'break-all' }}>{solanaTreasury || '—'}</span></div>
+                  <div><strong>Last refresh:</strong> <span>{solanaLastFetchAt ? new Date(solanaLastFetchAt).toLocaleString() : '—'}</span></div>
                   <div style={{ marginTop: 6, opacity: 0.9 }}>
                     This table shows: <strong>Solana signature → cron verifies SOL transfer → you send BITS manually → paste BSC tx hash (Mark fulfilled)</strong>.
                   </div>
@@ -1461,9 +1518,204 @@ const AdminPanel = () => {
                 <button onClick={fetchSolanaPayments} disabled={solanaPaymentsLoading} style={{ marginTop: 10 }}>
                   {solanaPaymentsLoading ? "⏳ Refreshing..." : "🔄 Refresh"}
                 </button>
+                <button
+                  type="button"
+                  onClick={() => setSolanaDebugOpen((v) => !v)}
+                  style={{ marginTop: 10, marginLeft: 10 }}
+                >
+                  {solanaDebugOpen ? "🧪 Hide debug" : "🧪 Show debug"}
+                </button>
                 <button onClick={fetchSolanaDbInfo} style={{ marginTop: 10, marginLeft: 10 }}>
                   🧩 DB diagnostics
                 </button>
+                {solanaDebugOpen && (
+                  <div style={{
+                    marginTop: 10,
+                    padding: '10px 12px',
+                    borderRadius: 10,
+                    border: '1px solid rgba(125, 211, 252, 0.25)',
+                    background: 'rgba(125, 211, 252, 0.06)',
+                    color: '#dbeafe',
+                    fontSize: 12,
+                    lineHeight: 1.45
+                  }}>
+                    <div style={{ fontWeight: 900, marginBottom: 6 }}>🧪 Solana Payments Debug</div>
+                    <div style={{
+                      marginTop: 8,
+                      padding: '8px 10px',
+                      borderRadius: 10,
+                      border: '1px solid rgba(255, 215, 0, 0.22)',
+                      background: 'rgba(255, 215, 0, 0.06)',
+                      color: '#ffd7a3'
+                    }}>
+                      <div style={{ fontWeight: 900, marginBottom: 4 }}>🚫 Anti double-pay rule</div>
+                      <div style={{ opacity: 0.95 }}>
+                        Pentru plățile SOL, <strong>trimite exact valoarea “Send now”</strong> din tabel (nu “BITS”).
+                        Diferența “reserved” rămâne claimabilă în <strong>Rewards Hub → SOL Loyalty Reward</strong>.
+                        <div style={{ marginTop: 4, opacity: 0.9 }}>
+                          Backend-ul validează acum tx hash-ul de pe BSC și <strong>refuză Mark fulfilled</strong> dacă suma trimisă nu corespunde (previne plata dublă).
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+                      <div><strong>Rows:</strong> {(solanaPayments || []).length}</div>
+                      <div><strong>API ok:</strong> {String(solanaApiStatus.ok)}</div>
+                      {solanaApiStatus.msg ? <div><strong>API msg:</strong> {solanaApiStatus.msg}</div> : null}
+                    </div>
+                    <div style={{ marginTop: 8, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          try {
+                            const txt = JSON.stringify(solanaLastRawResponse ?? { ok: solanaApiStatus.ok, msg: solanaApiStatus.msg }, null, 2);
+                            await navigator.clipboard.writeText(txt);
+                            toast.success("✅ Copied Solana API response JSON");
+                          } catch (e) {
+                            toast.error("❌ Copy failed: " + (e.message || String(e)));
+                          }
+                        }}
+                        style={{ padding: '6px 10px', borderRadius: 10 }}
+                      >
+                        📋 Copy API JSON
+                      </button>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          try {
+                            const txt = JSON.stringify(solanaPayments || [], null, 2);
+                            await navigator.clipboard.writeText(txt);
+                            toast.success("✅ Copied rows JSON");
+                          } catch (e) {
+                            toast.error("❌ Copy failed: " + (e.message || String(e)));
+                          }
+                        }}
+                        style={{ padding: '6px 10px', borderRadius: 10 }}
+                      >
+                        📋 Copy rows JSON
+                      </button>
+                    </div>
+
+                    <div style={{ marginTop: 10, opacity: 0.95 }}>
+                      <div style={{ fontWeight: 900, marginBottom: 4 }}>On-chain AdditionalReward (read-only)</div>
+                      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+                        <label style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+                          <strong>EVM wallet:</strong>
+                          <select
+                            value={solanaSelectedEvmWallet}
+                            onChange={(e) => setSolanaSelectedEvmWallet(e.target.value)}
+                            style={{ minWidth: 320 }}
+                          >
+                            <option value="">— select wallet —</option>
+                            {Array.from(new Set((solanaPayments || [])
+                              .map(r => String(r?.evm_wallet || r?.evmWallet || '').trim())
+                              .filter(x => x && x.startsWith('0x'))))
+                              .map((w) => (
+                                <option key={w} value={w}>{w}</option>
+                              ))}
+                          </select>
+                        </label>
+                      </div>
+                      <div style={{ marginTop: 8, display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+                        <div><strong>Total invested (contract):</strong> ${fmt(additionalBonus.totalInvested, 2)}</div>
+                        <div><strong>Tier:</strong> {additionalBonus.tier ? `${additionalBonus.tier.rate}%` : '—'}</div>
+                        <div><strong>Estimated bonus (contract history):</strong> ${fmt(additionalBonus.totalEstimatedBonus, 2)}</div>
+                        <div><strong>Claimable:</strong> ${fmt(additionalBonus.claimableBonus, 2)}</div>
+                        <div><strong>Claimed:</strong> ${fmt(additionalBonus.claimedBonus, 2)}</div>
+                      </div>
+                      {additionalBonus.nextTier?.threshold ? (
+                        <div style={{ marginTop: 6, opacity: 0.9 }}>
+                          Next tier: <strong>{additionalBonus.nextTier.rate}%</strong> at ${fmt(additionalBonus.nextTier.threshold, 2)} (remaining ${fmt(additionalBonus.nextTier.remaining, 2)})
+                        </div>
+                      ) : null}
+                      <div style={{ marginTop: 6, opacity: 0.85 }}>
+                        Note: acest panel citește contractul AdditionalReward pe BSC public RPC. Dacă backend-ul nu a înregistrat investițiile, valorile pot fi 0.
+                      </div>
+                    </div>
+
+                    <div style={{ marginTop: 14, opacity: 0.98 }}>
+                      <div style={{ fontWeight: 900, marginBottom: 6 }}>🟣 SOL Loyalty (DB rewards) — Admin quick actions</div>
+                      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+                        <label style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                          <strong>Payout:</strong>
+                          <select
+                            value={solanaLoyaltyCurrency}
+                            onChange={(e) => setSolanaLoyaltyCurrency(e.target.value)}
+                          >
+                            <option value="BITS">BITS</option>
+                            <option value="USDT">USDT</option>
+                          </select>
+                        </label>
+                        <button
+                          type="button"
+                          disabled={!solanaSelectedEvmWallet}
+                          onClick={async () => {
+                            try {
+                              const res = await axios.post(`${API_URL}/api/rewards/register-solana-loyalty`, { wallet: solanaSelectedEvmWallet });
+                              setSolanaLoyaltyLast(res.data);
+                              if (res.data?.ok) toast.success(`✅ SOL loyalty synced: +${res.data.added || 0} BITS`);
+                              else toast.error(`❌ Sync failed`);
+                            } catch (e) {
+                              toast.error("❌ Sync failed: " + (e.response?.data?.error || e.message));
+                            }
+                          }}
+                          style={{ padding: '6px 10px', borderRadius: 10 }}
+                          title="Computes SOL loyalty from confirmed SOL transactions and registers delta into unified rewards DB"
+                        >
+                          🔄 Sync SOL loyalty
+                        </button>
+                        <button
+                          type="button"
+                          disabled={!solanaSelectedEvmWallet}
+                          onClick={async () => {
+                            try {
+                              const res = await axios.post(`${API_URL}/api/rewards/quote-solana-loyalty`, {
+                                wallet: solanaSelectedEvmWallet,
+                                payoutCurrency: solanaLoyaltyCurrency
+                              });
+                              setSolanaLoyaltyLast(res.data);
+                              if (res.data?.ok) toast.success(`✅ Quote OK (canPay=${String(res.data.canPay)})`);
+                              else toast.error(`❌ Quote failed`);
+                            } catch (e) {
+                              toast.error("❌ Quote failed: " + (e.response?.data?.error || e.message));
+                            }
+                          }}
+                          style={{ padding: '6px 10px', borderRadius: 10 }}
+                          title="Pre-check: shows pending amount and whether treasury can pay"
+                        >
+                          🧾 Quote
+                        </button>
+                        <button
+                          type="button"
+                          disabled={!solanaSelectedEvmWallet}
+                          onClick={async () => {
+                            const ok = window.confirm(`Pay SOL loyalty to ${solanaSelectedEvmWallet} in ${solanaLoyaltyCurrency}?`);
+                            if (!ok) return;
+                            try {
+                              const res = await axios.post(`${API_URL}/api/rewards/payout-solana-loyalty`, {
+                                wallet: solanaSelectedEvmWallet,
+                                payoutCurrency: solanaLoyaltyCurrency
+                              });
+                              setSolanaLoyaltyLast(res.data);
+                              if (res.data?.ok) toast.success(`✅ Paid. Tx: ${(res.data.tx_hash || '').slice(0, 10)}…`);
+                              else toast.error(`❌ Payout failed`);
+                            } catch (e) {
+                              toast.error("❌ Payout failed: " + (e.response?.data?.error || e.message));
+                            }
+                          }}
+                          style={{ padding: '6px 10px', borderRadius: 10 }}
+                          title="Executes treasury payout for pending SOL loyalty rewards (BITS or USDT)"
+                        >
+                          💸 Pay now
+                        </button>
+                      </div>
+                      {solanaLoyaltyLast ? (
+                        <div style={{ marginTop: 8, fontSize: 12, opacity: 0.9 }}>
+                          <div><strong>Last response:</strong> {JSON.stringify(solanaLoyaltyLast)}</div>
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                )}
                 {solanaDbInfo?.ok && (
                   <div style={{ marginTop: 10, fontSize: 12, color: "#ccc", lineHeight: 1.5 }}>
                     <div><strong>DB:</strong> {solanaDbInfo.db?.host || "—"} / {solanaDbInfo.db?.name || "—"}</div>
@@ -1543,7 +1795,7 @@ const AdminPanel = () => {
                 }}>
                   <div style={{
                     display: 'grid',
-                    gridTemplateColumns: '1fr 0.9fr 1fr 0.9fr 0.9fr 1.4fr',
+                    gridTemplateColumns: '1fr 0.8fr 1fr 0.7fr 0.8fr 0.8fr 0.9fr 0.9fr 1.6fr',
                     gap: 8,
                     padding: '10px',
                     fontSize: '11px',
@@ -1554,95 +1806,184 @@ const AdminPanel = () => {
                     <div>Status</div>
                     <div>Buyer (BSC)</div>
                     <div>SOL</div>
+                    <div>USD</div>
+                    <div>Tier</div>
+                    <div>Send now</div>
                     <div>BITS</div>
                     <div>Links / Actions</div>
                   </div>
 
                   <div style={{ maxHeight: 520, overflow: 'auto' }}>
-                    {(solanaPayments || [])
-                      .filter((tx) => {
-                        const st = String(tx.status || '').toLowerCase();
-                        if (solanaStatusFilter !== "all" && st !== solanaStatusFilter) return false;
-                        const q = solanaSearch.trim().toLowerCase();
-                        if (!q) return true;
-                        const w = String((tx.evm_wallet || tx.wallet_address) || '').toLowerCase();
-                        const solFrom = String(tx.wallet_address || '').toLowerCase();
-                        const sig = String((tx.tx_signature || tx.signature) || '').toLowerCase();
-                        return w.includes(q) || sig.includes(q) || solFrom.includes(q);
-                      })
-                      .slice(0, 200)
-                      .map((tx) => {
-                      const buyer = String((tx.evm_wallet || tx.wallet_address) || '');
-                      const solFrom = String(tx.wallet_address || '');
-                      const shortW = buyer ? `${buyer.slice(0, 6)}...${buyer.slice(-4)}` : '—';
-                      const sig = String((tx.tx_signature || tx.signature) || '');
-                      const shortSig = sig ? `${sig.slice(0, 8)}...${sig.slice(-6)}` : '—';
-                      const evm = String(tx.tx_hash_on_chain || '');
-                      const shortEvm = evm ? `${evm.slice(0, 8)}...${evm.slice(-6)}` : '—';
-                      const status = String(tx.status || '').toLowerCase();
-                      const statusColor = status === 'confirmed' ? '#00ff88' : status === 'failed' ? '#ff3366' : '#ffaa00';
-                      const createdAt = tx.created_at ? new Date(tx.created_at).toLocaleString() : '—';
-                      const solAmount = Number(tx.amount || 0);
-                      const bits = Number(tx.bits_received || 0);
-                      const canMark = status === 'confirmed' && !evm && !!sig;
+                    {(() => {
+                      const rawRows = Array.isArray(solanaPayments) ? solanaPayments : [];
+
+                      // Decorate rows with cumulative USD tier/rate (estimate) based on DB `usd_invested` (SOL only).
+                      // IMPORTANT: This is an estimate; the contract may store per-investment rates.
+                      const byTimeAsc = [...rawRows].sort((a, b) => {
+                        const ta = a?.created_at ? new Date(a.created_at).getTime() : 0;
+                        const tb = b?.created_at ? new Date(b.created_at).getTime() : 0;
+                        return ta - tb;
+                      });
+                      let cumUsd = 0;
+                      const decoratedAsc = byTimeAsc.map((tx) => {
+                        const usd = toNum(tx.usd_invested ?? tx.usdInvested);
+                        cumUsd += usd;
+                        const tier = getTierForUsd(cumUsd);
+                        const estBonusUsd = usd > 0 ? (usd * (tier.rate || 0)) / 100 : 0;
+                        const solAmount = toNum(tx.amount);
+                        const impliedSolPrice = solAmount > 0 ? (usd / solAmount) : 0;
+                        return {
+                          ...tx,
+                          __dbg_usd: usd,
+                          __dbg_cumUsd: cumUsd,
+                          __dbg_tierRate: tier.rate || 0,
+                          __dbg_tierLabel: tier.label,
+                          __dbg_estBonusUsd: estBonusUsd,
+                          __dbg_impliedSolPrice: impliedSolPrice
+                        };
+                      });
+
+                      const rows = decoratedAsc.sort((a, b) => {
+                        const ta = a?.created_at ? new Date(a.created_at).getTime() : 0;
+                        const tb = b?.created_at ? new Date(b.created_at).getTime() : 0;
+                        return tb - ta;
+                      });
+
+                      const filtered = rows
+                        .filter((tx) => {
+                          const st = String(tx.status || "").toLowerCase();
+                          if (solanaStatusFilter !== "all" && st !== solanaStatusFilter) return false;
+                          const q = solanaSearch.trim().toLowerCase();
+                          if (!q) return true;
+                          const w = String((tx.evm_wallet || tx.evmWallet || tx.wallet_address) || "").toLowerCase();
+                          const solFrom = String(tx.wallet_address || "").toLowerCase();
+                          const sig = String((tx.tx_signature || tx.signature) || "").toLowerCase();
+                          return w.includes(q) || sig.includes(q) || solFrom.includes(q);
+                        })
+                        .slice(0, 200);
 
                       return (
-                        <div key={tx.id || sig} style={{
-                          display: 'grid',
-                          gridTemplateColumns: '1fr 0.9fr 1fr 0.9fr 0.9fr 1.4fr',
-                          gap: 8,
-                          padding: '10px',
-                          fontSize: '11px',
-                          borderTop: '1px solid rgba(255,255,255,0.06)'
-                        }}>
-                          <div>{createdAt}</div>
-                          <div style={{ color: statusColor, fontWeight: 800 }}>{(tx.status || 'pending')}</div>
-                          <div title={`Buyer: ${buyer}\nSOL From: ${solFrom}`}>{shortW}</div>
-                          <div>{Number.isFinite(solAmount) ? solAmount.toFixed(4) : '—'}</div>
-                          <div>{Number.isFinite(bits) ? Math.floor(bits).toLocaleString() : '—'}</div>
-                          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                            {sig ? (
-                              <a href={`https://solscan.io/tx/${sig}`} target="_blank" rel="noreferrer" title={sig} style={{ color: '#7dd3fc' }}>
-                                Solscan ({shortSig})
-                              </a>
-                            ) : (
-                              <span style={{ opacity: 0.6 }}>Solscan —</span>
-                            )}
-                            {evm ? (
-                              <a href={`https://bscscan.com/tx/${evm}`} target="_blank" rel="noreferrer" title={evm} style={{ color: '#facc15' }}>
-                                BscScan ({shortEvm})
-                              </a>
-                            ) : (
-                              <span style={{ opacity: 0.6 }}>BscScan —</span>
-                            )}
-                            {canMark && (
-                              <button
-                                type="button"
-                                onClick={() => markSolanaFulfilled(tx.id)}
-                                disabled={solanaMarkingSig === tx.id}
-                                style={{
-                                  padding: '3px 8px',
-                                  borderRadius: 8,
-                                  border: '1px solid rgba(255,255,255,0.18)',
-                                  background: 'rgba(0,0,0,0.25)',
-                                  color: '#fff',
-                                  cursor: 'pointer'
-                                }}
-                                title="After you manually send BITS, paste the BSC tx hash to link it here"
-                              >
-                                {solanaMarkingSig === tx.id ? '⏳ Marking…' : '✅ Mark fulfilled'}
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
+                        <>
+                          {filtered.map((tx) => {
+                            const buyer = String((tx.evm_wallet || tx.evmWallet || tx.wallet_address) || "");
+                            const solFrom = String(tx.wallet_address || "");
+                            const shortW = buyer ? `${buyer.slice(0, 6)}...${buyer.slice(-4)}` : "—";
+                            const sig = String((tx.tx_signature || tx.signature) || "");
+                            const shortSig = sig ? `${sig.slice(0, 8)}...${sig.slice(-6)}` : "—";
+                            const evm = String(tx.tx_hash_on_chain || "");
+                            const shortEvm = evm ? `${evm.slice(0, 8)}...${evm.slice(-6)}` : "—";
+                            const status = String(tx.status || "").toLowerCase();
+                            const statusColor = status === "confirmed" ? "#00ff88" : status === "failed" ? "#ff3366" : "#ffaa00";
+                            const createdAt = tx.created_at ? new Date(tx.created_at).toLocaleString() : "—";
+                            const solAmount = toNum(tx.amount);
+                            const bits = toNum(tx.bits_received);
+                            const usd = toNum(tx.__dbg_usd);
+                            const tierLabel = String(tx.__dbg_tierLabel || "0%");
+                            const estBonusUsd = toNum(tx.__dbg_estBonusUsd);
+                            const impliedSol = toNum(tx.__dbg_impliedSolPrice);
+                            const canMark = status === "confirmed" && !evm && !!sig;
 
-                    {(solanaPayments || []).length === 0 && (
-                      <div style={{ padding: 12, fontSize: 12, color: '#aaa' }}>
-                        No Solana payments found yet.
-                      </div>
-                    )}
+                            return (
+                              <div
+                                key={tx.id || sig || `${buyer}-${createdAt}`}
+                                style={{
+                                  display: "grid",
+                                  gridTemplateColumns: "1fr 0.8fr 1fr 0.7fr 0.8fr 0.8fr 0.9fr 0.9fr 1.6fr",
+                                  gap: 8,
+                                  padding: "10px",
+                                  fontSize: "11px",
+                                  borderTop: "1px solid rgba(255,255,255,0.06)"
+                                }}
+                              >
+                                <div>{createdAt}</div>
+                                <div style={{ color: statusColor, fontWeight: 800 }}>{tx.status || "pending"}</div>
+                                <div title={`Buyer: ${buyer}\nSOL From: ${solFrom}`}>{shortW}</div>
+                                <div>{Number.isFinite(solAmount) ? solAmount.toFixed(4) : "—"}</div>
+                                <div title={impliedSol > 0 ? `Implied SOL price: $${fmt(impliedSol, 2)} (usd_invested / SOL)` : ""}>
+                                  {usd > 0 ? `$${fmt(usd, 2)}` : "—"}
+                                  {impliedSol > 0 ? <div style={{ opacity: 0.75 }}>SOL≈${fmt(impliedSol, 0)}</div> : null}
+                                </div>
+                                <div title={`Tier based on cumulative SOL USD (DB estimate): ${fmt(tx.__dbg_cumUsd, 2)} USD`}>
+                                  <div style={{ fontWeight: 900 }}>{tierLabel}</div>
+                                  {estBonusUsd > 0 ? <div style={{ opacity: 0.8 }}>res {fmt(estBonusUsd, 2)} BITS</div> : <div style={{ opacity: 0.55 }}>—</div>}
+                                </div>
+                                {(() => {
+                                  // BNB flow effectively subtracts "investment bonus" from immediate receive.
+                                  // For SOL manual fulfilment, we show suggested "send now" so you don't double-pay:
+                                  // sendNow ≈ (baseUSD - reserved) + promoBonusBits.
+                                  const promo = toNum(tx.bonus_bits);
+                                  const base = usd > 0 ? Math.floor(usd) : 0;
+                                  const reserved = estBonusUsd > 0 ? Math.floor(estBonusUsd) : 0; // 1 USD = 1 BITS
+                                  const sendNow = base > 0 ? Math.max(0, base - reserved) + promo : (bits > 0 ? Math.max(0, Math.floor(bits) - reserved) : 0);
+                                  return (
+                                    <div title={`base=${base} promo=${promo} reserved=${reserved} (1 USD = 1 BITS reserved)`}>
+                                      {sendNow > 0 ? sendNow.toLocaleString() : "—"}
+                                      {promo > 0 ? <div style={{ opacity: 0.75 }}>promo {promo}</div> : null}
+                                    </div>
+                                  );
+                                })()}
+                                <div title={`Total recorded (bits_received). This may include promo bonus.`}>
+                                  {Number.isFinite(bits) && bits > 0 ? Math.floor(bits).toLocaleString() : "—"}
+                                </div>
+                                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                                  {sig ? (
+                                    <a
+                                      href={`https://solscan.io/tx/${sig}`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      title={sig}
+                                      style={{ color: "#7dd3fc" }}
+                                    >
+                                      Solscan ({shortSig})
+                                    </a>
+                                  ) : (
+                                    <span style={{ opacity: 0.6 }}>Solscan —</span>
+                                  )}
+                                  {evm ? (
+                                    <a
+                                      href={`https://bscscan.com/tx/${evm}`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      title={evm}
+                                      style={{ color: "#facc15" }}
+                                    >
+                                      BscScan ({shortEvm})
+                                    </a>
+                                  ) : (
+                                    <span style={{ opacity: 0.6 }}>BscScan —</span>
+                                  )}
+                                  {canMark && (
+                                    <button
+                                      type="button"
+                                      onClick={() => markSolanaFulfilled(tx.id)}
+                                      disabled={solanaMarkingSig === tx.id}
+                                      style={{
+                                        padding: "3px 8px",
+                                        borderRadius: 8,
+                                        border: "1px solid rgba(255,255,255,0.18)",
+                                        background: "rgba(0,0,0,0.25)",
+                                        color: "#fff",
+                                        cursor: "pointer"
+                                      }}
+                                      title="After you manually send BITS, paste the BSC tx hash to link it here"
+                                    >
+                                      {solanaMarkingSig === tx.id ? "⏳ Marking…" : "✅ Mark fulfilled"}
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+
+                          {rawRows.length === 0 && (
+                            <div style={{ padding: 12, fontSize: 12, color: "#aaa" }}>
+                              No Solana payments found yet.
+                            </div>
+                          )}
+                        </>
+                      );
+                    })()}
+
                   </div>
                 </div>
               </div>

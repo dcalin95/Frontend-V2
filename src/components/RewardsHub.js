@@ -12,6 +12,7 @@ import RealLeaderboard from "./RealLeaderboard";
 import ChampionsLeaderboard from "./ChampionsLeaderboard";
 import HistoryLeaderboard from "./HistoryLeaderboard";
 import { getBackendUrl } from "../utils/getBackendUrl";
+import { toast } from "react-toastify";
 import "./RewardsHub.desktop.css";
 import "./RewardsHub.mobile.css";
 
@@ -39,6 +40,45 @@ const RewardsHub = () => {
   const [activeTab, setActiveTab] = useState('summary');
   const [showModal, setShowModal] = useState(false);
   const [modalPayload, setModalPayload] = useState(null);
+  const saveModalReceipt = () => {
+    try {
+      const title = String(modalPayload?.title || "Receipt").trim();
+      const tx = String(modalPayload?.tx || "").trim();
+      const lines = Array.isArray(modalPayload?.lines) ? modalPayload.lines : [];
+      const now = new Date();
+      const payload = {
+        title,
+        tx: tx || null,
+        bscscan: tx ? `https://bscscan.com/tx/${tx}` : null,
+        at: now.toISOString(),
+        lines
+      };
+      const filenameSafe = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40) || "receipt";
+      const filename = `bitswap-${filenameSafe}-${now.getTime()}.txt`;
+      const text = [
+        `Title: ${payload.title}`,
+        `Time: ${payload.at}`,
+        payload.tx ? `Tx: ${payload.tx}` : null,
+        payload.bscscan ? `BscScan: ${payload.bscscan}` : null,
+        "",
+        "Details:",
+        ...lines.map((l) => `- ${l}`)
+      ].filter(Boolean).join("\n");
+
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      toast.error("❌ Save failed: " + (e?.message || String(e)));
+    }
+  };
+
   const [showRealLeaderboard, setShowRealLeaderboard] = useState(false);
   const [showChampionsLeaderboard, setShowChampionsLeaderboard] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
@@ -46,6 +86,7 @@ const RewardsHub = () => {
   const [bitsPriceMillicents, setBitsPriceMillicents] = useState(null);
   const [telegramPayoutCurrency, setTelegramPayoutCurrency] = useState("BITS");
   const [referralPayoutCurrency, setReferralPayoutCurrency] = useState("BITS");
+  const [solanaPayoutCurrency, setSolanaPayoutCurrency] = useState("BITS");
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmPayload, setConfirmPayload] = useState(null);
   const [showBurst, setShowBurst] = useState(false);
@@ -71,18 +112,7 @@ const RewardsHub = () => {
     } catch (_) {}
   };
 
-  const [leaderboardJitterEnabled, setLeaderboardJitterEnabled] = useState(true);
-
-  const fetchLeaderboardDemo = async () => {
-    try {
-      const res = await fetch(`${BACKEND_URL}/api/leaderboard/demo`);
-      if (!res.ok) return;
-      const data = await res.json();
-      if (typeof data?.jitterEnabled === "boolean") {
-        setLeaderboardJitterEnabled(data.jitterEnabled);
-      }
-    } catch (_) {}
-  };
+  // (Removed unused leaderboardJitterEnabled state to avoid eslint warning.)
 
   const fetchBitsPrice = async () => {
     try {
@@ -118,12 +148,38 @@ const RewardsHub = () => {
   useEffect(() => {
     // Always fetch live BITS price for public preview / USDT estimates copy.
     fetchBitsPrice();
-    fetchLeaderboardDemo();
     if (walletAddress) {
       loadRewards();
       loadAdditionalBonus();
     }
     // We intentionally trigger on wallet changes only; functions are stable enough for this component.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [walletAddress]);
+
+  // Sync SOL loyalty rewards (DB-only) once per wallet connection.
+  const solanaSyncRef = React.useRef({ wallet: "", at: 0 });
+  useEffect(() => {
+    if (!walletAddress) return;
+    const w = String(walletAddress || "").toLowerCase();
+    const now = Date.now();
+    if (solanaSyncRef.current.wallet === w && now - solanaSyncRef.current.at < 60_000) return;
+    solanaSyncRef.current = { wallet: w, at: now };
+    (async () => {
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/rewards/register-solana-loyalty`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ wallet: walletAddress })
+        });
+        const data = await res.json().catch(() => null);
+        if (data?.ok && Number(data?.added || 0) > 0) {
+          console.log("✅ [RewardsHub] SOL loyalty registered:", data.added);
+          await loadRewards();
+        }
+      } catch (e) {
+        console.warn("⚠️ [RewardsHub] SOL loyalty sync failed:", e.message);
+      }
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletAddress]);
 
@@ -334,6 +390,36 @@ const RewardsHub = () => {
       const data = await res.json().catch(() => null);
       if (!res.ok || !data?.ok) {
         const msg = data?.error || `HTTP ${res.status}`;
+        // Fallback mode: some deployments may not have /api/telegram-rewards/quote (404 "API route not found").
+        // In that case, allow claim by calling payout directly; backend will enforce caps/processing.
+        const isRouteMissing = res.status === 404 || String(msg || "").toLowerCase().includes("api route not found");
+        if (isRouteMissing) {
+          try {
+            const rr = await fetch(`${BACKEND_URL}/api/telegram-rewards/reward/${walletAddress}`);
+            const rd = await rr.json().catch(() => null);
+            const pendingBits = Math.floor(Number(rd?.reward || 0));
+            const lines = [
+              `Wallet: ${walletAddress}`,
+              `Reward: ${toBitsInteger(pendingBits)} $BITS`,
+              telegramPayoutCurrency === "USDT"
+                ? `Estimated payout: ${estimateUsdt(pendingBits) ?? 0} USDT (live price at claim)`
+                : `Payout: ${toBitsInteger(pendingBits)} $BITS`,
+              "Status: Fallback mode (quote endpoint unavailable). Claim will still work; backend validates caps/processing."
+            ].filter(Boolean);
+            setConfirmPayload({
+              ok: true,
+              kind: "telegram",
+              title: "Confirm Telegram Claim (fallback)",
+              lines,
+              canPay: pendingBits > 0
+            });
+            return;
+          } catch (e) {
+            setConfirmPayload({ ok: false, title: "Telegram Claim (fallback failed)", lines: [e.message], canPay: false });
+            return;
+          }
+        }
+
         setConfirmPayload({ ok: false, title: "Telegram Claim (pre-check failed)", lines: [msg], canPay: false });
         return;
       }
@@ -440,6 +526,89 @@ const RewardsHub = () => {
       });
     } catch (e) {
       setConfirmPayload({ ok: false, title: "Referral Claim (pre-check error)", lines: [e.message], canPay: false });
+    }
+  };
+
+  const openConfirmForSolana = async () => {
+    if (!walletAddress) return;
+    setStatusMsg("");
+    setConfirmPayload(null);
+    setShowConfirm(true);
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/rewards/quote-solana-loyalty`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ wallet: walletAddress, payoutCurrency: solanaPayoutCurrency })
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data?.ok) {
+        const msg = data?.error || `HTTP ${res.status}`;
+        setConfirmPayload({ ok: false, title: "SOL Loyalty Claim (pre-check failed)", lines: [msg], canPay: false });
+        return;
+      }
+      const lines = [
+        `Wallet: ${walletAddress}`,
+        `Reward: ${toBitsInteger(Number(data.pending_bits || 0))} $BITS`,
+        solanaPayoutCurrency === "USDT"
+          ? `Estimated payout: ${Number(data.payout_usdt || 0)} USDT (rate: $${(Number(data.price_millicents || 0) / 1000).toFixed(6)} / BITS)`
+          : `Payout: ${toBitsInteger(Number(data.pending_bits || 0))} $BITS`,
+        solanaPayoutCurrency === "USDT"
+          ? `USDT cap: ${Number(data.usdt_spent_today || 0)} / ${Number(data.usdt_daily_cap || 0)} spent today`
+          : null,
+        data?.reason ? `Status: ${data.reason}` : "Status: OK"
+      ].filter(Boolean);
+      setConfirmPayload({
+        ok: true,
+        kind: "solana_loyalty",
+        title: "Confirm SOL Loyalty Claim",
+        lines,
+        canPay: !!data.canPay
+      });
+    } catch (e) {
+      setConfirmPayload({ ok: false, title: "SOL Loyalty Claim (pre-check error)", lines: [e.message], canPay: false });
+    }
+  };
+
+  const executeSolanaPayout = async () => {
+    if (!walletAddress) return;
+    setClaiming(true);
+    setStatusMsg(`⏳ Paying SOL loyalty rewards in ${solanaPayoutCurrency}...`);
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/rewards/payout-solana-loyalty`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ wallet: walletAddress, payoutCurrency: solanaPayoutCurrency })
+      });
+      if (!res.ok) {
+        const { msg, json } = await parseBackendError(res);
+        if (res.status === 403 && (msg || "").toLowerCase().includes("cap")) {
+          setSolanaPayoutCurrency("BITS");
+          setStatusMsg(`⚠️ USDT daily cap reached. Switched to BITS — please claim again.`);
+        } else {
+          setStatusMsg(`❌ SOL loyalty payout failed: ${msg}`);
+        }
+        console.warn("[RewardsHub] solana loyalty payout failed", res.status, json || msg);
+        return;
+      }
+      const data = await res.json();
+      const paidBits = Number(data?.payout_bits || 0);
+      const paidUsdt = data?.payout_usdt;
+      setStatusMsg(`✅ SOL loyalty payout sent. Tx: ${(data?.tx_hash || "").slice(0, 10)}…`);
+      setModalPayload({
+        title: "SOL Loyalty Payout Successful",
+        lines: [
+          `Payout: ${solanaPayoutCurrency === "USDT" ? `${paidUsdt} USDT` : `${toBitsInteger(paidBits)} $BITS`}`,
+          solanaPayoutCurrency === "USDT" && data?.price_millicents ? `Rate: $${(Number(data.price_millicents) / 1000).toFixed(6)} per BITS` : null,
+          `Tx: ${data?.tx_hash}`
+        ].filter(Boolean),
+        tx: data?.tx_hash
+      });
+      setShowModal(true);
+      await loadRewards();
+    } catch (e) {
+      setStatusMsg(`❌ SOL loyalty payout error: ${e.message}`);
+    } finally {
+      setClaiming(false);
     }
   };
 
@@ -775,7 +944,8 @@ const RewardsHub = () => {
                       <div className="reward-info">
                         <span className="reward-type">
                           {reward.reward_type === 'telegram' ? '💬' : 
-                           reward.reward_type === 'referral' ? '👥' : '🎁'} 
+                           reward.reward_type === 'referral' ? '👥' :
+                           reward.reward_type === 'solana_loyalty' ? '🟣' : '🎁'} 
                           {reward.reward_type.charAt(0).toUpperCase() + reward.reward_type.slice(1)}
                         </span>
                         <span className="reward-amount">
@@ -966,6 +1136,71 @@ const RewardsHub = () => {
                     </div>
                     <div className="payout-help">Referral rewards are earned from invite purchases.</div>
                   </div>
+
+                  <div className={`payout-card ${solanaPayoutCurrency === "USDT" ? "payout-card-usdt" : ""}`}>
+                    <h4>🟣 SOL Loyalty Reward</h4>
+                    <div className="payout-row">
+                      <div className="payout-amount">
+                        {walletAddress ? (
+                          <TokenAmount value={toBitsInteger(rewards.unified?.byType?.solana_loyalty?.pending || 0)} token="BITS" dollar />
+                        ) : (
+                          "Connect wallet to see your amount"
+                        )}
+                      </div>
+                      <div className="payout-estimate">
+                        {!walletAddress ? (
+                          bitsPriceMillicents ? (
+                            <span className="live-rate">
+                              Live rate: <strong>${(Number(bitsPriceMillicents) / 1000).toFixed(6)}</strong> /{" "}
+                              <TokenInline token="BITS" />
+                            </span>
+                          ) : ""
+                        ) : solanaPayoutCurrency === "USDT"
+                          ? (estimateUsdt(rewards.unified?.byType?.solana_loyalty?.pending) != null ? (
+                              <span className="estimate">
+                                ≈ <strong>{estimateUsdt(rewards.unified?.byType?.solana_loyalty?.pending)}</strong> <TokenInline token="USDT" />
+                              </span>
+                            ) : (
+                              <span className="estimate">
+                                ≈ <TokenInline token="USDT" /> (loading price...)
+                              </span>
+                            ))
+                          : (bitsPriceMillicents ? `≈ ${formatUSD((Number(bitsPriceMillicents) / 1000) * Number(rewards.unified?.byType?.solana_loyalty?.pending || 0))}` : "")}
+                      </div>
+                    </div>
+                    <div className="payout-controls">
+                      <div className="payout-toggle" aria-label="SOL loyalty payout currency">
+                        <button
+                          type="button"
+                          className={`payout-toggle-btn ${solanaPayoutCurrency === "BITS" ? "active" : ""}`}
+                          onClick={() => setSolanaPayoutCurrency("BITS")}
+                          disabled={!walletAddress}
+                          title="Claim in BITS"
+                        >
+                          <img className="toggle-icon" src={bitsLogo} alt="BITS" />
+                          BITS
+                        </button>
+                        <button
+                          type="button"
+                          className={`payout-toggle-btn usdt ${solanaPayoutCurrency === "USDT" ? "active" : ""}`}
+                          onClick={() => setSolanaPayoutCurrency("USDT")}
+                          disabled={!walletAddress}
+                          title="Claim in USDT"
+                        >
+                          <img className="toggle-icon" src={usdtLogo} alt="USDT" />
+                          USDT
+                        </button>
+                      </div>
+                      <button
+                        className="action-btn claim-btn"
+                        disabled={!walletAddress || claiming || (Number(rewards.unified?.byType?.solana_loyalty?.pending || 0) <= 0)}
+                        onClick={openConfirmForSolana}
+                      >
+                        {!walletAddress ? "Connect wallet to claim" : (claiming ? "⏳ Processing..." : "Claim")}
+                      </button>
+                    </div>
+                    <div className="payout-help">SOL loyalty rewards are derived from confirmed SOL buys and paid from treasury.</div>
+                  </div>
                 </div>
               </div>
 
@@ -1010,7 +1245,12 @@ const RewardsHub = () => {
             {modalPayload?.tx && (
               <a className="tx-link" href={`https://bscscan.com/tx/${modalPayload.tx}`} target="_blank" rel="noreferrer"><Icon name="tx"/> View on BscScan</a>
             )}
-            <button className="action-btn claim-btn" onClick={()=>setShowModal(false)}>Close</button>
+            <div className="modal-actions">
+              <button className="action-btn" onClick={saveModalReceipt} disabled={!modalPayload}>
+                💾 Save
+              </button>
+              <button className="action-btn claim-btn" onClick={()=>setShowModal(false)}>Close</button>
+            </div>
           </div>
         </div>
       )}
@@ -1072,6 +1312,8 @@ const RewardsHub = () => {
                       await executeTelegramPayout();
                     } else if (confirmPayload?.kind === "referral") {
                       await executeReferralPayout();
+                    } else if (confirmPayload?.kind === "solana_loyalty") {
+                      await executeSolanaPayout();
                     }
                   }}
                 >

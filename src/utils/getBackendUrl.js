@@ -3,17 +3,7 @@ export function getBackendUrl() {
   const envUrl = (process.env.REACT_APP_BACKEND_URL || "").trim();
   if (envUrl) return envUrl;
 
-  // Smart default: local dev should use local backend
-  try {
-    if (typeof window !== "undefined") {
-      const host = window.location?.hostname || "";
-      if (host === "localhost" || host === "127.0.0.1") {
-        return "http://localhost:4000";
-      }
-    }
-  } catch (_) {}
-
-  // Fallback: production backend
+  // Default to production backend. If you want to use a local backend, set REACT_APP_BACKEND_URL=http://localhost:4000
   return "https://backend-server-f82y.onrender.com";
 }
 

@@ -149,6 +149,15 @@
     align-items: center;
     gap: 6px;
   }
+
+  /* Modal: prevent long tx hashes/addresses from overflowing on mobile */
+  .modal ul,
+  .modal li,
+  .tx-link {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    max-width: 100%;
+  }
   
   .mobile-rewards-hub-wrapper .rewards-hub-wrapper {
     padding: 0;

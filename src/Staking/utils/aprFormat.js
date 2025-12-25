@@ -12,7 +12,10 @@ export function aprPercentNumberFrom1e18(value) {
 
 export function aprPercentDisplayFrom1e18(value, digits = 2) {
   const n = aprPercentNumberFrom1e18(value);
-  return `${n.toFixed(digits)}%`;
+  // If integer percent, don't show decimals: 100.00% -> 100%
+  const rounded = Number.isFinite(n) ? Number(n.toFixed(digits)) : 0;
+  const isInt = Number.isInteger(rounded);
+  return isInt ? `${rounded}%` : `${rounded.toFixed(digits)}%`;
 }
 
 

@@ -8,6 +8,7 @@ import SmartTooltip from "../components/SmartTooltip"; // Import SmartTooltip
 import "./PresaleDashboard.desktop.css";
 import "./PresaleDashboard.mobile.css";
 import "../CrystalClear.css"; // 💎 Crystal clear text
+import TotalRaised from "./logic/TotalRaised"; // Import TotalRaised
 
 // Import styles as object for class usage (simulated from CSS modules)
 // Since we switched to standard CSS files, we use standard classes
@@ -67,6 +68,7 @@ const PresaleDashboard = () => {
     roundActive,
     price,
     roundNumber,
+    totalBoosted,
     cellManagerData
   } = hybridState;
 
@@ -214,6 +216,7 @@ const PresaleDashboard = () => {
     <div className={styles.dashboard}>
       {/* Componenta verticală într-o singură coloană */}
       <div className={styles.column}>
+        <TotalRaised totalBoosted={totalBoosted || 166669} />
         <PresaleCountdownFlip endTime={endTime} />
         
         {/* 🎯 MARKETING INFO: Only blockchain data for public */}

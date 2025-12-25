@@ -66,7 +66,8 @@
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
-  max-width: 100%; /* Trust Wallet fix: avoid oversizing */
+  max-width: 1400px; /* keep layout inside a readable container */
+  margin: 0 auto;
   gap: clamp(1rem, 2vw, 2rem);
 }
 

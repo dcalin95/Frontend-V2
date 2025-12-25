@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
+import { ethers } from "ethers";
 import { trackTikTokEvent } from "../../utils/tiktok";
 import usePaymentState from "./hooks/usePaymentState";
 import useHandleTransaction from "./useHandleTransaction";
@@ -68,6 +69,9 @@ const PaymentBox = ({
   
   // 🎯 Referral Code State
   const [referralCode, setReferralCode] = useState("");
+  // 🟣 SOL-only: receiving wallet on BSC/EVM (0x...) where BITS + rewards will be delivered
+  const [solReceivingEvmWallet, setSolReceivingEvmWallet] = useState("");
+  const [solReceivingTouched, setSolReceivingTouched] = useState(false);
   // const tikTokTrackedRef = React.useRef(false);
 
   // 🔍 Auto-detect referral code from URL
@@ -96,6 +100,31 @@ const PaymentBox = ({
       console.log("🔄 [RESET] State after timeout - selectedPaymentMethod should be null");
     }, 100);
   }, [selectedToken]);
+
+  // Keep a default receiving wallet for SOL: if the user is connected with an EVM wallet, reuse it.
+  // If not connected, user can paste it manually (required to receive BITS on BSC).
+  React.useEffect(() => {
+    if (selectedToken !== "SOL") return;
+    if (solReceivingTouched) return;
+    const w = (paymentState.walletAddress || "").toString().trim();
+    if (w) setSolReceivingEvmWallet(w);
+  }, [selectedToken, paymentState.walletAddress, solReceivingTouched]);
+
+  const isValidEvmWallet = useMemo(() => {
+    const w = (solReceivingEvmWallet || "").toString().trim();
+    try {
+      return !!w && ethers.utils.isAddress(w);
+    } catch (_) {
+      return false;
+    }
+  }, [solReceivingEvmWallet]);
+
+  const effectiveEvmWallet = useMemo(() => {
+    if (selectedToken === "SOL") {
+      return (solReceivingEvmWallet || paymentState.walletAddress || "").toString().trim();
+    }
+    return paymentState.walletAddress;
+  }, [selectedToken, solReceivingEvmWallet, paymentState.walletAddress]);
 
   React.useEffect(() => {
     if (!isStripeToken) return;
@@ -165,7 +194,8 @@ const PaymentBox = ({
     usdValue: paymentState.usdValue,
     pricePerBitsUSD: paymentState.pricePerBitsUSD,
     selectedTokenPrice: paymentState.selectedTokenPrice,
-    walletAddress: paymentState.walletAddress,
+    // For SOL: user may not connect MetaMask; we still require a valid 0x receiving wallet.
+    walletAddress: effectiveEvmWallet,
     balances: paymentState.balances,
     availableBits: paymentState.availableBits,
     setTransactionHash,
@@ -382,7 +412,7 @@ const PaymentBox = ({
       )}
 
       {/* 🎯 Action Buttons */}
-      {!paymentState.walletAddress ? (
+      {!paymentState.walletAddress && !(selectedToken === "SOL" && isValidEvmWallet) ? (
         <button onClick={paymentState.connectWallet} className="connect-wallet-button">
           Connect Wallet
         </button>
@@ -403,7 +433,7 @@ const PaymentBox = ({
               handleBuy();
             }} 
             className="buy-button"
-            disabled={!paymentState.canProceed || !termsAccepted}
+            disabled={!paymentState.canProceed || !termsAccepted || (selectedToken === "SOL" && !isValidEvmWallet)}
           >
             <img src="/logo.png" alt="BITS Logo" className="button-logo" />
             <span className="button-text">
@@ -434,6 +464,7 @@ const PaymentBox = ({
               {paymentState.isLoading && <div>• Loading data...</div>}
               {!termsAccepted && <div>• Terms & Conditions not accepted</div>}
               {selectedToken === "SOL" && !window.solana && <div>• Phantom Wallet not detected (install Phantom)</div>}
+              {selectedToken === "SOL" && !isValidEvmWallet && <div>• Missing/invalid BSC receiving wallet (0x...)</div>}
               
 
             </div>
@@ -458,6 +489,33 @@ const PaymentBox = ({
             : null
         }
       />
+
+      {/* 🟣 SOL: receiving wallet (BSC/EVM) */}
+      {selectedToken === "SOL" && (
+        <div className="referral-code-container" style={{ marginTop: 12 }}>
+          <label className="referral-code-label">
+            🟣 Receive BITS on (BSC / EVM wallet 0x…)
+          </label>
+          <input
+            type="text"
+            placeholder="Paste your EVM wallet address (0x...) to receive BITS + rewards"
+            value={solReceivingEvmWallet}
+            onChange={(e) => {
+              setSolReceivingTouched(true);
+              setSolReceivingEvmWallet(e.target.value.trim());
+            }}
+            className="referral-code-input"
+            maxLength={64}
+          />
+          <div className="referral-code-info" style={{ opacity: 0.95 }}>
+            {isValidEvmWallet ? (
+              <>✅ Receiving wallet set: <strong>{solReceivingEvmWallet}</strong></>
+            ) : (
+              <>⚠️ Required: enter a valid <strong>0x…</strong> address (this is where you will receive BITS + claimable rewards).</>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* 🎯 Bonus Information */}
       <div className="bonus-line">

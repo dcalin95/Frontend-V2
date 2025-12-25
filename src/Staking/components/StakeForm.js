@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect } from "react";
 import { ethers } from "ethers";
 import { aprPercentDisplayFrom1e18 } from "../utils/aprFormat";
-import { getStakingContract, executeStakingCall } from "../../contract/getStakingContract";
+import { getStakingContract } from "../../contract/getStakingContract";
 import { getContractInstance } from "../../contract/getContract";
-import { getRobustProvider, executeWithFallback } from "../../utils/rpcFallback";
+import { getRobustProvider } from "../../utils/rpcFallback";
 import WalletContext from "../../context/WalletContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -11,6 +11,69 @@ import "../styles/StakeForm.css";
 import "../styles/StakeForm.mobile.css"; // 🆕 Import Mobile CSS
 import useBitsPrice from "../../Presale/prices/useBitsPrice";
 import successSfx from "../../assets/sounds/success.mp3";
+
+// Static data for tiers and lock periods (module-scope to keep hooks stable)
+const TIERS = [
+  { name: "Bronze", min: 1, max: 1000, bonus: 0, color: "#CD7F32", icon: "🥉" },
+  { name: "Silver", min: 1001, max: 5000, bonus: 2, color: "#C0C0C0", icon: "🥈" },
+  { name: "Gold", min: 5001, max: 10000, bonus: 5, color: "#FFD700", icon: "🥇" },
+  { name: "Platinum", min: 10001, max: Infinity, bonus: 10, color: "#E5E4E2", icon: "💎" }
+];
+
+const LOCK_PERIODS = [
+  { name: "Flexible", days: 0, bonus: 0, color: "#00ff88", icon: "🔓" },
+  { name: "30 Days", days: 30, bonus: 10, color: "#00aaff", icon: "📅" },
+  { name: "90 Days", days: 90, bonus: 25, color: "#ff6b00", icon: "🗓️" },
+  { name: "180 Days", days: 180, bonus: 50, color: "#ff00aa", icon: "📆" },
+  { name: "365 Days", days: 365, bonus: 100, color: "#aa00ff", icon: "🔒" }
+];
+
+// Popular networks registry (mainnets first, include icon and testnet flag)
+const SUPPORTED_NETWORKS = {
+  1:      { icon: '⬡',   testnet: false, chainId: '0x1',       chainName: 'Ethereum',            nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://rpc.ankr.com/eth'], blockExplorerUrls: ['https://etherscan.io'] },
+  56:     { icon: '🟡',   testnet: false, chainId: '0x38',      chainName: 'BSC Mainnet',         nativeCurrency: { name: 'Binance', symbol: 'BNB', decimals: 18 }, rpcUrls: ['https://bsc-dataseed.binance.org'], blockExplorerUrls: ['https://bscscan.com'] },
+  137:    { icon: '🟣',   testnet: false, chainId: '0x89',      chainName: 'Polygon',             nativeCurrency: { name: 'Matic', symbol: 'MATIC', decimals: 18 }, rpcUrls: ['https://polygon-rpc.com'], blockExplorerUrls: ['https://polygonscan.com'] },
+  10:     { icon: '🟥',   testnet: false, chainId: '0xa',       chainName: 'Optimism',            nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://mainnet.optimism.io'], blockExplorerUrls: ['https://optimistic.etherscan.io'] },
+  42161:  { icon: '🛡️',  testnet: false, chainId: '0xa4b1',   chainName: 'Arbitrum One',        nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://arb1.arbitrum.io/rpc'], blockExplorerUrls: ['https://arbiscan.io'] },
+  43114:  { icon: '🔺',   testnet: false, chainId: '0xa86a',   chainName: 'Avalanche C-Chain',   nativeCurrency: { name: 'Avalanche', symbol: 'AVAX', decimals: 18 }, rpcUrls: ['https://api.avax.network/ext/bc/C/rpc'], blockExplorerUrls: ['https://snowtrace.io'] },
+  8453:   { icon: '🟦',   testnet: false, chainId: '0x2105',   chainName: 'Base',                nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://mainnet.base.org'], blockExplorerUrls: ['https://basescan.org'] },
+  250:    { icon: '👻',   testnet: false, chainId: '0xfa',     chainName: 'Fantom Opera',        nativeCurrency: { name: 'Fantom', symbol: 'FTM', decimals: 18 }, rpcUrls: ['https://rpcapi.fantom.network'], blockExplorerUrls: ['https://ftmscan.com'] },
+  324:    { icon: '🧊',   testnet: false, chainId: '0x144',    chainName: 'zkSync Era',          nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://mainnet.era.zksync.io'], blockExplorerUrls: ['https://explorer.zksync.io'] },
+  59144:  { icon: '🟦',   testnet: false, chainId: '0xe708',   chainName: 'Linea',               nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://rpc.linea.build'], blockExplorerUrls: ['https://lineascan.build'] },
+  534352: { icon: '🟨',   testnet: false, chainId: '0x82aef',  chainName: 'Scroll',              nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://rpc.scroll.io'], blockExplorerUrls: ['https://scrollscan.com'] },
+  100:    { icon: '🟢',   testnet: false, chainId: '0x64',     chainName: 'Gnosis',              nativeCurrency: { name: 'xDAI', symbol: 'xDAI', decimals: 18 }, rpcUrls: ['https://rpc.gnosischain.com'], blockExplorerUrls: ['https://gnosisscan.io'] },
+  42220:  { icon: '🟡',   testnet: false, chainId: '0xa4ec',   chainName: 'Celo',                nativeCurrency: { name: 'Celo', symbol: 'CELO', decimals: 18 }, rpcUrls: ['https://forno.celo.org'], blockExplorerUrls: ['https://celoscan.io'] },
+  25:     { icon: '🟦',   testnet: false, chainId: '0x19',     chainName: 'Cronos',              nativeCurrency: { name: 'Cronos', symbol: 'CRO', decimals: 18 }, rpcUrls: ['https://evm.cronos.org'], blockExplorerUrls: ['https://cronoscan.com'] },
+  1284:   { icon: '🌙',   testnet: false, chainId: '0x504',    chainName: 'Moonbeam',            nativeCurrency: { name: 'GLMR', symbol: 'GLMR', decimals: 18 }, rpcUrls: ['https://rpc.api.moonbeam.network'], blockExplorerUrls: ['https://moonscan.io'] },
+  1101:   { icon: '🟣',   testnet: false, chainId: '0x44d',    chainName: 'Polygon zkEVM',       nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://zkevm-rpc.com'], blockExplorerUrls: ['https://zkevm.polygonscan.com'] },
+  5000:   { icon: '🟧',   testnet: false, chainId: '0x1388',   chainName: 'Mantle',              nativeCurrency: { name: 'Mantle', symbol: 'MNT', decimals: 18 }, rpcUrls: ['https://rpc.mantle.xyz'], blockExplorerUrls: ['https://mantlescan.xyz'] },
+  204:    { icon: '🟡',   testnet: false, chainId: '0xcc',     chainName: 'opBNB',               nativeCurrency: { name: 'Binance', symbol: 'BNB', decimals: 18 }, rpcUrls: ['https://opbnb-mainnet-rpc.bnbchain.org'], blockExplorerUrls: ['https://opbnbscan.com'] },
+  // Testnets
+  97:     { icon: '🟡',   testnet: true,  chainId: '0x61',     chainName: 'BSC Testnet',         nativeCurrency: { name: 'Binance Testnet', symbol: 'tBNB', decimals: 18 }, rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545'], blockExplorerUrls: ['https://testnet.bscscan.com'] },
+  11155111:{ icon: '⬡',  testnet: true,  chainId: '0xaa36a7', chainName: 'Sepolia',             nativeCurrency: { name: 'Sepolia ETH', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://rpc.sepolia.org'], blockExplorerUrls: ['https://sepolia.etherscan.io'] },
+  80002:  { icon: '🟣',   testnet: true,  chainId: '0x13882',  chainName: 'Polygon Amoy',        nativeCurrency: { name: 'Matic', symbol: 'MATIC', decimals: 18 }, rpcUrls: ['https://rpc-amoy.polygon.technology'], blockExplorerUrls: ['https://www.oklink.com/amoy'] },
+  5611:   { icon: '🟡',   testnet: true,  chainId: '0x15eb',   chainName: 'opBNB Testnet',       nativeCurrency: { name: 'tBNB', symbol: 'tBNB', decimals: 18 }, rpcUrls: ['https://opbnb-testnet-rpc.bnbchain.org'], blockExplorerUrls: ['https://testnet.opbnbscan.com'] }
+};
+
+const getNetworkLabelByChainId = (chainId) => {
+  const n = SUPPORTED_NETWORKS[Number(chainId)];
+  if (n) return { name: n.chainName, nativeSymbol: n.nativeCurrency.symbol };
+  switch (Number(chainId)) {
+    case 56: return { name: "BSC Mainnet", nativeSymbol: "BNB" };
+    case 97: return { name: "BSC Testnet", nativeSymbol: "tBNB" };
+    default: return { name: `Chain ${chainId}`, nativeSymbol: "NATIVE" };
+  }
+};
+
+const getAddChainParams = (chainId) => (SUPPORTED_NETWORKS[Number(chainId)] || null);
+
+const getNetworkChipStyle = (chainId) => {
+  const id = Number(chainId);
+  if (id === 97) return { bg: 'rgba(0,255,136,0.15)', border: '1px solid rgba(0,255,136,0.5)', color: '#00ff88' };
+  if (id === 56) return { bg: 'rgba(255,215,0,0.12)', border: '1px solid rgba(255,215,0,0.5)', color: '#ffd700' };
+  if (id === 1) return { bg: 'rgba(138,43,226,0.15)', border: '1px solid rgba(138,43,226,0.5)', color: '#b388ff' };
+  return { bg: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.3)', color: 'rgba(255,255,255,0.9)' };
+};
 
 const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
   const { walletAddress } = useContext(WalletContext);
@@ -26,14 +89,13 @@ const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
   const [stakeStep, setStakeStep] = useState('idle'); // idle | approve_request | approve_pending | stake_request | stake_pending | done | error
   const [showAprInfo, setShowAprInfo] = useState(false);
   const [networkInfo, setNetworkInfo] = useState({ name: null, chainId: null, nativeSymbol: "NATIVE" });
-  const [nativeBalance, setNativeBalance] = useState("0");
   const [isSwitchingNet, setIsSwitchingNet] = useState(false);
-  const [targetChainId, setTargetChainId] = useState(97);
+  // Default to BSC mainnet; if user is on another chain, effect below will sync to current chainId.
+  const [targetChainId, setTargetChainId] = useState(56);
 
   // Advanced staking states
   const [selectedLockPeriod, setSelectedLockPeriod] = useState(0);
   const [autoCompound, setAutoCompound] = useState(false);
-  const [compoundFrequency, setCompoundFrequency] = useState(7);
   const [compoundMode, setCompoundMode] = useState("ai");
   const [showCompoundInfo, setShowCompoundInfo] = useState(false);
   const [showApyModal, setShowApyModal] = useState(false);
@@ -82,6 +144,8 @@ const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
     if (n >= 1) return Math.floor(n).toLocaleString();
     return n.toFixed(4).replace(/\.0+$/, '');
   };
+
+  // (removed unused formatCompact helper to satisfy eslint)
   const formatUsd = (n) => {
     const v = parseFloat(n || '0');
     if (!isFinite(v) || v <= 0) return '$0.00';
@@ -177,85 +241,47 @@ const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
     );
   };
 
-  // Static data for tiers and lock periods
-  const TIERS = [
-    { name: "Bronze", min: 1, max: 1000, bonus: 0, color: "#CD7F32", icon: "🥉" },
-    { name: "Silver", min: 1001, max: 5000, bonus: 2, color: "#C0C0C0", icon: "🥈" },
-    { name: "Gold", min: 5001, max: 10000, bonus: 5, color: "#FFD700", icon: "🥇" },
-    { name: "Platinum", min: 10001, max: Infinity, bonus: 10, color: "#E5E4E2", icon: "💎" }
-  ];
-
-  const LOCK_PERIODS = [
-    { name: "Flexible", days: 0, bonus: 0, color: "#00ff88", icon: "🔓" },
-    { name: "30 Days", days: 30, bonus: 10, color: "#00aaff", icon: "📅" },
-    { name: "90 Days", days: 90, bonus: 25, color: "#ff6b00", icon: "🗓️" },
-    { name: "180 Days", days: 180, bonus: 50, color: "#ff00aa", icon: "📆" },
-    { name: "365 Days", days: 365, bonus: 100, color: "#aa00ff", icon: "🔒" }
-  ];
-
-  // Popular networks registry (mainnets first, include icon and testnet flag)
-  const SUPPORTED_NETWORKS = {
-    1:      { icon: '⬡',   testnet: false, chainId: '0x1',       chainName: 'Ethereum',            nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://rpc.ankr.com/eth'], blockExplorerUrls: ['https://etherscan.io'] },
-    56:     { icon: '🟡',   testnet: false, chainId: '0x38',      chainName: 'BSC Mainnet',         nativeCurrency: { name: 'Binance', symbol: 'BNB', decimals: 18 }, rpcUrls: ['https://bsc-dataseed.binance.org'], blockExplorerUrls: ['https://bscscan.com'] },
-    137:    { icon: '🟣',   testnet: false, chainId: '0x89',      chainName: 'Polygon',             nativeCurrency: { name: 'Matic', symbol: 'MATIC', decimals: 18 }, rpcUrls: ['https://polygon-rpc.com'], blockExplorerUrls: ['https://polygonscan.com'] },
-    10:     { icon: '🟥',   testnet: false, chainId: '0xa',       chainName: 'Optimism',            nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://mainnet.optimism.io'], blockExplorerUrls: ['https://optimistic.etherscan.io'] },
-    42161:  { icon: '🛡️',  testnet: false, chainId: '0xa4b1',   chainName: 'Arbitrum One',        nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://arb1.arbitrum.io/rpc'], blockExplorerUrls: ['https://arbiscan.io'] },
-    43114:  { icon: '🔺',   testnet: false, chainId: '0xa86a',   chainName: 'Avalanche C-Chain',   nativeCurrency: { name: 'Avalanche', symbol: 'AVAX', decimals: 18 }, rpcUrls: ['https://api.avax.network/ext/bc/C/rpc'], blockExplorerUrls: ['https://snowtrace.io'] },
-    8453:   { icon: '🟦',   testnet: false, chainId: '0x2105',   chainName: 'Base',                nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://mainnet.base.org'], blockExplorerUrls: ['https://basescan.org'] },
-    250:    { icon: '👻',   testnet: false, chainId: '0xfa',     chainName: 'Fantom Opera',        nativeCurrency: { name: 'Fantom', symbol: 'FTM', decimals: 18 }, rpcUrls: ['https://rpcapi.fantom.network'], blockExplorerUrls: ['https://ftmscan.com'] },
-    324:    { icon: '🧊',   testnet: false, chainId: '0x144',    chainName: 'zkSync Era',          nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://mainnet.era.zksync.io'], blockExplorerUrls: ['https://explorer.zksync.io'] },
-    59144:  { icon: '🟦',   testnet: false, chainId: '0xe708',   chainName: 'Linea',               nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://rpc.linea.build'], blockExplorerUrls: ['https://lineascan.build'] },
-    534352: { icon: '🟨',   testnet: false, chainId: '0x82aef',  chainName: 'Scroll',              nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://rpc.scroll.io'], blockExplorerUrls: ['https://scrollscan.com'] },
-    100:    { icon: '🟢',   testnet: false, chainId: '0x64',     chainName: 'Gnosis',              nativeCurrency: { name: 'xDAI', symbol: 'xDAI', decimals: 18 }, rpcUrls: ['https://rpc.gnosischain.com'], blockExplorerUrls: ['https://gnosisscan.io'] },
-    42220:  { icon: '🟡',   testnet: false, chainId: '0xa4ec',   chainName: 'Celo',                nativeCurrency: { name: 'Celo', symbol: 'CELO', decimals: 18 }, rpcUrls: ['https://forno.celo.org'], blockExplorerUrls: ['https://celoscan.io'] },
-    25:     { icon: '🟦',   testnet: false, chainId: '0x19',     chainName: 'Cronos',              nativeCurrency: { name: 'Cronos', symbol: 'CRO', decimals: 18 }, rpcUrls: ['https://evm.cronos.org'], blockExplorerUrls: ['https://cronoscan.com'] },
-    1284:   { icon: '🌙',   testnet: false, chainId: '0x504',    chainName: 'Moonbeam',            nativeCurrency: { name: 'GLMR', symbol: 'GLMR', decimals: 18 }, rpcUrls: ['https://rpc.api.moonbeam.network'], blockExplorerUrls: ['https://moonscan.io'] },
-    1101:   { icon: '🟣',   testnet: false, chainId: '0x44d',    chainName: 'Polygon zkEVM',       nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://zkevm-rpc.com'], blockExplorerUrls: ['https://zkevm.polygonscan.com'] },
-    5000:   { icon: '🟧',   testnet: false, chainId: '0x1388',   chainName: 'Mantle',              nativeCurrency: { name: 'Mantle', symbol: 'MNT', decimals: 18 }, rpcUrls: ['https://rpc.mantle.xyz'], blockExplorerUrls: ['https://mantlescan.xyz'] },
-    204:    { icon: '🟡',   testnet: false, chainId: '0xcc',     chainName: 'opBNB',               nativeCurrency: { name: 'Binance', symbol: 'BNB', decimals: 18 }, rpcUrls: ['https://opbnb-mainnet-rpc.bnbchain.org'], blockExplorerUrls: ['https://opbnbscan.com'] },
-    // Testnets
-    97:     { icon: '🟡',   testnet: true,  chainId: '0x61',     chainName: 'BSC Testnet',         nativeCurrency: { name: 'Binance Testnet', symbol: 'tBNB', decimals: 18 }, rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545'], blockExplorerUrls: ['https://testnet.bscscan.com'] },
-    11155111:{ icon: '⬡',  testnet: true,  chainId: '0xaa36a7', chainName: 'Sepolia',             nativeCurrency: { name: 'Sepolia ETH', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://rpc.sepolia.org'], blockExplorerUrls: ['https://sepolia.etherscan.io'] },
-    80002:  { icon: '🟣',   testnet: true,  chainId: '0x13882',  chainName: 'Polygon Amoy',        nativeCurrency: { name: 'Matic', symbol: 'MATIC', decimals: 18 }, rpcUrls: ['https://rpc-amoy.polygon.technology'], blockExplorerUrls: ['https://www.oklink.com/amoy'] },
-    5611:   { icon: '🟡',   testnet: true,  chainId: '0x15eb',   chainName: 'opBNB Testnet',       nativeCurrency: { name: 'tBNB', symbol: 'tBNB', decimals: 18 }, rpcUrls: ['https://opbnb-testnet-rpc.bnbchain.org'], blockExplorerUrls: ['https://testnet.opbnbscan.com'] }
-  };
-
-  const getNetworkLabelByChainId = (chainId) => {
-    const n = SUPPORTED_NETWORKS[Number(chainId)];
-    if (n) return { name: n.chainName, nativeSymbol: n.nativeCurrency.symbol };
-    switch (Number(chainId)) {
-      case 56: return { name: "BSC Mainnet", nativeSymbol: "BNB" };
-      case 97: return { name: "BSC Testnet", nativeSymbol: "tBNB" };
-      default: return { name: `Chain ${chainId}`, nativeSymbol: "NATIVE" };
-    }
-  };
-
-  const getAddChainParams = (chainId) => {
-    const cfg = SUPPORTED_NETWORKS[Number(chainId)];
-    return cfg || null;
-  };
-
-  const getNetworkChipStyle = (chainId) => {
-    const id = Number(chainId);
-    if (id === 97) return { bg: 'rgba(0,255,136,0.15)', border: '1px solid rgba(0,255,136,0.5)', color: '#00ff88' };
-    if (id === 56) return { bg: 'rgba(255,215,0,0.12)', border: '1px solid rgba(255,215,0,0.5)', color: '#ffd700' };
-    if (id === 1) return { bg: 'rgba(138,43,226,0.15)', border: '1px solid rgba(138,43,226,0.5)', color: '#b388ff' };
-    return { bg: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.3)', color: 'rgba(255,255,255,0.9)' };
-  };
-
-  const getIconByChainId = (cid) => (SUPPORTED_NETWORKS[Number(cid)]?.icon || '🌐');
+  // (moved TIERS/LOCK_PERIODS/SUPPORTED_NETWORKS + helpers to module scope to satisfy hooks lint)
 
   const switchNetwork = async (target) => {
     try {
-      if (!window?.ethereum) {
-        toast.error('No EIP-1193 wallet detected. Open MetaMask.');
+      // IMPORTANT: do NOT use window.ethereum directly (can be Phantom or another injected provider).
+      // Prefer the EIP-1193 provider backing the currently connected ethers signer (MetaMask/Trust/etc).
+      const pickEip1193 = () => {
+        const p = signer?.provider?.provider;
+        if (p && typeof p.request === "function") return p;
+        const eth = window?.ethereum;
+        const list = Array.isArray(eth?.providers) ? eth.providers : [];
+        const prefer = (pred) => list.find((x) => x && typeof x.request === "function" && pred(x));
+        return (
+          prefer((x) => x.isMetaMask) ||
+          prefer((x) => x.isTrust) ||
+          prefer((x) => x.isCoinbaseWallet) ||
+          list.find((x) => x && typeof x.request === "function" && !x.isPhantom) ||
+          (eth && typeof eth.request === "function" ? eth : null)
+        );
+      };
+
+      const eip1193 = pickEip1193();
+      if (!eip1193) {
+        toast.error('No EVM wallet provider detected for network switch (MetaMask/Trust).');
         return;
       }
+
       const targetId = Number(target) || 97;
+      // Guard: if already on target chain, don't trigger wallet popup
+      try {
+        const curHex = await eip1193.request({ method: "eth_chainId", params: [] });
+        const curId = typeof curHex === "string" ? parseInt(curHex, 16) : Number(curHex);
+        if (Number.isFinite(curId) && curId === targetId) {
+          toast.info("Already on selected network.");
+          return;
+        }
+      } catch (_) {}
       setIsSwitchingNet(true);
       toast.info('Requesting network switch...');
       const hexId = '0x' + targetId.toString(16);
-      await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: hexId }] });
+      await eip1193.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: hexId }] });
       toast.success('Network switched successfully');
     } catch (err) {
       if (err?.code === 4001) {
@@ -264,9 +290,13 @@ const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
         const params = getAddChainParams(Number(target));
         if (params) {
           try {
-            await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [params] });
+            const eip1193 = (signer?.provider?.provider && typeof signer.provider.provider.request === "function")
+              ? signer.provider.provider
+              : window?.ethereum;
+            if (!eip1193?.request) throw new Error("No EVM wallet provider available");
+            await eip1193.request({ method: 'wallet_addEthereumChain', params: [params] });
             const hexId = '0x' + Number(target).toString(16);
-            await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: hexId }] });
+            await eip1193.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: hexId }] });
             toast.success('Network added and switched');
           } catch (e2) {
             toast.error('Failed to add network: ' + (e2?.message || 'Unknown error'));
@@ -302,7 +332,7 @@ const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
       const tier = TIERS.find(t => amountNum >= t.min && amountNum <= t.max) || TIERS[0];
       setCurrentTier(tier);
     }
-  }, [amount, TIERS]);
+  }, [amount]);
 
   // ✅ Fetch balance
   useEffect(() => {
@@ -327,39 +357,31 @@ const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
         const net = await signer.provider.getNetwork();
         const mapped = getNetworkLabelByChainId(net.chainId);
         setNetworkInfo({ name: mapped.name, chainId: net.chainId, nativeSymbol: mapped.nativeSymbol });
-        const nativeWei = await signer.provider.getBalance(walletAddress);
-        setNativeBalance(ethers.utils.formatEther(nativeWei));
       } catch (e) {
         console.warn("Network/native balance fetch failed:", e?.message);
       }
     };
     loadNetworkAndNative();
-    if (typeof window !== 'undefined' && window.ethereum) {
+    // Attach listeners to the same provider used by the connected signer when possible (avoids Phantom opening)
+    const eip1193 = signer?.provider?.provider && typeof signer.provider.provider.on === "function"
+      ? signer.provider.provider
+      : (window?.ethereum && typeof window.ethereum.on === "function" ? window.ethereum : null);
+    if (eip1193) {
       const onChainChanged = async (hexId) => {
         const id = parseInt(hexId, 16);
         const mapped = getNetworkLabelByChainId(id);
         setNetworkInfo({ name: mapped.name, chainId: id, nativeSymbol: mapped.nativeSymbol });
-        try {
-          if (walletAddress) {
-            const nativeWei = await signer?.provider?.getBalance(walletAddress);
-            if (nativeWei) setNativeBalance(ethers.utils.formatEther(nativeWei));
-          }
-        } catch {}
       };
       const onAccountsChanged = async (accs) => {
-        try {
-          if (accs && accs[0]) {
-            const nativeWei = await signer?.provider?.getBalance(accs[0]);
-            if (nativeWei) setNativeBalance(ethers.utils.formatEther(nativeWei));
-          }
-        } catch {}
+        // networkInfo is refreshed elsewhere; no-op
+        void accs;
       };
-      window.ethereum.on('chainChanged', onChainChanged);
-      window.ethereum.on('accountsChanged', onAccountsChanged);
+      eip1193.on('chainChanged', onChainChanged);
+      eip1193.on('accountsChanged', onAccountsChanged);
       return () => {
         try {
-          window.ethereum.removeListener('chainChanged', onChainChanged);
-          window.ethereum.removeListener('accountsChanged', onAccountsChanged);
+          eip1193.removeListener('chainChanged', onChainChanged);
+          eip1193.removeListener('accountsChanged', onAccountsChanged);
         } catch {}
       };
     }
@@ -622,7 +644,7 @@ const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
       )}
 
       {/* AI Stats Display */}
-      <div className="ai-stats-grid" style={{ marginBottom: "2rem", gridTemplateColumns: "1fr 1fr 1fr", rowGap: "1.2rem" }}>
+      <div className="ai-stats-grid" style={{ marginBottom: "2rem", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", rowGap: "1.2rem" }}>
         <div className="ai-stat-item">
           <div className="ai-stat-label">Wallet</div>
           <div className="ai-stat-value" style={{ fontSize: "1.2rem", letterSpacing: "0.5px", textShadow: "0 0 8px rgba(0,255,200,0.5)", color: "rgba(0,255,200,0.95)" }}>
@@ -632,7 +654,12 @@ const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
           <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
             {(() => { const sty = getNetworkChipStyle(networkInfo?.chainId); return (
               <span style={{
-                display: 'inline-flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap'
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                flexWrap: 'wrap',
+                maxWidth: '100%'
               }}>
                 <span style={{
                   width: 28, height: 28, borderRadius: '50%',
@@ -641,17 +668,32 @@ const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
                 }}>
                   <ChainIcon chainId={networkInfo?.chainId} size={16} />
                 </span>
-                <span style={{ color: sty.color, fontSize: '0.9rem' }}>{networkInfo?.name || 'Network'}</span>
+                <span style={{
+                  color: sty.color,
+                  fontSize: '0.9rem',
+                  maxWidth: '100%',
+                  textAlign: 'center',
+                  overflowWrap: 'anywhere',
+                  wordBreak: 'break-word'
+                }}>
+                  {networkInfo?.name || 'Network'}
+                </span>
               </span>
             ); })()}
-            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
               <select
                 value={String(targetChainId)}
                 onChange={(e) => setTargetChainId(parseInt(e.target.value))}
                 style={{
                   background: 'rgba(24,24,24,0.9)',
                   border: '1px solid rgba(255,255,255,0.25)',
-                  color: 'white', borderRadius: '8px', padding: '4px 6px', fontSize: '0.8rem'
+                  color: 'white',
+                  borderRadius: '8px',
+                  padding: '4px 6px',
+                  fontSize: '0.8rem',
+                  flex: '1 1 170px',
+                  minWidth: 170,
+                  maxWidth: '100%'
                 }}
               >
                 {Object.keys(SUPPORTED_NETWORKS)
@@ -662,6 +704,8 @@ const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
                     if (an.testnet !== bn.testnet) return an.testnet ? 1 : -1; // mainnets first
                     return an.chainName.localeCompare(bn.chainName);
                   })
+                  // ✅ Only mainnets in UI (testnets hidden)
+                  .filter((cid) => !SUPPORTED_NETWORKS[cid]?.testnet)
                   .map((cid) => (
                     <option key={cid} value={cid}>
                       {SUPPORTED_NETWORKS[cid].icon} {SUPPORTED_NETWORKS[cid].chainName}{SUPPORTED_NETWORKS[cid].testnet ? ' (testnet)' : ''}
@@ -674,7 +718,9 @@ const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
                   background: 'linear-gradient(135deg, #00ff88, #00aaff)',
                   color: 'black', border: 'none', borderRadius: '10px',
                   padding: '4px 8px', fontSize: '0.8rem', fontWeight: 700,
-                  cursor: isSwitchingNet ? 'not-allowed' : 'pointer', opacity: isSwitchingNet ? 0.7 : 1
+                  cursor: isSwitchingNet ? 'not-allowed' : 'pointer',
+                  opacity: isSwitchingNet ? 0.7 : 1,
+                  flex: '0 0 auto'
                 }}
                 disabled={isSwitchingNet || !window?.ethereum}
               >
@@ -685,7 +731,12 @@ const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
         </div>
         <div className="ai-stat-item">
           <div className="ai-stat-label">Available</div>
-          <div className="ai-stat-value">{parseFloat(balance).toFixed(2)}</div>
+          <div
+            className="ai-stat-value"
+            title={Number.isFinite(Number(balance)) ? Number(balance).toLocaleString("en-US", { maximumFractionDigits: 6 }) : String(balance || "")}
+          >
+            {Number.isFinite(Number(balance)) ? Math.floor(Number(balance)).toLocaleString("en-US") : "—"}
+          </div>
           <div className="ai-stat-label">$BITS</div>
         </div>
         <div className="ai-stat-item">
@@ -716,7 +767,7 @@ const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
               ⓘ
             </button>
           </div>
-          <div className="ai-stat-value">{aprPercentDisplayFrom1e18(apr)}</div>
+          <div className="ai-stat-value stake-protocol-apr">{aprPercentDisplayFrom1e18(apr)}</div>
           <div className="ai-stat-label">Rate</div>
         </div>
       </div>
@@ -782,7 +833,13 @@ const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
             STAKE AMOUNT
           </label>
           <div style={{fontSize: "0.8rem", color: "rgba(255,255,255,0.6)"}}>
-            Wallet: <span style={{color: "#fff", fontWeight: "600"}}>{Math.floor(parseFloat(balance)).toLocaleString()}</span>
+            Wallet:{" "}
+            <span
+              style={{ color: "#fff", fontWeight: "600", whiteSpace: "nowrap" }}
+              title={Number.isFinite(Number(balance)) ? Number(balance).toLocaleString("en-US", { maximumFractionDigits: 6 }) : String(balance || "")}
+            >
+              {Number.isFinite(Number(balance)) ? Math.floor(Number(balance)).toLocaleString("en-US") : "—"}
+            </span>
           </div>
         </div>
 
@@ -1015,9 +1072,6 @@ const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
                 onClick={() => {
                   if (!autoCompound) return;
                   setCompoundMode(opt.id);
-                  if (opt.id === 'daily') setCompoundFrequency(1);
-                  if (opt.id === 'weekly') setCompoundFrequency(7);
-                  if (opt.id === 'monthly') setCompoundFrequency(30);
                 }}
                 title={opt.id === 'ai' ? 'AI schedules reinvest when profitable' : `Reinvest ${opt.label.toLowerCase()}`}
                 style={{

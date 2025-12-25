@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import handleStripePaymentService from "../../Presale/TokenHandlers/handleStripePayment";
+import PaymentTitleBridgeMobile from "./PaymentTitleBridgeMobile";
 
 // ✅ PRESETS EXACT CA PE DESKTOP (10, 30, 50, 100, 500, 1000)
 // Acestea sunt valori in EUR conform backend-ului Stripe
@@ -113,6 +114,10 @@ const StripeBoxMobile = ({ walletAddress, onBack }) => {
         marginBottom: '20px'
       }}>
         <div className="mobile-payment-content" style={{flex: 1}}>
+          <PaymentTitleBridgeMobile
+            payTokenLabel="CARD"
+            payTokenIconSrc={null}
+          />
           <label className="mobile-payment-title" style={{display: 'flex', justifyContent: 'space-between', marginBottom: '12px', color: '#a5b4fc'}}>
             <span>Amount (EUR)</span>
             <span style={{fontSize: '12px', color: '#14f195'}}>Rate: 1 EUR ≈ ${eurToUsdRate.toFixed(2)}</span>

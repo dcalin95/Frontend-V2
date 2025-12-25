@@ -75,31 +75,53 @@ const RecentBTCFeed = () => {
   }, []);
 
   return (
-    <div className="btc-feed">
-      <div className="btc-feed-head">
-        <span className="btc-feed-icon">₿</span>
-        <span className="btc-feed-title">Live Bitcoin Mempool</span>
-        <span className="brand-line" title="AI data pipeline">
-          <img src={bitsLogo} alt="BITS" className="bits-logo-mini" />
-          <span className="bitsPulseLabel">BitPulse®</span>
-        </span>
-        {error && <span className="btc-feed-error">{error}</span>}
+    <div className="terminal-feed btc">
+      <div className="terminal-head">
+        <div className="terminal-title-group">
+          <span className="terminal-icon">₿</span>
+          <span className="terminal-label">Live Bitcoin Mempool</span>
+        </div>
+        <div className="terminal-branding">
+          <img src={bitsLogo} alt="BITS" className="bits-logo-pulse" />
+          <span className="pulse-text">BitPulse®</span>
+        </div>
+        {error && <span className="terminal-error">{error}</span>}
       </div>
-      <div className="btc-feed-list">
+      
+      <div className="terminal-table-head">
+        <span>TXID</span>
+        <span>VALUE</span>
+        <span>FEE / SIZE</span>
+      </div>
+
+      <div className="terminal-list">
         {txs.length === 0 && !error && (
-          <div className="btc-feed-empty">Loading recent transactions…</div>
+          <div className="terminal-loading">📡 SCANNING BLOCKCHAIN...</div>
         )}
         {txs.map((t) => {
           const f = Number(t.fee || 0);
           const v = Number(t.vsize || 1);
-          const rate = v > 0 ? f / v : 0; // sat/vB
-          const widthPct = Math.min(100, Math.max(5, (rate / 60) * 100)); // normalize ~0-60 sat/vB
+          const rate = v > 0 ? f / v : 0;
+          const widthPct = Math.min(100, Math.max(10, (rate / 50) * 100));
+          
           return (
-            <div className="btc-feed-row" key={t.txid}>
-              <a className="txid" title={t.txid} href={`https://mempool.space/tx/${t.txid}`} target="_blank" rel="noreferrer">{truncateTxid(t.txid)}</a>
-              <div className="val">{formatBTCFromSats(t.value)} BTC</div>
-              <div className="meta">{formatFeeRate(t.fee, t.vsize)} · {t.vsize} vB</div>
-              <div className="spark-line btc" style={{ ['--w']: `${widthPct}%` }} />
+            <div className="terminal-row" key={t.txid}>
+              <a 
+                className="t-txid" 
+                href={`https://mempool.space/tx/${t.txid}`} 
+                target="_blank" 
+                rel="noreferrer"
+              >
+                {truncateTxid(t.txid)}
+              </a>
+              <div className="t-val">{formatBTCFromSats(t.value)} BTC</div>
+              <div className="t-meta">
+                <span className="t-fee">{rate.toFixed(1)} sat/vB</span>
+                <span className="t-size">{t.vsize} vB</span>
+              </div>
+              <div className="t-progress-bg">
+                <div className="t-progress-fill" style={{ width: `${widthPct}%` }} />
+              </div>
             </div>
           );
         })}

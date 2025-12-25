@@ -39,28 +39,51 @@ const RecentStacksFeed = () => {
   }, []);
 
   return (
-    <div className="stx-feed">
-      <div className="stx-feed-head">
-        <span className="stx-feed-icon">🟧</span>
-        <span className="stx-feed-title">Live Stacks (STX) Mempool</span>
-        <span className="brand-line" title="AI data pipeline">
-          <img src={bitsLogo} alt="BITS" className="bits-logo-mini" />
-          <span className="bitsPulseLabel">BitPulse®</span>
-        </span>
-        {error && <span className="stx-feed-error">{error}</span>}
+    <div className="terminal-feed stx">
+      <div className="terminal-head">
+        <div className="terminal-title-group">
+          <span className="terminal-icon">🟧</span>
+          <span className="terminal-label">Live Stacks (STX) Mempool</span>
+        </div>
+        <div className="terminal-branding">
+          <img src={bitsLogo} alt="BITS" className="bits-logo-pulse" />
+          <span className="pulse-text">BitPulse®</span>
+        </div>
+        {error && <span className="terminal-error">{error}</span>}
       </div>
-      <div className="stx-feed-list">
+
+      <div className="terminal-table-head">
+        <span>TXID</span>
+        <span>METHOD</span>
+        <span>NONCE / FEE</span>
+      </div>
+
+      <div className="terminal-list">
         {txs.length === 0 && !error && (
-          <div className="stx-feed-empty">Loading recent transactions…</div>
+          <div className="terminal-loading">📡 SCANNING STACKS NETWORK...</div>
         )}
         {txs.map((t) => {
           const fee = Number(t.fee_rate ?? t.fee ?? 0);
-          const widthPct = Math.min(100, Math.max(5, (fee / 500) * 100)); // normalize ~0-500
+          const widthPct = Math.min(100, Math.max(10, (fee / 1000) * 100)); // normalized
+          
           return (
-            <div className="stx-feed-row" key={t.tx_id}>
-              <a className="txid" title={t.tx_id} href={`https://explorer.hiro.so/txid/${t.tx_id}?chain=mainnet`} target="_blank" rel="noreferrer">{truncate(t.tx_id)}</a>
-              <div className="meta">{t.tx_type} · nonce {t.nonce ?? '-'} · fee {fee}</div>
-              <div className="spark-line stx" style={{ ['--w']: `${widthPct}%` }} />
+            <div className="terminal-row" key={t.tx_id}>
+              <a 
+                className="t-txid" 
+                href={`https://explorer.hiro.so/txid/${t.tx_id}?chain=mainnet`} 
+                target="_blank" 
+                rel="noreferrer"
+              >
+                {truncate(t.tx_id)}
+              </a>
+              <div className="t-val stx-method">{t.tx_type.replace('_', ' ')}</div>
+              <div className="t-meta">
+                <span className="t-fee">n.{t.nonce ?? '-'}</span>
+                <span className="t-size">{fee} STX</span>
+              </div>
+              <div className="t-progress-bg">
+                <div className="t-progress-fill stx" style={{ width: `${widthPct}%` }} />
+              </div>
             </div>
           );
         })}

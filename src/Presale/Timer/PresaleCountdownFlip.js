@@ -64,14 +64,11 @@ const PresaleCountdownFlip = () => {
 
   return (
     <div className={styles.countdownFlip} translate="no">
-      <div className={styles.cardHeader}>
-        <img src={bitsLogo} alt="BITS Token Logo" className={styles.bitsLogo} />
-      </div>
-
       <div className={styles.priceInfo}>
         <div className={styles.roundText} translate="no">
           {roundNumber ? (
             <>
+              <img src={bitsLogo} alt="BITS" className={styles.roundLogo} />
               $BITS Presale Round: <span className={styles.currentRound}>{roundNumber}</span>
             </>
           ) : (
@@ -81,17 +78,12 @@ const PresaleCountdownFlip = () => {
 
         <div className={styles.remainingText} translate="no">
           {/* Always show presale as active if supply exists */}
-          {"⏳ Presale Active"}
+          <span className={styles.hourglass}>⏳</span> Presale Active
         </div>
 
-
-
         <div className={styles.priceLine} translate="no">
-          <span>
-            <img src={bitsLogo} alt="BITS Logo" className={styles.priceLogo} />
-          </span>
           {currentPrice > 0 ? (
-            <span className={styles.currentPriceDisplay}>${currentPrice.toFixed(3)}</span>
+            <span className={styles.currentPriceDisplay}>1 $BITS ≈ ${currentPrice.toFixed(3)}</span>
           ) : (
             <span className={styles.unavailablePrice}>Unavailable</span>
           )}
@@ -104,8 +96,6 @@ const PresaleCountdownFlip = () => {
         <TimeBox label="Minutes" value={timeLeft.minutes} />
         <TimeBox label="Seconds" value={timeLeft.seconds} />
       </div>
-
-      <TotalRaised totalBoosted={totalBoosted} />
     </div>
   );
 };

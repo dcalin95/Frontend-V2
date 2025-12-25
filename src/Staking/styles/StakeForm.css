@@ -7,6 +7,33 @@
   margin: 0;
 }
 
+/* Prevent stake header stats (Wallet / Available / APR) from overflowing containers */
+.stake-form .ai-stats-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.stake-form .ai-stat-item {
+  min-width: 0;
+}
+
+.stake-form .ai-stat-value {
+  /* slightly smaller to avoid layout deformation on large balances */
+  font-size: clamp(1.05rem, 1.6vw, 1.6rem);
+  line-height: 1.05;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* ensure it stays visible even if other global styles use text-fill transparent */
+  background: none;
+  -webkit-text-fill-color: unset;
+  color: rgba(0, 255, 200, 0.95);
+}
+
+/* APR value: slightly smaller than other stats */
+.stake-form .stake-protocol-apr {
+  font-size: clamp(0.95rem, 1.3vw, 1.35rem);
+}
+
 /* Calm Form Title - SOLANA/AI STYLE */
 .ai-form-title {
   font-size: 1.6rem;

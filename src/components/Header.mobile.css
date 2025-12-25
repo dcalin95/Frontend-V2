@@ -412,8 +412,10 @@
     overflow: visible; 
     margin-right: 0;
     margin-left: -10px; 
-    transform: scale(1.10); /* Mărire 10% */
+    /* Enforced: make timer+slogans 10% smaller */
+    transform: scale(0.85) !important;
     transform-origin: center center; /* Mărire din centru */
+    font-size: 0.85em;
     
     /* Smooth transitions */
     transition: all 0.3s ease;

@@ -182,7 +182,7 @@ const MainLayout = ({ children, isMobile, menuOpen, setMenuOpen, headerMenuOpen,
         isMenuOpen={headerMenuOpen} 
         toggleMenu={toggleHeaderMenu} 
       />
-      <BoostedBanner />
+      {location.pathname !== "/presale" && <BoostedBanner />}
       <div className="header-spacer"></div>
       <HeaderWalletInfo />
       <ThemeChecker />
