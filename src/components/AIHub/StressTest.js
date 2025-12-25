@@ -23,6 +23,7 @@ const EXCHANGES_TOP10 = [
 ];
 
 const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+const SFX_GAIN = 0.5; // global -50% for all noise/SFX (user request)
 
 const makeSparkPoints = (values, w = 160, h = 42) => {
   if (!values?.length) return '';
@@ -365,7 +366,17 @@ const NEGATIVE_NEWS_TEMPLATES = [
   "FLASH: Rumors of insolvency trigger a bank-run on-chain. Wallet drains are trending.",
   "UPDATE: Derivatives funding flips sharply negative. Traders are paying to stay short.",
   "BREAKING: A critical exploit report triggers protocol pauses across multiple chains.",
-  "ALERT: Forced liquidations cascade. Stop-losses are turning into market orders."
+  "ALERT: Forced liquidations cascade. Stop-losses are turning into market orders.",
+  "BREAKING: Your wallet value just collapsed. You have no money for food. It's over.",
+  "EMERGENCY: You are broke. Your children have no food. This is not a drill.",
+  "ALERT: Water and fuel prices spike as supply chains break. Households are rationing.",
+  "UPDATE: Hospital systems report shortages. Basic medicine and care are delayed.",
+  "BREAKING: Rent defaults surge. Evictions accelerate. Temporary shelters overflow.",
+  "PANIC UPDATE: A wave of account freezes is reported. Users cannot withdraw funds.",
+  "URGENT: Payment processors throttle transactions. Lines form at ATMs.",
+  "FLASH: A cyberattack disrupts banking rails. Transfers fail intermittently.",
+  "ALERT: Food prices jump again. Local stores report empty shelves.",
+  "UPDATE: Emergency services are overwhelmed. Response times are increasing."
 ];
 
 const HELL_QUOTES = [
@@ -475,11 +486,12 @@ const StressTest = () => {
   const tvZapInterval = useRef(null);
   const audioCtxRef = useRef(null);
   const tvZapSfxRef = useRef([]);
+  const tvWeirdSfxRef = useRef([]);
   const tvZapGateRef = useRef({ t: 0 });
   const ambientDuckRef = useRef({ amb: 0.22, despair: 0.24 });
   const musicMixRef = useRef({
-    ambVol: 0.22,
-    despairVol: 0.24,
+    ambVol: 0.06,
+    despairVol: 0.06,
     ambPaused: false,
     despairPaused: false
   });
@@ -505,6 +517,7 @@ const StressTest = () => {
   const newsTimerRef = useRef(null);
   const newsGateRef = useRef({ t: 0, speaking: false, musicDiffuse: false });
   const [musicDiffuse, setMusicDiffuse] = useState(false);
+  const [musicHardMute, setMusicHardMute] = useState(false);
   const newsAudioRef = useRef({
     ambVol: null,
     despairVol: null,
@@ -533,7 +546,7 @@ const StressTest = () => {
         if (ambientAudio.current) ambientAudio.current.src = ambientTracks[nextIdx];
       } catch (_) {}
       // Start ambient immediately when enabled
-      safePlay(ambientAudio, 0.15, true, 1, true);
+      safePlay(ambientAudio, 0.045, true, 1, true);
     } else {
       // Stop everything when disabled
       safeStop(ambientAudio);
@@ -578,10 +591,11 @@ const StressTest = () => {
   const certificateFeeBits = 10000;
   const bscOk = !chainId || chainId === 56; // allow unknown during init; enforce when paying
   const cameraEligible = cameraEnabled && cameraConsent; // hard requirement when wantsCertificate
+  const wealthOk = portfolioUsd > 0;
   const canStart =
     !!walletAddress
     && bitsEnough
-    && portfolioUsd > 0
+    && wealthOk
     && (!wantsCertificate || (nameOk && emailOk && emailConsent && cameraEligible))
     && !loading;
 
@@ -649,8 +663,15 @@ const StressTest = () => {
     // TV zap / weird noises (generated locally into public/sounds)
     tvZapSfxRef.current = [
       new Audio('/sounds/tv_zap_1.wav'),
-      new Audio('/sounds/tv_zap_2.wav'),
-      new Audio('/sounds/tv_weird_1.wav')
+      new Audio('/sounds/tv_zap_2.wav')
+    ];
+
+    // Extra "cybernetic hell" noises (more variety, lower volume)
+    tvWeirdSfxRef.current = [
+      new Audio('/sounds/tv_weird_1.wav'),
+      new Audio('/sounds/boost.wav'),
+      new Audio('/sounds/click.mp3'),
+      new Audio('/sounds/test-sound.mp3')
     ];
     
     return () => {
@@ -695,7 +716,7 @@ const StressTest = () => {
     if (now - (sfxGateRef.current.t || 0) < 120) return;
     sfxGateRef.current.t = now;
     try {
-      audioRef.current.volume = volume;
+      audioRef.current.volume = clamp(volume * SFX_GAIN, 0, 1);
       if (audioRef.current.currentTime > 0.05 && !audioRef.current.paused) {
         // don't restart if already playing (reduces stutter)
         return;
@@ -874,14 +895,14 @@ const StressTest = () => {
       } else {
         // Restore normal background mix
         if (a) {
-          a.volume = musicMixRef.current.ambVol ?? 0.22;
+          a.volume = musicMixRef.current.ambVol ?? 0.06;
           if (musicMixRef.current.ambPaused) {
             a.play().catch(() => {});
             musicMixRef.current.ambPaused = false;
           }
         }
         if (d) {
-          d.volume = musicMixRef.current.despairVol ?? 0.24;
+          d.volume = musicMixRef.current.despairVol ?? 0.06;
           if (musicMixRef.current.despairPaused) {
             d.play().catch(() => {});
             musicMixRef.current.despairPaused = false;
@@ -895,18 +916,21 @@ const StressTest = () => {
     // Music switching across stages (keep it dynamic).
     if (!soundEnabled) return;
     if (!loading) return;
+    if (musicHardMute) return; // HARD MUTE while negative news voice is speaking
     const a = ambientAudio.current;
     const d = despairAudio.current;
     if (!a || !d) return;
 
     try {
       const diffuse = !!musicDiffuse;
-      const vCalm = diffuse ? 0.015 : 0.20;
-      const vUnrest = diffuse ? 0.015 : 0.22;
-      const vBlendA = diffuse ? 0.010 : 0.12;
-      const vBlendD = diffuse ? 0.015 : 0.20;
-      const vAnnih = diffuse ? 0.015 : 0.28;
-      const vAgony = diffuse ? 0.018 : 0.34;
+      // Global -50% background volume (user request)
+      // Further reduction: keep background music quieter overall
+      const vCalm = diffuse ? 0.006 : 0.06;
+      const vUnrest = diffuse ? 0.006 : 0.065;
+      const vBlendA = diffuse ? 0.004 : 0.035;
+      const vBlendD = diffuse ? 0.006 : 0.06;
+      const vAnnih = diffuse ? 0.006 : 0.085;
+      const vAgony = diffuse ? 0.007 : 0.10;
 
       // Stage-based palette: swap sources + playbackRate to feel evolving
       if (simStage <= 1) {
@@ -939,7 +963,19 @@ const StressTest = () => {
         safePlay(despairAudio, vAgony, true, 1);
       }
     } catch (_) {}
-  }, [soundEnabled, loading, simStage, safePlay, safeStop, musicDiffuse]);
+  }, [soundEnabled, loading, simStage, safePlay, safeStop, musicDiffuse, musicHardMute]);
+
+  useEffect(() => {
+    // HARD MUTE: guarantee music is silent while voice speaks (prevents stage mixer from re-enabling it).
+    const a = ambientAudio.current;
+    const d = despairAudio.current;
+    if (!a && !d) return;
+    if (!musicHardMute) return;
+    try {
+      if (a) { a.volume = 0; a.pause(); }
+      if (d) { d.volume = 0; d.pause(); }
+    } catch (_) {}
+  }, [musicHardMute]);
 
   useEffect(() => {
     // Fullscreen takeover without touching other components: we overlay the entire viewport.
@@ -990,7 +1026,7 @@ const StressTest = () => {
     try {
       duckAmbient(950);
       pick.currentTime = 0;
-      pick.volume = 1.0; // louder than music
+      pick.volume = 1.0 * SFX_GAIN; // -50%
       pick.play().catch(() => {});
     } catch (_) {}
   }, [duckAmbient, soundEnabled]);
@@ -1000,13 +1036,13 @@ const StressTest = () => {
     const now = Date.now();
     if (now - (tvZapGateRef.current.t || 0) < 350) return;
     tvZapGateRef.current.t = now;
-    const arr = tvZapSfxRef.current || [];
-    const pick = arr.find(a => a?.src?.includes('tv_weird_1')) || arr[arr.length - 1];
+    const arr = tvWeirdSfxRef.current || [];
+    const pick = arr[Math.floor(Math.random() * arr.length)];
     if (!pick) return;
     try {
       duckAmbient(1100);
       pick.currentTime = 0;
-      pick.volume = 0.85;
+      pick.volume = 0.85 * SFX_GAIN;
       pick.play().catch(() => {});
     } catch (_) {}
   }, [duckAmbient, soundEnabled]);
@@ -1074,7 +1110,7 @@ const StressTest = () => {
       osc.start();
       // ramp up / down (war siren vibe)
       const now = ctx.currentTime;
-      gain.gain.setTargetAtTime(0.08, now, 0.03);
+      gain.gain.setTargetAtTime(0.04, now, 0.03); // -50%
       // sweep frequency
       osc.frequency.setValueAtTime(420, now);
       osc.frequency.linearRampToValueAtTime(980, now + 0.7);
@@ -1180,10 +1216,41 @@ const StressTest = () => {
     if (!loading) return;
     if (!tvOnlineChannels || tvOnlineChannels.length < 2) return;
 
-    const cadenceMs = simStage >= 5 ? 8000 : simStage >= 3 ? 12000 : 16000;
+    const cadenceMs = simStage >= 5 ? 12000 : simStage >= 4 ? 16000 : simStage >= 3 ? 20000 : 26000;
+
+    const takeoverMs = 7000; // HARD minimum (user requirement)
+    const triggerFullscreenOnZap = () => {
+      try {
+        // Extend fullscreen time deterministically
+        if (tvTakeoverRef.current.timer) window.clearTimeout(tvTakeoverRef.current.timer);
+        tvTakeoverRef.current.prev = { tvSize, tvMute, tvPower };
+
+        // Ensure TV is visible and loud on zap unless voice is speaking
+        if (!tvPower) setTvPower(true);
+        if (!newsGateRef.current?.speaking && !musicHardMute) {
+          if (tvMute) setTvMute(false);
+        }
+        setTvSize('fullscreen');
+
+        tvTakeoverRef.current.timer = window.setTimeout(() => {
+          const prev = tvTakeoverRef.current.prev;
+          if (prev) {
+            setTvSize(prev.tvSize || 'normal');
+            setTvMute(!!prev.tvMute);
+            setTvPower(!!prev.tvPower);
+          } else {
+            setTvSize('normal');
+          }
+        }, takeoverMs);
+      } catch (_) {}
+    };
 
     tvZapInterval.current = setInterval(() => {
-      playTvZap();
+      // Go fullscreen on every auto-zap and stay there at least 7 seconds
+      triggerFullscreenOnZap();
+      if (!newsGateRef.current?.speaking && !musicHardMute) {
+        playTvZap();
+      }
       setTvChannelKey((prev) => {
         const idx = tvOnlineChannels.findIndex((c) => c.key === prev);
         const step = 1 + Math.floor(Math.random() * 2); // 1-2 channels jump
@@ -1196,7 +1263,7 @@ const StressTest = () => {
       if (tvZapInterval.current) clearInterval(tvZapInterval.current);
       tvZapInterval.current = null;
     };
-  }, [tvPower, loading, simStage, tvOnlineChannels, playTvZap]);
+  }, [tvPower, loading, simStage, tvOnlineChannels, playTvZap, tvSize, tvMute, musicHardMute]);
 
   useEffect(() => {
     // TV "audio" chaos layer: fluctuating intensity + noisy effects while StressTest runs
@@ -1563,7 +1630,7 @@ const StressTest = () => {
     // Auto-enable sound when starting the test (user gesture = clicking RUN)
     if (!soundEnabled) setSoundEnabled(true);
     // Force play immediately even if state update hasn't propagated yet
-    safePlay(ambientAudio, 0.22, true, 1, true);
+    safePlay(ambientAudio, 0.06, true, 1, true);
 
     // Dynamic Quote/Devil/Scream Logic
     quoteInterval.current = setInterval(() => {
@@ -1931,6 +1998,41 @@ const StressTest = () => {
     }
   };
 
+  const normalizeTtsText = useCallback((s) => {
+    // Improve intelligibility/pronunciation: slow the speech down with punctuation + expand abbreviations.
+    const raw = String(s || '');
+    return raw
+      .replace(/\bBTC\b/g, 'B T C')
+      .replace(/\bETH\b/g, 'E T H')
+      .replace(/\bBNB\b/g, 'B N B')
+      .replace(/\bUSD\b/g, 'U S D')
+      .replace(/\bETF\b/g, 'E T F')
+      .replace(/%/g, ' percent')
+      .replace(/\$/g, ' dollars ')
+      .replace(/:/g, '. ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }, []);
+
+  const pickNewsVoice = useCallback((mode = 'any') => {
+    // mode: 'any' | 'male' | 'female'
+    try {
+      const voices = window.speechSynthesis?.getVoices?.() || [];
+      const en = voices.filter(v => /en/i.test(v.lang));
+      if (!en.length) return null;
+      const femaleHints = /female|susan|zira|samantha|victoria|karen|tessa|alice|emma|amelie|fiona/i;
+      const maleHints = /male|david|mark|guy|daniel|alex|tom|george|ryan|fred/i;
+      const pool =
+        mode === 'female' ? en.filter(v => femaleHints.test(v.name)) :
+        mode === 'male' ? en.filter(v => maleHints.test(v.name)) :
+        en;
+      const preferred = pool.find(v => /en-US/i.test(v.lang)) || pool[0] || en[0];
+      return (pool.length ? pool[Math.floor(Math.random() * pool.length)] : preferred) || null;
+    } catch (_) {
+      return null;
+    }
+  }, []);
+
   const scrollToAttention = useCallback(() => {
     try {
       attentionPanelRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'center' });
@@ -1994,13 +2096,14 @@ const StressTest = () => {
     duckAmbient(4500);
     playSound(glitchAudio, 1.0);
 
-    // Make the final lines clearly audible: stop music and mute TV briefly.
+    // Make the final lines clearly audible: HARD MUTE music and mute TV briefly.
     try {
       const a0 = ambientAudio.current;
       const d0 = despairAudio.current;
       if (a0) { a0.volume = 0; a0.pause(); }
       if (d0) { d0.volume = 0; d0.pause(); }
     } catch (_) {}
+    setMusicHardMute(true);
     let prevMute = null;
     try {
       prevMute = tvMute;
@@ -2024,6 +2127,7 @@ const StressTest = () => {
           try {
             if (typeof prevMute === 'boolean') setTvMute(prevMute);
           } catch (_) {}
+          setMusicHardMute(false);
         } else {
           window.setTimeout(speakNext, 420);
         }
@@ -2035,6 +2139,7 @@ const StressTest = () => {
           try {
             if (typeof prevMute === 'boolean') setTvMute(prevMute);
           } catch (_) {}
+          setMusicHardMute(false);
         } else {
           window.setTimeout(speakNext, 420);
         }
@@ -2057,6 +2162,7 @@ const StressTest = () => {
     newsGateRef.current.speaking = true;
     newsGateRef.current.musicDiffuse = true;
     setMusicDiffuse(true);
+    setMusicHardMute(true);
 
     // Stop music completely while the voice speaks (user requirement)
     try {
@@ -2078,18 +2184,17 @@ const StressTest = () => {
       if (!tvMute) setTvMute(true);
     } catch (_) {}
 
-    const utter = new SpeechSynthesisUtterance(text);
+    // Rotate voices: mix male/female, some deeper.
+    const voiceMode = Math.random() < 0.52 ? 'male' : 'female';
+    const chosenVoice = pickNewsVoice(voiceMode);
+    const normalized = normalizeTtsText(text);
+    const utter = new SpeechSynthesisUtterance(normalized);
     utter.lang = 'en-US';
-    // Aggressive / panicked delivery
-    utter.rate = 1.18 + Math.random() * 0.10;
-    utter.pitch = 0.78 + Math.random() * 0.08;
+    // Louder + clearer: slower, with more stable pitch.
+    utter.rate = 0.98 + Math.random() * 0.08; // slower than before
+    utter.pitch = (voiceMode === 'male' ? 0.70 : 0.92) + (Math.random() * 0.04);
     utter.volume = 1.0;
-
-    // Best-effort voice selection
-    try {
-      const v = pickAggressiveEnglishVoice();
-      if (v) utter.voice = v;
-    } catch (_) {}
+    if (chosenVoice) utter.voice = chosenVoice;
 
     const triggerTvTakeover = (ms = 7000) => {
       const nowT = Date.now();
@@ -2142,7 +2247,7 @@ const StressTest = () => {
       }, ms);
     };
 
-    // When negative news voice speaks: keep music very diffuse (low volume), not fully stopped.
+    // While voice speaks: music is HARD muted (handled by musicHardMute) + TV muted temporarily.
     const a = ambientAudio.current;
     const d = despairAudio.current;
     try {
@@ -2152,9 +2257,10 @@ const StressTest = () => {
 
     // Make it audible: extra ducking + siren/glitch cue + zap cue
     duckAmbient(4200);
-    playSound(glitchAudio, 0.95);
+    // Keep cues subtle so they don't mask the voice
+    playSound(glitchAudio, 0.22);
     setNewsCaption(text);
-    try { playTvZap(); } catch (_) {}
+    // Avoid loud "zap" during speech (it can cover the TTS). We keep visuals + caption instead.
     // Occasionally take over the screen with TV + chart
     // TV takeover should stay up at least 7 seconds
     if (Math.random() < 0.65) triggerTvTakeover(7000 + Math.random() * 2500);
@@ -2180,6 +2286,7 @@ const StressTest = () => {
       newsGateRef.current.speaking = false;
       newsGateRef.current.musicDiffuse = false;
       setMusicDiffuse(false);
+      setMusicHardMute(false);
       window.setTimeout(() => setNewsCaption(''), 2600);
       // restore TV mute state
       try {
@@ -2191,6 +2298,7 @@ const StressTest = () => {
       newsGateRef.current.speaking = false;
       newsGateRef.current.musicDiffuse = false;
       setMusicDiffuse(false);
+      setMusicHardMute(false);
       try {
         const prev = newsAudioRef.current.prevTvMute;
         if (typeof prev === 'boolean') setTvMute(prev);
@@ -2204,12 +2312,13 @@ const StressTest = () => {
       newsGateRef.current.speaking = false;
       newsGateRef.current.musicDiffuse = false;
       setMusicDiffuse(false);
+      setMusicHardMute(false);
       try {
         const prev = newsAudioRef.current.prevTvMute;
         if (typeof prev === 'boolean') setTvMute(prev);
       } catch (_) {}
     }
-  }, [soundEnabled, loading, duckAmbient, playTvZap, playSound, tvSize, tvMute, tvPower, selectedFeed, globalReveal]);
+  }, [soundEnabled, loading, duckAmbient, playTvZap, playSound, tvSize, tvMute, tvPower, selectedFeed, globalReveal, normalizeTtsText, pickNewsVoice]);
 
   useEffect(() => {
     // Schedule occasional breaking-news voice lines while the stress test runs.
@@ -2794,6 +2903,11 @@ const StressTest = () => {
                 placeholder="e.g., 450000 or 10"
                 disabled={loading}
               />
+              {!loading && !wealthOk && (
+                <div className="bad" style={{ marginTop: 8 }}>
+                  Enter your wallet value above to enable <strong>RUN THE STRESS TEST</strong>.
+                </div>
+              )}
               <div className="wealth-row">
                 <label className="wealth-unit-label">Unit</label>
                 <select
@@ -2982,6 +3096,7 @@ const StressTest = () => {
                   {bitsEnough ? <span className="ok"> • OK</span> : <span className="bad"> • INSUFFICIENT</span>}
                 </div>
                 {!walletAddress && <div className="bad">Connect a wallet to continue.</div>}
+                {walletAddress && !wealthOk && <div className="bad">Enter your wallet value (USD / EUR / ETH) above to start.</div>}
                 {wantsCertificate && walletAddress && !emailOk && <div className="bad">Enter a valid email address.</div>}
                 {wantsCertificate && walletAddress && !nameOk && <div className="bad">Enter your full name.</div>}
                 {wantsCertificate && walletAddress && !emailConsent && <div className="bad">Consent is required to issue the certificate.</div>}
