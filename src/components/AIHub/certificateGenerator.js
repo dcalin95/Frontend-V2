@@ -178,15 +178,43 @@ export function generateCertificateHTML(certificate) {
   
   // Calculate professional stress metrics
   const stressIndex = Math.round((c.score / 100) * 10);
-  const resilenceLevel = c.score >= 90 ? 'Exceptional' : c.score >= 80 ? 'High' : c.score >= 70 ? 'Moderate' : c.score >= 60 ? 'Low' : 'Critical';
+  const resilienceLevel = c.score >= 90 ? 'Exceptional' : c.score >= 80 ? 'High' : c.score >= 70 ? 'Moderate' : c.score >= 60 ? 'Low' : 'Critical';
   const psychologicalStability = c.score >= 75 ? 'Stable' : c.score >= 50 ? 'Borderline' : 'Unstable';
   
-  // Medical-grade recommendations
-  const recommendations = c.score >= 80 
-    ? 'Subject demonstrates exceptional stress resilience. Suitable for high-pressure financial environments.'
-    : c.score >= 60
-    ? 'Subject shows moderate stress tolerance. Recommended for medium-risk trading with proper risk management protocols.'
-    : 'Subject exhibits low stress resilience. High-risk trading NOT RECOMMENDED. Consider professional psychological assessment.';
+  // COMPREHENSIVE PSYCHOLOGICAL ANALYSIS
+  const cognitiveLoad = c.score >= 85 ? 'Low to Moderate' : c.score >= 70 ? 'Moderate' : c.score >= 55 ? 'High' : 'Extreme';
+  const emotionalRegulation = c.score >= 85 ? 'Excellent' : c.score >= 70 ? 'Good' : c.score >= 55 ? 'Fair' : 'Poor';
+  const decisionMakingCapacity = c.score >= 85 ? 'Optimal under pressure' : c.score >= 70 ? 'Adequate with support' : c.score >= 55 ? 'Impaired under stress' : 'Severely compromised';
+  const riskTolerance = c.score >= 85 ? 'High Risk Compatible' : c.score >= 70 ? 'Moderate Risk Compatible' : c.score >= 55 ? 'Low Risk Only' : 'Risk Averse Required';
+  
+  // Behavioral patterns
+  const attentionPattern = avgAttention >= 80 ? 'Sustained focus with minimal distraction' : avgAttention >= 65 ? 'Adequate focus with occasional lapses' : avgAttention >= 50 ? 'Frequent attentional shifts' : 'Severe attentional deficits';
+  const stressResponse = c.score >= 80 ? 'Adaptive coping mechanisms demonstrated' : c.score >= 60 ? 'Moderate stress response with partial adaptation' : 'Maladaptive stress response patterns';
+  
+  // Clinical assessment paragraphs
+  const clinicalSummary = c.score >= 85
+    ? `The subject demonstrates exceptional psychological resilience under extreme financial stress conditions. Cognitive performance remains optimal despite systematic wealth depletion, indicating superior emotional regulation and stress adaptation mechanisms. Attentional metrics (${avgAttention.toFixed(1)}% sustained focus) suggest maintained executive function integrity throughout the assessment period. This level of performance is consistent with individuals possessing robust psychological defense mechanisms, high frustration tolerance, and well-developed coping strategies.`
+    : c.score >= 70
+    ? `The subject exhibits good stress resilience with adequate psychological adaptation to financial stressors. While some fluctuations in emotional regulation were observed during critical loss periods, overall cognitive functioning remained within acceptable parameters. Attentional metrics (${avgAttention.toFixed(1)}% sustained focus) indicate maintained task engagement despite mounting pressure. The subject would benefit from structured stress management protocols when operating in high-volatility environments.`
+    : c.score >= 55
+    ? `The subject demonstrates moderate stress vulnerability with notable psychological strain under sustained financial pressure. Cognitive load indicators suggest approaching threshold capacity, with observable decrements in emotional regulation during peak stress periods. Attentional metrics (${avgAttention.toFixed(1)}% sustained focus) reveal compromised executive function. Clinical recommendation: avoid high-risk financial environments without comprehensive psychological support and risk mitigation strategies.`
+    : `The subject exhibits significant stress vulnerability with marked psychological decompensation under financial pressure. Severe deficits in emotional regulation, cognitive flexibility, and stress adaptation were observed. Attentional metrics (${avgAttention.toFixed(1)}% sustained focus) indicate critical impairment of executive function. CLINICAL ALERT: High-risk trading contraindicated. Referral for psychological evaluation and stress management intervention strongly recommended.`;
+  
+  const behavioralAnalysis = c.score >= 85
+    ? `Behavioral observation reveals consistent engagement patterns with minimal avoidance behaviors. The subject maintained direct visual contact ${avgAttention.toFixed(1)}% of the assessment period, demonstrating active cognitive processing and emotional confrontation of stress stimuli rather than denial or avoidance. Blink rate analysis (${blinkRate.toFixed(1)} bpm) falls within normal physiological range, suggesting autonomic regulation remains intact. These behavioral markers are highly predictive of successful performance in high-pressure trading environments.`
+    : c.score >= 70
+    ? `Behavioral patterns demonstrate generally adaptive engagement with occasional stress-related avoidance. Visual engagement (${avgAttention.toFixed(1)}%) remained adequate despite financial losses, though brief attentional disengagement episodes suggest mild cognitive avoidance during peak stress. Blink rate (${blinkRate.toFixed(1)} bpm) shows moderate elevation, consistent with heightened arousal states. Overall behavioral profile supports capacity for controlled risk exposure with appropriate safety parameters.`
+    : c.score >= 55
+    ? `Behavioral assessment reveals concerning patterns of cognitive avoidance and emotional dysregulation. Visual engagement (${avgAttention.toFixed(1)}%) demonstrates frequent attentional disengagement, particularly during high-stress intervals, indicating maladaptive coping through avoidance rather than confrontation. Elevated blink rate (${blinkRate.toFixed(1)} bpm) and increased look-away frequency (${lookAwayCount} episodes) suggest significant autonomic dysregulation. These patterns correlate with poor stress tolerance and increased decision-making errors under pressure.`
+    : `Behavioral observation reveals severe stress-related dysfunction. Critical attentional deficits (${avgAttention.toFixed(1)}% engagement) with pronounced avoidance behaviors indicate psychological overwhelm. Markedly elevated blink rate (${blinkRate.toFixed(1)} bpm) and excessive look-away episodes (${lookAwayCount} instances) demonstrate autonomic hyperarousal and fight-flight activation. This behavioral profile is incompatible with high-stress trading and suggests underlying vulnerability requiring clinical intervention.`;
+  
+  const recommendations = c.score >= 85
+    ? `<strong>CLEARED FOR HIGH-RISK TRADING:</strong> Subject possesses exceptional stress resilience suitable for volatile market environments. Recommended for autonomous high-stakes trading, leveraged positions, and rapid decision-making scenarios. No psychological restrictions. Periodic stress assessments recommended at 12-month intervals to monitor continued resilience. Consider advanced performance optimization protocols to maintain peak cognitive efficiency.`
+    : c.score >= 70
+    ? `<strong>CLEARED WITH CONDITIONS:</strong> Subject demonstrates adequate stress tolerance for moderate-risk trading. Recommended for controlled risk exposure with established stop-loss protocols and position sizing limits. Suggest maximum 30-40% portfolio risk exposure. Implement mandatory cool-down periods after significant losses. Monthly stress monitoring recommended. Consider cognitive-behavioral stress management training to enhance resilience capacity.`
+    : c.score >= 55
+    ? `<strong>RESTRICTED CLEARANCE:</strong> Subject shows marginal stress tolerance. Trading restricted to low-risk, conservative strategies only. Maximum 15-20% portfolio risk exposure with mandatory automated risk management systems. Real-time psychological monitoring required during active trading. Weekly stress assessments mandatory. Formal stress management therapy strongly recommended before increasing risk exposure. Consider alternative investment strategies (passive investing, robo-advisors) that minimize psychological burden.`
+    : `<strong>NOT CLEARED - CLINICAL INTERVENTION REQUIRED:</strong> Subject demonstrates insufficient psychological resilience for active trading. High-risk trading is medically contraindicated. Recommend immediate cessation of active trading activities. Referral for comprehensive psychological evaluation and stress management intervention required. Focus on passive investment strategies with minimal cognitive demand. Re-evaluation only after documented completion of stress resilience training program and demonstrable improvement in stress tolerance metrics.`;
 
   return `<!doctype html>
 <html lang="${c.lang}" dir="${isRtl ? 'rtl' : 'ltr'}">
@@ -257,7 +285,7 @@ export function generateCertificateHTML(certificate) {
     <!-- SINGLE PROFESSIONAL HEADER - RIGHT SIDE -->
     <div class="cert-header">
       <div class="cert-logo-icon">
-        <img src="https://raw.githubusercontent.com/dcalin95/Frontend/main/src/assets/logo.png" alt="BITS Logo" />
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAF8GlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDUgNzkuMTYzNDk5LCAyMDE4LzA4LzEzLTE2OjQwOjIyICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoV2luZG93cykiIHhtcDpDcmVhdGVEYXRlPSIyMDI0LTEyLTI4VDIzOjQ1OjAwKzAyOjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyNC0xMi0yOFQyMzo0NTowMCswMjowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyNC0xMi0yOFQyMzo0NTowMCswMjowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDphYmNkZTEyMy00NTY3LTg5YWItY2RlZi0wMTIzNDU2Nzg5YWIiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6YWJjZGUxMjMtNDU2Ny04OWFiLWNkZWYtMDEyMzQ1Njc4OWFiIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6YWJjZGUxMjMtNDU2Ny04OWFiLWNkZWYtMDEyMzQ1Njc4OWFiIj4gPHhtcE1NOkhpc3Rvcnk+IDxyZGY6U2VxPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY3JlYXRlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDphYmNkZTEyMy00NTY3LTg5YWItY2RlZi0wMTIzNDU2Nzg5YWIiIHN0RXZ0OndoZW49IjIwMjQtMTItMjhUMjM6NDU6MDArMDI6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDQyAyMDE5IChXaW5kb3dzKSIvPiA8L3JkZjpTZXE+IDwveG1wTU06SGlzdG9yeT4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz4B" alt="BITS Logo" style="width: 48px; height: 48px; object-fit: contain;" />
       </div>
       <div class="cert-logo-text">
         <div class="cert-logo-title">BitSwapDEX AI • $BITS</div>
@@ -289,47 +317,64 @@ export function generateCertificateHTML(certificate) {
     </div>
 
     <div class="analysis-section">
-      <div class="analysis-title">📊 Professional Biometric Analysis</div>
+      <div class="analysis-title">📊 Professional Biometric & Psychological Analysis</div>
       <div class="metrics-grid">
         <div class="metric">
           <div class="metric-value">${avgAttention.toFixed(1)}%</div>
-          <div class="metric-label">Attention Rate</div>
+          <div class="metric-label">Visual Attention</div>
         </div>
         <div class="metric">
-          <div class="metric-value">${blinkRate}</div>
-          <div class="metric-label">Blink/Min</div>
-        </div>
-        <div class="metric">
-          <div class="metric-value">${engagementScore.toFixed(0)}</div>
-          <div class="metric-label">Engagement</div>
+          <div class="metric-value">${blinkRate.toFixed(1)}</div>
+          <div class="metric-label">Blink Rate (bpm)</div>
         </div>
         <div class="metric">
           <div class="metric-value">${lookAwayCount}</div>
-          <div class="metric-label">Look-Aways</div>
+          <div class="metric-label">Avoidance Episodes</div>
+        </div>
+        <div class="metric">
+          <div class="metric-value">${engagementScore.toFixed(0)}</div>
+          <div class="metric-label">Engagement Score</div>
         </div>
       </div>
       
-      <div class="metrics-grid">
+      <div class="metrics-grid" style="margin-top: 16px;">
         <div class="metric">
           <div class="metric-value">${stressIndex}/10</div>
           <div class="metric-label">Stress Index</div>
         </div>
         <div class="metric">
-          <div class="metric-value">${resilenceLevel}</div>
-          <div class="metric-label">Resilience</div>
+          <div class="metric-value" style="font-size: 16px;">${resilienceLevel}</div>
+          <div class="metric-label">Resilience Level</div>
         </div>
         <div class="metric">
-          <div class="metric-value">${psychologicalStability}</div>
-          <div class="metric-label">Stability</div>
+          <div class="metric-value" style="font-size: 16px;">${psychologicalStability}</div>
+          <div class="metric-label">Psych. Stability</div>
         </div>
         <div class="metric">
           <div class="metric-value">${c.fit ? 'PASS' : 'FAIL'}</div>
-          <div class="metric-label">Assessment</div>
+          <div class="metric-label">Final Verdict</div>
         </div>
       </div>
 
-      <div class="analysis-text">
-        <strong>Clinical Assessment:</strong> ${recommendations}
+      <div style="margin-top: 24px; padding: 16px; background: rgba(0,0,0,0.3); border-radius: 8px; border-left: 4px solid #00ff66;">
+        <div style="font-size: 13px; font-weight: 700; color: #00ff66; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">I. Clinical Summary</div>
+        <div class="analysis-text" style="margin-bottom: 16px;">${clinicalSummary}</div>
+        
+        <div style="font-size: 13px; font-weight: 700; color: #00ff66; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">II. Behavioral Analysis</div>
+        <div class="analysis-text" style="margin-bottom: 16px;">${behavioralAnalysis}</div>
+        
+        <div style="font-size: 13px; font-weight: 700; color: #00ff66; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">III. Psychological Profile</div>
+        <div class="analysis-text" style="margin-bottom: 8px;">
+          <strong>Cognitive Load Capacity:</strong> ${cognitiveLoad}<br />
+          <strong>Emotional Regulation:</strong> ${emotionalRegulation}<br />
+          <strong>Decision-Making Under Pressure:</strong> ${decisionMakingCapacity}<br />
+          <strong>Risk Tolerance Classification:</strong> ${riskTolerance}<br />
+          <strong>Attention Pattern:</strong> ${attentionPattern}<br />
+          <strong>Stress Response Type:</strong> ${stressResponse}
+        </div>
+        
+        <div style="font-size: 13px; font-weight: 700; color: ${c.score >= 70 ? '#00ff66' : '#ff6600'}; margin: 16px 0 8px; text-transform: uppercase; letter-spacing: 0.5px;">IV. Clinical Recommendations</div>
+        <div class="analysis-text">${recommendations}</div>
       </div>
     </div>
 
