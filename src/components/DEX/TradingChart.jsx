@@ -26,6 +26,7 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
   const widgetRef = useRef(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [containerId] = useState(() => `tradingview_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
 
   // Get TradingView symbol for the current token
   const tradingViewSymbol = TRADINGVIEW_SYMBOL_MAP[fromToken] || 'BINANCE:BTCUSDT';
@@ -33,112 +34,145 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Clear any existing widget
-    if (widgetRef.current) {
-      containerRef.current.innerHTML = '';
-    }
-
-    // Create TradingView widget script
-    const script = document.createElement('script');
-    script.src = 'https://s3.tradingview.com/tv.js';
-    script.async = true;
-    script.onload = () => {
-      if (window.TradingView) {
+    // Cleanup function to properly destroy widget
+    const destroyWidget = () => {
+      if (widgetRef.current) {
         try {
-          widgetRef.current = new window.TradingView.widget({
-            autosize: true,
-            symbol: tradingViewSymbol,
-            interval: '15',
-            timezone: 'Etc/UTC',
-            theme: 'dark',
-            style: '1',
-            locale: 'en',
-            toolbar_bg: '#0a0a0e',
-            enable_publishing: false,
-            hide_top_toolbar: false,
-            hide_legend: false,
-            save_image: true,
-            container_id: containerRef.current.id,
-            // Advanced features
-            studies: [
-              'Volume@tv-basicstudies',
-              'MASimple@tv-basicstudies'
-            ],
-            // UI customization
-            backgroundColor: '#0a0a0e',
-            gridColor: 'rgba(139, 155, 180, 0.06)',
-            hide_side_toolbar: false,
-            allow_symbol_change: true,
-            watchlist: [
-              'BINANCE:BTCUSDT',
-              'BINANCE:ETHUSDT',
-              'BINANCE:BNBUSDT',
-              'BINANCE:SOLUSDT',
-              'BINANCE:STXUSDT'
-            ],
-            details: true,
-            hotlist: true,
-            calendar: false,
-            // Chart settings
-            studies_overrides: {},
-            overrides: {
-              'mainSeriesProperties.candleStyle.upColor': '#00FFA3',
-              'mainSeriesProperties.candleStyle.downColor': '#E6444D',
-              'mainSeriesProperties.candleStyle.drawWick': true,
-              'mainSeriesProperties.candleStyle.drawBorder': true,
-              'mainSeriesProperties.candleStyle.borderColor': '#378658',
-              'mainSeriesProperties.candleStyle.borderUpColor': '#00FFA3',
-              'mainSeriesProperties.candleStyle.borderDownColor': '#E6444D',
-              'mainSeriesProperties.candleStyle.wickUpColor': '#00FFA3',
-              'mainSeriesProperties.candleStyle.wickDownColor': '#E6444D',
-              'paneProperties.background': '#0a0a0e',
-              'paneProperties.backgroundType': 'solid',
-              'paneProperties.vertGridProperties.color': 'rgba(139, 155, 180, 0.06)',
-              'paneProperties.horzGridProperties.color': 'rgba(139, 155, 180, 0.06)',
-              'scalesProperties.textColor': '#8b9bb4',
-              'scalesProperties.lineColor': 'rgba(139, 155, 180, 0.2)'
-            },
-            disabled_features: [
-              'use_localstorage_for_settings',
-              'header_symbol_search',
-              'header_screenshot'
-            ],
-            enabled_features: [
-              'study_templates',
-              'side_toolbar_in_fullscreen_mode',
-              'header_in_fullscreen_mode'
-            ],
-            loading_screen: { backgroundColor: '#0a0a0e' },
-            favorites: {
-              intervals: ['1', '5', '15', '60', '240', 'D', 'W'],
-              chartTypes: ['Area', 'Candles', 'Line', 'Bars']
-            }
-          });
-
-          setIsLoading(false);
-          console.log('✅ TradingView widget loaded successfully for:', tradingViewSymbol);
+          if (widgetRef.current.remove) {
+            widgetRef.current.remove();
+          }
+          widgetRef.current = null;
         } catch (error) {
-          console.error('❌ TradingView widget initialization failed:', error);
-          setIsLoading(false);
+          console.warn('Widget cleanup warning:', error);
         }
       }
+      
+      // Clear container completely
+      if (containerRef.current) {
+        containerRef.current.innerHTML = '';
+      }
     };
 
-    script.onerror = () => {
-      console.error('❌ Failed to load TradingView script');
-      setIsLoading(false);
+    // Destroy any existing widget before creating new one
+    destroyWidget();
+
+    // Check if TradingView is already loaded
+    const initWidget = () => {
+      if (!window.TradingView) {
+        console.warn('TradingView not loaded yet');
+        return;
+      }
+
+      try {
+        // Use the unique container ID
+        if (containerRef.current) {
+          containerRef.current.id = containerId;
+        }
+
+        widgetRef.current = new window.TradingView.widget({
+          autosize: true,
+          symbol: tradingViewSymbol,
+          interval: '15',
+          timezone: 'Etc/UTC',
+          theme: 'dark',
+          style: '1',
+          locale: 'en',
+          toolbar_bg: '#0a0a0e',
+          enable_publishing: false,
+          hide_top_toolbar: false,
+          hide_legend: false,
+          save_image: true,
+          container_id: containerId,
+          // Advanced features
+          studies: [
+            'Volume@tv-basicstudies',
+            'MASimple@tv-basicstudies'
+          ],
+          // UI customization
+          backgroundColor: '#0a0a0e',
+          gridColor: 'rgba(139, 155, 180, 0.06)',
+          hide_side_toolbar: false,
+          allow_symbol_change: true,
+          watchlist: [
+            'BINANCE:BTCUSDT',
+            'BINANCE:ETHUSDT',
+            'BINANCE:BNBUSDT',
+            'BINANCE:SOLUSDT',
+            'BINANCE:STXUSDT'
+          ],
+          details: true,
+          hotlist: true,
+          calendar: false,
+          // Chart settings
+          studies_overrides: {},
+          overrides: {
+            'mainSeriesProperties.candleStyle.upColor': '#00FFA3',
+            'mainSeriesProperties.candleStyle.downColor': '#E6444D',
+            'mainSeriesProperties.candleStyle.drawWick': true,
+            'mainSeriesProperties.candleStyle.drawBorder': true,
+            'mainSeriesProperties.candleStyle.borderColor': '#378658',
+            'mainSeriesProperties.candleStyle.borderUpColor': '#00FFA3',
+            'mainSeriesProperties.candleStyle.borderDownColor': '#E6444D',
+            'mainSeriesProperties.candleStyle.wickUpColor': '#00FFA3',
+            'mainSeriesProperties.candleStyle.wickDownColor': '#E6444D',
+            'paneProperties.background': '#0a0a0e',
+            'paneProperties.backgroundType': 'solid',
+            'paneProperties.vertGridProperties.color': 'rgba(139, 155, 180, 0.06)',
+            'paneProperties.horzGridProperties.color': 'rgba(139, 155, 180, 0.06)',
+            'scalesProperties.textColor': '#8b9bb4',
+            'scalesProperties.lineColor': 'rgba(139, 155, 180, 0.2)'
+          },
+          disabled_features: [
+            'use_localstorage_for_settings',
+            'header_symbol_search',
+            'header_screenshot'
+          ],
+          enabled_features: [
+            'study_templates',
+            'side_toolbar_in_fullscreen_mode',
+            'header_in_fullscreen_mode'
+          ],
+          loading_screen: { backgroundColor: '#0a0a0e' },
+          favorites: {
+            intervals: ['1', '5', '15', '60', '240', 'D', 'W'],
+            chartTypes: ['Area', 'Candles', 'Line', 'Bars']
+          }
+        });
+
+        setIsLoading(false);
+        console.log('✅ TradingView widget loaded successfully for:', tradingViewSymbol);
+      } catch (error) {
+        console.error('❌ TradingView widget initialization failed:', error);
+        setIsLoading(false);
+      }
     };
 
-    document.head.appendChild(script);
+    // Load TradingView script if not already loaded
+    if (!window.TradingView) {
+      const script = document.createElement('script');
+      script.src = 'https://s3.tradingview.com/tv.js';
+      script.async = true;
+      script.onload = initWidget;
+      script.onerror = () => {
+        console.error('❌ Failed to load TradingView script');
+        setIsLoading(false);
+      };
+      
+      // Check if script is already in DOM
+      const existingScript = document.querySelector('script[src="https://s3.tradingview.com/tv.js"]');
+      if (!existingScript) {
+        document.head.appendChild(script);
+      } else {
+        initWidget();
+      }
+    } else {
+      // TradingView already loaded, just init widget
+      initWidget();
+    }
 
-    // Cleanup
+    // Cleanup on unmount or symbol change
     return () => {
-      if (widgetRef.current && widgetRef.current.remove) {
-        widgetRef.current.remove();
-      }
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
-      }
+      destroyWidget();
     };
   }, [tradingViewSymbol]);
 
@@ -171,7 +205,7 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
         )}
         
         <div 
-          id="tradingview_widget_container"
+          id={containerId}
           ref={containerRef}
           style={{ 
             width: '100%', 
