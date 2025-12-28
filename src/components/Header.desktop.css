@@ -394,9 +394,9 @@
 .header-mini-timer > div:last-child span,
 .header-mini-timer > a:last-child span {
   font-size: 1rem;
-  font-weight: 700;
-  font-family: 'Orbitron', 'Rajdhani', system-ui, sans-serif;
-  letter-spacing: 0.05em;
+  font-weight: 600; /* Lighter, sharper weight - same as HeaderPrice */
+  font-family: 'Roboto Mono', 'Courier New', monospace; /* Sharp, clear font - same as HeaderPrice */
+  letter-spacing: 0.5px; /* Tighter spacing - same as HeaderPrice */
   padding: 0;
   white-space: nowrap;
   display: inline-block;
