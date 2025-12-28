@@ -314,7 +314,7 @@ const UnifiedWalletModal = () => {
       if (walletName === 'Binance') {
         try {
           if (typeof window === 'undefined' || !window.ethereum) {
-            setError('Binance Web3 Wallet is not detected. Please install the Binance Web3 Wallet extension and refresh the page.');
+            setError(`⚠️ Binance Web3 Wallet not detected.\n\n📱 Mobile: Open this site in Binance App Browser (Web3 tab)\n💻 Desktop: Install Binance Web3 Wallet extension\n\n🔗 Or use "WalletConnect" button to scan QR with Binance App`);
             setIsConnecting(false);
             return;
           }
@@ -330,7 +330,7 @@ const UnifiedWalletModal = () => {
             (typeof window !== 'undefined' ? window.BinanceChain : null);
 
           if (!binanceProvider) {
-            setError('Binance Web3 Wallet provider was not found. Please ensure Binance Web3 Wallet extension is installed, enabled, unlocked, then refresh.');
+            setError(`⚠️ Binance Web3 Wallet provider not found.\n\n📱 MOBILE USERS:\n• Open Binance App → Web3 tab\n• Paste this site URL in browser\n• Try again\n\n💻 DESKTOP USERS:\n• Install Binance Wallet extension\n• Enable it in your browser\n• Unlock wallet & refresh page\n\n🔗 ALTERNATIVE:\n• Use "WalletConnect" button below\n• Scan QR with Binance App`);
             setIsConnecting(false);
             return;
           }
@@ -418,7 +418,9 @@ const UnifiedWalletModal = () => {
             setIsConnecting(false);
             return;
           }
-          setError(`Binance connection failed: ${binanceErr?.message || 'Unknown error'}`);
+          // Enhanced error message with troubleshooting
+          const errorMsg = binanceErr?.message || 'Unknown error';
+          setError(`⚠️ Binance connection failed: ${errorMsg}\n\n🔧 TROUBLESHOOTING:\n\n📱 Mobile:\n• Open Binance App → Web3 tab\n• Use built-in browser\n• Make sure wallet is unlocked\n\n💻 Desktop:\n• Check if Binance Wallet extension is enabled\n• Unlock your wallet\n• Refresh page and try again\n\n🔗 Alternative:\n• Use "WalletConnect" button\n• Scan QR with Binance App`);
           setIsConnecting(false);
           return;
         }
