@@ -271,7 +271,7 @@ export function generateCertificateHTML(certificate) {
       opacity: 0.7;
       pointer-events: none;
     }
-    .cert-header { position: absolute; top: 24px; ${isRtl ? 'left' : 'right'}: 24px; display: flex; align-items: center; gap: 14px; padding: 14px 20px; 
+    .cert-header { position: absolute; top: 24px; ${isRtl ? 'left' : 'right'}: 24px; padding: 14px 20px; 
       background: linear-gradient(135deg, rgba(0,0,0,0.95), rgba(10,10,30,0.92)); 
       border: 1px solid rgba(0,255,102,0.3); 
       border-radius: 12px; 
@@ -279,17 +279,12 @@ export function generateCertificateHTML(certificate) {
       backdrop-filter: blur(8px);
       max-width: 320px;
     }
-    .cert-logo-icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; 
-      flex-shrink: 0; border-radius: 8px; overflow: hidden;
-    }
-    .cert-logo-icon img { width: 100%; height: 100%; object-fit: contain; }
-    .cert-logo-text { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+    .cert-logo-text { display: flex; flex-direction: column; gap: 3px; }
     .cert-logo-title { font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; font-weight: 800; letter-spacing: 0.5px; 
       color: #00ff66;
       line-height: 1.2;
     }
     .cert-logo-url { font-family: 'Courier New', monospace; font-size: 11px; font-weight: 600; color: rgba(0,255,102,0.75); letter-spacing: 0.5px; }
-    .cert-logo-badge { display: none; }
     h1 { margin: 0 0 12px; letter-spacing: 1px; font-size: 28px; padding-top: 60px; }
     .sub { opacity: 0.85; margin-bottom: 18px; font-size: 14px; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
@@ -319,37 +314,12 @@ export function generateCertificateHTML(certificate) {
   <div class="page">
     <div class="watermark"></div>
     
-    <!-- SINGLE PROFESSIONAL HEADER - RIGHT SIDE -->
+    <!-- PROFESSIONAL HEADER - RIGHT SIDE -->
     <div class="cert-header">
-      <div class="cert-logo-icon">
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width: 48px; height: 48px;">
-          <defs>
-            <linearGradient id="bitsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#00ff66;stop-opacity:1" />
-              <stop offset="100%" style="stop-color:#00dd88;stop-opacity:1" />
-            </linearGradient>
-            <filter id="glow">
-              <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-              <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-          </defs>
-          <!-- Outer ring -->
-          <circle cx="50" cy="50" r="42" fill="none" stroke="url(#bitsGrad)" stroke-width="3" opacity="0.4"/>
-          <!-- Letter B -->
-          <path d="M 32 30 L 32 70 L 52 70 Q 65 70 65 57.5 Q 65 50 57 48 Q 65 46 65 37.5 Q 65 30 52 30 Z M 40 38 L 50 38 Q 57 38 57 42.5 Q 57 47 50 47 L 40 47 Z M 40 53 L 52 53 Q 59 53 59 61.5 Q 59 70 52 70 L 40 62 Z" 
-                fill="url(#bitsGrad)" filter="url(#glow)"/>
-          <!-- Three dots representing blockchain/bits -->
-          <circle cx="72" cy="35" r="3.5" fill="url(#bitsGrad)" opacity="0.9"/>
-          <circle cx="72" cy="50" r="3.5" fill="url(#bitsGrad)" opacity="0.9"/>
-          <circle cx="72" cy="65" r="3.5" fill="url(#bitsGrad)" opacity="0.9"/>
-        </svg>
-      </div>
-      <div class="cert-logo-text">
+      <div class="cert-logo-text" style="text-align: right;">
         <div class="cert-logo-title">BitSwapDEX AI • $BITS</div>
         <div class="cert-logo-url">bits-ai.io</div>
+        <div style="font-size: 10px; color: rgba(0,255,102,0.7); margin-top: 4px; letter-spacing: 0.5px;">Quantum Stress Lab</div>
       </div>
     </div>
     
