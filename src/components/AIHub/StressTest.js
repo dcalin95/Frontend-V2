@@ -1890,7 +1890,6 @@ const StressTest = () => {
     
     // Reset simulation state
     setSimStage(0);
-    setElapsedTime(0);
     setCurrentBalance(portfolioUsd);
     setGlobalReveal(false);
     setLogs([]);
