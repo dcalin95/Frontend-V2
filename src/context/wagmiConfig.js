@@ -40,6 +40,7 @@ export const config = defaultWagmiConfig({
   chains,
   projectId,
   metadata,
+  defaultChain: bsc, // ✅ Force BSC as default (prevents WC from opening on Ethereum)
   enableCoinbase: true,
   enableEmail: true,
   enableEIP6963: true, // Detects multiple injected wallets (MetaMask, Trust, Phantom, etc.)

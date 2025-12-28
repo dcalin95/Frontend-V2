@@ -403,6 +403,75 @@ const HeaderWalletInfo = () => {
                 </span>
               </div>
               
+              {/* 🚨 WRONG NETWORK WARNING - Show if not on BSC */}
+              {chainId && chainId !== 56 && walletType !== "SOLANA" && (
+                <div style={{
+                  padding: '10px',
+                  background: 'linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(255, 48, 48, 0.15) 100%)',
+                  border: '1px solid rgba(255, 107, 107, 0.3)',
+                  borderRadius: '8px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                  alignItems: 'center'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ fontSize: '0.8rem', fontWeight: '600', color: '#ff6b6b' }}>
+                      ⚠️ Wrong Network
+                    </span>
+                  </div>
+                  <span style={{ fontSize: '0.7rem', color: 'rgba(255, 255, 255, 0.7)', textAlign: 'center' }}>
+                    You're on {chainId === 1 ? 'Ethereum' : `Chain ${chainId}`}
+                  </span>
+                  <button
+                    onClick={async () => {
+                      try {
+                        await window.ethereum.request({
+                          method: 'wallet_switchEthereumChain',
+                          params: [{ chainId: '0x38' }], // 56 in hex
+                        });
+                      } catch (switchError) {
+                        if (switchError.code === 4902) {
+                          try {
+                            await window.ethereum.request({
+                              method: 'wallet_addEthereumChain',
+                              params: [{
+                                chainId: '0x38',
+                                chainName: 'BNB Smart Chain',
+                                nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
+                                rpcUrls: ['https://bsc-dataseed.binance.org/'],
+                                blockExplorerUrls: ['https://bscscan.com/']
+                              }]
+                            });
+                          } catch (addError) {
+                            console.error('Failed to add BSC:', addError);
+                          }
+                        }
+                        console.error('Failed to switch to BSC:', switchError);
+                      }
+                    }}
+                    style={{
+                      padding: '6px 12px',
+                      background: 'linear-gradient(135deg, #F0B90B 0%, #FFA000 100%)',
+                      border: 'none',
+                      borderRadius: '6px',
+                      color: '#000',
+                      fontWeight: '700',
+                      fontSize: '0.75rem',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      transition: 'transform 0.2s'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                  >
+                    🔄 Switch to BSC
+                  </button>
+                </div>
+              )}
+              
               <div className="wallet-quick-actions">
                 <button 
                   className="wallet-action-btn history-btn" 

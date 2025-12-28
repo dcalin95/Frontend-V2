@@ -723,15 +723,25 @@ const AdminPanel = () => {
       return;
     }
 
+    const duration = prompt("⏱️ Enter round duration in days (14-30):", "30");
+    if (!duration || isNaN(duration) || parseInt(duration) < 14 || parseInt(duration) > 30) {
+      toast.error("❌ Duration must be between 14 and 30 days");
+      return;
+    }
+
     try {
+      const now = Math.floor(Date.now() / 1000); // Current timestamp in seconds
+      
       await axios.post(`${API_URL}/api/presale/start-round`, {
         password: ADMIN_PASS,
-        round: cellManagerData.roundNumber,
-        price: Math.round(cellManagerData.currentPrice * 100),
-        tokensAvailable: parseInt(newSupply)
+        roundNumber: cellManagerData.roundNumber,
+        price: cellManagerData.currentPrice, // Already in USD
+        totalSupply: parseInt(newSupply),
+        duration: parseInt(duration),
+        startTime: now
       });
 
-      toast.success(`🎉 Round ${cellManagerData.roundNumber} started successfully!`);
+      toast.success(`🎉 Round ${cellManagerData.roundNumber} started with ${duration} days duration!`);
       setShowRoundEndStats(false);
       setRoundEndData(null);
       fetchPresaleState();

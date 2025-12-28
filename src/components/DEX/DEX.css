@@ -688,16 +688,7 @@ body.chart-fullscreen-active .dex-page-container {
 
 /* Desktop Wallet Header */
 .dex-desktop-wallet-header {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 12px 20px;
-  border-bottom: 1px solid rgba(139, 155, 180, 0.1);
-  background: rgba(10, 10, 20, 0.4);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
+  display: none !important;  /* ✅ HIDDEN - wallet info in chart header */
 }
 
 .dex-wallet-connect-btn {

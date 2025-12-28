@@ -7,7 +7,7 @@ import { formatEther } from "viem";
 import { providers } from "ethers";
 import BitsABI from '../abi/BitsABI.js';
 import { CONTRACT_MAP } from '../contract/contractMap';
-import { logDetectedWallets } from '../utils/walletFilter';
+import { logDetectedWallets, detectAllInjectedWallets } from '../utils/walletFilter';
 
 // 🔑 Wallet Types Constants
 export const WALLET_TYPES = {
@@ -372,9 +372,20 @@ const InnerWalletProvider = ({ children }) => {
         console.log('🔍 [WalletContext] isTrust:', window.ethereum.isTrust);
         console.log('🔍 [WalletContext] isPhantom:', window.ethereum.isPhantom);
         
-        // 🦊 IF MULTIPLE PROVIDERS, PRIORITIZE METAMASK
-        if (window.ethereum.providers && Array.isArray(window.ethereum.providers)) {
-          console.log('🔍 [WalletContext] Multiple providers detected:', window.ethereum.providers.length);
+        // 🛡️ HARD PRIORITY: pick a real EVM provider, never Phantom
+        const detected = detectAllInjectedWallets();
+        const evmList = detected.evm || [];
+        const preferred =
+          evmList.find(w => w.name?.toLowerCase().includes('metamask')) ||
+          evmList.find(w => w.name?.toLowerCase().includes('trust')) ||
+          evmList.find(w => w.name?.toLowerCase().includes('coinbase')) ||
+          evmList[0];
+
+        if (preferred?.provider) {
+          console.log('✅ [WalletContext] Setting preferred EVM provider:', preferred.name);
+          window.ethereum = preferred.provider;
+        } else if (window.ethereum.providers && Array.isArray(window.ethereum.providers)) {
+          console.log('🔍 [WalletContext] Multiple providers detected (fallback path):', window.ethereum.providers.length);
           
           const metamaskProvider = window.ethereum.providers.find(p => p.isMetaMask && !p.isPhantom);
           const trustProvider = window.ethereum.providers.find(p => p.isTrust);
@@ -395,6 +406,8 @@ const InnerWalletProvider = ({ children }) => {
             console.log('✅ [WalletContext] Setting Coinbase as primary provider');
             window.ethereum = coinbaseProvider;
           }
+        } else if (window.ethereum.isPhantom && !window.ethereum.isMetaMask) {
+          console.warn('🛑 [WalletContext] window.ethereum is Phantom (EVM hijack). Please open MetaMask extension first.');
         }
       }
       

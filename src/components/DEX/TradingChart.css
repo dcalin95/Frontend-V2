@@ -4,8 +4,8 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 .dex-chart-wrapper {
-  background: rgba(22, 26, 30, 0.6);
-  backdrop-filter: blur(12px);
+  background: transparent;  /* ✅ TRANSPARENT - no gray area */
+  backdrop-filter: none;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   display: flex; 
@@ -14,7 +14,19 @@
   min-height: 400px;
   overflow: hidden;
   position: relative;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: none;  /* ✅ No shadow */
+  margin: 0;  /* ✅ No margin */
+  padding: 0; /* ✅ No padding */
+}
+
+/* 🎯 Chart component - remove dead space */
+.dex-chart {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;  /* ✅ For absolute positioned header */
 }
 
 .dex-chart-fullscreen { 
@@ -56,6 +68,177 @@ body.chart-fullscreen-active .dex-chart-fullscreen {
 /* ═══════════════════════════════════════════════════════════════════
    CHART HEADER
    ═══════════════════════════════════════════════════════════════════ */
+
+/* Main Chart Header (from TradingChart.jsx) */
+.dex-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, rgba(12, 15, 22, 0.98) 0%, rgba(18, 22, 30, 0.98) 100%);
+  border-bottom: 1px solid rgba(0, 255, 163, 0.28);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.32);
+  margin: 0;
+  gap: 16px;
+  position: relative;
+  z-index: 10;
+  min-height: 46px;
+}
+
+/* Make buttons clickable */
+.dex-chart-header > * {
+  pointer-events: auto;
+}
+
+/* Left section with title and timeframes */
+.dex-chart-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Roboto Mono', 'Courier New', monospace;
+  font-size: 0.9rem;  /* ✅ Smaller to fit on one line */
+  font-weight: 600;
+  flex-shrink: 0;  /* ✅ Don't shrink */
+}
+
+/* Right section with wallet and actions */
+.dex-chart-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* Wallet Balance Pills in Chart Header */
+.chart-wallet-balance-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: rgba(0, 255, 163, 0.12);
+  border: 1px solid rgba(0, 255, 163, 0.32);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-family: 'Roboto Mono', 'Courier New', monospace;
+  white-space: nowrap;
+  color: #b5ffdf;
+  box-shadow: 0 2px 8px rgba(0, 255, 163, 0.12);
+}
+
+/* Wallet Address Chip in Chart Header */
+.chart-wallet-address-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: rgba(139, 155, 180, 0.12);
+  border: 1px solid rgba(139, 155, 180, 0.32);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-family: 'Roboto Mono', 'Courier New', monospace;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+}
+
+.wallet-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 26px;
+  padding: 4px 6px;
+  background: rgba(0, 255, 163, 0.16);
+  border: 1px solid rgba(0, 255, 163, 0.35);
+  border-radius: 6px;
+  font-size: 0.7rem;
+  color: #b5ffdf;
+  box-shadow: inset 0 0 0 1px rgba(0,255,163,0.08);
+}
+
+/* Wallet Connect Button in Chart Header */
+.chart-wallet-connect-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 255, 163, 0.3);
+}
+
+.dex-chart-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Roboto Mono', 'Courier New', monospace;
+  font-size: 0.9rem;  /* ✅ Smaller to fit on one line */
+  font-weight: 600;
+  flex-shrink: 0;  /* ✅ Don't shrink */
+}
+
+.dex-chart-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;  /* ✅ Don't shrink */
+}
+
+.chart-action-btn {
+  padding: 7px 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  font-family: 'Roboto Mono', 'Courier New', monospace;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.chart-action-btn.warning {
+  background: rgba(255, 193, 7, 0.16);
+  border: 1px solid rgba(255, 193, 7, 0.35);
+  color: #ffc107;
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.18);
+}
+
+.network-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: rgba(0, 255, 163, 0.12);
+  border: 1px solid rgba(0, 255, 163, 0.32);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  color: #b5ffdf;
+  box-shadow: 0 2px 8px rgba(0, 255, 163, 0.12);
+}
+
+.network-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ffc107;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.network-dot.green {
+  background: #00ffa3;
+}
+
+.chart-action-btn:hover {
+  background: rgba(0, 255, 163, 0.15);
+  border-color: #00FFA3;
+  color: #00FFA3;
+}
+
+.text-highlight {
+  color: #00FFA3;
+}
+
+/* Chart Header Modern (legacy) */
 .dex-chart-header-modern {
   display: flex; 
   justify-content: space-between; 
@@ -217,10 +400,14 @@ body.chart-fullscreen-active .dex-chart-fullscreen {
    CHART BODY
    ═══════════════════════════════════════════════════════════════════ */
 .dex-chart-body { 
-  flex: 1; 
-  position: relative; 
-  width: 100%; 
-  overflow: hidden; 
+  flex: 1 !important; 
+  position: relative !important; 
+  width: 100% !important; 
+  overflow: hidden !important;
+  margin: 0 !important;  /* ✅ Force no margin */
+  margin-top: 0 !important;  /* ✅ No negative margin needed */
+  padding: 0 !important; /* ✅ Force no padding */
+  box-sizing: border-box !important;
 }
 
 .dex-chart-fullscreen .dex-chart-body {

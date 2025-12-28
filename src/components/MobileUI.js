@@ -32,12 +32,20 @@ const MobileUI = ({ children }) => {
     const updateClasses = () => {
       const mobile = window.matchMedia('(max-width: 768px)').matches;
       
+      console.log('🔍 [MobileUI] Detecting device:', { 
+        mobile, 
+        width: window.innerWidth, 
+        height: window.innerHeight 
+      });
+      
       if (mobile) {
         document.body.classList.add('mode-mobile');
         document.body.classList.remove('mode-desktop');
+        console.log('✅ [MobileUI] Applied mode-mobile class');
       } else {
         document.body.classList.add('mode-desktop');
         document.body.classList.remove('mode-mobile');
+        console.log('✅ [MobileUI] Applied mode-desktop class');
       }
 
       // Landscape ONLY when: width > height AND height is very small AND mobile width
@@ -75,15 +83,24 @@ const MobileUI = ({ children }) => {
       const isMobileWidth = window.innerWidth < 900;
       const landscape = isLandscapeOrientation && isSmallHeight && isMobileWidth;
       
+      console.log('🔍 [MobileUI] Resize detected:', { 
+        mobile, 
+        landscape,
+        width: window.innerWidth, 
+        height: window.innerHeight 
+      });
+      
       setIsMobile(mobile);
       setIsLandscape(landscape);
 
       if (mobile) {
         document.body.classList.add('mode-mobile');
         document.body.classList.remove('mode-desktop');
+        console.log('✅ [MobileUI] Switched to mobile mode');
       } else {
         document.body.classList.add('mode-desktop');
         document.body.classList.remove('mode-mobile');
+        console.log('✅ [MobileUI] Switched to desktop mode');
       }
 
       if (landscape) {
