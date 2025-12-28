@@ -22,11 +22,10 @@ import { useDeviceDetect } from '../../hooks/useDeviceDetect'; // Import device 
 
 // DEMO Tokens (Simulation mode - current behavior)
 const tokensDemo = [
-  { id: 'BTC', name: 'Bitcoin', symbol: 'BTC', icon: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png' },
+  { id: 'BTCB', name: 'Bitcoin', symbol: 'BTC', icon: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png' }, // align id with real token map
   { id: 'BNB', name: 'Binance Coin', symbol: 'BNB', icon: 'https://cryptologos.cc/logos/bnb-bnb-logo.png' },
   { id: 'ETH', name: 'Ethereum', symbol: 'ETH', icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png' },
   { id: 'USDT', name: 'Tether USD', symbol: 'USDT', icon: usdtLogo },
-  { id: 'STX', name: 'Stacks', symbol: 'STX', icon: 'https://cryptologos.cc/logos/stacks-stx-logo.png' },
   { id: 'BITS', name: 'BitSwap Token', symbol: 'BITS', icon: bitsLogo },
 ];
 
@@ -36,7 +35,7 @@ const tokensReal = [
     id: 'BNB',
     name: 'Binance Coin',
     symbol: 'BNB',
-    address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+    address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE', // Native token placeholder
     decimals: 18,
     isNative: true,
     icon: 'https://cryptologos.cc/logos/bnb-bnb-logo.png',
@@ -45,7 +44,7 @@ const tokensReal = [
     id: 'BTCB',
     name: 'Bitcoin (BTCB)',
     symbol: 'BTC',
-    address: '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c',
+    address: '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c', // ✅ Verified BTCB on BSC
     decimals: 18,
     isNative: false,
     icon: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png',
@@ -54,34 +53,25 @@ const tokensReal = [
     id: 'ETH',
     name: 'Ethereum (Binance-Peg)',
     symbol: 'ETH',
-    address: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8',
+    address: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8', // ✅ Verified ETH on BSC
     decimals: 18,
     isNative: false,
     icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png',
   },
   {
     id: 'USDT',
-    name: 'Tether USD',
+    name: 'Tether USD (BSC-USD)',
     symbol: 'USDT',
-    address: '0x55d398326f99059fF775485246999027B3197955',
+    address: '0x55d398326f99059fF775485246999027B3197955', // ✅ Verified USDT on BSC
     decimals: 18,
     isNative: false,
     icon: usdtLogo,
   },
   {
-    id: 'STX',
-    name: 'Stacks (Wrapped)',
-    symbol: 'STX',
-    address: '0xca0a9Df6a8cAD800046C1DDc5755810718b65C44', // Wrapped STX on BSC (if available)
-    decimals: 18,
-    isNative: false,
-    icon: 'https://cryptologos.cc/logos/stacks-stx-logo.png',
-  },
-  {
     id: 'BITS',
     name: 'BitSwap Token',
     symbol: 'BITS',
-    address: '0x957B858cc0684c8a91ec3C7f8A9E3DA2Df9F3bC6', // BITS BSC address
+    address: '0xCE056ee6ED7Ae0944f10BAfc5E7f5d160c8641fe', // ✅ Your BITS contract on BSC
     decimals: 18,
     isNative: false,
     icon: bitsLogo,
@@ -89,11 +79,10 @@ const tokensReal = [
 ];
 
 const MOCK_BALANCES = {
-  BTC: '2.45',
+  BTCB: '2.45',
   BNB: '15.50',
   ETH: '8.25',
   USDT: '25000.00',
-  STX: '1250.00',
   BITS: '5000.00'
 };
 
@@ -105,7 +94,17 @@ const SwapPage = () => {
   const [isLoading, setIsLoading] = useState(true); // Loading State
   
   // Wallet Context
-  const { walletAddress, bitsBalance, ethBalance, nativeSymbol, connectWallet, disconnectWallet } = useContext(WalletContext);
+  const { 
+    walletAddress, 
+    bitsBalance, 
+    ethBalance, 
+    nativeSymbol, 
+    connectWallet, 
+    disconnectWallet,
+    connector,
+    chainId,
+    switchNetwork
+  } = useContext(WalletContext);
   
   // Account Mode: DEMO (simulator) vs REAL (on-chain BSC)
   const [accountMode, setAccountMode] = useState('DEMO'); // 'DEMO' | 'REAL'
@@ -178,11 +177,16 @@ const SwapPage = () => {
     }
 
     try {
-      // ethers v5 API
+      // Verify we're on BSC (Chain ID 56)
       const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const network = await provider.getNetwork();
+      
+      if (network.chainId !== 56) {
+        console.warn('⚠️ Not on BSC! Chain ID:', network.chainId, '| Expected: 56');
+      }
+      
       const balances = await fetchTokenBalances(provider, walletAddress, tokensReal);
       setRealBalances(balances);
-      console.log('✅ Balances refreshed:', balances);
     } catch (error) {
       console.error('❌ Failed to fetch real balances:', error);
     }
@@ -223,6 +227,9 @@ const SwapPage = () => {
   };
 
   const renderMainContent = () => {
+    // Prepare balances for SwapPanel
+    const balancesToPass = accountMode === 'DEMO' ? MOCK_BALANCES : realBalances;
+    
     switch (activeTab) {
       case 'swap':
         return (
@@ -233,7 +240,7 @@ const SwapPage = () => {
                   accountMode={accountMode}
                   setAccountMode={setAccountMode}
                   tokens={tokens}
-                  balances={accountMode === 'DEMO' ? MOCK_BALANCES : realBalances}
+                  balances={balancesToPass}
                   payToken={payToken}
                   setPayToken={setPayToken}
                   receiveToken={receiveToken}
@@ -244,7 +251,19 @@ const SwapPage = () => {
               </section>
 
               <section className="dex-chart-section stagger-fade-in stagger-3">
-                <TradingChart fromToken={payToken.symbol} toToken={receiveToken.symbol} />
+                <TradingChart 
+                  fromToken={payToken.symbol} 
+                  toToken={receiveToken.symbol}
+                  walletAddress={walletAddress}
+                  bitsBalance={bitsBalance}
+                  ethBalance={ethBalance}
+                  nativeSymbol={nativeSymbol}
+                  connectorName={connector?.name || ''}
+                  chainId={chainId}
+                  onConnectWallet={connectWallet}
+                  onDisconnectWallet={disconnectWallet}
+                  onSwitchNetwork={switchNetwork}
+                />
               </section>
             </div>
 
@@ -280,7 +299,32 @@ const SwapPage = () => {
 
   // Mobile View - Prioritize Mobile Component
   if (isMobile) {
-      return <SwapPageMobile />;
+      return (
+        <SwapPageMobile 
+          accountMode={accountMode}
+          setAccountMode={setAccountMode}
+          walletAddress={walletAddress}
+          balance={balance}
+          positions={positions}
+          tokens={tokens}
+          balances={balancesToPass}
+          payToken={payToken}
+          setPayToken={setPayToken}
+          receiveToken={receiveToken}
+          setReceiveToken={setReceiveToken}
+          onSwap={handleSwapExecution}
+          onClosePosition={handleClosePosition}
+          onBalanceRefresh={loadRealBalances}
+          bitsBalance={bitsBalance}
+          ethBalance={ethBalance}
+          nativeSymbol={nativeSymbol}
+          connectorName={connector?.name || ''}
+          chainId={chainId}
+          onConnectWallet={connectWallet}
+          onDisconnectWallet={disconnectWallet}
+          onSwitchNetwork={switchNetwork}
+        />
+      );
   }
 
   // AI Loader View

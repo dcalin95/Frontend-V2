@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useContext } from 'react';
-import { Settings, Info, Shield, Zap, Timer, MousePointerClick, RefreshCw, AlertCircle, ArrowDownUp, Clock } from 'lucide-react';
+import { Settings, Info, Shield, Zap, Timer, MousePointerClick, RefreshCw, AlertCircle, ArrowDownUp, Clock, AlertTriangle, Network } from 'lucide-react';
 import SwapRoute from './SwapRoute';
 import SmartTooltip from '../../Presale/components/SmartTooltip';
 import { ethers } from 'ethers';
@@ -117,7 +117,54 @@ const SwapPanel = ({ accountMode, setAccountMode, tokens, balances, payToken, se
   const [payWithBits, setPayWithBits] = useState(false);
   
   // Wallet context (for REAL mode checks)
-  const { isConnected, connectWallet, walletAddress } = useContext(WalletContext);
+  const { isConnected, connectWallet, walletAddress, chainId, ethBalance, bitsBalance, signer, provider: wagmiProvider } = useContext(WalletContext);
+  
+  // Balances tracking (production-ready logging)
+  useEffect(() => {
+    if (accountMode === 'REAL' && !balances?.[payToken?.id]) {
+      console.warn('⚠️ [SWAP] Balance not found for', payToken?.symbol);
+    }
+  }, [balances, payToken, accountMode]);
+  
+  // 🚨 Wrong Network Detection
+  const isWrongNetwork = accountMode === 'REAL' && walletAddress && chainId && chainId !== 56;
+  
+  // Switch to BSC
+  const switchToBSC = async () => {
+    if (!window.ethereum) return;
+    
+    try {
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x38' }], // 56 in hex
+      });
+    } catch (switchError) {
+      // This error code indicates that the chain has not been added to MetaMask
+      if (switchError.code === 4902) {
+        try {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                chainId: '0x38',
+                chainName: 'BNB Smart Chain',
+                nativeCurrency: {
+                  name: 'BNB',
+                  symbol: 'BNB',
+                  decimals: 18
+                },
+                rpcUrls: ['https://bsc-dataseed.binance.org/'],
+                blockExplorerUrls: ['https://bscscan.com/']
+              }
+            ]
+          });
+        } catch (addError) {
+          console.error('Failed to add BSC network:', addError);
+        }
+      }
+      console.error('Failed to switch to BSC:', switchError);
+    }
+  };
   
   // 🎯 PRESALE DATA - Pentru prețul BITS live din CellManager
   const cellManagerData = useCellManagerData();
@@ -190,17 +237,12 @@ const SwapPanel = ({ accountMode, setAccountMode, tokens, balances, payToken, se
   // Check if ALL prices are loaded
   const allPricesLoaded = payPrice !== null && receivePrice !== null && !pricesLoading;
 
-  // 🔴 DEBUG: Log live prices
+  // Monitor prices - log only errors in production
   useEffect(() => {
-    console.log('📊 LIVE PRICES:', {
-      payToken: payToken.symbol,
-      payPrice: payPrice ?? 'LOADING...',
-      receiveToken: receiveToken.symbol,
-      receivePrice: receivePrice ?? 'LOADING...',
-      source: pricesSource,
-      allLoaded: allPricesLoaded
-    });
-  }, [payPrice, receivePrice, payToken.symbol, receiveToken.symbol, pricesSource, allPricesLoaded]);
+    if (pricesError) {
+      console.error('❌ [PRICES]:', pricesError);
+    }
+  }, [pricesError]);
   
   const usdValuePay = amount && !isNaN(amount) && payPrice ? parseFloat(amount) * payPrice : 0;
   
@@ -214,7 +256,6 @@ const SwapPanel = ({ accountMode, setAccountMode, tokens, balances, payToken, se
     estimatedOutput = amount && !isNaN(amount) && payPrice ? usdValuePay / liveBitsPrice : 0;
     usdValueReceive = estimatedOutput * liveBitsPrice;
     exchangeRate = payPrice && liveBitsPrice ? payPrice / liveBitsPrice : 0;
-    console.log('🎯 [BITS Calculation] USD Invested:', usdValuePay, '| BITS Price:', liveBitsPrice, '| BITS Output:', estimatedOutput);
   } else {
     // 🥞 PANCAKESWAP LOGIC: Normal exchange rate
     exchangeRate = payPrice && receivePrice ? payPrice / receivePrice : 0;
@@ -229,9 +270,23 @@ const SwapPanel = ({ accountMode, setAccountMode, tokens, balances, payToken, se
   // Dynamic Minimum Received based on User Slippage
   const minReceived = estimatedOutput * (1 - (slippage / 100));
   
-  // ⚠️ INSUFFICIENT BALANCE CHECK
-  const currentBalance = parseFloat(balances[payToken.id] || 0);
-  const hasInsufficientBalance = amount && !isNaN(amount) && parseFloat(amount) > currentBalance;
+  // ⚠️ INSUFFICIENT BALANCE CHECK (with gas buffer for native)
+  const balanceLookupId = payToken?.id;
+  const altLookupId = payToken?.symbol === 'BTC' ? 'BTCB' : payToken?.symbol;
+  const contextNativeBalance = parseFloat(ethBalance || 0);
+  const contextBitsBalance = parseFloat(bitsBalance || 0);
+
+  let numericBalance = parseFloat((balances?.[balanceLookupId] ?? balances?.[altLookupId]) || 0);
+  if (numericBalance === 0 && payToken?.isNative && contextNativeBalance > 0) {
+    numericBalance = contextNativeBalance;
+  }
+  if (numericBalance === 0 && payToken?.symbol === 'BITS' && contextBitsBalance > 0) {
+    numericBalance = contextBitsBalance;
+  }
+
+  const gasReserve = payToken?.isNative ? 0.002 : 0; // leave ~0.002 BNB for gas
+  const effectiveBalance = Math.max(numericBalance - gasReserve, 0);
+  const hasInsufficientBalance = amount && !isNaN(amount) && parseFloat(amount) > effectiveBalance;
 
 // DEMO Mode: Simulation (timeout, no wallet tx)
 const handleSwapDemo = () => {
@@ -288,7 +343,7 @@ const handleSwapReal = async () => {
 
     // 🎯 DETECT: Dacă cumpărăm BITS → folosim PRESALE logic (CellManager)
     if (receiveToken.symbol === 'BITS') {
-      console.log('🎯 [PRESALE MODE] Buying BITS via CellManager.sol');
+      // Presale mode: Buying BITS via CellManager.sol
 
       // Validate BITS price is loaded
       if (!liveBitsPrice || liveBitsPrice <= 0) {
@@ -312,9 +367,7 @@ const handleSwapReal = async () => {
       const usdInvested = parseFloat(amount) * payPrice;
       const bitsToReceive = usdInvested / liveBitsPrice;
 
-      console.log(`💰 USD Invested: $${usdInvested.toFixed(2)}`);
-      console.log(`💰 BITS Price: $${liveBitsPrice}`);
-      console.log(`💰 BITS to Receive: ${bitsToReceive.toFixed(2)}`);
+      // USD Invested, BITS Price, and BITS to Receive calculated
 
       // Prepare presale parameters
       const presaleParams = {
@@ -345,7 +398,7 @@ const handleSwapReal = async () => {
           return;
       }
 
-      console.log(`📞 Calling ${payToken.symbol} presale handler...`);
+      // Calling presale handler
       await handler(presaleParams);
 
       toast.success(`✅ Successfully purchased ${bitsToReceive.toFixed(2)} BITS!`, {
@@ -361,15 +414,18 @@ const handleSwapReal = async () => {
       return;
     }
 
-    // 🥞 PANCAKESWAP pentru toate celelalte swap-uri (NON-BITS)
-    console.log('🥞 [PANCAKESWAP MODE] Regular DEX swap');
+    // PancakeSwap mode for regular DEX swaps (non-BITS)
     
     toast.info(`🔄 Executing swap on BSC: ${amount} ${payToken.symbol} → ${receiveToken.symbol}...`, {
       autoClose: 3000
     });
 
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
+    const signerToUse = signer || (wagmiProvider ? wagmiProvider.getSigner?.() : null) || (window.ethereum ? new ethers.providers.Web3Provider(window.ethereum).getSigner() : null);
+    if (!signerToUse) {
+      toast.error('❌ No signer available. Please reconnect your wallet.');
+      setLoading(false);
+      return;
+    }
 
     const amountInWei = ethers.utils.parseUnits(
       amount.toString(),
@@ -377,7 +433,7 @@ const handleSwapReal = async () => {
     );
 
     const tx = await executeSwap({
-      provider: signer,
+      provider: signerToUse,
       mode: 'AUTO',
       payToken,
       receiveToken,
@@ -401,6 +457,24 @@ const handleSwapReal = async () => {
         </div>,
         { autoClose: 8000 }
       );
+
+      // 📢 TELEGRAM NOTIFICATION for DEX swaps
+      try {
+        const { sendTelegramNotification } = await import('../../utils/telegramNotify');
+        await sendTelegramNotification({
+          type: 'dex_swap',
+          status: 'success',
+          network: 'BSC',
+          wallet: walletAddress,
+          amount: `${amount} ${payToken.symbol} → ${receiveToken.symbol}`,
+          currency: payToken.symbol,
+          txHash: tx.hash,
+          details: `Swapped ${amount} ${payToken.symbol} for ${receiveToken.symbol} on PancakeSwap`
+        });
+        console.log('✅ [Telegram] DEX swap notification sent');
+      } catch (notifyError) {
+        console.warn('⚠️ [Telegram] Notification failed:', notifyError.message);
+      }
     } else {
       toast.success(`✅ Swap executed successfully!`, { autoClose: 5000 });
     }
@@ -648,6 +722,53 @@ const handleSwap = () => {
 
         {/* Pay Input */}
         <div className="dex-input-group">
+          {/* 🚨 WRONG NETWORK WARNING */}
+          {isWrongNetwork && (
+            <div style={{
+              padding: '12px',
+              marginBottom: '12px',
+              background: 'linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(255, 48, 48, 0.15) 100%)',
+              border: '1px solid rgba(255, 107, 107, 0.3)',
+              borderRadius: '8px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+              alignItems: 'center'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <AlertTriangle size={20} color="#ff6b6b" />
+                <span style={{ fontSize: '0.85rem', fontWeight: '600', color: '#ff6b6b' }}>
+                  Wrong Network Detected
+                </span>
+              </div>
+              <span style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.7)', textAlign: 'center' }}>
+                You're on {chainId === 1 ? 'Ethereum' : `Chain ${chainId}`}. Please switch to BSC to trade.
+              </span>
+              <button
+                onClick={switchToBSC}
+                style={{
+                  padding: '8px 16px',
+                  background: 'linear-gradient(135deg, #F0B90B 0%, #FFA000 100%)',
+                  border: 'none',
+                  borderRadius: '6px',
+                  color: '#000',
+                  fontWeight: '700',
+                  fontSize: '0.8rem',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  transition: 'transform 0.2s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+              >
+                <Network size={16} />
+                Switch to BSC Network
+              </button>
+            </div>
+          )}
+          
           <div className="dex-label-row">
             <SmartTooltip content={
                 `AI LIQUIDITY AGGREGATOR\n
@@ -684,9 +805,85 @@ const handleSwap = () => {
                   <button
                     key={percent}
                     onClick={() => {
-                      const balance = parseFloat(balances[payToken.id] || 0);
-                      if (balance > 0) {
-                        setAmount((balance * percent / 100).toFixed(6));
+                      // Map symbols/ids to balances for safety (BTC vs BTCB) + gas buffer
+                      const balanceLookupId = payToken?.id;
+                      const altLookupId = payToken?.symbol === 'BTC' ? 'BTCB' : payToken?.symbol;
+                      const rawBalance = balances?.[balanceLookupId] ?? balances?.[altLookupId];
+                      let balance = parseFloat(rawBalance || 0);
+                      const contextNativeBalance = parseFloat(ethBalance || 0);
+                      const contextBitsBalance = parseFloat(bitsBalance || 0);
+                      const isNative = !!payToken?.isNative;
+                      const isBits = payToken?.symbol === 'BITS';
+                      const gasReserve = isNative ? 0.002 : 0;
+
+                      if (balance === 0 && isNative && contextNativeBalance > 0) {
+                        balance = contextNativeBalance;
+                      }
+                      if (balance === 0 && isBits && contextBitsBalance > 0) {
+                        balance = contextBitsBalance;
+                      }
+
+                      const availableBalance = Math.max(balance - gasReserve, 0);
+                      
+                      const setCalcAmount = (val) => {
+                        const cap = Math.max(val - gasReserve, 0);
+                        const calculatedAmount = (cap * percent / 100).toFixed(6);
+                        setAmount(calculatedAmount);
+                      };
+
+                      if (availableBalance > 0) {
+                        setCalcAmount(availableBalance);
+                      } else if (accountMode === 'REAL' && isBits && contextBitsBalance > 0) {
+                        // Use wagmi-provided BITS balance if available
+                        setCalcAmount(contextBitsBalance);
+                      } else if (accountMode === 'REAL' && isNative && contextNativeBalance > 0) {
+                        // Use context-provided native balance (wagmi) if available
+                        setCalcAmount(contextNativeBalance);
+                      } else if (accountMode === 'REAL' && isBits && payToken?.address && (wagmiProvider || window.ethereum) && walletAddress) {
+                        // Fallback: fetch BITS balance live
+                        (async () => {
+                          try {
+                            const providerToUse = wagmiProvider || new ethers.providers.Web3Provider(window.ethereum);
+                            const erc20Abi = ['function balanceOf(address account) view returns (uint256)', 'function decimals() view returns (uint8)'];
+                            const tokenContract = new ethers.Contract(payToken.address, erc20Abi, providerToUse);
+                            const bal = await tokenContract.balanceOf(walletAddress);
+                            const decimals = payToken.decimals ?? 18;
+                            const formatted = parseFloat(ethers.utils.formatUnits(bal, decimals));
+                            if (formatted > 0) {
+                              setCalcAmount(formatted);
+                            } else {
+                              console.warn('⚠️ [PERCENT BUTTON] Live BITS balance is 0');
+                              toast.warn('BITS balance is 0. Add funds on BSC.');
+                            }
+                          } catch (err) {
+                            console.error('❌ [PERCENT BUTTON] Failed to fetch BITS balance:', err);
+                            toast.error('Cannot read BITS balance. Please reconnect wallet on BSC.');
+                          }
+                        })();
+                      } else if (accountMode === 'REAL' && isNative && (wagmiProvider || window.ethereum) && walletAddress) {
+                        // Fallback: fetch native balance live if not yet populated
+                        (async () => {
+                          try {
+                            const providerToUse = wagmiProvider || new ethers.providers.Web3Provider(window.ethereum);
+                            const nativeBal = await providerToUse.getBalance(walletAddress);
+                            const formatted = parseFloat(ethers.utils.formatEther(nativeBal));
+                            if (formatted > 0) {
+                              setCalcAmount(formatted);
+                            } else {
+                              console.warn('⚠️ [PERCENT BUTTON] Live native balance is 0');
+                              toast.warn('Balance is 0. Connect wallet with funds on BSC.');
+                            }
+                          } catch (err) {
+                            console.error('❌ [PERCENT BUTTON] Failed to fetch native balance:', err);
+                            toast.error('Cannot read wallet balance. Please reconnect wallet on BSC.');
+                          }
+                        })();
+                      } else {
+                        // Balance is 0 or undefined - trigger refresh in REAL mode
+                        if (accountMode === 'REAL' && onBalanceRefresh) {
+                          onBalanceRefresh();
+                        }
+                        toast.warn('Balance not available. Please refresh or connect wallet on BSC.');
                       }
                     }}
                     style={{
@@ -1000,7 +1197,7 @@ const handleSwap = () => {
                 Insufficient {payToken.symbol} balance
               </div>
               <div style={{ fontSize: '0.7rem', color: '#888', marginTop: '2px' }}>
-                Available: {currentBalance.toFixed(6)} {payToken.symbol}
+                Available: {Number.isFinite(effectiveBalance) ? effectiveBalance.toFixed(6) : '0.000000'} {payToken.symbol}
               </div>
             </div>
           </div>
