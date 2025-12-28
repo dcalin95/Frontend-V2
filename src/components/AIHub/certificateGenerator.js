@@ -285,7 +285,30 @@ export function generateCertificateHTML(certificate) {
     <!-- SINGLE PROFESSIONAL HEADER - RIGHT SIDE -->
     <div class="cert-header">
       <div class="cert-logo-icon">
-        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAF8GlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDUgNzkuMTYzNDk5LCAyMDE4LzA4LzEzLTE2OjQwOjIyICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoV2luZG93cykiIHhtcDpDcmVhdGVEYXRlPSIyMDI0LTEyLTI4VDIzOjQ1OjAwKzAyOjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyNC0xMi0yOFQyMzo0NTowMCswMjowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAyNC0xMi0yOFQyMzo0NTowMCswMjowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDphYmNkZTEyMy00NTY3LTg5YWItY2RlZi0wMTIzNDU2Nzg5YWIiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6YWJjZGUxMjMtNDU2Ny04OWFiLWNkZWYtMDEyMzQ1Njc4OWFiIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6YWJjZGUxMjMtNDU2Ny04OWFiLWNkZWYtMDEyMzQ1Njc4OWFiIj4gPHhtcE1NOkhpc3Rvcnk+IDxyZGY6U2VxPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY3JlYXRlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDphYmNkZTEyMy00NTY3LTg5YWItY2RlZi0wMTIzNDU2Nzg5YWIiIHN0RXZ0OndoZW49IjIwMjQtMTItMjhUMjM6NDU6MDArMDI6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDQyAyMDE5IChXaW5kb3dzKSIvPiA8L3JkZjpTZXE+IDwveG1wTU06SGlzdG9yeT4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz4B" alt="BITS Logo" style="width: 48px; height: 48px; object-fit: contain;" />
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width: 48px; height: 48px;">
+          <defs>
+            <linearGradient id="bitsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#00ff66;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#00dd88;stop-opacity:1" />
+            </linearGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+          <!-- Outer ring -->
+          <circle cx="50" cy="50" r="42" fill="none" stroke="url(#bitsGrad)" stroke-width="3" opacity="0.4"/>
+          <!-- Letter B -->
+          <path d="M 32 30 L 32 70 L 52 70 Q 65 70 65 57.5 Q 65 50 57 48 Q 65 46 65 37.5 Q 65 30 52 30 Z M 40 38 L 50 38 Q 57 38 57 42.5 Q 57 47 50 47 L 40 47 Z M 40 53 L 52 53 Q 59 53 59 61.5 Q 59 70 52 70 L 40 62 Z" 
+                fill="url(#bitsGrad)" filter="url(#glow)"/>
+          <!-- Three dots representing blockchain/bits -->
+          <circle cx="72" cy="35" r="3.5" fill="url(#bitsGrad)" opacity="0.9"/>
+          <circle cx="72" cy="50" r="3.5" fill="url(#bitsGrad)" opacity="0.9"/>
+          <circle cx="72" cy="65" r="3.5" fill="url(#bitsGrad)" opacity="0.9"/>
+        </svg>
       </div>
       <div class="cert-logo-text">
         <div class="cert-logo-title">BitSwapDEX AI • $BITS</div>
