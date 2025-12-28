@@ -8,6 +8,7 @@ import * as mpCamera from '@mediapipe/camera_utils';
 import * as mpDrawing from '@mediapipe/drawing_utils';
 import { sendBitsToTreasury, BITS_TREASURY_WALLET } from '../../utils/paymentService';
 import { openCertificateWindow, downloadCertificateHTML } from './certificateGenerator';
+import { notifyCertificatePurchase } from '../../utils/telegramNotify';
 import './AIHub.desktop.css';
 import './StressTest.css';
 import './StressTest.mobile.css';
@@ -2089,6 +2090,13 @@ const StressTest = () => {
       setTimeout(() => {
         openCertificateWindow(paid);
       }, 1500); // Small delay to let state update
+
+      // 📢 NOTIFY TELEGRAM GROUP
+      notifyCertificatePurchase({
+        wallet: walletAddress,
+        bits: certificateFeeBits.toLocaleString(),
+        txHash: res.hash
+      });
     } else {
       let errStr = res?.error || 'Payment failed.';
       if (typeof errStr === 'object') {

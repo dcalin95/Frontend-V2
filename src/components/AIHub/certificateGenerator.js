@@ -195,7 +195,7 @@ export function generateCertificateHTML(certificate) {
   <title>${t.certTitle}</title>
   <style>
     body { font-family: 'Segoe UI', Arial, sans-serif; background: #0b0b0b; color: #f5f5f5; margin: 0; padding: 24px; direction: ${isRtl ? 'rtl' : 'ltr'}; }
-    .page { position: relative; max-width: 1000px; margin: 0 auto; border: 2px solid rgba(0,255,102,0.45); padding: 32px; border-radius: 18px; background: linear-gradient(180deg, rgba(0,0,0,0.85), rgba(20,0,0,0.75)); overflow: hidden; }
+    .page { position: relative; max-width: 1000px; margin: 0 auto; border: 2px solid rgba(0,255,102,0.45); padding: 40px 32px 32px; border-radius: 18px; background: linear-gradient(180deg, rgba(0,0,0,0.85), rgba(20,0,0,0.75)); overflow: hidden; }
     .watermark { position: absolute; inset: -90px; 
       background:
         url("data:image/svg+xml,%3Csvg width='360' height='260' viewBox='0 0 360 260' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='180' y='130' font-family='Roboto, sans-serif' font-weight='700' font-size='11' fill='rgba(0, 255, 102, 0.12)' text-anchor='middle' transform='rotate(-24 180 130)'%3EThe Quantum Stress Test is an Official AI BitSwapDEX Diagnostic%3C/text%3E%3C/svg%3E") repeat,
@@ -206,26 +206,29 @@ export function generateCertificateHTML(certificate) {
       opacity: 0.7;
       pointer-events: none;
     }
-    .cert-logo { position: absolute; top: 24px; ${isRtl ? 'right' : 'left'}: 24px; display: flex; align-items: center; gap: 12px; padding: 14px 18px; 
-      background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(10,10,20,0.85)); border: 2px solid rgba(0,255,102,0.5); 
-      border-radius: 12px; box-shadow: 0 0 30px rgba(0,255,102,0.2); }
-    .cert-logo-icon { width: 44px; height: 44px; background: radial-gradient(circle, rgba(0,255,102,0.15), transparent); 
-      border-radius: 8px; border: 1px solid rgba(0,255,102,0.3); display: flex; align-items: center; justify-content: center; }
-    .cert-logo-icon svg { width: 32px; height: 32px; filter: drop-shadow(0 0 6px rgba(0,255,102,0.6)); }
-    .cert-logo-text { display: flex; flex-direction: column; gap: 2px; }
-    .cert-logo-title { font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 900; letter-spacing: 2px; 
-      background: linear-gradient(135deg, #00ff66, #00cc88); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .cert-logo-url { font-family: 'Roboto Mono', monospace; font-size: 9px; font-weight: 600; color: rgba(0,255,102,0.8); letter-spacing: 0.5px; }
-    .cert-logo-badge { font-family: 'Roboto Mono', monospace; font-size: 8px; font-weight: 600; color: rgba(170,100,255,0.9); 
-      letter-spacing: 0.8px; text-transform: uppercase; }
-    .seal { position: absolute; ${isRtl ? 'left' : 'right'}: 22px; top: 22px; width: 96px; height: 96px; border-radius: 50%;
-      border: 2px solid rgba(0,255,102,0.55);
-      box-shadow: 0 0 28px rgba(0,255,102,0.18), inset 0 0 22px rgba(255,255,255,0.08);
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.16), rgba(0,0,0,0.6));
+    .cert-header { position: absolute; top: 20px; ${isRtl ? 'left' : 'right'}: 20px; display: flex; align-items: center; gap: 16px; padding: 16px 24px; 
+      background: linear-gradient(135deg, rgba(0,0,0,0.95), rgba(10,10,30,0.9)); 
+      border: 2px solid rgba(0,255,102,0.6); 
+      border-radius: 16px; 
+      box-shadow: 0 0 40px rgba(0,255,102,0.3), inset 0 0 20px rgba(0,255,102,0.05); 
+      backdrop-filter: blur(10px);
+      max-width: 280px;
     }
-    .seal::after { content: "BSDX\\A AI"; white-space: pre; position: absolute; inset: 0; display: grid; place-items: center;
-      font-weight: 900; letter-spacing: 2px; color: rgba(0,255,102,0.9); font-size: 18px; text-align: center; }
-    h1 { margin: 0 0 8px; letter-spacing: 1px; font-size: 28px; }
+    .cert-logo-icon { width: 52px; height: 52px; background: radial-gradient(circle, rgba(0,255,102,0.2), transparent); 
+      border-radius: 12px; border: 2px solid rgba(0,255,102,0.4); display: flex; align-items: center; justify-content: center; 
+      flex-shrink: 0;
+    }
+    .cert-logo-icon svg { width: 40px; height: 40px; filter: drop-shadow(0 0 8px rgba(0,255,102,0.7)); }
+    .cert-logo-text { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    .cert-logo-title { font-family: 'Orbitron', 'Arial Black', sans-serif; font-size: 20px; font-weight: 900; letter-spacing: 2px; 
+      background: linear-gradient(135deg, #00ff66, #00cc88); -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+      text-shadow: 0 0 20px rgba(0,255,102,0.5);
+    }
+    .cert-logo-url { font-family: 'Roboto Mono', 'Courier New', monospace; font-size: 11px; font-weight: 700; color: rgba(0,255,102,0.9); letter-spacing: 1px; }
+    .cert-logo-badge { font-family: 'Roboto Mono', 'Courier New', monospace; font-size: 9px; font-weight: 700; color: rgba(170,100,255,0.95); 
+      letter-spacing: 1px; text-transform: uppercase; padding: 2px 8px; background: rgba(170,100,255,0.15); border-radius: 4px; display: inline-block;
+    }
+    h1 { margin: 0 0 12px; letter-spacing: 1px; font-size: 28px; padding-top: 60px; }
     .sub { opacity: 0.85; margin-bottom: 18px; font-size: 14px; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
     .box { border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; padding: 16px; background: rgba(0,0,0,0.35); text-align: ${isRtl ? 'right' : 'left'}; }
@@ -252,7 +255,10 @@ export function generateCertificateHTML(certificate) {
 </head>
 <body>
   <div class="page">
-    <div class="cert-logo">
+    <div class="watermark"></div>
+    
+    <!-- SINGLE PROFESSIONAL HEADER - RIGHT SIDE -->
+    <div class="cert-header">
       <div class="cert-logo-icon">
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -275,10 +281,9 @@ export function generateCertificateHTML(certificate) {
         <div class="cert-logo-badge">Quantum Stress Lab</div>
       </div>
     </div>
-    <div class="watermark"></div>
-    <div class="seal"></div>
-    <h1>${t.certTitle}</h1>
-    <div class="sub">${t.certId}: <strong>${c.certId}</strong> • ${t.issued}: <strong>${new Date(c.issuedAt).toUTCString()}</strong></div>
+    
+    <h1>BitSwapDEX AI — Official Stress Resilience Certificate</h1>
+    <div class="sub">Certificate ID: <strong>${c.certId}</strong> • Issued: <strong>${new Date(c.issuedAt).toUTCString()}</strong></div>
     ${txLine}
     
     <div class="grid">
@@ -346,7 +351,7 @@ export function generateCertificateHTML(certificate) {
     </div>
 
     <div class="foot">
-      <strong>Legal Disclaimer:</strong> ${t.footer}
+      <strong>Legal Disclaimer:</strong> This is a simulated stress resilience certificate for entertainment/testing. Not medical or financial advice.
       <br /><br />
       <strong>Issued by:</strong> BitSwapDEX AI - Quantum Stress Lab | <strong>bits-ai.io</strong>
       <br />
