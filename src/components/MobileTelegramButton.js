@@ -1,5 +1,5 @@
 import React from 'react';
-import telegramLogo from '../assets/icons/telegram-logo.png';
+import telegramLogo from '../assets/icons/telegram.svg';
 import './MobileTelegramButton.css';
 
 /**
