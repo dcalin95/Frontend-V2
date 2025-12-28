@@ -1,0 +1,85 @@
+/* 📱 MOBILE TELEGRAM BUTTON - Fixed position above PresaleCopilot */
+
+.mobile-telegram-button {
+  /* Hidden by default (desktop) */
+  display: none;
+}
+
+/* 📱 SHOW ONLY ON MOBILE */
+body.mode-mobile .mobile-telegram-button {
+  display: grid;
+  place-items: center;
+  
+  /* Fixed position above PresaleCopilot */
+  position: fixed;
+  bottom: 190px; /* Above Copilot (120px) */
+  right: 14px; /* Aligned with Copilot */
+  z-index: 99989; /* Just below Copilot (99990) */
+  
+  /* Size matching Copilot */
+  width: 48px;
+  height: 48px;
+  
+  /* Styling matching Copilot */
+  background: rgba(10, 12, 16, 0.78);
+  border: 1px solid rgba(20, 241, 149, 0.32);
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+  
+  /* Smooth interactions */
+  transition: all 0.3s ease;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  
+  /* Prevent text selection */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body.mode-mobile .mobile-telegram-button:active {
+  transform: scale(0.95);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+}
+
+body.mode-mobile .mobile-telegram-button:hover {
+  border-color: rgba(20, 241, 149, 0.5);
+  box-shadow: 0 16px 40px rgba(20, 241, 149, 0.3);
+}
+
+body.mode-mobile .mobile-telegram-button img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(20, 241, 149, 0.5));
+  pointer-events: none;
+}
+
+/* Small screens adjustment */
+@media (max-width: 380px) {
+  body.mode-mobile .mobile-telegram-button {
+    width: 44px;
+    height: 44px;
+  }
+  
+  body.mode-mobile .mobile-telegram-button img {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 340px) {
+  body.mode-mobile .mobile-telegram-button {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+/* In-app browser optimization */
+body.mode-mobile.in-app-browser .mobile-telegram-button {
+  bottom: 190px;
+  right: 14px;
+}
+

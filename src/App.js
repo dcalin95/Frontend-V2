@@ -23,6 +23,7 @@ import InstallAppModal from "./components/PWA/InstallAppModal"; // 🚀 PWA Inst
 import HamburgerButton from "./HamburgerButton/HamburgerButton";
 import ThemeChecker from "./components/ThemeChecker";
 import GlobalPresaleCopilot from "./components/GlobalPresaleCopilot";
+import MobileTelegramButton from "./components/MobileTelegramButton"; // 📱 Mobile-only Telegram button
 
 // 🔄 State/Loading
 import CosmicLoader from "./components/DEX/CosmicLoader";
@@ -204,6 +205,9 @@ const MainLayout = ({ children, isMobile, menuOpen, setMenuOpen, headerMenuOpen,
 
       <Footer />
       <PWAInstallPrompt />
+      
+      {/* 📱 Mobile-only Telegram button (positioned above PresaleCopilot) */}
+      <MobileTelegramButton />
     </div>
   );
 };
