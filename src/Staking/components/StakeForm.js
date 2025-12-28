@@ -11,7 +11,7 @@ import "../styles/StakeForm.css";
 import "../styles/StakeForm.mobile.css"; // 🆕 Import Mobile CSS
 import useBitsPrice from "../../Presale/prices/useBitsPrice";
 import successSfx from "../../assets/sounds/success.mp3";
-import { notifyStaking } from "../../utils/telegramNotify";
+import { notifyStakingDeposit } from "../../utils/telegramNotify";
 
 // Static data for tiers and lock periods (module-scope to keep hooks stable)
 const TIERS = [
@@ -565,12 +565,10 @@ const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
 
       // 📢 TELEGRAM NOTIFICATION
       const bitsStaked = ethers.utils.formatUnits(parsed, 18);
-      await notifyStaking({
+      const lockPeriod = LOCK_PERIODS[selectedLockPeriod] || LOCK_PERIODS[0];
+      await notifyStakingDeposit({
         wallet: walletAddress,
-        bits: parseFloat(bitsStaked).toFixed(2),
-        apr: parseFloat(aprPercentDisplayFrom1e18(finalApr)).toFixed(2),
-        lockDays: selectedLockDays,
-        network: 'BSC',
+        amount: parseFloat(bitsStaked).toFixed(2),
         txHash: receipt.transactionHash
       });
 

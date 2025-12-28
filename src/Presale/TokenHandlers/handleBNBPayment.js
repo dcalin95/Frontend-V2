@@ -293,23 +293,6 @@ const handleBNBPayment = async ({
         const ok = rec && (rec.status === 1 || rec.status === '0x1');
         if (ok && finalHash) {
           console.warn('ℹ️ Transaction replaced, but confirmed with new hash:', finalHash);
-
-          // Success notify to Telegram for the replacement (single send)
-          await notifyTelegram({
-            event: 'bits_purchase',
-            status: 'success',
-            network: (CONTRACTS?.NODE?.address || '').toLowerCase() === '0xe6536756d73f0771d9a317f49453de96541c352f'.toLowerCase()
-              ? 'BSC Mainnet' : 'BSC Mainnet',
-            wallet: walletAddress,
-            bits: (bitsToReceive ? String(bitsToReceive) : '0'),
-            bitsHuman: (bitsToReceive ? String(bitsToReceive) : '0'),
-            valueWei: undefined,
-            usd: usdInvested,
-            txHash: finalHash,
-            explorer: `https://bscscan.com/tx/${finalHash}`,
-            ts: Date.now(),
-          });
-
           return { txHash: finalHash };
         }
       }
@@ -336,18 +319,6 @@ const handleBNBPayment = async ({
     } catch (logError) {
       console.warn("⚠️ Error logging failed transaction:", logError.message);
     }
-
-    // 🔔 Telegram notification (failure)
-    TG_ENABLE_FRONTEND && notifyTelegram({
-      event: "bits_purchase",
-      status: "failed",
-      network: (CONTRACTS?.NODE?.address || '').toLowerCase() === '0xe6536756d73f0771d9a317f49453de96541c352f'.toLowerCase()
-        ? 'BSC Mainnet' : 'BSC Mainnet',
-      wallet: walletAddress,
-      reason: friendlyReason,
-      usd: usdInvested,
-      ts: Date.now(),
-    });
 
     throw err;
 
