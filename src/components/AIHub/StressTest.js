@@ -3937,14 +3937,14 @@ const StressTest = () => {
                         border: 'none'
                       }}
                     >
-                      📄 DESCARCĂ CERTIFICAT / PRINT
+                      📄 DOWNLOAD CERTIFICATE / PRINT
                     </button>
                     <button 
                       type="button" 
                       className="tv-toggle" 
                       onClick={() => downloadCertificateHTML(certificate)}
                     >
-                      💾 Salvează HTML
+                      💾 Save HTML
                     </button>
                     {!!certificate?.payment?.txHash && (
                       <>
