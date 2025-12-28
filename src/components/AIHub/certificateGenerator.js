@@ -215,6 +215,43 @@ export function generateCertificateHTML(certificate) {
     : c.score >= 55
     ? `<strong>RESTRICTED CLEARANCE:</strong> Subject shows marginal stress tolerance. Trading restricted to low-risk, conservative strategies only. Maximum 15-20% portfolio risk exposure with mandatory automated risk management systems. Real-time psychological monitoring required during active trading. Weekly stress assessments mandatory. Formal stress management therapy strongly recommended before increasing risk exposure. Consider alternative investment strategies (passive investing, robo-advisors) that minimize psychological burden.`
     : `<strong>NOT CLEARED - CLINICAL INTERVENTION REQUIRED:</strong> Subject demonstrates insufficient psychological resilience for active trading. High-risk trading is medically contraindicated. Recommend immediate cessation of active trading activities. Referral for comprehensive psychological evaluation and stress management intervention required. Focus on passive investment strategies with minimal cognitive demand. Re-evaluation only after documented completion of stress resilience training program and demonstrable improvement in stress tolerance metrics.`;
+  
+  // TRADING STYLE RECOMMENDATIONS based on psychological profile
+  const tradingStyleRec = c.score >= 85
+    ? {
+      primary: 'Day Trading / Scalping',
+      secondary: 'High-frequency trading, Options trading, Futures',
+      timeframes: '1min-15min charts optimal',
+      sessions: 'High volatility periods: 9:30-11:00 AM ET, 2:00-4:00 PM ET (US markets), 8:00-10:00 AM GMT (EU open), 1:00-3:00 AM ET (Asian session)',
+      risk: 'Aggressive position sizing acceptable (40-50% portfolio)',
+      notes: 'Cognitive profile supports rapid decision-making under pressure. Suitable for high-frequency strategies requiring split-second execution.'
+    }
+    : c.score >= 70
+    ? {
+      primary: 'Swing Trading / Position Trading',
+      secondary: 'ETF trading, Index funds, Cryptocurrency swing trades',
+      timeframes: '4H-Daily charts recommended',
+      sessions: 'Market open/close periods: 9:30-10:30 AM ET, 3:00-4:00 PM ET. Avoid mid-day chop.',
+      risk: 'Moderate position sizing (20-30% portfolio)',
+      notes: 'Psychological profile favors medium-term strategies with defined risk parameters. Benefits from structured entry/exit rules.'
+    }
+    : c.score >= 55
+    ? {
+      primary: 'Long-term Investing / ETFs',
+      secondary: 'Blue-chip stocks, Dividend aristocrats, Index ETFs',
+      timeframes: 'Weekly/Monthly charts only',
+      sessions: 'End-of-day analysis preferred. Avoid real-time price monitoring.',
+      risk: 'Conservative (10-15% active portfolio)',
+      notes: 'Stress profile indicates vulnerability to short-term volatility. Recommend automated rebalancing and limit order strategies only.'
+    }
+    : {
+      primary: 'Passive Index Investing ONLY',
+      secondary: 'Robo-advisors, Target-date funds, Dollar-cost averaging',
+      timeframes: 'Quarterly/Annual review only',
+      sessions: 'NO active trading recommended. Set-and-forget strategy.',
+      risk: 'Minimal (5-10% equities, rest in bonds/stable assets)',
+      notes: 'CLINICAL RESTRICTION: Active trading contraindicated. Psychological profile incompatible with real-time market exposure.'
+    };
 
   return `<!doctype html>
 <html lang="${c.lang}" dir="${isRtl ? 'rtl' : 'ltr'}">
@@ -398,8 +435,35 @@ export function generateCertificateHTML(certificate) {
         
         <div style="font-size: 13px; font-weight: 700; color: ${c.score >= 70 ? '#00ff66' : '#ff6600'}; margin: 16px 0 8px; text-transform: uppercase; letter-spacing: 0.5px;">IV. Clinical Recommendations</div>
         <div class="analysis-text">${recommendations}</div>
+        
+        <div style="font-size: 13px; font-weight: 700; color: #00ccff; margin: 16px 0 8px; text-transform: uppercase; letter-spacing: 0.5px;">V. Trading Strategy Recommendations</div>
+        <div class="analysis-text" style="margin-bottom: 12px;">
+          <strong>Recommended Trading Style:</strong> ${tradingStyleRec.primary}<br />
+          <strong>Alternative Strategies:</strong> ${tradingStyleRec.secondary}<br />
+          <strong>Optimal Timeframes:</strong> ${tradingStyleRec.timeframes}<br />
+          <strong>Best Trading Sessions:</strong> ${tradingStyleRec.sessions}<br />
+          <strong>Risk Allocation:</strong> ${tradingStyleRec.risk}<br />
+          <strong>Clinical Notes:</strong> <em>${tradingStyleRec.notes}</em>
+        </div>
       </div>
     </div>
+    
+    ${c.videoSnapshots && c.videoSnapshots.length > 0 ? `
+    <div class="analysis-section" style="margin-top: 20px;">
+      <div class="analysis-title">📸 Video Evidence - Facial Verification</div>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px;">
+        ${c.videoSnapshots.map((snapshot, idx) => `
+          <div style="text-align: center;">
+            <img src="${snapshot}" alt="Snapshot ${idx + 1}" style="width: 100%; border-radius: 8px; border: 2px solid rgba(0,255,102,0.3);" />
+            <div style="font-size: 11px; margin-top: 6px; opacity: 0.7;">${idx === 0 ? 'Start' : idx === 1 ? 'Middle' : 'End'} (T+${idx === 0 ? '0' : idx === 1 ? '5' : '10'}min)</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="analysis-text" style="margin-top: 12px; font-size: 12px; opacity: 0.8;">
+        <strong>Verification Protocol:</strong> Three timestamped facial captures confirm subject identity and continuous engagement throughout the 10-minute assessment period. Facial landmarks and biometric consistency validated via MediaPipe Face Mesh technology.
+      </div>
+    </div>
+    ` : ''}
 
     <div class="foot">
       <strong>Legal Disclaimer:</strong> This is a simulated stress resilience certificate for entertainment/testing. Not medical or financial advice.

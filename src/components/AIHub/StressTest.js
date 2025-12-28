@@ -527,7 +527,33 @@ const StressTest = () => {
     }
   });
   const [certPayState, setCertPayState] = useState({ status: 'idle', error: '', txHash: '' }); // idle | pending | paid | error
+  const videoSnapshotsRef = useRef([]); // Store 3 face snapshots: start, middle, end
   const [cameraEnabled, setCameraEnabled] = useState(false);
+  
+  // 📸 CAPTURE VIDEO SNAPSHOT FUNCTION
+  const captureVideoSnapshot = useCallback(() => {
+    try {
+      const video = videoRef.current;
+      if (!video || !video.videoWidth || !video.videoHeight) {
+        console.warn('📸 Video not ready for snapshot');
+        return null;
+      }
+      
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // Convert to base64 data URL
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+      console.log('📸 Snapshot captured!', dataUrl.substring(0, 50) + '...');
+      return dataUrl;
+    } catch (err) {
+      console.error('📸 Error capturing snapshot:', err);
+      return null;
+    }
+  }, []);
   const [cameraConsent, setCameraConsent] = useState(false);
   const [attention, setAttention] = useState({
     status: 'OFF', // OFF | STARTING | ACTIVE | ERROR
@@ -1642,6 +1668,16 @@ const StressTest = () => {
     if (cyberNoiseInterval.current) clearInterval(cyberNoiseInterval.current);
     if (tvZapInterval.current) clearInterval(tvZapInterval.current);
 
+    // 📸 CLEAR PREVIOUS SNAPSHOTS & CAPTURE START SNAPSHOT
+    videoSnapshotsRef.current = [];
+    setTimeout(() => {
+      const startSnapshot = captureVideoSnapshot();
+      if (startSnapshot) {
+        videoSnapshotsRef.current.push(startSnapshot);
+        console.log('📸 START snapshot captured!');
+      }
+    }, 1000); // Wait 1s for video to stabilize
+
     setLoading(true);
     setResult(null);
     setCertificate(null);
@@ -1755,10 +1791,19 @@ const StressTest = () => {
           setRealityTimeline(tl => [
             ...tl,
             { t: 'T+05:00', msg: 'Wallet compromise wave: seed exposure → drain → irreversible loss.' },
-            { t: 'T+05:00', msg: 'Banks enforce bail-ins. Deposits are “converted” to stabilize balance sheets.' }
+            { t: 'T+05:00', msg: 'Banks enforce bail-ins. Deposits are "converted" to stabilize balance sheets.' }
           ]);
           triggerChaos(4);
           sirenBurst(1800);
+          
+          // 📸 CAPTURE MIDDLE SNAPSHOT (T+5min)
+          setTimeout(() => {
+            const middleSnapshot = captureVideoSnapshot();
+            if (middleSnapshot) {
+              videoSnapshotsRef.current.push(middleSnapshot);
+              console.log('📸 MIDDLE snapshot captured!');
+            }
+          }, 500);
         }
         if (nextTime === 420) {
           setSimStage(5); 
@@ -1819,6 +1864,13 @@ const StressTest = () => {
 
   const finishSimulation = () => {
     const val = Number.isFinite(portfolioUsd) ? portfolioUsd : 0;
+
+    // 📸 CAPTURE END SNAPSHOT (T+10min) BEFORE stopping camera
+    const endSnapshot = captureVideoSnapshot();
+    if (endSnapshot) {
+      videoSnapshotsRef.current.push(endSnapshot);
+      console.log('📸 END snapshot captured! Total snapshots:', videoSnapshotsRef.current.length);
+    }
 
     setWalletShock(false);
     setGlitchLevel(5);
@@ -1889,9 +1941,11 @@ const StressTest = () => {
         faceDetected: attention.faceDetected,
         lookingPct: attention.lookingPct,
         blinkPerMin: attention.blinkPerMin,
-        engagementScore: attention.engagementScore
+        engagementScore: attention.engagementScore,
+        lookAwayCount: attention.lookAwayCount || 0
       },
       cameraVerified: !!faceEverDetectedRef.current,
+      videoSnapshots: videoSnapshotsRef.current.slice(0, 3), // Max 3 snapshots
       payment: null,
       disclaimer: (CERT_I18N[certLang] || CERT_I18N.en).disclaimer
     };
