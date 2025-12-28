@@ -12,7 +12,7 @@ body.mode-mobile .mobile-telegram-button {
   
   /* Fixed position above PresaleCopilot */
   position: fixed;
-  bottom: 190px; /* Above Copilot (120px) */
+  bottom: 200px; /* Moved up from 190px */
   right: 14px; /* Aligned with Copilot */
   z-index: 99989; /* Just below Copilot (99990) */
   
@@ -84,7 +84,7 @@ body.mode-mobile .mobile-telegram-button img {
 
 /* In-app browser optimization */
 body.mode-mobile.in-app-browser .mobile-telegram-button {
-  bottom: 190px;
+  bottom: 200px; /* Moved up */
   right: 14px;
 }
 
