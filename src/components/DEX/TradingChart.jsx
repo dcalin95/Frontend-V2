@@ -21,6 +21,9 @@ const TRADINGVIEW_SYMBOL_MAP = {
   'BITS': 'BINANCE:BTCUSDT' // Fallback to BTC for BITS
 };
 
+// Global flag to prevent multiple simultaneous initializations
+const widgetInstances = new Map();
+
 const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
   const containerRef = useRef(null);
   const widgetRef = useRef(null);
@@ -33,6 +36,12 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
 
   useEffect(() => {
     if (!containerRef.current) return;
+
+    // Check if this container already has a widget instance
+    if (widgetInstances.has(containerId)) {
+      console.log('⚠️ Widget already registered for container:', containerId);
+      return;
+    }
 
     // Cleanup function to properly destroy widget
     const destroyWidget = () => {
@@ -51,6 +60,9 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
       if (containerRef.current) {
         containerRef.current.innerHTML = '';
       }
+      
+      // Remove from global registry
+      widgetInstances.delete(containerId);
     };
 
     // Check if TradingView is already loaded
@@ -78,7 +90,7 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
           containerRef.current.id = containerId;
         }
 
-        console.log('🚀 Initializing TradingView widget for:', tradingViewSymbol);
+        console.log('🚀 Initializing TradingView widget for:', tradingViewSymbol, 'in container:', containerId);
 
         widgetRef.current = new window.TradingView.widget({
           autosize: true,
@@ -150,8 +162,11 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
           }
         });
 
+        // Register widget instance globally
+        widgetInstances.set(containerId, widgetRef.current);
+
         setIsLoading(false);
-        console.log('✅ TradingView widget loaded successfully for:', tradingViewSymbol);
+        console.log('✅ TradingView widget loaded successfully for:', tradingViewSymbol, '- Container:', containerId);
       } catch (error) {
         console.error('❌ TradingView widget initialization failed:', error);
         setIsLoading(false);
