@@ -226,9 +226,10 @@ const SwapPage = () => {
     setBalance(prev => prev + profit);
   };
 
+  // Prepare balances for SwapPanel (used by both desktop and mobile)
+  const balancesToPass = accountMode === 'DEMO' ? MOCK_BALANCES : realBalances;
+
   const renderMainContent = () => {
-    // Prepare balances for SwapPanel
-    const balancesToPass = accountMode === 'DEMO' ? MOCK_BALANCES : realBalances;
     
     switch (activeTab) {
       case 'swap':
