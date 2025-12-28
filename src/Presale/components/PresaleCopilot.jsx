@@ -272,9 +272,21 @@ const PresaleCopilot = ({
   }, [lastTx]);
 
   const handleAddBitsToWallet = useCallback(async () => {
-    if (!bitsTokenAddress) return;
-    if (!window?.ethereum?.request) return;
+    const { ethereum } = window;
+
+    if (!ethereum) {
+      console.error('❌ [PresaleCopilot] No Ethereum provider found');
+      return;
+    }
+
+    if (!bitsTokenAddress) {
+      console.error('❌ [PresaleCopilot] BITS token address not available');
+      return;
+    }
+
     try {
+      console.log('🔄 [PresaleCopilot] ===== ATTEMPTING TO ADD BITS TOKEN =====');
+      
       const image = (() => {
         try {
           return new URL(bitsLogo, window.location.origin).toString();
@@ -283,7 +295,50 @@ const PresaleCopilot = ({
         }
       })();
 
-      await window.ethereum.request({
+      console.log('📋 [PresaleCopilot] Token Details:', {
+        address: bitsTokenAddress,
+        symbol: 'BITS',
+        decimals: 18,
+        image
+      });
+
+      // 🔍 DETECT WALLET TYPE & CAPABILITIES
+      const walletType = ethereum.isCoinbaseWallet ? 'Coinbase Wallet' :
+                         ethereum.isTrust ? 'Trust Wallet' :
+                         ethereum.isMetaMask ? 'MetaMask' :
+                         ethereum.isBraveWallet ? 'Brave Wallet' :
+                         'Unknown Wallet';
+      
+      console.log('🔍 [PresaleCopilot] Detected Wallet:', walletType);
+      console.log('🔍 [PresaleCopilot] Wallet Capabilities:', {
+        isMetaMask: ethereum.isMetaMask,
+        isCoinbaseWallet: ethereum.isCoinbaseWallet,
+        isTrust: ethereum.isTrust,
+        isBraveWallet: ethereum.isBraveWallet,
+        hasRequest: typeof ethereum.request === 'function'
+      });
+
+      // 🔍 CHECK IF wallet_watchAsset IS SUPPORTED
+      const supportsRequest = typeof ethereum.request === 'function';
+      
+      if (!supportsRequest) {
+        console.warn('⚠️ [PresaleCopilot] Wallet does not support ethereum.request()');
+        
+        // 📋 COPY CONTRACT ADDRESS AS FALLBACK
+        try {
+          await navigator.clipboard.writeText(bitsTokenAddress);
+          console.log('📋 [PresaleCopilot] Contract address copied as fallback:', bitsTokenAddress);
+          alert(`⚠️ ${walletType} doesn't support automatic token adding.\n\n📋 Contract address copied to clipboard!\n\nPlease add manually:\nAddress: ${bitsTokenAddress}\nSymbol: BITS\nDecimals: 18\nNetwork: BSC (BEP-20)`);
+        } catch (clipError) {
+          console.error('[PresaleCopilot] Failed to copy to clipboard:', clipError);
+          alert(`Please add BITS token manually:\n\nAddress: ${bitsTokenAddress}\nSymbol: BITS\nDecimals: 18\nNetwork: BSC (BEP-20)`);
+        }
+        return;
+      }
+
+      // 🚀 TRY TO ADD TOKEN VIA wallet_watchAsset
+      console.log('🚀 [PresaleCopilot] Calling wallet_watchAsset...');
+      const wasAdded = await ethereum.request({
         method: "wallet_watchAsset",
         params: {
           type: "ERC20",
@@ -295,8 +350,67 @@ const PresaleCopilot = ({
           },
         },
       });
-    } catch (_) {
-      // user rejected or wallet doesn't support; silent
+
+      console.log('✅ [PresaleCopilot] Token addition result:', wasAdded);
+
+      if (wasAdded) {
+        console.log('✅ [PresaleCopilot] User confirmed token addition');
+      } else {
+        console.log('ℹ️ [PresaleCopilot] User cancelled token addition');
+      }
+    } catch (error) {
+      console.error('❌ [PresaleCopilot] ===== ERROR ADDING BITS TOKEN =====');
+      console.error('❌ [PresaleCopilot] Error Object:', error);
+      console.error('❌ [PresaleCopilot] Error Code:', error.code);
+      console.error('❌ [PresaleCopilot] Error Message:', error.message);
+      console.error('❌ [PresaleCopilot] Error Stack:', error.stack);
+      
+      // 🔍 DETAILED ERROR HANDLING
+      if (error.code === 4001) {
+        console.log('⚠️ [PresaleCopilot] User rejected the request (code 4001)');
+        // User rejected - silent, no alert needed
+        
+      } else if (error.code === -32002) {
+        console.log('⚠️ [PresaleCopilot] Request already pending (code -32002)');
+        alert('⚠️ Request already pending. Please check your wallet.');
+        
+      } else if (error.message && (
+        error.message.includes('wallet_watchAsset') || 
+        error.message.includes("isn't implemented") ||
+        error.message.includes('not supported')
+      )) {
+        // ⚠️ WALLET DOESN'T SUPPORT wallet_watchAsset
+        console.warn('⚠️ [PresaleCopilot] Wallet does not support wallet_watchAsset method');
+        
+        // 📋 FALLBACK: COPY CONTRACT ADDRESS TO CLIPBOARD
+        try {
+          await navigator.clipboard.writeText(bitsTokenAddress);
+          console.log('📋 [PresaleCopilot] Contract address copied as fallback:', bitsTokenAddress);
+          alert(`⚠️ Your wallet doesn't support automatic token adding.\n\n📋 Contract address copied to clipboard!\n\nPlease add manually in your wallet:\n\nAddress: ${bitsTokenAddress}\nSymbol: BITS\nDecimals: 18\nNetwork: BSC (BEP-20)`);
+        } catch (clipError) {
+          console.error('[PresaleCopilot] Failed to copy to clipboard:', clipError);
+          alert(`Please add BITS token manually:\n\nAddress: ${bitsTokenAddress}\nSymbol: BITS\nDecimals: 18\nNetwork: BSC (BEP-20)`);
+        }
+        
+      } else if (error.message && error.message.includes('network')) {
+        console.log('⚠️ [PresaleCopilot] Wrong network detected');
+        alert('❌ Please switch to BSC Network (Binance Smart Chain) in your wallet.');
+        
+      } else {
+        // GENERIC ERROR
+        console.log('❌ [PresaleCopilot] Generic error occurred');
+        
+        // 📋 FALLBACK: COPY CONTRACT ADDRESS
+        try {
+          await navigator.clipboard.writeText(bitsTokenAddress);
+          console.log('📋 [PresaleCopilot] Fallback: Contract address copied:', bitsTokenAddress);
+          alert(`❌ Failed to add BITS token: ${error.message || 'Unknown error'}\n\n📋 Contract address copied to clipboard.\n\nPlease add manually:\nAddress: ${bitsTokenAddress}\nSymbol: BITS\nDecimals: 18`);
+        } catch (clipError) {
+          console.error('[PresaleCopilot] Failed to copy to clipboard:', clipError);
+        }
+      }
+      
+      console.log('🔄 [PresaleCopilot] ===== END ERROR HANDLING =====');
     }
   }, [bitsTokenAddress]);
 
