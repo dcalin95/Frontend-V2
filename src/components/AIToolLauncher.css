@@ -298,32 +298,29 @@
    ============================================= */
 body.mode-mobile .ai-launcher {
   bottom: 24px !important;
-  right: 20px !important;
+  right: 14px !important; /* Aligned with other buttons */
 }
 
 body.mode-mobile .ai-launcher__fab {
-  min-width: 64px !important;
-  width: 64px !important;
-  height: 64px !important;
+  min-width: 56px !important; /* SYNCHRONIZED with Copilot & Telegram */
+  width: 56px !important;
+  height: 56px !important;
   padding: 0 !important;
   border-radius: 50% !important;
-  background: rgba(0, 0, 0, 0.7) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border: 1.5px solid rgba(20, 241, 149, 0.5) !important;
-  box-shadow: 
-    0 8px 32px rgba(153, 69, 255, 0.4), 
-    0 0 24px rgba(20, 241, 149, 0.3) !important;
+  background: rgba(10, 12, 16, 0.78) !important; /* Match Copilot style */
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(20, 241, 149, 0.32) !important; /* Match Copilot */
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55) !important; /* Match Copilot */
   justify-content: center !important;
 }
 
 body.mode-mobile .ai-launcher__fab:hover,
 body.mode-mobile .ai-launcher__fab:active {
-  background: rgba(0, 0, 0, 0.85) !important;
-  transform: translateY(-4px) scale(1.05) !important;
-  box-shadow: 
-    0 16px 48px rgba(153, 69, 255, 0.5), 
-    0 0 40px rgba(20, 241, 149, 0.4) !important;
+  background: rgba(10, 12, 16, 0.90) !important;
+  transform: scale(0.95) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7) !important;
+  border-color: rgba(20, 241, 149, 0.5) !important;
 }
 
 /* ASCUNDE TEXTUL PE MOBIL - DOAR LOGO */
@@ -331,10 +328,10 @@ body.mode-mobile .ai-launcher__label {
   display: none !important;
 }
 
-/* LOGO BITS MAI MARE PE MOBIL */
+/* LOGO BITS PE MOBIL - adjusted size */
 body.mode-mobile .ai-launcher__icon {
-  width: 42px !important;
-  height: 42px !important;
+  width: 32px !important; /* Proportional to 56px container */
+  height: 32px !important;
   margin: 0 !important;
 }
 
