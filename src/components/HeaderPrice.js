@@ -14,7 +14,7 @@ const HeaderPrice = () => {
   return (
     <div className="header-price-display">
       <span className="price-label">
-        1 <TokenInline token="BITS" /> =
+        1 BITS =
       </span>
       <span className="price-value">${displayPrice}</span>
     </div>

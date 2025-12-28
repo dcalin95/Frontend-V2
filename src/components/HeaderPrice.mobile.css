@@ -38,20 +38,20 @@
   .price-label {
     font-size: 1.35rem !important; /* Base size, scaled by transform */
     color: #ffffff !important; 
-    font-weight: 800 !important;
-    letter-spacing: 1px !important;
-    font-family: 'Orbitron', sans-serif !important;
-    text-shadow: 3px 3px 0px #000000 !important;
+    font-weight: 600 !important; /* Lighter, sharper weight */
+    letter-spacing: 0.5px !important; /* Tighter spacing for clarity */
+    font-family: 'Roboto Mono', 'Courier New', monospace !important; /* Sharp, clear font */
+    text-shadow: 2px 2px 0px #000000 !important; /* Subtler shadow */
     margin-right: 4px !important;
   }
 
   .price-value {
     font-size: 1.35rem !important; /* Base size, scaled by transform */
     color: #00FFEA !important; 
-    font-weight: 800 !important;
-    font-family: 'Orbitron', sans-serif !important;
-    text-shadow: 3px 3px 0px #000000 !important;
-    letter-spacing: 1px !important;
+    font-weight: 600 !important; /* Lighter, sharper weight */
+    font-family: 'Roboto Mono', 'Courier New', monospace !important; /* Sharp, clear font */
+    text-shadow: 2px 2px 0px #000000 !important; /* Subtler shadow */
+    letter-spacing: 0.5px !important; /* Tighter spacing for clarity */
   }
   
   /* === ECRANE MICI (sub 380px) === */
