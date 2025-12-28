@@ -361,11 +361,51 @@ const InnerWalletProvider = ({ children }) => {
   // Replaces all legacy connection functions
   const connectWallet = async () => {
     try {
+      console.log('🔄 [WalletContext] ===== CONNECT WALLET INITIATED =====');
+      
+      // 🎯 DETECT AND LOG ALL AVAILABLE PROVIDERS
+      if (window.ethereum) {
+        console.log('🔍 [WalletContext] window.ethereum exists');
+        console.log('🔍 [WalletContext] window.ethereum.providers:', window.ethereum.providers);
+        console.log('🔍 [WalletContext] isMetaMask:', window.ethereum.isMetaMask);
+        console.log('🔍 [WalletContext] isCoinbaseWallet:', window.ethereum.isCoinbaseWallet);
+        console.log('🔍 [WalletContext] isTrust:', window.ethereum.isTrust);
+        console.log('🔍 [WalletContext] isPhantom:', window.ethereum.isPhantom);
+        
+        // 🦊 IF MULTIPLE PROVIDERS, PRIORITIZE METAMASK
+        if (window.ethereum.providers && Array.isArray(window.ethereum.providers)) {
+          console.log('🔍 [WalletContext] Multiple providers detected:', window.ethereum.providers.length);
+          
+          const metamaskProvider = window.ethereum.providers.find(p => p.isMetaMask && !p.isPhantom);
+          const trustProvider = window.ethereum.providers.find(p => p.isTrust);
+          const coinbaseProvider = window.ethereum.providers.find(p => p.isCoinbaseWallet);
+          
+          console.log('🦊 [WalletContext] MetaMask provider found:', !!metamaskProvider);
+          console.log('💙 [WalletContext] Trust provider found:', !!trustProvider);
+          console.log('🔵 [WalletContext] Coinbase provider found:', !!coinbaseProvider);
+          
+          // 🎯 PRIORITIZE: MetaMask > Trust > Coinbase > Others
+          if (metamaskProvider) {
+            console.log('✅ [WalletContext] Setting MetaMask as primary provider');
+            window.ethereum = metamaskProvider;
+          } else if (trustProvider) {
+            console.log('✅ [WalletContext] Setting Trust Wallet as primary provider');
+            window.ethereum = trustProvider;
+          } else if (coinbaseProvider) {
+            console.log('✅ [WalletContext] Setting Coinbase as primary provider');
+            window.ethereum = coinbaseProvider;
+          }
+        }
+      }
+      
       // Record explicit user intent so any resulting connection is allowed
       markConnectIntent();
+      console.log('🚀 [WalletContext] Opening Web3Modal...');
       await open();
+      console.log('✅ [WalletContext] Web3Modal opened successfully');
     } catch (err) {
-      console.error("Failed to open Web3Modal", err);
+      console.error("❌ [WalletContext] Failed to open Web3Modal:", err);
+      console.error("❌ [WalletContext] Error stack:", err.stack);
     }
   };
 
