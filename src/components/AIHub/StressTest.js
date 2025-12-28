@@ -518,6 +518,14 @@ const StressTest = () => {
       return null;
     }
   });
+  const [certificateHistory, setCertificateHistory] = useState(() => {
+    try {
+      const saved = localStorage.getItem('stress_certificate_history');
+      return saved ? JSON.parse(saved) : [];
+    } catch (_) {
+      return [];
+    }
+  });
   const [pendingCertificate, setPendingCertificate] = useState(() => {
     try {
       const saved = localStorage.getItem('stress_pending_certificate');
@@ -731,6 +739,15 @@ const StressTest = () => {
       }
     } catch (_) {}
   }, [certificate]);
+
+  // Persist certificate history
+  useEffect(() => {
+    try {
+      if (certificateHistory && certificateHistory.length > 0) {
+        localStorage.setItem('stress_certificate_history', JSON.stringify(certificateHistory));
+      }
+    } catch (_) {}
+  }, [certificateHistory]);
 
   useEffect(() => {
     try {
@@ -1862,6 +1879,26 @@ const StressTest = () => {
     setPreStartOpen(true);
   };
 
+  // 🔄 RESET FOR NEW TEST - Allow multiple tests & certificates
+  const resetForNewTest = useCallback(() => {
+    setLoading(false);
+    setResult(null);
+    setCertificate(null); // Clear current cert to allow new one
+    setPendingCertificate(null);
+    setCertPayState({ status: 'idle', error: '', txHash: '' });
+    setTestCompleteOpen(false);
+    
+    // Reset simulation state
+    setSimStage(0);
+    setElapsedTime(0);
+    setCurrentBalance(portfolioUsd);
+    setGlobalReveal(false);
+    setLogs([]);
+    setRealityTimeline([]);
+    
+    console.log('🔄 Reset complete! Ready for new test.');
+  }, [portfolioUsd]);
+
   const finishSimulation = () => {
     const val = Number.isFinite(portfolioUsd) ? portfolioUsd : 0;
 
@@ -2138,6 +2175,9 @@ const StressTest = () => {
       setCertificate(paid);
       setPendingCertificate(null);
       setCertPayState({ status: 'paid', error: '', txHash: res.hash });
+      
+      // 📚 ADD TO CERTIFICATE HISTORY
+      setCertificateHistory(prev => [...prev, paid]);
       
       // 🎉 AUTO-GENERATE AND OPEN CERTIFICATE AFTER SUCCESSFUL PAYMENT
       console.log('✅ [StressTest] Payment successful! Auto-generating certificate...');
@@ -4132,6 +4172,34 @@ const StressTest = () => {
                 </button>
               </div>
             )}
+            
+            {/* 🔄 RUN AGAIN BUTTON - Always visible after test completion */}
+            <div style={{ marginTop: '24px', paddingTop: '24px', borderTop: '1px solid rgba(0,255,102,0.2)' }}>
+              <button
+                className="test-complete-retry-btn"
+                onClick={() => {
+                  resetForNewTest();
+                  setTestCompleteOpen(false);
+                }}
+                style={{ 
+                  background: 'linear-gradient(135deg, rgba(0,255,102,0.2), rgba(0,200,255,0.2))',
+                  border: '2px solid rgba(0,255,102,0.5)',
+                  color: '#00ff66',
+                  fontWeight: '700',
+                  padding: '14px 28px',
+                  borderRadius: '12px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  letterSpacing: '1px',
+                  transition: 'all 0.3s'
+                }}
+              >
+                🔄 RUN NEW TEST (pay 10,000 BITS again)
+              </button>
+              <p style={{ fontSize: '12px', opacity: '0.7', marginTop: '12px', textAlign: 'center' }}>
+                You can run multiple tests. Each certificate will be saved in your history.
+              </p>
+            </div>
           </div>
         </div>
       )}
