@@ -1,21 +1,9 @@
 import { ethers } from "ethers";
 import axios from "axios";
 import { CONTRACTS } from "../../contract/contracts";
+import { notifyPresaleBuy } from "../../utils/telegramNotify";
 
 const API_ENDPOINT = (process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com") + "/transactions";
-const TG_WEBHOOK_URL = process.env.REACT_APP_TG_WEBHOOK_URL || ""; // Optional: set in .env
-const TG_ENABLE_FRONTEND = String(process.env.REACT_APP_TG_ENABLE_FRONTEND || 'true').toLowerCase() !== 'false';
-const TG_WEBHOOK_SECRET = process.env.REACT_APP_TG_WEBHOOK_SECRET || ""; // Optional: if webhook enforces secret
-
-async function notifyTelegram(payload) {
-  if (!TG_WEBHOOK_URL || !TG_ENABLE_FRONTEND) return;
-  try {
-    const headers = TG_WEBHOOK_SECRET ? { 'x-webhook-secret': TG_WEBHOOK_SECRET } : undefined;
-    await axios.post(TG_WEBHOOK_URL, payload, { timeout: 8000, headers });
-  } catch (_) {
-    // Silent fail – never blochează fluxul de plată
-  }
-}
 
 const handleBNBPayment = async ({
   amount,
@@ -237,19 +225,14 @@ const handleBNBPayment = async ({
       console.warn("⚠️ Error saving transaction in backend:", err.message);
     }
 
-    // 🔔 Telegram notification (success) — ensure single send
-    await notifyTelegram({
-      event: "bits_purchase",
-      status: "success",
-      network: "BSC Mainnet",
+    // 📢 TELEGRAM NOTIFICATION - Universal format
+    const bitsFormatted = ethers.utils.formatUnits(bitsToReceiveBN, 18);
+    await notifyPresaleBuy({
       wallet: walletAddress,
-      bits: bitsToReceiveBN.toString(),
-      bitsHuman: ethers.utils.formatUnits(bitsToReceiveBN, 18),
-      valueWei: valueToSend.toString(),
-      usd: usdInvested,
-      txHash: receipt.transactionHash,
-      explorer: `https://bscscan.com/tx/${receipt.transactionHash}`,
-      ts: Date.now(),
+      bits: parseFloat(bitsFormatted).toFixed(2),
+      usd: Math.round(usdInvested),
+      network: 'BSC',
+      txHash: receipt.transactionHash
     });
 
     return { txHash: receipt.transactionHash };

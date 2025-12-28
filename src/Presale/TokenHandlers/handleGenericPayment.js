@@ -3,6 +3,7 @@ import axios from "axios";
 import { getContractInstance } from "../../contract/getContract";
 import { CONTRACTS } from "../../contract/contracts";
 import ERC20ABI from "../../abi/erc20ABI.js";
+import { notifyPresaleBuy } from "../../utils/telegramNotify";
 
 const API_ENDPOINT = (process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com") + "/api/transactions";
 
@@ -101,6 +102,16 @@ const handleGenericPayment = async ({
 
       console.log("💾 [generic] Sending transaction to backend:", transactionData);
       await axios.post(API_ENDPOINT, transactionData);
+      
+      // 📢 TELEGRAM NOTIFICATION
+      const bitsFormatted = ethers.utils.formatUnits(bitsInWei, 18);
+      await notifyPresaleBuy({
+        wallet: walletAddress,
+        bits: parseFloat(bitsFormatted).toFixed(2),
+        usd: Math.round(Number(usdInvested) || 0),
+        network: 'BSC',
+        txHash: receipt.transactionHash
+      });
     } catch (backendErr) {
       console.warn("⚠️ [generic] Error saving transaction in backend:", backendErr.message);
     }

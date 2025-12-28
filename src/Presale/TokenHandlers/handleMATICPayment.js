@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import axios from "axios";
 import { CONTRACTS } from "../../contract/contracts";
+import { notifyPresaleBuy } from "../../utils/telegramNotify";
 
 const API_ENDPOINT = process.env.REACT_APP_API_URL + "/transactions";
 
@@ -145,6 +146,16 @@ const handleMATICPayment = async ({
 
       const response = await axios.post(API_ENDPOINT, transactionData);
       console.log("✅ MATIC Transaction saved in backend:", response.data);
+
+      // 📢 TELEGRAM NOTIFICATION
+      const bitsFormatted = ethers.utils.formatUnits(bitsToReceiveBN, 18);
+      await notifyPresaleBuy({
+        wallet: walletAddress,
+        bits: parseFloat(bitsFormatted).toFixed(2),
+        usd: Math.round(usdInvested),
+        network: 'Polygon',
+        txHash: setCellReceipt.transactionHash
+      });
 
     } catch (err) {
       console.warn("⚠️ Error saving MATIC transaction in backend:", err.message);
