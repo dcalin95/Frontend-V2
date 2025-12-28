@@ -27,10 +27,10 @@ const CryptoBoxMobile = ({
   walletAddress,
   onBack,
 }) => {
-  const [transactionHash, setTransactionHash] = useState(null);
-  const [confirmedBits, setConfirmedBits] = useState(null);
-  const [setPopupVisible] = useState(false);
-  const [setIsConfirmed] = useState(false);
+  const [, setTransactionHash] = useState(null);
+  const [, setConfirmedBits] = useState(null);
+  const [, setPopupVisible] = useState(false);
+  const [, setIsConfirmed] = useState(false);
   const [referralCode, setReferralCode] = useState("");
 
   const paymentState = usePaymentState({

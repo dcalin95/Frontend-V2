@@ -156,6 +156,16 @@ canvas[class*="background"],
   min-height: calc(100svh - 80px);
 }
 
+/* Reserve space for the fixed Presale Copilot (desktop) to prevent overlap */
+@media (min-width: 993px) {
+  body.presale-copilot-open .presale-wrapper {
+    padding-right: 446px; /* slightly reduced */
+  }
+  body.presale-copilot-closed .presale-wrapper {
+    padding-right: 369px; /* slightly reduced */
+  }
+}
+
 .presale-grid {
   display: grid;
   grid-template-areas:

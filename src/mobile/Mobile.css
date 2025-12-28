@@ -29,6 +29,14 @@
   overflow-x: hidden;
 }
 
+/* Extra space so the fixed Presale Copilot doesn't cover content on mobile */
+body.presale-copilot-open .mobile-presale-wrapper {
+  padding-bottom: 349px;
+}
+body.presale-copilot-closed .mobile-presale-wrapper {
+  padding-bottom: 233px;
+}
+
 /* ================================
    HERO SECTION
    ================================ */

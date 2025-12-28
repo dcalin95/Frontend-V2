@@ -20,13 +20,8 @@ const aiDescriptions = [
 const getExplorerLink = (txHash, token) => {
   if (!txHash) return null;
   try {
-    // Detect chain id from wallet if available; fallback by token
-    const chainIdHex = window?.ethereum && window.ethereum.chainId;
-    let chain;
-    if (chainIdHex) {
-      const id = parseInt(chainIdHex, 16);
-      chain = (id === 56 || id === 1 || id === 137) ? 'mainnet' : 'testnet';
-    }
+    // Presale is mainnet-only
+    const chain = 'mainnet';
     // Prefer BscScan for BNB token, otherwise delegate to util
     return getExplorerLinkUtil(txHash, token || 'BNB', chain);
   } catch (_) {

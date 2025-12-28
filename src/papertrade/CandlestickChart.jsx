@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { createChart, ColorType } from 'lightweight-charts';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
+import { createChart } from 'lightweight-charts';
 import BrandLogo from '../components/BrandLogo';
 import './CandlestickChart.css';
 
@@ -26,15 +26,15 @@ const CandlestickChart = ({
   const [priceChange, setPriceChange] = useState(null);
   const [chartHeight, setChartHeight] = useState(height);
 
-  // Timeframe configurations
-  const timeframes = {
+  // Timeframe configurations (memoized so effects deps stay stable)
+  const timeframes = useMemo(() => ({
     '1m': { interval: '1m', limit: 100, label: '1m' },
     '5m': { interval: '5m', limit: 100, label: '5m' },
     '15m': { interval: '15m', limit: 100, label: '15m' },
     '1h': { interval: '1h', limit: 100, label: '1H' },
     '4h': { interval: '4h', limit: 100, label: '4H' },
     '1d': { interval: '1d', limit: 100, label: '1D' },
-  };
+  }), []);
 
   // Fullscreen handlers
   const toggleFullscreen = () => {
@@ -146,7 +146,7 @@ const CandlestickChart = ({
         horzLines: { color: 'rgba(43, 49, 57, 0.4)' },
       },
       width: chartContainerRef.current.clientWidth,
-      height: chartHeight,
+      height: height,
       timeScale: {
         borderColor: '#2b3139',
         timeVisible: true,
@@ -219,7 +219,7 @@ const CandlestickChart = ({
         chartRef.current.remove();
       }
     };
-  }, []);
+  }, [height]);
 
   // Update chart height when chartHeight changes
   useEffect(() => {
@@ -256,7 +256,7 @@ const CandlestickChart = ({
       const interval = setInterval(updateChartData, updateInterval);
       return () => clearInterval(interval);
     }
-  }, [symbol, timeframe, autoUpdate, updateInterval]);
+  }, [symbol, timeframe, autoUpdate, updateInterval, timeframes]);
 
   return (
     <div 

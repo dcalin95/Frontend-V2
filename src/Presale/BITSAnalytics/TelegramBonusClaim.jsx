@@ -20,7 +20,7 @@ const TelegramBonusClaim = ({ onClaimed }) => {
       const network = await provider.getNetwork();
       
       // Only fetch on Binance Smart Chain (56) or Ethereum (1)
-      if (network.chainId !== 97 && network.chainId !== 1) { // BSC Testnet (97) și ETH Mainnet (1)
+      if (network.chainId !== 56 && network.chainId !== 1) {
         console.log("⚠️ Telegram rewards not available on chain:", network.chainId);
         setReward(0);
         return;

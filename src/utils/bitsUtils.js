@@ -99,7 +99,7 @@ export const logBITSConversion = (originalAmount, context = "") => {
   return integerAmount;
 };
 
-export default {
+const bitsUtils = {
   toBitsInteger,
   formatBITS,
   calculateBonusBITSInteger,
@@ -108,3 +108,5 @@ export default {
   weiToBitsInteger,
   logBITSConversion
 };
+
+export default bitsUtils;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import BrandLogo from '../components/BrandLogo';
 import './WhaleTransactions.css';
@@ -13,7 +13,6 @@ const WhaleTransactions = ({ minAmount = 10000000 }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [viewMode, setViewMode] = useState('normal'); // 'normal', 'threequarter', 'fullscreen'
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [selectedTx, setSelectedTx] = useState(null);
   const [currentSloganIndex, setCurrentSloganIndex] = useState(0);
   const [selectedNetworks, setSelectedNetworks] = useState([]); // Network filter: [] = all, ['binance', 'bitcoin', ...] = specific
@@ -32,7 +31,7 @@ const WhaleTransactions = ({ minAmount = 10000000 }) => {
   ];
 
   // Fetch large trades from MULTIPLE BLOCKCHAINS (7 Active Sources: Binance + Bitcoin + Ethereum + BSC + Stacks + Polygon + Avalanche)
-  const fetchWhaleTransactions = async () => {
+  const fetchWhaleTransactions = useCallback(async () => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000); // 15s timeout
 
@@ -504,7 +503,7 @@ const WhaleTransactions = ({ minAmount = 10000000 }) => {
       setTransactions([]);
       setLoading(false);
     }
-  };
+  }, [minAmount, selectedNetworks, timeFilter]);
 
   // DEMO DATA FUNCTION - DISABLED (Now using only real data from APIs)
   /*
@@ -540,7 +539,7 @@ const WhaleTransactions = ({ minAmount = 10000000 }) => {
     const interval = setInterval(fetchWhaleTransactions, 120000);
 
     return () => clearInterval(interval);
-  }, [minAmount]);
+  }, [fetchWhaleTransactions]);
 
   // Toggle network filter
   const toggleNetworkFilter = (network) => {

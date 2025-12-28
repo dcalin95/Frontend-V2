@@ -3,7 +3,6 @@ import './AnalysisExplainer.css';
 import './AnalysisExplainer.mobile.css';
 import useReadingTracker from '../hooks/useReadingTracker';
 import ReadingProgressBar from './ReadingProgressBar';
-import SmartHighlight from './SmartHighlight';
 
 const AnalysisExplainer = () => {
   const [expandedSection, setExpandedSection] = useState(null);
@@ -13,7 +12,6 @@ const AnalysisExplainer = () => {
     activeSection,
     readingSections,
     scrollProgress,
-    analytics,
     observeSection,
     trackCardExpansion,
     trackHover,

@@ -310,7 +310,7 @@ export const getNFTMetadata = async (tokenURI) => {
   }
 };
 
-export default {
+const nftUtils = {
   uploadNFTToIPFS,
   getMindNFTContract,
   mintMindNFT,
@@ -318,4 +318,6 @@ export default {
   getUserMindNFTs,
   getNFTMetadata
 };
+
+export default nftUtils;
 

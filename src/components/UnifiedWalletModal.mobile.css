@@ -11,6 +11,9 @@ body.mode-mobile .unified-wallet-modal-overlay {
   background: rgba(0, 0, 0, 0.92);
   padding: 0;
   z-index: 100000;
+  /* Override global mobile kill-switch */
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
 }
 
 /* 🎴 MODAL - Compact & Centrat */
@@ -24,6 +27,8 @@ body.mode-mobile .unified-wallet-modal {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.08);
   overflow-y: auto;
+  /* Override global mobile kill-switch */
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.95) !important;
 }
 
 /* 🎯 MODAL HEADER - Compact */

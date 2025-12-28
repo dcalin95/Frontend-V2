@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { createWeb3Modal, useWeb3Modal } from "@web3modal/wagmi/react";
-import { WagmiProvider, useAccount, useDisconnect, useBalance, useSwitchChain, useReadContract, useWalletClient } from "wagmi";
+import { WagmiProvider, useAccount, useDisconnect, useBalance, useSwitchChain, useReadContract, useWalletClient, useReconnect } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { config, projectId } from "./wagmiConfig";
 import { formatEther } from "viem";
@@ -19,6 +19,8 @@ export const WALLET_TYPES = {
   SOLANA: 'solana',
   PHANTOM: 'phantom'
 };
+
+const REMEMBER_WALLET_KEY = "bits_remember_wallet"; // "true" | "false"
 
 // Adresa Contractului BITS Token (BSC Mainnet)
 const BITS_TOKEN_ADDRESS = CONTRACT_MAP.BITS_TOKEN.address;
@@ -54,10 +56,43 @@ const InnerWalletProvider = ({ children }) => {
     watch: true, // Watch for changes
   });
   const { switchChain } = useSwitchChain();
+  const { reconnect } = useReconnect();
   const { open } = useWeb3Modal();
+  const connectIntentRef = useRef({ at: 0 });
+  const CONNECT_INTENT_WINDOW_MS = 120000;
+  const CONNECT_INTENT_KEY = 'wallet_connect_intent_at';
+
+  // 🔄 NO AUTO-RECONNECT ON MOUNT
+  // Removed aggressive auto-reconnect to prevent MetaMask errors on refresh.
+  // Wagmi will handle reconnection naturally if wagmi.store exists in localStorage.
+
+  const markConnectIntent = useCallback(() => {
+    const at = Date.now();
+    connectIntentRef.current.at = at;
+    try {
+      sessionStorage.setItem(CONNECT_INTENT_KEY, String(at));
+    } catch (e) {
+      // ignore storage issues
+    }
+    return at;
+  }, []);
 
   // 🎨 Modal Control State
   const [showWalletModal, setShowWalletModal] = useState(false);
+  const [rememberWallet, setRememberWallet] = useState(() => {
+    try {
+      // default OFF unless explicitly set to "true"
+      return localStorage.getItem(REMEMBER_WALLET_KEY) === "true";
+    } catch (_) {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(REMEMBER_WALLET_KEY, rememberWallet ? "true" : "false");
+    } catch (_) {}
+  }, [rememberWallet]);
 
   // Debug logs
   console.log("🔍 [Wallet Debug] Address:", address);
@@ -159,6 +194,7 @@ const InnerWalletProvider = ({ children }) => {
       try {
         localStorage.removeItem('wagmi.connected');
         localStorage.removeItem('wagmi.store');
+        localStorage.removeItem('wagmi.recentConnectorId');
         sessionStorage.removeItem('wagmi.connector');
         console.log("✅ [WalletContext] All connection states cleared");
       } catch (e) {
@@ -170,6 +206,24 @@ const InnerWalletProvider = ({ children }) => {
         console.warn("[WalletContext] Disconnect failed suppressed:", e);
     }
   }, [disconnect]);
+
+  const setRememberWalletEnabled = useCallback(async (enabled) => {
+    const next = !!enabled;
+    // Write immediately so a fast refresh doesn't lose the toggle state.
+    try {
+      localStorage.setItem(REMEMBER_WALLET_KEY, next ? "true" : "false");
+    } catch (_) {}
+    setRememberWallet(next);
+    if (!next) {
+      // Turning OFF persistence should immediately behave like manual-connect-only.
+      await safeDisconnect();
+      try {
+        localStorage.removeItem('wagmi.recentConnectorId');
+        localStorage.removeItem('wagmi.store');
+        localStorage.removeItem('wagmi.connected');
+      } catch (_) {}
+    }
+  }, [safeDisconnect]);
 
   // Debug logs for BITS balance
   useEffect(() => {
@@ -199,18 +253,36 @@ const InnerWalletProvider = ({ children }) => {
     }
     
     if (isConnected && address) {
-      // 🛑 CRITICAL: Filter out Phantom from EVM connections ONLY
-      // Phantom injects window.ethereum but it's a Solana wallet, not EVM
-      // Only check this for EVM connections (Wagmi), not for Solana connections
-      if (connector?.id === 'injected' && window.ethereum?.isPhantom) {
-        // Check if this is actually an EVM connection attempt (not Solana)
-        // Phantom should only be used via window.solana for Solana, not window.ethereum for EVM
-        console.warn("⚠️ [ModernWallet] Phantom detected as EVM connector - this is wrong, disconnecting");
-        console.warn("💡 [ModernWallet] Use Phantom via Solana network, not EVM");
-        console.warn("💡 [ModernWallet] This should not happen if walletFilter is working correctly");
+      // ✅ Allow persistent connections across refresh/restart.
+      // We only use "intent" to decide whether to auto-open UI widgets (wallet box).
+      const now = Date.now();
+      const intentAt =
+        Number(connectIntentRef.current.at || 0) ||
+        Number(sessionStorage.getItem(CONNECT_INTENT_KEY) || 0);
+      const userInitiated = Number.isFinite(intentAt) && intentAt > 0 && (now - intentAt) <= CONNECT_INTENT_WINDOW_MS;
+
+      // If user disabled "Remember wallet", do not allow auto-connect on refresh.
+      // Allow only explicit user-initiated connect (intent set right before opening the modal).
+      if (!rememberWallet && !userInitiated) {
+        console.warn("🛑 [WalletContext] Auto-connect blocked (Remember wallet is OFF). Disconnecting.");
         safeDisconnect();
         return;
       }
+
+      // 🛑 CRITICAL: Filter out Phantom-as-EVM ONLY when the *connected provider* is actually Phantom.
+      // NOTE: window.ethereum can be hijacked in multi-wallet setups, so we must inspect connector.getProvider().
+      (async () => {
+        try {
+          const provider = await connector?.getProvider?.();
+          const isPhantomProvider = !!provider?.isPhantom;
+          const isMetaMaskProvider = !!provider?.isMetaMask;
+          const connectorName = String(connector?.name || '').toLowerCase();
+          if ((connectorName.includes('phantom') || isPhantomProvider) && !isMetaMaskProvider) {
+            console.warn("⚠️ [ModernWallet] Phantom provider detected for EVM connection. Disconnecting.");
+            safeDisconnect();
+          }
+        } catch (_) {}
+      })();
       
       console.log("✅ [ModernWallet] Connected:", address);
       console.log("✅ [ModernWallet] Chain ID:", chainId);
@@ -219,8 +291,13 @@ const InnerWalletProvider = ({ children }) => {
       setWalletType(connector?.name || "WalletConnect");
       setWalletName(connector?.name || "Wallet");
       
-      // Mark that we just connected (for auto-opening wallet box)
-      sessionStorage.setItem('wallet_just_connected', 'true');
+      // Mark that we just connected (for auto-opening wallet box) — ONLY for user-initiated connects
+      if (userInitiated) {
+        sessionStorage.setItem('wallet_just_connected', 'true');
+      }
+      // Consume connect intent
+      connectIntentRef.current.at = 0;
+      sessionStorage.removeItem(CONNECT_INTENT_KEY);
       
       // Set icon (simple fallback)
       if (connector?.name?.toLowerCase().includes("metamask")) {
@@ -248,7 +325,7 @@ const InnerWalletProvider = ({ children }) => {
       setEthBalance("0");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isConnected, address, connector, chainId, safeDisconnect]);
+  }, [isConnected, address, connector, chainId, safeDisconnect, rememberWallet]);
 
   // Balance Sync (Native Token - BNB/ETH)
   useEffect(() => {
@@ -284,6 +361,8 @@ const InnerWalletProvider = ({ children }) => {
   // Replaces all legacy connection functions
   const connectWallet = async () => {
     try {
+      // Record explicit user intent so any resulting connection is allowed
+      markConnectIntent();
       await open();
     } catch (err) {
       console.error("Failed to open Web3Modal", err);
@@ -359,35 +438,8 @@ const InnerWalletProvider = ({ children }) => {
     }
   };
 
-  // 🔧 Prevent auto-connect on mount - clear stale connections
-  useEffect(() => {
-    const preventAutoConnect = async () => {
-      try {
-        console.log('🔍 [WalletContext] Initializing with clean state...');
-        
-        // 🛑 CRITICAL: Always disconnect on mount to prevent any auto-connect
-        // This ensures the site is 100% disconnected until user clicks "Connect"
-        if (isConnected) {
-          console.log('🧹 [WalletContext] Disconnecting auto-connected wallet on mount');
-          await disconnect();
-        }
-        
-        // Clear all session/local flags
-        localStorage.removeItem('wagmi.recentConnectorId');
-        localStorage.removeItem('wagmi.store');
-        localStorage.removeItem('wagmi.connected');
-        sessionStorage.removeItem('wagmi.connector');
-        sessionStorage.removeItem('wallet_just_connected');
-        
-        console.log('✅ [WalletContext] Fresh state ready');
-      } catch (error) {
-        console.warn('[WalletContext] Error ensuring clean state:', error);
-      }
-    };
-    
-    preventAutoConnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Run ONLY once on mount
+  // NOTE: We intentionally do NOT disconnect on mount anymore.
+  // The connected wallet should persist across refresh/restart until the user disconnects manually.
 
   return (
     <WalletContext.Provider
@@ -406,11 +458,14 @@ const InnerWalletProvider = ({ children }) => {
         provider: signer?.provider || null, // ✅ Expose ethers provider, not connector
         signer, // Adapter for ethers.js signer
         connector, // ✅ Expose connector separately (read-only)
+        rememberWallet,
 
         // Functions
         connectWallet,
+        markConnectIntent,
         disconnectWallet: safeDisconnect, // ✅ Use safe wrapper
         hardReset, // 🧨 Nuclear option for stuck connections
+        setRememberWalletEnabled,
         
         // Legacy Functions (Mapped)
         connectViaMetamask,
@@ -439,7 +494,7 @@ const InnerWalletProvider = ({ children }) => {
 
 export const WalletProvider = ({ children }) => {
   return (
-    <WagmiProvider config={config}>
+    <WagmiProvider config={config} reconnectOnMount={true}>
       <QueryClientProvider client={queryClient}>
         <InnerWalletProvider>
           {children}

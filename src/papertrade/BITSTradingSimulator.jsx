@@ -6,6 +6,22 @@ import './BITSTradingSimulator.css';
 import './CompactStyles.css';
 import './ChartPlaceholder.css';
 
+// Available trading pairs (top cryptocurrencies)
+const TRADING_PAIRS = [
+  'BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'ADAUSDT', 'DOTUSDT',
+  'LINKUSDT', 'LTCUSDT', 'BCHUSDT', 'XLMUSDT', 'UNIUSDT',
+  'SOLUSDT', 'AVAXUSDT', 'MATICUSDT', 'ATOMUSDT', 'FILUSDT'
+];
+
+// Fallback market data in case API fails
+const FALLBACK_MARKET_DATA = {
+  'BTCUSDT': { symbol: 'BTCUSDT', price: 114277.51, change24h: 0.89, volume24h: 1000000, high24h: 115000, low24h: 113000, lastUpdate: Date.now() },
+  'ETHUSDT': { symbol: 'ETHUSDT', price: 3456.78, change24h: 1.23, volume24h: 800000, high24h: 3500, low24h: 3400, lastUpdate: Date.now() },
+  'BNBUSDT': { symbol: 'BNBUSDT', price: 678.90, change24h: -0.45, volume24h: 600000, high24h: 680, low24h: 675, lastUpdate: Date.now() },
+  'ADAUSDT': { symbol: 'ADAUSDT', price: 0.45, change24h: 2.10, volume24h: 400000, high24h: 0.46, low24h: 0.44, lastUpdate: Date.now() },
+  'DOTUSDT': { symbol: 'DOTUSDT', price: 7.89, change24h: 1.56, volume24h: 300000, high24h: 8.00, low24h: 7.80, lastUpdate: Date.now() }
+};
+
 const BITSTradingSimulator = () => {
   // Wallet context pentru teste practice
   const { walletAddress, connectWallet, disconnectWallet } = useContext(WalletContext);
@@ -50,22 +66,6 @@ const BITSTradingSimulator = () => {
   const [searchTerm, setSearchTerm] = useState('');
   // TEMPORARILY DISABLED - const [chartWidget, setChartWidget] = useState(null);
 
-  // Available trading pairs (top cryptocurrencies)
-  const tradingPairs = [
-    'BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'ADAUSDT', 'DOTUSDT',
-    'LINKUSDT', 'LTCUSDT', 'BCHUSDT', 'XLMUSDT', 'UNIUSDT',
-    'SOLUSDT', 'AVAXUSDT', 'MATICUSDT', 'ATOMUSDT', 'FILUSDT'
-  ];
-
-  // Fallback market data in case API fails
-  const fallbackMarketData = {
-    'BTCUSDT': { symbol: 'BTCUSDT', price: 114277.51, change24h: 0.89, volume24h: 1000000, high24h: 115000, low24h: 113000, lastUpdate: Date.now() },
-    'ETHUSDT': { symbol: 'ETHUSDT', price: 3456.78, change24h: 1.23, volume24h: 800000, high24h: 3500, low24h: 3400, lastUpdate: Date.now() },
-    'BNBUSDT': { symbol: 'BNBUSDT', price: 678.90, change24h: -0.45, volume24h: 600000, high24h: 680, low24h: 675, lastUpdate: Date.now() },
-    'ADAUSDT': { symbol: 'ADAUSDT', price: 0.45, change24h: 2.10, volume24h: 400000, high24h: 0.46, low24h: 0.44, lastUpdate: Date.now() },
-    'DOTUSDT': { symbol: 'DOTUSDT', price: 7.89, change24h: 1.56, volume24h: 300000, high24h: 8.00, low24h: 7.80, lastUpdate: Date.now() }
-  };
-
   // Small helper: fetch with timeout (browser-safe)
   const fetchWithTimeout = useCallback(async (url, options = {}, timeoutMs = 10000) => {
     const controller = new AbortController();
@@ -101,7 +101,7 @@ const BITSTradingSimulator = () => {
       // Filter and format data for our trading pairs
       const formattedData = {};
       data.forEach(ticker => {
-        if (tradingPairs.includes(ticker.symbol)) {
+        if (TRADING_PAIRS.includes(ticker.symbol)) {
           formattedData[ticker.symbol] = {
             symbol: ticker.symbol,
             price: parseFloat(ticker.lastPrice),
@@ -145,7 +145,7 @@ const BITSTradingSimulator = () => {
       // If this is a retry and we still fail, use fallback data
       if (isRetry || retryCount >= 2) {
         console.log('Using fallback market data due to API failure');
-        setMarketData(fallbackMarketData);
+        setMarketData(FALLBACK_MARKET_DATA);
         setMarketDataError('Using fallback data - API temporarily unavailable');
         
         // Show a less aggressive error message
@@ -170,12 +170,6 @@ const BITSTradingSimulator = () => {
       if (!isRetry) setLoading(false);
     }
   }, [retryCount, fetchWithTimeout]);
-
-  // Build chart data for selected pair
-  const chartData = useMemo(() => {
-    const series = priceHistory[selectedPair] || [];
-    return series.map(p => ({ time: new Date(p.time).toLocaleTimeString(), price: Number(p.price) }));
-  }, [priceHistory, selectedPair]);
 
   // Calculate portfolio value based on current prices
   const calculatePortfolioValue = useCallback(() => {
@@ -686,7 +680,7 @@ const BITSTradingSimulator = () => {
             
             <div className="market-grid-compact">
               {(() => {
-                const filteredPairs = tradingPairs.filter(symbol => 
+                const filteredPairs = TRADING_PAIRS.filter(symbol => 
                   symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
                   symbol.replace('USDT', '').toLowerCase().includes(searchTerm.toLowerCase())
                 );

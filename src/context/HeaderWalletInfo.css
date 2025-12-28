@@ -389,52 +389,74 @@
   font-size: 0.65rem;
 }
 
-/* ➖ Buton Minimizare (nu închidere) - POZIȚIE ORIGINALĂ (colț dreapta sus ferestrei - ÎN INTERIOR) */
+/* ➖ Buton Minimizare - POZIȚIE EXTERNĂ (mai vizibil și ușor de accesat) */
 .wallet-minimize-btn {
   position: absolute;
-  top: 0;
-  right: 0;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.7);
-  border-radius: 0 15px 0 3px;
+  top: -12px;
+  right: -12px;
+  background: linear-gradient(135deg, #14f195 0%, #9945ff 100%);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  color: #000;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  padding: 3px 8px;
-  font-size: 0.65rem;
-  font-weight: 600;
-  white-space: nowrap;
-  width: auto;
-  height: auto;
-  z-index: 10001;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 10005;
+  box-shadow: 0 4px 15px rgba(20, 241, 149, 0.5);
 }
 
 .wallet-minimize-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.3);
-  color: rgba(255, 255, 255, 0.9);
-  transform: translateY(-1px);
+  transform: scale(1.2) rotate(90deg);
+  box-shadow: 0 6px 20px rgba(20, 241, 149, 0.7);
+  background: #fff;
 }
 
 .wallet-minimize-btn:active {
-  transform: translateY(0);
-  background: rgba(255, 255, 255, 0.15);
+  transform: scale(0.9);
 }
 
 .wallet-minimize-btn svg {
-  width: 10px;
-  height: 10px;
-  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  stroke: #000;
+  stroke-width: 3px;
 }
 
 .wallet-minimize-btn .minimize-text {
-  font-size: 0.65rem;
-  font-weight: 600;
-  white-space: nowrap;
+  display: none; /* Ascundem textul pentru stil minimalist */
+}
+
+.wallet-remember-toggle {
+  position: absolute;
+  top: 34px;
+  right: 8px;
+  z-index: 10002;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 0.68rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.wallet-remember-toggle input {
+  width: 14px;
+  height: 14px;
+  accent-color: #14f195;
+}
+
+.wallet-remember-toggle:hover {
+  border-color: rgba(20, 241, 149, 0.35);
+  box-shadow: 0 0 14px rgba(20, 241, 149, 0.12);
 }
 
 /* 💰 Liniile de Balanță - SOLANA STYLE +7% */

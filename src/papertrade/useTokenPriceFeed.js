@@ -10,7 +10,7 @@ const CORS_PROXY = "https://api.allorigins.win/raw?url=";
  * @param {{ coingeckoId?: string|null, fixedPrice?: number|null, vs?: string, refreshMs?: number }} cfg
  */
 export default function useTokenPriceFeed(cfg = {}) {
-  const { coingeckoId = null, fixedPrice = null, vs = "usd", refreshMs = 10000 } = cfg;
+  const { coingeckoId = null, fixedPrice = null, vs = "usd" } = cfg;
   const [series, setSeries] = useState([]); // [{ time, price }]
   const [price, setPrice] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -181,7 +181,7 @@ export default function useTokenPriceFeed(cfg = {}) {
     // REMOVE auto-refresh to stop random chart changes!
     // const id = setInterval(fetchData, refreshMs);
     // return () => clearInterval(id);
-  }, []); // 🔧 FIXED - Empty dependency array to prevent infinite loop
+  }, [fetchData]); // fetchData is memoized via useCallback
 
   return { series, price, loading, error, useDemo, refresh: fetchData };
 }

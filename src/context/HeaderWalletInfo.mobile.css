@@ -115,6 +115,21 @@ body.mode-mobile .wallet-header-info {
   position: fixed !important;
 }
 
+/* Remember wallet toggle: keep it visible on small screens */
+body.mode-mobile .wallet-remember-toggle {
+  position: static !important;
+  margin: 2px 0 6px 0 !important;
+  width: 100% !important;
+  justify-content: space-between !important;
+  font-size: 0.7rem !important;
+  z-index: 10002 !important;
+}
+
+body.mode-mobile .wallet-remember-toggle input {
+  width: 16px !important;
+  height: 16px !important;
+}
+
 /* Container când wallet-ul NU este conectat - mai compact */
 body.mode-mobile .wallet-header-info:has(.connect-wallet-button:only-child) {
   padding: 6px !important; /* Redus de la 8px */

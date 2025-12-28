@@ -232,21 +232,18 @@ const BITSAnalytics = () => {
   const [isSwitchingNet, setIsSwitchingNet] = useState(false);
 
   const SUPPORTED_NETWORKS = {
-    56:  { icon: '🟡', testnet: false, chainId: '0x38',   chainName: 'BSC Mainnet',   nativeCurrency: { name: 'BNB',  symbol: 'BNB',  decimals: 18 }, rpcUrls: ['https://bsc-dataseed.binance.org'],            blockExplorerUrls: ['https://bscscan.com'] },
-    97:  { icon: '🟡', testnet: true,  chainId: '0x61',   chainName: 'BSC Testnet',   nativeCurrency: { name: 'tBNB', symbol: 'tBNB', decimals: 18 }, rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545'], blockExplorerUrls: ['https://testnet.bscscan.com'] },
-    30:  { icon: '🟩', testnet: false, chainId: '0x1e',   chainName: 'RSK Mainnet',   nativeCurrency: { name: 'RBTC', symbol: 'RBTC', decimals: 18 }, rpcUrls: ['https://public-node.rsk.co'],                  blockExplorerUrls: ['https://explorer.rsk.co'] },
-    31:  { icon: '🟩', testnet: true,  chainId: '0x1f',   chainName: 'RSK Testnet',   nativeCurrency: { name: 'tRBTC',symbol: 'tRBTC',decimals: 18 }, rpcUrls: ['https://public-node.testnet.rsk.co'],         blockExplorerUrls: ['https://explorer.testnet.rsk.co'] },
-    1:   { icon: '⬡',  testnet: false, chainId: '0x1',    chainName: 'Ethereum',      nativeCurrency: { name: 'ETH',  symbol: 'ETH',  decimals: 18 }, rpcUrls: ['https://rpc.ankr.com/eth'],                  blockExplorerUrls: ['https://etherscan.io'] },
-    137: { icon: '🟣', testnet: false, chainId: '0x89',   chainName: 'Polygon',       nativeCurrency: { name: 'MATIC',symbol: 'MATIC',decimals: 18 }, rpcUrls: ['https://polygon-rpc.com'],                   blockExplorerUrls: ['https://polygonscan.com'] },
-    42161:{ icon: '🛡️',testnet: false, chainId: '0xa4b1', chainName: 'Arbitrum One', nativeCurrency: { name: 'ETH',  symbol: 'ETH',  decimals: 18 }, rpcUrls: ['https://arb1.arbitrum.io/rpc'],             blockExplorerUrls: ['https://arbiscan.io'] },
-    43114:{ icon: '🔺',testnet: false, chainId: '0xa86a', chainName: 'Avalanche',     nativeCurrency: { name: 'AVAX', symbol: 'AVAX', decimals: 18 }, rpcUrls: ['https://api.avax.network/ext/bc/C/rpc'],       blockExplorerUrls: ['https://snowtrace.io'] }
+    56:  { icon: '🟡', chainId: '0x38',   chainName: 'BSC Mainnet',   nativeCurrency: { name: 'BNB',  symbol: 'BNB',  decimals: 18 }, rpcUrls: ['https://bsc-dataseed.binance.org'],            blockExplorerUrls: ['https://bscscan.com'] },
+    30:  { icon: '🟩', chainId: '0x1e',   chainName: 'RSK Mainnet',   nativeCurrency: { name: 'RBTC', symbol: 'RBTC', decimals: 18 }, rpcUrls: ['https://public-node.rsk.co'],                  blockExplorerUrls: ['https://explorer.rsk.co'] },
+    1:   { icon: '⬡',  chainId: '0x1',    chainName: 'Ethereum',      nativeCurrency: { name: 'ETH',  symbol: 'ETH',  decimals: 18 }, rpcUrls: ['https://rpc.ankr.com/eth'],                  blockExplorerUrls: ['https://etherscan.io'] },
+    137: { icon: '🟣', chainId: '0x89',   chainName: 'Polygon',       nativeCurrency: { name: 'MATIC',symbol: 'MATIC',decimals: 18 }, rpcUrls: ['https://polygon-rpc.com'],                   blockExplorerUrls: ['https://polygonscan.com'] },
+    42161:{ icon: '🛡️',chainId: '0xa4b1', chainName: 'Arbitrum One', nativeCurrency: { name: 'ETH',  symbol: 'ETH',  decimals: 18 }, rpcUrls: ['https://arb1.arbitrum.io/rpc'],             blockExplorerUrls: ['https://arbiscan.io'] },
+    43114:{ icon: '🔺',chainId: '0xa86a', chainName: 'Avalanche',     nativeCurrency: { name: 'AVAX', symbol: 'AVAX', decimals: 18 }, rpcUrls: ['https://api.avax.network/ext/bc/C/rpc'],       blockExplorerUrls: ['https://snowtrace.io'] }
   };
 
   const getNetworkLabelByChainId = (cid) => {
     const n = SUPPORTED_NETWORKS[Number(cid)];
     if (n) return n.chainName;
     if (Number(cid) === 56) return 'BSC Mainnet';
-    if (Number(cid) === 97) return 'BSC Testnet';
     return `Chain ${cid}`;
   };
 
@@ -553,12 +550,11 @@ const BITSAnalytics = () => {
               .sort((a, b) => {
                 const an = SUPPORTED_NETWORKS[a];
                 const bn = SUPPORTED_NETWORKS[b];
-                if (an.testnet !== bn.testnet) return an.testnet ? 1 : -1;
                 return an.chainName.localeCompare(bn.chainName);
               })
               .map((cid) => (
                 <option key={cid} value={cid}>
-                  {SUPPORTED_NETWORKS[cid].icon} {SUPPORTED_NETWORKS[cid].chainName}{SUPPORTED_NETWORKS[cid].testnet ? ' (testnet)' : ''}
+                  {SUPPORTED_NETWORKS[cid].icon} {SUPPORTED_NETWORKS[cid].chainName}
                 </option>
               ))}
           </select>

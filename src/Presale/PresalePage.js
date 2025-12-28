@@ -19,6 +19,7 @@ import { useWallet } from "../context/WalletContext";
 import AdjustFontButton from "../components/AdjustFontButton";
 import RecentBTCFeed from "./BITSAnalytics/RecentBTCFeed";
 import RecentStacksFeed from "./BITSAnalytics/RecentStacksFeed";
+import PresaleCopilot from "./components/PresaleCopilot";
 
 // Lazy loaded components for better performance
 const PaymentBox = lazy(() => import("./PaymentBox/PaymentBox"));
@@ -218,6 +219,7 @@ const PresalePage = () => {
 
   return (
     <div className="presale-page">
+      <PresaleCopilot selectedToken={selectedToken} selectedChain={selectedChain} />
       {/* 🎨 Switcher (3 poziții) - MOVED BOTTOM LEFT */}
       <div
         onClick={handleToggle}

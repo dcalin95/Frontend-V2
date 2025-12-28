@@ -81,13 +81,10 @@ export const formatBITS = (value, enhanced = false) => {
   if (convertedValue === 0) return "0.00 $BITS";
   
   // Dynamic precision for BITS (ALWAYS 1 decimal)
-  return `${convertedValue.toFixed(1)} $BITS`;
-  
-  const formatted = convertedValue.toLocaleString('en-US', { 
-    minimumFractionDigits: 2, 
-    maximumFractionDigits: 2 
+  const formatted = convertedValue.toLocaleString('en-US', {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1
   });
-  
   return enhanced ? `💎 ${formatted} $BITS` : `${formatted} $BITS`;
 };
 

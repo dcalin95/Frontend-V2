@@ -27,12 +27,8 @@ export const useBitsPrice = (walletAddress) => {
         }
 
         // 🎯 EXACT COPY FROM PAYMENTBOX - CREATE OWN PROVIDER!
-        const IS_TESTNET = false; // BSC MAINNET
-        const provider = new ethers.providers.JsonRpcProvider(
-          IS_TESTNET
-            ? "https://data-seed-prebsc-1-s1.binance.org:8545/"
-            : "https://bsc-dataseed1.binance.org"
-        );
+        // MAINNET-only
+        const provider = new ethers.providers.JsonRpcProvider("https://bsc-dataseed1.binance.org");
 
         const abi = [
           "function getCurrentBitsPriceUSD() view returns (uint256)",
@@ -89,13 +85,8 @@ const getCurrentBitsPrice = async (provider, walletAddress) => {
     
     // 🎯 EXACT COPY FROM GPT2 CHILD - CREATE OWN PROVIDER!
     console.log("💰 [getCurrentBitsPrice] Creating DIRECT PROVIDER like GPT2 child...");
-    const IS_TESTNET = false; // BSC MAINNET
-
-    const directProvider = new ethers.providers.JsonRpcProvider(
-      IS_TESTNET
-        ? "https://data-seed-prebsc-1-s1.binance.org:8545/"
-        : "https://bsc-dataseed1.binance.org"
-    );
+    // MAINNET-only
+    const directProvider = new ethers.providers.JsonRpcProvider("https://bsc-dataseed1.binance.org");
 
     // 🎯 EXACT ABI FROM GPT2 CHILD!
     const workingAbi = [

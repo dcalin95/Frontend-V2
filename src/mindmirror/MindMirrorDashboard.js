@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useWallet } from '../context/WalletContext';
 import useBitsBalance from '../hooks/useBitsBalance';
 import './mindmirror.desktop.css';
 import './mindmirror.mobile.css';
-import MindNFTGenerator from './components/MindNFTGenerator';
 import AITradingGuardian from '../components/AIHub/AITradingGuardian';
 import DynamicNFTCard from '../components/AIHub/DynamicNFTCard';
 import WordCollectionProgress from './components/WordCollectionProgress';
@@ -16,11 +15,9 @@ const MindMirrorDashboard = () => {
   const { balance: bitsBalance, loading: balanceLoading } = useBitsBalance(walletAddress);
 
   // State management
-  const [inputText, setInputText] = useState('');
+  const [inputText] = useState('');
   const [analysisResults, setAnalysisResults] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const [videoStream, setVideoStream] = useState(null);
   const [currentTier, setCurrentTier] = useState(1);
   const [hasUsedAnalysis, setHasUsedAnalysis] = useState(false);
   const [showWarningModal, setShowWarningModal] = useState(false);
@@ -32,8 +29,6 @@ const MindMirrorDashboard = () => {
   const [hoveredFeature, setHoveredFeature] = useState(null);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
   const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
-  
-  const videoRef = useRef(null);
 
   // Toast notification helper
   const showToast = (message, type = 'info', duration = 3000) => {
@@ -43,56 +38,25 @@ const MindMirrorDashboard = () => {
 
   // Calculate progress and word count
   const wordCount = wordMilestone.count || (inputText.trim() ? inputText.trim().split(/\s+/).length : 0);
-  const progress = Math.min((wordCount / 1000) * 100, 100);
-
-  // Check word milestone and usage on component mount or account change  
-  useEffect(() => {
-    console.log('🔄 [useEffect] Wallet address changed:', walletAddress);
-    if (walletAddress) {
-      console.log('✅ [useEffect] Wallet is connected, fetching word count and usage...');
-      checkWordMilestone();
-      checkAnalysisUsage();
-    } else {
-      console.log('⚠️ [useEffect] No wallet connected, resetting word milestone');
-      setWordMilestone({ count: 0, hasAccess: false, isLoading: false });
-    }
-  }, [walletAddress]);
-
-  // Page protection against accidental closure
-  useEffect(() => {
-    const handleBeforeUnload = (e) => {
-      if (analysisResults) {
-        e.preventDefault();
-        e.returnValue = 'You have unsaved analysis results! If you leave, the data will be lost forever.';
-        return 'You have unsaved analysis results! If you leave, the data will be lost forever.';
-      }
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [analysisResults]);
 
   // Check if user has already used the analysis
-  const checkAnalysisUsage = async () => {
+  const checkAnalysisUsage = useCallback(async () => {
     try {
       const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
-      
       if (!walletAddress) return;
-      
       const response = await fetch(`${BACKEND_URL}/api/word-analysis/check-usage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ walletAddress: walletAddress })
       });
-      
       const data = await response.json();
       setHasUsedAnalysis(data.hasUsed || false);
     } catch (error) {
       console.error('Error checking analysis usage:', error);
     }
-  };
+  }, [walletAddress]);
 
-  const checkWordMilestone = async () => {
+  const checkWordMilestone = useCallback(async () => {
     try {
       const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
       
@@ -165,7 +129,36 @@ const MindMirrorDashboard = () => {
       // Subtle error toast
       showToast('⚠️ Could not load word count. Click refresh to try again.', 'error', 4000);
     }
-  };
+  }, [walletAddress]);
+
+  // Check word milestone and usage on component mount or account change  
+  useEffect(() => {
+    console.log('🔄 [useEffect] Wallet address changed:', walletAddress);
+    if (walletAddress) {
+      console.log('✅ [useEffect] Wallet is connected, fetching word count and usage...');
+      checkWordMilestone();
+      checkAnalysisUsage();
+    } else {
+      console.log('⚠️ [useEffect] No wallet connected, resetting word milestone');
+      setWordMilestone({ count: 0, hasAccess: false, isLoading: false });
+    }
+  }, [walletAddress, checkWordMilestone, checkAnalysisUsage]);
+
+  // Page protection against accidental closure
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (analysisResults) {
+        e.preventDefault();
+        e.returnValue = 'You have unsaved analysis results! If you leave, the data will be lost forever.';
+        return 'You have unsaved analysis results! If you leave, the data will be lost forever.';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [analysisResults]);
+
+  // checkAnalysisUsage / checkWordMilestone moved above & memoized (useCallback) to satisfy hooks deps
 
   const handleAnalysis = async () => {
     if (!walletAddress) {

@@ -11,7 +11,7 @@ export const SOLANA_CONFIG = {
   destinationWallet:
     process.env.REACT_APP_SOL_DESTINATION_WALLET ||
     // Your mainnet receive wallet
-    "3phi3ycJnNDh5xndAX5u4f7qXcxwWmgTfxkVt6wgoyTe",
+    "63u6aWZJdFd1vh6VfCya5DJkXTUEmHBbs14SiqHNt4GQ",
 
   // Optional: if/when you deploy a Solana program later, store its address here.
   programId: process.env.REACT_APP_SOL_PROGRAM_ID || null

@@ -1,14 +1,10 @@
 import { toast } from "react-toastify";
 import { switchChain } from '@wagmi/core';
-import { config } from '../../context/wagmiConfig';
+import { config } from '../context/wagmiConfig';
 
 // 🌐 Network Definitions (Wagmi Compatible)
 // Note: We use numeric Chain IDs for Wagmi v2 compatibility
 const NETWORKS = {
-  BNB_TEST: {
-    chainId: 97, // 0x61
-    chainName: "BSC Testnet",
-  },
   BNB_MAIN: {
     chainId: 56, // 0x38
     chainName: "BSC Mainnet",
@@ -17,29 +13,22 @@ const NETWORKS = {
     chainId: 1, // Ethereum Mainnet
     chainName: "Ethereum Mainnet",
   },
-  ETH_TEST: {
-    chainId: 11155111, // Sepolia
-    chainName: "Sepolia Testnet",
-  },
   MATIC: {
     chainId: 137, // Polygon Mainnet
     chainName: "Polygon Mainnet",
   },
-  MATIC_TEST: {
-    chainId: 80002, // Amoy
-    chainName: "Polygon Amoy",
-  },
 };
 
-const isMainnet = process.env.REACT_APP_ENV === "mainnet";
+// Presale is MAINNET-only
+const isMainnet = true;
 
 const TOKEN_TO_NETWORK = {
-  BNB: isMainnet ? "BNB_MAIN" : "BNB_TEST",
-  USDT: isMainnet ? "BNB_MAIN" : "BNB_TEST",
-  USDC: isMainnet ? "BNB_MAIN" : "BNB_TEST",
-  ETH: isMainnet ? "ETH" : "ETH_TEST",
-  SHIB: isMainnet ? "ETH" : "ETH_TEST",
-  MATIC: isMainnet ? "MATIC" : "MATIC_TEST",
+  BNB: "BNB_MAIN",
+  USDT: "BNB_MAIN",
+  USDC: "BNB_MAIN",
+  ETH: "ETH",
+  SHIB: "ETH",
+  MATIC: "MATIC",
 };
 
 /**

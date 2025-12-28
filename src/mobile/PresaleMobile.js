@@ -9,6 +9,7 @@ import useCellManagerData from "../Presale/hooks/useCellManagerData"; // ✅ Imp
 import bitsLogo from "../assets/logo.png";
 import StakingSummary from "../Staking/components/StakingSummary"; // ✅ Use Responsive Component
 import RewardsHub from "../components/RewardsHub"; // ✅ Use Responsive Component
+import PresaleCopilot from "../Presale/components/PresaleCopilot";
 import "./Mobile.css";
 
 // Lazy load mobile components
@@ -82,6 +83,7 @@ const PresaleMobile = () => {
 
   return (
     <div className="mobile-presale-wrapper">
+      <PresaleCopilot selectedToken={selectedToken} selectedChain={selectedChain} />
       {/* Hero Section - REFACTORED GEMINI STYLE */}
       <section className="mobile-hero" style={{minHeight: 'auto', paddingBottom: '40px'}}>
         <div className="mobile-hero-content">

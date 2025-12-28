@@ -47,8 +47,16 @@ export const SolanaProvider = ({ children }) => {
   // RPC endpoint
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
   
+  // 🔌 Check if "Remember wallet" is enabled to allow auto-connect
+  const shouldAutoConnect = useMemo(() => {
+    try {
+      return localStorage.getItem('bits_remember_wallet') === 'true';
+    } catch (_) {
+      return false;
+    }
+  }, []);
+
   // Configure supported Solana wallets
-  // Ledger removed - requires hardware wallet connected, can be accessed through Phantom/Solflare
   const wallets = useMemo(
     () => [
       new PhantomWalletAdapter(),
@@ -58,19 +66,17 @@ export const SolanaProvider = ({ children }) => {
       new MathWalletAdapter(),
       new Coin98WalletAdapter(),
       new CloverWalletAdapter(),
-      // LedgerWalletAdapter - requires hardware wallet, commented out
-      // new LedgerWalletAdapter(),
     ],
     []
   );
 
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <SolanaWalletProvider wallets={wallets} autoConnect={false}>
+      <SolanaWalletProvider wallets={wallets} autoConnect={shouldAutoConnect}>
         <SolanaAutoConnect>
-        <SolanaContext.Provider value={{}}>
-          {children}
-        </SolanaContext.Provider>
+          <SolanaContext.Provider value={{}}>
+            {children}
+          </SolanaContext.Provider>
         </SolanaAutoConnect>
       </SolanaWalletProvider>
     </ConnectionProvider>

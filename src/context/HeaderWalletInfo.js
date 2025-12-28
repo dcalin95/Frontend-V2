@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useWallet } from "../context/WalletContext";
 import { useGeoLocation } from "../context/GeoLocationContext"; 
 import SwapModal from "../components/SwapModal";
@@ -41,6 +41,7 @@ const getFlagEmoji = (countryCode) => {
 };
 
 const HeaderWalletInfo = () => {
+  const location = useLocation();
   const {
     walletAddress,
     disconnectWallet,
@@ -51,6 +52,8 @@ const HeaderWalletInfo = () => {
     walletType,
     setShowWalletModal,
     chainId, // 🔍 Get chainId to detect network
+    rememberWallet,
+    setRememberWalletEnabled,
   } = useWallet();
 
   const { countryCode, country, city, ip } = useGeoLocation();
@@ -71,6 +74,13 @@ const HeaderWalletInfo = () => {
 
   const [isDragging, setIsDragging] = useState(false);
   const [showWalletBox, setShowWalletBox] = useState(false); // ✅ Define showWalletBox early
+
+  // 🎯 NAVIGATION AUTO-MINIMIZE
+  useEffect(() => {
+    console.log("🚶 [HeaderWalletInfo] Navigation detected, auto-minimizing wallet...");
+    setShowWalletBox(false);
+  }, [location.pathname]);
+
   const dragOffset = useRef({ x: 0, y: 0 });
   const wrapperRef = useRef(null);
 
@@ -323,6 +333,18 @@ const HeaderWalletInfo = () => {
             </svg>
             <span className="minimize-text">Minimize</span>
           </button>
+
+          <label
+            className="wallet-remember-toggle"
+            title="Keep your wallet connected on this device until you disconnect manually."
+          >
+            <input
+              type="checkbox"
+              checked={!!rememberWallet}
+              onChange={(e) => setRememberWalletEnabled?.(e.target.checked)}
+            />
+            <span>Remember wallet</span>
+          </label>
 
             <>
               <div className="wallet-identifier">

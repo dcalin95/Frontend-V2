@@ -34,25 +34,18 @@ const handleBNBPayment = async ({
   try {
     if (!window.ethereum) throw new Error("No Web3 wallet detected.");
 
-    // 🌐 Choose RPCs based on active network (default MAINNET)
-    const isMainnet = (CONTRACTS?.NODE?.address || "").toLowerCase() === "0xe6536756d73f0771d9a317f49453de96541c352f".toLowerCase();
-    const readRpcEndpoints = isMainnet
-      ? [
-          "https://bsc-dataseed1.binance.org",
-          "https://bsc-dataseed.binance.org",
-          "https://bsc-dataseed4.binance.org",
-          "https://bsc.publicnode.com"
-        ]
-      : [
-          "https://data-seed-prebsc-1-s1.binance.org:8545/",
-          "https://data-seed-prebsc-2-s1.binance.org:8545/",
-          "https://data-seed-prebsc-1-s2.binance.org:8545/",
-          "https://bsc-testnet.publicnode.com",
-          "https://bsc-testnet-rpc.publicnode.com"
-        ];
+    // 🌐 MAINNET-only RPCs
+    const isMainnet = true;
+    const readRpcEndpoints = [
+      "https://bsc-dataseed1.binance.org",
+      "https://bsc-dataseed.binance.org",
+      "https://bsc-dataseed4.binance.org",
+      "https://bsc.publicnode.com",
+      "https://rpc.ankr.com/bsc"
+    ];
 
-    // 🔁 Ensure wallet is on the right chain for signing (56 mainnet / 97 testnet)
-    const desiredChainIdHex = isMainnet ? "0x38" : "0x61";
+    // 🔁 Ensure wallet is on the right chain for signing (BSC Mainnet)
+    const desiredChainIdHex = "0x38";
     try {
       const providerForSwitch = new ethers.providers.Web3Provider(window.ethereum);
       const net = await providerForSwitch.getNetwork();
@@ -79,9 +72,9 @@ const handleBNBPayment = async ({
       if (onWrongChain) {
         const msg = [
           `⚠️ Wrong network selected in wallet.`,
-          `\nYou are buying with BNB on ${isMainnet ? 'BSC Mainnet' : 'BSC Testnet'}.`,
+          `\nYou are buying with BNB on BSC Mainnet.`,
           `\nIf you use Ledger, open the "Ethereum" app (BSC uses the Ethereum app), not the "Binance" app.`,
-          `\nThen switch your wallet network to ${isMainnet ? 'BSC Mainnet (chainId 56, 0x38)' : 'BSC Testnet (chainId 97, 0x61)'} and try again.`,
+          `\nThen switch your wallet network to BSC Mainnet (chainId 56, 0x38) and try again.`,
         ].join(' ');
         alert(msg);
         throw new Error("Wrong network or Ledger app. Open Ethereum app for BSC and switch to the correct BSC network.");
@@ -248,7 +241,7 @@ const handleBNBPayment = async ({
     await notifyTelegram({
       event: "bits_purchase",
       status: "success",
-      network: isMainnet ? "BSC Mainnet" : "BSC Testnet",
+      network: "BSC Mainnet",
       wallet: walletAddress,
       bits: bitsToReceiveBN.toString(),
       bitsHuman: ethers.utils.formatUnits(bitsToReceiveBN, 18),
@@ -299,7 +292,7 @@ const handleBNBPayment = async ({
       if (msg.includes('CALL_EXCEPTION') || msg.toLowerCase().includes('execution reverted')) {
         const friendly = [
           'Transaction failed due to a contract/network mismatch.',
-          ` Use ${ (CONTRACTS?.NODE?.address || '').toLowerCase() === '0xe6536756d73f0771d9a317f49453de96541c352f'.toLowerCase() ? 'BSC Mainnet' : 'BSC Testnet' } in your wallet.`,
+          ` Use BSC Mainnet in your wallet.`,
           ' If you use Ledger, open the Ethereum app (BSC uses the Ethereum app), not the Binance app, then retry.'
         ].join('');
         try { err.message = friendly; } catch (_) {}
@@ -323,7 +316,7 @@ const handleBNBPayment = async ({
             event: 'bits_purchase',
             status: 'success',
             network: (CONTRACTS?.NODE?.address || '').toLowerCase() === '0xe6536756d73f0771d9a317f49453de96541c352f'.toLowerCase()
-              ? 'BSC Mainnet' : 'BSC Testnet',
+              ? 'BSC Mainnet' : 'BSC Mainnet',
             wallet: walletAddress,
             bits: (bitsToReceive ? String(bitsToReceive) : '0'),
             bitsHuman: (bitsToReceive ? String(bitsToReceive) : '0'),
@@ -366,7 +359,7 @@ const handleBNBPayment = async ({
       event: "bits_purchase",
       status: "failed",
       network: (CONTRACTS?.NODE?.address || '').toLowerCase() === '0xe6536756d73f0771d9a317f49453de96541c352f'.toLowerCase()
-        ? 'BSC Mainnet' : 'BSC Testnet',
+        ? 'BSC Mainnet' : 'BSC Mainnet',
       wallet: walletAddress,
       reason: friendlyReason,
       usd: usdInvested,

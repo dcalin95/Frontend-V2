@@ -21,11 +21,11 @@ const CosmicLoader = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress(prev => {
-        if (prev >= 100) {
-            clearInterval(interval);
-            return 100;
-        }
-        return Math.min(prev + 1.5, 100);
+        // Never show 100% while the loader is still visible.
+        // It's more faithful to cap at 99% and let the app unmount the loader when truly ready.
+        const cap = 99;
+        if (prev >= cap) return cap;
+        return Math.min(prev + 1.5, cap);
       });
     }, 40);
     return () => clearInterval(interval);
@@ -33,8 +33,8 @@ const CosmicLoader = () => {
 
   useEffect(() => {
       const totalTexts = LOADING_TEXTS.length;
-      const step = 100 / totalTexts;
-      const newIndex = Math.min(Math.floor(progress / step), totalTexts - 1);
+      const step = 99 / totalTexts;
+      const newIndex = Math.min(Math.floor(progress / Math.max(1, step)), totalTexts - 1);
       if (newIndex !== textIndex) setTextIndex(newIndex);
   }, [progress, textIndex]);
 

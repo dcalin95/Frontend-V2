@@ -2,6 +2,90 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto+Mono:wght@400;700&display=swap');
 
+/* === DESKTOP / CHROME WARNING === */
+.desktop-chrome-warning {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  background: linear-gradient(135deg, rgba(255, 165, 0, 0.95), rgba(255, 140, 0, 0.9));
+  color: #000;
+  padding: 12px 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 
+    0 4px 20px rgba(255, 165, 0, 0.4),
+    0 0 60px rgba(255, 165, 0, 0.2);
+  font-size: 14px;
+  font-weight: 600;
+  animation: warningPulse 2s ease-in-out infinite;
+}
+
+@keyframes warningPulse {
+  0%, 100% {
+    box-shadow: 
+      0 4px 20px rgba(255, 165, 0, 0.4),
+      0 0 60px rgba(255, 165, 0, 0.2);
+  }
+  50% {
+    box-shadow: 
+      0 4px 30px rgba(255, 165, 0, 0.6),
+      0 0 80px rgba(255, 165, 0, 0.4);
+  }
+}
+
+.warning-icon {
+  font-size: 20px;
+}
+
+.warning-text {
+  color: #000;
+}
+
+.warning-text strong {
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.chrome-link {
+  background: rgba(0, 0, 0, 0.2);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.chrome-link:hover {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .desktop-chrome-warning {
+    top: 10px;
+    font-size: 12px;
+    padding: 10px 16px;
+    gap: 8px;
+  }
+  
+  .warning-icon {
+    font-size: 16px;
+  }
+  
+  .chrome-link {
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+}
+
 .hell-wrapper {
   min-height: 100vh;
   background: #050000;
@@ -11,15 +95,12 @@
   text-rendering: geometricPrecision;
   position: relative;
   overflow-x: hidden;
-  /* Removed 100vw: adapt to available space next to sidebar for real symmetry */
   width: 100%;
   margin: 0;
-  /* Adaptive spacing: avoids overlap with external fixed banners without a huge empty gap */
-  padding: clamp(140px, 16vh, 220px) 30px 110px;
+  padding: clamp(320px, 38vh, 480px) 30px 110px;
   box-sizing: border-box;
   transition: background 1s ease;
   z-index: 1;
-  isolation: isolate;
 }
 
 /* When TV is opened as popup/fullscreen, lift the entire StressTest stacking context above external headers */
@@ -89,6 +170,14 @@
   background: url('https://upload.wikimedia.org/wikipedia/commons/b/b1/TV_static.gif');
   opacity: 0.02;
   mix-blend-mode: overlay;
+}
+
+.stress-vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  transition: all 0.5s ease;
 }
 
 /* 🎧 AUDIO CONTROL */
@@ -194,7 +283,7 @@
 /* 🏢 CONTENT LAYOUT */
 .stress-content {
   position: relative;
-  z-index: 10;
+  z-index: 10000; /* Higher than the BoostedBanner (9999) to prevent being covered */
   /* Wider, less "narrow": fill the available app content area, only gently cap ultra-wide screens */
   max-width: 1900px;
   /* IMPORTANT: avoid vw-based widths (they include sidebar area and cause "false centering") */
@@ -224,10 +313,74 @@
   margin: 0;
 }
 
-.subtitle {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 0.9rem;
+.subtitle-v2 {
+  max-width: 800px;
+  margin: 15px auto 0;
+  font-family: 'Roboto Mono', monospace;
+  text-align: center;
+}
+
+.access-info {
+  font-size: 0.95rem;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.req-label {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.8rem;
+  margin-right: 8px;
+}
+
+.price-details-expand {
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  text-align: left;
+  background: rgba(255, 0, 51, 0.03);
+  border-radius: 12px;
+  margin-top: 15px;
+}
+
+.price-details-expand.open {
+  max-height: 400px;
+  opacity: 1;
+  padding: 20px;
+  border: 1px solid rgba(255, 0, 51, 0.1);
+  box-shadow: inset 0 0 20px rgba(255, 0, 51, 0.05);
+}
+
+.price-details-expand p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.price-details-expand p strong {
+  color: #ff0033;
+}
+
+.read-more-btn {
+  background: transparent;
+  border: none;
+  color: #ff0033;
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
   margin-top: 10px;
+  padding: 5px 10px;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.read-more-btn:hover {
+  color: #fff;
+  border-color: #fff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 /* 🧪 SIMULATION CORE - RE-INGINERIE PENTRU SIMETRIE FLEXIBILĂ */
@@ -498,6 +651,16 @@
 .ai-face-v3.mood-agony .pupil { background: #fff; box-shadow: 0 0 18px rgba(255,255,255,0.55); width: 16px; }
 .ai-face-v3.mood-agony .mouth { height: 14px; width: 54px; border-radius: 999px; background: rgba(255,255,255,0.65); }
 
+.ai-face-v3.mood-insane {
+  border-color: #ff00ff;
+  box-shadow: 0 0 70px rgba(255, 0, 255, 0.5);
+  animation: headTwitch 0.08s infinite alternate-reverse;
+}
+.ai-face-v3.mood-insane .pupil { background: #ff00ff; box-shadow: 0 0 24px #ff00ff; width: 6px; height: 18px; }
+.ai-face-v3.mood-insane .mouth { height: 2px; width: 66px; background: #ff00ff; transform: rotate(-3deg); }
+.ai-face-v3.mood-insane .brow.left { transform: rotate(-35deg) translateY(-5px); }
+.ai-face-v3.mood-insane .brow.right { transform: rotate(35deg) translateY(-5px); }
+
 .status-bubble {
   text-align: left;
 }
@@ -527,12 +690,54 @@
 
 /* 🎛️ GLASS PANELS */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 20px;
-  backdrop-filter: blur(20px);
+  background: rgba(10, 0, 0, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  padding: 24px;
+  backdrop-filter: blur(30px);
   margin-bottom: 14px;
+  box-shadow: 
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    inset 0 0 20px rgba(255, 0, 51, 0.02);
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), 
+              border-color 0.4s ease, 
+              box-shadow 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-panel:hover {
+  border-color: rgba(255, 0, 51, 0.35);
+  box-shadow: 
+    0 15px 50px rgba(255, 0, 51, 0.1),
+    inset 0 0 30px rgba(255, 0, 51, 0.05);
+  transform: translateY(-2px);
+}
+
+.glass-panel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.03),
+    transparent
+  );
+  transform: skewX(-25deg);
+  pointer-events: none;
+}
+
+.glass-panel:hover::after {
+  animation: sweep 1.2s ease-in-out;
+}
+
+@keyframes sweep {
+  0% { left: -100%; }
+  100% { left: 150%; }
 }
 
 /* In the 3-rail layout we want PERFECT symmetry:
@@ -914,14 +1119,35 @@
 }
 
 .tv-panel.size-fullscreen {
-  position: fixed;
-  inset: 0;
-  z-index: 20000001;
-  margin: 0;
-  border-radius: 0;
-  padding: 18px;
-  background: rgba(0,0,0,0.92);
-  overflow: visible;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 20000001 !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  padding: 18px !important;
+  background: rgba(0,0,0,0.96) !important;
+  overflow: visible !important;
+  transform: none !important;
+  backdrop-filter: blur(40px) !important;
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+.tv-panel.size-popup {
+  position: fixed !important;
+  bottom: 30px !important;
+  right: 30px !important;
+  width: 420px !important;
+  height: 320px !important;
+  z-index: 20000001 !important;
+  transform: none !important;
+  box-shadow: 0 20px 80px rgba(0,0,0,0.8) !important;
+  border: 2px solid rgba(255,255,255,0.2) !important;
+}
+
+.tv-panel.size-fullscreen:hover,
+.tv-panel.size-popup:hover {
+  transform: none !important;
 }
 
 .tv-panel.size-fullscreen .tv-shell,
@@ -1050,10 +1276,11 @@
   font-size: 0.56rem;
   padding: 6px 8px;
   border-radius: 999px;
-  cursor: pointer;
+  cursor: pointer !important;
   text-transform: uppercase;
   letter-spacing: 1px;
   white-space: nowrap;
+  pointer-events: all !important;
 }
 
 .tv-fav:hover { border-color: rgba(255,255,255,0.28); transform: translateY(-1px); }
@@ -1067,10 +1294,11 @@
   font-size: 0.60rem;
   padding: 6px 9px;
   border-radius: 999px;
-  cursor: pointer;
+  cursor: pointer !important;
   text-transform: uppercase;
   letter-spacing: 1px;
   white-space: nowrap;
+  pointer-events: all !important;
 }
 
 .tv-toggle:hover {
@@ -1651,6 +1879,19 @@
   gap: 6px;
 }
 
+.cert-inline-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .cert-inline-group {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+}
+
 .cert-label {
   font-size: 0.82rem;
   color: rgba(255,255,255,0.82);
@@ -1748,8 +1989,47 @@
 .cert-camera-cta .cta-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 8px;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.cert-camera-cta .tv-toggle {
+  background: rgba(255, 0, 51, 0.15);
+  border: 2px solid #ff0033;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 900;
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(255, 0, 51, 0.3);
+  text-shadow: 0 0 5px #ff0033;
+  transition: all 0.3s ease;
+  animation: pulse-border 2s infinite;
+}
+
+.cert-camera-cta .tv-toggle:hover {
+  background: #ff0033;
+  color: #000;
+  box-shadow: 0 0 30px #ff0033;
+  transform: translateY(-3px) scale(1.02);
+}
+
+@keyframes pulse-border {
+  0% { box-shadow: 0 0 5px rgba(255, 0, 51, 0.4); }
+  50% { box-shadow: 0 0 20px rgba(255, 0, 51, 0.8); }
+  100% { box-shadow: 0 0 5px rgba(255, 0, 51, 0.4); }
+}
+
+.cert-camera-cta .tv-toggle.primary-action {
+  background: #ff0033;
+  color: #fff;
+  border-color: #fff;
+}
+
+.cert-camera-cta .tv-toggle.primary-action:hover {
+  background: #fff;
+  color: #ff0033;
+  border-color: #ff0033;
 }
 
 .cert-camera-cta .cta-sub {
@@ -1809,21 +2089,26 @@
 }
 
 .br-toggle {
-  background: rgba(0,0,0,0.38);
-  border: 1px solid rgba(0,255,102,0.28);
-  color: rgba(255,255,255,0.92);
-  padding: 8px 12px;
-  border-radius: 999px;
+  background: rgba(0,255,102,0.1);
+  border: 2px solid #00ff66;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
   font-family: 'Roboto Mono', monospace;
-  font-size: 0.78rem;
+  font-size: 0.85rem;
+  font-weight: 900;
   cursor: pointer;
-  transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 255, 102, 0.2);
 }
 
 .br-toggle:hover {
-  transform: translateY(-1px);
-  border-color: rgba(0,255,102,0.45);
-  box-shadow: 0 0 18px rgba(0,255,102,0.10);
+  background: #00ff66;
+  color: #000;
+  box-shadow: 0 0 25px #00ff66;
+  transform: translateY(-2px);
 }
 
 .br-chip {
@@ -1919,9 +2204,11 @@
 
 .cert-panel {
   margin-top: 18px;
+  margin-bottom: 120px;
   border-color: rgba(0,255,102,0.25);
   position: relative;
   overflow: hidden;
+  opacity: 0.98;
 }
 
 /* Hologram / watermark effect */
@@ -1930,11 +2217,12 @@
   position: absolute;
   inset: -140px;
   background:
+    url("data:image/svg+xml,%3Csvg width='360' height='260' viewBox='0 0 360 260' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='180' y='130' font-family='Roboto, sans-serif' font-weight='700' font-size='11' fill='rgba(0, 255, 102, 0.12)' text-anchor='middle' transform='rotate(-24 180 130)'%3EThe Quantum Stress Test is an Official AI BitSwapDEX Diagnostic%3C/text%3E%3C/svg%3E") repeat,
     radial-gradient(circle at 18% 30%, rgba(0,255,102,0.10), transparent 55%),
     radial-gradient(circle at 78% 40%, rgba(112,0,255,0.10), transparent 55%),
     conic-gradient(from 180deg, rgba(255,0,51,0.06), rgba(0,255,102,0.05), rgba(255,255,255,0.035), rgba(112,0,255,0.05), rgba(255,0,51,0.06));
   mix-blend-mode: screen;
-  opacity: 0.65;
+  opacity: 0.7;
   pointer-events: none;
   filter: saturate(1.15);
 }
@@ -1972,10 +2260,12 @@
 
 .cert-title {
   margin: 0;
-  font-size: 1.05rem;
-  letter-spacing: 1px;
+  font-size: 1.25rem;
+  letter-spacing: 1.5px;
+  font-weight: 900;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.9);
+  color: #00f0ff;
+  text-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
 }
 
 .cert-id {
@@ -2138,11 +2428,73 @@
   display: flex;
   justify-content: space-between;
   gap: 10px;
-  padding: 10px 12px;
+  padding: 12px 16px;
   border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(0,0,0,0.28);
-  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(10, 0, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+.att-m:hover {
+  background: rgba(255, 0, 51, 0.05);
+  border-color: rgba(255, 0, 51, 0.2);
+}
+
+.att-m .k {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.att-m .v {
+  font-family: 'Space Mono', monospace;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+/* CAMERA SCANNER LINE */
+.attention-view {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #000;
+}
+
+.attention-view::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: rgba(0, 255, 102, 0.4);
+  box-shadow: 0 0 15px rgba(0, 255, 102, 0.8);
+  animation: scanlineMove 4s linear infinite;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* 🚨 URGENT CALL TO ACTION PULSE */
+@keyframes pulse-urgent {
+  0% { box-shadow: 0 0 0 0 rgba(255, 0, 51, 0.7); transform: scale(1); }
+  50% { box-shadow: 0 0 30px 10px rgba(255, 0, 51, 0); transform: scale(1.02); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 0, 51, 0); transform: scale(1); }
+}
+
+.pulse-urgent {
+  animation: pulse-urgent 1.5s infinite ease-in-out !important;
+  border-color: #ff0033 !important;
+  color: #fff !important;
+  text-shadow: 0 0 10px #ff0033 !important;
+  background: rgba(255, 0, 51, 0.2) !important;
+}
+
+@keyframes scanlineMove {
+  0% { top: 0%; opacity: 0; }
+  5% { opacity: 1; }
+  95% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
 }
 
 .att-m .k { font-size: 0.65rem; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 1px; }
@@ -2215,10 +2567,13 @@
 }
 
 .verdict-title {
-  font-size: 1.8rem;
+  font-size: 2.2rem;
+  font-weight: 900;
   color: #ff0033;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   text-align: center;
+  text-shadow: 0 0 30px rgba(255, 0, 51, 0.6);
+  letter-spacing: 2px;
 }
 
 .verdict-stats {
@@ -2240,17 +2595,25 @@
 }
 
 .stat strong {
-  font-size: 1.2rem;
+  font-size: 1.6rem;
   font-family: 'Roboto Mono', monospace;
+  font-weight: 900;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
 }
 
-.stat.highlight strong { color: #ff0033; }
+.stat.highlight strong { 
+  color: #ff0033;
+  text-shadow: 0 0 20px rgba(255, 0, 51, 0.5);
+}
 
 .v-comment {
   text-align: center;
   font-family: 'Roboto Mono', monospace;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
+  font-weight: 700;
   color: #00f0ff;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+  margin: 20px 0;
 }
 
 /* 📠 HELL TICKER */
@@ -2531,6 +2894,15 @@
 .stage-5 .glitch-title { color: #fff; text-shadow: 0 0 50px #fff; }
 .stage-5 .static-noise-overlay { opacity: 0.4; mix-blend-mode: overlay; }
 
+.look-away-overlay.is-alert {
+  animation: alertFlash 0.4s infinite alternate;
+}
+
+@keyframes alertFlash {
+  from { background: rgba(20, 0, 0, 0.95); backdrop-filter: blur(25px); }
+  to { background: rgba(40, 0, 0, 0.98); backdrop-filter: blur(30px); }
+}
+
 @keyframes absoluteAgony {
   0% { transform: scale(1); filter: grayscale(1) contrast(2); }
   100% { transform: scale(1.01); filter: grayscale(1) contrast(3) invert(0.05); }
@@ -2611,3 +2983,367 @@
   .tv-panel { grid-column: 1; }
   .tv-panel { --tv-crt-h: 200px; }
 }
+
+/* LOOK AWAY OVERLAY */
+.look-away-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(15, 0, 5, 0.96), rgba(0, 0, 0, 0.98));
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(25px);
+  padding: 20px;
+}
+
+.look-away-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: 
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.01) 2px, rgba(255, 255, 255, 0.01) 3px);
+  pointer-events: none;
+}
+
+.warning-content {
+  text-align: center;
+  padding: clamp(30px, 5vw, 60px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(15, 15, 15, 0.7);
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 80px rgba(255, 0, 51, 0.05);
+  position: relative;
+  max-width: 800px;
+  width: 100%;
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+.warning-content::after {
+  content: "PROTOCOL: HUMAN RESILIENCE VERIFICATION";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 0, 51, 0.2), transparent);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.7rem;
+  padding: 8px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.w-title {
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 800;
+  margin: 20px 0 10px;
+  background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.7) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -1px;
+}
+
+.w-msg {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.6;
+  margin: 20px 0;
+  color: #ff0033;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.w-sub {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.7;
+  margin-bottom: 15px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.primary-confirm-btn {
+  background: #ff0033;
+  color: #fff;
+  border: none;
+  padding: 16px 40px;
+  border-radius: 12px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  letter-spacing: 2px;
+  box-shadow: 0 10px 20px -5px rgba(255, 0, 51, 0.4);
+  text-transform: uppercase;
+}
+
+.primary-confirm-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  background: #ff1a47;
+  box-shadow: 0 15px 30px -5px rgba(255, 0, 51, 0.6), 0 0 20px rgba(255, 0, 51, 0.2);
+}
+
+.primary-confirm-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.secondary-cancel-btn {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px 40px;
+  border-radius: 12px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.secondary-cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.eye-scanner {
+  width: min(300px, 80%);
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ff0033, transparent);
+  margin: 40px auto;
+  box-shadow: 0 0 30px #ff0033;
+  animation: scanMove 1.5s infinite ease-in-out;
+}
+
+.look-away-overlay.pause-mode {
+  background: rgba(0, 0, 0, 0.97);
+  backdrop-filter: blur(50px);
+}
+
+/* Modal Watermark & Seal */
+.modal-watermark {
+  position: absolute;
+  inset: 0;
+  background:
+    url("data:image/svg+xml,%3Csvg width='320' height='220' viewBox='0 0 320 220' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='160' y='110' font-family='Roboto, sans-serif' font-weight='700' font-size='11' fill='rgba(0, 255, 102, 0.12)' text-anchor='middle' transform='rotate(-24 160 110)'%3EThe Quantum Stress Test is an Official AI BitSwapDEX Diagnostic%3C/text%3E%3C/svg%3E") repeat,
+    radial-gradient(circle at 22% 32%, rgba(0, 255, 102, 0.05), transparent 55%),
+    radial-gradient(circle at 78% 42%, rgba(112, 0, 255, 0.05), transparent 55%),
+    conic-gradient(from 180deg, rgba(255, 0, 51, 0.03), rgba(0, 255, 102, 0.03), rgba(255, 255, 255, 0.02), rgba(112, 0, 255, 0.03), rgba(255, 0, 51, 0.03));
+  mix-blend-mode: screen;
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.brand-logo {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 140px;
+  height: 48px;
+  background: url("data:image/svg+xml,%3Csvg width='420' height='140' viewBox='0 0 420 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop stop-color='%2300ff9c' offset='0'/%3E%3Cstop stop-color='%235454ff' offset='1'/%3E%3C/linearGradient%3E%3Cfilter id='s' x='-20%25' y='-20%25' width='140%25' height='140%25'%3E%3CfeGaussianBlur stdDeviation='2' result='b'/%3E%3CfeMerge%3E%3CfeMergeNode in='b'/%3E%3CfeMergeNode in='SourceGraphic'/%3E%3C/feMerge%3E%3C/filter%3E%3C/defs%3E%3Crect x='0' y='0' width='420' height='140' rx='18' fill='rgba(0,0,0,0.4)' stroke='rgba(0,255,156,0.35)'/%3E%3Ctext x='110' y='74' font-family='Orbitron, Roboto, sans-serif' font-size='46' font-weight='800' fill='url(%23g)' filter='url(%23s)'%3EBITS%3C/text%3E%3Ctext x='210' y='74' font-family='Orbitron, Roboto, sans-serif' font-size='46' font-weight='800' fill='%23ffffff'%3EA.I%3C/text%3E%3Ctext x='20' y='110' font-family='Roboto, sans-serif' font-size='26' font-weight='600' fill='rgba(0,255,156,0.85)'%3Ebits-ai.io%3C/text%3E%3Ctext x='240' y='110' font-family='Roboto Mono, monospace' font-size='18' font-weight='600' fill='rgba(255,255,255,0.7)'%3Equantum stress lab%3C/text%3E%3C/svg%3E") center/contain no-repeat;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.modal-seal {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 255, 102, 0.4);
+  box-shadow: 0 0 20px rgba(0, 255, 102, 0.1), inset 0 0 15px rgba(255, 255, 255, 0.05);
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.4));
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.modal-seal::after {
+  content: "BSDX\A AI";
+  white-space: pre;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: rgba(0, 255, 102, 0.8);
+  font-size: 14px;
+  text-align: center;
+  font-family: 'Orbitron', sans-serif;
+}
+
+@keyframes scanMove {
+  0% { transform: translateY(-20px); }
+  50% { transform: translateY(20px); }
+  100% { transform: translateY(-20px); }
+}
+
+/* Wallet Shock Overlay */
+.wallet-shock-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(25px);
+  animation: shockFlash 0.3s ease-out;
+  overflow: hidden;
+}
+
+.shock-content {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  animation: shockContentPulse 0.5s infinite alternate;
+}
+
+.shock-label {
+  color: #ff3333;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 5px;
+  margin-bottom: 20px;
+  text-shadow: 0 0 15px rgba(255, 51, 51, 0.6);
+}
+
+.shock-value {
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(60px, 15vw, 160px);
+  font-weight: 900;
+  text-shadow: 4px 4px 0px #ff3333, -4px -4px 0px #00ffff;
+  margin-bottom: 20px;
+  animation: shockGlitch 0.2s infinite;
+}
+
+.shock-status {
+  color: #ff3333;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  opacity: 0.8;
+}
+
+.shock-scanlines {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+              linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background-size: 100% 4px, 3px 100%;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+@keyframes shockFlash {
+  0% { opacity: 0; transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shockContentPulse {
+  from { transform: scale(0.98); filter: brightness(1); }
+  to { transform: scale(1.02); filter: brightness(1.3); }
+}
+
+@keyframes shockGlitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-4px, 2px); }
+  40% { transform: translate(-4px, -2px); }
+  60% { transform: translate(4px, 2px); }
+  80% { transform: translate(4px, -2px); }
+  100% { transform: translate(0); }
+}
+
+/* Professional Logo for Modal & Certificate */
+.modal-logo {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 22px;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(10, 10, 20, 0.85));
+  border: 2px solid rgba(0, 255, 102, 0.5);
+  border-radius: 14px;
+  backdrop-filter: blur(20px);
+  z-index: 10;
+  box-shadow: 
+    0 0 40px rgba(0, 255, 102, 0.3),
+    0 4px 20px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.modal-logo-icon {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 30% 30%, rgba(0, 255, 102, 0.2), rgba(0, 150, 60, 0.05));
+  border-radius: 10px;
+  border: 1px solid rgba(0, 255, 102, 0.3);
+  box-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
+}
+
+.modal-logo-icon svg {
+  width: 36px;
+  height: 36px;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 102, 0.6));
+}
+
+.modal-logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.modal-logo-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 2.5px;
+  background: linear-gradient(135deg, #00ff66 0%, #00cc88 50%, #00aa66 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 102, 0.5));
+}
+
+.modal-logo-url {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(0, 255, 102, 0.85);
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+
+.modal-logo-badge {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  color: rgba(170, 100, 255, 0.9);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-top: 1px;
+}
+
+

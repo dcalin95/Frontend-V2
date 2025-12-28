@@ -7,10 +7,12 @@ const handleNowPayments = async ({
   bonusPercentage = 0,
   onStatusUpdate 
 }) => {
-  console.groupCollapsed("💳 [handleNowPayments] COMING SOON");
-  
-  // Coming Soon - waiting for Seychelles company registration
-  alert(`💰 NOWPayments Integration - Coming Soon!
+  const ENABLE_NOWPAYMENTS = false; // flip to true when NOWPayments is ready
+
+  console.groupCollapsed("💳 [handleNowPayments]");
+  if (!ENABLE_NOWPAYMENTS) {
+    // Coming Soon - waiting for Seychelles company registration
+    alert(`💰 NOWPayments Integration - Coming Soon!
   
 📋 Status: Waiting for company registration in Seychelles
 🔑 Required: Business verification for NOWPayments API access
@@ -21,10 +23,10 @@ For now, please use crypto payments:
 • SOL, USDC (Solana Network)
 
 Thank you for your patience! 🙏`);
-  
-  console.log("💰 NOWPayments payment blocked - waiting for company docs");
-  console.groupEnd();
-  return null;
+    console.log("💰 NOWPayments payment blocked - waiting for company docs");
+    console.groupEnd();
+    return null;
+  }
 
   // Original code kept for future use
   try {

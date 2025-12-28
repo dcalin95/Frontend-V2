@@ -1,4 +1,5 @@
 const webpack = require("webpack");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = function override(config) {
   // ====== FALLBACKS (rămân ca la tine)
@@ -66,6 +67,16 @@ module.exports = function override(config) {
       process: "process/browser",
     }),
   ];
+
+  // ====== Silence MiniCssExtractPlugin "Conflicting order" warnings (CSS import order varies across routes)
+  // This does NOT change runtime behavior in our case; it only avoids noisy build warnings.
+  config.plugins = (config.plugins || []).map((p) => {
+    if (p && p.constructor && p.constructor.name === "MiniCssExtractPlugin") {
+      const opts = p.options || {};
+      return new MiniCssExtractPlugin({ ...opts, ignoreOrder: true });
+    }
+    return p;
+  });
 
   // ====== (Opțional) ascunde mesajele „Failed to parse source map” rămase
   config.ignoreWarnings = [

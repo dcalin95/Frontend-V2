@@ -8,10 +8,12 @@ const handleMoonPayPayment = async ({
   bonusPercentage = 0,
   onStatusUpdate 
 }) => {
-  console.groupCollapsed("🌙 [handleMoonPayPayment] COMING SOON");
-  
-  // Coming Soon - waiting for Seychelles company registration
-  alert(`🌙 MoonPay Integration - Coming Soon!
+  const ENABLE_MOONPAY = false; // flip to true when MoonPay is ready
+
+  console.groupCollapsed("🌙 [handleMoonPayPayment]");
+  if (!ENABLE_MOONPAY) {
+    // Coming Soon - waiting for Seychelles company registration
+    alert(`🌙 MoonPay Integration - Coming Soon!
   
 📋 Status: Waiting for company registration in Seychelles
 🔑 Required: Business documents for MoonPay API access
@@ -22,10 +24,10 @@ For now, please use crypto payments:
 • SOL, USDC (Solana Network)
 
 Thank you for your patience! 🙏`);
-  
-  console.log("🌙 MoonPay payment blocked - waiting for company docs");
-  console.groupEnd();
-  return null;
+    console.log("🌙 MoonPay payment blocked - waiting for company docs");
+    console.groupEnd();
+    return null;
+  }
 
   try {
     if (!walletAddress) {

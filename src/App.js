@@ -6,7 +6,7 @@ import "./toastStyle.css";
 
 // 🧠 Core React
 import React, { useState, Suspense, lazy, useEffect } from "react";
-import { HashRouter as Router, Routes, Route, useLocation } from "react-router-dom"; // HashRouter for S3/CloudFront compatibility
+import { HashRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom"; // HashRouter for S3/CloudFront compatibility
 import { ToastContainer } from "react-toastify";
 
 // 🧩 Layout & UI
@@ -22,6 +22,7 @@ import SidebarMenu from "./SidebarMenu/SidebarMenu";
 import InstallAppModal from "./components/PWA/InstallAppModal"; // 🚀 PWA Install Prompt
 import HamburgerButton from "./HamburgerButton/HamburgerButton";
 import ThemeChecker from "./components/ThemeChecker";
+import GlobalPresaleCopilot from "./components/GlobalPresaleCopilot";
 
 // 🔄 State/Loading
 import CosmicLoader from "./components/DEX/CosmicLoader";
@@ -84,66 +85,66 @@ const lazyWithRetry = (importer) => lazy(() => new Promise((resolve, reject) => 
 }));
 
 const Home = lazyWithRetry(() => import("./components/Home"));
-const Whitepaper = lazy(() => import("./components/Whitepaper"));
-const About = lazy(() => import("./components/About"));
-const HowToBuy = lazy(() => import("./components/HowToBuy"));
-const TokenomicsPage = lazy(() => import("./components/TokenomicsPage"));
-const HowItWorks = lazy(() => import("./components/HowItWorks"));
-const Roadmap = lazy(() => import("./components/Roadmap"));
-const StakingPage = lazy(() => import("./Staking/StakingPage"));
-const StakeWithNFTPreOrder = lazy(() => import("./components/Staking/StakeWithNFTPreOrder"));
-const Scheme = lazy(() => import("./components/Scheme/Scheme"));
-const AIBitSwapDEXAssistant = lazy(() => import("./openai/AIAssistantBox"));
-const PresaleDashboard = lazy(() => import("./Presale/Timer/PresaleDashboard"));
-const AdminPanel = lazy(() => import("./Presale/Timer/logic/AdminPanel"));
-const SidebarDashboard = lazy(() => import("./SidebarMenu/SidebarDashboard"));
-const PresaleHistory = lazy(() => import("./Presale/Timer/PresaleHistory"));
+const Whitepaper = lazyWithRetry(() => import("./components/Whitepaper"));
+const About = lazyWithRetry(() => import("./components/About"));
+const HowToBuy = lazyWithRetry(() => import("./components/HowToBuy"));
+const TokenomicsPage = lazyWithRetry(() => import("./components/TokenomicsPage"));
+const HowItWorks = lazyWithRetry(() => import("./components/HowItWorks"));
+const Roadmap = lazyWithRetry(() => import("./components/Roadmap"));
+const StakingPage = lazyWithRetry(() => import("./Staking/StakingPage"));
+const StakeWithNFTPreOrder = lazyWithRetry(() => import("./components/Staking/StakeWithNFTPreOrder"));
+const Scheme = lazyWithRetry(() => import("./components/Scheme/Scheme"));
+const AIBitSwapDEXAssistant = lazyWithRetry(() => import("./openai/AIAssistantBox"));
+const PresaleDashboard = lazyWithRetry(() => import("./Presale/Timer/PresaleDashboard"));
+const AdminPanel = lazyWithRetry(() => import("./Presale/Timer/logic/AdminPanel"));
+const SidebarDashboard = lazyWithRetry(() => import("./SidebarMenu/SidebarDashboard"));
+const PresaleHistory = lazyWithRetry(() => import("./Presale/Timer/PresaleHistory"));
 
-const PresalePage = lazy(() => import("./Presale/PresalePage"));
+const PresalePage = lazyWithRetry(() => import("./Presale/PresalePage"));
 
 // 🔐 Auth & AI Hub
-const Login = lazy(() => import("./components/Login"));
-const AIHub = lazy(() => import("./components/AIHub/AIHub"));
-const MarketOracle = lazy(() => import("./components/AIHub/MarketOracle"));
-const StressTest = lazy(() => import("./components/AIHub/StressTest"));
-const LieDetector = lazy(() => import("./components/AIHub/LieDetector"));
-const SmartAudit = lazy(() => import("./components/AIHub/SmartAudit"));
-const GemHunter = lazy(() => import("./components/AIHub/GemHunter")); // 💎 New Tool
-const AdminNeuralLink = lazy(() => import("./components/AIHub/AdminNeuralLink"));
-const PaymentBox = lazy(() => import("./Presale/PaymentBox/PaymentBox"));
+const Login = lazyWithRetry(() => import("./components/Login"));
+const StressTest = lazyWithRetry(() => import("./components/AIHub/StressTest"));
+const LieDetector = lazyWithRetry(() => import("./components/AIHub/LieDetector"));
+const SmartAudit = lazyWithRetry(() => import("./components/AIHub/SmartAudit"));
+const GemHunter = lazyWithRetry(() => import("./components/AIHub/GemHunter")); // 💎 New Tool
+const AIHub = lazyWithRetry(() => import("./components/AIHub/AIHub"));
+const MarketOracle = lazyWithRetry(() => import("./components/AIHub/MarketOracle"));
+const AdminNeuralLink = lazyWithRetry(() => import("./components/AIHub/AdminNeuralLink"));
+const PaymentBox = lazyWithRetry(() => import("./Presale/PaymentBox/PaymentBox"));
 
 // 📱 Mobile versions
-const PresaleMobile = lazy(() => import("./mobile/PresaleMobile"));
-const StakingPageMobile = lazy(() => import("./mobile/StakingPageMobile"));
-const RewardsHubMobile = lazy(() => import("./mobile/RewardsHubMobile"));
+const PresaleMobile = lazyWithRetry(() => import("./mobile/PresaleMobile"));
+const StakingPageMobile = lazyWithRetry(() => import("./mobile/StakingPageMobile"));
+const RewardsHubMobile = lazyWithRetry(() => import("./mobile/RewardsHubMobile"));
 
-const RewardsHub = lazy(() => import("./components/RewardsHub"));
+const RewardsHub = lazyWithRetry(() => import("./components/RewardsHub"));
 // const RewardDashboard = lazy(() => import("./components/RewardsDashboard/RewardsDashboard"));
-const BITSAnalytics = lazy(() => import("./Presale/BITSAnalytics/BITSAnalytics"));
-const InvitePage = lazy(() => import("./components/Invite/InvitePage"));
-const BitcoinAcademy = lazy(() => import("./components/BitcoinAcademy"));
-const ProofOfTransferPage = lazy(() => import("./components/BitcoinAcademy/pages/ProofOfTransferPage"));
+const BITSAnalytics = lazyWithRetry(() => import("./Presale/BITSAnalytics/BITSAnalytics"));
+const InvitePage = lazyWithRetry(() => import("./components/Invite/InvitePage"));
+const BitcoinAcademy = lazyWithRetry(() => import("./components/BitcoinAcademy"));
+const ProofOfTransferPage = lazyWithRetry(() => import("./components/BitcoinAcademy/pages/ProofOfTransferPage"));
 const EducationPage = lazyWithRetry(() => import("./components/EducationPageModern"));
-const WelcomePage = lazy(() => import("./components/WelcomePage"));
-const OrbitPage = lazy(() => import("./components/OrbitPage"));
-const AIPortfolioPage = lazy(() => import("./components/AIPortfolioPage"));
-const AIPortfolioPageRefactored = lazy(() => import("./components/AIPortfolioPageRefactored"));
-const Claude4AIPortfolioDemo = lazy(() => import("./ai-portfolio/Claude4AIPortfolioDemo"));
-const AIPortfolioAnalyticsRefactored = lazy(() => import("./ai-portfolio/AIPortfolioAnalyticsRefactored"));
-const PaperTradingPage = lazy(() => import("./papertrade/PaperTradingPage"));
-const STXPaperTrade = lazy(() => import("./papertrade/STXPaperTrade"));
-const TokenPaperTrade = lazy(() => import("./papertrade/TokenPaperTrade"));
+const WelcomePage = lazyWithRetry(() => import("./components/WelcomePage"));
+const OrbitPage = lazyWithRetry(() => import("./components/OrbitPage"));
+const AIPortfolioPage = lazyWithRetry(() => import("./components/AIPortfolioPage"));
+const AIPortfolioPageRefactored = lazyWithRetry(() => import("./components/AIPortfolioPageRefactored"));
+const Claude4AIPortfolioDemo = lazyWithRetry(() => import("./ai-portfolio/Claude4AIPortfolioDemo"));
+const AIPortfolioAnalyticsRefactored = lazyWithRetry(() => import("./ai-portfolio/AIPortfolioAnalyticsRefactored"));
+const PaperTradingPage = lazyWithRetry(() => import("./papertrade/PaperTradingPage"));
+const STXPaperTrade = lazyWithRetry(() => import("./papertrade/STXPaperTrade"));
+const TokenPaperTrade = lazyWithRetry(() => import("./papertrade/TokenPaperTrade"));
 
-const TermsPart1 = lazy(() => import("./Legal/TermsPart1"));
-const TermsPart2 = lazy(() => import("./Legal/TermsPart2"));
-const TermsPart3 = lazy(() => import("./Legal/TermsPart3"));
-const Privacy = lazy(() => import("./Legal/Privacy"));
-const ContactPage = lazy(() => import("./components/contact/ContactPage"));
+const TermsPart1 = lazyWithRetry(() => import("./Legal/TermsPart1"));
+const TermsPart2 = lazyWithRetry(() => import("./Legal/TermsPart2"));
+const TermsPart3 = lazyWithRetry(() => import("./Legal/TermsPart3"));
+const Privacy = lazyWithRetry(() => import("./Legal/Privacy"));
+const ContactPage = lazyWithRetry(() => import("./components/contact/ContactPage"));
 
-const MindMirror = lazy(() => import("./mindmirror/MindMirrorDashboard"));
-const ThankYouPage = lazy(() => import("./components/ThankYouPage"));
-const RegisteredUsers = lazy(() => import("./components/Admin/RegisteredUsers")); // Import nou
-const SwapPage = lazy(() => import("./components/DEX/SwapPage")); // 🔄 Import DEX Demo
+const MindMirror = lazyWithRetry(() => import("./mindmirror/MindMirrorDashboard"));
+const ThankYouPage = lazyWithRetry(() => import("./components/ThankYouPage"));
+const RegisteredUsers = lazyWithRetry(() => import("./components/Admin/RegisteredUsers")); // Import nou
+const SwapPage = lazyWithRetry(() => import("./components/DEX/SwapPage")); // 🔄 Import DEX Demo
 
 
 // 🧠 Main Layout Component
@@ -390,7 +391,7 @@ const App = () => {
                       <Route path="/paper-trading" element={<PaperTradingPage />} />
                       <Route path="/paper-trade/stx" element={<STXPaperTrade />} />
                       <Route path="/paper-trade/:symbol" element={<TokenPaperTrade />} />
-                      <Route path="/ai-assistant" element={<AIBitSwapDEXAssistant />} />
+                      <Route path="/ai-assistant" element={<Navigate to="/presale" replace />} />
                       <Route path="/presale" element={isMobile ? <PresaleMobile /> : <PresalePage />} />
                       <Route path="/staking" element={isMobile ? <StakingPageMobile /> : <StakingPage />} />
                       <Route path="/rewards-hub" element={isMobile ? <RewardsHubMobile /> : <RewardsHub />} />
@@ -450,6 +451,8 @@ const App = () => {
                       
                       {/* Launcher AI Tools */}
                       <AIToolLauncher />
+                      {/* Global Presale Copilot (minimized across the whole UI) */}
+                      <GlobalPresaleCopilot />
                     </MobileUI>
                   }
                 />

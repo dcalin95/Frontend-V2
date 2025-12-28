@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { AreaChart, Area, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, ComposedChart, Bar } from "recharts";
+import { AreaChart, Area, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import useSTXPriceFeed from "./useSTXPriceFeed";
 
 function formatTime(ts) {
@@ -7,7 +7,7 @@ function formatTime(ts) {
 }
 
 export default function STXPaperTrade() {
-  const { series, price, loading, error, useDemo, refresh } = useSTXPriceFeed();
+  const { series, price, loading, useDemo, refresh } = useSTXPriceFeed();
   const [usdt, setUsdt] = useState(1000);
   const [stx, setStx] = useState(0);
   const [history, setHistory] = useState([]);

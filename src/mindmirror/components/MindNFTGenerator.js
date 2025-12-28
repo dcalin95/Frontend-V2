@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import WalletContext from '../../context/WalletContext';
 import emailService from '../../services/emailService';
-import { mintMindNFT, getUserMindNFTs } from '../../utils/nftUtils';
+import { mintMindNFT } from '../../utils/nftUtils';
 import { MIND_MIRROR_NFT_CONFIG } from '../../contract/MindMirrorNFT';
 import NFTTransferModal from '../../components/NFT/NFTTransferModal';
 
@@ -22,8 +22,6 @@ const MindNFTGenerator = ({ results }) => {
   const [isMinted, setIsMinted] = useState(false);
   const [mintedTokenId, setMintedTokenId] = useState(null);
   const [showTransferModal, setShowTransferModal] = useState(false);
-  const [userNFTs, setUserNFTs] = useState([]);
-  const [loadingNFTs, setLoadingNFTs] = useState(false);
 
     // Post-process DALL-E image with guaranteed branding overlay
   const addBrandingOverlay = async (imageUrl, userInfo) => {
@@ -104,7 +102,6 @@ const MindNFTGenerator = ({ results }) => {
       ctx.save();
       
       // Semi-transparent background for readability
-      const padding = 15;
       const bgHeight = 80; // Increased height for date/time
       const bgWidth = 220; // Increased width for longer text
       const bgX = canvas.width - bgWidth - 20;
@@ -478,8 +475,8 @@ const MindNFTGenerator = ({ results }) => {
         throw new Error(errorData.details || errorData.error || 'Failed to send to Telegram');
       }
       
-      const result = await response.json();
-      console.log('✅ NFT sent to Telegram successfully!');
+      const telegramResult = await response.json();
+      console.log('✅ NFT sent to Telegram successfully!', telegramResult);
       alert('🎉 NFT sent to your Telegram successfully! Check your private messages.');
       
     } catch (error) {
@@ -592,9 +589,6 @@ const MindNFTGenerator = ({ results }) => {
         `🔗 View on BSCScan: https://testnet.bscscan.com/tx/${result.transactionHash}`
       );
       
-      // Refresh user's NFT list
-      loadUserNFTs();
-      
     } catch (error) {
       console.error('❌ NFT minting failed:', error);
       alert(`❌ Minting Failed\n\n${error.message}\n\nPlease try again or check your wallet connection.`);
@@ -603,35 +597,9 @@ const MindNFTGenerator = ({ results }) => {
     }
   };
 
-  const loadUserNFTs = async () => {
-    if (!walletAddress) return;
-
-    setLoadingNFTs(true);
-    try {
-      console.log('🔍 Loading user NFTs...');
-      const nfts = await getUserMindNFTs(walletAddress);
-      setUserNFTs(nfts);
-      console.log(`✅ Loaded ${nfts.length} NFTs`);
-    } catch (error) {
-      console.error('❌ Failed to load NFTs:', error);
-      // Don't show error for this - contract might not be deployed yet
-    } finally {
-      setLoadingNFTs(false);
-    }
-  };
-
   const handleTransferComplete = (result) => {
     console.log('✅ Transfer completed:', result);
-    // Refresh NFT list
-    loadUserNFTs();
   };
-
-  // Load user NFTs when component mounts or wallet changes
-  React.useEffect(() => {
-    if (walletAddress) {
-      loadUserNFTs();
-    }
-  }, [walletAddress]);
 
   if (!results) return null;
 

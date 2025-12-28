@@ -8,10 +8,12 @@ const handleTransakPayment = async ({
   bonusPercentage = 0,
   onStatusUpdate 
 }) => {
-  console.groupCollapsed("🏦 [handleTransakPayment] COMING SOON");
-  
-  // Coming Soon - waiting for Seychelles company registration
-  alert(`🏦 Transak Integration - Coming Soon!
+  const ENABLE_TRANSAK = false; // flip to true when Transak is ready
+
+  console.groupCollapsed("🏦 [handleTransakPayment]");
+  if (!ENABLE_TRANSAK) {
+    // Coming Soon - waiting for Seychelles company registration
+    alert(`🏦 Transak Integration - Coming Soon!
   
 📋 Status: Waiting for company registration in Seychelles
 🔑 Required: Business verification documents for Transak API access
@@ -22,10 +24,10 @@ For now, please use crypto payments:
 • SOL, USDC (Solana Network)
 
 Thank you for your patience! 🙏`);
-  
-  console.log("🏦 Transak payment blocked - waiting for company docs");
-  console.groupEnd();
-  return null;
+    console.log("🏦 Transak payment blocked - waiting for company docs");
+    console.groupEnd();
+    return null;
+  }
 
   try {
     if (!walletAddress) {

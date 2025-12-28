@@ -1,5 +1,4 @@
 // Backend API helper functions - MOCKED FOR FRONTEND ONLY
-import { get, post } from './http';
 
 // Mock delay helper
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));

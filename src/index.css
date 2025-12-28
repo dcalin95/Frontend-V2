@@ -142,10 +142,15 @@ body.mode-mobile .btn-go-main {
   -webkit-background-clip: border-box !important;
 }
 
-/* Hide video background on mobile to save battery/data/CPU */
-body.mode-mobile video, 
-body.mode-mobile .video-background {
+/* Hide heavy videos on mobile to save battery/data/CPU */
+/* IMPORTANT: do NOT hide functional UI videos (e.g., AI avatar in Presale Copilot) */
+body.mode-mobile video {
   display: none !important;
+}
+
+/* Allow-list: small functional UI videos */
+body.mode-mobile video.presale-copilot__avatar {
+  display: block !important;
 }
 
 /* Fallback background for mobile */

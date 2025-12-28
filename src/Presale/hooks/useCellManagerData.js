@@ -41,11 +41,8 @@ export default function useCellManagerData() {
       
       try {
         console.log("🔍 [DEBUG] Inside try block, starting data fetch...");
-        const IS_TESTNET = false; // BSC MAINNET
-        
-        const rpcUrl = IS_TESTNET
-          ? "https://data-seed-prebsc-1-s1.binance.org:8545/"
-          : "https://bsc-dataseed1.binance.org";
+        // MAINNET-only
+        const rpcUrl = "https://bsc-dataseed1.binance.org";
           
         console.log("🌐 Using RPC:", rpcUrl);
         const provider = new ethers.providers.JsonRpcProvider(rpcUrl);

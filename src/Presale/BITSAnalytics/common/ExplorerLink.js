@@ -23,8 +23,6 @@ const ExplorerLink = ({ walletAddress }) => {
           baseUrl = "https://arbiscan.io"; break;
         case 43114:
           baseUrl = "https://snowtrace.io"; break;
-        case 97:
-          baseUrl = "https://testnet.bscscan.com"; break;
         case 5:
           baseUrl = "https://goerli.etherscan.io"; break;
         default:

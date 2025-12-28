@@ -9,7 +9,7 @@ const useFetchBalances = (walletAddress, selectedToken) => {
   const [balances, setBalances] = useState({});
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchBalances = async () => {
       if (!walletAddress || !selectedToken) return;
 
       try {
@@ -41,7 +41,7 @@ const useFetchBalances = (walletAddress, selectedToken) => {
             
             try {
               // Direct HTTP POST to Solana RPC (no WebSocket)
-              const response = await fetch("https://api.devnet.solana.com", {
+              const response = await window.fetch("https://api.devnet.solana.com", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
@@ -111,7 +111,7 @@ const useFetchBalances = (walletAddress, selectedToken) => {
             const tokenAccount = await getAssociatedTokenAddress(USDC_MINT, publicKey);
             
             // HTTP RPC call for token balance
-            const response = await fetch("https://api.mainnet-beta.solana.com", {
+            const response = await window.fetch("https://api.mainnet-beta.solana.com", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -158,7 +158,7 @@ const useFetchBalances = (walletAddress, selectedToken) => {
           }));
         } else if (selectedToken === "ETH") {
           // ETH on BSC is a wrapped token, not native
-          const ETH_BSC_ADDRESS = "0x8BaBbB98678facC7342735486C851ABD7A0d17Ca"; // ETH on BSC Testnet
+          const ETH_BSC_ADDRESS = "0x2170Ed0880ac9A755fd29B2688956BD959F933F8"; // Binance-Peg ETH on BSC Mainnet
           const tokenContract = new ethers.Contract(ETH_BSC_ADDRESS, ERC20ABI, provider);
           const balance = await tokenContract.balanceOf(walletAddress);
           setBalances(prev => ({
@@ -183,7 +183,7 @@ const useFetchBalances = (walletAddress, selectedToken) => {
       }
     };
 
-    fetch();
+    fetchBalances();
   }, [walletAddress, selectedToken]);
 
   return balances;

@@ -5,6 +5,14 @@
     padding: 20px 1rem;
   }
 
+  /* Reserve bottom space for the fixed Copilot on small screens */
+  body.presale-copilot-open .presale-wrapper {
+    padding-bottom: 330px;
+  }
+  body.presale-copilot-closed .presale-wrapper {
+    padding-bottom: 213px;
+  }
+
   .presale-grid {
     grid-template-areas:
       "select"

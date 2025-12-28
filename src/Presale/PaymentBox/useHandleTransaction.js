@@ -250,6 +250,17 @@ const useHandleTransaction = ({
           // Show hash immediately so explorer link is available even while waiting confirmation
           if (typeof setTransactionHash === "function") setTransactionHash(txHash);
 
+          // Persist last TX for Copilot (UX only; does not affect payment flow)
+          try {
+            const payload = {
+              hash: txHash,
+              token: selectedToken,
+              chain: selectedChain,
+              at: Date.now(),
+            };
+            localStorage.setItem("presale_last_tx", JSON.stringify(payload));
+          } catch (_) {}
+
           // 🌟 Different confirmation logic for Solana vs ETH/BSC
           if (selectedToken === "SOL" || selectedToken === "USDC-Solana") {
             // For Solana tokens, the transaction is already confirmed in handler

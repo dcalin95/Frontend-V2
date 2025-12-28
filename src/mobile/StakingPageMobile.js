@@ -6,7 +6,6 @@ import { useStakingData } from "../Staking/useStakingData";
 import StakingSummary from "../Staking/components/StakingSummary";
 import StakingInfoBox from "../Staking/components/StakingInfoBox";
 import StakeForm from "../Staking/components/StakeForm"; // ✅ Use standard responsive component
-import StakingBox from "../Staking/components/StakingBox";
 import ClaimStakes from "../Staking/components/ClaimStakes"; // ✅ Use standard responsive component
 import StakingUSDValue from "../Staking/components/StakingUSDValue";
 

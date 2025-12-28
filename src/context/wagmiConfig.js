@@ -1,6 +1,19 @@
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 import { mainnet, bsc, polygon, arbitrum, optimism, base, avalanche } from "wagmi/chains";
 
+const REMEMBER_WALLET_KEY = "bits_remember_wallet"; // "true" | "false" (default false)
+
+const shouldRememberWallet = () => {
+  try {
+    if (typeof window === "undefined") return true;
+    const v = localStorage.getItem(REMEMBER_WALLET_KEY);
+    // default OFF unless explicitly set to "true"
+    return v === "true";
+  } catch (_) {
+    return false;
+  }
+};
+
 // ⚙️ WALLET CONNECT CONFIGURATION (Modern Setup)
 // NOTE: Get a free projectId from https://cloud.walletconnect.com
 export const projectId = "3a8170812b534d0ff9d794f19a901d64"; // ID Public de test Web3Modal 
@@ -32,41 +45,35 @@ export const config = defaultWagmiConfig({
   enableEIP6963: true, // Detects multiple injected wallets (MetaMask, Trust, Phantom, etc.)
   enableInjected: true, // Essential for dApp browsers (Trust Wallet Browser, MetaMask Browser)
   enableWalletConnect: true, // Standard connection for external wallets
-  
-  // 🛑 CRITICAL: DISABLE AUTO-CONNECT to prevent automatic reconnection at refresh
-  // User MUST manually connect each time - no automatic reconnection
+
+  // ✅ ENABLE persistent connection:
+  // wagmi will persist the last connector in storage and reconnect on refresh/restart
   ssr: false, // Disable server-side rendering features that might trigger auto-connect
-  
-  // 🛑 CRITICAL: Configure storage to BLOCK auto-reconnect completely
+
+  // ✅ Conditional persistence (user-controlled):
+  // If the user disables "Remember my wallet", we block wagmi storage reads/writes
+  // so the site behaves like manual-connect-only until re-enabled.
   storage: {
     getItem(key) {
-      const value = localStorage.getItem(key);
-      console.log(`🔍 [Wagmi Storage] GET ${key}:`, value);
-      
-      // 🛑 CRITICAL: BLOCK ALL auto-reconnect attempts
-      // Only allow manual connections initiated by user
-      if (key === 'wagmi.recentConnectorId' || key === 'wagmi.store' || key.includes('connector')) {
-        console.warn(`🛑 [Wagmi Storage] BLOCKED auto-reconnect for key: ${key}`);
-        console.warn(`🛑 [Wagmi Storage] User MUST manually connect - no automatic reconnection allowed`);
-        return null; // Return null to prevent ANY auto-reconnect
+      try {
+        if (!shouldRememberWallet() && String(key || "").startsWith("wagmi.")) return null;
+        return localStorage.getItem(key);
+      } catch (_) {
+        return null;
       }
-      
-      return value;
     },
     setItem(key, value) {
-      console.log(`🔍 [Wagmi Storage] SET ${key}:`, value);
-      
-      // 🛑 CRITICAL: Don't save connector IDs that might trigger auto-reconnect
-      if (key === 'wagmi.recentConnectorId') {
-        console.warn(`🛑 [Wagmi Storage] NOT saving recent connector ID to prevent auto-reconnect`);
-        return; // Don't save
-      }
-      
-      localStorage.setItem(key, value);
+      try {
+        // Always allow writes so that if user later enables "Remember wallet",
+        // the last connection state is already available to restore.
+        // Reads are still blocked when "Remember wallet" is OFF.
+        localStorage.setItem(key, value);
+      } catch (_) {}
     },
     removeItem(key) {
-      console.log(`🔍 [Wagmi Storage] REMOVE ${key}`);
-      localStorage.removeItem(key);
+      try {
+        localStorage.removeItem(key);
+      } catch (_) {}
     },
   },
 });

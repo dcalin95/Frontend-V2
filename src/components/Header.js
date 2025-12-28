@@ -242,9 +242,9 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
             </Link>
           </SmartTooltip>
           
-          <SmartTooltip content={`AI BitSwapDEX Assistant\nChat with our AI to get instant answers and market insights.`}>
-            <button className="btn-go-main" onClick={() => navigate("/ai-assistant")}>
-              <i className="fas fa-robot"></i> AI BitSwapDEX
+          <SmartTooltip content={`DEX Swap\nSwap tokens on the BitSwapDEX exchange.\nThis is the path to recurring fee revenue.`}>
+            <button className="btn-go-main" onClick={() => navigate("/dex")}>
+              <i className="fas fa-exchange-alt"></i> DEX Swap
             </button>
           </SmartTooltip>
           
@@ -361,8 +361,8 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
             <Link to="/ai-portfolio-claude4" className="mobile-btn-ai laser-sharp" onClick={closeMenu}>
               <i className="fas fa-brain"></i> <span className="mobile-text">Neural Investment Optimizer</span>
             </Link>
-            <button className="mobile-btn-ai" onClick={() => { closeMenu(); navigate("/ai-assistant"); }}>
-              <i className="fas fa-robot"></i> <span className="mobile-text">AI BitSwapDEX</span>
+            <button className="mobile-btn-ai" onClick={() => { closeMenu(); navigate("/dex"); }}>
+              <i className="fas fa-exchange-alt"></i> <span className="mobile-text">DEX Swap</span>
             </button>
             <Link to="/ai-hub" className="mobile-btn-ai-hub laser-sharp" onClick={closeMenu} style={{background: 'linear-gradient(135deg, #00FFA3 0%, #DC1FFF 100%)', color: '#000'}}>
               <i className="fas fa-brain"></i> <span className="mobile-text">AI Hub</span>

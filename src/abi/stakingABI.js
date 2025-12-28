@@ -1,5 +1,4 @@
-export default
-[
+const stakingABI = [
 	{
 		"inputs": [
 			{
@@ -2099,4 +2098,6 @@ export default
 		"stateMutability": "nonpayable",
 		"type": "function"
 	}
-]
+];
+
+export default stakingABI;

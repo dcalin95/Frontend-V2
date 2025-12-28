@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useConnect, useAccount } from 'wagmi'; // 🔌 IMPORT CRITIC: Direct Connection Hook
+import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useWallet as useSolanaWalletAdapter } from '@solana/wallet-adapter-react';
 import { useWallet } from '../context/WalletContext';
 import { prepareForConnection, handleConnectionError } from '../utils/walletConnectionFix';
 import { prioritizeEVMWallets, logDetectedWallets } from '../utils/walletFilter';
-import Web3ModalHandler from './Web3ModalHandler'; // 🔐 Separate Web3Modal component
 import walletConnectLogo from '../assets/icons/wallet-connect-logo.png'; 
 import evmIcon from '../assets/icons/evm-logo.jpg'; // Import EVM logo
 import solanaIcon from '../assets/icons/solana-logo.png'; // Import Solana logo
@@ -13,9 +13,10 @@ import './UnifiedWalletModal.css';
 import './UnifiedWalletModal.mobile.css';
 
 const UnifiedWalletModal = () => {
-  const { showWalletModal, setShowWalletModal, hardReset } = useWallet(); 
+  const { showWalletModal, setShowWalletModal, hardReset, markConnectIntent } = useWallet();
   const { connect, disconnect: disconnectEVM, connectors } = useConnect(); // 🔌 Get direct connectors
   const { isConnected, address } = useAccount(); // 🔍 Monitor connection status
+  const { open: openEvmModal } = useWeb3Modal();
   
   // 🛡️ Filter and prioritize EVM connectors (exclude Phantom and other non-EVM wallets)
   const filteredConnectors = useMemo(() => {
@@ -42,10 +43,9 @@ const UnifiedWalletModal = () => {
     wallet: selectedSolanaWallet
   } = useSolanaWalletAdapter();
   
-  const [selectedNetwork, setSelectedNetwork] = useState(null); // "EVM" | "SOLANA" | "WEB3" | null
+  const [selectedNetwork, setSelectedNetwork] = useState(null); // "EVM" | "SOLANA" | null
   const [isConnecting, setIsConnecting] = useState(false); // ⏳ New connecting state
   const [error, setError] = useState(null);
-  const [web3Context, setWeb3Context] = useState(null); // e.g. "binance_walletconnect"
 
   // (Debug panel removed)
 
@@ -165,6 +165,9 @@ const UnifiedWalletModal = () => {
           setIsConnecting(false);
           return true; // handled
         }
+
+        // Mark explicit user intent (prevents WalletContext from treating this as auto-connect)
+        if (typeof markConnectIntent === 'function') markConnectIntent();
 
         // Try provider request first (forces the right wallet popup)
         await provider.request({ method: 'eth_requestAccounts' });
@@ -598,12 +601,14 @@ const UnifiedWalletModal = () => {
           }
           
           // 🔄 FORCE SWITCH TO BSC after connection (CRITICAL for BITS token)
-          if (typeof window !== 'undefined' && window.ethereum) {
+          // Use the connected wallet provider, NOT window.ethereum (can be Phantom in multi-wallet setups).
+          const evmProvider = (await (connector?.getProvider?.().catch(() => null))) || (typeof window !== 'undefined' ? window.ethereum : null);
+          if (evmProvider) {
             try {
               // Wait a bit for connection to settle
               await new Promise(resolve => setTimeout(resolve, 500));
               
-              const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+              const currentChainId = await evmProvider.request({ method: 'eth_chainId' });
               const bscChainId = '0x38'; // BSC Mainnet (56)
               
               console.log(`🔍 [UnifiedWalletModal] Current chain: ${currentChainId}, Target: ${bscChainId}`);
@@ -611,7 +616,7 @@ const UnifiedWalletModal = () => {
               if (currentChainId !== bscChainId) {
                 console.log(`🔄 [UnifiedWalletModal] FORCING switch to BSC (${bscChainId})...`);
                 try {
-                  await window.ethereum.request({
+                  await evmProvider.request({
                     method: 'wallet_switchEthereumChain',
                     params: [{ chainId: bscChainId }],
                   });
@@ -623,7 +628,7 @@ const UnifiedWalletModal = () => {
                   if (switchErr.code === 4902) {
                     // Chain not added, add it
                     console.log(`➕ [UnifiedWalletModal] BSC not in wallet, adding it...`);
-                    await window.ethereum.request({
+                    await evmProvider.request({
                       method: 'wallet_addEthereumChain',
                       params: [{
                         chainId: bscChainId,
@@ -694,6 +699,9 @@ const UnifiedWalletModal = () => {
 
   const handleEvmConnect = async (preferredWallet = null) => {
     try {
+      // ✅ Mark explicit user intent so WalletContext won't treat this as auto-connect
+      if (typeof markConnectIntent === 'function') markConnectIntent();
+
       // 🛑 CRITICAL: Verify we're on EVM network, not Solana
       if (selectedNetwork !== "EVM" && selectedNetwork !== null) {
         console.error(`❌ [EVM] ERROR: selectedNetwork is not EVM! It is: ${selectedNetwork}`);
@@ -1267,7 +1275,15 @@ const UnifiedWalletModal = () => {
 
               <button 
                 className="network-card web3-card"
-                onClick={() => setSelectedNetwork("WEB3")}
+                onClick={() => {
+                  // Open Web3Modal directly and close this custom modal to avoid overlap
+                  try { if (typeof markConnectIntent === 'function') markConnectIntent(); } catch (_) {}
+                  setShowWalletModal(false);
+                  setSelectedNetwork(null);
+                  window.setTimeout(() => {
+                    openEvmModal().catch(() => {});
+                  }, 50);
+                }}
                 title="All wallets via Web3Modal"
               >
                 <div className="network-icon-wrapper">
@@ -1319,87 +1335,54 @@ const UnifiedWalletModal = () => {
             
             
             <div className="wallet-list">
-              <button 
-                className="wallet-option" 
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  if (selectedNetwork !== "EVM") {
-                    console.error(`❌ [MetaMask] Wrong network selected: ${selectedNetwork}`);
-                    setError('Please select EVM network first');
-                    return;
-                  }
-                  if (isConnecting) {
-                    console.warn(`⚠️ [MetaMask] Already connecting, ignoring click`);
-                    return;
-                  }
-                  handleEvmConnect('MetaMask');
-                }}
-              >
-                <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask" />
-                <span>MetaMask</span>
-              </button>
+              {/* 🦊 [EIP-6963] Dinamic detected wallets */}
+              {filteredConnectors
+                .filter(c => c.id !== 'injected' && c.id !== 'walletConnect' && c.id !== 'coinbaseWalletSDK')
+                .map((connector) => (
+                  <button 
+                    key={connector.id}
+                    className="wallet-option"
+                    onClick={() => {
+                      if (isConnecting) return;
+                      // We can connect directly via the connector object for EIP-6963 wallets
+                      setError(null);
+                      setIsConnecting(true);
+                      if (typeof markConnectIntent === 'function') markConnectIntent();
+                      connect({ connector });
+                    }}
+                  >
+                    <img src={connector.icon || evmIcon} alt={connector.name} />
+                    <span>{connector.name}</span>
+                    <small className="detected-badge">Detected</small>
+                  </button>
+                ))
+              }
+
+              {/* Standard fallbacks if not detected via EIP-6963 */}
+              {!filteredConnectors.some(c => c.id === 'io.metamask' || c.id === 'metamask') && (
+                <button className="wallet-option" onClick={() => handleEvmConnect('MetaMask')}>
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask" />
+                  <span>MetaMask</span>
+                </button>
+              )}
+
               <button className="wallet-option" onClick={() => handleEvmConnect('WalletConnect')}>
                 <img src={walletConnectLogo} alt="WalletConnect" />
                 <span>WalletConnect</span>
               </button>
-              <button className="wallet-option" onClick={() => handleEvmConnect('Coinbase')}>
-                <img src="https://avatars.githubusercontent.com/u/18060234?s=200&v=4" alt="Coinbase" />
-                <span>Coinbase Wallet</span>
-              </button>
-              <button className="wallet-option" onClick={() => handleEvmConnect('Rainbow')}>
-                <img src="https://avatars.githubusercontent.com/u/48327834?s=200&v=4" alt="Rainbow" />
-                <span>Rainbow</span>
-              </button>
-               <button className="wallet-option" onClick={() => handleEvmConnect('Trust Wallet')}>
-                <img src="https://trustwallet.com/assets/images/media/assets/TWT.png" alt="Trust Wallet" />
-                <span>Trust Wallet</span>
-              </button>
+
+              {!filteredConnectors.some(c => c.id === 'coinbaseWalletSDK') && (
+                <button className="wallet-option" onClick={() => handleEvmConnect('Coinbase')}>
+                  <img src="https://avatars.githubusercontent.com/u/18060234?s=200&v=4" alt="Coinbase" />
+                  <span>Coinbase Wallet</span>
+                </button>
+              )}
+
               <button className="wallet-option" onClick={() => handleEvmConnect('Binance')}>
                 <img src={binanceLogo} alt="Binance Web3" />
                 <span>Binance Web3</span>
               </button>
-              <button
-                className="wallet-option"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setWeb3Context('binance_walletconnect');
-                  setSelectedNetwork('WEB3');
-                }}
-                title="Recommended: connect Binance via WalletConnect (QR)"
-              >
-                <img src={walletConnectLogo} alt="WalletConnect" />
-                <span>Binance (WalletConnect)</span>
-              </button>
             </div>
-          </>
-        ) : selectedNetwork === "WEB3" ? (
-          // Step 2c: Web3Modal - Separate component
-          <>
-            <button className="back-btn" onClick={() => setSelectedNetwork(null)}>← Back</button>
-            {web3Context === 'binance_walletconnect' && (
-              <div style={{
-                margin: '10px 0 14px',
-                padding: '12px 14px',
-                borderRadius: 12,
-                border: '1px solid rgba(255,255,255,0.12)',
-                background: 'rgba(255,255,255,0.05)',
-                color: 'rgba(255,255,255,0.9)',
-                fontSize: 13,
-                lineHeight: 1.4
-              }}>
-                <div style={{ fontWeight: 800, marginBottom: 6 }}>Binance via WalletConnect</div>
-                <div>1) In Web3Modal, select <b>WalletConnect</b>.</div>
-                <div>2) Scan QR with <b>Binance Web3 Wallet</b> (in the Binance app) and approve.</div>
-                <div style={{ opacity: 0.85, marginTop: 6 }}>This avoids injected-provider conflicts (No active wallet found).</div>
-              </div>
-            )}
-            <Web3ModalHandler onClose={() => {
-              setSelectedNetwork(null);
-              setShowWalletModal(false);
-              setWeb3Context(null);
-            }} />
           </>
         ) : (
           // Step 2b: Solana Wallet Selection

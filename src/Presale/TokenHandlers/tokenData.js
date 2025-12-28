@@ -35,7 +35,7 @@ export const tokenList = [
     icon: usdt,
     color: "#26a17b",
     chain: "evm",
-    address: "0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684", // USDT on BSC Testnet
+    address: "0x55d398326f99059fF775485246999027B3197955", // USDT (BEP-20) on BSC Mainnet
   },
   {
     name: "USDC",
@@ -43,7 +43,7 @@ export const tokenList = [
     icon: usdc,
     color: "#2775ca",
     chain: "evm",
-    address: "0x64544969ed7EBf5f083679233325356EbE738930", // USDC on BSC Testnet
+    address: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d", // USDC (BEP-20) on BSC Mainnet
   },
   {
     name: "SOL",

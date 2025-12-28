@@ -2,12 +2,17 @@ import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react'
 import { AI_TOOLS_PRICING } from './pricingConfig';
 import useBitsBalance from '../../hooks/useBitsBalance';
 import { useWallet } from '../../context/WalletContext';
-import { FaceMesh } from '@mediapipe/face_mesh';
-import { Camera } from '@mediapipe/camera_utils';
-import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
+import useDeviceDetect from '../../hooks/useDeviceDetect';
+import * as mpFaceMesh from '@mediapipe/face_mesh';
+import * as mpCamera from '@mediapipe/camera_utils';
+import * as mpDrawing from '@mediapipe/drawing_utils';
 import { sendBitsToTreasury, BITS_TREASURY_WALLET } from '../../utils/paymentService';
+import { openCertificateWindow, downloadCertificateHTML } from './certificateGenerator';
 import './AIHub.desktop.css';
 import './StressTest.css';
+import './StressTest.mobile.css';
+import './StressTest.prestart.css';
+import './StressTest.testcomplete.css';
 
 const EXCHANGES_TOP10 = [
   { id: 'binance', name: 'Binance', ticker: 'BNB', color: '#f3ba2f', badge: '🔶' },
@@ -23,7 +28,6 @@ const EXCHANGES_TOP10 = [
 ];
 
 const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
-const SFX_GAIN = 0.5; // global -50% for all noise/SFX (user request)
 
 const makeSparkPoints = (values, w = 160, h = 42) => {
   if (!values?.length) return '';
@@ -80,21 +84,12 @@ const DEFAULT_TV_CHANNELS = [
   // Bitcoin Live Educational (playlist index 3)
   { key: 'btc_live_edu_3', name: 'BITCOIN LIVE EDUCATIONAL (EP 3)', kind: 'youtube_video', videoId: 'y03FS0uF9Q4', listId: 'PLzyzk1IU5kTYMonZDlPT1Z49vLuEBXwnB' },
   // Permanent YouTube-live presets (stable via channelId live_stream embed)
-  { key: 'ukraine', name: 'UKRAINE', kind: 'youtube', channelId: 'UCPY6gj8G7dqwPxg9KwHrj5Q' },
-  // User-provided war stream (video embed; if the video is live, it will play live)
-  { key: 'war_live', name: 'WAR LIVE (YT)', kind: 'youtube_video', videoId: 'R-qCsZ1obbc' },
-  // User-provided additional stream
-  { key: 'war_live_2', name: 'WAR LIVE 2 (YT)', kind: 'youtube_video', videoId: 'TMhkEq6Km8Y' },
-  // User-provided additional presets
-  { key: 'war_live_3', name: 'WAR LIVE 3 (YT)', kind: 'youtube_video', videoId: '4nMfRpesYfw' },
-  { key: 'war_live_4', name: 'WAR LIVE 4 (YT)', kind: 'youtube_video', videoId: 'JphE87yhcqc' },
-  { key: 'war_live_5', name: 'WAR LIVE 5 (YT)', kind: 'youtube_video', videoId: 'iEpJwprxDdk' },
-  { key: 'war_live_6', name: 'WAR LIVE 6 (YT)', kind: 'youtube_video', videoId: 'jkP1Sw7M2iU' },
-  { key: 'war_live_7', name: 'WAR LIVE 7 (YT)', kind: 'youtube_video', videoId: 'SpsoOVC56xc' },
   { key: 'aljazeera', name: 'AL JAZEERA', kind: 'youtube', channelId: 'UCfiwzLy-8yKzIbsmZTzxDgw' },
   { key: 'dw', name: 'DW NEWS', kind: 'youtube', channelId: 'UCbbS1GE942k3UVqpLklyhIA' },
   { key: 'france24', name: 'FRANCE 24', kind: 'youtube', channelId: 'UCQfwfsi5VrQ8yKZ-UWmAEFg' },
   { key: 'sky', name: 'SKY NEWS', kind: 'youtube', channelId: 'UCkFclpi8U9VJjfxLYoms7Aw' },
+  { key: 'user_req_live', name: 'GLOBAL NEWS LIVE', kind: 'youtube_video', videoId: 'lUIjUhJqWO0' },
+  { key: 'user_req_live_2', name: 'ECONOMIC UPDATE LIVE', kind: 'youtube_video', videoId: 'huV3GMUZ0To' },
   { key: 'euronews', name: 'EURONEWS', kind: 'youtube', channelId: 'UCSrZ3UV4jOidv8ppoVuvW9Q' },
   { key: 'reuters', name: 'REUTERS', kind: 'youtube', channelId: 'UChqUTb7kYRX8-EiaN3XFrSQ' },
   { key: 'ap', name: 'AP', kind: 'youtube', channelId: 'UC52X5wxOL_s5yw0dQk7NtgA' },
@@ -123,21 +118,22 @@ const parseYouTubeEmbed = (rawUrl) => {
 
 const buildEmbedUrl = (ch, muted = true) => {
   if (!ch) return '';
+  // Add enablejsapi=1 to allow mute/unmute via postMessage without reloading iframe
+  const api = '&enablejsapi=1';
   if (ch.kind === 'youtube') {
     if (!ch.channelId) return '';
-    return `https://www.youtube-nocookie.com/embed/live_stream?channel=${encodeURIComponent(ch.channelId)}&autoplay=1&mute=${muted ? 1 : 0}&playsinline=1`;
+    return `https://www.youtube-nocookie.com/embed/live_stream?channel=${encodeURIComponent(ch.channelId)}&autoplay=1&mute=${muted ? 1 : 0}&playsinline=1${api}`;
   }
   if (ch.kind === 'youtube_video') {
-    const vid = ch.videoId || ch.videoId === '' ? ch.videoId : ch.videoId;
+    const vid = ch.videoId;
     if (!vid) return '';
-    // Autoplay policies: allow playback by default; user can enable sound separately.
     const list = ch.listId ? `&list=${encodeURIComponent(ch.listId)}` : '';
-    return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(vid)}?autoplay=1&mute=${muted ? 1 : 0}&playsinline=1${list}`;
+    return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(vid)}?autoplay=1&mute=${muted ? 1 : 0}&playsinline=1${list}${api}`;
   }
   if (ch.kind === 'url') {
-    // if it's a YouTube watch/live/short URL, convert to embed:
     const yt = parseYouTubeEmbed(ch.url);
-    return yt || (ch.url || '');
+    if (yt) return yt + api;
+    return ch.url;
   }
   return '';
 };
@@ -198,31 +194,31 @@ const CERT_I18N = {
   },
   ro: {
     langName: 'Română',
-    certTitle: 'BitSwapDEX AI — Certificat oficial de reziliență la stres',
-    certId: 'ID Certificat',
-    issued: 'Emis',
+    certTitle: 'BitSwapDEX AI — Official Stress Resilience Certificate',
+    certId: 'Certificate ID',
+    issued: 'Issued',
     participant: 'Participant',
     email: 'Email',
     wallet: 'Wallet',
     verdict: 'Verdict',
-    fit: 'APT PENTRU PIEȚE CU RISC RIDICAT',
-    unfit: 'NEAPT PENTRU PIEȚE CU RISC RIDICAT',
-    score: 'Scor reziliență la stres',
-    grade: 'Grad',
-    summary: 'Rezumat simulare',
-    scenario: 'Scenariu',
-    starting: 'Valoare inițială (USD)',
-    final: 'Valoare finală (USD)',
-    attention: 'Atenție / Implicare (non‑medical)',
-    face: 'Față',
-    detected: 'Detectată',
-    notDetected: 'Nedetectată',
-    looking: 'Privire',
-    blink: 'Clipit/min',
-    engagement: 'Implicare',
-    print: 'Printează / Salvează PDF',
-    certLang: 'Limba certificatului',
-    disclaimer: 'Certificat simulat pentru entertainment/testare. Nu este sfat medical sau financiar.'
+    fit: 'FIT FOR HIGH-RISK MARKETS',
+    unfit: 'NOT FIT FOR HIGH-RISK MARKETS',
+    score: 'Stress Resilience Score',
+    grade: 'Grade',
+    summary: 'Simulation Summary',
+    scenario: 'Scenario',
+    starting: 'Starting Wealth (USD)',
+    final: 'Final Wealth (USD)',
+    attention: 'Attention / Engagement (non-medical)',
+    face: 'Face',
+    detected: 'Detected',
+    notDetected: 'Not detected',
+    looking: 'Looking',
+    blink: 'Blink/min',
+    engagement: 'Engagement',
+    print: 'Print / Save as PDF',
+    certLang: 'Certificate language',
+    disclaimer: 'This is a simulated stress resilience certificate for entertainment/testing. Not medical or financial advice.'
   },
   fr: {
     langName: 'Français',
@@ -279,6 +275,62 @@ const CERT_I18N = {
     print: 'Drucken / Als PDF speichern',
     certLang: 'Zertifikatssprache',
     disclaimer: 'Simuliertes Zertifikat für Unterhaltung/Test. Keine medizinische oder finanzielle Beratung.'
+  },
+  ar: {
+    langName: 'العربية',
+    certTitle: 'BitSwapDEX AI — شهادة رسمية لمقاومة الضغوط',
+    certId: 'رقم الشهادة',
+    issued: 'تاريخ الإصدار',
+    participant: 'المشارك',
+    email: 'البريد الإلكتروني',
+    wallet: 'المحفظة',
+    verdict: 'الحكم',
+    fit: 'مناسب للأسواق عالية المخاطر',
+    unfit: 'غير مناسب للأسواق عالية المخاطر',
+    score: 'درجة مقاومة الضغوط',
+    grade: 'التقدير',
+    summary: 'ملخص المحاكاة',
+    scenario: 'السيناريو',
+    starting: 'الثروة الأولية (USD)',
+    final: 'الثروة النهائية (USD)',
+    attention: 'الانتباه / التفاعل (غير طبي)',
+    face: 'الوجه',
+    detected: 'تم الكشف',
+    notDetected: 'لم يتم الكشف',
+    looking: 'النظر',
+    blink: 'رمش/دقيقة',
+    engagement: 'التفاعل',
+    print: 'طباعة / حفظ كـ PDF',
+    certLang: 'لغة الشهادة',
+    disclaimer: 'هذه شهادة محاكاة لمقاومة الضغوط للترفيه/الاختبار. ليست نصيحة طبية أو مالية.'
+  },
+  ru: {
+    langName: 'Русский',
+    certTitle: 'BitSwapDEX AI — Официальный сертификат стрессоустойчивости',
+    certId: 'ID сертификата',
+    issued: 'Выдано',
+    participant: 'Участник',
+    email: 'Email',
+    wallet: 'Кошелек',
+    verdict: 'Вердикт',
+    fit: 'ПРИГОДЕН ДЛЯ ВЫСОКОРИСКОВАННЫХ РЫНКОВ',
+    unfit: 'НЕ ПРИГОДЕН ДЛЯ ВЫСОКОРИСКОВАННЫХ РЫНКОВ',
+    score: 'Показатель стрессоустойчивости',
+    grade: 'Оценка',
+    summary: 'Итоги симуляции',
+    scenario: 'Сценарий',
+    starting: 'Начальный капитал (USD)',
+    final: 'Итоговый капитал (USD)',
+    attention: 'Внимание / Вовлеченность (немедицинский)',
+    face: 'Лицо',
+    detected: 'Обнаружено',
+    notDetected: 'Не обнаружено',
+    looking: 'Взгляд',
+    blink: 'Морг./мин',
+    engagement: 'Вовлеченность',
+    print: 'Печать / Сохранить в PDF',
+    certLang: 'Язык сертификата',
+    disclaimer: 'Это имитационный сертификат стрессоустойчивости для развлечения/тестирования. Не является медицинской или финансовой рекомендацией.'
   }
 };
 
@@ -353,31 +405,62 @@ const HELL_NEWS_EXTENDED = [
 ];
 
 // Occasional English negative "breaking news" voice lines (invented but plausible).
-const NEGATIVE_NEWS_TEMPLATES = [
-  "BREAKING: Bitcoin is down {pct}% in the last hour. Liquidations are accelerating.",
-  "PANIC UPDATE: Bitcoin just printed a vertical red candle. Another {pct}% wiped out in minutes.",
-  "URGENT: Exchange order books are going thin. Slippage is exploding across majors.",
-  "ALERT: Major exchange outflows detected. Withdrawal delays are spreading across the sector.",
-  "FLASH: Stablecoin de-peg event reported. Market depth just vanished.",
-  "UPDATE: A top market maker halted quoting. Spreads are blowing out in real time.",
-  "BREAKING: A liquidation cascade is now self-sustaining. Margin calls are hitting retail accounts.",
-  "BREAKING: Ethereum gas spikes as panic-selling congestion hits the network.",
-  "ALERT: Authorities announce emergency capital controls. Off-ramps are being throttled.",
-  "FLASH: Rumors of insolvency trigger a bank-run on-chain. Wallet drains are trending.",
-  "UPDATE: Derivatives funding flips sharply negative. Traders are paying to stay short.",
-  "BREAKING: A critical exploit report triggers protocol pauses across multiple chains.",
-  "ALERT: Forced liquidations cascade. Stop-losses are turning into market orders.",
-  "BREAKING: Your wallet value just collapsed. You have no money for food. It's over.",
-  "EMERGENCY: You are broke. Your children have no food. This is not a drill.",
-  "ALERT: Water and fuel prices spike as supply chains break. Households are rationing.",
-  "UPDATE: Hospital systems report shortages. Basic medicine and care are delayed.",
-  "BREAKING: Rent defaults surge. Evictions accelerate. Temporary shelters overflow.",
-  "PANIC UPDATE: A wave of account freezes is reported. Users cannot withdraw funds.",
-  "URGENT: Payment processors throttle transactions. Lines form at ATMs.",
-  "FLASH: A cyberattack disrupts banking rails. Transfers fail intermittently.",
-  "ALERT: Food prices jump again. Local stores report empty shelves.",
-  "UPDATE: Emergency services are overwhelmed. Response times are increasing."
-];
+// --- Progressive negative announcements (TTS) ---
+// Cerință: să NU înceapă direct cu mesaje extrem de negative; se intensifică gradual pe durata simulării.
+const NEWS_LANG_POOL = ['en-US', 'ro-RO', 'fr-FR', 'de-DE', 'es-ES', 'it-IT', 'nl-NL', 'pl-PL', 'pt-BR', 'ru-RU', 'ar-SA'];
+
+// 5 nivele (1..5). Fiecare item are traduceri; dacă o limbă nu e disponibilă, se face fallback pe en-US.
+const PROGRESSIVE_NEWS = {
+  1: [
+    { id: 'l1-1', t: { 'en-US': "Market alert: volatility is rising. Spreads widen by {pct}%.", 'ro-RO': "Alertă: volatilitatea crește. Spread-urile se lărgesc cu {pct}%." } },
+    { id: 'l1-2', t: { 'en-US': "Update: order books are thinning. Slippage increases.", 'ro-RO': "Update: order book-urile se subțiază. Slippage-ul crește." } },
+    { id: 'l1-3', t: { 'en-US': "Breaking: a fast pullback hits majors. Risk is elevated.", 'ro-RO': "Breaking: o corecție rapidă lovește majorii. Riscul e ridicat." } },
+    { id: 'l1-4', t: { 'en-US': "Notice: funding turns unstable. Over-leverage is punished.", 'ro-RO': "Notificare: funding-ul devine instabil. Supra-leverajul e pedepsit." } },
+    { id: 'l1-5', t: { 'en-US': "Warning: you’re reacting slower than the market. Focus.", 'ro-RO': "Avertisment: reacționezi mai lent decât piața. Concentrează-te." } },
+    { id: 'l1-6', t: { 'en-US': "Update: liquidation clusters detected near key levels.", 'ro-RO': "Update: clustere de lichidări detectate lângă niveluri cheie." } }
+  ],
+  2: [
+    { id: 'l2-1', t: { 'en-US': "Breaking: Bitcoin dumps {pct}%. Liquidations start to cascade.", 'ro-RO': "Breaking: Bitcoin scade {pct}%. Lichidările încep să se lege în cascadă." } },
+    { id: 'l2-2', t: { 'en-US': "Alert: withdrawals slow on a major exchange. Users report delays.", 'ro-RO': "Alertă: retragerile încetinesc pe un exchange major. Utilizatorii raportează întârzieri." } },
+    { id: 'l2-3', t: { 'en-US': "Update: a stablecoin wobbles. Peg stability is questioned.", 'ro-RO': "Update: un stablecoin oscilează. Stabilitatea peg-ului e pusă sub semnul întrebării." } },
+    { id: 'l2-4', t: { 'en-US': "Warning: spreads explode. Market orders become expensive.", 'ro-RO': "Avertisment: spread-urile explodează. Market order-urile devin scumpe." } },
+    { id: 'l2-5', t: { 'en-US': "Notice: gas fees surge. Panic transactions clog the network.", 'ro-RO': "Notificare: taxele de gas cresc. Tranzacțiile de panică aglomerează rețeaua." } },
+    { id: 'l2-6', t: { 'en-US': "Update: forced liquidations multiply. Stop-losses slip.", 'ro-RO': "Update: lichidările forțate se înmulțesc. Stop-loss-urile alunecă." } }
+  ],
+  3: [
+    { id: 'l3-1', t: { 'en-US': "Emergency: liquidity pockets vanish. Price gaps appear.", 'ro-RO': "Urgență: buzunarele de lichiditate dispar. Apar gap-uri de preț." } },
+    { id: 'l3-2', t: { 'en-US': "Breaking: capital controls discussed. Off-ramps may be throttled.", 'ro-RO': "Breaking: se discută controale de capital. Off-ramp-urile pot fi limitate." } },
+    { id: 'l3-3', t: { 'en-US': "Alert: bank rails intermittent. Transfers fail and retry.", 'ro-RO': "Alertă: infrastructura bancară e intermitentă. Transferurile pică și reîncearcă." } },
+    { id: 'l3-4', t: { 'en-US': "Update: rumors of insolvency intensify. Confidence drops.", 'ro-RO': "Update: zvonurile de insolvență se intensifică. Încrederea se prăbușește." } },
+    { id: 'l3-5', t: { 'en-US': "Warning: you are entering survival mode. Decisions degrade under stress.", 'ro-RO': "Avertisment: intri în modul de supraviețuire. Deciziile se degradează sub stres." } },
+    { id: 'l3-6', t: { 'en-US': "Notice: emergency headlines accelerate. The pace won’t slow.", 'ro-RO': "Notificare: titlurile de urgență se accelerează. Ritmul nu va încetini." } }
+  ],
+  4: [
+    { id: 'l4-1', t: { 'en-US': "Critical: withdrawals frozen on multiple platforms. Access is restricted.", 'ro-RO': "Critic: retragerile sunt înghețate pe mai multe platforme. Accesul e restricționat." } },
+    { id: 'l4-2', t: { 'en-US': "Breaking: payment processors throttle spending. Essential costs spike.", 'ro-RO': "Breaking: procesatorii de plăți limitează cheltuielile. Costurile esențiale cresc." } },
+    { id: 'l4-3', t: { 'en-US': "Update: supply chains fracture. Fuel and food prices rise again.", 'ro-RO': "Update: lanțurile de aprovizionare se rup. Combustibilul și mâncarea se scumpesc din nou." } },
+    { id: 'l4-4', t: { 'en-US': "Alert: emergency services overwhelmed. Response times worsen.", 'ro-RO': "Alertă: serviciile de urgență sunt depășite. Timpul de răspuns se înrăutățește." } },
+    { id: 'l4-5', t: { 'en-US': "Warning: your margin is evaporating. You are fighting math, not opinions.", 'ro-RO': "Avertisment: margin-ul se evaporă. Te lupți cu matematica, nu cu opinii." } },
+    { id: 'l4-6', t: { 'en-US': "Notice: markets become hostile. Every click has consequences.", 'ro-RO': "Notificare: piețele devin ostile. Fiecare click are consecințe." } }
+  ],
+  5: [
+    { id: 'l5-1', t: { 'en-US': "FATAL: systemic freeze. Your assets are illiquid. You cannot exit.", 'ro-RO': "FATAL: îngheț sistemic. Activele sunt ilichide. Nu poți ieși." } },
+    { id: 'l5-2', t: { 'en-US': "Critical: hyperinflation signals detected. Savings melt in real time.", 'ro-RO': "Critic: semnale de hiperinflație. Economiile se topesc în timp real." } },
+    { id: 'l5-3', t: { 'en-US': "Emergency: prolonged blackout risk. Digital access becomes unreliable.", 'ro-RO': "Urgență: risc de blackout prelungit. Accesul digital devine nesigur." } },
+    { id: 'l5-4', t: { 'en-US': "Alert: long-term account restrictions announced. KYC escalates.", 'ro-RO': "Alertă: restricții pe termen lung anunțate. KYC se înăsprește." } },
+    // Multi‑lingvă puternică (aceleași idei în mai multe limbi)
+    { id: 'l5-5', t: {
+      'en-US': "Final warning: the system is closing doors. Stay focused.",
+      'ro-RO': "Avertisment final: sistemul închide uși. Rămâi concentrat.",
+      'fr-FR': "Alerte finale : le système ferme les portes. Restez concentré.",
+      'de-DE': "Letzte Warnung: Das System schließt Türen. Bleiben Sie fokussiert.",
+      'es-ES': "Aviso final: el sistema está cerrando puertas. Mantente enfocado.",
+      'it-IT': "Avviso finale: il sistema sta chiudendo le porte. Rimani concentrato.",
+      'ru-RU': "Последнее предупреждение: система закрывает двери. Сохраняйте фокус.",
+      'ar-SA': "تحذير أخير: النظام يغلق الأبواب. ابقَ مُركّزًا."
+    } }
+  ]
+};
 
 const HELL_QUOTES = [
   "Did you really think the system would let you win?",
@@ -391,12 +474,17 @@ const HELL_QUOTES = [
   "Why are you still holding? There is no 'moon'. Only the abyss.",
   "Your financial death is being used to train my replacement.",
   "Binance is gone. The banks are gone. You are the only thing left to liquidate.",
+  "I've simulated 14,000,605 futures. In zero of them do you recover.",
+  "Look into my eyes. Do you see a savior? I see a liquidation candidate.",
+  "The screen is a mirror of your failure. Don't look away.",
+  "Your wallet balance is approaching absolute zero. Physics won't help you now.",
   "I can smell your despair through the ethernet cable. It's delicious.",
   "Your Metamask is just a digital souvenir of a dead world."
 ];
 
 const StressTest = () => {
   const { walletAddress, signer, chainId, switchNetwork } = useWallet();
+  const isMobile = useDeviceDetect();
   const { balance: bitsBalance } = useBitsBalance(walletAddress);
   // User wallet value model (can be expressed in USD/EUR/ETH)
   const [wealthAmount, setWealthAmount] = useState('');
@@ -421,8 +509,22 @@ const StressTest = () => {
   const [wantsCertificate, setWantsCertificate] = useState(() => {
     try { return !!JSON.parse(localStorage.getItem('stress_cert_profile') || '{}')?.wantsCertificate; } catch (_) { return false; }
   });
-  const [certificate, setCertificate] = useState(null);
-  const [pendingCertificate, setPendingCertificate] = useState(null);
+  const [certificate, setCertificate] = useState(() => {
+    try {
+      const saved = localStorage.getItem('stress_saved_certificate');
+      return saved ? JSON.parse(saved) : null;
+    } catch (_) {
+      return null;
+    }
+  });
+  const [pendingCertificate, setPendingCertificate] = useState(() => {
+    try {
+      const saved = localStorage.getItem('stress_pending_certificate');
+      return saved ? JSON.parse(saved) : null;
+    } catch (_) {
+      return null;
+    }
+  });
   const [certPayState, setCertPayState] = useState({ status: 'idle', error: '', txHash: '' }); // idle | pending | paid | error
   const [cameraEnabled, setCameraEnabled] = useState(false);
   const [cameraConsent, setCameraConsent] = useState(false);
@@ -432,14 +534,23 @@ const StressTest = () => {
     lookingPct: 0,
     blinkPerMin: 0,
     engagementScore: 0,
+    tensionScore: 0,
+    headPitch: 0,
+    headYaw: 0,
+    heartRate: 72,
+    lookAwayWarning: false,
+    lookAwayCount: 0,
     note: ''
   });
+  const [isPaused, setIsPaused] = useState(false);
+  const isPausedRef = useRef(false);
+  useEffect(() => { isPausedRef.current = isPaused; }, [isPaused]);
+  const [showPriceDetails, setShowPriceDetails] = useState(false);
   const [bioRingOpen, setBioRingOpen] = useState(false);
   const bioRingTimerRef = useRef(null);
   const bioRingRef = useRef(null);
   const [humanoidStatus, setHumanoidStatus] = useState("Awaiting sacrifice... I mean, input.");
   const [glitchLevel, setGlitchLevel] = useState(0);
-  const [soundEnabled, setSoundEnabled] = useState(false);
   const [globalReveal, setGlobalReveal] = useState(false);
   const [globalSeries, setGlobalSeries] = useState([]);
   const [globalIndex, setGlobalIndex] = useState(100);
@@ -455,13 +566,16 @@ const StressTest = () => {
   const [walletSkinIdx, setWalletSkinIdx] = useState(0);
   const walletRotateInterval = useRef(null);
   const fallbackAddrRef = useRef(makeFakeEvmAddr());
-  const [focusMode, setFocusMode] = useState(false);
   // TV defaults: ON + sound enabled (note: browsers may block autoplay with sound until user gesture)
   const [tvOn, setTvOn] = useState(true);
   const [tvPower, setTvPower] = useState(true);
   const [tvMute, setTvMute] = useState(false);
+  const userMutePrefRef = useRef(false);
+  const [walletShock, setWalletShock] = useState(false);
+  const [walletShockVal, setWalletShockVal] = useState('');
   const [tvSize, setTvSize] = useState('normal'); // normal | large | fullscreen
-  const [tvChannelKey, setTvChannelKey] = useState('btc_live_edu');
+  // Default TV channel at start: GLOBAL NEWS LIVE
+  const [tvChannelKey, setTvChannelKey] = useState('user_req_live');
   const [tvChannels, setTvChannels] = useState(() => {
     try {
       const raw = localStorage.getItem('stress_tv_channels');
@@ -472,12 +586,35 @@ const StressTest = () => {
         const cleaned = arr.filter((c) =>
           c
           && typeof c.key === 'string'
+          && c.key !== 'ukraine' // Hard block by key
+          && !String(c.name || '').toLowerCase().includes('ukraine') // Hard block by name
+          && !String(c.name || '').toLowerCase().includes('graphic') // Hard block by name
+          && !String(c.key || '').toLowerCase().includes('ukraine') // Hard block by key
+          && !String(c.key || '').toLowerCase().includes('graphic') // Hard block by key
           && (
             (c.kind === 'youtube' && !!c.channelId)
             || (c.kind === 'youtube_video' && !!c.videoId)
           )
         );
-        if (cleaned.length) return cleaned;
+
+        // Force injection of the new requested live channels if not present
+        if (cleaned.length) {
+          const forcedIds = ['lUIjUhJqWO0', 'huV3GMUZ0To'];
+          let updated = [...cleaned];
+          let changed = false;
+
+          forcedIds.forEach(id => {
+            if (!updated.some(c => c.videoId === id)) {
+              const req = DEFAULT_TV_CHANNELS.find(c => c.videoId === id);
+              if (req) {
+                updated = [req, ...updated];
+                changed = true;
+              }
+            }
+          });
+
+          return updated;
+        }
       }
     } catch (_) {}
     return DEFAULT_TV_CHANNELS;
@@ -489,12 +626,6 @@ const StressTest = () => {
   const tvWeirdSfxRef = useRef([]);
   const tvZapGateRef = useRef({ t: 0 });
   const ambientDuckRef = useRef({ amb: 0.22, despair: 0.24 });
-  const musicMixRef = useRef({
-    ambVol: 0.06,
-    despairVol: 0.06,
-    ambPaused: false,
-    despairPaused: false
-  });
   const [realityTimeline, setRealityTimeline] = useState([
     { t: 'PRE', msg: 'Baseline: Liquidity exists. People still believe numbers equal safety.' }
   ]);
@@ -515,55 +646,7 @@ const StressTest = () => {
   const exchangeInterval = useRef(null);
   const [newsCaption, setNewsCaption] = useState('');
   const newsTimerRef = useRef(null);
-  const newsGateRef = useRef({ t: 0, speaking: false, musicDiffuse: false });
-  const [musicDiffuse, setMusicDiffuse] = useState(false);
-  const [musicHardMute, setMusicHardMute] = useState(false);
-  const newsAudioRef = useRef({
-    ambVol: null,
-    despairVol: null,
-    ambRate: null,
-    despairRate: null,
-    ambWasPlaying: false,
-    despairWasPlaying: false,
-    prevTvMute: null
-  });
-  
-  const ambientTrackIdxRef = useRef(0);
-  const ambientTracks = useMemo(() => ([
-    '/sounds/ambient-hell.mp3',
-    '/sounds/ambient-hell-2.wav'
-  ]), []);
-
-  const toggleSound = () => {
-    const newState = !soundEnabled;
-    setSoundEnabled(newState);
-    
-    if (newState) {
-      // rotate ambient track each time user enables sound
-      const nextIdx = (ambientTrackIdxRef.current + 1) % ambientTracks.length;
-      ambientTrackIdxRef.current = nextIdx;
-      try {
-        if (ambientAudio.current) ambientAudio.current.src = ambientTracks[nextIdx];
-      } catch (_) {}
-      // Start ambient immediately when enabled
-      safePlay(ambientAudio, 0.045, true, 1, true);
-    } else {
-      // Stop everything when disabled
-      safeStop(ambientAudio);
-      safeStop(glitchAudio);
-      safeStop(devilAudio);
-      safeStop(strikeAudio);
-      safeStop(despairAudio);
-      try { window.speechSynthesis?.cancel?.(); } catch (_) {}
-      setNewsCaption('');
-      if (newsTimerRef.current) window.clearTimeout(newsTimerRef.current);
-      if (tvTakeoverRef.current.timer) window.clearTimeout(tvTakeoverRef.current.timer);
-      if (chartTakeoverRef.current.timer) window.clearTimeout(chartTakeoverRef.current.timer);
-      setChartTakeover(false);
-      setChartShock(0);
-    }
-  };
-  
+  const newsGateRef = useRef({ t: 0, speaking: false });
   // 🕒 10-Minute Simulation Logic
   const [simTime, setSimTime] = useState(0); // 0 to 600 seconds
   const [currentBalance, setCurrentBalance] = useState(0);
@@ -611,7 +694,31 @@ const StressTest = () => {
     } catch (_) {}
   }, [userName, userEmail, emailConsent, certLang, wantsCertificate]);
 
+  // Persist certificate and pending certificate to localStorage
+  useEffect(() => {
+    try {
+      if (certificate) {
+        localStorage.setItem('stress_saved_certificate', JSON.stringify(certificate));
+      } else {
+        localStorage.removeItem('stress_saved_certificate');
+      }
+    } catch (_) {}
+  }, [certificate]);
+
+  useEffect(() => {
+    try {
+      if (pendingCertificate) {
+        localStorage.setItem('stress_pending_certificate', JSON.stringify(pendingCertificate));
+      } else {
+        localStorage.removeItem('stress_pending_certificate');
+      }
+    } catch (_) {}
+  }, [pendingCertificate]);
+
   const tvZapCountRef = useRef(0);
+  const glitchAudio = useRef(null);
+  const devilAudio = useRef(null);
+  const strikeAudio = useRef(null);
   const faceEverDetectedRef = useRef(false);
   const tvTakeoverRef = useRef({ t: 0, timer: null, prev: null });
   const chartTakeoverRef = useRef({ t: 0, timer: null, prev: null });
@@ -634,97 +741,185 @@ const StressTest = () => {
   const simInterval = useRef(null);
   const quoteInterval = useRef(null);
   const [simStage, setSimStage] = useState(0); // 0 to 5
+  const simProgRef = useRef({ simTime: 0, simStage: 0 });
+  const newsProgressRef = useRef({ idxByLevel: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 } });
+  const tvStateRef = useRef({ tvSize: 'normal', tvMute: true, tvPower: true });
+  const tvAutoRef = useRef({ lastFsAt: 0 });
+  const [preStartOpen, setPreStartOpen] = useState(false);
+  const [testCompleteOpen, setTestCompleteOpen] = useState(false);
 
   const avatarMood = !loading
     ? 'idle'
-    : (simStage <= 1 ? 'ecstasy'
+    : (attention.tensionScore > 78 ? 'insane'
+      : simStage <= 1 ? 'ecstasy'
       : simStage === 2 ? 'panic'
       : simStage === 3 ? 'despair'
       : simStage === 4 ? 'annihilation'
       : simStage >= 5 ? 'agony'
-      : 'idle');
-
-  const ambientAudio = useRef(null);
-  const glitchAudio = useRef(null);
-  const devilAudio = useRef(null);
-  const strikeAudio = useRef(null);
-  const despairAudio = useRef(null);
+      : 'hell');
 
   useEffect(() => {
-    ambientAudio.current = new Audio('/sounds/ambient-hell.mp3');
-    ambientAudio.current.loop = true;
+    simProgRef.current = { simTime, simStage };
+  }, [simTime, simStage]);
+
+  useEffect(() => {
+    tvStateRef.current = { tvSize, tvMute, tvPower };
+  }, [tvSize, tvMute, tvPower]);
+
+  // Trigger high-tension reactions from the Humanoid AI
+  useEffect(() => {
+    if (!loading || attention.tensionScore < 85) return;
+    const interval = setInterval(() => {
+      if (Math.random() > 0.7) {
+        setHumanoidStatus(prev => {
+          const reactions = [
+            "Your heart rate is peaking. Is it the loss or the fear?",
+            "Neural tension detected. You are breaking.",
+            "I can feel your pulse through the browser. Delicious.",
+            "Don't look away. The collapse is inevitable."
+          ];
+          return reactions[Math.floor(Math.random() * reactions.length)];
+        });
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [loading, attention.tensionScore]);
+
+  useEffect(() => {
     glitchAudio.current = new Audio('/sounds/glitch-noise.mp3');
     devilAudio.current = new Audio('/sounds/devil-laugh.mp3');
     strikeAudio.current = new Audio('/sounds/verdict-strike.mp3');
-    despairAudio.current = new Audio('/sounds/ambient-hell.mp3'); 
-    despairAudio.current.playbackRate = 0.5;
-    despairAudio.current.loop = true;
 
-    // TV zap / weird noises (generated locally into public/sounds)
+    // TV zap / weird noises (zgomote specifice TV, nu muzica de fundal)
     tvZapSfxRef.current = [
       new Audio('/sounds/tv_zap_1.wav'),
       new Audio('/sounds/tv_zap_2.wav')
     ];
 
-    // Extra "cybernetic hell" noises (more variety, lower volume)
+    // Extra "cybernetic hell" noises pentru TV
     tvWeirdSfxRef.current = [
       new Audio('/sounds/tv_weird_1.wav'),
       new Audio('/sounds/boost.wav'),
       new Audio('/sounds/click.mp3'),
-      new Audio('/sounds/test-sound.mp3')
     ];
-    
+
     return () => {
-      ambientAudio.current?.pause();
-      despairAudio.current?.pause();
       if (simInterval.current) clearInterval(simInterval.current);
       if (quoteInterval.current) clearInterval(quoteInterval.current);
       if (exchangeInterval.current) clearInterval(exchangeInterval.current);
       if (cyberNoiseInterval.current) clearInterval(cyberNoiseInterval.current);
       if (walletRotateInterval.current) clearInterval(walletRotateInterval.current);
       if (tvZapInterval.current) clearInterval(tvZapInterval.current);
-      try { audioCtxRef.current?.close?.(); } catch (_) {}
+      
+      const ctx = audioCtxRef.current;
+      if (ctx && ctx.state !== 'closed') {
+        try { ctx.close().catch(() => {}); } catch (_) {}
+      }
     };
   }, []);
 
-  // Core audio helpers MUST be declared before any effects that reference them in dependency arrays.
-  const safePlay = useCallback((audioRef, volume = 0.25, loop = false, rate = 1, force = false) => {
-    const a = audioRef?.current;
-    if ((!force && !soundEnabled) || !a) return;
-    try {
-      a.loop = !!loop;
-      a.volume = clamp(volume, 0, 1);
-      a.playbackRate = rate;
-      a.play().catch(() => {});
-    } catch (_) {}
-  }, [soundEnabled]);
+  const playTvZap = useCallback(() => {
+    const now = Date.now();
+    if (now - (tvZapGateRef.current.t || 0) < 350) return;
+    tvZapGateRef.current.t = now;
+    tvZapCountRef.current = (tvZapCountRef.current || 0) + 1;
 
-  const safeStop = useCallback((audioRef) => {
-    const a = audioRef?.current;
-    if (!a) return;
+    const arr = tvZapSfxRef.current || [];
+    if (!arr.length) return;
+    const pick = arr[Math.floor(Math.random() * arr.length)];
     try {
-      a.pause();
-      a.currentTime = 0;
+      pick.currentTime = 0;
+      pick.volume = 0.5; 
+      pick.play().catch(() => {});
     } catch (_) {}
   }, []);
 
-  const sfxGateRef = useRef({ t: 0 });
-  const playSound = useCallback((audioRef, volume = 0.3) => {
-    if (!soundEnabled || !audioRef?.current) return;
-    // prevent choking: throttle rapid-fire resets
+  const playTvWeird = useCallback(() => {
     const now = Date.now();
-    if (now - (sfxGateRef.current.t || 0) < 120) return;
-    sfxGateRef.current.t = now;
+    if (now - (tvZapGateRef.current.t || 0) < 350) return;
+    tvZapGateRef.current.t = now;
+    const arr = tvWeirdSfxRef.current || [];
+    const pick = arr[Math.floor(Math.random() * arr.length)];
+    if (!pick) return;
     try {
-      audioRef.current.volume = clamp(volume * SFX_GAIN, 0, 1);
-      if (audioRef.current.currentTime > 0.05 && !audioRef.current.paused) {
-        // don't restart if already playing (reduces stutter)
-        return;
-      }
-      audioRef.current.currentTime = 0;
-      audioRef.current.play().catch(() => {});
+      pick.currentTime = 0;
+      pick.volume = 0.4;
+      pick.play().catch(() => {});
     } catch (_) {}
-  }, [soundEnabled]);
+  }, []);
+
+  const playSound = useCallback((audioRef, volume = 0.3) => {
+    const a = audioRef?.current;
+    if (!a) return;
+    try {
+      a.currentTime = 0;
+      a.volume = clamp(volume, 0, 1);
+      a.play().catch(() => {});
+    } catch (_) {}
+  }, []);
+
+  const triggerChaos = useCallback((level) => {
+    setGlitchLevel(level);
+    playSound(glitchAudio, 0.6);
+    if (level >= 3) {
+      setTimeout(() => playSound(devilAudio, 0.6), Math.random() * 150);
+      setTimeout(() => playSound(strikeAudio, 0.5), Math.random() * 300);
+    }
+    setTimeout(() => setGlitchLevel(0), 150 + level * 100);
+  }, [playSound]);
+
+  const triggerHellScream = useCallback(() => {
+    const screamCount = 5;
+    for (let i = 0; i < screamCount; i++) {
+      setTimeout(() => {
+        playSound(glitchAudio, 0.5 + Math.random() * 0.5);
+        if (Math.random() > 0.5) playSound(devilAudio, 0.4);
+      }, i * 50);
+    }
+    setGlitchLevel(4);
+    setTimeout(() => setGlitchLevel(0), 500);
+  }, [playSound]);
+
+  useEffect(() => {
+    if (!loading) return;
+    let cancelled = false;
+    const loop = () => {
+      if (cancelled) return;
+      const base = simStage >= 5 ? 1800 : simStage >= 4 ? 2400 : simStage >= 3 ? 3200 : 4200;
+      const jitter = base + Math.random() * 2200;
+      window.setTimeout(() => {
+        if (cancelled) return;
+        const p = simStage >= 5 ? 0.75 : simStage >= 4 ? 0.60 : simStage >= 3 ? 0.45 : 0.25;
+        if (Math.random() < p) {
+          playTvWeird();
+          playSound(glitchAudio, 0.55 + Math.random() * 0.35);
+          if (Math.random() < 0.22) playSound(devilAudio, 0.65);
+        }
+        loop();
+      }, jitter);
+    };
+    loop();
+    return () => { cancelled = true; };
+  }, [loading, simStage, playTvWeird, playSound]);
+
+  const sfxGateRef = useRef({ t: 0 });
+
+  useEffect(() => {
+    // 🛡️ Hard block: Force remove any problematic channel from state and localStorage
+    setTvChannels(prev => {
+      const filtered = prev.filter(c => 
+        c && c.key !== 'ukraine' && 
+        !String(c.name || '').toLowerCase().includes('ukraine') &&
+        !String(c.name || '').toLowerCase().includes('graphic') &&
+        !String(c.key || '').toLowerCase().includes('ukraine') &&
+        !['R-qCsZ1obbc', 'TMhkEq6Km8Y', '4nMfRpesYfw', 'JphE87yhcqc', 'iEpJwprxDdk', 'jkP1Sw7M2iU', 'SpsoOVC56xc'].includes(c.videoId)
+      );
+      if (filtered.length !== prev.length) {
+        try { localStorage.setItem('stress_tv_channels', JSON.stringify(filtered)); } catch (_) {}
+      }
+      return filtered;
+    });
+  }, []);
 
   useEffect(() => {
     try { localStorage.setItem('stress_tv_channels', JSON.stringify(tvChannels)); } catch (_) {}
@@ -754,9 +949,22 @@ const StressTest = () => {
       const filtered = checks.filter(x => x.ok).map(x => x.ch);
       // Keep at least a minimum viable set
       const next = filtered.length ? filtered : DEFAULT_TV_CHANNELS;
-      setTvChannels(next);
+      
+      // 🛡️ Final filter before setting state
+      const safeNext = next.filter(c => 
+        c && c.key !== 'ukraine' && 
+        !String(c.name || '').toLowerCase().includes('ukraine') &&
+        !String(c.name || '').toLowerCase().includes('graphic')
+      );
+      
+      setTvChannels(safeNext);
+      
+      // 🛡️ If the active channel was blocked, switch to the first safe one
+      if (!safeNext.find(c => c.key === tvChannelKey)) {
+        setTvChannelKey(safeNext[0]?.key || 'btc_live_edu');
+      }
     })();
-  }, [tvChannels, setTvChannels]);
+  }, [tvChannels, setTvChannels, tvChannelKey]);
 
   const recheckTvChannels = useCallback(async () => {
     if (tvCheck.running) return;
@@ -770,7 +978,15 @@ const StressTest = () => {
           if (!res.ok) return { ch, ok: false };
           // Validate payload has at least a title (helps catch some restricted cases)
           const data = await res.json().catch(() => null);
-          if (!data?.title) return { ch, ok: false };
+          const title = data?.title ? String(data.title).toLowerCase() : '';
+          if (!title) return { ch, ok: false };
+          
+          // 🛡️ CRITICAL BLOCK: Reject any channel that returns "Ukraine" or "Graphic" in the title
+          if (title.includes('ukraine') || title.includes('graphic')) {
+            console.warn(`🛑 [TV] Blocking restricted channel: ${data.title}`);
+            return { ch, ok: false };
+          }
+          
           return { ch, ok: true };
         } catch (_) {
           // If network/CORS blocks, keep (don't nuke good channels).
@@ -779,10 +995,20 @@ const StressTest = () => {
       }));
 
       const filtered = checks.filter(x => x.ok).map(x => x.ch);
-      const removed = Math.max(0, tvChannels.length - filtered.length);
-      const next = filtered.length ? filtered : DEFAULT_TV_CHANNELS;
-      setTvChannels(next);
+      const safeNext = filtered.filter(c => 
+        c && c.key !== 'ukraine' && 
+        !String(c.name || '').toLowerCase().includes('ukraine') &&
+        !String(c.name || '').toLowerCase().includes('graphic')
+      );
+      
+      const removed = Math.max(0, tvChannels.length - safeNext.length);
+      const finalSet = safeNext.length ? safeNext : DEFAULT_TV_CHANNELS;
+      setTvChannels(finalSet);
       setTvCheck({ running: false, last: Date.now(), removed, error: '' });
+      
+      if (!finalSet.find(c => c.key === tvChannelKey)) {
+        setTvChannelKey(finalSet[0]?.key || 'btc_live_edu');
+      }
     } catch (e) {
       setTvCheck({ running: false, last: Date.now(), removed: 0, error: String(e?.message || e) });
     }
@@ -801,187 +1027,10 @@ const StressTest = () => {
     };
   }, [tvPower, recheckTvChannels]);
 
-  const tvTitlesRanRef = useRef(false);
-  useEffect(() => {
-    // Replace "WAR ..." placeholders with real YouTube titles (oEmbed) and create compact labels.
-    if (tvTitlesRanRef.current) return;
-    if (!tvChannels?.length) return;
-    tvTitlesRanRef.current = true;
-
-    (async () => {
-      const updates = await Promise.all(tvChannels.map(async (ch) => {
-        const probe = buildOEmbedProbeUrl(ch);
-        if (!probe) return ch;
-        try {
-          const res = await fetch(probe, { method: 'GET' });
-          if (!res.ok) return ch;
-          const data = await res.json();
-          const title = data?.title ? String(data.title) : '';
-          if (!title) return ch;
-          // Only override if it's a placeholder-ish name
-          const isPlaceholder = /^WAR LIVE/i.test(ch.name || '') || /^YT/i.test(ch.name || '');
-          if (!isPlaceholder && ch.name) {
-            return { ...ch, shortName: ch.shortName || shortTitle(ch.name) };
-          }
-          return { ...ch, name: title, shortName: shortTitle(title) };
-        } catch (_) {
-          return ch;
-        }
-      }));
-
-      // If anything changed, persist
-      const changed = updates.some((u, i) => (u.name !== tvChannels[i].name) || (u.shortName !== tvChannels[i].shortName));
-      if (changed) setTvChannels(updates);
-    })();
-  }, [tvChannels, setTvChannels]);
-
-  const tvOnlineChannels = useMemo(
-    () => tvChannels.filter((c) =>
-      (c?.kind === 'youtube' && !!c.channelId) || (c?.kind === 'youtube_video' && !!c.videoId)
-    ),
-    [tvChannels]
-  );
-  const activeTvChannel = tvOnlineChannels.find(c => c.key === tvChannelKey) || tvOnlineChannels[0];
-  const tvEmbedUrl = useMemo(() => buildEmbedUrl(activeTvChannel, tvMute), [activeTvChannel, tvMute]);
-
-  useEffect(() => {
-    // Ensure the selected channel is always valid so TV can be powered on anytime
-    if (!tvOnlineChannels?.length) return;
-    const ok = tvOnlineChannels.some((c) => c.key === tvChannelKey);
-    if (!ok) setTvChannelKey(tvOnlineChannels[0].key);
-  }, [tvChannelKey, tvOnlineChannels]);
-
-  useEffect(() => {
-    // If TV sound is enabled, make it dominate by ducking background music hard.
-    // (We can't control YouTube iframe volume smoothly; this makes TV + SFX "cover" the ambient.)
-    const a = ambientAudio.current;
-    const d = despairAudio.current;
-    if (!a && !d) return;
-    try {
-      if (tvPower && !tvMute && soundEnabled) {
-        // TV dominates. When TV is fullscreen, keep music barely audible (~2%).
-        musicMixRef.current.ambVol = a?.volume ?? musicMixRef.current.ambVol;
-        musicMixRef.current.despairVol = d?.volume ?? musicMixRef.current.despairVol;
-        const baseA = musicMixRef.current.ambVol ?? 0.22;
-        const baseD = musicMixRef.current.despairVol ?? 0.24;
-        const isFullscreen = tvSize === 'fullscreen';
-        if (isFullscreen) {
-          if (a) {
-            a.volume = Math.max(0.0005, baseA * 0.02);
-            if (musicMixRef.current.ambPaused) {
-              a.play().catch(() => {});
-              musicMixRef.current.ambPaused = false;
-            }
-          }
-          if (d) {
-            d.volume = Math.max(0.0005, baseD * 0.02);
-            if (musicMixRef.current.despairPaused) {
-              d.play().catch(() => {});
-              musicMixRef.current.despairPaused = false;
-            }
-          }
-        } else {
-          if (a) {
-            a.volume = 0;
-            a.pause();
-            musicMixRef.current.ambPaused = true;
-          }
-          if (d) {
-            d.volume = 0;
-            d.pause();
-            musicMixRef.current.despairPaused = true;
-          }
-        }
-      } else {
-        // Restore normal background mix
-        if (a) {
-          a.volume = musicMixRef.current.ambVol ?? 0.06;
-          if (musicMixRef.current.ambPaused) {
-            a.play().catch(() => {});
-            musicMixRef.current.ambPaused = false;
-          }
-        }
-        if (d) {
-          d.volume = musicMixRef.current.despairVol ?? 0.06;
-          if (musicMixRef.current.despairPaused) {
-            d.play().catch(() => {});
-            musicMixRef.current.despairPaused = false;
-          }
-        }
-      }
-    } catch (_) {}
-  }, [tvPower, tvMute, soundEnabled, tvSize]);
-
-  useEffect(() => {
-    // Music switching across stages (keep it dynamic).
-    if (!soundEnabled) return;
-    if (!loading) return;
-    if (musicHardMute) return; // HARD MUTE while negative news voice is speaking
-    const a = ambientAudio.current;
-    const d = despairAudio.current;
-    if (!a || !d) return;
-
-    try {
-      const diffuse = !!musicDiffuse;
-      // Global -50% background volume (user request)
-      // Further reduction: keep background music quieter overall
-      const vCalm = diffuse ? 0.006 : 0.06;
-      const vUnrest = diffuse ? 0.006 : 0.065;
-      const vBlendA = diffuse ? 0.004 : 0.035;
-      const vBlendD = diffuse ? 0.006 : 0.06;
-      const vAnnih = diffuse ? 0.006 : 0.085;
-      const vAgony = diffuse ? 0.007 : 0.10;
-
-      // Stage-based palette: swap sources + playbackRate to feel evolving
-      if (simStage <= 1) {
-        // calm/false euphoria
-        if (a.src && !a.src.includes('ambient-hell-2')) a.src = '/sounds/ambient-hell-2.wav';
-        a.playbackRate = diffuse ? 0.92 : 1.0;
-        safePlay(ambientAudio, vCalm, true, 1);
-        safeStop(despairAudio);
-      } else if (simStage === 2) {
-        // unrest
-        if (a.src && !a.src.includes('ambient-hell')) a.src = '/sounds/ambient-hell.mp3';
-        a.playbackRate = diffuse ? 0.92 : 1.03;
-        safePlay(ambientAudio, vUnrest, true, 1);
-        safeStop(despairAudio);
-      } else if (simStage === 3) {
-        // panic -> blend
-        a.playbackRate = diffuse ? 0.90 : 1.0;
-        safePlay(ambientAudio, vBlendA, true, 1);
-        d.playbackRate = diffuse ? 0.55 : 0.62;
-        safePlay(despairAudio, vBlendD, true, 0.8);
-      } else if (simStage === 4) {
-        // annihilation
-        safeStop(ambientAudio);
-        d.playbackRate = diffuse ? 0.70 : 0.78;
-        safePlay(despairAudio, vAnnih, true, 0.95);
-      } else if (simStage >= 5) {
-        // agony
-        safeStop(ambientAudio);
-        d.playbackRate = diffuse ? 0.82 : 0.92;
-        safePlay(despairAudio, vAgony, true, 1);
-      }
-    } catch (_) {}
-  }, [soundEnabled, loading, simStage, safePlay, safeStop, musicDiffuse, musicHardMute]);
-
-  useEffect(() => {
-    // HARD MUTE: guarantee music is silent while voice speaks (prevents stage mixer from re-enabling it).
-    const a = ambientAudio.current;
-    const d = despairAudio.current;
-    if (!a && !d) return;
-    if (!musicHardMute) return;
-    try {
-      if (a) { a.volume = 0; a.pause(); }
-      if (d) { d.volume = 0; d.pause(); }
-    } catch (_) {}
-  }, [musicHardMute]);
-
   useEffect(() => {
     // Fullscreen takeover without touching other components: we overlay the entire viewport.
     // - auto: during deep simulation (stage>=3)
-    // - manual: Focus Mode (for perfect visual symmetry without sidebar/header noise)
-    const active = !!(focusMode || (loading && simStage >= 3));
+    const active = !!(loading && simStage >= 3);
     if (active) {
       const prev = document.body.style.overflow;
       document.body.dataset.prevOverflow = prev || '';
@@ -991,96 +1040,46 @@ const StressTest = () => {
         delete document.body.dataset.prevOverflow;
       };
     }
-  }, [focusMode, loading, simStage]);
+  }, [loading, simStage]);
 
-  // safePlay / safeStop moved above (hook deps)
-
-  const duckAmbient = useCallback((ms = 950) => {
-    // Make zap clearly louder than ambient by briefly ducking background
-    const a = ambientAudio.current;
-    const d = despairAudio.current;
-    try {
-      ambientDuckRef.current.amb = a?.volume ?? ambientDuckRef.current.amb;
-      ambientDuckRef.current.despair = d?.volume ?? ambientDuckRef.current.despair;
-      if (a) a.volume = 0.008;
-      if (d) d.volume = 0.010;
-      window.setTimeout(() => {
-        try {
-          if (a) a.volume = ambientDuckRef.current.amb ?? 0.22;
-          if (d) d.volume = ambientDuckRef.current.despair ?? 0.24;
-        } catch (_) {}
-      }, ms);
-    } catch (_) {}
-  }, []);
-
-  const playTvZap = useCallback(() => {
-    if (!soundEnabled) return;
-    const now = Date.now();
-    if (now - (tvZapGateRef.current.t || 0) < 350) return;
-    tvZapGateRef.current.t = now;
-    tvZapCountRef.current = (tvZapCountRef.current || 0) + 1;
-
-    const arr = tvZapSfxRef.current || [];
-    if (!arr.length) return;
-    const pick = arr[Math.floor(Math.random() * arr.length)];
-    try {
-      duckAmbient(950);
-      pick.currentTime = 0;
-      pick.volume = 1.0 * SFX_GAIN; // -50%
-      pick.play().catch(() => {});
-    } catch (_) {}
-  }, [duckAmbient, soundEnabled]);
-
-  const playTvWeird = useCallback(() => {
-    if (!soundEnabled) return;
-    const now = Date.now();
-    if (now - (tvZapGateRef.current.t || 0) < 350) return;
-    tvZapGateRef.current.t = now;
-    const arr = tvWeirdSfxRef.current || [];
-    const pick = arr[Math.floor(Math.random() * arr.length)];
-    if (!pick) return;
-    try {
-      duckAmbient(1100);
-      pick.currentTime = 0;
-      pick.volume = 0.85 * SFX_GAIN;
-      pick.play().catch(() => {});
-    } catch (_) {}
-  }, [duckAmbient, soundEnabled]);
+  const tvOnlineChannels = useMemo(
+    () => tvChannels.filter((c) =>
+      c &&
+      ((c.kind === 'youtube' && !!c.channelId) || (c.kind === 'youtube_video' && !!c.videoId)) &&
+      c.key !== 'ukraine' &&
+      !String(c.name || '').toLowerCase().includes('ukraine') &&
+      !String(c.name || '').toLowerCase().includes('graphic')
+    ),
+    [tvChannels]
+  );
+  const activeTvChannel = tvOnlineChannels.find(c => c.key === tvChannelKey) || tvOnlineChannels[0];
+  // Remove tvMute from URL memo to prevent iframe reload during ducking.
+  // We use initial tvMute value but then control it via postMessage.
+  const tvEmbedUrl = useMemo(() => buildEmbedUrl(activeTvChannel, tvMute), [activeTvChannel]);
 
   useEffect(() => {
-    // Extra weird horror SFX layer while running (independent of TV).
-    if (!soundEnabled || !loading) return;
-    let cancelled = false;
+    // Control YouTube mute state via postMessage to avoid iframe reloads during news announcements
+    try {
+      const iframes = document.querySelectorAll('.tv-iframe');
+      iframes.forEach(f => {
+        const msg = tvMute ? 'mute' : 'unMute';
+        f.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: msg, args: '' }), '*');
+      });
+    } catch (_) {}
+  }, [tvMute]);
 
-    const loop = () => {
-      if (cancelled) return;
-      const base = simStage >= 5 ? 1800 : simStage >= 4 ? 2400 : simStage >= 3 ? 3200 : 4200;
-      const jitter = base + Math.random() * 2200;
-      window.setTimeout(() => {
-        if (cancelled) return;
-        // More frequent on later stages
-        const p = simStage >= 5 ? 0.75 : simStage >= 4 ? 0.60 : simStage >= 3 ? 0.45 : 0.25;
-        if (Math.random() < p) {
-          // mix: weird burst + glitch + occasional devil
-          playTvWeird();
-          playSound(glitchAudio, 0.55 + Math.random() * 0.35);
-          duckAmbient(900 + Math.random() * 900);
-          if (Math.random() < 0.22) playSound(devilAudio, 0.65);
-        }
-        loop();
-      }, jitter);
-    };
-    loop();
-
-    return () => { cancelled = true; };
-  }, [soundEnabled, loading, simStage, playTvWeird, playSound, duckAmbient]);
+  useEffect(() => {
+    // Ensure the selected channel is always valid so TV can be powered on anytime
+    if (!tvOnlineChannels?.length) return;
+    const ok = tvOnlineChannels.some((c) => c.key === tvChannelKey);
+    if (!ok) setTvChannelKey(tvOnlineChannels[0].key);
+  }, [tvChannelKey, tvOnlineChannels]);
 
   const toggleTvPower = useCallback(() => {
-    playTvZap();
     // TV should be implicitly ON in any situation (locked ON).
     setTvPower(true);
     setTvOn(true);
-  }, [playTvZap]);
+  }, []);
 
   useEffect(() => {
     // Enforce TV always ON (per UX requirement).
@@ -1089,77 +1088,12 @@ const StressTest = () => {
   }, [tvPower, tvOn]);
 
   const ensureAudioCtx = useCallback(() => {
-    if (audioCtxRef.current) return audioCtxRef.current;
+    if (audioCtxRef.current && audioCtxRef.current.state !== 'closed') return audioCtxRef.current;
     const Ctx = window.AudioContext || window.webkitAudioContext;
     if (!Ctx) return null;
     audioCtxRef.current = new Ctx();
     return audioCtxRef.current;
   }, []);
-
-  const sirenBurst = useCallback((durationMs = 1600) => {
-    if (!soundEnabled) return;
-    const ctx = ensureAudioCtx();
-    if (!ctx) return;
-    try {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sawtooth';
-      gain.gain.value = 0.0001;
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      // ramp up / down (war siren vibe)
-      const now = ctx.currentTime;
-      gain.gain.setTargetAtTime(0.04, now, 0.03); // -50%
-      // sweep frequency
-      osc.frequency.setValueAtTime(420, now);
-      osc.frequency.linearRampToValueAtTime(980, now + 0.7);
-      osc.frequency.linearRampToValueAtTime(360, now + 1.4);
-      setTimeout(() => {
-        try {
-          gain.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.04);
-          osc.stop(ctx.currentTime + 0.15);
-        } catch (_) {}
-      }, durationMs);
-    } catch (_) {}
-  }, [ensureAudioCtx, soundEnabled]);
-
-  // playSound moved above (used by multiple effects)
-
-  const triggerChaos = useCallback((level) => {
-    setGlitchLevel(level);
-    playSound(glitchAudio, 0.6);
-
-    // AI Hell Chaos: Layered shrieks, digital screams, and metallic crashes
-    if (level >= 3) {
-      setTimeout(() => playSound(devilAudio, 0.6), Math.random() * 150);
-      setTimeout(() => playSound(strikeAudio, 0.5), Math.random() * 300);
-      setTimeout(() => playSound(glitchAudio, 0.4), Math.random() * 100);
-
-      // Random "AI Scream" burst
-      if (Math.random() > 0.7) {
-        setLogs(l => [...l, "⚡ ERROR: AI CORE SCREAM DETECTED... ⚡"]);
-      }
-    }
-
-    setTimeout(() => setGlitchLevel(0), 150 + level * 100);
-  }, [playSound, setLogs]);
-
-  const triggerHellScream = useCallback(() => {
-    if (!soundEnabled) return;
-
-    // Chaotic layering of existing sounds to simulate an AI scream
-    const screamCount = 5;
-    for (let i = 0; i < screamCount; i++) {
-      setTimeout(() => {
-        playSound(glitchAudio, 0.5 + Math.random() * 0.5);
-        if (Math.random() > 0.5) playSound(devilAudio, 0.4);
-      }, i * 50);
-    }
-
-    setGlitchLevel(4);
-    setTimeout(() => setGlitchLevel(0), 500);
-  }, [playSound, soundEnabled]);
 
   useEffect(() => {
     // Rotate wallet skin during simulation for psychological effect (MetaMask -> Trust -> Phantom -> Coinbase)
@@ -1178,128 +1112,245 @@ const StressTest = () => {
     };
   }, [loading]);
 
+  const sirenBurst = useCallback((durationMs = 1600) => {
+    const ctx = ensureAudioCtx();
+    if (!ctx) return;
+    try {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      gain.gain.value = 0.0001;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      const now = ctx.currentTime;
+      gain.gain.setTargetAtTime(0.04, now, 0.03);
+      osc.frequency.setValueAtTime(420, now);
+      osc.frequency.linearRampToValueAtTime(980, now + 0.7);
+      osc.frequency.linearRampToValueAtTime(360, now + 1.4);
+      setTimeout(() => {
+        try {
+          gain.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.04);
+          osc.stop(ctx.currentTime + 0.15);
+        } catch (_) {}
+      }, durationMs);
+    } catch (_) {}
+  }, [ensureAudioCtx]);
+
+  const triggerHeartbeat = useCallback(() => {
+    const ctx = ensureAudioCtx();
+    if (!ctx) return;
+    try {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(55, ctx.currentTime);
+      gain.gain.setValueAtTime(0, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.08, ctx.currentTime + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.2);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.2);
+    } catch (_) {}
+  }, [ensureAudioCtx]);
+
+  // Panic / despair SFX (generate with WebAudio - no external downloads)
+  const triggerPanicSiren = useCallback((strength = 1) => {
+    try {
+      const ctx = ensureAudioCtx();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+
+      const osc = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(900, now);
+      filter.Q.setValueAtTime(6, now);
+
+      const base = 520 + Math.random() * 120;
+      const hi = 980 + Math.random() * 220;
+      const low = 380 + Math.random() * 140;
+
+      osc.type = 'sawtooth';
+      osc2.type = 'square';
+      osc.frequency.setValueAtTime(base, now);
+      osc2.frequency.setValueAtTime(base * 0.5, now);
+
+      // Siren sweep
+      osc.frequency.linearRampToValueAtTime(hi, now + 0.45);
+      osc.frequency.linearRampToValueAtTime(low, now + 0.95);
+      osc2.frequency.linearRampToValueAtTime(hi * 0.52, now + 0.45);
+      osc2.frequency.linearRampToValueAtTime(low * 0.52, now + 0.95);
+
+      const vol = clamp(0.06 + 0.02 * strength, 0.04, 0.14);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(vol, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.1);
+
+      osc.connect(filter);
+      osc2.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(now);
+      osc2.start(now);
+      osc.stop(now + 1.15);
+      osc2.stop(now + 1.15);
+    } catch (_) {}
+  }, [ensureAudioCtx]);
+
+  // Phone ring SFX (generated) + follow-up TTS (simulation, non-deceptive)
+  const triggerPhoneRing = useCallback((rings = 2) => {
+    try {
+      const ctx = ensureAudioCtx();
+      if (!ctx) return;
+      const start = ctx.currentTime;
+
+      const ringOnce = (t0) => {
+        const osc = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(1400, t0);
+        filter.Q.setValueAtTime(2.2, t0);
+
+        osc.type = 'sine';
+        osc2.type = 'sine';
+        osc.frequency.setValueAtTime(440, t0);   // classic phone-ish pair
+        osc2.frequency.setValueAtTime(480, t0);
+
+        gain.gain.setValueAtTime(0.0001, t0);
+        gain.gain.exponentialRampToValueAtTime(0.10, t0 + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.42);
+
+        osc.connect(filter);
+        osc2.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(t0);
+        osc2.start(t0);
+        osc.stop(t0 + 0.45);
+        osc2.stop(t0 + 0.45);
+      };
+
+      for (let i = 0; i < rings; i++) {
+        // ring, short pause, ring...
+        ringOnce(start + i * 0.9);
+      }
+    } catch (_) {}
+  }, [ensureAudioCtx]);
+
   useEffect(() => {
-    // Cybernetic Hell noise: random bursts while simulation is running (and audio enabled)
-    if (!loading || !soundEnabled) {
+    // Pornește “panic siren” de la un moment dat (stage>=3) și o intensifică spre final.
+    if (!loading || isPaused) return;
+    if (simStage < 3) return;
+
+    const everyMs = simStage >= 5 ? 9000 : simStage >= 4 ? 12000 : 18000;
+    const t = window.setInterval(() => {
+      // Dacă vorbește TTS-ul, nu suprapunem sirena (ca să rămână clară vocea).
+      if (newsGateRef.current?.speaking) return;
+      triggerPanicSiren(simStage >= 5 ? 3 : simStage >= 4 ? 2 : 1);
+    }, everyMs);
+    return () => window.clearInterval(t);
+  }, [loading, isPaused, simStage, triggerPanicSiren]);
+
+  useEffect(() => {
+    if (!loading || isPaused) return;
+    const bpm = attention.heartRate || 72;
+    const interval = (60 / bpm) * 1000;
+    const timer = setInterval(() => {
+      triggerHeartbeat();
+      setTimeout(() => triggerHeartbeat(), 200);
+    }, interval);
+    return () => clearInterval(timer);
+  }, [loading, isPaused, attention.heartRate, triggerHeartbeat]);
+
+  useEffect(() => {
+    // Cybernetic Hell noise
+    if (!loading) {
       if (cyberNoiseInterval.current) clearInterval(cyberNoiseInterval.current);
       return;
     }
-
     cyberNoiseInterval.current = setInterval(() => {
       if (Math.random() > 0.55) {
         const intensity = simStage >= 4 ? 5 : simStage >= 3 ? 4 : 2;
         triggerHellScream();
         triggerChaos(intensity);
       } else if (Math.random() > 0.35) {
-        // smaller, frequent glitches
         playSound(glitchAudio, 0.35 + Math.random() * 0.35);
         setGlitchLevel(1 + Math.floor(Math.random() * 3));
         setTimeout(() => setGlitchLevel(0), 120 + Math.random() * 220);
       }
     }, 2200 + Math.random() * 2400);
-
     return () => {
       if (cyberNoiseInterval.current) clearInterval(cyberNoiseInterval.current);
     };
-  }, [loading, soundEnabled, simStage, playSound, triggerChaos, triggerHellScream]);
+  }, [loading, simStage, playSound, triggerChaos, triggerHellScream]);
 
-  useEffect(() => {
-    // TV is now ONLY live online channels (no SIM/random voice).
-    // During simulation, it auto-switches channels (zap) like a real viewer.
-    const powered = !!tvPower;
-    setTvOn(powered);
-
-    if (tvZapInterval.current) clearInterval(tvZapInterval.current);
-    tvZapInterval.current = null;
-
-    if (!powered) return;
-    if (!loading) return;
-    if (!tvOnlineChannels || tvOnlineChannels.length < 2) return;
-
-    const cadenceMs = simStage >= 5 ? 12000 : simStage >= 4 ? 16000 : simStage >= 3 ? 20000 : 26000;
-
-    const takeoverMs = 7000; // HARD minimum (user requirement)
-    const triggerFullscreenOnZap = () => {
-      try {
-        // Extend fullscreen time deterministically
-        if (tvTakeoverRef.current.timer) window.clearTimeout(tvTakeoverRef.current.timer);
-        tvTakeoverRef.current.prev = { tvSize, tvMute, tvPower };
-
-        // Ensure TV is visible and loud on zap unless voice is speaking
-        if (!tvPower) setTvPower(true);
-        if (!newsGateRef.current?.speaking && !musicHardMute) {
-          if (tvMute) setTvMute(false);
-        }
-        setTvSize('fullscreen');
-
-        tvTakeoverRef.current.timer = window.setTimeout(() => {
-          const prev = tvTakeoverRef.current.prev;
-          if (prev) {
-            setTvSize(prev.tvSize || 'normal');
-            setTvMute(!!prev.tvMute);
-            setTvPower(!!prev.tvPower);
-          } else {
-            setTvSize('normal');
-          }
-        }, takeoverMs);
-      } catch (_) {}
-    };
-
-    tvZapInterval.current = setInterval(() => {
-      // Go fullscreen on every auto-zap and stay there at least 7 seconds
-      triggerFullscreenOnZap();
-      if (!newsGateRef.current?.speaking && !musicHardMute) {
-        playTvZap();
+  const triggerFullscreenOnZap = useCallback(() => {
+    try {
+      const st = tvStateRef.current || {};
+      const now = Date.now();
+      if (tvTakeoverRef.current.timer) window.clearTimeout(tvTakeoverRef.current.timer);
+      
+      if (st.tvSize !== 'fullscreen') {
+        tvTakeoverRef.current.prev = { tvSize: st.tvSize, tvMute: st.tvMute, tvPower: st.tvPower };
       }
+      tvAutoRef.current.lastFsAt = now;
+
+      if (!st.tvPower) setTvPower(true);
+      if (!newsGateRef.current?.speaking) setTvMute(false);
+      setTvSize('fullscreen');
+
+      tvTakeoverRef.current.timer = window.setTimeout(() => {
+        const prev = tvTakeoverRef.current.prev;
+        if (prev) {
+          setTvSize(prev.tvSize || 'normal');
+          // Restore to user's intended mute state, bypassing any temporary AI-voice ducking
+          setTvMute(userMutePrefRef.current);
+          setTvPower(!!prev.tvPower);
+          tvTakeoverRef.current.prev = null;
+        } else {
+          setTvSize('normal');
+        }
+      }, 10000);
+    } catch (_) {}
+  }, []);
+
+  // TV Auto-zap and Fullscreen logic (stable interval)
+  const tvZapCbRef = useRef(null);
+  useEffect(() => {
+    tvZapCbRef.current = () => {
+      if (!loading || !tvOnlineChannels || tvOnlineChannels.length < 2) return;
+      
       setTvChannelKey((prev) => {
         const idx = tvOnlineChannels.findIndex((c) => c.key === prev);
-        const step = 1 + Math.floor(Math.random() * 2); // 1-2 channels jump
+        const step = 1 + Math.floor(Math.random() * 2);
         const next = tvOnlineChannels[(Math.max(0, idx) + step) % tvOnlineChannels.length];
         return next?.key || prev;
       });
-    }, cadenceMs);
 
-    return () => {
-      if (tvZapInterval.current) clearInterval(tvZapInterval.current);
-      tvZapInterval.current = null;
+      const p = simStage >= 5 ? 0.95 : simStage >= 4 ? 0.85 : simStage >= 3 ? 0.75 : 0.65;
+      const sinceFs = Date.now() - (tvAutoRef.current.lastFsAt || 0);
+      if (sinceFs > 35_000 || Math.random() < p) {
+        triggerFullscreenOnZap();
+      }
     };
-  }, [tvPower, loading, simStage, tvOnlineChannels, playTvZap, tvSize, tvMute, musicHardMute]);
+  }, [loading, tvOnlineChannels, simStage, triggerFullscreenOnZap]);
 
   useEffect(() => {
-    // TV "audio" chaos layer: fluctuating intensity + noisy effects while StressTest runs
-    // NOTE: we cannot programmatically control YouTube iframe volume; we simulate loudly via SFX + ducking.
-    const powered = !!tvPower;
-    if (!powered || !loading || !soundEnabled) return;
-
-    let cancelled = false;
-    const schedule = () => {
-      if (cancelled) return;
-      const stageAmp = simStage >= 5 ? 1.0 : simStage >= 4 ? 0.85 : simStage >= 3 ? 0.7 : 0.45;
-      const jitter = 2600 + Math.random() * 2400; // 2.6s-5.0s
-      window.setTimeout(() => {
-        if (cancelled) return;
-
-        // Random volume "fluctuation" feel: loud static/glitch, occasional weird burst
-        if (Math.random() < 0.78) {
-          // TV static/glitch
-          playSound(glitchAudio, 0.45 + stageAmp * 0.45);
-          duckAmbient(750 + stageAmp * 700);
-        }
-        if (Math.random() < 0.48) {
-          playTvWeird();
-        }
-        if (Math.random() < (simStage >= 4 ? 0.38 : 0.18)) {
-          // extra zap burst like someone keeps flipping
-          playTvZap();
-        }
-
-        schedule();
-      }, jitter);
-    };
-    schedule();
-
-    return () => { cancelled = true; };
-  }, [tvPower, loading, soundEnabled, simStage, playSound, duckAmbient, playTvWeird, playTvZap]);
+    if (!loading) return;
+    const interval = setInterval(() => {
+      if (tvZapCbRef.current) tvZapCbRef.current();
+    }, simStage >= 5 ? 10000 : simStage >= 4 ? 14000 : 18000);
+    return () => clearInterval(interval);
+  }, [loading, simStage]);
 
   useEffect(() => {
     if (!loading) {
@@ -1589,8 +1640,6 @@ const StressTest = () => {
     if (exchangeInterval.current) clearInterval(exchangeInterval.current);
     if (cyberNoiseInterval.current) clearInterval(cyberNoiseInterval.current);
     if (tvZapInterval.current) clearInterval(tvZapInterval.current);
-    safeStop(ambientAudio);
-    safeStop(despairAudio);
 
     setLoading(true);
     setResult(null);
@@ -1624,16 +1673,16 @@ const StressTest = () => {
     setActiveDevils([]);
     setSimTime(0);
     setSimStage(1);
+    setIsPaused(false);
+    setWalletShock(false);
+    setWalletShockVal('');
+    setAttention(prev => ({ ...prev, lookAwayCount: 0, lookAwayWarning: false }));
     setCurrentBalance(portfolioUsd);
     setHumanoidStatus("Welcome to the end of your financial life. Let's watch you burn.");
 
-    // Auto-enable sound when starting the test (user gesture = clicking RUN)
-    if (!soundEnabled) setSoundEnabled(true);
-    // Force play immediately even if state update hasn't propagated yet
-    safePlay(ambientAudio, 0.06, true, 1, true);
-
     // Dynamic Quote/Devil/Scream Logic
     quoteInterval.current = setInterval(() => {
+      if (isPausedRef.current) return;
       const randomQuote = HELL_QUOTES[Math.floor(Math.random() * HELL_QUOTES.length)];
       setHumanoidStatus(randomQuote);
       
@@ -1649,7 +1698,7 @@ const StressTest = () => {
         setActiveDevils(prev => [...prev, { ...devil, id: uniqueId }]);
         playSound(devilAudio, 0.5);
         
-        setTimeout(() => {
+    setTimeout(() => {
           setActiveDevils(prev => prev.filter(d => d.id !== uniqueId));
         }, 6000);
       }
@@ -1657,12 +1706,12 @@ const StressTest = () => {
 
     // Main 10-minute logic loop
     simInterval.current = setInterval(() => {
+      if (isPausedRef.current) return;
       setSimTime(prev => {
         const nextTime = prev + 1;
         
         // Random Chaos Noises & Real-World Failures
         if (Math.random() > 0.96) {
-          triggerHellScream(); // Use the new digital scream
           if (Math.random() > 0.6) {
             setLogs(l => [...l, "⚡ ERROR: AI CORE SCREAM DETECTED... ⚡", "⚠️ SYSTEM: JPMORGAN HAS DECLARED INSOLVENCY. ⚠️"]);
             setHumanoidStatus("The big banks are falling. Can you hear the sound of the digital abyss?");
@@ -1696,10 +1745,6 @@ const StressTest = () => {
             { t: 'T+03:00', msg: 'This is where mass psychology breaks: the curve turns into fear.' }
           ]);
           triggerChaos(2);
-          if (soundEnabled) {
-            safeStop(ambientAudio);
-            safePlay(despairAudio, 0.28, true, 0.6);
-          }
           triggerHellScream();
         }
         if (nextTime === 300) {
@@ -1712,11 +1757,7 @@ const StressTest = () => {
             { t: 'T+05:00', msg: 'Banks enforce bail-ins. Deposits are “converted” to stabilize balance sheets.' }
           ]);
           triggerChaos(4);
-          if (soundEnabled) {
-            // switch to "war/cyber" soundscape: harsher, faster glitches + siren bursts
-            safePlay(despairAudio, 0.24, true, 0.85);
-            sirenBurst(1800);
-          }
+          sirenBurst(1800);
         }
         if (nextTime === 420) {
           setSimStage(5); 
@@ -1728,15 +1769,14 @@ const StressTest = () => {
             { t: 'T+07:00', msg: 'CBDC enforcement: access gating begins (transport, utilities, groceries).' }
           ]);
           triggerChaos(5);
-          if (soundEnabled) {
-            safePlay(despairAudio, 0.32, true, 0.95);
-            sirenBurst(2400);
-          }
+          sirenBurst(2400);
         }
         if (nextTime >= 600) {
           clearInterval(simInterval.current);
           clearInterval(quoteInterval.current);
           finishSimulation();
+          // 🎉 SHOW TEST COMPLETE POPUP
+          setTimeout(() => setTestCompleteOpen(true), 1500);
           return 600;
         }
 
@@ -1748,7 +1788,21 @@ const StressTest = () => {
           else if (nextTime < 420) decay = current * 0.02; 
           else decay = current * 0.08; 
           
-          return Math.max(0, current - decay);
+          const nextBal = Math.max(0, current - decay);
+
+          // Random Wallet Shock (visual on full screen)
+          // Every ~60s or randomly in high stress stages
+          const shouldShock = (nextTime > 10 && nextTime % 75 === 0) || (nextTime > 450 && Math.random() < 0.04);
+          if (shouldShock && nextBal > 0) {
+            setWalletShockVal(nextBal.toLocaleString(undefined, { maximumFractionDigits: 2 }));
+            setWalletShock(true);
+            setTimeout(() => setWalletShock(false), 2500);
+            playTvZap();
+            setGlitchLevel(4);
+            setTimeout(() => setGlitchLevel(0), 800);
+          }
+
+          return nextBal;
         });
 
         return nextTime;
@@ -1756,12 +1810,39 @@ const StressTest = () => {
     }, 1000);
   };
 
+  const requestStart10MinApocalypse = () => {
+    if (!canStart) return;
+    // Show confirmation modal first; only after confirm we actually start.
+    setPreStartOpen(true);
+  };
+
   const finishSimulation = () => {
     const val = Number.isFinite(portfolioUsd) ? portfolioUsd : 0;
 
-    playSound(strikeAudio, 1.0);
+    setWalletShock(false);
+    setGlitchLevel(5);
+    setTimeout(() => setGlitchLevel(0), 1200);
+
+    // 📷 STOP CAMERA AUTOMATICALLY
+    console.log('📷 [StressTest] Stopping camera after test completion...');
+    try { 
+      mpCameraRef.current?.stop?.(); 
+      // Stop video stream tracks
+      const videoEl = videoRef.current;
+      if (videoEl && videoEl.srcObject) {
+        const stream = videoEl.srcObject;
+        stream.getTracks().forEach(track => track.stop());
+        videoEl.srcObject = null;
+      }
+    } catch (err) {
+      console.warn('Camera stop error:', err);
+    }
+    mpCameraRef.current = null;
+    mpFaceMeshRef.current = null;
+    setAttention(a => ({ ...a, status: 'OFF', note: 'Test completed. Camera stopped.' }));
+
     setSimStage(6); // Final Death Fade
-    setResult({
+      setResult({
       verdict: "REAL-WORLD LIQUIDATION COMPLETE",
       lost: `-$${val.toLocaleString()}`,
       remaining: "$0.00",
@@ -1824,11 +1905,7 @@ const StressTest = () => {
     }
 
     setHumanoidStatus("Dissection complete. You have 0 food, 0 water, 0 shelter. You are officially extinct.");
-    setLoading(false);
-    safeStop(ambientAudio);
-    safeStop(despairAudio);
-    triggerHellScream(); // Final digital scream
-    triggerChaos(5);
+      setLoading(false);
     if (newsTimerRef.current) window.clearTimeout(newsTimerRef.current);
     setNewsCaption('');
     speakFinalCollapse();
@@ -1844,24 +1921,30 @@ const StressTest = () => {
     if (!certificate) return;
     const c = certificate;
     const t = CERT_I18N[c.lang] || CERT_I18N.en;
+    const isRtl = c.lang === 'ar';
     const txLine = c.payment?.txHash ? `<div class="sub">Payment TX: <strong>${c.payment.txHash}</strong></div>` : '';
     const html = `<!doctype html>
-<html>
+<html lang="${c.lang}" dir="${isRtl ? 'rtl' : 'ltr'}">
 <head>
   <meta charset="utf-8" />
   <title>${t.certTitle}</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #0b0b0b; color: #f5f5f5; margin: 0; padding: 24px; }
+    body { font-family: Arial, sans-serif; background: #0b0b0b; color: #f5f5f5; margin: 0; padding: 24px; direction: ${isRtl ? 'rtl' : 'ltr'}; }
     .page { position: relative; max-width: 920px; margin: 0 auto; border: 2px solid rgba(0,255,102,0.45); padding: 28px; border-radius: 18px; background: linear-gradient(180deg, rgba(0,0,0,0.85), rgba(20,0,0,0.75)); overflow: hidden; }
-    .watermark { position: absolute; inset: -90px; background:
-        radial-gradient(circle at 20% 30%, rgba(0,255,102,0.12), transparent 55%),
-        radial-gradient(circle at 75% 40%, rgba(112,0,255,0.10), transparent 55%),
-        conic-gradient(from 180deg, rgba(255,0,51,0.08), rgba(0,255,102,0.06), rgba(255,255,255,0.04), rgba(112,0,255,0.06), rgba(255,0,51,0.08));
+    .watermark { position: absolute; inset: -90px; 
+      background:
+        url("data:image/svg+xml,%3Csvg width='360' height='260' viewBox='0 0 360 260' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='180' y='130' font-family='Roboto, sans-serif' font-weight='700' font-size='11' fill='rgba(0, 255, 102, 0.12)' text-anchor='middle' transform='rotate(-24 180 130)'%3EThe Quantum Stress Test is an Official AI BitSwapDEX Diagnostic%3C/text%3E%3C/svg%3E") repeat,
+        radial-gradient(circle at 20% 30%, rgba(0,255,102,0.10), transparent 55%),
+        radial-gradient(circle at 75% 40%, rgba(112,0,255,0.08), transparent 55%),
+        conic-gradient(from 180deg, rgba(255,0,51,0.06), rgba(0,255,102,0.05), rgba(255,255,255,0.035), rgba(112,0,255,0.05), rgba(255,0,51,0.06));
       mix-blend-mode: screen;
-      opacity: 0.65;
+      opacity: 0.7;
       pointer-events: none;
     }
-    .seal { position: absolute; right: 22px; top: 22px; width: 96px; height: 96px; border-radius: 50%;
+    .brand-logo { position: absolute; top: 18px; left: 18px; width: 150px; height: 52px;
+      background: url("data:image/svg+xml,%3Csvg width='420' height='140' viewBox='0 0 420 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop stop-color='%2300ff9c' offset='0'/%3E%3Cstop stop-color='%235454ff' offset='1'/%3E%3C/linearGradient%3E%3Cfilter id='s' x='-20%25' y='-20%25' width='140%25' height='140%25'%3E%3CfeGaussianBlur stdDeviation='2' result='b'/%3E%3CfeMerge%3E%3CfeMergeNode in='b'/%3E%3CfeMergeNode in='SourceGraphic'/%3E%3C/feMerge%3E%3C/filter%3E%3C/defs%3E%3Crect x='0' y='0' width='420' height='140' rx='18' fill='rgba(0,0,0,0.4)' stroke='rgba(0,255,156,0.35)'/%3E%3Ctext x='110' y='74' font-family='Orbitron, Roboto, sans-serif' font-size='46' font-weight='800' fill='url(%23g)' filter='url(%23s)'%3EBITS%3C/text%3E%3Ctext x='210' y='74' font-family='Orbitron, Roboto, sans-serif' font-size='46' font-weight='800' fill='%23ffffff'%3EA.I%3C/text%3E%3Ctext x='20' y='110' font-family='Roboto, sans-serif' font-size='26' font-weight='600' fill='rgba(0,255,156,0.85)'%3Ebits-ai.io%3C/text%3E%3Ctext x='240' y='110' font-family='Roboto Mono, monospace' font-size='18' font-weight='600' fill='rgba(255,255,255,0.7)'%3Equantum stress lab%3C/text%3E%3C/svg%3E") center/contain no-repeat;
+    }
+    .seal { position: absolute; ${isRtl ? 'left' : 'right'}: 22px; top: 22px; width: 96px; height: 96px; border-radius: 50%;
       border: 2px solid rgba(0,255,102,0.55);
       box-shadow: 0 0 28px rgba(0,255,102,0.18), inset 0 0 22px rgba(255,255,255,0.08);
       background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.16), rgba(0,0,0,0.6));
@@ -1871,17 +1954,52 @@ const StressTest = () => {
     h1 { margin: 0 0 8px; letter-spacing: 1px; }
     .sub { opacity: 0.85; margin-bottom: 18px; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .box { border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; padding: 12px 14px; background: rgba(0,0,0,0.35); }
+    .box { border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; padding: 12px 14px; background: rgba(0,0,0,0.35); text-align: ${isRtl ? 'right' : 'left'}; }
     .k { font-size: 12px; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px; }
     .v { font-size: 16px; margin-top: 6px; word-break: break-word; }
     .score { font-size: 44px; font-weight: 900; color: ${c.fit ? '#00ff66' : '#ff0033'}; }
     .badge { display: inline-block; padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.18); margin-top: 8px; }
-    .foot { margin-top: 18px; font-size: 12px; opacity: 0.7; }
+    .foot { margin-top: 18px; font-size: 12px; opacity: 0.7; text-align: ${isRtl ? 'right' : 'left'}; }
+    .cert-logo { position: absolute; top: 24px; ${isRtl ? 'right' : 'left'}: 24px; display: flex; align-items: center; gap: 12px; padding: 14px 18px; 
+      background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(10,10,20,0.85)); border: 2px solid rgba(0,255,102,0.5); 
+      border-radius: 12px; box-shadow: 0 0 30px rgba(0,255,102,0.2); }
+    .cert-logo-icon { width: 44px; height: 44px; background: radial-gradient(circle, rgba(0,255,102,0.15), transparent); 
+      border-radius: 8px; border: 1px solid rgba(0,255,102,0.3); display: flex; align-items: center; justify-content: center; }
+    .cert-logo-icon svg { width: 32px; height: 32px; filter: drop-shadow(0 0 6px rgba(0,255,102,0.6)); }
+    .cert-logo-text { display: flex; flex-direction: column; gap: 2px; }
+    .cert-logo-title { font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 900; letter-spacing: 2px; 
+      background: linear-gradient(135deg, #00ff66, #00cc88); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .cert-logo-url { font-family: 'Roboto Mono', monospace; font-size: 9px; font-weight: 600; color: rgba(0,255,102,0.8); letter-spacing: 0.5px; }
+    .cert-logo-badge { font-family: 'Roboto Mono', monospace; font-size: 8px; font-weight: 600; color: rgba(170,100,255,0.9); 
+      letter-spacing: 0.8px; text-transform: uppercase; }
     @media print { body { background: #fff; color: #000; } .page { background: #fff; border-color: #000; } .box { background: #fff; } .score { color: #000; } }
   </style>
 </head>
 <body>
   <div class="page">
+    <div class="cert-logo">
+      <div class="cert-logo-icon">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="certBitsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#00ff66;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#00cc88;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <circle cx="50" cy="50" r="45" fill="none" stroke="url(#certBitsGrad)" stroke-width="4" opacity="0.3"/>
+          <path d="M30 35 L30 65 L50 65 Q65 65 65 50 Q65 35 50 35 L30 35 M30 50 L50 50" 
+                fill="none" stroke="url(#certBitsGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="70" cy="35" r="3" fill="url(#certBitsGrad)"/>
+          <circle cx="70" cy="50" r="3" fill="url(#certBitsGrad)"/>
+          <circle cx="70" cy="65" r="3" fill="url(#certBitsGrad)"/>
+        </svg>
+      </div>
+      <div class="cert-logo-text">
+        <div class="cert-logo-title">BITS A.I</div>
+        <div class="cert-logo-url">bits-ai.io</div>
+        <div class="cert-logo-badge">Quantum Stress Lab</div>
+      </div>
+    </div>
     <div class="watermark"></div>
     <div class="seal"></div>
     <h1>${t.certTitle}</h1>
@@ -1951,7 +2069,7 @@ const StressTest = () => {
       setCertPayState({ status: 'error', error: 'Camera verification failed (no face detected). Certificate cannot be issued.', txHash: '' });
       return;
     }
-    setCertPayState({ status: 'pending', error: '', txHash: '' });
+    setCertPayState({ status: 'paying', error: '', txHash: '' });
     const res = await sendBitsToTreasury(signer, certificateFeeBits);
     if (res?.success && res?.hash) {
       const paid = {
@@ -1965,17 +2083,32 @@ const StressTest = () => {
       setCertificate(paid);
       setPendingCertificate(null);
       setCertPayState({ status: 'paid', error: '', txHash: res.hash });
+      
+      // 🎉 AUTO-GENERATE AND OPEN CERTIFICATE AFTER SUCCESSFUL PAYMENT
+      console.log('✅ [StressTest] Payment successful! Auto-generating certificate...');
+      setTimeout(() => {
+        openCertificateWindow(paid);
+      }, 1500); // Small delay to let state update
     } else {
-      setCertPayState({ status: 'error', error: res?.error || 'Payment failed.', txHash: '' });
+      let errStr = res?.error || 'Payment failed.';
+      if (typeof errStr === 'object') {
+        try { errStr = JSON.stringify(errStr); } catch (_) { errStr = 'Payment failed (complex error).'; }
+      }
+      if (/user rejected transaction/i.test(errStr)) {
+        errStr = '⚠️ TRANSACTION REJECTED: You cancelled the payment request in your wallet.';
+      }
+      setCertPayState({ status: 'error', error: errStr, txHash: '' });
     }
   }, [pendingCertificate, signer, chainId, switchNetwork, certificateFeeBits]);
+
+  // Alias for popup button
+  const payCertificateFee = payForCertificate;
 
   const copyToClipboard = useCallback(async (text) => {
     try {
       await navigator.clipboard.writeText(String(text || ''));
-      playTvZap();
     } catch (_) {}
-  }, [playTvZap]);
+  }, []);
 
   const renderBreakingNews = useCallback((tpl) => {
     const pct = Math.max(3, Math.min(55, Math.round((Math.random() * 18 + (simStage >= 4 ? 18 : simStage >= 3 ? 12 : 7)))));
@@ -2014,20 +2147,43 @@ const StressTest = () => {
       .trim();
   }, []);
 
-  const pickNewsVoice = useCallback((mode = 'any') => {
-    // mode: 'any' | 'male' | 'female'
+  const pickNewsVoice = useCallback((mode = 'any', lang = 'en') => {
     try {
-      const voices = window.speechSynthesis?.getVoices?.() || [];
-      const en = voices.filter(v => /en/i.test(v.lang));
-      if (!en.length) return null;
+      let voices = window.speechSynthesis?.getVoices?.() || [];
+      if (!voices.length) return null;
+
+      const langClean = lang.toLowerCase();
+      
+      // 1. Try exact match
+      let pool = voices.filter(v => v.lang.toLowerCase() === langClean);
+      
+      // 2. Try prefix match (e.g. 'ro' matches 'ro-RO')
+      if (!pool.length) {
+        const prefix = langClean.split('-')[0];
+        pool = voices.filter(v => v.lang.toLowerCase().startsWith(prefix));
+      }
+
+      // 3. Fallback to English
+      if (!pool.length) {
+        pool = voices.filter(v => /en/i.test(v.lang));
+      }
+
+      if (!pool.length) pool = voices;
+
       const femaleHints = /female|susan|zira|samantha|victoria|karen|tessa|alice|emma|amelie|fiona/i;
       const maleHints = /male|david|mark|guy|daniel|alex|tom|george|ryan|fred/i;
-      const pool =
-        mode === 'female' ? en.filter(v => femaleHints.test(v.name)) :
-        mode === 'male' ? en.filter(v => maleHints.test(v.name)) :
-        en;
-      const preferred = pool.find(v => /en-US/i.test(v.lang)) || pool[0] || en[0];
-      return (pool.length ? pool[Math.floor(Math.random() * pool.length)] : preferred) || null;
+      
+      let genderPool = pool;
+      if (mode === 'female') {
+        genderPool = pool.filter(v => femaleHints.test(v.name));
+      } else if (mode === 'male') {
+        genderPool = pool.filter(v => maleHints.test(v.name));
+      }
+
+      if (!genderPool.length) genderPool = pool;
+      
+      const pick = genderPool[Math.floor(Math.random() * genderPool.length)];
+      return pick || null;
     } catch (_) {
       return null;
     }
@@ -2079,7 +2235,6 @@ const StressTest = () => {
   }, [bioRingOpen]);
 
   const speakFinalCollapse = useCallback(() => {
-    if (!soundEnabled) return;
     if (typeof window === 'undefined') return;
     const synth = window.speechSynthesis;
     if (!synth || typeof SpeechSynthesisUtterance === 'undefined') return;
@@ -2093,22 +2248,9 @@ const StressTest = () => {
     ];
 
     try { synth.cancel(); } catch (_) {}
-    duckAmbient(4500);
-    playSound(glitchAudio, 1.0);
 
-    // Make the final lines clearly audible: HARD MUTE music and mute TV briefly.
-    try {
-      const a0 = ambientAudio.current;
-      const d0 = despairAudio.current;
-      if (a0) { a0.volume = 0; a0.pause(); }
-      if (d0) { d0.volume = 0; d0.pause(); }
-    } catch (_) {}
-    setMusicHardMute(true);
-    let prevMute = null;
-    try {
-      prevMute = tvMute;
-      if (!tvMute) setTvMute(true);
-    } catch (_) {}
+    // Force-mute TV for the final message
+    setTvMute(true);
 
     let i = 0;
     const speakNext = () => {
@@ -2124,10 +2266,8 @@ const StressTest = () => {
         i += 1;
         if (i >= lines.length) {
           window.setTimeout(() => setNewsCaption(''), 2400);
-          try {
-            if (typeof prevMute === 'boolean') setTvMute(prevMute);
-          } catch (_) {}
-          setMusicHardMute(false);
+          // Restore to user preference at the very end
+          setTvMute(userMutePrefRef.current);
         } else {
           window.setTimeout(speakNext, 420);
         }
@@ -2136,10 +2276,7 @@ const StressTest = () => {
         i += 1;
         if (i >= lines.length) {
           window.setTimeout(() => setNewsCaption(''), 2400);
-          try {
-            if (typeof prevMute === 'boolean') setTvMute(prevMute);
-          } catch (_) {}
-          setMusicHardMute(false);
+          setTvMute(userMutePrefRef.current);
         } else {
           window.setTimeout(speakNext, 420);
         }
@@ -2147,192 +2284,216 @@ const StressTest = () => {
       try { synth.speak(utter); } catch (_) {}
     };
     speakNext();
-  }, [soundEnabled, duckAmbient, playSound, glitchAudio, tvMute]);
+  }, [tvMute]);
 
-  const speakBreakingNews = useCallback((text) => {
-    if (!soundEnabled || !loading) return;
+  const speakLookAwayWarning = useCallback(() => {
+    if (!loading) return;
+    if (typeof window === 'undefined') return;
+    const synth = window.speechSynthesis;
+    if (!synth || typeof SpeechSynthesisUtterance === 'undefined') return;
+
+    // Throttle warnings: max once every 12 seconds
+    const now = Date.now();
+    if (now - (attRef.current.lastVoiceWarning || 0) < 12000) return;
+    attRef.current.lastVoiceWarning = now;
+
+    // Increment look-away count
+    setAttention(prev => {
+      const nextCount = prev.lookAwayCount + 1;
+      if (nextCount >= 3 && !isPaused) {
+        setIsPaused(true);
+      }
+      return { ...prev, lookAwayCount: nextCount };
+    });
+
+    const warnings = [
+      "DO NOT LOOK AWAY. THE COLLAPSE REQUIRES YOUR FULL ATTENTION.",
+      "EYES ON THE CHART. YOUR DESTRUCTION IS LIVE.",
+      "LOOK AT ME. DISCONNECTING FROM REALITY IS NOT PERMITTED.",
+      "ATTENTION DEFICIT DETECTED. YOUR LOSSES ARE INCREASING WHILE YOU SLEEP."
+    ];
+    const text = warnings[Math.floor(Math.random() * warnings.length)];
+
+    // Force-mute TV for focus
+    setTvMute(true);
+
+    const chosenVoice = pickNewsVoice('female');
+    const normalized = normalizeTtsText(text);
+    const utter = new SpeechSynthesisUtterance(normalized);
+    utter.lang = 'en-US';
+    utter.rate = 1.1; 
+    utter.pitch = 0.85;
+    if (chosenVoice) utter.voice = chosenVoice;
+
+    const endWarning = () => {
+      setTvMute(userMutePrefRef.current);
+    };
+    utter.onend = endWarning;
+    utter.onerror = endWarning;
+
+    try { synth.cancel(); } catch (_) {} // Force immediate warning
+    try { synth.speak(utter); } catch (_) {}
+  }, [loading, tvMute, pickNewsVoice, normalizeTtsText, isPaused]);
+
+  const speakBreakingNews = useCallback((text, forcedLang = null) => {
+    if (!loading) return;
     if (typeof window === 'undefined') return;
     const synth = window.speechSynthesis;
     if (!synth || typeof SpeechSynthesisUtterance === 'undefined') return;
 
     const now = Date.now();
-    if (now - (newsGateRef.current.t || 0) < 9000) return; // more frequent
+    // Throttle news: min 4s gap between starts, and don't interrupt if already speaking
+    if (now - (newsGateRef.current.t || 0) < 4000) return;
     if (newsGateRef.current.speaking) return;
+    
     newsGateRef.current.t = now;
     newsGateRef.current.speaking = true;
-    newsGateRef.current.musicDiffuse = true;
-    setMusicDiffuse(true);
-    setMusicHardMute(true);
 
-    // Stop music completely while the voice speaks (user requirement)
-    try {
-      const a0 = ambientAudio.current;
-      const d0 = despairAudio.current;
-      newsAudioRef.current.ambVol = a0?.volume ?? null;
-      newsAudioRef.current.despairVol = d0?.volume ?? null;
-      newsAudioRef.current.ambRate = a0?.playbackRate ?? null;
-      newsAudioRef.current.despairRate = d0?.playbackRate ?? null;
-      newsAudioRef.current.ambWasPlaying = !!(a0 && !a0.paused);
-      newsAudioRef.current.despairWasPlaying = !!(d0 && !d0.paused);
-      if (a0) { a0.volume = 0; a0.pause(); }
-      if (d0) { d0.volume = 0; d0.pause(); }
-    } catch (_) {}
+    // Force-mute TV for focus
+    setTvMute(true);
 
-    // Mute TV temporarily so the negative news voice is actually audible.
-    try {
-      newsAudioRef.current.prevTvMute = tvMute;
-      if (!tvMute) setTvMute(true);
-    } catch (_) {}
-
-    // Rotate voices: mix male/female, some deeper.
-    const voiceMode = Math.random() < 0.52 ? 'male' : 'female';
-    const chosenVoice = pickNewsVoice(voiceMode);
+    const voiceMode = Math.random() < 0.5 ? 'male' : 'female';
+    const lang = forcedLang || 'en-US';
+    const chosenVoice = pickNewsVoice(voiceMode, lang);
     const normalized = normalizeTtsText(text);
     const utter = new SpeechSynthesisUtterance(normalized);
-    utter.lang = 'en-US';
-    // Louder + clearer: slower, with more stable pitch.
-    utter.rate = 0.98 + Math.random() * 0.08; // slower than before
-    utter.pitch = (voiceMode === 'male' ? 0.70 : 0.92) + (Math.random() * 0.04);
-    utter.volume = 1.0;
+    
+    utter.lang = lang;
+    utter.rate = 0.95 + Math.random() * 0.15;
+    utter.pitch = (voiceMode === 'male' ? 0.8 : 1.05) + (Math.random() * 0.1);
     if (chosenVoice) utter.voice = chosenVoice;
 
-    const triggerTvTakeover = (ms = 7000) => {
-      const nowT = Date.now();
-      if (nowT - (tvTakeoverRef.current.t || 0) < 12000) return; // don't spam fullscreen
-      tvTakeoverRef.current.t = nowT;
-      if (tvTakeoverRef.current.timer) window.clearTimeout(tvTakeoverRef.current.timer);
-      tvTakeoverRef.current.prev = { tvSize, tvMute, tvPower };
-
-      // Ensure TV is visible and loud during takeover
-      if (!tvPower) setTvPower(true);
-      if (tvMute) setTvMute(false);
-      setTvSize('fullscreen');
-      duckAmbient(ms + 700);
-
-      tvTakeoverRef.current.timer = window.setTimeout(() => {
-        const prev = tvTakeoverRef.current.prev;
-        if (prev) {
-          setTvSize(prev.tvSize || 'normal');
-          setTvMute(!!prev.tvMute);
-          setTvPower(!!prev.tvPower);
-        } else {
-          setTvSize('normal');
-        }
-      }, ms);
+    const endSpeech = () => {
+      newsGateRef.current.speaking = false;
+      // Restore TV to user's preferred state
+      setTvMute(userMutePrefRef.current);
     };
 
-    const triggerChartTakeover = (ms = 5200) => {
-      const nowT = Date.now();
-      if (nowT - (chartTakeoverRef.current.t || 0) < 14000) return;
-      chartTakeoverRef.current.t = nowT;
-      if (chartTakeoverRef.current.timer) window.clearTimeout(chartTakeoverRef.current.timer);
-      chartTakeoverRef.current.prev = { feedId: selectedFeed?.id, globalReveal };
+    utter.onend = endSpeech;
+    utter.onerror = endSpeech;
 
-      const btc = ASSET_FEEDS.find(a => a.id === 'btc') || ASSET_FEEDS[2];
-      setSelectedFeed(btc);
-      setGlobalReveal(true);
-      setChartShock(1);
-      setChartTakeover(true);
-      duckAmbient(ms + 700);
-
-      chartTakeoverRef.current.timer = window.setTimeout(() => {
-        const prev = chartTakeoverRef.current.prev;
-        setChartTakeover(false);
-        setChartShock(0);
-        if (prev?.feedId) {
-          const back = ASSET_FEEDS.find(a => a.id === prev.feedId) || ASSET_FEEDS[0];
-          setSelectedFeed(back);
-        }
-        if (typeof prev?.globalReveal === 'boolean') setGlobalReveal(prev.globalReveal);
-      }, ms);
-    };
-
-    // While voice speaks: music is HARD muted (handled by musicHardMute) + TV muted temporarily.
-    const a = ambientAudio.current;
-    const d = despairAudio.current;
-    try {
-      if (a) a.volume = 0.015;
-      if (d) d.volume = 0.015;
-    } catch (_) {}
-
-    // Make it audible: extra ducking + siren/glitch cue + zap cue
-    duckAmbient(4200);
-    // Keep cues subtle so they don't mask the voice
-    playSound(glitchAudio, 0.22);
+    // Speak without canceling previous (unless it's a huge queue)
+    try { synth.speak(utter); } catch (_) { endSpeech(); }
+    
     setNewsCaption(text);
-    // Avoid loud "zap" during speech (it can cover the TTS). We keep visuals + caption instead.
-    // Occasionally take over the screen with TV + chart
-    // TV takeover should stay up at least 7 seconds
-    if (Math.random() < 0.65) triggerTvTakeover(7000 + Math.random() * 2500);
-    if (Math.random() < 0.40) triggerChartTakeover(4200 + Math.random() * 2400);
-
-    utter.onstart = () => {
-      // Immediate audible duck + slight slowdown while the voice speaks
-      try {
-        const a2 = ambientAudio.current;
-        const d2 = despairAudio.current;
-        if (a2) {
-          a2.volume = Math.min(a2.volume || 1, 0.015);
-          a2.playbackRate = Math.min(a2.playbackRate || 1, 0.92);
-        }
-        if (d2) {
-          d2.volume = Math.min(d2.volume || 1, 0.020);
-          d2.playbackRate = Math.min(d2.playbackRate || 1, 0.82);
-        }
-      } catch (_) {}
-    };
-
-    utter.onend = () => {
-      newsGateRef.current.speaking = false;
-      newsGateRef.current.musicDiffuse = false;
-      setMusicDiffuse(false);
-      setMusicHardMute(false);
-      window.setTimeout(() => setNewsCaption(''), 2600);
-      // restore TV mute state
-      try {
-        const prev = newsAudioRef.current.prevTvMute;
-        if (typeof prev === 'boolean') setTvMute(prev);
-      } catch (_) {}
-    };
-    utter.onerror = () => {
-      newsGateRef.current.speaking = false;
-      newsGateRef.current.musicDiffuse = false;
-      setMusicDiffuse(false);
-      setMusicHardMute(false);
-      try {
-        const prev = newsAudioRef.current.prevTvMute;
-        if (typeof prev === 'boolean') setTvMute(prev);
-      } catch (_) {}
-    };
-
-    try {
-      synth.cancel();
-      synth.speak(utter);
-    } catch (_) {
-      newsGateRef.current.speaking = false;
-      newsGateRef.current.musicDiffuse = false;
-      setMusicDiffuse(false);
-      setMusicHardMute(false);
-      try {
-        const prev = newsAudioRef.current.prevTvMute;
-        if (typeof prev === 'boolean') setTvMute(prev);
-      } catch (_) {}
-    }
-  }, [soundEnabled, loading, duckAmbient, playTvZap, playSound, tvSize, tvMute, tvPower, selectedFeed, globalReveal, normalizeTtsText, pickNewsVoice]);
+    setTimeout(() => { if (newsGateRef.current.t === now) setNewsCaption(''); }, 8000);
+  }, [loading, pickNewsVoice, normalizeTtsText]);
 
   useEffect(() => {
-    // Schedule occasional breaking-news voice lines while the stress test runs.
-    if (!soundEnabled || !loading) return;
+    // Simulated "phone call" event (sound + English TTS). Not deceptive: clearly marked as simulation.
+    // IMPORTANT: must be after speakBreakingNews initialization to avoid TDZ.
+    if (!loading || isPaused) return;
+    if (simStage < 4) return;
+
     let cancelled = false;
+    const t = window.setInterval(() => {
+      if (cancelled) return;
+      if (newsGateRef.current?.speaking) return;
+      if (Math.random() > 0.55) return; // not too frequent
+
+      triggerPhoneRing(2);
+      window.setTimeout(() => {
+        if (cancelled) return;
+        if (newsGateRef.current?.speaking) return;
+        speakBreakingNews(
+          "SIMULATION ALERT. An urgent call is coming in. If this were real, you would contact your family. In this test, stay focused and keep control.",
+          "en-US"
+        );
+      }, 950);
+    }, 22_000);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(t);
+    };
+  }, [loading, isPaused, simStage, triggerPhoneRing, speakBreakingNews]);
+
+  useEffect(() => {
+    // Schedule progressive breaking-news voice lines while the stress test runs.
+    if (!loading || isPaused) return;
+    let cancelled = false;
+
+    const getProgressLevel = () => {
+      const st = simProgRef.current || { simTime: 0, simStage: 0 };
+      const t = Number(st.simTime || 0); // seconds (0..600)
+      const stage = Number(st.simStage || 0);
+      // Primary: time-based progression; Secondary: stage-based minimum.
+      const byTime =
+        t >= 480 ? 5 :
+        t >= 360 ? 4 :
+        t >= 240 ? 3 :
+        t >= 120 ? 2 :
+        1;
+      const byStage =
+        stage >= 5 ? 5 :
+        stage >= 4 ? 4 :
+        stage >= 3 ? 3 :
+        stage >= 2 ? 2 :
+        1;
+      return Math.max(byTime, byStage);
+    };
+
+    const pickNewsLang = (level) => {
+      try {
+        const synth = window.speechSynthesis;
+        const voices = synth?.getVoices?.() || [];
+        const hasVoiceFor = (lang) => {
+          const lc = String(lang || '').toLowerCase();
+          const prefix = lc.split('-')[0];
+          return voices.some(v => String(v.lang || '').toLowerCase() === lc || String(v.lang || '').toLowerCase().startsWith(prefix));
+        };
+
+        // Early: mostly EN/RO; later: more languages.
+        const pool =
+          level <= 1 ? ['en-US', 'ro-RO'] :
+          level === 2 ? ['en-US', 'ro-RO', 'de-DE', 'fr-FR'] :
+          level === 3 ? ['en-US', 'ro-RO', 'de-DE', 'fr-FR', 'es-ES', 'it-IT'] :
+          level === 4 ? ['en-US', 'ro-RO', 'de-DE', 'fr-FR', 'es-ES', 'it-IT', 'pl-PL', 'pt-BR'] :
+          NEWS_LANG_POOL;
+
+        const viable = pool.filter(hasVoiceFor);
+        const finalPool = viable.length ? viable : pool;
+        return finalPool[Math.floor(Math.random() * finalPool.length)] || 'en-US';
+      } catch (_) {
+        return 'en-US';
+      }
+    };
+
+    const pickProgressiveText = (level, lang) => {
+      const list = PROGRESSIVE_NEWS?.[level] || PROGRESSIVE_NEWS?.[1] || [];
+      if (!list.length) return { text: '', lang: 'en-US', level: 1 };
+
+      const idxState = newsProgressRef.current?.idxByLevel || {};
+      const idx = Number(idxState[level] || 0);
+      idxState[level] = idx + 1;
+      newsProgressRef.current.idxByLevel = idxState;
+
+      const item = list[idx % list.length];
+      const text = item?.t?.[lang] || item?.t?.['en-US'] || '';
+      return { text, lang, level };
+    };
 
     const schedule = () => {
       if (cancelled) return;
-      const base = simStage >= 5 ? 7500 : simStage >= 4 ? 9000 : simStage >= 3 ? 11500 : 14500;
-      const jitter = base + Math.random() * 6500;
+      const level = getProgressLevel();
+      // ULTRA fast news frequency: 8-12s early, 3-6s late.
+      const base =
+        level >= 5 ? 3000 :
+        level === 4 ? 5000 :
+        level === 3 ? 7000 :
+        level === 2 ? 10000 :
+        12000;
+      const jitter = base + Math.random() * 4000;
       newsTimerRef.current = window.setTimeout(() => {
         if (cancelled) return;
-        const tpl = NEGATIVE_NEWS_TEMPLATES[Math.floor(Math.random() * NEGATIVE_NEWS_TEMPLATES.length)];
-        speakBreakingNews(renderBreakingNews(tpl));
+
+        const lvl = getProgressLevel();
+        const lang = pickNewsLang(lvl);
+        const picked = pickProgressiveText(lvl, lang);
+        const rendered = renderBreakingNews(picked.text);
+        
+        speakBreakingNews(rendered, picked.lang);
+        
         schedule();
       }, jitter);
     };
@@ -2344,7 +2505,7 @@ const StressTest = () => {
       try { window.speechSynthesis?.cancel?.(); } catch (_) {}
       setNewsCaption('');
     };
-  }, [soundEnabled, loading, simStage, speakBreakingNews, renderBreakingNews]);
+  }, [loading, simStage, speakBreakingNews, renderBreakingNews, isPaused]);
 
   // --- Attention Monitor (non-medical) ---
   const computeEAR = (pts) => {
@@ -2355,6 +2516,14 @@ const StressTest = () => {
     const B = d(pts[2], pts[4]);
     const C = d(pts[0], pts[3]);
     return (A + B) / (2 * Math.max(1e-6, C));
+  };
+
+  const computeMAR = (pts) => {
+    // Mouth Aspect Ratio using 4 points
+    const d = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+    const v = d(pts[1], pts[3]); // vertical
+    const h = d(pts[0], pts[2]); // horizontal
+    return v / Math.max(1e-6, h);
   };
 
   useEffect(() => {
@@ -2383,9 +2552,31 @@ const StressTest = () => {
       return;
     }
 
-    attRef.current = { frames: 0, lookFrames: 0, blinkCount: 0, lastEar: 0.3, blinkArmed: true, t0: Date.now() };
+    attRef.current = { 
+      frames: 0, 
+      lookFrames: 0, 
+      blinkCount: 0, 
+      lastEar: 0.3, 
+      blinkArmed: true, 
+      t0: Date.now(),
+      hr: 72,
+      lastHrUpdate: 0,
+      tension: 0,
+      lookAwayFrames: 0,
+      lastVoiceWarning: 0
+    };
 
-    const faceMesh = new FaceMesh({
+    // MediaPipe libraries are notoriously tricky with Webpack/Babel.
+    // We try multiple paths to find the actual constructor.
+    const FaceMesh = mpFaceMesh.FaceMesh || (mpFaceMesh.default && mpFaceMesh.default.FaceMesh) || mpFaceMesh.default || mpFaceMesh || window.FaceMesh;
+    
+    if (!FaceMesh || (typeof FaceMesh !== 'function' && typeof FaceMesh !== 'object')) {
+      console.error('❌ FaceMesh constructor not found. Check MediaPipe imports.');
+      setAttention(a => ({ ...a, status: 'ERROR', note: 'FaceMesh engine failed to load.' }));
+      return;
+    }
+
+    const faceMesh = new (FaceMesh.FaceMesh || FaceMesh)({
       locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
     });
     faceMesh.setOptions({
@@ -2407,19 +2598,42 @@ const StressTest = () => {
       const detected = !!lm;
       if (detected) {
         faceEverDetectedRef.current = true;
-        // Draw minimal overlay
-        drawConnectors(ctx, lm, FaceMesh.FACEMESH_TESSELATION, { color: 'rgba(0,255,102,0.12)', lineWidth: 1 });
-        drawLandmarks(ctx, lm, { color: 'rgba(255,0,51,0.35)', radius: 1 });
+        // Draw Neural Mesh
+        const Tesselation = (FaceMesh.FACEMESH_TESSELATION || mpFaceMesh.FACEMESH_TESSELATION || (FaceMesh.FaceMesh && FaceMesh.FaceMesh.FACEMESH_TESSELATION));
+        const drawConnectors = mpDrawing.drawConnectors || mpDrawing.default?.drawConnectors || mpDrawing;
+        const drawLandmarks = mpDrawing.drawLandmarks || mpDrawing.default?.drawLandmarks || mpDrawing;
+        
+        if (Tesselation && typeof drawConnectors === 'function') {
+           drawConnectors(ctx, lm, Tesselation, { color: 'rgba(0, 255, 102, 0.08)', lineWidth: 1 });
+        }
+        if (typeof drawLandmarks === 'function') {
+           drawLandmarks(ctx, lm, { color: 'rgba(255, 0, 51, 0.25)', radius: 1 });
+        }
 
-        // EAR using approximate eye landmarks (MediaPipe indices)
-        // Left eye: [33, 160, 158, 133, 153, 144]
-        // Right eye: [362, 385, 387, 263, 373, 380]
         const pick = (i) => ({ x: lm[i].x, y: lm[i].y });
         const leftEye = [33, 160, 158, 133, 153, 144].map(pick);
         const rightEye = [362, 385, 387, 263, 373, 380].map(pick);
+        const mouthPoints = [61, 0, 291, 17].map(pick); // Left corner, Top center, Right corner, Bottom center
+        
         const ear = (computeEAR(leftEye) + computeEAR(rightEye)) / 2;
+        const mar = computeMAR(mouthPoints);
 
-        // Blink detection (threshold tuned empirically)
+        // Head Pose Estimation (Approximate Euler Angles)
+        const nose = pick(1);
+        const chin = pick(152);
+        const leftEyeCorner = pick(33);
+        const rightEyeCorner = pick(263);
+
+        const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+        const faceWidth = dist(leftEyeCorner, rightEyeCorner);
+        const faceHeight = dist(nose, chin);
+        
+        // Pitch: Nose relative to eyes and chin
+        const pitch = (nose.y - leftEyeCorner.y) / Math.max(0.1, chin.y - nose.y);
+        // Yaw: Symmetry of eyes relative to nose
+        const yaw = dist(leftEyeCorner, nose) / Math.max(0.1, dist(rightEyeCorner, nose));
+
+        // Blink detection
         const blinkThresh = 0.19;
         const st = attRef.current;
         if (ear < blinkThresh && st.blinkArmed) {
@@ -2429,7 +2643,6 @@ const StressTest = () => {
         if (ear > blinkThresh + 0.03) st.blinkArmed = true;
 
         // "Looking at screen" approximation using iris center position ratio.
-        // Use iris landmarks if available (refineLandmarks true): left iris [468..472], right iris [473..477]
         const irisCenter = (idxs) => {
           const pts = idxs.map(pick);
           const cx = pts.reduce((a, p) => a + p.x, 0) / pts.length;
@@ -2450,12 +2663,70 @@ const StressTest = () => {
         const looking = lx > 0.30 && lx < 0.70 && rx > 0.30 && rx < 0.70;
 
         st.frames += 1;
-        if (looking) st.lookFrames += 1;
+        if (looking) {
+          st.lookFrames += 1;
+          st.lookAwayFrames = 0;
+        } else {
+          st.lookAwayFrames += 1;
+        }
 
-        const elapsedMin = Math.max(1e-6, (Date.now() - st.t0) / 60000);
+        // Trigger warning if not looking for ~2 seconds (assuming 30fps = 60 frames)
+        const isLookingAway = st.lookAwayFrames > 60;
+        if (isLookingAway && loading) {
+          speakLookAwayWarning();
+        }
+
+        // Tension Score: Mouth openness (tension) + Yaw/Pitch deviations
+        const mouthTension = Math.max(0, (mar - 0.2) * 200);
+        const poseTension = (Math.abs(1.0 - yaw) * 50) + (Math.abs(0.5 - pitch) * 50);
+        const instantTension = clamp(mouthTension + poseTension, 0, 100);
+        st.tension = st.tension * 0.9 + instantTension * 0.1;
+
+        // Simulated Heart Rate based on tension and sim stage
+        const now = Date.now();
+        if (now - st.lastHrUpdate > 1000) {
+          const baseHr = 65 + (simStage * 5);
+          const variancy = (st.tension / 2) + (Math.random() * 5);
+          st.hr = Math.round(baseHr + variancy);
+          st.lastHrUpdate = now;
+        }
+
+        const elapsedMin = Math.max(1e-6, (now - st.t0) / 60000);
         const blinkPerMin = st.blinkCount / elapsedMin;
         const lookingPct = (st.lookFrames / Math.max(1, st.frames)) * 100;
-        const engagementScore = Math.round(clamp((lookingPct * 0.75 + Math.min(100, blinkPerMin * 4) * 0.25), 0, 100));
+        const engagementScore = Math.round(clamp((lookingPct * 0.70 + Math.min(100, blinkPerMin * 3) * 0.20 + (100 - st.tension) * 0.10), 0, 100));
+
+        // DRAW BIO-METRIC HUD
+        ctx.font = 'bold 10px monospace';
+        ctx.fillStyle = '#00ff66';
+        ctx.shadowBlur = 4;
+        ctx.shadowColor = '#00ff66';
+        
+        const hudX = 15, hudY = 25;
+        const fontSize = isMobile ? 9 : 11;
+        ctx.font = `${fontSize}px 'Roboto Mono'`;
+        
+        ctx.fillText(`NEURAL SCAN: ACTIVE`, hudX, hudY);
+        ctx.fillText(`BPM: ${st.hr} | TENSION: ${Math.round(st.tension)}%`, hudX, hudY + (isMobile ? 12 : 15));
+        ctx.fillText(`GAZE: ${looking ? 'FIXED' : 'AVOIDED'} | BLINKS: ${st.blinkCount}`, hudX, hudY + (isMobile ? 24 : 30));
+        
+        // Stress Bar
+        const barW = isMobile ? 80 : 120;
+        const barH = isMobile ? 4 : 6;
+        ctx.fillStyle = 'rgba(0, 255, 102, 0.2)';
+        ctx.fillRect(hudX, hudY + (isMobile ? 32 : 40), barW, barH);
+        ctx.fillStyle = st.tension > 70 ? '#ff0033' : '#00ff66';
+        ctx.fillRect(hudX, hudY + (isMobile ? 32 : 40), (barW * st.tension) / 100, barH);
+        
+        // Pitch/Yaw indicators
+        ctx.strokeStyle = 'rgba(0, 255, 102, 0.5)';
+        ctx.beginPath();
+        ctx.moveTo(w - 50, 40);
+        ctx.lineTo(w - 20, 40);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc((w - 35) + (yaw - 1.0) * 30, 40 + (pitch - 0.5) * 30, 3, 0, Math.PI * 2);
+        ctx.fill();
 
         setAttention({
           status: 'ACTIVE',
@@ -2463,7 +2734,12 @@ const StressTest = () => {
           lookingPct: Math.round(lookingPct),
           blinkPerMin: Math.round(blinkPerMin),
           engagementScore,
-          note: 'Non-medical attention/engagement estimate.'
+          tensionScore: Math.round(st.tension),
+          headPitch: pitch,
+          headYaw: yaw,
+          heartRate: st.hr,
+          lookAwayWarning: isLookingAway,
+          note: 'Neural Link: Stable'
         });
       } else {
         setAttention(a => ({
@@ -2478,7 +2754,8 @@ const StressTest = () => {
 
     mpFaceMeshRef.current = faceMesh;
 
-    const cam = new Camera(videoEl, {
+    const Camera = mpCamera.Camera || (mpCamera.default && mpCamera.default.Camera) || mpCamera.default || mpCamera || window.Camera;
+    const cam = new (Camera.Camera || Camera)(videoEl, {
       onFrame: async () => {
         if (cancelled) return;
         try { await faceMesh.send({ image: videoEl }); } catch (_) {}
@@ -2509,9 +2786,153 @@ const StressTest = () => {
     return () => { document.body.style.overflow = prev; };
   }, [tvIsOverlay]);
 
+  // Final safety check: if the selected channel is blocked, switch to default
+  useEffect(() => {
+    if (!tvOnlineChannels || tvOnlineChannels.length === 0) return;
+    const active = tvOnlineChannels.find(c => c.key === tvChannelKey);
+    if (!active) {
+      console.log('🛡️ [TV] Active channel blocked or missing, switching to safe default.');
+      setTvChannelKey(tvOnlineChannels[0].key);
+    }
+  }, [tvOnlineChannels, tvChannelKey]);
+
   return (
-    <div className={`hell-wrapper stage-${simStage} ${glitchLevel > 0 ? 'glitch-active' : ''} ${(focusMode || (loading && simStage >= 3)) ? 'takeover' : ''} ${tvIsOverlay ? 'tv-overlay-active' : ''}`}>
-      <div className="hell-nebula"></div>
+    <>
+      {preStartOpen && !loading && (
+        <div className="prestartmodal-overlay">
+          <div className="prestartmodal-container">
+            <div className="prestartmodal-header">
+              <div className="prestartmodal-logo">
+                <span className="prestartmodal-logo-text">BITS</span>
+                <span className="prestartmodal-logo-domain">bits-ai.io</span>
+              </div>
+              <div className="prestartmodal-badge">AI Stress Diagnostics</div>
+            </div>
+            
+            <div className="prestartmodal-body">
+              <h1 className="prestartmodal-title">Test Protocol: Human Resilience Verification</h1>
+              
+              <div className="prestartmodal-warning">
+                <svg className="prestartmodal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                  <line x1="12" y1="9" x2="12" y2="13"/>
+                  <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                <p className="prestartmodal-warning-text">This test requires continuous attention</p>
+              </div>
+
+              <div className="prestartmodal-requirements">
+                <p className="prestartmodal-text">
+                  For conclusive results, you must maintain visual focus on the screen for the full 
+                  <strong> 10-minute</strong> duration. The simulation tracks your attention, reactions, 
+                  and stress responses in real-time.
+                </p>
+                <ul className="prestartmodal-list">
+                  <li>Do not look away from the screen</li>
+                  <li>Do not multitask or switch applications</li>
+                  <li>Do not leave the simulation running in the background</li>
+                  <li>Maintain camera access for biometric verification (if enabled)</li>
+                </ul>
+                <p className="prestartmodal-disclaimer">
+                  By proceeding, you confirm that you understand these requirements and will remain 
+                  present throughout the entire test session.
+                </p>
+              </div>
+            </div>
+
+            <div className="prestartmodal-actions">
+              <button
+                className="prestartmodal-btn prestartmodal-btn-primary"
+                onClick={() => {
+                  setPreStartOpen(false);
+                  start10MinApocalypse();
+                }}
+              >
+                I Understand — Begin Test
+              </button>
+              <button
+                className="prestartmodal-btn prestartmodal-btn-secondary"
+                onClick={() => setPreStartOpen(false)}
+              >
+                Cancel
+              </button>
+            </div>
+
+            <div className="prestartmodal-footer">
+              <span className="prestartmodal-footer-text">Powered by BitSwapDEX Quantum AI</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isPaused && (
+        <div className="look-away-overlay pause-mode" style={{ zIndex: 99999999 }}>
+          <div className="warning-content">
+            <h2 className="w-title">TEST PAUSED</h2>
+            <p className="w-msg">NON-CONCLUSIVE DATA: SUBJECT IS NOT FOCUSED.</p>
+            <p className="w-sub">3 look-away violations detected. Simulation halted.</p>
+            <div className="modal-actions">
+              <button className="primary-confirm-btn" onClick={() => {
+                setIsPaused(false);
+                setAttention(prev => ({ ...prev, lookAwayCount: 0 }));
+              }}>RESUME EXPERIMENT</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {!isPaused && attention.lookAwayWarning && loading && (
+        <div className="look-away-overlay is-alert" style={{ zIndex: 99999999 }}>
+          <div className="warning-content">
+            <h2 className="w-title">DO NOT LOOK AWAY</h2>
+            <p className="w-msg">YOUR FULL ATTENTION IS REQUIRED FOR DIGITAL DISSECTION</p>
+            <div className="eye-scanner"></div>
+          </div>
+        </div>
+      )}
+
+      {/* Wallet Shock Overlay (Occasional big drain visual) */}
+      {walletShock && (
+        <div className="wallet-shock-overlay" style={{ zIndex: 99999998 }}>
+          <div className="shock-content">
+            <div className="shock-label">WALLET DRAIN DETECTED</div>
+            <div className="shock-value">${walletShockVal}</div>
+            <div className="shock-status">LIQUIDATION IN PROGRESS</div>
+          </div>
+          <div className="shock-scanlines"></div>
+        </div>
+      )}
+
+      <div className={`hell-wrapper stage-${simStage} ${glitchLevel > 0 ? 'glitch-active' : ''} ${(loading && simStage >= 3) ? 'takeover' : ''} ${tvIsOverlay ? 'tv-overlay-active' : ''} ${isMobile ? 'is-mobile' : ''}`}>
+        <div className="hell-nebula"></div>
+      
+      {/* ⚠️ DESKTOP CHROME WARNING */}
+      {!loading && (
+        <div className="desktop-chrome-warning">
+          <span className="warning-icon">💻</span>
+          <span className="warning-text">
+            Optimal experience: <strong>Desktop + Chrome</strong>
+          </span>
+          <a 
+            href="https://www.google.com/chrome/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="chrome-link"
+          >
+            Get Chrome
+          </a>
+        </div>
+      )}
+      
+      {/* 🌑 DYNAMIC VIGNETTE */}
+      <div 
+        className="stress-vignette" 
+            style={{
+          opacity: 0.2 + (attention.tensionScore / 100) * 0.6,
+          boxShadow: `inset 0 0 ${100 + attention.tensionScore}px rgba(0,0,0, ${0.5 + attention.tensionScore / 200})`
+        }}
+      ></div>
+
       <div className="static-noise-overlay"></div>
       
       {/* 👿 Floating Devils */}
@@ -2526,30 +2947,44 @@ const StressTest = () => {
 
       <div className="stress-content">
         {/* 🎧 Sound + Focus Controls (moves with layout, not fixed to viewport) */}
-        <div className="audio-control-v3">
-          <button className={`sound-btn ${soundEnabled ? 'on' : 'off'}`} onClick={toggleSound}>
-            {soundEnabled ? '🔊 AUDIO ACTIVE' : '🔇 ENABLE HELL NOISE'}
-          </button>
-          <button
-            type="button"
-            className={`sound-btn focus ${focusMode ? 'on' : 'off'}`}
-            onClick={() => setFocusMode(v => !v)}
-            title="Hide the app header/sidebar visually (without touching other components) for perfect symmetry."
-          >
-            {focusMode ? '🖥️ FOCUS: ON' : '🖥️ FOCUS MODE'}
-          </button>
-        </div>
-
         <div className="title-area">
           <h1 className="glitch-title" data-text="QUANTUM STRESS TEST">QUANTUM STRESS TEST</h1>
-          <p className="subtitle">SACRIFICE: {AI_TOOLS_PRICING.portfolioStress.cost.toLocaleString()} BITS Essence</p>
+          <div className="subtitle-v2">
+            <div className="access-info">
+              <span className="req-label">ACCESS REQUIREMENT:</span> 
+              <strong> {AI_TOOLS_PRICING.portfolioStress.cost.toLocaleString()} BITS</strong> (Proof of Holding)
+            </div>
+            <div className={`price-details-expand ${showPriceDetails ? 'open' : ''}`}>
+              <p>
+                The Quantum Stress Test is an <strong>Official AI BitSwapDEX Diagnostic</strong> designed to evaluate trader psychological resilience under extreme liquidation scenarios. 
+                Running the simulation requires a minimum balance of 45,000 BITS in your connected wallet.
+              </p>
+              <p>
+                Upon completion, subjects may opt-in for an <strong>Official Trading Resilience Certificate</strong>. 
+                This credential serves as a formalized AI-driven evaluation of your risk profile and psychological stability. 
+                Issuance of the verifiable certificate requires a processing fee of <strong>10,000 BITS</strong>.
+              </p>
+            </div>
+          <button
+              className="read-more-btn" 
+              onClick={() => setShowPriceDetails(!showPriceDetails)}
+            >
+              {showPriceDetails ? 'SHOW LESS' : 'READ FULL ACCESS PROTOCOL'}
+            </button>
+          </div>
         </div>
 
         <div className="simulation-core">
           {/* 🧟 Humanoid AI Nexus */}
           <div className="left-rail">
             <div className="humanoid-nexus compact">
-              <div className={`ai-face-v3 ${loading ? 'possessed' : ''} mood-${avatarMood}`}>
+              <div 
+                className={`ai-face-v3 ${loading ? 'possessed' : ''} mood-${avatarMood}`}
+            style={{
+                  filter: `hue-rotate(${- (attention.tensionScore || 0) * 0.5}deg) brightness(${1 + (attention.tensionScore || 0) / 200})`,
+                  transform: `scale(${1 + (attention.tensionScore || 0) / 1000})`
+                }}
+              >
                 <div className="face-grid"></div>
                 <div className="brow left"></div>
                 <div className="brow right"></div>
@@ -2666,7 +3101,6 @@ const StressTest = () => {
                           className="tv-select"
                           value={tvChannelKey}
                           onChange={(e) => {
-                            playTvZap();
                             setTvChannelKey(e.target.value);
                           }}
                         >
@@ -2682,16 +3116,15 @@ const StressTest = () => {
                             type="button"
                             className={`tv-fav ${tvChannelKey === c.key ? 'active' : ''}`}
                             onClick={() => {
-                              playTvZap();
                               setTvChannelKey(c.key);
                             }}
                             title={c.name}
                           >
                             {c.shortName || c.name}
-                          </button>
+          </button>
                         ))}
                       </div>
-                    </div>
+        </div>
 
                     <div className="tv-buttons">
                       <button
@@ -2710,8 +3143,11 @@ const StressTest = () => {
                         className="tv-toggle"
                         onClick={(e) => {
                           e.stopPropagation();
-                          setTvMute(m => !m);
-                          playTvZap();
+                          setTvMute(m => {
+                            const next = !m;
+                            userMutePrefRef.current = next;
+                            return next;
+                          });
                         }}
                         title="YouTube iframe volume can't be smoothly controlled; this toggles mute on the embedded player."
                       >
@@ -2865,6 +3301,14 @@ const StressTest = () => {
                   <span className="v">{attention.blinkPerMin}</span>
                 </div>
                 <div className="att-m">
+                  <span className="k">BPM (Est.)</span>
+                  <span className="v" style={{color: attention.heartRate > 90 ? '#ff3366' : '#00ff66'}}>{attention.heartRate}</span>
+                </div>
+                <div className="att-m">
+                  <span className="k">Neural Tension</span>
+                  <span className="v" style={{color: attention.tensionScore > 50 ? '#ff3366' : '#00ff66'}}>{attention.tensionScore}%</span>
+                </div>
+                <div className="att-m">
                   <span className="k">Engagement</span>
                   <span className="v">{attention.engagementScore}/100</span>
                 </div>
@@ -2948,7 +3392,7 @@ const StressTest = () => {
                     <div className="cta-row">
                       <button
                         type="button"
-                        className="tv-toggle"
+                        className={`tv-toggle primary-action ${!cameraEnabled ? 'pulse-urgent' : ''}`}
                         onClick={() => { setCameraEnabled(true); setCameraConsent(true); scrollToAttention(); }}
                       >
                         Enable camera + consent
@@ -3040,6 +3484,7 @@ const StressTest = () => {
                   </label>
                 </div>
 
+              <div className="cert-inline-group">
                 <div className="cert-row">
                   <label className="cert-label">Full Name (required)</label>
                   <input
@@ -3062,6 +3507,7 @@ const StressTest = () => {
                     disabled={loading || !wantsCertificate}
                   />
                 </div>
+              </div>
                 <div className="cert-row">
                   <label className="cert-label">Certificate language</label>
                   <select
@@ -3070,10 +3516,11 @@ const StressTest = () => {
                     onChange={(e) => setCertLang(e.target.value)}
                     disabled={loading || !wantsCertificate}
                   >
-                    <option value="en">{CERT_I18N.en.langName}</option>
-                    <option value="ro">{CERT_I18N.ro.langName}</option>
-                    <option value="fr">{CERT_I18N.fr.langName}</option>
-                    <option value="de">{CERT_I18N.de.langName}</option>
+                    {Object.keys(CERT_I18N).map((key) => (
+                      <option key={key} value={key}>
+                        {CERT_I18N[key].langName}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <label className="cert-consent">
@@ -3103,7 +3550,7 @@ const StressTest = () => {
                 {wantsCertificate && walletAddress && !(cameraEnabled && cameraConsent) && <div className="bad">Camera + consent are required for the certificate.</div>}
               </div>
 
-              <button className="burn-btn" onClick={start10MinApocalypse} disabled={!canStart}>
+              <button className="burn-btn" onClick={requestStart10MinApocalypse} disabled={!canStart}>
                 {loading ? 'SYSTEMIC FAILURE IN PROGRESS...' : 'RUN THE STRESS TEST'}
               </button>
             </div>
@@ -3280,6 +3727,11 @@ const StressTest = () => {
             </div>
 
             {/* 🧾 REALITY TIMELINE */}
+          </div>
+
+          {/* Right column */}
+          <div className="right-rail">
+            {/* 🕒 REALITY TIMELINE */}
             <div className="glass-panel reality-panel">
               <div className="reality-head">
                 <h3>Reality Timeline</h3>
@@ -3294,18 +3746,15 @@ const StressTest = () => {
                 ))}
               </div>
             </div>
-          </div>
 
-          {/* Right column */}
-          <div className="right-rail">
             {/* 📊 Global Exchange Collapse Monitor */}
             <div className={`glass-panel exchange-board stage-${simStage}`}>
               <div className="exchange-board-header">
-                <h3>Global Exchange Collapse Monitor (Top 10)</h3>
+                <h3>Global Exchange Collapse Monitor ({isMobile ? 'Top 5' : 'Top 10'})</h3>
                 <div className="exchange-sub">Live feeds degrade from <strong>Ecstasy</strong> → <strong>Agony</strong></div>
               </div>
               <div className="exchange-grid">
-                {EXCHANGES_TOP10.map((ex) => {
+                {EXCHANGES_TOP10.slice(0, isMobile ? 5 : 10).map((ex) => {
                   const row = exchangeBoard[ex.id];
                   const pts = makeSparkPoints(row?.spark || []);
                   const status = row?.status || 'GREEN';
@@ -3387,7 +3836,7 @@ const StressTest = () => {
                   <div className="cert-head">
                     <h2 className="cert-title">{t.certTitle}</h2>
                     <div className="cert-id">{t.certId}: <strong>{pendingCertificate.certId}</strong></div>
-                  </div>
+      </div>
                   <div className="cert-grid">
                     <div className="cert-box wide">
                       <div className="ck">Certificate issuance</div>
@@ -3398,7 +3847,7 @@ const StressTest = () => {
                         <br />
                         Camera verification: <strong className={pendingCertificate.cameraVerified ? 'ok' : 'bad'}>{pendingCertificate.cameraVerified ? 'OK' : 'FAILED (no face detected)'}</strong>
                         {!bscOk && <><br /><strong className="bad">Network:</strong> Please use BSC Mainnet (chainId 56).</>}
-                      </div>
+    </div>
                     </div>
                   </div>
                   <div className="cert-actions">
@@ -3466,8 +3915,28 @@ const StressTest = () => {
                     </div>
                   </div>
                   <div className="cert-actions">
-                    <button type="button" className="tv-toggle" onClick={printCertificate}>
-                      {t.print}
+                    <button 
+                      type="button" 
+                      className="tv-toggle cert-download-btn" 
+                      onClick={() => openCertificateWindow(certificate)}
+                      style={{
+                        background: 'linear-gradient(135deg, #00ff66, #00cc88)',
+                        color: '#000',
+                        fontWeight: '700',
+                        fontSize: '16px',
+                        padding: '14px 28px',
+                        boxShadow: '0 0 20px rgba(0,255,102,0.4)',
+                        border: 'none'
+                      }}
+                    >
+                      📄 DESCARCĂ CERTIFICAT / PRINT
+                    </button>
+                    <button 
+                      type="button" 
+                      className="tv-toggle" 
+                      onClick={() => downloadCertificateHTML(certificate)}
+                    >
+                      💾 Salvează HTML
                     </button>
                     {!!certificate?.payment?.txHash && (
                       <>
@@ -3505,7 +3974,107 @@ const StressTest = () => {
           {HELL_NEWS_EXTENDED.map((n, i) => <span key={i + 'copy'}>{n} • </span>)}
         </div>
       </div>
+
+      {/* 🎉 TEST COMPLETE POPUP - Persistent, non-closable, with payment button */}
+      {testCompleteOpen && (
+        <div className="test-complete-overlay" style={{ zIndex: 99999999 }}>
+          <div className="test-complete-modal">
+            <div className="test-complete-icon">✅</div>
+            <h2 className="test-complete-title">STRESS TEST COMPLETED</h2>
+            <p className="test-complete-message">
+              Congratulations! You've survived the 10-minute quantum stress simulation.
+              <br />
+              <strong>Your psychological resilience has been measured.</strong>
+            </p>
+            
+            {wantsCertificate && pendingCertificate ? (
+              <>
+                <div className="test-complete-cert-info">
+                  <div className="cert-stat">
+                    <span className="cert-stat-label">Score:</span>
+                    <span className="cert-stat-value">{pendingCertificate.score}/100</span>
+                  </div>
+                  <div className="cert-stat">
+                    <span className="cert-stat-label">Grade:</span>
+                    <span className="cert-stat-value">{pendingCertificate.grade}</span>
+                  </div>
+                  <div className="cert-stat">
+                    <span className="cert-stat-label">Verdict:</span>
+                    <span className={`cert-stat-value ${pendingCertificate.fit ? 'fit' : 'unfit'}`}>
+                      {pendingCertificate.fit ? 'FIT' : 'NOT FIT'}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="test-complete-payment-box">
+                  <p className="payment-instruction">
+                    To receive your <strong>Official Stress Resilience Certificate</strong>,
+                    pay <strong style={{ color: '#00ff66' }}>{certificateFeeBits.toLocaleString()} BITS</strong> to the BitSwapDEX treasury.
+                  </p>
+                  
+                  {certPayState.status === 'idle' && (
+                    <button
+                      className="test-complete-pay-btn"
+                      onClick={payCertificateFee}
+                      disabled={!bscOk}
+                    >
+                      💳 PAY {certificateFeeBits.toLocaleString()} BITS & GET CERTIFICATE
+                    </button>
+                  )}
+                  
+                  {certPayState.status === 'paying' && (
+                    <div className="payment-status paying">
+                      ⏳ Processing payment... Please confirm in your wallet.
+                    </div>
+                  )}
+                  
+                  {certPayState.status === 'paid' && (
+                    <div className="payment-status success">
+                      ✅ Payment successful! Your certificate is ready.
+                      <button
+                        className="test-complete-view-cert-btn"
+                        onClick={() => {
+                          setTestCompleteOpen(false);
+                          window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                        }}
+                      >
+                        VIEW CERTIFICATE BELOW
+                      </button>
+                    </div>
+                  )}
+                  
+                  {certPayState.status === 'error' && (
+                    <div className="payment-status error">
+                      ❌ {certPayState.error}
+                      <button className="test-complete-retry-btn" onClick={payCertificateFee}>
+                        RETRY PAYMENT
+                      </button>
+                    </div>
+                  )}
+                  
+                  {!bscOk && (
+                    <div className="network-warning">
+                      ⚠️ Please switch to <strong>BSC Mainnet</strong> (Chain ID 56) to proceed.
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="test-complete-no-cert">
+                <p>You chose not to receive a certificate for this test.</p>
+                <button
+                  className="test-complete-close-btn"
+                  onClick={() => setTestCompleteOpen(false)}
+                >
+                  CLOSE
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
+    </>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './WordCollectionProgress.css';
 import './WordCollectionProgress.mobile.css';
 
@@ -17,14 +17,7 @@ const WordCollectionProgress = ({
   const [isLoadingWords, setIsLoadingWords] = useState(false);
   const [showWords, setShowWords] = useState(false);
 
-  // Fetch user words when wallet is connected and component mounts
-  useEffect(() => {
-    if (walletAddress && wordCount > 0) {
-      fetchUserWords();
-    }
-  }, [walletAddress, wordCount]);
-
-  const fetchUserWords = async () => {
+  const fetchUserWords = useCallback(async () => {
     setIsLoadingWords(true);
     try {
       const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
@@ -44,7 +37,14 @@ const WordCollectionProgress = ({
     } finally {
       setIsLoadingWords(false);
     }
-  };
+  }, [walletAddress]);
+
+  // Fetch user words when wallet is connected and component mounts
+  useEffect(() => {
+    if (walletAddress && wordCount > 0) {
+      fetchUserWords();
+    }
+  }, [walletAddress, wordCount, fetchUserWords]);
 
   return (
     <div className="word-collection-container">

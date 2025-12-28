@@ -121,7 +121,7 @@ const PerformanceAnalysis = ({ safeData, walletAddress, pulseEffect }) => {
         }}>
           <strong>💡 Troubleshooting:</strong><br/>
           • Make sure your wallet is connected<br/>
-          • Switch to BSC Testnet or BSC Mainnet<br/>
+          • Switch to BSC Mainnet<br/>
           • Refresh the page and reconnect wallet
         </div>
       </div>

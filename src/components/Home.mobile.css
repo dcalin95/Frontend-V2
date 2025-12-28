@@ -183,12 +183,12 @@ body.in-app-browser p {
 /* Tablets & Small Laptops */
 @media (max-width: 1024px) and (min-width: 769px) {
   .fab-whale-tracker {
-    bottom: 10rem !important;
-    right: 3rem !important;
+    bottom: calc(12rem + env(safe-area-inset-bottom, 0px)) !important;
+    right: calc(3rem + env(safe-area-inset-right, 0px)) !important;
     width: 70px !important;
     height: 70px !important;
     gap: 0.25rem !important;
-    padding: 0.45rem 0.3rem !important;
+    padding: 0 !important;
   }
 
   .fab-whale-tracker i {
@@ -219,13 +219,13 @@ body.in-app-browser p {
 /* Mobile - Medium Screens */
 @media (max-width: 768px) and (min-width: 481px) {
   .fab-whale-tracker {
-    bottom: 10rem !important;
-    right: 1.5rem !important;
+    bottom: calc(12rem + env(safe-area-inset-bottom, 0px)) !important;
+    right: calc(1.5rem + env(safe-area-inset-right, 0px)) !important;
     width: 60px !important;
     height: 60px !important;
     border-width: 2.5px !important;
     gap: 0.2rem !important;
-    padding: 0.4rem 0.25rem !important;
+    padding: 0 !important;
   }
 
   .fab-whale-tracker i {
@@ -257,13 +257,13 @@ body.in-app-browser p {
 /* Mobile - Small Screens */
 @media (max-width: 480px) {
   .fab-whale-tracker {
-    bottom: 9rem !important;
-    right: 1rem !important;
+    bottom: calc(11rem + env(safe-area-inset-bottom, 0px)) !important;
+    right: calc(1rem + env(safe-area-inset-right, 0px)) !important;
     width: 55px !important;
     height: 55px !important;
     border-width: 2px !important;
     gap: 0.18rem !important;
-    padding: 0.35rem 0.2rem !important;
+    padding: 0 !important;
   }
 
   .fab-whale-tracker i {
@@ -295,13 +295,13 @@ body.in-app-browser p {
 /* Mobile - Extra Small Screens */
 @media (max-width: 360px) {
   .fab-whale-tracker {
-    bottom: 8rem !important;
-    right: 0.75rem !important;
+    bottom: calc(10rem + env(safe-area-inset-bottom, 0px)) !important;
+    right: calc(0.75rem + env(safe-area-inset-right, 0px)) !important;
     width: 50px !important;
     height: 50px !important;
     border-width: 2px !important;
     gap: 0.15rem !important;
-    padding: 0.3rem 0.15rem !important;
+    padding: 0 !important;
   }
 
   .fab-whale-tracker i {

@@ -218,7 +218,7 @@ export default function useSTXPriceFeed() {
     // REMOVE auto-refresh to stop random chart changes!
     // const id = setInterval(fetchData, 10000);
     // return () => clearInterval(id);
-  }, []); // 🔧 FIXED - Empty dependency array to prevent infinite loop
+  }, [fetchData]); // fetchData is memoized via useCallback
 
   return { series, price, loading, error, useDemo, refresh: fetchData };
 }

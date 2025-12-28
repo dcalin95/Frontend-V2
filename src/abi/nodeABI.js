@@ -1,5 +1,4 @@
-export default 
-[
+const nodeABI = [
 	{
 		"inputs": [
 			{
@@ -2581,4 +2580,6 @@ export default
 		"stateMutability": "payable",
 		"type": "receive"
 	}
-]
+];
+
+export default nodeABI;

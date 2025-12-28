@@ -13,7 +13,7 @@ function formatTime(ts) { try { return new Date(ts).toLocaleTimeString(); } catc
 
 export default function TokenPaperTrade({ symbol = "STX", initialUsdt = 1000 }) {
   const cfg = TOKEN_CFG[symbol] || { id: null, fixed: 1 };
-  const { series, price, loading, error, useDemo, refresh } = useTokenPriceFeed({ coingeckoId: cfg.id, fixedPrice: cfg.fixed });
+  const { series, price, loading, useDemo, refresh } = useTokenPriceFeed({ coingeckoId: cfg.id, fixedPrice: cfg.fixed });
   const [usdt, setUsdt] = useState(initialUsdt);
   const [qty, setQty] = useState(0);
   const [history, setHistory] = useState([]);
