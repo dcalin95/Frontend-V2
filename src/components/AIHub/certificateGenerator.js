@@ -206,28 +206,25 @@ export function generateCertificateHTML(certificate) {
       opacity: 0.7;
       pointer-events: none;
     }
-    .cert-header { position: absolute; top: 20px; ${isRtl ? 'left' : 'right'}: 20px; display: flex; align-items: center; gap: 16px; padding: 16px 24px; 
-      background: linear-gradient(135deg, rgba(0,0,0,0.95), rgba(10,10,30,0.9)); 
-      border: 2px solid rgba(0,255,102,0.6); 
-      border-radius: 16px; 
-      box-shadow: 0 0 40px rgba(0,255,102,0.3), inset 0 0 20px rgba(0,255,102,0.05); 
-      backdrop-filter: blur(10px);
-      max-width: 280px;
+    .cert-header { position: absolute; top: 24px; ${isRtl ? 'left' : 'right'}: 24px; display: flex; align-items: center; gap: 14px; padding: 14px 20px; 
+      background: linear-gradient(135deg, rgba(0,0,0,0.95), rgba(10,10,30,0.92)); 
+      border: 1px solid rgba(0,255,102,0.3); 
+      border-radius: 12px; 
+      box-shadow: 0 4px 20px rgba(0,255,102,0.25); 
+      backdrop-filter: blur(8px);
+      max-width: 320px;
     }
-    .cert-logo-icon { width: 52px; height: 52px; background: radial-gradient(circle, rgba(0,255,102,0.2), transparent); 
-      border-radius: 12px; border: 2px solid rgba(0,255,102,0.4); display: flex; align-items: center; justify-content: center; 
-      flex-shrink: 0;
+    .cert-logo-icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; 
+      flex-shrink: 0; border-radius: 8px; overflow: hidden;
     }
-    .cert-logo-icon svg { width: 40px; height: 40px; filter: drop-shadow(0 0 8px rgba(0,255,102,0.7)); }
-    .cert-logo-text { display: flex; flex-direction: column; gap: 4px; flex: 1; }
-    .cert-logo-title { font-family: 'Orbitron', 'Arial Black', sans-serif; font-size: 20px; font-weight: 900; letter-spacing: 2px; 
-      background: linear-gradient(135deg, #00ff66, #00cc88); -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-      text-shadow: 0 0 20px rgba(0,255,102,0.5);
+    .cert-logo-icon img { width: 100%; height: 100%; object-fit: contain; }
+    .cert-logo-text { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+    .cert-logo-title { font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; font-weight: 800; letter-spacing: 0.5px; 
+      color: #00ff66;
+      line-height: 1.2;
     }
-    .cert-logo-url { font-family: 'Roboto Mono', 'Courier New', monospace; font-size: 11px; font-weight: 700; color: rgba(0,255,102,0.9); letter-spacing: 1px; }
-    .cert-logo-badge { font-family: 'Roboto Mono', 'Courier New', monospace; font-size: 9px; font-weight: 700; color: rgba(170,100,255,0.95); 
-      letter-spacing: 1px; text-transform: uppercase; padding: 2px 8px; background: rgba(170,100,255,0.15); border-radius: 4px; display: inline-block;
-    }
+    .cert-logo-url { font-family: 'Courier New', monospace; font-size: 11px; font-weight: 600; color: rgba(0,255,102,0.75); letter-spacing: 0.5px; }
+    .cert-logo-badge { display: none; }
     h1 { margin: 0 0 12px; letter-spacing: 1px; font-size: 28px; padding-top: 60px; }
     .sub { opacity: 0.85; margin-bottom: 18px; font-size: 14px; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
@@ -260,25 +257,11 @@ export function generateCertificateHTML(certificate) {
     <!-- SINGLE PROFESSIONAL HEADER - RIGHT SIDE -->
     <div class="cert-header">
       <div class="cert-logo-icon">
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="certBitsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#00ff66;stop-opacity:1" />
-              <stop offset="100%" style="stop-color:#00cc88;stop-opacity:1" />
-            </linearGradient>
-          </defs>
-          <circle cx="50" cy="50" r="45" fill="none" stroke="url(#certBitsGrad)" stroke-width="4" opacity="0.3"/>
-          <path d="M30 35 L30 65 L50 65 Q65 65 65 50 Q65 35 50 35 L30 35 M30 50 L50 50" 
-                fill="none" stroke="url(#certBitsGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="70" cy="35" r="3" fill="url(#certBitsGrad)"/>
-          <circle cx="70" cy="50" r="3" fill="url(#certBitsGrad)"/>
-          <circle cx="70" cy="65" r="3" fill="url(#certBitsGrad)"/>
-        </svg>
+        <img src="https://raw.githubusercontent.com/dcalin95/Frontend/main/src/assets/logo.png" alt="BITS Logo" />
       </div>
       <div class="cert-logo-text">
-        <div class="cert-logo-title">BITS A.I</div>
+        <div class="cert-logo-title">BitSwapDEX AI • $BITS</div>
         <div class="cert-logo-url">bits-ai.io</div>
-        <div class="cert-logo-badge">Quantum Stress Lab</div>
       </div>
     </div>
     
