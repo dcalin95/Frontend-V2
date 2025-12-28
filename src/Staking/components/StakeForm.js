@@ -11,6 +11,7 @@ import "../styles/StakeForm.css";
 import "../styles/StakeForm.mobile.css"; // 🆕 Import Mobile CSS
 import useBitsPrice from "../../Presale/prices/useBitsPrice";
 import successSfx from "../../assets/sounds/success.mp3";
+import { notifyStaking } from "../../utils/telegramNotify";
 
 // Static data for tiers and lock periods (module-scope to keep hooks stable)
 const TIERS = [
@@ -560,7 +561,18 @@ const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
       toast.info("📥 Sending stake transaction...");
       const txStake = await contract.stake(parsed);
       setStakeStep('stake_pending');
-      await txStake.wait();
+      const receipt = await txStake.wait();
+
+      // 📢 TELEGRAM NOTIFICATION
+      const bitsStaked = ethers.utils.formatUnits(parsed, 18);
+      await notifyStaking({
+        wallet: walletAddress,
+        bits: parseFloat(bitsStaked).toFixed(2),
+        apr: parseFloat(aprPercentDisplayFrom1e18(finalApr)).toFixed(2),
+        lockDays: selectedLockDays,
+        network: 'BSC',
+        txHash: receipt.transactionHash
+      });
 
       setAmount("");
       toast.success("🎉 Stake successful!");
