@@ -1,7 +1,7 @@
 /* ===== Root Variables - SOLANA/AI STYLE ===== */
 :root {
-  --font-primary: 'Orbitron', 'Space Grotesk', sans-serif;
-  --font-secondary: 'Inter', sans-serif;
+  --font-primary: 'Roboto Mono', 'Courier New', monospace; /* Sharp, clear font */
+  --font-secondary: 'Roboto Mono', 'Courier New', monospace; /* Sharp, clear font */
   --color-bg: #0F1419;
   --color-text: #ffffff;
   --color-accent: #00FFA3;
