@@ -1,7 +1,7 @@
 @media (max-width: 1580px) {
   .header-price-display {
     position: fixed !important;
-    top: 210px !important; 
+    top: 170px !important; /* Moved up - closer to slogans */
     
     /* MUTAT ÎN STÂNGA (Left Side) */
     left: 20px !important; 
@@ -29,40 +29,43 @@
     
     width: auto !important;
     max-width: none !important;
+    
+    /* SCALE DOWN - 60% of original size (40% reduction) */
+    transform: scale(0.6);
+    transform-origin: left center;
   }
 
   .price-label {
-    font-size: 1.35rem !important; /* Aceeași mărime */
+    font-size: 1.35rem !important; /* Base size, scaled by transform */
     color: #ffffff !important; 
-    font-weight: 800 !important; /* Aceeași grosime */
+    font-weight: 800 !important;
     letter-spacing: 1px !important;
-    font-family: 'Orbitron', sans-serif !important; /* Același font */
-    text-shadow: 3px 3px 0px #000000 !important; /* Aceeași umbră */
+    font-family: 'Orbitron', sans-serif !important;
+    text-shadow: 3px 3px 0px #000000 !important;
     margin-right: 4px !important;
   }
 
   .price-value {
-    font-size: 1.35rem !important; /* Aceeași mărime */
+    font-size: 1.35rem !important; /* Base size, scaled by transform */
     color: #00FFEA !important; 
-    font-weight: 800 !important; /* Aceeași grosime */
-    font-family: 'Orbitron', sans-serif !important; /* Același font */
-    text-shadow: 3px 3px 0px #000000 !important; /* Aceeași umbră */
+    font-weight: 800 !important;
+    font-family: 'Orbitron', sans-serif !important;
+    text-shadow: 3px 3px 0px #000000 !important;
     letter-spacing: 1px !important;
   }
   
   /* === ECRANE MICI (sub 380px) === */
   @media (max-width: 380px) {
       .header-price-display {
-          top: 195px !important; 
+          top: 165px !important; 
           left: 15px !important;
+          transform: scale(0.55); /* Slightly smaller on very small screens */
       }
-      .price-label { font-size: 1.1rem !important; }
-      .price-value { font-size: 1.1rem !important; }
   }
   
   /* === IN-APP BROWSER === */
   body.in-app-browser .header-price-display {
-      top: 180px !important;
+      top: 160px !important;
       left: 20px !important;
   }
 }
