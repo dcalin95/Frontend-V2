@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { getContractInstance } from "../../contract/getContract";
 import { CONTRACTS } from "../../contract/contracts";
+import { notifyPresaleBuy } from "../../utils/telegramNotify";
 
 const handleSHIBPayment = async ({
   amount,
@@ -31,6 +32,17 @@ const handleSHIBPayment = async ({
     const receipt = await tx.wait();
 
     console.log("✅ SHIB Payment complete:", receipt.transactionHash);
+
+    // 📢 TELEGRAM NOTIFICATION
+    const bitsFormatted = parseFloat(bitsToReceive).toFixed(2);
+    const usdInvested = parseFloat(bitsToReceive) * tokenPrice; // SHIB to USD
+    await notifyPresaleBuy({
+      wallet: walletAddress,
+      bits: bitsFormatted,
+      usd: Math.round(usdInvested),
+      network: 'BSC',
+      txHash: receipt.transactionHash
+    });
 
     // 🎁 Bonus logic – USD calc + makeInvestment
     try {

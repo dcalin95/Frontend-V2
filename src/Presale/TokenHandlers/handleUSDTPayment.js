@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { getContractInstance } from "../../contract/getContract";
 import { CONTRACTS } from "../../contract/contracts";
+import { notifyPresaleBuy } from "../../utils/telegramNotify";
 
 const handleUSDTPayment = async ({
   amount,
@@ -29,6 +30,17 @@ const handleUSDTPayment = async ({
     const receipt = await tx.wait();
 
     console.log("✅ USDT Payment complete:", receipt.transactionHash);
+
+    // 📢 TELEGRAM NOTIFICATION
+    const bitsFormatted = parseFloat(bitsToReceive).toFixed(2);
+    const usdInvested = parseFloat(amount);
+    await notifyPresaleBuy({
+      wallet: walletAddress,
+      bits: bitsFormatted,
+      usd: Math.round(usdInvested),
+      network: 'BSC',
+      txHash: receipt.transactionHash
+    });
 
     // 🎁 Bonus logic
     try {
