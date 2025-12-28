@@ -272,20 +272,37 @@ const PresaleCopilot = ({
   }, [lastTx]);
 
   const handleAddBitsToWallet = useCallback(async () => {
-    const { ethereum } = window;
-
-    if (!ethereum) {
-      console.error('❌ [PresaleCopilot] No Ethereum provider found');
-      return;
-    }
-
     if (!bitsTokenAddress) {
       console.error('❌ [PresaleCopilot] BITS token address not available');
       return;
     }
 
+    if (!window.ethereum) {
+      console.error('❌ [PresaleCopilot] No Ethereum provider found');
+      alert('❌ No crypto wallet detected. Please install MetaMask.');
+      return;
+    }
+
     try {
       console.log('🔄 [PresaleCopilot] ===== ATTEMPTING TO ADD BITS TOKEN =====');
+      
+      // 🎯 DETECT MULTIPLE PROVIDERS (MetaMask, Coinbase, Trust, etc.)
+      console.log('🔍 [PresaleCopilot] Checking for multiple providers...');
+      console.log('🔍 [PresaleCopilot] window.ethereum.providers:', window.ethereum.providers);
+      
+      let ethereum = window.ethereum;
+      
+      // 🦊 IF MULTIPLE PROVIDERS, TRY TO FIND METAMASK
+      if (window.ethereum.providers && Array.isArray(window.ethereum.providers)) {
+        console.log('🔍 [PresaleCopilot] Multiple providers detected:', window.ethereum.providers.length);
+        const metamaskProvider = window.ethereum.providers.find(p => p.isMetaMask);
+        if (metamaskProvider) {
+          console.log('✅ [PresaleCopilot] Found MetaMask provider in array');
+          ethereum = metamaskProvider;
+        } else {
+          console.log('⚠️ [PresaleCopilot] MetaMask not found in providers array, using default');
+        }
+      }
       
       const image = (() => {
         try {
@@ -309,7 +326,7 @@ const PresaleCopilot = ({
                          ethereum.isBraveWallet ? 'Brave Wallet' :
                          'Unknown Wallet';
       
-      console.log('🔍 [PresaleCopilot] Detected Wallet:', walletType);
+      console.log('🔍 [PresaleCopilot] Selected Provider:', walletType);
       console.log('🔍 [PresaleCopilot] Wallet Capabilities:', {
         isMetaMask: ethereum.isMetaMask,
         isCoinbaseWallet: ethereum.isCoinbaseWallet,

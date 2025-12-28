@@ -17,9 +17,7 @@ const AddTokenButton = ({ className = '', style = {}, compact = false }) => {
   const tokenImage = 'https://bits-ai.io/logo.png'; 
 
   const addTokenToWallet = async () => {
-    const { ethereum } = window;
-
-    if (!ethereum) {
+    if (!window.ethereum) {
       toast.error("❌ No crypto wallet found. Please install MetaMask.");
       console.error('❌ No Ethereum provider found');
       return;
@@ -27,6 +25,25 @@ const AddTokenButton = ({ className = '', style = {}, compact = false }) => {
 
     try {
       console.log('🔄 ===== ATTEMPTING TO ADD BITS TOKEN =====');
+      
+      // 🎯 DETECT MULTIPLE PROVIDERS (MetaMask, Coinbase, Trust, etc.)
+      console.log('🔍 Checking for multiple providers...');
+      console.log('🔍 window.ethereum.providers:', window.ethereum.providers);
+      
+      let ethereum = window.ethereum;
+      
+      // 🦊 IF MULTIPLE PROVIDERS, TRY TO FIND METAMASK
+      if (window.ethereum.providers && Array.isArray(window.ethereum.providers)) {
+        console.log('🔍 Multiple providers detected:', window.ethereum.providers.length);
+        const metamaskProvider = window.ethereum.providers.find(p => p.isMetaMask);
+        if (metamaskProvider) {
+          console.log('✅ Found MetaMask provider in array');
+          ethereum = metamaskProvider;
+        } else {
+          console.log('⚠️ MetaMask not found in providers array, using default');
+        }
+      }
+
       console.log('📋 Token Details:', {
         address: tokenAddress,
         symbol: tokenSymbol,
@@ -41,7 +58,7 @@ const AddTokenButton = ({ className = '', style = {}, compact = false }) => {
                          ethereum.isBraveWallet ? 'Brave Wallet' :
                          'Unknown Wallet';
       
-      console.log('🔍 Detected Wallet:', walletType);
+      console.log('🔍 Selected Provider:', walletType);
       console.log('🔍 Wallet Capabilities:', {
         isMetaMask: ethereum.isMetaMask,
         isCoinbaseWallet: ethereum.isCoinbaseWallet,
