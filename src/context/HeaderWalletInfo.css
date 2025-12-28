@@ -328,6 +328,7 @@
 
 .wallet-name {
   font-size: 0.9rem; /* Mărit de la 0.73rem */
+  font-family: 'Roboto Mono', 'Courier New', monospace; /* Sharp, clear font */
   background: linear-gradient(135deg, #14f195 0%, #9945ff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -340,7 +341,7 @@
 .wallet-address {
   font-size: 0.85rem; /* Mărit de la 0.7rem */
   color: rgba(255, 255, 255, 0.7); /* Mai vizibil */
-  font-family: 'Courier New', monospace;
+  font-family: 'Roboto Mono', 'Courier New', monospace; /* Sharp, clear font */
   margin-left: 28px; /* Ajustat pentru iconița mai mare */
 }
 
@@ -470,6 +471,7 @@
   border: 1px solid rgba(20, 241, 149, 0.1);
   font-size: 0.95rem; /* Mărit de la 0.84rem */
   font-weight: 600; /* Mărit de la 500 */
+  font-family: 'Roboto Mono', 'Courier New', monospace; /* Sharp, clear font */
   transition: all 0.2s ease;
 }
 
@@ -493,6 +495,7 @@
 
 .balance-amount {
   font-weight: 800; /* Mărit de la 700 */
+  font-family: 'Roboto Mono', 'Courier New', monospace; /* Sharp, clear font */
   background: linear-gradient(135deg, #14f195 0%, #9945ff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -508,6 +511,7 @@
   border-radius: 11px; /* Mărit de la 9px */
   font-size: 1rem; /* Mărit de la 0.86rem */
   font-weight: 700; /* Mărit de la 600 */
+  font-family: 'Roboto Mono', 'Courier New', monospace; /* Sharp, clear font */
   cursor: pointer;
   transition: all 0.3s ease;
   border: none;
@@ -562,7 +566,7 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: 0.15em;
-  font-family: 'Orbitron', 'Rajdhani', sans-serif;
+  font-family: 'Roboto Mono', 'Courier New', monospace; /* Sharp, clear font */
 }
 
 .connect-wallet-button-floating:hover {
@@ -604,6 +608,7 @@
   border-radius: 12px;
   font-size: 0.9rem;
   font-weight: 700;
+  font-family: 'Roboto Mono', 'Courier New', monospace; /* Sharp, clear font */
   cursor: pointer;
   transition: all 0.3s ease;
   border: none;
