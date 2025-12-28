@@ -53,13 +53,22 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
       }
     };
 
-    // Destroy any existing widget before creating new one
-    destroyWidget();
-
     // Check if TradingView is already loaded
     const initWidget = () => {
       if (!window.TradingView) {
         console.warn('TradingView not loaded yet');
+        return;
+      }
+
+      // Check if widget already exists in this container
+      if (containerRef.current && containerRef.current.querySelector('iframe')) {
+        console.log('⚠️ TradingView iframe already exists, skipping init...');
+        return;
+      }
+
+      // Check if widgetRef already has a widget
+      if (widgetRef.current) {
+        console.log('⚠️ Widget reference already exists, skipping init...');
         return;
       }
 
@@ -68,6 +77,8 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
         if (containerRef.current) {
           containerRef.current.id = containerId;
         }
+
+        console.log('🚀 Initializing TradingView widget for:', tradingViewSymbol);
 
         widgetRef.current = new window.TradingView.widget({
           autosize: true,
@@ -172,9 +183,10 @@ const TradingChart = ({ fromToken = 'BTC', toToken = 'bBNB' }) => {
 
     // Cleanup on unmount or symbol change
     return () => {
+      console.log('🧹 Cleaning up TradingView widget...');
       destroyWidget();
     };
-  }, [tradingViewSymbol]);
+  }, [tradingViewSymbol, containerId]);
 
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
