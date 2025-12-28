@@ -4,6 +4,7 @@ import { getStakingContract } from "../../contract/getStakingContract";
 import styles from '../styles/StakingCard.module.css';
 import { aprPercentDisplayFrom1e18 } from "../utils/aprFormat";
 import successSfx from "../../assets/sounds/success.mp3";
+import { sendTelegramNotification } from "../../utils/telegramNotify";
 console.log("✅ StakingCard loaded");
 
 
@@ -208,8 +209,23 @@ const StakingCard = ({ stake, index, signer, tgeDate, cooldown }) => {
       }
       const tx = await contract.withdraw(index);
       setFeedback("⏳ Transaction pending...");
-      await tx.wait();
+      const receipt = await tx.wait();
       setFeedback("🎉 Stake successfully withdrawn!");
+      
+      // 📢 TELEGRAM NOTIFICATION - Staking Withdrawal
+      const walletAddr = await signer.getAddress();
+      const bitsAmount = parseFloat(formatEther(stake.locked || stake.amount || 0)).toFixed(2);
+      const rewardAmount = dynamicReward ? parseFloat(dynamicReward).toFixed(2) : '0';
+      await sendTelegramNotification({
+        type: 'staking_withdraw',
+        status: 'success',
+        network: 'BSC',
+        wallet: walletAddr,
+        amount: `${bitsAmount} BITS + ${rewardAmount} BITS rewards`,
+        txHash: receipt.transactionHash,
+        details: `Withdrew ${bitsAmount} BITS stake with ${rewardAmount} BITS rewards earned`
+      });
+      
       try { new Audio(successSfx).play().catch(()=>{});} catch(_) {}
       setSuccessMsg("Withdraw successful.");
       setShowSuccess(true);
@@ -279,8 +295,21 @@ const StakingCard = ({ stake, index, signer, tgeDate, cooldown }) => {
       }
       const tx = await contract.claimReward(index);
       setFeedback("⏳ Claiming rewards...");
-      await tx.wait();
+      const receipt = await tx.wait();
       setFeedback("✅ Rewards claimed!");
+      
+      // 📢 TELEGRAM NOTIFICATION - Reward Claim Only
+      const walletAddr = await signer.getAddress();
+      const rewardAmount = dynamicReward ? parseFloat(dynamicReward).toFixed(2) : '0';
+      await sendTelegramNotification({
+        type: 'staking_claim',
+        status: 'success',
+        network: 'BSC',
+        wallet: walletAddr,
+        amount: `${rewardAmount} BITS`,
+        txHash: receipt.transactionHash,
+        details: `Claimed ${rewardAmount} BITS staking rewards (stake remains active)`
+      });
     } catch (err) {
       console.error("❌ ClaimReward Error:", err.message);
       setFeedback(`Error: ${err.message}`);

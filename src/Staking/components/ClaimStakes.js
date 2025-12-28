@@ -6,6 +6,7 @@ import WalletContext from "../../context/WalletContext";
 import { getStakingContract } from "../../contract/getStakingContract";
 import "../styles/ClaimStakes.css";
 import "../styles/ClaimStakes.mobile.css"; // 🆕 Import Mobile CSS
+import { sendTelegramNotification } from "../../utils/telegramNotify";
 
 // --- AI GEMINI 3 ICONS ---
 const AiIcons = {
@@ -346,6 +347,8 @@ const ClaimStakes = ({ signer }) => {
     try {
       setLoadingIndex(index);
       const contract = getStakingContract(signer);
+      const stake = stakes[index];
+      
       try {
         const ro = await getStakingContract(null, true);
         await ro.callStatic.withdraw(index, { from: walletAddress });
@@ -360,7 +363,21 @@ const ClaimStakes = ({ signer }) => {
         throw new Error(msg);
       }
       const tx = await contract.withdraw(index);
-      await tx.wait();
+      const receipt = await tx.wait();
+      
+      // 📢 TELEGRAM NOTIFICATION - Staking Withdrawal
+      const bitsAmount = parseFloat(formatUnits(stake.amount, 18)).toFixed(2);
+      const rewardAmount = stake.reward ? parseFloat(formatUnits(stake.reward, 18)).toFixed(2) : '0';
+      await sendTelegramNotification({
+        type: 'staking_withdraw',
+        status: 'success',
+        network: 'BSC',
+        wallet: walletAddress,
+        amount: `${bitsAmount} BITS + ${rewardAmount} BITS rewards`,
+        txHash: receipt.transactionHash,
+        details: `Withdrew ${bitsAmount} BITS stake with ${rewardAmount} BITS rewards earned`
+      });
+      
       await fetchData();
     } catch (err) {
       toast.error(err.message || "Transaction failed");
@@ -374,11 +391,26 @@ const ClaimStakes = ({ signer }) => {
     try {
       setLoadingIndex(index);
       const contract = getStakingContract(signer);
+      const stake = stakes[index];
+      
       try { await contract.callStatic.claimReward(index); } catch (e) {
         throw new Error("Claim not available.");
       }
       const tx = await contract.claimReward(index);
-      await tx.wait();
+      const receipt = await tx.wait();
+      
+      // 📢 TELEGRAM NOTIFICATION - Reward Claim Only
+      const rewardAmount = stake.reward ? parseFloat(formatUnits(stake.reward, 18)).toFixed(2) : '0';
+      await sendTelegramNotification({
+        type: 'staking_claim',
+        status: 'success',
+        network: 'BSC',
+        wallet: walletAddress,
+        amount: `${rewardAmount} BITS`,
+        txHash: receipt.transactionHash,
+        details: `Claimed ${rewardAmount} BITS staking rewards (stake remains active)`
+      });
+      
       await fetchData();
     } catch (err) {
       toast.error(err.message);

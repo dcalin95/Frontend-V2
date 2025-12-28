@@ -684,6 +684,19 @@ const RewardsHub = () => {
       
       setStatusMsg("🎉 Additional Bonus claimed successfully!");
       
+      // 📢 TELEGRAM NOTIFICATION - Additional Bonus Claim
+      const { sendTelegramNotification } = await import('../utils/telegramNotify');
+      const claimedAmount = parseFloat(formatBITS(additionalBonus.onChainClaimable)).toFixed(2);
+      await sendTelegramNotification({
+        type: 'rewards_claim',
+        status: 'success',
+        network: 'BSC',
+        wallet: walletAddress,
+        amount: `${claimedAmount} BITS`,
+        txHash: receipt.transactionHash,
+        details: `Claimed ${claimedAmount} BITS Additional Bonus from Rewards Hub`
+      });
+      
       // Refresh data
       await loadAdditionalBonus();
       
@@ -731,9 +744,22 @@ const RewardsHub = () => {
       const receipt = await tx.wait();
       console.log("✅ [RewardsHub] Additional Bonus claim confirmed:", receipt);
       
+      // 📢 TELEGRAM NOTIFICATION - Additional Bonus Claim (before staking)
+      const { sendTelegramNotification } = await import('../utils/telegramNotify');
+      const claimedAmount = parseFloat(formatBITS(additionalBonus.onChainClaimable)).toFixed(2);
+      await sendTelegramNotification({
+        type: 'rewards_claim',
+        status: 'success',
+        network: 'BSC',
+        wallet: walletAddress,
+        amount: `${claimedAmount} BITS`,
+        txHash: receipt.transactionHash,
+        details: `Claimed ${claimedAmount} BITS Additional Bonus - Auto-staking...`
+      });
+      
       // Then redirect to staking with the claimed amount  
-      const claimedAmount = toBitsInteger(additionalBonus.claimable);
-      setStatusMsg(`✅ Claimed ${claimedAmount} $BITS! Redirecting to staking...`);
+      const claimedAmountInt = toBitsInteger(additionalBonus.claimable);
+      setStatusMsg(`✅ Claimed ${claimedAmountInt} $BITS! Redirecting to staking...`);
       
       // Refresh data
       await loadAdditionalBonus();

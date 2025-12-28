@@ -10,7 +10,7 @@ const TG_WEBHOOK_SECRET = process.env.REACT_APP_TG_WEBHOOK_SECRET || '';
 /**
  * Send transaction notification to Telegram
  * @param {Object} data - Transaction data
- * @param {string} data.type - Transaction type: 'presale_buy', 'certificate', 'staking_deposit', 'staking_withdraw', 'dex_swap'
+ * @param {string} data.type - Transaction type: 'presale_buy', 'certificate', 'staking_deposit', 'staking_withdraw', 'staking_claim', 'rewards_claim', 'dex_swap'
  * @param {string} data.status - 'success' or 'error'
  * @param {string} data.network - Network name (BNB, ETH, Polygon, Solana, etc.)
  * @param {string} data.wallet - User wallet address
