@@ -334,6 +334,20 @@
   .action-buttons.desktop-only {
     display: none !important;
   }
+
+  /* 🚨 Button Debug Info - VISIBLE & CLEAR ON MOBILE */
+  .button-debug-info {
+    font-size: 0.75rem !important;
+    padding: 10px !important;
+    margin: 8px auto !important;
+    max-width: 95% !important;
+    line-height: 1.5 !important;
+    text-align: left !important;
+  }
+
+  .button-debug-info div {
+    margin: 4px 0;
+  }
 }
 
 @media (max-width: 480px) {
@@ -412,5 +426,12 @@
     min-width: 50px;
     height: 36px;
     font-size: 0.85rem;
+  }
+
+  /* 🚨 Button Debug Info - EVEN SMALLER ON TINY SCREENS */
+  .button-debug-info {
+    font-size: 0.7rem !important;
+    padding: 8px !important;
+    margin: 6px auto !important;
   }
 }
