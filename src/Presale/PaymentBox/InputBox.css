@@ -70,14 +70,16 @@
   display: flex;
   gap: 0.5rem;
   justify-content: center;
+  align-items: center;
   width: 100%;
   max-width: 350px;
+  margin: 0 auto;
 }
 
 .percentage-button {
   flex: 1;
   min-width: 50px;
-  height: 32px;
+  height: 34px;
   background: rgba(0, 255, 163, 0.1);
   border: 1px solid rgba(0, 255, 163, 0.3);
   border-radius: 8px;
@@ -90,6 +92,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  padding: 0 4px;
 }
 
 .percentage-button:hover {
@@ -184,13 +189,16 @@
 body.mode-mobile .percentage-buttons-row {
   display: flex !important;
   max-width: 100%;
-  gap: 0.5rem;
+  gap: 0.4rem;
+  padding: 0 0.5rem;
 }
 
 body.mode-mobile .percentage-button {
-  min-width: 60px;
-  height: 38px;
-  font-size: 0.9rem;
+  min-width: 55px;
+  height: 40px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
 }
 
 body.mode-mobile .action-buttons.desktop-only {
@@ -202,17 +210,36 @@ body.mode-mobile .cosmic-input-wrapper {
   max-width: 100%;
 }
 
+body.mode-mobile .cosmic-input-container {
+  gap: 0.6rem;
+}
+
 /* 📱 SYSTEM 2: Media Query Detection (Fallback) */
 /* ✅ Responsive */
 @media screen and (max-width: 768px) {
   /* Show percentage buttons on mobile */
   .percentage-buttons-row {
     display: flex;
+    max-width: 100%;
+    gap: 0.4rem;
+    padding: 0 0.5rem;
+  }
+  
+  .percentage-button {
+    min-width: 55px;
+    height: 40px;
+    font-size: 0.88rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
   }
   
   /* Hide old +/- buttons on mobile */
   .action-buttons.desktop-only {
     display: none;
+  }
+  
+  .cosmic-input-container {
+    gap: 0.6rem;
   }
 }
 
@@ -245,13 +272,15 @@ body.mode-mobile .cosmic-input-wrapper {
   
   .percentage-buttons-row {
     max-width: 100%;
-    gap: 0.3rem;
+    gap: 0.35rem;
+    padding: 0 0.3rem;
   }
   
   .percentage-button {
-    min-width: 45px;
-    height: 36px;
-    font-size: 0.8rem;
+    min-width: 48px;
+    height: 38px;
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
   }
 }
 
@@ -262,12 +291,15 @@ body.mode-mobile .cosmic-input-wrapper {
   }
   
   .percentage-buttons-row {
-    gap: 0.25rem;
+    gap: 0.3rem;
+    padding: 0 0.2rem;
   }
   
   .percentage-button {
-    min-width: 40px;
-    height: 32px;
+    min-width: 42px;
+    height: 36px;
     font-size: 0.75rem;
+    letter-spacing: 0.01em;
+    padding: 0 2px;
   }
 }
