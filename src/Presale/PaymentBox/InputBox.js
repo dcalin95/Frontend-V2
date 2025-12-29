@@ -101,8 +101,17 @@ const InputBox = ({ amountPay, setAmountPay, userBalance, selectedToken, minAmou
         </SmartTooltip>
       </div>
 
-      {/* 🎯 NEW: Percentage Buttons Row (like DEXSwap) */}
+      {/* 🎯 NEW: Min - 25% - 50% - 75% - MAX (ALL IN ONE ROW) */}
       <div className="percentage-buttons-row">
+        <SmartTooltip content={`Reset to Minimum\n${MIN_AMOUNT} ${selectedToken}`}>
+          <button 
+            type="button" 
+            onClick={handleErase} 
+            className="percentage-button min-button"
+          >
+            MIN
+          </button>
+        </SmartTooltip>
         <SmartTooltip content={`Quick Select\n25% of your ${selectedToken} balance`}>
           <button 
             type="button" 
@@ -141,7 +150,7 @@ const InputBox = ({ amountPay, setAmountPay, userBalance, selectedToken, minAmou
         </SmartTooltip>
       </div>
 
-      {/* Keep old buttons for desktop (hidden on mobile) */}
+      {/* Keep old +/- buttons for desktop ONLY (hidden on mobile) */}
       <div className="action-buttons desktop-only">
         <SmartTooltip content={`Decrease Amount\nStep: -${STEP} ${selectedToken}`}>
           <button type="button" onClick={handleDecrement} className="cosmic-button">
@@ -151,11 +160,6 @@ const InputBox = ({ amountPay, setAmountPay, userBalance, selectedToken, minAmou
         <SmartTooltip content={`Increase Amount\nStep: +${STEP} ${selectedToken}`}>
           <button type="button" onClick={handleIncrement} className="cosmic-button">
             <FaPlus />
-          </button>
-        </SmartTooltip>
-        <SmartTooltip content="Reset to Minimum">
-          <button type="button" onClick={handleErase} className="cosmic-button">
-            <GiBroom />
           </button>
         </SmartTooltip>
       </div>

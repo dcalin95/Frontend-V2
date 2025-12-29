@@ -71,7 +71,7 @@
   gap: 0.5rem;
   justify-content: center;
   width: 100%;
-  max-width: 300px;
+  max-width: 350px;
 }
 
 .percentage-button {
@@ -102,6 +102,19 @@
 .percentage-button:active {
   transform: translateY(0);
   box-shadow: 0 0 5px rgba(0, 255, 163, 0.5);
+}
+
+.percentage-button.min-button {
+  background: rgba(0, 150, 255, 0.1);
+  border-color: rgba(0, 150, 255, 0.4);
+  color: #0096ff;
+  font-weight: 800;
+}
+
+.percentage-button.min-button:hover {
+  background: rgba(0, 150, 255, 0.2);
+  border-color: rgba(0, 150, 255, 0.6);
+  box-shadow: 0 0 12px rgba(0, 150, 255, 0.4);
 }
 
 .percentage-button.max-button {
