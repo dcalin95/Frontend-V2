@@ -75,6 +75,15 @@ const InputBox = ({ amountPay, setAmountPay, userBalance, selectedToken, minAmou
     setAmountPay(maxValue);
   };
 
+  // 🎯 Percentage buttons handler (25%, 50%, 75%, MAX)
+  const handlePercentage = (percent) => {
+    const balance = parseFloat(userBalance || 0);
+    if (balance > 0) {
+      const calculatedAmount = parseFloat(((balance * percent) / 100).toFixed(DECIMALS));
+      setAmountPay(Math.max(calculatedAmount, MIN_AMOUNT));
+    }
+  };
+
   const defaultValue = MIN_AMOUNT.toFixed(DECIMALS);
   const safeValue = isNaN(internalValue) || internalValue <= 0 ? defaultValue : internalValue.toFixed(DECIMALS);
 
@@ -92,7 +101,48 @@ const InputBox = ({ amountPay, setAmountPay, userBalance, selectedToken, minAmou
         </SmartTooltip>
       </div>
 
-      <div className="action-buttons">
+      {/* 🎯 NEW: Percentage Buttons Row (like DEXSwap) */}
+      <div className="percentage-buttons-row">
+        <SmartTooltip content={`Quick Select\n25% of your ${selectedToken} balance`}>
+          <button 
+            type="button" 
+            onClick={() => handlePercentage(25)} 
+            className="percentage-button"
+          >
+            25%
+          </button>
+        </SmartTooltip>
+        <SmartTooltip content={`Quick Select\n50% of your ${selectedToken} balance`}>
+          <button 
+            type="button" 
+            onClick={() => handlePercentage(50)} 
+            className="percentage-button"
+          >
+            50%
+          </button>
+        </SmartTooltip>
+        <SmartTooltip content={`Quick Select\n75% of your ${selectedToken} balance`}>
+          <button 
+            type="button" 
+            onClick={() => handlePercentage(75)} 
+            className="percentage-button"
+          >
+            75%
+          </button>
+        </SmartTooltip>
+        <SmartTooltip content={`Max Balance\nInvest all available ${selectedToken}`}>
+          <button 
+            type="button" 
+            onClick={handleMax} 
+            className="percentage-button max-button"
+          >
+            MAX
+          </button>
+        </SmartTooltip>
+      </div>
+
+      {/* Keep old buttons for desktop (hidden on mobile) */}
+      <div className="action-buttons desktop-only">
         <SmartTooltip content={`Decrease Amount\nStep: -${STEP} ${selectedToken}`}>
           <button type="button" onClick={handleDecrement} className="cosmic-button">
             <FaMinus />
@@ -106,11 +156,6 @@ const InputBox = ({ amountPay, setAmountPay, userBalance, selectedToken, minAmou
         <SmartTooltip content="Reset to Minimum">
           <button type="button" onClick={handleErase} className="cosmic-button">
             <GiBroom />
-          </button>
-        </SmartTooltip>
-        <SmartTooltip content={`Max Balance\nInvest all available ${selectedToken} from your wallet.`}>
-          <button type="button" onClick={handleMax} className="cosmic-button">
-            <GiWallet />
           </button>
         </SmartTooltip>
       </div>
