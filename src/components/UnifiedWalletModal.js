@@ -4,7 +4,7 @@ import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useWallet as useSolanaWalletAdapter } from '@solana/wallet-adapter-react';
 import { useWallet } from '../context/WalletContext';
 import { prepareForConnection, handleConnectionError } from '../utils/walletConnectionFix';
-import { prioritizeEVMWallets, logDetectedWallets } from '../utils/walletFilter';
+import { prioritizeEVMWallets, logDetectedWallets, forceFixPhantomHijack } from '../utils/walletFilter';
 import walletConnectLogo from '../assets/icons/wallet-connect-logo.png'; 
 import evmIcon from '../assets/icons/evm-logo.jpg'; // Import EVM logo
 import solanaIcon from '../assets/icons/solana-logo.png'; // Import Solana logo
@@ -46,6 +46,7 @@ const UnifiedWalletModal = () => {
   const [selectedNetwork, setSelectedNetwork] = useState(null); // "EVM" | "SOLANA" | null
   const [isConnecting, setIsConnecting] = useState(false); // ⏳ New connecting state
   const [error, setError] = useState(null);
+  const [connectionLock, setConnectionLock] = useState(false); // 🔒 CONNECTION GUARD
 
   // (Debug panel removed)
 
@@ -64,7 +65,7 @@ const UnifiedWalletModal = () => {
     // 🛑 CRITICAL: Only check EVM if we're on EVM network (not Solana)
     if (isConnecting && isConnected && address && selectedNetwork !== "SOLANA") {
       console.log('✅ [UnifiedWalletModal] EVM wallet connected successfully, closing modal...');
-      setIsConnecting(false);
+      unlockConnection();
       setError(null);
       
       // 🛑 CRITICAL: Ensure Solana is disconnected
@@ -93,7 +94,7 @@ const UnifiedWalletModal = () => {
     // 🛑 CRITICAL: Only check Solana if we're on Solana network (not EVM)
     if (isConnecting && isSolanaConnected && solanaPublicKey && selectedNetwork !== "EVM") {
       console.log('✅ [UnifiedWalletModal] Solana wallet connected successfully, closing modal...');
-      setIsConnecting(false);
+      unlockConnection();
       setError(null);
       
       // 🛑 CRITICAL: Ensure EVM is disconnected
@@ -120,18 +121,64 @@ const UnifiedWalletModal = () => {
 
   if (!showWalletModal) return null;
 
+  // 🔓 Helper function to unlock connection state
+  const unlockConnection = () => {
+    unlockConnection();
+    setConnectionLock(false);
+  };
+
   const handleClose = () => {
     setShowWalletModal(false);
     setSelectedNetwork(null);
     setError(null);
-    setIsConnecting(false);
+    unlockConnection();
   };
 
   // 🎯 DIRECT CONNECT FUNCTION (Bypasses generic modal to avoid Phantom conflict)
   const connectToSpecificWallet = async (walletName) => {
+    // 🔒 CONNECTION GUARD: Prevent overlapping connection attempts
+    if (connectionLock) {
+      console.warn('🛑 [UnifiedWalletModal] Connection already in progress, ignoring new request');
+      setError('Connection already in progress. Please wait...');
+      return;
+    }
+    
     try {
+      setConnectionLock(true); // 🔒 LOCK
       setError(null);
       setIsConnecting(true);
+      
+      // 🛑 STEP 1: FIX PHANTOM HIJACK (if present)
+      console.log('🔧 [UnifiedWalletModal] Checking for Phantom hijack...');
+      forceFixPhantomHijack(); // This will swap window.ethereum if needed
+      
+      // 🛑 STEP 2: FORCE CLEAR ALL PENDING REQUESTS
+      console.log('🧹 [UnifiedWalletModal] Clearing ALL pending wallet requests...');
+      try {
+        // 1. Clear all storage-based pending states
+        sessionStorage.removeItem('wallet_pending_request');
+        sessionStorage.removeItem('wagmi.connector');
+        localStorage.removeItem('wagmi.recentConnectorId');
+        
+        // 2. Force reject any pending MetaMask/wallet requests
+        if (window.ethereum) {
+          try {
+            // Send a dummy request to cancel any pending ones
+            await window.ethereum.request({ 
+              method: 'wallet_requestPermissions',
+              params: [{ eth_accounts: {} }]
+            }).catch(() => {}); // Ignore errors
+          } catch (e) {}
+        }
+        
+        // 3. Wait a bit to ensure clearing is complete
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
+        console.log('✅ [UnifiedWalletModal] All pending requests cleared');
+      } catch (clearErr) {
+        console.warn('⚠️ [UnifiedWalletModal] Error clearing pending:', clearErr);
+      }
+      
       await prepareForConnection();
 
       console.log(`🔥🔥🔥 [CONNECT START] ========================================`);
@@ -153,7 +200,7 @@ const UnifiedWalletModal = () => {
       }) => {
         if (typeof window === 'undefined' || !window.ethereum) {
           setError(notDetectedMessage);
-          setIsConnecting(false);
+          unlockConnection();
           return true; // handled
         }
 
@@ -162,7 +209,7 @@ const UnifiedWalletModal = () => {
 
         if (!provider) {
           setError(notDetectedMessage);
-          setIsConnecting(false);
+          unlockConnection();
           return true; // handled
         }
 
@@ -184,7 +231,7 @@ const UnifiedWalletModal = () => {
         const injected = connectors.find(c => c.id === 'injected');
         if (!injected) {
           setError(ambiguousMessage);
-          setIsConnecting(false);
+          unlockConnection();
           return true; // handled
         }
 
@@ -200,7 +247,7 @@ const UnifiedWalletModal = () => {
 
         if (!canSwapEthereum) {
           setError(ambiguousMessage);
-          setIsConnecting(false);
+          unlockConnection();
           return true; // handled
         }
 
@@ -230,11 +277,11 @@ const UnifiedWalletModal = () => {
         } catch (trustErr) {
           console.error('❌ Trust Wallet connection error:', trustErr);
           if (trustErr?.code === 4001) {
-            setIsConnecting(false);
+            unlockConnection();
             return;
           }
           setError(`Trust Wallet connection failed: ${trustErr?.message || 'Unknown error'}`);
-          setIsConnecting(false);
+          unlockConnection();
           return;
         }
       }
@@ -261,11 +308,11 @@ const UnifiedWalletModal = () => {
         } catch (coinbaseErr) {
           console.error('❌ Coinbase connection error:', coinbaseErr);
           if (coinbaseErr?.code === 4001) {
-            setIsConnecting(false);
+            unlockConnection();
             return;
           }
           setError(`Coinbase connection failed: ${coinbaseErr?.message || 'Unknown error'}`);
-          setIsConnecting(false);
+          unlockConnection();
           return;
         }
       }
@@ -284,11 +331,11 @@ const UnifiedWalletModal = () => {
         } catch (rainbowErr) {
           console.error('❌ Rainbow connection error:', rainbowErr);
           if (rainbowErr?.code === 4001) {
-            setIsConnecting(false);
+            unlockConnection();
             return;
           }
           setError(`Rainbow connection failed: ${rainbowErr?.message || 'Unknown error'}`);
-          setIsConnecting(false);
+          unlockConnection();
           return;
         }
       }
@@ -305,7 +352,7 @@ const UnifiedWalletModal = () => {
         // AND we don't have multiple providers (where MetaMask would be separate)
         if (isPhantom && !hasProviders) {
           setError(`MetaMask is not detected. Phantom has taken over your EVM connection. Please install MetaMask or disable "EVM Support" in Phantom settings.`);
-          setIsConnecting(false);
+          unlockConnection();
           return;
         }
       }
@@ -315,7 +362,7 @@ const UnifiedWalletModal = () => {
         try {
           if (typeof window === 'undefined' || !window.ethereum) {
             setError(`⚠️ Binance Web3 Wallet not detected.\n\n📱 Mobile: Open this site in Binance App Browser (Web3 tab)\n💻 Desktop: Install Binance Web3 Wallet extension\n\n🔗 Or use "WalletConnect" button to scan QR with Binance App`);
-            setIsConnecting(false);
+            unlockConnection();
             return;
           }
 
@@ -331,7 +378,7 @@ const UnifiedWalletModal = () => {
 
           if (!binanceProvider) {
             setError(`⚠️ Binance Web3 Wallet provider not found.\n\n📱 MOBILE USERS:\n• Open Binance App → Web3 tab\n• Paste this site URL in browser\n• Try again\n\n💻 DESKTOP USERS:\n• Install Binance Wallet extension\n• Enable it in your browser\n• Unlock wallet & refresh page\n\n🔗 ALTERNATIVE:\n• Use "WalletConnect" button below\n• Scan QR with Binance App`);
-            setIsConnecting(false);
+            unlockConnection();
             return;
           }
 
@@ -340,7 +387,7 @@ const UnifiedWalletModal = () => {
           const binanceAccounts = await binanceProvider.request({ method: 'eth_accounts' }).catch(() => []);
           if (!binanceAccounts || binanceAccounts.length === 0) {
             setError('Binance is detected, but no accounts are available. Please unlock Binance Web3 Wallet and approve this site, then try again.');
-            setIsConnecting(false);
+            unlockConnection();
             return;
           }
 
@@ -360,7 +407,7 @@ const UnifiedWalletModal = () => {
               const msg = String(e?.message || '');
               if (msg.toLowerCase().includes('no active wallet found')) {
                 setError('Binance is detected, but Wagmi cannot bind it as an active wallet. Please use Web3Modal → WalletConnect, or temporarily disable other injected wallets (Trust/others) and refresh.');
-                setIsConnecting(false);
+                unlockConnection();
                 return;
               }
               throw e;
@@ -371,7 +418,7 @@ const UnifiedWalletModal = () => {
           const injectedConnector = connectors.find(c => c.id === 'injected');
           if (!injectedConnector) {
             setError('Binance connector not found. Please use WalletConnect/Web3Modal or install a compatible Binance Web3 Wallet extension.');
-            setIsConnecting(false);
+            unlockConnection();
             return;
           }
 
@@ -387,7 +434,7 @@ const UnifiedWalletModal = () => {
 
           if (!canSwapEthereum) {
             setError('Binance detected, but cannot bind injected provider safely. Please use Web3Modal/WalletConnect, or temporarily disable other injected wallets and refresh.');
-            setIsConnecting(false);
+            unlockConnection();
             return;
           }
 
@@ -401,7 +448,7 @@ const UnifiedWalletModal = () => {
               const msg = String(e?.message || '');
               if (msg.toLowerCase().includes('no active wallet found')) {
                 setError('Binance provider is present, but injected connection is ambiguous (multiple wallets installed). Best option: Web3Modal → WalletConnect.');
-                setIsConnecting(false);
+                unlockConnection();
                 return;
               }
               throw e;
@@ -415,13 +462,13 @@ const UnifiedWalletModal = () => {
           console.error('❌ [Binance] Connection error:', binanceErr);
           if (binanceErr?.code === 4001) {
             // User rejected
-            setIsConnecting(false);
+            unlockConnection();
             return;
           }
           // Enhanced error message with troubleshooting
           const errorMsg = binanceErr?.message || 'Unknown error';
           setError(`⚠️ Binance connection failed: ${errorMsg}\n\n🔧 TROUBLESHOOTING:\n\n📱 Mobile:\n• Open Binance App → Web3 tab\n• Use built-in browser\n• Make sure wallet is unlocked\n\n💻 Desktop:\n• Check if Binance Wallet extension is enabled\n• Unlock your wallet\n• Refresh page and try again\n\n🔗 Alternative:\n• Use "WalletConnect" button\n• Scan QR with Binance App`);
-          setIsConnecting(false);
+          unlockConnection();
           return;
         }
       }
@@ -485,7 +532,7 @@ const UnifiedWalletModal = () => {
         if (connectorName.includes('phantom') && !connectorName.includes('metamask')) {
           console.error(`❌ [CRITICAL] Connector is Phantom! Rejecting connection.`);
           setError(`Cannot connect to Phantom via EVM. Please use Solana network for Phantom.`);
-          setIsConnecting(false);
+          unlockConnection();
           return;
         }
         
@@ -493,7 +540,7 @@ const UnifiedWalletModal = () => {
         if (connector.id === 'injected' && typeof window !== 'undefined' && window.ethereum?.isPhantom) {
           console.error(`❌ [CRITICAL] Cannot use "injected" connector when Phantom is present!`);
           setError(`Cannot connect via injected connector when Phantom is present. Please ensure MetaMask is installed and try again, or use Solana network for Phantom.`);
-          setIsConnecting(false);
+          unlockConnection();
           return;
         }
         
@@ -507,7 +554,7 @@ const UnifiedWalletModal = () => {
           if (typeof window !== 'undefined' && window.ethereum?.isPhantom && !window.ethereum.isMetaMask) {
             console.error(`❌ [CRITICAL] Only Phantom detected, no MetaMask! Cannot connect via EVM.`);
             setError(`Cannot connect to Phantom via EVM. Please use Solana network for Phantom.`);
-            setIsConnecting(false);
+            unlockConnection();
             return;
           }
           
@@ -517,7 +564,7 @@ const UnifiedWalletModal = () => {
             if (!window.ethereum.isMetaMask) {
               console.error(`❌ [CRITICAL] Cannot use "injected" connector - only Phantom detected, no MetaMask!`);
               setError(`Cannot connect via injected connector. Only Phantom is detected. Please install MetaMask or use Solana network for Phantom.`);
-              setIsConnecting(false);
+              unlockConnection();
               return;
             }
             // MetaMask is present, but we should prefer EIP6963 connector if available
@@ -566,14 +613,14 @@ const UnifiedWalletModal = () => {
                 // If we don't have a reliable MetaMask provider, we STOP here to avoid Phantom popup
                 if (window.ethereum?.isPhantom) {
                   setError("MetaMask is not detected. Phantom is blocking the connection. Please go to Phantom Settings > 'EVM Support' and disable it to use MetaMask.");
-                  setIsConnecting(false);
+                  unlockConnection();
                   return;
                 }
               }
             } catch (primeErr) {
               console.warn('⚠️ [MetaMask] Pre-connection check failed:', primeErr);
               if (primeErr.code === 4001) {
-                setIsConnecting(false);
+                unlockConnection();
                 return; // User rejected MetaMask
               }
             }
@@ -595,7 +642,7 @@ const UnifiedWalletModal = () => {
             try {
               await disconnectEVM();
               setError(`Phantom was connected instead of MetaMask. Please use Solana network for Phantom.`);
-              setIsConnecting(false);
+              unlockConnection();
               return;
             } catch (e) {
               console.error(`❌ Error disconnecting Phantom:`, e);
@@ -659,7 +706,7 @@ const UnifiedWalletModal = () => {
           // Don't close here to allow useEffect to handle it
         } catch (connectErr) {
           console.error(`❌ Connection error for ${walletName}:`, connectErr);
-          setIsConnecting(false);
+          unlockConnection();
           if (connectErr.code === 4001) {
             // User rejected
         setShowWalletModal(false);
@@ -671,7 +718,7 @@ const UnifiedWalletModal = () => {
         // 🛑 CRITICAL: DO NOT fallback to Web3Modal - it will open Phantom!
         // Instead, show clear error message
         console.error(`❌ [CRITICAL] Connector ${walletName} not found! Cannot connect.`);
-        setIsConnecting(false);
+        unlockConnection();
         
         if (walletName === 'MetaMask') {
           // Special error for MetaMask
@@ -686,7 +733,7 @@ const UnifiedWalletModal = () => {
       }
     } catch (err) {
       console.error(`❌ Connection to ${walletName} failed:`, err);
-      setIsConnecting(false);
+      unlockConnection();
       const errorInfo = await handleConnectionError(err);
       
       if (errorInfo.retry) {
@@ -727,7 +774,7 @@ const UnifiedWalletModal = () => {
       // Instead, show error that user must select a specific wallet
       console.error('❌ [CRITICAL] handleEvmConnect called without preferredWallet - this should not happen!');
       setError('Please select a specific wallet from the list above.');
-      setIsConnecting(false);
+      unlockConnection();
     } catch (err) {
       console.error('[WalletModal] EVM connection error:', err);
       const errorInfo = await handleConnectionError(err);
@@ -740,7 +787,7 @@ const UnifiedWalletModal = () => {
         setError('EVM connection failed. Please try again.');
       }
     } finally {
-      setIsConnecting(false);
+      unlockConnection();
     }
   };
 
@@ -792,7 +839,7 @@ const UnifiedWalletModal = () => {
       if (selectedNetwork !== "SOLANA") {
         console.error(`❌ [Solana] ERROR: selectedNetwork is not SOLANA! It is: ${selectedNetwork}`);
         setError(`Invalid network selection. Please select Solana first.`);
-        setIsConnecting(false);
+        unlockConnection();
         return;
       }
       
@@ -814,7 +861,7 @@ const UnifiedWalletModal = () => {
       if (!wallet) {
         console.error(`❌ [Solana] Wallet ${walletName} not found in list`);
         setError(`${walletName} wallet not found.`);
-        setIsConnecting(false);
+        unlockConnection();
         return;
       }
 
@@ -823,7 +870,7 @@ const UnifiedWalletModal = () => {
         console.log(`✅ [Solana] Already connected to ${walletName}:`, solanaPublicKey.toBase58());
         setShowWalletModal(false);
         setSelectedNetwork(null);
-        setIsConnecting(false);
+        unlockConnection();
         return;
       }
 
@@ -841,7 +888,7 @@ const UnifiedWalletModal = () => {
         
         if (!hasPhantom && isNotDetected) {
           setError(`Phantom is not available. Please install the Phantom extension first.`);
-          setIsConnecting(false);
+          unlockConnection();
           return;
         }
       } else {
@@ -856,7 +903,7 @@ const UnifiedWalletModal = () => {
           } else {
             setError(`${walletName} is not available. Please install the ${walletName} extension first, unlock it, refresh the page, and try again.`);
           }
-          setIsConnecting(false);
+          unlockConnection();
           return;
         }
       }
@@ -912,7 +959,7 @@ const UnifiedWalletModal = () => {
         setTimeout(() => {
             setShowWalletModal(false);
             setSelectedNetwork(null);
-            setIsConnecting(false);
+            unlockConnection();
                 window.dispatchEvent(new CustomEvent('openWalletBox'));
               }, 500);
               return;
@@ -929,7 +976,7 @@ const UnifiedWalletModal = () => {
           const errorMsg = "⚠️ Phantom Wallet not detected.";
           console.error(errorMsg);
           setError(errorMsg);
-          setIsConnecting(false);
+          unlockConnection();
           return;
         }
         
@@ -943,7 +990,7 @@ const UnifiedWalletModal = () => {
           setTimeout(() => {
             setShowWalletModal(false);
             setSelectedNetwork(null);
-            setIsConnecting(false);
+            unlockConnection();
             window.dispatchEvent(new CustomEvent('openWalletBox'));
           }, 500);
           return;
@@ -960,12 +1007,12 @@ const UnifiedWalletModal = () => {
               err?.code === 4001) {
             console.log("ℹ️ [Phantom] User rejected connection");
             setShowWalletModal(false);
-            setIsConnecting(false);
+            unlockConnection();
             return;
           }
           
           setError(`Phantom connection failed: ${errorMsg}`);
-          setIsConnecting(false);
+          unlockConnection();
           return;
         }
       }
@@ -1001,7 +1048,7 @@ const UnifiedWalletModal = () => {
               setError(`${walletName} extension is not installed. Please install the ${walletName} extension, unlock it, refresh the page, and try again.`);
             }
           }
-          setIsConnecting(false);
+          unlockConnection();
           return; // Stop here to prevent adapter from opening external sites
         } else if (wallet.readyState === 'Loadable') {
           console.log(`⏳ [${walletName}] ${walletName} is loadable, waiting for it to be ready...`);
@@ -1045,7 +1092,7 @@ const UnifiedWalletModal = () => {
         const pk = wallet.adapter.publicKey;
         if (!pk) {
           setError(`Connected to ${walletName} but publicKey is not available. Please try again.`);
-          setIsConnecting(false);
+          unlockConnection();
           return;
         }
 
@@ -1054,12 +1101,12 @@ const UnifiedWalletModal = () => {
         setTimeout(() => {
           setShowWalletModal(false);
           setSelectedNetwork(null);
-          setIsConnecting(false);
+          unlockConnection();
           window.dispatchEvent(new CustomEvent('openWalletBox'));
         }, 500);
       } catch (connectError) {
         // Ensure we never stay stuck in the loading overlay
-        setIsConnecting(false);
+        unlockConnection();
 
         // Timeout hint (common with Torus: popup blocked / login not completed)
         const msg = String(connectError?.message || '');
@@ -1121,7 +1168,7 @@ const UnifiedWalletModal = () => {
                 setError(`${walletName} extension is not installed or not ready. Please install the ${walletName} extension, unlock it, refresh the page, and try again. If the problem persists, ${walletName} may not be fully compatible with this dApp.`);
               }
             }
-            setIsConnecting(false);
+            unlockConnection();
             return;
           } else {
             // For other wallets, show generic message with install link if available
@@ -1130,7 +1177,7 @@ const UnifiedWalletModal = () => {
             } else {
               setError(`${walletName} wallet is not ready. Please ensure the ${walletName} extension is installed and unlocked, refresh the page, then try again.`);
             }
-            setIsConnecting(false);
+            unlockConnection();
             return;
           }
         }
@@ -1139,10 +1186,10 @@ const UnifiedWalletModal = () => {
           // User rejected - don't show error
           console.log(`ℹ️ [Solana] User rejected connection`);
           setShowWalletModal(false);
-          setIsConnecting(false);
+          unlockConnection();
         } else if (errorMessage.includes('not installed') || errorMessage.includes('not found') || errorMessage.includes('not available')) {
           setError(`${walletName} extension not found. Please install it first.`);
-          setIsConnecting(false);
+          unlockConnection();
         } else if (walletNameLower === 'torus' && 
                    (errorMessage.includes('Unable to find any account') || errorMessage.includes('account') || 
                     errorMessage.includes('no account') || errorMessage.includes('account not found'))) {
@@ -1153,20 +1200,20 @@ const UnifiedWalletModal = () => {
           } else {
             setError(`Torus requires social login (Google, Facebook, Email). Please visit wallet.web3auth.io to create an account first, then refresh the page and try connecting again.`);
           }
-          setIsConnecting(false);
+          unlockConnection();
         } else {
           // Show the actual error message
           const cleanMsg = errorMessage.includes('Unable to find any account') 
             ? 'Please complete the authentication process first.'
             : errorMessage;
           setError(`${walletName} connection failed: ${cleanMsg}`);
-          setIsConnecting(false);
+          unlockConnection();
         }
       }
     } catch (error) {
       console.error("❌ Error in handleSolanaConnect:", error);
       setError(`Failed to connect to ${walletName}. Please try again.`);
-      setIsConnecting(false);
+      unlockConnection();
     }
   };
 

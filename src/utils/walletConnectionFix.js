@@ -68,13 +68,28 @@ export const resetMetaMaskRequests = async () => {
       return false;
     }
     
+    console.log("🔧 [WalletFix] Resetting MetaMask pending requests...");
+    
+    // 🛑 CRITICAL: Force reject ALL pending requests by sending a new permission request
+    try {
+      await window.ethereum.request({ 
+        method: 'wallet_requestPermissions',
+        params: [{ eth_accounts: {} }]
+      }).catch(() => {
+        // This will reject any pending requests - we ignore the error
+        console.log("✅ [WalletFix] Pending requests rejected via wallet_requestPermissions");
+      });
+    } catch (e) {
+      // Ignore - just forcing the clear
+    }
+    
     // Check if MetaMask is unlocked
     if (window.ethereum._metamask?.isUnlocked) {
       const isUnlocked = await window.ethereum._metamask.isUnlocked();
       console.log("🔓 [WalletFix] MetaMask unlocked:", isUnlocked);
     }
     
-    // Force clear any pending requests
+    // Force clear any pending listeners
     if (window.ethereum.removeAllListeners) {
       window.ethereum.removeAllListeners('connect');
       window.ethereum.removeAllListeners('disconnect');
@@ -194,8 +209,8 @@ export const hasPendingConnection = () => {
 export const prepareForConnection = async () => {
   console.log("🔧 [WalletFix] Preparing wallet connection...");
   
-  // 🛑 CRITICAL: We skip resetMetaMaskRequests() here because it touches window.ethereum
-  // If Phantom is hijacking window.ethereum, touching it will trigger a Phantom popup
+  // 🛑 CRITICAL: Always reset MetaMask requests to clear any pending states
+  await resetMetaMaskRequests();
   
   // Check for pending connections
   if (hasPendingConnection()) {

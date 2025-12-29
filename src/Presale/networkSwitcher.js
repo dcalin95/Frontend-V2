@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import { switchChain } from '@wagmi/core';
 import { config } from '../context/wagmiConfig';
+import { forceFixPhantomHijack } from '../utils/walletFilter';
 
 // 🌐 Network Definitions (Wagmi Compatible)
 // Note: We use numeric Chain IDs for Wagmi v2 compatibility
@@ -56,6 +57,29 @@ export const switchNetwork = async (selectedToken) => {
     if (currentChainId === network.chainId) {
       // ✅ Already on correct chain
       return;
+    }
+
+    // 🛑 CRITICAL: FIX PHANTOM HIJACK BEFORE SWITCH
+    console.log('🔧 [NetworkSwitcher] Checking for Phantom hijack before switch...');
+    forceFixPhantomHijack();
+    
+    // 🛑 CRITICAL: CLEAR PENDING REQUESTS BEFORE SWITCH
+    console.log('🧹 [NetworkSwitcher] Clearing pending requests before switch...');
+    try {
+      sessionStorage.removeItem('wallet_pending_request');
+      sessionStorage.removeItem('wagmi.connector');
+      
+      // Clear any pending wallet requests
+      if (window.ethereum) {
+        try {
+          await window.ethereum.request({ 
+            method: 'wallet_requestPermissions',
+            params: [{ eth_accounts: {} }]
+          }).catch(() => {}); // Ignore errors
+        } catch (e) {}
+      }
+    } catch (clearErr) {
+      console.warn('⚠️ [NetworkSwitcher] Error clearing pending:', clearErr);
     }
 
     toast.info(`🔄 Switching to ${network.chainName}...`);

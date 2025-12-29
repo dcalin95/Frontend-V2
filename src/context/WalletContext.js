@@ -7,7 +7,7 @@ import { formatEther } from "viem";
 import { providers } from "ethers";
 import BitsABI from '../abi/BitsABI.js';
 import { CONTRACT_MAP } from '../contract/contractMap';
-import { logDetectedWallets, detectAllInjectedWallets } from '../utils/walletFilter';
+import { logDetectedWallets, detectAllInjectedWallets, forceFixPhantomHijack } from '../utils/walletFilter';
 
 // 🔑 Wallet Types Constants
 export const WALLET_TYPES = {
@@ -363,6 +363,36 @@ const InnerWalletProvider = ({ children }) => {
     try {
       console.log('🔄 [WalletContext] ===== CONNECT WALLET INITIATED =====');
       
+      // 🛑 STEP 1: FIX PHANTOM HIJACK (if present)
+      console.log('🔧 [WalletContext] Checking for Phantom hijack...');
+      forceFixPhantomHijack(); // This will swap window.ethereum if needed
+      
+      // 🛑 STEP 2: CLEAR ALL PENDING REQUESTS
+      console.log('🧹 [WalletContext] Clearing all pending wallet requests...');
+      try {
+        // Clear wagmi pending states
+        sessionStorage.removeItem('wallet_pending_request');
+        sessionStorage.removeItem('wagmi.connector');
+        
+        // Reset MetaMask pending requests (if any)
+        if (window.ethereum) {
+          try {
+            // Cancel any pending MetaMask requests by sending a new request
+            // This will reject the old one automatically
+            await window.ethereum.request({ 
+              method: 'wallet_requestPermissions',
+              params: [{ eth_accounts: {} }]
+            }).catch(() => {}); // Ignore errors - we just want to clear pending
+          } catch (e) {
+            // Ignore - just clearing
+          }
+        }
+        
+        console.log('✅ [WalletContext] Pending requests cleared');
+      } catch (clearErr) {
+        console.warn('⚠️ [WalletContext] Error clearing pending requests:', clearErr);
+      }
+      
       // 🎯 DETECT AND LOG ALL AVAILABLE PROVIDERS
       if (window.ethereum) {
         console.log('🔍 [WalletContext] window.ethereum exists');
@@ -547,7 +577,7 @@ const InnerWalletProvider = ({ children }) => {
 
 export const WalletProvider = ({ children }) => {
   return (
-    <WagmiProvider config={config} reconnectOnMount={true}>
+    <WagmiProvider config={config} reconnectOnMount={false}>
       <QueryClientProvider client={queryClient}>
         <InnerWalletProvider>
           {children}

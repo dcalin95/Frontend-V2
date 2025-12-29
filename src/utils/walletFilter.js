@@ -204,4 +204,56 @@ export const logDetectedWallets = () => {
   return detected;
 };
 
+/**
+ * 🚨 FORCE FIX: Restore window.ethereum to REAL EVM wallet (not Phantom)
+ * USAGE: Call before EVERY EVM connection attempt
+ */
+export const forceFixPhantomHijack = () => {
+  if (typeof window === 'undefined' || !window.ethereum) {
+    return false;
+  }
+  
+  console.log('🔧 [WalletFilter] Checking for Phantom hijack...');
+  
+  // Check if window.ethereum is hijacked by Phantom
+  const isPhantomHijack = window.ethereum.isPhantom && !window.ethereum.isMetaMask && !window.ethereum.isTrust && !window.ethereum.isCoinbaseWallet;
+  
+  if (!isPhantomHijack) {
+    console.log('✅ [WalletFilter] No hijack detected - window.ethereum is clean');
+    return false;
+  }
+  
+  console.warn('🛑 [WalletFilter] PHANTOM HIJACK DETECTED! Attempting to restore real EVM wallet...');
+  
+  // Try to find a real EVM provider in window.ethereum.providers[]
+  if (window.ethereum.providers && Array.isArray(window.ethereum.providers)) {
+    console.log(`🔍 [WalletFilter] Found ${window.ethereum.providers.length} providers, searching for EVM wallet...`);
+    
+    // Priority: MetaMask > Trust > Coinbase > Any non-Phantom
+    const metamask = window.ethereum.providers.find(p => p.isMetaMask && !p.isPhantom);
+    const trust = window.ethereum.providers.find(p => p.isTrust);
+    const coinbase = window.ethereum.providers.find(p => p.isCoinbaseWallet);
+    const anyEVM = window.ethereum.providers.find(p => !p.isPhantom);
+    
+    const realWallet = metamask || trust || coinbase || anyEVM;
+    
+    if (realWallet) {
+      console.log('✅ [WalletFilter] Found real EVM wallet, swapping window.ethereum...');
+      window.ethereum = realWallet;
+      console.log('✅ [WalletFilter] HIJACK FIXED! window.ethereum restored to:', {
+        isMetaMask: window.ethereum.isMetaMask,
+        isTrust: window.ethereum.isTrust,
+        isCoinbaseWallet: window.ethereum.isCoinbaseWallet,
+        isPhantom: window.ethereum.isPhantom
+      });
+      return true;
+    } else {
+      console.error('❌ [WalletFilter] No real EVM wallet found in providers! Install MetaMask or another EVM wallet.');
+      return false;
+    }
+  } else {
+    console.error('❌ [WalletFilter] No providers array found! Only Phantom is installed. Install MetaMask or another EVM wallet.');
+    return false;
+  }
+};
 
