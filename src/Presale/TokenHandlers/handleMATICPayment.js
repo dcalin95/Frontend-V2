@@ -14,14 +14,20 @@ const handleMATICPayment = async ({
   bonusAmount = 0,
   bonusPercentage = 0,
   fallbackBitsPrice = 1.0,
+  signer, // 🔐 CRITICAL: Signer from WalletContext
+  provider, // 🔐 CRITICAL: Provider from WalletContext
 }) => {
   console.groupCollapsed("🟣 [handleMATICPayment] START");
 
   try {
-    if (!window.ethereum) throw new Error("No Web3 wallet detected.");
+    // 🛑 CRITICAL: Use signer/provider from WalletContext, NOT window.ethereum
+    if (!signer || !provider) {
+      throw new Error("No wallet signer detected. Please connect your wallet first.");
+    }
 
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
+    // NO MORE: const provider = new ethers.providers.Web3Provider(window.ethereum);
+    // NO MORE: const signer = provider.getSigner();
+    // ✅ signer and provider are passed from WalletContext
 
     // Convert amount to proper units
     const amountInWei = ethers.utils.parseUnits(amount.toString(), 18); // MATIC has 18 decimals

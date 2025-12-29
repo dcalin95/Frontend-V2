@@ -13,7 +13,7 @@ const usePaymentState = ({
   tokenPrices,
   pricesLoading,
 }) => {
-  const { walletAddress, connectWallet } = useContext(WalletContext);
+  const { walletAddress, connectWallet, signer, provider } = useContext(WalletContext);
 
   // 🔄 Loading States
   const [isProcessingTransaction, setIsProcessingTransaction] = useState(false);
@@ -130,6 +130,10 @@ const usePaymentState = ({
     selectedTokenIcon,
     walletAddress,
     connectWallet,
+    
+    // 🔐 Provider & Signer (from WalletContext)
+    signer,
+    provider,
 
     // 🔍 Validation
     hasValidAmount,

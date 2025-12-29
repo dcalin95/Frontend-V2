@@ -22,6 +22,8 @@ const useHandleTransaction = ({
   selectedPaymentMethod,
   referralCode, // 🎯 Add referral code parameter
   stripeAmountEUR,
+  signer, // 🔐 Add signer from WalletContext
+  provider, // 🔐 Add provider from WalletContext
 }) => {
   const confirmedOnce = useRef(false); // ✅ Evită dublarea confirmării
 
@@ -237,6 +239,9 @@ const useHandleTransaction = ({
             referralCode: referralCode, // 🎯 Add referral code
             paymentTokenAddress,
             decimals,
+            // 🔐 CRITICAL: Pass signer and provider from WalletContext
+            signer,
+            provider,
           });
         }
 

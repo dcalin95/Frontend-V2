@@ -2,10 +2,16 @@ import { ethers } from "ethers";
 import { CONTRACTS } from "../../contract/contracts";
 import { notifyPresaleBuy } from "../../utils/telegramNotify";
 
-const handleUSDCPayment = async (amountPay, tokensReceive, tokenPriceUSD = 1.0) => {
+const handleUSDCPayment = async (amountPay, tokensReceive, tokenPriceUSD = 1.0, signer, provider) => {
   try {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
+    // 🛑 CRITICAL: Use signer/provider from WalletContext, NOT window.ethereum
+    if (!signer || !provider) {
+      throw new Error("No wallet signer detected. Please connect your wallet first.");
+    }
+
+    // NO MORE: const provider = new ethers.providers.Web3Provider(window.ethereum);
+    // NO MORE: const signer = provider.getSigner();
+    // ✅ signer and provider are passed from WalletContext
 
     const contract = new ethers.Contract(
       CONTRACTS.NODE.address,

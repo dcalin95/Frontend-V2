@@ -15,12 +15,17 @@ const handleBNBPayment = async ({
   bonusPercentage = 0,
   fallbackBitsPrice = 1.0,
   referralCode = "", // 🎯 Add referral code parameter
+  signer, // 🔐 CRITICAL: Signer from WalletContext (NOT window.ethereum)
+  provider, // 🔐 CRITICAL: Provider from WalletContext (NOT window.ethereum)
 }) => {
   console.groupCollapsed("🚀 [handleBNBPayment] START");
   console.log("🎯 [BNB] Referral Code:", referralCode);
 
   try {
-    if (!window.ethereum) throw new Error("No Web3 wallet detected.");
+    // 🛑 CRITICAL: Use signer/provider from WalletContext, NOT window.ethereum
+    if (!signer || !provider) {
+      throw new Error("No wallet signer detected. Please connect your wallet first.");
+    }
 
     // 🌐 MAINNET-only RPCs
     const isMainnet = true;
@@ -35,14 +40,16 @@ const handleBNBPayment = async ({
     // 🔁 Ensure wallet is on the right chain for signing (BSC Mainnet)
     const desiredChainIdHex = "0x38";
     try {
-      const providerForSwitch = new ethers.providers.Web3Provider(window.ethereum);
-      const net = await providerForSwitch.getNetwork();
+      const net = await provider.getNetwork();
       const currentChainHex = "0x" + net.chainId.toString(16);
       if (currentChainHex.toLowerCase() !== desiredChainIdHex.toLowerCase()) {
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: desiredChainIdHex }],
-        });
+        // Use provider's underlying connection to request chain switch
+        if (provider.provider?.request) {
+          await provider.provider.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: desiredChainIdHex }],
+          });
+        }
       }
     } catch (switchErr) {
       console.warn("⚠️ Network switch failed or not supported:", switchErr.message);
@@ -50,10 +57,9 @@ const handleBNBPayment = async ({
     
     // 🛡️ Preflight: verify we are truly on BSC and warn Ledger users to open Ethereum app
     try {
-      const providerForChecks = new ethers.providers.Web3Provider(window.ethereum);
       const [codeNode, codeCM] = await Promise.all([
-        providerForChecks.getCode(CONTRACTS.NODE.address),
-        providerForChecks.getCode(CONTRACTS.CELL_MANAGER.address)
+        provider.getCode(CONTRACTS.NODE.address),
+        provider.getCode(CONTRACTS.CELL_MANAGER.address)
       ]);
 
       const onWrongChain = !codeNode || codeNode === '0x' || !codeCM || codeCM === '0x';
@@ -92,12 +98,14 @@ const handleBNBPayment = async ({
     }
     
     if (!readProvider) {
-      console.error("❌ [BNB] All RPC endpoints failed, using MetaMask");
-      readProvider = new ethers.providers.Web3Provider(window.ethereum);
+      console.error("❌ [BNB] All RPC endpoints failed, using connected provider");
+      readProvider = provider;
     }
 
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
+    // 🔐 Use signer from WalletContext (already connected to correct wallet)
+    // NO MORE: const provider = new ethers.providers.Web3Provider(window.ethereum);
+    // NO MORE: const signer = provider.getSigner();
+    // ✅ signer is passed from WalletContext and is ALREADY correct wallet
     const amountInWei = ethers.utils.parseUnits(amount.toString(), "ether");
 
     const nodeAbi = [

@@ -206,6 +206,9 @@ const PaymentBox = ({
     selectedPaymentMethod: selectedPaymentMethod,
     referralCode: referralCode, // 🎯 Pass referral code to handler
     stripeAmountEUR: isStripeToken ? stripeAmountEUR : undefined,
+    // 🔐 Pass signer and provider from WalletContext
+    signer: paymentState.signer,
+    provider: paymentState.provider,
   });
 
   const handleClosePopup = () => {

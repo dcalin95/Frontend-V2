@@ -17,13 +17,21 @@ const handleGenericPayment = async ({
   bonusAmount = 0,
   bonusPercentage = 0,
   referralCode = "",
+  signer, // 🔐 CRITICAL: Signer from WalletContext
+  provider, // 🔐 CRITICAL: Provider from WalletContext
 }) => {
   try {
     console.log("🔁 Generic Payment Handler started");
 
+    // 🛑 CRITICAL: Use signer/provider from WalletContext, NOT window.ethereum
+    if (!signer || !provider) {
+      throw new Error("No wallet signer detected. Please connect your wallet first.");
+    }
+
     const nodeContract = await getContractInstance("NODE");
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
+    // NO MORE: const provider = new ethers.providers.Web3Provider(window.ethereum);
+    // NO MORE: const signer = provider.getSigner();
+    // ✅ signer and provider are passed from WalletContext
 
     const amountInWei = ethers.utils.parseUnits(amount.toString(), decimals);
     const bitsInWei = ethers.utils.parseUnits(bitsToReceive.toString(), 18);
