@@ -180,6 +180,29 @@
   fill: #ff4500 !important;
 }
 
+/* 📱 SYSTEM 1: Body Class Detection (MobileUI.js system) */
+body.mode-mobile .percentage-buttons-row {
+  display: flex !important;
+  max-width: 100%;
+  gap: 0.5rem;
+}
+
+body.mode-mobile .percentage-button {
+  min-width: 60px;
+  height: 38px;
+  font-size: 0.9rem;
+}
+
+body.mode-mobile .action-buttons.desktop-only {
+  display: none !important;
+}
+
+body.mode-mobile .cosmic-input-wrapper {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* 📱 SYSTEM 2: Media Query Detection (Fallback) */
 /* ✅ Responsive */
 @media screen and (max-width: 768px) {
   /* Show percentage buttons on mobile */

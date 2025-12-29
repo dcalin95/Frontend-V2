@@ -1,5 +1,53 @@
 /* PaymentBox Mobile Styles - Gemini 3 King */
 
+/* 📱 SYSTEM 1: Body Class Detection (MobileUI.js system) */
+body.mode-mobile .payment-box {
+  max-width: 95vw;
+  padding: 0.4rem 1rem 1rem 1rem;
+  border-radius: 1rem;
+  margin: 0 auto;
+  background: transparent;
+  border: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+body.mode-mobile .percentage-buttons-row {
+  display: flex !important;
+  gap: 0.5rem;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  padding: 0 0.5rem;
+}
+
+body.mode-mobile .percentage-button {
+  flex: 1;
+  min-width: 60px;
+  height: 38px;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+body.mode-mobile .action-buttons.desktop-only {
+  display: none !important;
+}
+
+body.mode-mobile .button-debug-info {
+  font-size: 0.75rem !important;
+  padding: 10px !important;
+  margin: 8px auto !important;
+  max-width: 95% !important;
+  line-height: 1.5 !important;
+  text-align: left !important;
+}
+
+body.mode-mobile .button-debug-info div {
+  margin: 4px 0;
+}
+
+/* 📱 SYSTEM 2: Media Query Detection (Fallback) */
 @media (max-width: 768px) {
   .payment-box {
     max-width: 95vw;
@@ -350,6 +398,29 @@
   }
 }
 
+/* 📱 SYSTEM 1: Body Class Detection for SMALL screens */
+body.mode-mobile .cosmic-input-container {
+  gap: 0.5rem;
+}
+
+body.mode-mobile .percentage-buttons-row {
+  gap: 0.4rem;
+  padding: 0 0.3rem;
+}
+
+body.mode-mobile .percentage-button {
+  min-width: 50px;
+  height: 36px;
+  font-size: 0.85rem;
+}
+
+body.mode-mobile .button-debug-info {
+  font-size: 0.7rem !important;
+  padding: 8px !important;
+  margin: 6px auto !important;
+}
+
+/* 📱 SYSTEM 2: Media Query for SMALL screens (Fallback) */
 @media (max-width: 480px) {
   .payment-box {
     max-width: 98vw;
