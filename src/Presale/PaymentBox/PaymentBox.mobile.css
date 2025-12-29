@@ -298,6 +298,42 @@
   .stripe-card-box__options {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  /* 🎯 InputBox percentage buttons - VISIBLE & PROMINENT ON MOBILE */
+  .cosmic-input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    width: 100%;
+  }
+
+  .cosmic-input-wrapper {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .percentage-buttons-row {
+    display: flex !important;
+    gap: 0.5rem;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    padding: 0 0.5rem;
+  }
+
+  .percentage-button {
+    flex: 1;
+    min-width: 60px;
+    height: 38px;
+    font-size: 0.9rem;
+    font-weight: 800;
+  }
+
+  /* Hide old +/- buttons on mobile (keep only percentage buttons) */
+  .action-buttons.desktop-only {
+    display: none !important;
+  }
 }
 
 @media (max-width: 480px) {
@@ -360,5 +396,21 @@
 
   .stripe-summary__value {
     text-align: left;
+  }
+
+  /* 🎯 InputBox percentage buttons - SMALLER ON VERY SMALL SCREENS */
+  .cosmic-input-container {
+    gap: 0.5rem;
+  }
+
+  .percentage-buttons-row {
+    gap: 0.4rem;
+    padding: 0 0.3rem;
+  }
+
+  .percentage-button {
+    min-width: 50px;
+    height: 36px;
+    font-size: 0.85rem;
   }
 }
