@@ -432,7 +432,17 @@ const PaymentBox = ({
         <>
           <button 
             onClick={() => {
-              try { trackTikTokEvent('InitiateCheckout', { context: 'presale_buy_click' }); } catch(_) {}
+              try { 
+                trackTikTokEvent('InitiateCheckout', { 
+                  context: 'presale_buy_click',
+                  content_type: 'product',
+                  content_name: 'BITS Token',
+                  value: paymentState.usdValue || paymentState.safeAmountPay,
+                  currency: 'USD',
+                  token: selectedToken,
+                  chain: selectedChain
+                }); 
+              } catch(_) {}
               handleBuy();
             }} 
             className="buy-button"

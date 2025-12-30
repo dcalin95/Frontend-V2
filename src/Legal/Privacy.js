@@ -29,7 +29,20 @@ BitswapDEX LAB collects Personal Data through the operation of its Website and b
     Device information, including but not limited to the device identifier, name, type, operating system, and mobile network information.
     Standard web log data, such as browser type and pages accessed on the Website.
 
-When Participants use location-enabled devices with the Company’s Website or products, we may collect geographic location data or use various means to determine location, such as sensor data from the Participant’s device. However, personally identifying information of this kind will not be released to any third party without your explicit consent, except as specified in this Policy.
+Geographic Location and Geo-Blocking Technology:
+
+The Company employs automated geo-blocking technology to enforce geographic restrictions required by applicable securities laws and regulations. When you access our Website, we automatically collect and process your IP address and geographic location data to determine your country of origin. This data is used solely for compliance purposes to:
+
+(a) Identify and block access from prohibited jurisdictions (including but not limited to the United States, Canada, China, North Korea, Iran, Syria, and Cuba);
+(b) Redirect users from restricted regions to a dedicated information page explaining the access restrictions;
+(c) Maintain compliance with U.S. SEC regulations, OFAC sanctions, and international securities laws;
+(d) Create audit trails for regulatory compliance purposes.
+
+Your geographic location data is processed in real-time and may be temporarily cached in your browser's session storage for performance optimization. This data is NOT sold, shared, or used for marketing purposes. We use third-party IP geolocation services (ipapi.co) to determine your approximate location. These services process your IP address on our behalf in accordance with their own privacy policies.
+
+By accessing this Website, you explicitly consent to the collection and processing of your IP address and geographic location data for the purposes described above. If you do not consent to this processing, you must immediately cease using the Website.
+
+When Participants use location-enabled devices with the Company's Website or products, we may collect geographic location data or use various means to determine location, such as sensor data from the Participant's device. However, personally identifying information of this kind will not be released to any third party without your explicit consent, except as specified in this Policy.
 
 If Users wish to purchase $BITS Tokens (to become Participants), the Company collects and stores the following types of Personal Data:
     Your wallet address.

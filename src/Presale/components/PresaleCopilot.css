@@ -55,7 +55,7 @@
   overflow: hidden;
   border: 2px solid rgba(20, 241, 149, 0.95);
   background: rgba(0, 0, 0, 0.35);
-  box-shadow: 0 10px 30px rgba(20, 241, 149, 0.22), 0 0 0 3px rgba(20, 241, 149, 0.10);
+  box-shadow: none;
   display: grid;
   place-items: center;
   flex: 0 0 auto;
@@ -74,7 +74,7 @@
 body.mode-mobile .presale-copilot {
   left: auto;
   right: 14px;
-  bottom: 120px; /* Moved up to be above BITS logo component */
+  bottom: 95px; /* Same as closed state for consistency */
   width: auto;
   max-height: 70vh;
   /* Override global mobile kill-switch */
@@ -83,7 +83,7 @@ body.mode-mobile .presale-copilot {
 }
 
 body.mode-mobile .presale-copilot.is-closed {
-  bottom: 120px; /* Positioned above other fixed components */
+  bottom: 95px; /* Positioned above AI Launcher (20px + 56px + 19px gap) */
   width: auto;
   left: auto;
   right: 14px;
@@ -110,7 +110,7 @@ body.mode-mobile .presale-copilot__avatar {
 }
 
 body.mode-mobile .presale-copilot__badge {
-  box-shadow: 0 10px 30px rgba(20, 241, 149, 0.22), 0 0 0 3px rgba(20, 241, 149, 0.10) !important;
+  box-shadow: none !important;
 }
 
 body.mode-mobile .pc-actions-row {

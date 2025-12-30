@@ -100,6 +100,9 @@ const CryptoBoxMobile = ({
   const bonusAmount = paymentState.bonusAmount || 0;
   const totalBits = bitsToReceive + bonusAmount;
   const selectedMeta = CRYPTO_TOKENS.find((t) => t.key === selectedToken);
+  
+  // Safe check for amountPay display
+  const displayAmount = amountPay && !isNaN(parseFloat(amountPay)) ? parseFloat(amountPay) : 0;
 
   return (
     <>
@@ -291,10 +294,54 @@ const CryptoBoxMobile = ({
             )}
           </div>
           
-          {amountPay && parseFloat(amountPay) > 0 && usdValue < 10 && (
+          {/* PERCENTAGE BUTTONS - MOBILE */}
+          <div style={{
+            display: 'flex',
+            gap: '8px',
+            marginTop: '12px',
+            justifyContent: 'space-between'
+          }}>
+            {[
+              { label: 'MIN', value: 0.001 },
+              { label: '25%', value: 0.25 },
+              { label: '50%', value: 0.50 },
+              { label: '75%', value: 0.75 },
+              { label: 'MAX', value: 1.0 }
+            ].map((btn) => (
+              <button
+                key={btn.label}
+                onClick={() => {
+                  if (btn.label === 'MIN') {
+                    setAmountPay('0.001');
+                  } else {
+                    const balance = paymentState.balances[selectedToken] || 0;
+                    const calculated = (balance * btn.value).toFixed(6);
+                    setAmountPay(calculated);
+                  }
+                }}
+                style={{
+                  flex: 1,
+                  padding: '10px 8px',
+                  background: 'rgba(20, 241, 149, 0.1)',
+                  border: '1px solid rgba(20, 241, 149, 0.3)',
+                  borderRadius: '8px',
+                  color: '#14f195',
+                  fontSize: '13px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                {btn.label}
+              </button>
+            ))}
+          </div>
+          
+          {amountPay && parseFloat(amountPay) > 0 && usdValue < 10 && !isNaN(usdValue) && (
              <div style={{marginTop: '8px', fontSize: '12px', color: '#ff9800', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px'}}>
                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-               Min $10 USD (~{(10 / (tokenPrices[selectedToken]||1)).toFixed(4)} {selectedToken})
+               Min $10 USD (~{(10 / ((tokenPrices[selectedToken]?.price || tokenPrices[selectedToken]) || 1)).toFixed(4)} {selectedToken})
              </div>
           )}
         </div>

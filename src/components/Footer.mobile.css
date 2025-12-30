@@ -2,8 +2,11 @@
 
 @media (max-width: 768px) {
   /* 🚨 Ascunde Device Info din Footer pe mobile (e în MobileUI.js) */
-  .desktop-device-info {
+  .desktop-device-info,
+  .desktop-only {
     display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
   }
 
   /* Footer container - Mai compact */

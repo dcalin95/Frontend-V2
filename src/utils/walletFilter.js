@@ -107,10 +107,11 @@ export const filterEVMConnectors = (connectors) => {
     const name = (connector.name || '').toLowerCase();
     const id = (connector.id || '').toLowerCase();
     
-    // 🛑 RULE #1: EXCLUDE orice conține "phantom" în nume sau ID
+    // ℹ️ Phantom is allowed - it supports both EVM and Solana
+    // The user chooses which network to connect via the modal
     if (name.includes('phantom') || id.includes('phantom')) {
-      console.warn(`🛑 [WalletFilter] BLOCKED Phantom connector: ${connector.name} (ID: ${connector.id}) - Phantom is SOLANA ONLY`);
-      return false;
+      console.log(`ℹ️ [WalletFilter] Phantom connector detected: ${connector.name} (ID: ${connector.id})`);
+      // Don't block - let user choose
     }
 
     // 🛑 RULE #2: Dacă este "injected" connector și Phantom a preluat window.ethereum, EXCLUDE

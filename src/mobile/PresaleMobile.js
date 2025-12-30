@@ -39,7 +39,7 @@ const PresaleMobile = () => {
   const { currentPrice, roundNumber, soldBits, availableBits } = useCellManagerData();
 
   const { prices: tokenPrices } = useTokenPrices();
-  const [amountPay, setAmountPay] = useState(0);
+  const [amountPay, setAmountPay] = useState("");
   const [stripeFeedback, setStripeFeedback] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState(null);
 

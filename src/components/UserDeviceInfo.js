@@ -7,6 +7,7 @@ import { trackVisitor } from '../services/trackingService';
 import metamaskLogo from '../assets/icons/metamask-logo.png';
 import phantomLogo from '../assets/icons/phantom-logo.png';
 import coinbaseLogo from '../assets/exchanges/coinbase-clearbit.png';
+import trustwalletLogo from '../assets/icons/trustwallet-logo.png';
 
 const UserDeviceInfo = ({ className = '' }) => {
   const [info, setInfo] = useState({
@@ -240,7 +241,7 @@ const UserDeviceInfo = ({ className = '' }) => {
     const wallets = [];
     if (window.ethereum?.isMetaMask) wallets.push('MetaMask');
     if (window.solana?.isPhantom) wallets.push('Phantom');
-    if (window.BinanceChain) wallets.push('Binance');
+    if (window.BinanceChain) wallets.push('Trust Wallet'); // ✅ Trust Wallet (owned by Binance)
     if (window.coinbaseWalletExtension) wallets.push('Coinbase');
     if (window.okxwallet) wallets.push('OKX');
     return wallets;
@@ -278,27 +279,30 @@ const UserDeviceInfo = ({ className = '' }) => {
 
         setInfo(prev => ({ ...prev, ...deviceInfo }));
 
-        // IP & Location API (with fallback)
+        // IP & Location API (with fallback) - FORȚĂM IPv4
         let ipData = null;
         
         try {
-          // Try ipapi.co first
-          const response = await fetch('https://ipapi.co/json/');
-          ipData = await response.json();
+          // ✅ FORȚĂM IPv4 prin ipify (doar IPv4)
+          const ipResponse = await fetch('https://api.ipify.org?format=json');
+          const ipJson = await ipResponse.json();
+          
+          // Acum luăm location de la ipapi.co cu IP-ul IPv4
+          const locResponse = await fetch(`https://ipapi.co/${ipJson.ip}/json/`);
+          const locJson = await locResponse.json();
+          
+          ipData = {
+            ip: ipJson.ip, // ✅ IPv4 garantat
+            city: locJson.city,
+            country_name: locJson.country_name,
+            org: locJson.org
+          };
         } catch (err) {
-          console.warn('ipapi.co failed, trying fallback...', err);
+          console.warn('IP fetch failed, trying alternative...', err);
           try {
-            // Fallback to ipify + ip-api
-            const ipResponse = await fetch('https://api.ipify.org?format=json');
-            const ipJson = await ipResponse.json();
-            const locResponse = await fetch(`http://ip-api.com/json/${ipJson.ip}`);
-            const locJson = await locResponse.json();
-            ipData = {
-              ip: ipJson.ip,
-              city: locJson.city,
-              country_name: locJson.country,
-              org: locJson.isp
-            };
+            // Fallback: ip-api.com
+            const response = await fetch('https://ipapi.co/json/');
+            ipData = await response.json();
           } catch (err2) {
             console.error('All IP APIs failed', err2);
             ipData = { ip: 'API Error', city: 'Unknown', country_name: '', org: 'Unknown' };
@@ -413,7 +417,9 @@ const UserDeviceInfo = ({ className = '' }) => {
             <div className="info-item">
               <i className="fas fa-fingerprint"></i>
               <span className="info-label">IP</span>
-              <span className="info-value">{info.ip}</span>
+              <span className="info-value" style={{wordBreak: 'break-word'}}>
+                {info.ip}
+              </span>
             </div>
 
             <div className="info-item">
@@ -421,12 +427,20 @@ const UserDeviceInfo = ({ className = '' }) => {
               <span className="info-label">Wallets</span>
               <span className="info-value">
                 {info.wallets.length > 0 ? (
-                  <div style={{display: 'flex', gap: '4px', alignItems: 'center', flexDirection: 'column'}}>
+                  <div style={{
+                    display: 'flex', 
+                    flexDirection: 'row',
+                    gap: '6px', 
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexWrap: 'wrap'
+                  }}>
                     {info.wallets.map(w => {
-                      if (w === 'MetaMask') return <img key={w} src={metamaskLogo} alt="MM" style={{width: '16px', height: '16px'}} />;
-                      if (w === 'Phantom') return <img key={w} src={phantomLogo} alt="PH" style={{width: '16px', height: '16px'}} />;
-                      if (w === 'Coinbase') return <img key={w} src={coinbaseLogo} alt="CB" style={{width: '16px', height: '16px'}} />;
-                      return <span key={w} style={{fontSize: '8px'}}>{w}</span>;
+                      if (w === 'MetaMask') return <img key={w} src={metamaskLogo} alt="MM" style={{width: '18px', height: '18px'}} />;
+                      if (w === 'Phantom') return <img key={w} src={phantomLogo} alt="PH" style={{width: '18px', height: '18px'}} />;
+                      if (w === 'Coinbase') return <img key={w} src={coinbaseLogo} alt="CB" style={{width: '18px', height: '18px'}} />;
+                      if (w === 'Trust Wallet') return <img key={w} src={trustwalletLogo} alt="TW" style={{width: '18px', height: '18px'}} />;
+                      return <span key={w} style={{fontSize: '9px', fontWeight: '600'}}>{w}</span>;
                     })}
                   </div>
                 ) : 'None'}

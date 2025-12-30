@@ -191,7 +191,11 @@ const MobileUI = ({ children }) => {
       
       {/* Mobile-specific touch feedback & Device Info */}
       {isMobile && <div className="mobile-touch-feedback" />}
-      {isMobile && <UserDeviceInfo />}
+      {isMobile && (
+        <div className="mobile-only-device-info">
+          <UserDeviceInfo />
+        </div>
+      )}
     </div>
   );
 };

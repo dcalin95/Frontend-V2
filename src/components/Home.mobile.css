@@ -219,7 +219,7 @@ body.in-app-browser p {
 /* Mobile - Medium Screens */
 @media (max-width: 768px) and (min-width: 481px) {
   .fab-whale-tracker {
-    bottom: calc(12rem + env(safe-area-inset-bottom, 0px)) !important;
+    bottom: calc(17rem + env(safe-area-inset-bottom, 0px)) !important;
     right: calc(1.5rem + env(safe-area-inset-right, 0px)) !important;
     width: 60px !important;
     height: 60px !important;
@@ -257,7 +257,7 @@ body.in-app-browser p {
 /* Mobile - Small Screens */
 @media (max-width: 480px) {
   .fab-whale-tracker {
-    bottom: calc(11rem + env(safe-area-inset-bottom, 0px)) !important;
+    bottom: calc(17rem + env(safe-area-inset-bottom, 0px)) !important;
     right: calc(1rem + env(safe-area-inset-right, 0px)) !important;
     width: 55px !important;
     height: 55px !important;
@@ -295,7 +295,7 @@ body.in-app-browser p {
 /* Mobile - Extra Small Screens */
 @media (max-width: 360px) {
   .fab-whale-tracker {
-    bottom: calc(10rem + env(safe-area-inset-bottom, 0px)) !important;
+    bottom: calc(16rem + env(safe-area-inset-bottom, 0px)) !important;
     right: calc(0.75rem + env(safe-area-inset-right, 0px)) !important;
     width: 50px !important;
     height: 50px !important;

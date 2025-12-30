@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧪 US Geo-Blocking Test Tool</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      color: #2d3748;
+      margin-bottom: 24px;
+      font-size: 28px;
+      text-align: center;
+    }
+
+    .test-section {
+      background: #f7fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .test-section h2 {
+      color: #1a202c;
+      font-size: 20px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .test-section p {
+      color: #4a5568;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .current-geo {
+      background: #e6fffa;
+      border-left: 4px solid #38b2ac;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .current-geo strong {
+      color: #234e52;
+    }
+
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 12px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button.danger {
+      background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+    }
+
+    button.success {
+      background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    }
+
+    .code-block {
+      background: #2d3748;
+      color: #e2e8f0;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      overflow-x: auto;
+      margin-top: 12px;
+    }
+
+    .warning {
+      background: #fef5e7;
+      border-left: 4px solid #f39c12;
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 16px;
+    }
+
+    .warning p {
+      color: #856404;
+      margin: 0;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+
+    .status.blocked {
+      background: #fed7d7;
+      color: #c53030;
+    }
+
+    .status.allowed {
+      background: #c6f6d5;
+      color: #2f855a;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 US Geo-Blocking Test Tool</h1>
+
+    <div class="current-geo" id="currentGeoInfo">
+      <strong>Current Location:</strong> Loading...
+    </div>
+
+    <div class="test-section">
+      <h2>🇺🇸 Test 1: Simulate US User</h2>
+      <p>
+        This test will simulate a US user by modifying geolocation data in 
+        <code>sessionStorage</code>. After reload, you should be automatically 
+        redirected to the <code>/us-blocked</code> page.
+      </p>
+      <button class="danger" onclick="simulateUSUser()">
+        🚫 Simulate US User
+      </button>
+    </div>
+
+    <div class="test-section">
+      <h2>🌍 Test 2: Reset to Real Location</h2>
+      <p>
+        Clear simulated data and reload the page to return to your real location.
+      </p>
+      <button class="success" onclick="resetGeoLocation()">
+        ✅ Reset Location
+      </button>
+    </div>
+
+    <div class="test-section">
+      <h2>📋 Test 3: Manual Check</h2>
+      <p>
+        Access the blocked page directly to see what it looks like:
+      </p>
+      <button onclick="window.location.href='/#/us-blocked'">
+        👁️ View /us-blocked Page
+      </button>
+    </div>
+
+    <div class="test-section">
+      <h2>🔍 Test 4: Inspect SessionStorage</h2>
+      <p>
+        Open Console (F12) and check <code>sessionStorage</code> content:
+      </p>
+      <button onclick="inspectStorage()">
+        🔎 Inspect Storage
+      </button>
+      <div class="code-block" id="storageOutput" style="display: none; margin-top: 12px;">
+        <pre id="storageContent"></pre>
+      </div>
+    </div>
+
+    <div class="warning">
+      <p>
+        ⚠️ <strong>Important:</strong> These tests only work in development environment. 
+        In production, geolocation is automatically detected via IP.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Display current location
+    function displayCurrentGeo() {
+      const geoData = sessionStorage.getItem('bits_user_geo');
+      const infoDiv = document.getElementById('currentGeoInfo');
+      
+      if (geoData) {
+        try {
+          const parsed = JSON.parse(geoData);
+          const isUS = parsed.countryCode === 'US';
+          const statusClass = isUS ? 'blocked' : 'allowed';
+          const statusText = isUS ? '🚫 BLOCKED' : '✅ ALLOWED';
+          
+          infoDiv.innerHTML = `
+            <strong>Current Location:</strong> ${parsed.country} (${parsed.countryCode})
+            <span class="status ${statusClass}">${statusText}</span><br>
+            <strong>City:</strong> ${parsed.city || 'N/A'}<br>
+            <strong>IP:</strong> ${parsed.ip || 'N/A'}
+          `;
+        } catch (e) {
+          infoDiv.innerHTML = '<strong>Error:</strong> Cannot read geolocation data';
+        }
+      } else {
+        infoDiv.innerHTML = '<strong>Status:</strong> No geolocation data (will be auto-detected on load)';
+      }
+    }
+
+    // Simulate US user
+    function simulateUSUser() {
+      const usGeoData = {
+        country: 'United States',
+        countryCode: 'US',
+        city: 'New York',
+        currency: 'USD',
+        ip: '8.8.8.8',
+        isLoading: false,
+        error: null
+      };
+      
+      sessionStorage.setItem('bits_user_geo', JSON.stringify(usGeoData));
+      
+      alert('✅ Geolocation set to USA!\n\nPage will reload and you should be redirected to /us-blocked');
+      
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    }
+
+    // Reset location
+    function resetGeoLocation() {
+      sessionStorage.removeItem('bits_user_geo');
+      sessionStorage.removeItem('bits_us_blocked');
+      
+      alert('✅ Geolocation data has been cleared!\n\nPage will reload and your real location will be auto-detected.');
+      
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    }
+
+    // Inspect storage
+    function inspectStorage() {
+      const outputDiv = document.getElementById('storageOutput');
+      const contentPre = document.getElementById('storageContent');
+      
+      const allData = {
+        bits_user_geo: sessionStorage.getItem('bits_user_geo'),
+        bits_us_blocked: sessionStorage.getItem('bits_us_blocked')
+      };
+      
+      contentPre.textContent = JSON.stringify(allData, null, 2);
+      outputDiv.style.display = 'block';
+      
+      console.log('📦 SessionStorage Data:', allData);
+    }
+
+    // Display location on load
+    displayCurrentGeo();
+  </script>
+</body>
+</html>
+

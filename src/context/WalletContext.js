@@ -202,6 +202,11 @@ const InnerWalletProvider = ({ children }) => {
       }
       
       console.log("✅ [WalletContext] Complete disconnect finished");
+      
+      // Reload page to ensure clean state
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     } catch (e) {
         console.warn("[WalletContext] Disconnect failed suppressed:", e);
     }
@@ -357,11 +362,29 @@ const InnerWalletProvider = ({ children }) => {
     }
   }, [bitsRawBalance]);
 
-  // 🚀 Magic Function: Opens AppKit Modal
-  // Replaces all legacy connection functions
-  const connectWallet = async () => {
+  // 🚀 SIMPLE FUNCTION: Opens Correct Modal Based on Chain Type
+  // @param {string} selectedChain - EXPLICIT chain: "evm" or "solana"
+  const connectWallet = async (selectedChain = "evm") => {
     try {
       console.log('🔄 [WalletContext] ===== CONNECT WALLET INITIATED =====');
+      console.log('🔍 [WalletContext] selectedChain:', selectedChain);
+      
+      // 🎯 SIMPLE: Check if Solana or EVM
+      const isSolana = selectedChain === "solana";
+      if (isSolana) {
+        console.log('🟣 [WalletContext] SOLANA → Opening UnifiedWalletModal');
+        setShowWalletModal(true);
+        return;
+      }
+
+      // Dacă deja e conectat pe EVM, nu deschide din nou modalul
+      if (isConnected && address) {
+        console.log('ℹ️ [WalletContext] Already connected (EVM), skipping modal');
+        return;
+      }
+
+      // 🔵 EVM: Open Web3Modal
+      console.log('🔵 [WalletContext] EVM → Opening Web3Modal');
       
       // 🛑 STEP 1: FIX PHANTOM HIJACK (if present)
       console.log('🔧 [WalletContext] Checking for Phantom hijack...');
@@ -447,10 +470,19 @@ const InnerWalletProvider = ({ children }) => {
       await open();
       console.log('✅ [WalletContext] Web3Modal opened successfully');
     } catch (err) {
-      console.error("❌ [WalletContext] Failed to open Web3Modal:", err);
+      console.error("❌ [WalletContext] Failed to open modal:", err);
       console.error("❌ [WalletContext] Error stack:", err.stack);
     }
   };
+
+  // Expose simple helpers to window for UI components (Copilot, etc.)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.openUnifiedWalletModal = () => setShowWalletModal(true);
+      window.disconnectWallet = safeDisconnect;
+      window.connectWalletPreferred = connectWallet;
+    }
+  }, [setShowWalletModal, safeDisconnect, connectWallet]);
 
   // Compatibility functions (mapped to connectWallet)
   const connectViaMetamask = connectWallet;

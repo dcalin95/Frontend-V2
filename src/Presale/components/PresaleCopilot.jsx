@@ -121,7 +121,12 @@ const PresaleCopilot = ({
     return selectedChain === "fiat" || ["STRIPE", "MOONPAY", "TRANSAK", "NOWPAY"].includes(t);
   }, [selectedChain, selectedToken]);
 
-  const isEvmFlow = selectedChain === "evm" && !isFiat;
+  const isSolana = useMemo(() => {
+    const t = String(selectedToken || "").toUpperCase();
+    return selectedChain === "solana" || ["SOL", "USDC-SOLANA", "USDT-SOLANA"].includes(t);
+  }, [selectedChain, selectedToken]);
+
+  const isEvmFlow = selectedChain === "evm" && !isFiat && !isSolana;
   const walletOk = !!walletAddress || !isEvmFlow;
   const chainOk = !isEvmFlow || Number(chainId) === desiredChainId;
   const connectedNetworkLabel = useMemo(() => getChainLabel(chainId), [chainId]);
@@ -188,12 +193,14 @@ const PresaleCopilot = ({
   const scrollToPayment = onScrollToPayment || defaultScrollToPayment;
 
   const headerSub = useMemo(() => {
+    // Dacă nu e wallet conectat, arată clar
+    if (!walletAddress) return "Not connected";
     const t = String(selectedToken || "").toUpperCase();
     const c = String(selectedChain || "").trim();
     if (!t && !c) return variant === "global" ? "Open Presale" : "—";
     if (t && c) return `${t} • ${c}`;
     return t || c || "—";
-  }, [selectedToken, selectedChain, variant]);
+  }, [selectedToken, selectedChain, variant, walletAddress]);
 
   const BACKEND_URL = useMemo(() => {
     return (process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com").toString().replace(/\/+$/, "");
@@ -563,7 +570,10 @@ const PresaleCopilot = ({
               <span className="pc-dot" />
               <span className="pc-label">
                 Network:{" "}
-                {connectedNetworkLabel ? (
+                {isSolana ? (
+                  // 🟣 SOLANA: No network check needed
+                  "Solana • OK"
+                ) : connectedNetworkLabel ? (
                   <>
                     connected to <strong>{connectedNetworkLabel}</strong>
                     {chainOk ? (
@@ -590,11 +600,30 @@ const PresaleCopilot = ({
 
           <div className="presale-copilot__actions">
             {!walletOk && (
-              <button type="button" className="pc-btn primary" onClick={connectWallet}>
+              <button type="button" className="pc-btn primary" onClick={() => {
+                // Deschide modalul de wallet (generic)
+                if (typeof window !== 'undefined' && window.openUnifiedWalletModal) {
+                  window.openUnifiedWalletModal();
+                } else {
+                  connectWallet();
+                }
+              }}>
                 Connect Wallet
               </button>
             )}
-            {!chainOk && (
+            {walletOk && (
+              <button type="button" className="pc-btn" onClick={() => {
+                if (typeof window !== 'undefined' && window.disconnectWallet) {
+                  window.disconnectWallet();
+                } else {
+                  // fallback
+                  connectWallet(); // va redeschide și poți deconecta din modal
+                }
+              }}>
+                Disconnect Wallet
+              </button>
+            )}
+            {!chainOk && !isSolana && (
               <button type="button" className="pc-btn" onClick={handleSwitch}>
                 Switch Network
               </button>

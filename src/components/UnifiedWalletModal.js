@@ -11,6 +11,7 @@ import solanaIcon from '../assets/icons/solana-logo.png'; // Import Solana logo
 import binanceLogo from '../assets/exchanges/binance.png'; // Import Binance logo
 import './UnifiedWalletModal.css';
 import './UnifiedWalletModal.mobile.css';
+import './UnifiedWalletModal.additions.css';
 
 const UnifiedWalletModal = () => {
   const { showWalletModal, setShowWalletModal, hardReset, markConnectIntent } = useWallet();
@@ -123,7 +124,7 @@ const UnifiedWalletModal = () => {
 
   // 🔓 Helper function to unlock connection state
   const unlockConnection = () => {
-    unlockConnection();
+    setIsConnecting(false);
     setConnectionLock(false);
   };
 
@@ -947,33 +948,57 @@ const UnifiedWalletModal = () => {
         console.log(`🔌 [Phantom] window.solana exists:`, typeof window !== 'undefined' && !!window.solana);
         console.log(`🔌 [Phantom] window.solana.isPhantom:`, typeof window !== 'undefined' && window.solana?.isPhantom);
         
-        // Check if already connected via window.solana
-        if (typeof window !== 'undefined' && window.solana?.isPhantom && window.solana.isConnected) {
-          console.log(`✅ [Phantom] Already connected via window.solana, getting publicKey...`);
-          try {
-            const publicKey = window.solana.publicKey;
-            if (publicKey) {
-              console.log(`✅ [Phantom] Already connected with publicKey:`, publicKey.toString());
-              
-              // Close modal and open wallet box
-        setTimeout(() => {
-            setShowWalletModal(false);
-            setSelectedNetwork(null);
-            unlockConnection();
-                window.dispatchEvent(new CustomEvent('openWalletBox'));
-              }, 500);
-              return;
-            }
-          } catch (e) {
-            console.warn(`⚠️ [Phantom] Error getting publicKey from existing connection:`, e);
+        // 🛑 CRITICAL: FORCE DISCONNECT ANY EVM CONNECTION FIRST!
+        // This prevents "Unsupported network" error when Phantom has EVM Support enabled
+        console.log(`🛡️ [Phantom] FORCE DISCONNECTING ALL EVM CONNECTIONS BEFORE SOLANA...`);
+        try {
+          // 1. Disconnect wagmi/EVM completely
+          if (isConnected || address) {
+            console.log(`🔌 [Phantom] Disconnecting EVM wallet first...`);
+            await disconnectEVM();
+            await new Promise(resolve => setTimeout(resolve, 500)); // Wait for disconnect
+            console.log(`✅ [Phantom] EVM disconnected`);
           }
+          
+          // 2. If Phantom EVM is active, disconnect it explicitly
+          if (typeof window !== 'undefined' && window.ethereum?.isPhantom) {
+            console.log(`🔌 [Phantom] Phantom EVM detected - forcing disconnect...`);
+            try {
+              // Force Phantom EVM to disconnect
+              if (window.ethereum.disconnect && typeof window.ethereum.disconnect === 'function') {
+                await window.ethereum.disconnect().catch(() => {});
+              }
+              // Clear any EVM state
+              if (window.ethereum._state) {
+                window.ethereum._state = {};
+              }
+              console.log(`✅ [Phantom] Phantom EVM disconnected/cleared`);
+            } catch (e) {
+              console.warn(`⚠️ [Phantom] Could not disconnect Phantom EVM:`, e);
+            }
+          }
+          
+          // 3. Clear any pending requests
+          sessionStorage.removeItem('wallet_pending_request');
+          sessionStorage.removeItem('wagmi.connector');
+          localStorage.removeItem('wagmi.recentConnectorId');
+          
+          console.log(`✅ [Phantom] All EVM connections cleared - ready for Solana connection`);
+          
+          // Wait a bit more to ensure everything is cleared
+          await new Promise(resolve => setTimeout(resolve, 300));
+        } catch (clearErr) {
+          console.warn(`⚠️ [Phantom] Error clearing EVM:`, clearErr);
         }
         
-        // Use DIRECT connection via window.solana - EXACTLY like handleSOLPayment.js (lines 18-25)
-        console.log("🟣 [Phantom] Starting connection (same as handleSOLPayment.js)...");
+        // 🔥 FIX: ALWAYS force connection - don't rely on isConnected!
+        // Phantom may be "connected" to another site but NOT to bits-ai.io
+        console.log("🟣 [Phantom] FORCING connection (ignoring isConnected state)...");
+        console.log("🟣 [Phantom] Current isConnected:", window.solana?.isConnected);
+        console.log("🟣 [Phantom] Current publicKey:", window.solana?.publicKey?.toString() || "null");
         
         if (!window.solana || !window.solana.isPhantom) {
-          const errorMsg = "⚠️ Phantom Wallet not detected.";
+          const errorMsg = "⚠️ Phantom Wallet not detected. Please install Phantom extension.";
           console.error(errorMsg);
           setError(errorMsg);
           unlockConnection();
@@ -981,25 +1006,40 @@ const UnifiedWalletModal = () => {
         }
         
         try {
-          // EXACT same code as handleSOLPayment.js line 24
-          console.log("🟣 [Phantom] Calling window.solana.connect()...");
-          const { publicKey } = await window.solana.connect();
-          console.log("👛 [Phantom] Connected! PublicKey:", publicKey.toBase58());
+          // 🟣 SIMPLE: Just call window.solana.connect()
+          console.log("🟣 [Phantom] Simple connect...");
           
-          // Close modal and open wallet box
+          const provider = window.phantom?.solana || window.solana;
+          if (!provider?.isPhantom) {
+            setError("Phantom not installed!");
+            unlockConnection();
+            return;
+          }
+          
+          const { publicKey } = await provider.connect();
+          console.log("✅ [Phantom] Connected:", publicKey?.toBase58());
+          
+          // Close modal
           setTimeout(() => {
             setShowWalletModal(false);
             setSelectedNetwork(null);
             unlockConnection();
-            window.dispatchEvent(new CustomEvent('openWalletBox'));
           }, 500);
           return;
         } catch (err) {
-          console.error("❌ [Phantom] Connection error:", err);
+          console.error("❌ [Phantom] SOLANA Connection error:", err);
           
           // Extract error message exactly like handleSOLPayment.js line 119
           const errorMsg = err?.message || "Connection failed";
           console.error("❌ [Phantom] Error message:", errorMsg);
+          
+          // Check for "Unsupported network" - this means Phantom EVM is interfering
+          if (errorMsg.includes('Unsupported') || errorMsg.includes('unsupported')) {
+            console.error("❌ [Phantom] UNSUPPORTED NETWORK ERROR - Phantom EVM is blocking Solana!");
+            setError(`⚠️ Phantom EVM Support is interfering with Solana connection!\n\n🔧 FIX:\n1. Open Phantom → Settings ⚙️\n2. Find "EVM Support" or "Ethereum"\n3. Toggle it OFF (disable)\n4. Refresh page (F5)\n5. Try again\n\nOR use Solflare for pure Solana.`);
+            unlockConnection();
+            return;
+          }
           
           // Check for user rejection
           if (errorMsg.includes('User rejected') || errorMsg.includes('user rejected') || 
@@ -1011,7 +1051,7 @@ const UnifiedWalletModal = () => {
             return;
           }
           
-          setError(`Phantom connection failed: ${errorMsg}`);
+          setError(`Phantom SOLANA connection failed: ${errorMsg}\n\nIf you see "Unsupported network", please disable Phantom EVM Support in settings.`);
           unlockConnection();
           return;
         }
@@ -1247,7 +1287,7 @@ const UnifiedWalletModal = () => {
                 <div className="network-info">
                   <div className="network-name">EVM Direct</div>
                   <div className="network-chains">MetaMask, Trust, Coinbase</div>
-                  <div className="network-chains">Rainbow, Binance</div>
+                  <div className="network-chains">Rabby, Binance, Phantom EVM</div>
                   <div 
                     className="network-tooltip"
                     onMouseEnter={(e) => {
@@ -1273,6 +1313,8 @@ const UnifiedWalletModal = () => {
                       </div>
                       <div className="tooltip-body">
                         Connect directly to popular EVM wallets. Supports BSC, Ethereum, Polygon, Arbitrum, Optimism, Base, and Avalanche. Auto-switches to BSC after connection.
+                        <br/><br/>
+                        <strong>⚠️ Phantom EVM:</strong> Use this for Phantom's Ethereum/BSC support (window.ethereum.isPhantom).
                       </div>
                     </div>
                   </div>
@@ -1289,7 +1331,7 @@ const UnifiedWalletModal = () => {
                 </div>
                 <div className="network-info">
                   <div className="network-name">Solana Direct</div>
-                  <div className="network-chains">Phantom, Solflare</div>
+                  <div className="network-chains">Phantom Solana, Solflare</div>
                   <div className="network-chains">Torus, Nightly, Math</div>
                   <div 
                     className="network-tooltip"
@@ -1316,6 +1358,8 @@ const UnifiedWalletModal = () => {
                       </div>
                       <div className="tooltip-body">
                         Connect directly to Solana wallets. Supports SPL tokens, Solana Pay, and fast transactions with low fees on Solana Mainnet.
+                        <br/><br/>
+                        <strong>⚠️ Phantom Solana:</strong> Use this for Phantom's Solana support (window.solana.isPhantom).
                       </div>
                     </div>
                   </div>
@@ -1450,73 +1494,94 @@ const UnifiedWalletModal = () => {
                   icon: w.adapter.icon
                 })));
                 
-                return solanaWallets
-                  .filter(w => {
-                    // Only show real Solana wallets (Phantom, Solflare, etc.)
-                    // Exclude EVM wallets that might appear in the list
-                    const walletName = w.adapter.name.toLowerCase();
-                    
-                    // List of known Solana wallets
-                    const solanaWalletNames = ['phantom', 'solflare', 'solana', 'torus', 'nightly', 'mathwallet', 'coin98', 'clover'];
-                    
-                    // List of EVM wallets to exclude
-                    const evmWalletNames = ['trust', 'metamask', 'coinbase', 'rainbow', 'binance'];
-                    
-                    const isSolanaWallet = solanaWalletNames.some(name => walletName.includes(name));
-                    const isEvmWallet = evmWalletNames.some(name => walletName.includes(name));
-                    
-                    // For Phantom, also check window.solana directly if readyState is NotDetected
-                    if (walletName.includes('phantom')) {
-                      const hasPhantom = typeof window !== 'undefined' && (window.solana?.isPhantom || window.phantom?.solana);
-                      if (hasPhantom) {
-                        console.log(`✅ [Solana] Phantom detected directly via window.solana`);
-                        return true; // Show Phantom even if readyState is NotDetected
+                // Filter Solana wallets
+                const filterSolanaWallets = (w) => {
+                  const walletName = w.adapter.name.toLowerCase();
+                  const solanaWalletNames = ['phantom', 'solflare', 'solana', 'torus', 'nightly', 'mathwallet', 'coin98', 'clover'];
+                  const evmWalletNames = ['trust', 'metamask', 'coinbase', 'rainbow', 'binance'];
+                  
+                  const isSolanaWallet = solanaWalletNames.some(name => walletName.includes(name));
+                  const isEvmWallet = evmWalletNames.some(name => walletName.includes(name));
+                  
+                  // For Phantom, also check window.solana directly if readyState is NotDetected
+                  if (walletName.includes('phantom')) {
+                    const hasPhantom = typeof window !== 'undefined' && (window.solana?.isPhantom || window.phantom?.solana);
+                    if (hasPhantom) {
+                      console.log(`✅ [Solana] Phantom detected directly via window.solana`);
+                      return true; // Show Phantom even if readyState is NotDetected
+                    }
+                  }
+                  
+                  // For Clover, always show it even if NotDetected (some wallets have detection issues)
+                  if (walletName.includes('clover')) {
+                    console.log(`✅ [Solana] Showing Clover wallet (detection may be unreliable, but user can try)`);
+                    return isSolanaWallet && !isEvmWallet; // Show Clover regardless of readyState
+                  }
+                  
+                  // Only show if it's a Solana wallet and not an EVM wallet
+                  const shouldShow = (w.readyState === 'Installed' || w.readyState === 'Loadable' || w.readyState === 'NotDetected') && 
+                                   isSolanaWallet && !isEvmWallet;
+                  
+                  if (shouldShow) {
+                    console.log(`✅ [Solana] Showing wallet: ${w.adapter.name} (${w.readyState})`);
+                  }
+                  
+                  return shouldShow;
+                };
+                
+                // Separate wallets into INSTALLED and NOT INSTALLED
+                const allFilteredWallets = solanaWallets.filter(filterSolanaWallets);
+                const installedWallets = allFilteredWallets.filter(w => w.readyState === 'Installed');
+                const otherWallets = allFilteredWallets.filter(w => w.readyState !== 'Installed');
+                
+                console.log(`🟢 [Solana] INSTALLED wallets: ${installedWallets.length}`, installedWallets.map(w => w.adapter.name));
+                console.log(`📱 [Solana] OTHER wallets: ${otherWallets.length}`, otherWallets.map(w => w.adapter.name));
+                
+                // Render wallet button
+                const renderWalletButton = (wallet) => (
+                  <button 
+                    key={wallet.adapter.name}
+                    className={`wallet-option ${wallet.readyState === 'Installed' ? 'wallet-installed' : ''}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      console.log(`🔌 [Solana] Clicked on wallet: ${wallet.adapter.name}`);
+                      if (selectedNetwork !== "SOLANA") {
+                        console.error(`❌ [Solana] Wrong network selected: ${selectedNetwork}`);
+                        setError('Please select Solana network first');
+                        return;
                       }
-                    }
-                    
-                    // For Clover, always show it even if NotDetected (some wallets have detection issues)
-                    // User can try to connect and we'll show a clear error if extension is not installed
-                    if (walletName.includes('clover')) {
-                      console.log(`✅ [Solana] Showing Clover wallet (detection may be unreliable, but user can try)`);
-                      return isSolanaWallet && !isEvmWallet; // Show Clover regardless of readyState
-                    }
-                    
-                    // Only show if it's a Solana wallet and not an EVM wallet
-                    // Accept Installed, Loadable, or NotDetected (some wallets may not be detected correctly)
-                    const shouldShow = (w.readyState === 'Installed' || w.readyState === 'Loadable' || w.readyState === 'NotDetected') && 
-                                     isSolanaWallet && !isEvmWallet;
-                    
-                    if (shouldShow) {
-                      console.log(`✅ [Solana] Showing wallet: ${w.adapter.name} (${w.readyState})`);
-                    }
-                    
-                    return shouldShow;
-                  });
-              })()
-                .map((wallet) => (
-                <button 
-                  key={wallet.adapter.name}
-                  className="wallet-option" 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log(`🔌 [Solana] Clicked on wallet: ${wallet.adapter.name}`);
-                    if (selectedNetwork !== "SOLANA") {
-                      console.error(`❌ [Solana] Wrong network selected: ${selectedNetwork}`);
-                      setError('Please select Solana network first');
-                      return;
-                    }
-                    if (isConnecting) {
-                      console.warn(`⚠️ [Solana] Already connecting, ignoring click`);
-                      return;
-                    }
-                    handleSolanaConnect(wallet.adapter.name);
-                  }}
-                >
-                  <img src={wallet.adapter.icon} alt={wallet.adapter.name} />
-                  <span>{wallet.adapter.name}</span>
-                </button>
-              ))}
+                      if (isConnecting) {
+                        console.warn(`⚠️ [Solana] Already connecting, ignoring click`);
+                        return;
+                      }
+                      handleSolanaConnect(wallet.adapter.name);
+                    }}
+                  >
+                    <img src={wallet.adapter.icon} alt={wallet.adapter.name} />
+                    <span>{wallet.adapter.name}</span>
+                    {wallet.readyState === 'Installed' && <span className="wallet-badge">🟢 Ready</span>}
+                  </button>
+                );
+                
+                return (
+                  <>
+                    {installedWallets.length > 0 && (
+                      <>
+                        <div className="wallet-section-title">🟢 INSTALLED</div>
+                        {installedWallets.map(renderWalletButton)}
+                      </>
+                    )}
+                    {otherWallets.length > 0 && (
+                      <>
+                        {installedWallets.length > 0 && <div className="wallet-section-divider"></div>}
+                        <div className="wallet-section-title">📱 ALL WALLETS</div>
+                        {otherWallets.map(renderWalletButton)}
+                      </>
+                    )}
+                  </>
+                );
+              })()}
               {solanaWallets
                 .filter(w => {
                   const walletName = w.adapter.name.toLowerCase();

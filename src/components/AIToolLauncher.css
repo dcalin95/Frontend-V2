@@ -297,7 +297,7 @@
    Buton compact cu doar logo BITS
    ============================================= */
 body.mode-mobile .ai-launcher {
-  bottom: 24px !important;
+  bottom: 20px !important;
   right: 14px !important; /* Aligned with other buttons */
 }
 

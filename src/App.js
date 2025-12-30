@@ -24,6 +24,10 @@ import HamburgerButton from "./HamburgerButton/HamburgerButton";
 import ThemeChecker from "./components/ThemeChecker";
 import GlobalPresaleCopilot from "./components/GlobalPresaleCopilot";
 import MobileTelegramButton from "./components/MobileTelegramButton"; // 📱 Mobile-only Telegram button
+import ScrollToTop from "./components/ScrollToTop"; // ✅ Scroll to top on navigation
+import USBlocker from "./components/USBlock/USBlocker"; // 🚫 US Geo-Blocking
+import USBlockedPage from "./components/USBlock/USBlockedPage"; // 🚫 US Blocked Page
+import GeoNoticeBanner from "./components/GeoNoticeBanner"; // 🌍 Global Geo-Notice Banner
 
 // 🔄 State/Loading
 import CosmicLoader from "./components/DEX/CosmicLoader";
@@ -146,6 +150,7 @@ const MindMirror = lazyWithRetry(() => import("./mindmirror/MindMirrorDashboard"
 const ThankYouPage = lazyWithRetry(() => import("./components/ThankYouPage"));
 const RegisteredUsers = lazyWithRetry(() => import("./components/Admin/RegisteredUsers")); // Import nou
 const SwapPage = lazyWithRetry(() => import("./components/DEX/SwapPage")); // 🔄 Import DEX Demo
+const SwapPageMobile = lazyWithRetry(() => import("./components/DEX/SwapPageMobile")); // 📱 Import DEX Mobile
 
 
 // 🧠 Main Layout Component
@@ -184,7 +189,7 @@ const MainLayout = ({ children, isMobile, menuOpen, setMenuOpen, headerMenuOpen,
         isMenuOpen={headerMenuOpen} 
         toggleMenu={toggleHeaderMenu} 
       />
-      {location.pathname !== "/presale" && <BoostedBanner />}
+      <BoostedBanner />
       <div className="header-spacer"></div>
       <HeaderWalletInfo />
       <ThemeChecker />
@@ -289,74 +294,88 @@ const App = () => {
       {renderToastContainer()}
 
       <Router>
+        <ScrollToTop /> {/* ✅ Scroll to top on every route change */}
         <GoogleAnalyticsWrapper>
           <ErrorBoundary>
                     <Suspense fallback={<CosmicLoader />}>
               <Routes>
+                {/* 🚫 ===== US BLOCKED PAGE (NO GEO-BLOCKING APPLIED HERE) ===== */}
+                <Route path="/us-blocked" element={<USBlockedPage />} />
+
                 {/* ===== PAGINI STANDALONE (FĂRĂ HEADER/FOOTER/SIDEBAR) ===== */}
                 <Route
                   path="/ai-marketing"
                   element={
-                    <AIStandaloneLayout
-                      title="AI Marketing Suite"
-                      description="Automated campaigns, analytics, and real-time insights for growth teams."
-                    >
-                      <MarketingDashboard standalone />
-                    </AIStandaloneLayout>
+                    <USBlocker>
+                      <AIStandaloneLayout
+                        title="AI Marketing Suite"
+                        description="Automated campaigns, analytics, and real-time insights for growth teams."
+                      >
+                        <MarketingDashboard standalone />
+                      </AIStandaloneLayout>
+                    </USBlocker>
                   }
                 />
                 <Route
                   path="/ai-crypto"
                   element={
-                    <AIStandaloneLayout
-                      title="AI Crypto Intelligence"
-                      description="Live market monitoring, predictive analytics, and trading signals."
-                    >
-                      <CryptoAnalyticsDashboard standalone />
-                    </AIStandaloneLayout>
+                    <USBlocker>
+                      <AIStandaloneLayout
+                        title="AI Crypto Intelligence"
+                        description="Live market monitoring, predictive analytics, and trading signals."
+                      >
+                        <CryptoAnalyticsDashboard standalone />
+                      </AIStandaloneLayout>
+                    </USBlocker>
                   }
                 />
                 <Route
                   path="/ai-portfolio-analytics"
                   element={
-                    <AIStandaloneLayout
-                      title="AI Portfolio Analytics"
-                      description="Advanced neural analytics, simulations, and strategy insights."
-                    >
-                      <AIPortfolioAnalyticsRefactored />
-                    </AIStandaloneLayout>
+                    <USBlocker>
+                      <AIStandaloneLayout
+                        title="AI Portfolio Analytics"
+                        description="Advanced neural analytics, simulations, and strategy insights."
+                      >
+                        <AIPortfolioAnalyticsRefactored />
+                      </AIStandaloneLayout>
+                    </USBlocker>
                   }
                 />
                 <Route
                   path="/ai-portfolio-standalone"
                   element={
-                    <AIStandaloneLayout
-                      title="AI Portfolio Manager"
-                      description="Multi-asset optimization, risk controls, and allocation recommendations."
-                    >
-                      <PortfolioManager standalone />
-                    </AIStandaloneLayout>
+                    <USBlocker>
+                      <AIStandaloneLayout
+                        title="AI Portfolio Manager"
+                        description="Multi-asset optimization, risk controls, and allocation recommendations."
+                      >
+                        <PortfolioManager standalone />
+                      </AIStandaloneLayout>
+                    </USBlocker>
                   }
                 />
                 <Route
                   path="/accessibility"
                   element={
-                    <AIStandaloneLayout
-                      title="AI Accessibility Hub"
-                      description="Adaptive UI settings, behavior insights, and personalized recommendations."
-                    >
-                      <AccessibilityPanel
-                        isOpen
-                        standalone
-                        onClose={() => {
-                          if (window.history.length > 1) {
-                            window.history.back();
-                          } else {
-                            window.location.href = '/';
-                          }
-                        }}
-                      />
-                    </AIStandaloneLayout>
+                    <USBlocker>
+                      <AIStandaloneLayout
+                        title="AI Accessibility Hub"
+                        description="Adaptive UI settings, behavior insights, and personalized recommendations."
+                      >
+                        <AccessibilityPanel
+                          isOpen
+                          standalone
+                          onClose={() => {
+                            if (window.history.length > 1) {
+                              window.history.back();
+                            } else {
+                              window.location.href = '/';
+                            }
+                          }}
+                        />
+                      </AIStandaloneLayout>
+                    </USBlocker>
                   }
                 />
 
@@ -364,18 +383,19 @@ const App = () => {
                 <Route 
                   path="/*" 
                   element={
-                    <MobileUI>
-                      <MainLayout
-                        isMobile={isMobile}
-                        menuOpen={menuOpen}
-                        setMenuOpen={setMenuOpen}
-                        headerMenuOpen={headerMenuOpen}
-                        setHeaderMenuOpen={setHeaderMenuOpen}
-                        currentSection={currentSection}
-                        handleSidebarSelect={handleSidebarSelect}
-                        toggleSidebarMenu={toggleSidebarMenu}
-                        toggleHeaderMenu={toggleHeaderMenu}
-                      >
+                    <USBlocker>
+                      <MobileUI>
+                        <MainLayout
+                          isMobile={isMobile}
+                          menuOpen={menuOpen}
+                          setMenuOpen={setMenuOpen}
+                          headerMenuOpen={headerMenuOpen}
+                          setHeaderMenuOpen={setHeaderMenuOpen}
+                          currentSection={currentSection}
+                          handleSidebarSelect={handleSidebarSelect}
+                          toggleSidebarMenu={toggleSidebarMenu}
+                          toggleHeaderMenu={toggleHeaderMenu}
+                        >
                           <Routes>
                       <Route path="/" element={<Home />} />
                       <Route path="/home" element={<Home />} />
@@ -436,7 +456,7 @@ const App = () => {
                       <Route path="/ai-hub/smart-audit" element={<SmartAudit />} />
                       <Route path="/ai-hub/gem-hunter" element={<GemHunter />} />
                       <Route path="/ai-hub/admin-neural" element={<AdminNeuralLink />} />
-                      <Route path="/dex" element={<SwapPage />} /> {/* 🔄 Rută DEX */}
+                      <Route path="/dex" element={isMobile ? <SwapPageMobile /> : <SwapPage />} /> {/* 🔄 Rută DEX */}
                       <Route
                         path="/test-payment"
                         element={
@@ -458,6 +478,7 @@ const App = () => {
                       {/* Global Presale Copilot (minimized across the whole UI) */}
                       <GlobalPresaleCopilot />
                     </MobileUI>
+                    </USBlocker>
                   }
                 />
               </Routes>

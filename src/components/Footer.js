@@ -109,7 +109,7 @@ const Footer = () => {
       </div>
 
       {/* 🕵️ User Device Info Panel - Desktop only (Mobile has it in MobileUI.js) */}
-      <div className="desktop-device-info" style={{marginTop: '30px', display: 'flex', justifyContent: 'center'}}>
+      <div className="desktop-device-info desktop-only" style={{marginTop: '30px', display: 'flex', justifyContent: 'center'}}>
         <UserDeviceInfo className="footer-mode" />
       </div>
     </footer>

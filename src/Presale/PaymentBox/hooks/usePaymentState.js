@@ -13,7 +13,10 @@ const usePaymentState = ({
   tokenPrices,
   pricesLoading,
 }) => {
-  const { walletAddress, connectWallet, signer, provider } = useContext(WalletContext);
+  const { walletAddress, connectWallet: _connectWallet, signer, provider } = useContext(WalletContext);
+  
+  // 🎯 Wrapper pentru connectWallet care pasează selectedChain (nu selectedToken!)
+  const connectWallet = async () => await _connectWallet(selectedChain);
 
   // 🔄 Loading States
   const [isProcessingTransaction, setIsProcessingTransaction] = useState(false);
@@ -38,13 +41,14 @@ const usePaymentState = ({
 
   // 🛡️ Safe Amount Validation
   const safeAmountPay = useMemo(() => {
-    if (isNaN(amountPay) || amountPay === undefined || amountPay === null) {
+    const numAmount = parseFloat(amountPay);
+    if (!amountPay || amountPay === "" || isNaN(numAmount) || numAmount === undefined || numAmount === null || numAmount <= 0) {
       if (selectedToken === 'SOL') return 0.001;
       if (selectedToken === 'BTCB') return 0.0001;
       if (selectedToken === 'USDC-Solana') return 0.01;
       return 0.01;
     }
-    return amountPay;
+    return numAmount;
   }, [amountPay, selectedToken]);
 
   // 🧮 BITS Calculation

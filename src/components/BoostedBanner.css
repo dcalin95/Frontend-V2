@@ -385,21 +385,13 @@
     background: transparent;
     box-shadow: none;
     
-    /* 🆕 Auto-hide on Mobile */
-    animation: appearBoostedMobile 0.5s ease-out 0.5s forwards, fadeOutMobile 0.5s ease-in 15s forwards;
-    opacity: 0; /* Start hidden, appear, then fade out */
+    /* ✅ STAY VISIBLE - No auto-hide */
+    animation: appearBoostedMobile 0.5s ease-out 0.5s forwards;
+    opacity: 0; /* Start hidden, then appear and STAY */
   }
 
   @keyframes appearBoostedMobile {
     to { opacity: 1; }
-  }
-
-  @keyframes fadeOutMobile {
-    to { 
-      opacity: 0; 
-      visibility: hidden; 
-      pointer-events: none;
-    }
   }
 
   /* Când meniul mobil este deschis, împinge bannerul în fluxul paginii */

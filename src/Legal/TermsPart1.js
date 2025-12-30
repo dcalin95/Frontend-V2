@@ -14,10 +14,19 @@ Purchasing $BITS tokens involves risks, and participants should be prepared to b
 Legal Disclaimer:
 BitSwapDEX AI is analyzing the legal and regulatory implications of $BITS tokens. As a result, the functionality of $BITS tokens may be updated to ensure compliance with applicable regulations. Any changes will be announced on the website, and it is your responsibility to stay informed.
 
-Prohibited Jurisdictions:
-$BITS tokens cannot be purchased or sold in jurisdictions where such activities are restricted or prohibited, including but not limited to the United States, Canada, and China. You are responsible for complying with local laws and ensuring that participation is allowed in your region.
+Prohibited Jurisdictions & Geographic Restrictions:
+$BITS tokens cannot be purchased, sold, or accessed in jurisdictions where such activities are restricted or prohibited. This includes, but is not limited to, the United States of America (including all U.S. territories and possessions), Canada, China, North Korea, Iran, Syria, and Cuba. 
 
-If you travel to a prohibited jurisdiction, you acknowledge that our services may be unavailable or restricted.
+By accessing this website and participating in the Token Sale, you represent and warrant that:
+(a) You are NOT a U.S. Person as defined by U.S. securities laws;
+(b) You are NOT a citizen, resident, or tax resident of any prohibited jurisdiction;
+(c) You are NOT accessing this website from a prohibited jurisdiction;
+(d) You will NOT use VPN, proxy, or any other means to circumvent geographic restrictions;
+(e) You understand that the Company employs geo-blocking technology to enforce these restrictions.
+
+"U.S. Person" includes but is not limited to: (i) any natural person resident in the United States; (ii) any partnership or corporation organized or incorporated under U.S. laws; (iii) any estate of which any executor or administrator is a U.S. Person; (iv) any trust of which any trustee is a U.S. Person; (v) any agency or branch of a foreign entity located in the United States; (vi) any non-discretionary account held by a dealer or fiduciary organized, incorporated, or resident in the United States; (vii) U.S. citizens living abroad; and (viii) Green Card holders regardless of location.
+
+You are solely responsible for complying with local laws and ensuring that participation is allowed in your region. If you travel to or relocate to a prohibited jurisdiction, you acknowledge that our services will be unavailable or restricted, and you may be automatically blocked from accessing the platform.
 These General Terms & Conditions (hereinafter referred to as the "Terms"), including all accompanying documents, constitute a legally binding agreement between Bitswapdex LAB, a company incorporated under the laws of Seychelles, with company number 250661, and registered address: Suite 1, Second Floor, Sound & Vision House, Rue Pierre De Possession, Victoria, Mahe, Seychelles ("Company," "Bitswapdex LABS," "we," "us"). The Company owns the website available on the Internet at https://bits-ai.io/, where $BITS tokens are offered during the Token Sale. These Terms also apply to any and all Participants, as defined in the Definitions clause.
 
 By using the website and/or purchasing $BITS tokens, the respective Participant confirms that they have fully read, understood, and irrevocably accepted these Terms. If any Participant does not agree with these Terms, either in whole or in part, such a Participant should refrain from purchasing $BITS tokens.

@@ -87,8 +87,14 @@ const MOCK_BALANCES = {
 };
 
 const SwapPage = () => {
-  const isMobileDetected = useDeviceDetect(); // Width-based detection
-  const [isMobile, setIsMobile] = useState(isMobileDetected); // Combined state
+  // ✅ INITIALIZE isMobile directly with width check (no delay)
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      return /android/i.test(userAgent) || /iPad|iPhone|iPod/.test(userAgent) || window.innerWidth <= 768;
+    }
+    return false;
+  });
   
   const [activeTab, setActiveTab] = useState('swap');
   const [isLoading, setIsLoading] = useState(true); // Loading State
@@ -132,20 +138,15 @@ const SwapPage = () => {
     return saved ? JSON.parse(saved) : [];
   });
 
-  // Force Mobile Check via User Agent as fallback
+  // Update mobile state on resize
   useEffect(() => {
-      const checkMobileUserAgent = () => {
+      const handleResize = () => {
           const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-          if (/android/i.test(userAgent) || /iPad|iPhone|iPod/.test(userAgent) || window.innerWidth <= 768) {
-              setIsMobile(true);
-          } else {
-              setIsMobile(isMobileDetected);
-          }
+          setIsMobile(/android/i.test(userAgent) || /iPad|iPhone|iPod/.test(userAgent) || window.innerWidth <= 768);
       };
-      checkMobileUserAgent();
-      window.addEventListener('resize', checkMobileUserAgent);
-      return () => window.removeEventListener('resize', checkMobileUserAgent);
-  }, [isMobileDetected]);
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Simulate AI Initialization (Cinematic 10s Intro)
   useEffect(() => {
@@ -333,6 +334,28 @@ const SwapPage = () => {
       return <CosmicLoader />;
   }
 
+  // 📱 MOBILE VIEW - Render SwapPageMobile
+  if (isMobile) {
+    return (
+      <SwapPageMobile
+        accountMode={accountMode}
+        setAccountMode={setAccountMode}
+        tokens={tokens}
+        balance={balance}
+        positions={positions}
+        payToken={payToken}
+        setPayToken={setPayToken}
+        receiveToken={receiveToken}
+        setReceiveToken={setReceiveToken}
+        handleSwapExecution={handleSwapExecution}
+        handleClosePosition={handleClosePosition}
+        balances={accountMode === 'DEMO' ? MOCK_BALANCES : realBalances}
+        onBalanceRefresh={loadRealBalances}
+      />
+    );
+  }
+
+  // 💻 DESKTOP VIEW
   return (
     <div className="dex-page-container">
       <div className="stagger-fade-in stagger-1" style={{height: '100%'}}>

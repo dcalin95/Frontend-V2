@@ -77,6 +77,76 @@ const PresalePage = () => {
     } catch (_) {}
   }, []);
 
+  // ⏱️ TikTok Time-Based Engagement Tracking - 3 Nivele (45s, 90s, 150s)
+  useEffect(() => {
+    const startTime = Date.now();
+    let tracked45 = false;
+    let tracked90 = false;
+    let tracked150 = false;
+
+    const timer45 = setTimeout(() => {
+      if (!tracked45) {
+        try {
+          trackTikTokEvent('Quick_Visitor', { 
+            page: 'presale',
+            time_spent_seconds: 45,
+            content_type: 'presale_engagement'
+          });
+          tracked45 = true;
+          console.log('✅ [TikTok] Quick_Visitor (45s) tracked');
+        } catch (_) {}
+      }
+    }, 45000); // 45 secunde
+
+    const timer90 = setTimeout(() => {
+      if (!tracked90) {
+        try {
+          trackTikTokEvent('Engaged_User', { 
+            page: 'presale',
+            time_spent_seconds: 90,
+            content_type: 'presale_engagement',
+            value: 1 // Valoare symbolică pentru optimizare CPA
+          });
+          tracked90 = true;
+          console.log('🎯 [TikTok] Engaged_User (90s) tracked - CPA CONVERSION!');
+        } catch (_) {}
+      }
+    }, 90000); // 90 secunde
+
+    const timer150 = setTimeout(() => {
+      if (!tracked150) {
+        try {
+          trackTikTokEvent('Hot_Lead', { 
+            page: 'presale',
+            time_spent_seconds: 150,
+            content_type: 'presale_engagement',
+            value: 3 // Valoare mai mare pentru lead-uri hot
+          });
+          tracked150 = true;
+          console.log('💎 [TikTok] Hot_Lead (150s) tracked - HIGH INTENT!');
+        } catch (_) {}
+      }
+    }, 150000); // 150 secunde (2:30)
+
+    // Cleanup: anulează timer-ele dacă utilizatorul părăsește pagina
+    return () => {
+      clearTimeout(timer45);
+      clearTimeout(timer90);
+      clearTimeout(timer150);
+      
+      // Track timpul total petrecut la exit (pentru analytics)
+      const totalTime = Math.floor((Date.now() - startTime) / 1000);
+      if (totalTime >= 10) {
+        try {
+          trackTikTokEvent('Page_Exit', {
+            page: 'presale',
+            total_time_seconds: totalTime
+          });
+        } catch (_) {}
+      }
+    };
+  }, []);
+
   // 🧪 Dev-only badge pentru a confirma că pixelul este disponibil
   useEffect(() => {
     if (process.env.NODE_ENV !== 'development') return;

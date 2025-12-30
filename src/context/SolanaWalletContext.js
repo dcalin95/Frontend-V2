@@ -47,14 +47,8 @@ export const SolanaProvider = ({ children }) => {
   // RPC endpoint
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
   
-  // 🔌 Check if "Remember wallet" is enabled to allow auto-connect
-  const shouldAutoConnect = useMemo(() => {
-    try {
-      return localStorage.getItem('bits_remember_wallet') === 'true';
-    } catch (_) {
-      return false;
-    }
-  }, []);
+  // 🛑 DISABLED: Never auto-connect - prevents Phantom from opening on refresh
+  const shouldAutoConnect = false;
 
   // Configure supported Solana wallets
   const wallets = useMemo(

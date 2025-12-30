@@ -48,6 +48,8 @@ const SwapPageMobile = ({
 }) => {
   const [activeTab, setActiveTab] = useState('swap'); // Main tab state
   const [isLoading, setIsLoading] = useState(true);
+  const [showWatchlist, setShowWatchlist] = useState(false); // ✅ NEW: Watchlist drawer state
+  const [showBalanceDetails, setShowBalanceDetails] = useState(false); // ✅ NEW: Balance details state
   
   // Tab state monitoring
   useEffect(() => {
@@ -215,91 +217,57 @@ const SwapPageMobile = ({
       );
     }
 
-    // Feature cards for unimplemented tabs
-    const getFeatureInfo = () => {
-      switch(activeTab) {
-        case 'dashboard': return { icon: '📊', title: 'Dashboard', desc: 'View your portfolio stats, P&L, and performance analytics.' };
-        case 'pools': return { icon: '💧', title: 'Liquidity Pools', desc: 'Provide liquidity and earn fees from trading pairs.' };
-        case 'stake': return { icon: '🔒', title: 'Staking Vault', desc: 'Stake BITS tokens and earn passive rewards.' };
-        case 'vote': return { icon: '⚖️', title: 'Governance', desc: 'Vote on protocol proposals and shape the future of BitSwap.' };
-        case 'ai': return { icon: '🤖', title: 'AI Intelligence', desc: 'AI-powered trading signals and market insights.' };
-        default: return { icon: '📱', title: 'Coming Soon', desc: 'This feature is being optimized for mobile.' };
-      }
-    };
-
-    const info = getFeatureInfo();
-
-    return (
-      <div style={{ 
-        flex: 1, 
-        display: 'flex', 
-        flexDirection: 'column',
-        alignItems: 'center', 
-        justifyContent: 'center', 
-        fontFamily: "'Roboto Mono', 'Courier New', monospace",
-        padding: '32px 24px',
-        textAlign: 'center',
-        minHeight: 'calc(100vh - 220px)',
-        background: 'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 255, 163, 0.05) 100%)'
-      }}>
-        <div style={{
-          fontSize: '4rem',
-          marginBottom: '24px',
-          filter: 'drop-shadow(0 0 20px rgba(0, 255, 163, 0.3))'
-        }}>
-          {info.icon}
+    // ✅ DASHBOARD TAB - Full Overview
+    if (activeTab === 'dashboard') {
+      return (
+        <div style={{ padding: '0 16px', paddingBottom: '20px' }}>
+          <DashboardOverview 
+            positions={finalPositions}
+            balance={finalBalance}
+            onClosePosition={handleClosePosition}
+          />
         </div>
-        
-        <h2 style={{
-          color: '#00FFA3',
-          fontSize: '1.5rem',
-          fontWeight: '700',
-          marginBottom: '12px',
-          textShadow: '0 0 20px rgba(0, 255, 163, 0.5)'
-        }}>
-          {info.title}
-        </h2>
-        
-        <p style={{
-          color: '#8b9bb4',
-          fontSize: '0.95rem',
-          lineHeight: '1.6',
-          marginBottom: '24px',
-          maxWidth: '300px'
-        }}>
-          {info.desc}
-        </p>
-        
-        <div style={{
-          padding: '12px 24px',
-          background: 'rgba(0, 255, 163, 0.1)',
-          border: '1px solid rgba(0, 255, 163, 0.3)',
-          borderRadius: '12px',
-          color: '#00FFA3',
-          fontSize: '0.85rem',
-          fontWeight: '600'
-        }}>
-          Available on Desktop
+      );
+    }
+
+    // ✅ POOLS TAB - Liquidity Pools
+    if (activeTab === 'pools') {
+      return (
+        <div style={{ padding: '0 16px', paddingBottom: '20px' }}>
+          <LiquidityPools />
         </div>
-        
-        <a 
-          href="/#/dex" 
-          style={{
-            marginTop: '20px',
-            padding: '10px 20px',
-            background: 'rgba(255, 255, 255, 0.05)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: '8px',
-            color: 'rgba(255, 255, 255, 0.7)',
-            fontSize: '0.9rem',
-            textDecoration: 'none',
-            display: 'inline-block'
-          }}
-        >
-          ← Back to Swap
-        </a>
-      </div>
-    );
+      );
+    }
+
+    // ✅ STAKE TAB - Staking Vault
+    if (activeTab === 'stake') {
+      return (
+        <div style={{ padding: '0 16px', paddingBottom: '20px' }}>
+          <StakeVault layout="mobile" />
+        </div>
+      );
+    }
+
+    // ✅ VOTE TAB - Governance Center
+    if (activeTab === 'vote') {
+      return (
+        <div style={{ padding: '0 16px', paddingBottom: '20px' }}>
+          <VoteCenter />
+        </div>
+      );
+    }
+
+    // ✅ AI TAB - AI Intelligence
+    if (activeTab === 'ai') {
+      return (
+        <div style={{ padding: '0 16px', paddingBottom: '20px' }}>
+          <AIIntelligencePage />
+        </div>
+      );
+    }
+
+    // Default fallback
+    return null;
   };
 
   return (
@@ -335,8 +303,12 @@ const SwapPageMobile = ({
               </div>
           </div>
           
-          {/* CYBER WALLET BADGE */}
-          <div className="dex-cyber-wallet-badge">
+          {/* CYBER WALLET BADGE - CLICKABLE FOR DETAILS */}
+          <div 
+            className="dex-cyber-wallet-badge" 
+            onClick={() => setShowBalanceDetails(!showBalanceDetails)}
+            style={{ cursor: 'pointer' }}
+          >
                <div className="wallet-icon-wrapper">
                    <Wallet size={14} color="#000" fill="#00FFA3" />
                </div>
@@ -348,6 +320,36 @@ const SwapPageMobile = ({
           </div>
       </header>
 
+      {/* ✅ NEW: BALANCE DETAILS DROPDOWN */}
+      {showBalanceDetails && (
+        <div style={{
+          background: 'rgba(0, 10, 20, 0.95)',
+          borderBottom: '1px solid rgba(0, 255, 163, 0.3)',
+          padding: '16px',
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '12px',
+          fontSize: '0.85rem'
+        }}>
+          <div>
+            <div style={{ color: '#8b9bb4', marginBottom: '4px' }}>Balance:</div>
+            <div style={{ color: '#00FFA3', fontWeight: 'bold' }}>${finalBalance.toLocaleString()}</div>
+          </div>
+          <div>
+            <div style={{ color: '#8b9bb4', marginBottom: '4px' }}>Equity:</div>
+            <div style={{ color: '#00FFA3', fontWeight: 'bold' }}>${finalBalance.toLocaleString()}</div>
+          </div>
+          <div>
+            <div style={{ color: '#8b9bb4', marginBottom: '4px' }}>Margin:</div>
+            <div style={{ color: '#00FFA3', fontWeight: 'bold' }}>$0.00</div>
+          </div>
+          <div>
+            <div style={{ color: '#8b9bb4', marginBottom: '4px' }}>Profit:</div>
+            <div style={{ color: '#00FFA3', fontWeight: 'bold' }}>+$0.00</div>
+          </div>
+        </div>
+      )}
+
       {/* 🎯 NEW: Binance-Style Tab Selector */}
       <div style={{
         display: 'flex',
@@ -357,51 +359,105 @@ const SwapPageMobile = ({
         borderBottom: '2px solid rgba(0, 255, 163, 0.2)',
         position: 'sticky',
         top: 0,
-        zIndex: 100
+        zIndex: 100,
+        justifyContent: 'space-between',
+        alignItems: 'center'
       }}>
+        <div style={{ display: 'flex', flex: 1 }}>
+          <button
+            onClick={() => setActiveTab('swap')}
+            style={{
+              flex: 1,
+              padding: '14px',
+              background: activeTab === 'swap' ? 'rgba(0, 255, 163, 0.2)' : 'transparent',
+              color: activeTab === 'swap' ? '#00FFA3' : 'rgba(255,255,255,0.7)',
+              border: 'none',
+              borderBottom: activeTab === 'swap' ? '3px solid #00FFA3' : '3px solid transparent',
+              fontFamily: "'Roboto Mono', 'Courier New', monospace",
+              fontWeight: activeTab === 'swap' ? '700' : '600',
+              fontSize: '1rem',
+              letterSpacing: '1px',
+              textTransform: 'uppercase',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              textShadow: activeTab === 'swap' ? '0 0 10px rgba(0, 255, 163, 0.5)' : 'none'
+            }}
+          >
+            SWAP
+          </button>
+          <button
+            onClick={() => setActiveTab('chart')}
+            style={{
+              flex: 1,
+              padding: '14px',
+              background: activeTab === 'chart' ? 'rgba(0, 255, 163, 0.2)' : 'transparent',
+              color: activeTab === 'chart' ? '#00FFA3' : 'rgba(255,255,255,0.7)',
+              border: 'none',
+              borderBottom: activeTab === 'chart' ? '3px solid #00FFA3' : '3px solid transparent',
+              fontFamily: "'Roboto Mono', 'Courier New', monospace",
+              fontWeight: activeTab === 'chart' ? '700' : '600',
+              fontSize: '1rem',
+              letterSpacing: '1px',
+              textTransform: 'uppercase',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              textShadow: activeTab === 'chart' ? '0 0 10px rgba(0, 255, 163, 0.5)' : 'none'
+            }}
+          >
+            CHART
+          </button>
+        </div>
+        
+        {/* ✅ WATCHLIST TOGGLE BUTTON */}
         <button
-          onClick={() => setActiveTab('swap')}
+          onClick={() => setShowWatchlist(!showWatchlist)}
           style={{
-            flex: 1,
-            padding: '14px',
-            background: activeTab === 'swap' ? 'rgba(0, 255, 163, 0.2)' : 'transparent',
-            color: activeTab === 'swap' ? '#00FFA3' : 'rgba(255,255,255,0.7)',
+            padding: '12px 16px',
+            background: showWatchlist ? 'rgba(0, 255, 163, 0.2)' : 'transparent',
+            color: showWatchlist ? '#00FFA3' : 'rgba(255,255,255,0.7)',
             border: 'none',
-            borderBottom: activeTab === 'swap' ? '3px solid #00FFA3' : '3px solid transparent',
-            fontFamily: "'Roboto Mono', 'Courier New', monospace",
-            fontWeight: activeTab === 'swap' ? '700' : '600',
-            fontSize: '1rem',
-            letterSpacing: '1px',
-            textTransform: 'uppercase',
+            fontSize: '1.2rem',
             cursor: 'pointer',
-            transition: 'all 0.2s',
-            textShadow: activeTab === 'swap' ? '0 0 10px rgba(0, 255, 163, 0.5)' : 'none'
+            transition: 'all 0.2s'
           }}
         >
-          SWAP
-        </button>
-        <button
-          onClick={() => setActiveTab('chart')}
-          style={{
-            flex: 1,
-            padding: '14px',
-            background: activeTab === 'chart' ? 'rgba(0, 255, 163, 0.2)' : 'transparent',
-            color: activeTab === 'chart' ? '#00FFA3' : 'rgba(255,255,255,0.7)',
-            border: 'none',
-            borderBottom: activeTab === 'chart' ? '3px solid #00FFA3' : '3px solid transparent',
-            fontFamily: "'Roboto Mono', 'Courier New', monospace",
-            fontWeight: activeTab === 'chart' ? '700' : '600',
-            fontSize: '1rem',
-            letterSpacing: '1px',
-            textTransform: 'uppercase',
-            cursor: 'pointer',
-            transition: 'all 0.2s',
-            textShadow: activeTab === 'chart' ? '0 0 10px rgba(0, 255, 163, 0.5)' : 'none'
-          }}
-        >
-          CHART
+          📊
         </button>
       </div>
+
+      {/* ✅ NEW: WATCHLIST DRAWER */}
+      {showWatchlist && (
+        <div style={{
+          background: 'rgba(0, 10, 20, 0.98)',
+          borderBottom: '1px solid rgba(0, 255, 163, 0.3)',
+          padding: '16px',
+          maxHeight: '300px',
+          overflowY: 'auto'
+        }}>
+          <h3 style={{ color: '#00FFA3', marginBottom: '12px', fontSize: '0.9rem', fontWeight: 'bold' }}>Watchlist</h3>
+          {[
+            { symbol: 'BTCUSDT', price: '87,852.67', change: '-0.11%', color: '#ff4444' },
+            { symbol: 'ETHUSDT', price: '2,941.09', change: '-0.33%', color: '#ff4444' },
+            { symbol: 'BNBUSDT', price: '855.24', change: '-0.47%', color: '#ff4444' },
+            { symbol: 'SOLUSD', price: '123.84', change: '-1.14%', color: '#ff4444' },
+            { symbol: 'STXUSD', price: '0.2584', change: '-2.49%', color: '#ff4444' }
+          ].map((item, idx) => (
+            <div key={idx} style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              padding: '8px 0',
+              borderBottom: '1px solid rgba(255,255,255,0.05)',
+              fontSize: '0.85rem'
+            }}>
+              <span style={{ color: '#fff', fontWeight: 'bold' }}>{item.symbol}</span>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ color: '#fff' }}>{item.price}</div>
+                <div style={{ color: item.color, fontSize: '0.75rem' }}>{item.change}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Main Content Scrollable Area */}
       <main className="force-black-bg dex-mobile-scroll-area" style={{ 
