@@ -913,7 +913,53 @@ const UnifiedWalletModal = () => {
 
         try {
           await solanaConnectPromise;
-          // At this point wallet-adapter should update `connected/publicKey` and our auto-close effect will handle UI.
+
+          // Some users only "unlock" Phantom (password) without approving site access.
+          // Wait briefly for wallet-adapter state to update; then fallback to provider.connect as a second strategy.
+          const waitForPk = async (timeoutMs = 2500) => {
+            const start = Date.now();
+            while (Date.now() - start < timeoutMs) {
+              const pkCandidate =
+                selectedSolanaWallet?.adapter?.publicKey ||
+                solanaPublicKey ||
+                wallet?.adapter?.publicKey ||
+                (typeof window !== 'undefined'
+                  ? (window.phantom?.solana?.publicKey || window.solana?.publicKey)
+                  : null);
+              if (pkCandidate) return pkCandidate;
+              await new Promise((r) => setTimeout(r, 150));
+            }
+            return null;
+          };
+
+          let pk = await waitForPk(2500);
+
+          // Fallback: direct provider connect (can re-trigger approval popup)
+          if (!pk && typeof window !== 'undefined') {
+            const provider = window.phantom?.solana || window.solana;
+            if (provider?.isPhantom && typeof provider.connect === 'function') {
+              try {
+                await provider.connect({ onlyIfTrusted: false });
+              } catch (_) {
+                // ignore: will show friendly error below
+              }
+              pk = await waitForPk(1500);
+            }
+          }
+
+          if (!pk) {
+            setError(
+              'Phantom unlocked, but the site still did not receive a Solana public key. ' +
+              'In Phantom, approve the connection for bits-ai.io (Allow/Connect). ' +
+              'If it still won’t open, click "Force Reconnect (Solana)" below.'
+            );
+            unlockConnection();
+            return;
+          }
+
+          // Success: close modal
+          setShowWalletModal(false);
+          setSelectedNetwork(null);
           unlockConnection();
           return;
         } catch (err) {
@@ -1497,6 +1543,29 @@ const UnifiedWalletModal = () => {
             lineHeight: '1.5'
           }}>
             ⚠️ <span dangerouslySetInnerHTML={{ __html: error.replace(/(https?:\/\/[^\s)]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: #14F195; text-decoration: underline; word-break: break-all;">$1</a>') }} />
+            {selectedNetwork === "SOLANA" && (
+              <button
+                type="button"
+                className="wallet-reset-btn"
+                style={{ marginTop: 12, width: "100%" }}
+                onClick={async () => {
+                  try {
+                    // Force reconnect (helps when Phantom was only unlocked, not approved)
+                    await disconnectSolanaWallet().catch(() => {});
+                    await new Promise((r) => setTimeout(r, 200));
+                    setError(null);
+                    setIsConnecting(true);
+                    await connectSolanaWallet();
+                  } catch (e) {
+                    setError(`Force reconnect failed: ${e?.message || String(e)}`);
+                  } finally {
+                    unlockConnection();
+                  }
+                }}
+              >
+                Force Reconnect (Solana)
+              </button>
+            )}
           </div>
         )}
 
