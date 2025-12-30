@@ -182,14 +182,7 @@ const UnifiedWalletModal = () => {
       
       await prepareForConnection();
 
-      console.log(`🔥🔥🔥 [CONNECT START] ========================================`);
-      console.log(`🔥 Wallet requested: ${walletName}`);
-      console.log(`🔥 window.solana exists: ${typeof window !== 'undefined' && !!window.solana}`);
-      console.log(`🔥 window.solana.isPhantom: ${typeof window !== 'undefined' && window.solana?.isPhantom}`);
-      console.log(`🔥 window.solana.isConnected: ${typeof window !== 'undefined' && window.solana?.isConnected}`);
-      console.log(`🔥 window.ethereum.isPhantom: ${typeof window !== 'undefined' && window.ethereum?.isPhantom}`);
-      console.log(`🔥 window.ethereum.isMetaMask: ${typeof window !== 'undefined' && window.ethereum?.isMetaMask}`);
-      console.log(`🔥🔥🔥 ========================================`);
+      // debug logs removed (too noisy in prod)
 
       // 🔧 Helper: safely connect to a specific injected provider (Trust/Coinbase/Rainbow/etc.)
       const connectViaInjectedProvider = async ({
@@ -579,9 +572,7 @@ const UnifiedWalletModal = () => {
           // Instead, just connect to MetaMask and let wagmi handle the provider selection
           console.log(`🛡️ [MetaMask] Skipping Phantom disconnect - will rely on connector to use MetaMask`);
           
-          console.log(`🔥🔥🔥 [BEFORE WAGMI CONNECT] ========================================`);
-          console.log(`🔥 About to call await connect({ connector })`);
-          console.log(`🔥 Connector: ${connector.name} (${connector.id})`);
+          // debug logs removed (too noisy in prod)
           
           // 🛡️ [PHANTOM-KILLER] Final check before we let Wagmi handle it
           if (walletName === 'MetaMask' && typeof window !== 'undefined') {
@@ -630,9 +621,7 @@ const UnifiedWalletModal = () => {
           console.log(`🔌 [EVM] Calling final Wagmi connect({ connector: ${connector.name} })...`);
           await connect({ connector });
           
-          console.log(`🔥🔥🔥 [AFTER WAGMI CONNECT] ========================================`);
-          console.log(`🔥 connect() call finished - DID PHANTOM OPEN?`);
-          console.log(`🔥🔥🔥 ========================================`);
+          // debug logs removed (too noisy in prod)
           
           console.log(`✅ [UnifiedWalletModal] Connected to ${connector.name}`);
           
@@ -910,152 +899,54 @@ const UnifiedWalletModal = () => {
       }
 
       console.log(`🔌 [Solana] Connecting to ${walletName} (State: ${wallet.readyState})`);
-      
-      // 🛑 CRITICAL: First, disconnect any existing EVM connection to avoid conflicts
-      try {
-        if (isConnected || address) {
-          await disconnectEVM();
-          console.log(`🔌 [Solana] Disconnected EVM wallet to avoid conflicts`);
-          await new Promise(resolve => setTimeout(resolve, 300)); // Wait a bit
-        } else {
-          console.log(`ℹ️ [Solana] No EVM wallet to disconnect`);
+
+      // ✅ CRITICAL FIX: preserve user-gesture for Phantom popup.
+      // Do NOT await anything before calling provider.connect().
+      if (walletNameLower === 'phantom') {
+        const provider = (typeof window !== 'undefined' ? (window.phantom?.solana || window.solana) : null);
+        if (!provider?.isPhantom || typeof provider.connect !== 'function') {
+          setError('Phantom not detected. Please install/unlock Phantom and refresh.');
+          unlockConnection();
+          return;
         }
-      } catch (e) {
-        // Ignore if not connected
-        console.log(`ℹ️ [Solana] Error disconnecting EVM (may not be connected):`, e);
-      }
-      
-      // 🛑 CRITICAL: Also disconnect any Phantom connection via window.ethereum if it exists
-      if (typeof window !== 'undefined' && window.ethereum?.isPhantom) {
+
+        // Call connect() immediately (still within the click handler "user gesture")
+        const connectPromise = provider.connect({ onlyIfTrusted: false });
+
+        // Cleanup EVM in background (do not await, to not lose user-gesture)
         try {
-          // Phantom might be connected via window.ethereum - disconnect it
-          if (window.ethereum._state && window.ethereum._state.accounts && window.ethereum._state.accounts.length > 0) {
-            console.log(`🔌 [Solana] Disconnecting Phantom from window.ethereum...`);
-            // Request disconnect (some wallets support this)
-            if (window.ethereum.disconnect) {
-              await window.ethereum.disconnect();
-            }
-          }
-        } catch (e) {
-          console.warn(`⚠️ [Solana] Error disconnecting Phantom from window.ethereum:`, e);
-        }
-      }
-      
-      // For Phantom, try adapter connection first (more reliable for popup)
-      if (walletName.toLowerCase() === 'phantom') {
-        console.log(`🔌 [Phantom] Starting connection process...`);
-        console.log(`🔌 [Phantom] Checking window.solana availability...`);
-        console.log(`🔌 [Phantom] window.solana exists:`, typeof window !== 'undefined' && !!window.solana);
-        console.log(`🔌 [Phantom] window.solana.isPhantom:`, typeof window !== 'undefined' && window.solana?.isPhantom);
-        
-        // 🛑 CRITICAL: FORCE DISCONNECT ANY EVM CONNECTION FIRST!
-        // This prevents "Unsupported network" error when Phantom has EVM Support enabled
-        console.log(`🛡️ [Phantom] FORCE DISCONNECTING ALL EVM CONNECTIONS BEFORE SOLANA...`);
+          if (isConnected || address) disconnectEVM().catch(() => {});
+        } catch (_) {}
         try {
-          // 1. Disconnect wagmi/EVM completely
-          if (isConnected || address) {
-            console.log(`🔌 [Phantom] Disconnecting EVM wallet first...`);
-            await disconnectEVM();
-            await new Promise(resolve => setTimeout(resolve, 500)); // Wait for disconnect
-            console.log(`✅ [Phantom] EVM disconnected`);
-          }
-          
-          // 2. If Phantom EVM is active, disconnect it explicitly
-          if (typeof window !== 'undefined' && window.ethereum?.isPhantom) {
-            console.log(`🔌 [Phantom] Phantom EVM detected - forcing disconnect...`);
-            try {
-              // Force Phantom EVM to disconnect
-              if (window.ethereum.disconnect && typeof window.ethereum.disconnect === 'function') {
-                await window.ethereum.disconnect().catch(() => {});
-              }
-              // Clear any EVM state
-              if (window.ethereum._state) {
-                window.ethereum._state = {};
-              }
-              console.log(`✅ [Phantom] Phantom EVM disconnected/cleared`);
-            } catch (e) {
-              console.warn(`⚠️ [Phantom] Could not disconnect Phantom EVM:`, e);
-            }
-          }
-          
-          // 3. Clear any pending requests
           sessionStorage.removeItem('wallet_pending_request');
           sessionStorage.removeItem('wagmi.connector');
           localStorage.removeItem('wagmi.recentConnectorId');
-          
-          console.log(`✅ [Phantom] All EVM connections cleared - ready for Solana connection`);
-          
-          // Wait a bit more to ensure everything is cleared
-          await new Promise(resolve => setTimeout(resolve, 300));
-        } catch (clearErr) {
-          console.warn(`⚠️ [Phantom] Error clearing EVM:`, clearErr);
-        }
-        
-        // 🔥 FIX: ALWAYS force connection - don't rely on isConnected!
-        // Phantom may be "connected" to another site but NOT to bits-ai.io
-        console.log("🟣 [Phantom] FORCING connection (ignoring isConnected state)...");
-        console.log("🟣 [Phantom] Current isConnected:", window.solana?.isConnected);
-        console.log("🟣 [Phantom] Current publicKey:", window.solana?.publicKey?.toString() || "null");
-        
-        if (!window.solana || !window.solana.isPhantom) {
-          const errorMsg = "⚠️ Phantom Wallet not detected. Please install Phantom extension.";
-          console.error(errorMsg);
-          setError(errorMsg);
+        } catch (_) {}
+
+        try {
+          const resp = await connectPromise;
+          const pk = resp?.publicKey;
+          if (!pk) throw new Error('NO_PUBLIC_KEY');
+          console.log('✅ [Phantom] Connected (Solana):', pk.toBase58?.() || pk.toString?.());
+          setShowWalletModal(false);
+          setSelectedNetwork(null);
           unlockConnection();
           return;
-        }
-        
-        try {
-          // 🟣 SIMPLE: Just call window.solana.connect()
-          console.log("🟣 [Phantom] Simple connect...");
-          
-          const provider = window.phantom?.solana || window.solana;
-          if (!provider?.isPhantom) {
-            setError("Phantom not installed!");
-            unlockConnection();
-            return;
-          }
-          
-          const { publicKey } = await provider.connect();
-          console.log("✅ [Phantom] Connected:", publicKey?.toBase58());
-          
-          // Close modal
-          setTimeout(() => {
-            setShowWalletModal(false);
-            setSelectedNetwork(null);
-            unlockConnection();
-          }, 500);
-          return;
         } catch (err) {
-          console.error("❌ [Phantom] SOLANA Connection error:", err);
-          
-          // Extract error message exactly like handleSOLPayment.js line 119
-          const errorMsg = err?.message || "Connection failed";
-          console.error("❌ [Phantom] Error message:", errorMsg);
-          
-          // Check for "Unsupported network" - this means Phantom EVM is interfering
-          if (errorMsg.includes('Unsupported') || errorMsg.includes('unsupported')) {
-            console.error("❌ [Phantom] UNSUPPORTED NETWORK ERROR - Phantom EVM is blocking Solana!");
-            setError(`⚠️ Phantom EVM Support is interfering with Solana connection!\n\n🔧 FIX:\n1. Open Phantom → Settings ⚙️\n2. Find "EVM Support" or "Ethereum"\n3. Toggle it OFF (disable)\n4. Refresh page (F5)\n5. Try again\n\nOR use Solflare for pure Solana.`);
+          const msg = err?.message || String(err);
+          console.error('❌ [Phantom] Solana connect failed:', err);
+          if (err?.code === 4001 || /reject|cancel/i.test(msg)) {
+            // user cancelled
             unlockConnection();
             return;
           }
-          
-          // Check for user rejection
-          if (errorMsg.includes('User rejected') || errorMsg.includes('user rejected') || 
-              errorMsg.includes('User cancelled') || errorMsg.includes('user cancelled') ||
-              err?.code === 4001) {
-            console.log("ℹ️ [Phantom] User rejected connection");
-            setShowWalletModal(false);
-            unlockConnection();
-            return;
-          }
-          
-          setError(`Phantom SOLANA connection failed: ${errorMsg}\n\nIf you see "Unsupported network", please disable Phantom EVM Support in settings.`);
+          setError(`Phantom (Solana) connection failed: ${msg}`);
           unlockConnection();
           return;
         }
       }
+
+      // For non-Phantom wallets, continue with adapter flow below.
       
       // For other wallets, use adapter connection
       console.log(`🔌 [Solana] Selecting wallet: ${wallet.adapter.name}`);
