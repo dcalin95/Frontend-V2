@@ -85,10 +85,6 @@ const UnifiedWalletModal = () => {
       setTimeout(() => {
         setShowWalletModal(false);
         setSelectedNetwork(null);
-        
-        // Open wallet info box automatically (always on first connection)
-        console.log('📦 [UnifiedWalletModal] Triggering openWalletBox event...');
-        window.dispatchEvent(new CustomEvent('openWalletBox'));
       }, 500);
     }
     
@@ -112,10 +108,6 @@ const UnifiedWalletModal = () => {
       setTimeout(() => {
         setShowWalletModal(false);
         setSelectedNetwork(null);
-        
-        // Open wallet info box automatically (always on first connection)
-        console.log('📦 [UnifiedWalletModal] Triggering openWalletBox event for Solana...');
-        window.dispatchEvent(new CustomEvent('openWalletBox'));
       }, 500);
     }
   }, [isConnecting, isConnected, address, isSolanaConnected, solanaPublicKey, selectedNetwork, setShowWalletModal, disconnectEVM]);
@@ -900,23 +892,19 @@ const UnifiedWalletModal = () => {
 
       console.log(`🔌 [Solana] Connecting to ${walletName} (State: ${wallet.readyState})`);
 
-      // ✅ CRITICAL FIX: preserve user-gesture for Phantom popup.
-      // Do NOT await anything before calling provider.connect().
+      // ✅ CRITICAL FIX: connect via Solana Wallet Adapter so React state updates (connected/publicKey)
+      // Also preserve user-gesture: call connectSolanaWallet() immediately, do not await anything before it.
       if (walletNameLower === 'phantom') {
-        const provider = (typeof window !== 'undefined' ? (window.phantom?.solana || window.solana) : null);
-        if (!provider?.isPhantom || typeof provider.connect !== 'function') {
-          setError('Phantom not detected. Please install/unlock Phantom and refresh.');
-          unlockConnection();
-          return;
-        }
-
-        // Call connect() immediately (still within the click handler "user gesture")
-        const connectPromise = provider.connect({ onlyIfTrusted: false });
-
-        // Cleanup EVM in background (do not await, to not lose user-gesture)
         try {
-          if (isConnected || address) disconnectEVM().catch(() => {});
+          // Select wallet in adapter context (sync)
+          selectSolanaWallet(wallet.adapter.name);
         } catch (_) {}
+
+        // Call adapter connect immediately (this should trigger Phantom popup within user gesture)
+        const solanaConnectPromise = connectSolanaWallet();
+
+        // Cleanup EVM in background (do not await)
+        try { if (isConnected || address) disconnectEVM().catch(() => {}); } catch (_) {}
         try {
           sessionStorage.removeItem('wallet_pending_request');
           sessionStorage.removeItem('wagmi.connector');
@@ -924,19 +912,14 @@ const UnifiedWalletModal = () => {
         } catch (_) {}
 
         try {
-          const resp = await connectPromise;
-          const pk = resp?.publicKey;
-          if (!pk) throw new Error('NO_PUBLIC_KEY');
-          console.log('✅ [Phantom] Connected (Solana):', pk.toBase58?.() || pk.toString?.());
-          setShowWalletModal(false);
-          setSelectedNetwork(null);
+          await solanaConnectPromise;
+          // At this point wallet-adapter should update `connected/publicKey` and our auto-close effect will handle UI.
           unlockConnection();
           return;
         } catch (err) {
           const msg = err?.message || String(err);
           console.error('❌ [Phantom] Solana connect failed:', err);
           if (err?.code === 4001 || /reject|cancel/i.test(msg)) {
-            // user cancelled
             unlockConnection();
             return;
           }
@@ -1033,7 +1016,6 @@ const UnifiedWalletModal = () => {
           setShowWalletModal(false);
           setSelectedNetwork(null);
           unlockConnection();
-          window.dispatchEvent(new CustomEvent('openWalletBox'));
         }, 500);
       } catch (connectError) {
         // Ensure we never stay stuck in the loading overlay
