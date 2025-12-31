@@ -287,8 +287,8 @@ const InnerWalletProvider = ({ children }) => {
     
     const fetchSolanaBalances = async () => {
       // 🚀 TRY MULTIPLE SOURCES: adapter OR direct window.solana
-      const directPk = typeof window !== 'undefined' ? (window.phantom?.solana?.publicKey || window.solana?.publicKey) : null;
-      const adapterPk = solanaPublicKey;
+        const directPk = typeof window !== 'undefined' ? (window.phantom?.solana?.publicKey || window.solana?.publicKey) : null;
+        const adapterPk = solanaPublicKey;
       const currentPk = adapterPk || directPk;
       
       const isConnectedViaAdapter = isSolanaConnected && adapterPk;
@@ -305,8 +305,8 @@ const InnerWalletProvider = ({ children }) => {
       
       if (!isAnyConnected || !currentPk) {
         console.warn("⚠️ [SolanaBalance] NOT CONNECTED - skipping fetch");
-        return;
-      }
+          return;
+        }
 
       try {
         const addrStr = currentPk.toBase58 ? currentPk.toBase58() : currentPk.toString();
@@ -335,7 +335,7 @@ const InnerWalletProvider = ({ children }) => {
             
             const solVal = await Promise.race([solBalancePromise, timeoutPromise]);
             const solBalance = solVal / 1e9;
-
+            
             console.log(`✅ [SolanaBalance] SUCCESS: SOL=${solBalance.toFixed(4)}`);
             
             if (!cancelled) {
@@ -395,7 +395,7 @@ const InnerWalletProvider = ({ children }) => {
       const isConnectedViaDirectInterval = typeof window !== 'undefined' && window.solana?.isConnected && directPkInterval;
       
       if ((isSolanaConnected && solanaPublicKey) || isConnectedViaDirectInterval) {
-        fetchSolanaBalances();
+    fetchSolanaBalances();
       }
     }, 10000);
     
@@ -454,7 +454,7 @@ const InnerWalletProvider = ({ children }) => {
       setNativeSymbol("BNB"); // Reset to EVM default
       // Continue to EVM setup below
     }
-    
+
     // 🎯 PRIORITY 1: EVM CONNECTION (highest priority)
     if (isConnected && address) {
       // 🛡️ SECURITY: If remember wallet is OFF and this wasn't a fresh user click, disconnect.
@@ -575,9 +575,9 @@ const InnerWalletProvider = ({ children }) => {
     }
 
     if (balanceData?.formatted) {
-      const val = parseFloat(balanceData.formatted);
-      setEthBalance(isNaN(val) ? "0.0000" : val.toFixed(4));
-      setNativeSymbol(balanceData.symbol);
+        const val = parseFloat(balanceData.formatted);
+        setEthBalance(isNaN(val) ? "0.0000" : val.toFixed(4));
+        setNativeSymbol(balanceData.symbol);
     }
   }, [balanceData, isSolanaConnected, walletType]);
 
@@ -606,7 +606,7 @@ const InnerWalletProvider = ({ children }) => {
       if (isConnected && address) {
         return;
       }
-
+      
       // 🛑 STEP 1: FIX PHANTOM HIJACK (if present)
       forceFixPhantomHijack();
       

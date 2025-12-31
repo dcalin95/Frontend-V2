@@ -69,7 +69,7 @@ export const config = createConfig({
     }),
     walletConnect({
       projectId: effectiveProjectId,
-      metadata,
+  metadata,
       showQrModal: true,
     }),
   ],

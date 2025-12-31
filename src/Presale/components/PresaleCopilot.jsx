@@ -244,22 +244,65 @@ const PresaleCopilot = ({
 
   // Load last TX from localStorage (set by PaymentBox flow)
   useEffect(() => {
-    const raw = localStorage.getItem("presale_last_tx");
-    const parsed = safeJsonParse(raw);
-    if (parsed?.hash && isTxHash(parsed.hash)) {
-      setLastTx(parsed);
-    } else {
-      setLastTx(null);
-    }
+    const loadHistory = async () => {
+      // Load EVM last TX from localStorage
+      const raw = localStorage.getItem("presale_last_tx");
+      const parsed = safeJsonParse(raw);
+      if (parsed?.hash && isTxHash(parsed.hash)) {
+        setLastTx(parsed);
+      } else {
+        setLastTx(null);
+      }
+      
+      // 🆕 Load SOL transaction history from BACKEND (not localStorage)
+      if (walletAddress) {
+        try {
+          console.log("🔍 [Copilot] Fetching SOL history from backend for wallet:", walletAddress);
+          const response = await fetch(`${BACKEND_URL}/api/solana/payments/user/${walletAddress}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            console.log("✅ [Copilot] SOL history from backend:", data);
+            
+            // Backend returns { ok: true, payments: [...] }
+            const payments = Array.isArray(data.payments) ? data.payments : [];
+            
+            // Sort by timestamp, newest first
+            const sorted = payments.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+            console.log("🔍 [Copilot] Setting solTxHistory state:", sorted.length, "transactions");
+            setSolTxHistory(sorted);
+          } else {
+            console.warn("⚠️ [Copilot] Backend returned error:", response.status);
+            setSolTxHistory([]);
+          }
+        } catch (error) {
+          console.error("❌ [Copilot] Failed to fetch SOL history from backend:", error);
+          setSolTxHistory([]);
+        }
+      } else {
+        console.log("ℹ️ [Copilot] No wallet connected, skipping SOL history fetch");
+        setSolTxHistory([]);
+      }
+    };
+
+    // Load initially
+    loadHistory();
+
+    // Listen for SOL payment success events to refresh history
+    const handleSolPaymentSuccess = () => {
+      console.log("✅ [Copilot] SOL payment success event detected, reloading history");
+      loadHistory();
+    };
+
+    window.addEventListener('sol-payment-success', handleSolPaymentSuccess);
     
-    // 🆕 Load SOL transaction history
-    const solHistoryRaw = localStorage.getItem("presale_sol_tx_history");
-    const solHistory = safeJsonParse(solHistoryRaw) || [];
-    if (Array.isArray(solHistory)) {
-      // Sort by timestamp, newest first
-      setSolTxHistory(solHistory.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)));
-    }
-  }, []);
+    return () => {
+      window.removeEventListener('sol-payment-success', handleSolPaymentSuccess);
+    };
+  }, [walletAddress, BACKEND_URL]);
 
   // Load Telegram time/reward for connected wallet (best-effort, backend read)
   useEffect(() => {
@@ -898,35 +941,42 @@ const PresaleCopilot = ({
               ) : (
                 <div className="pc-sol-history-list">
                   {solTxHistory.map((tx, idx) => (
-                    <div key={tx.signature || idx} className="pc-sol-tx-item">
+                    <div key={tx.tx_signature || tx.signature || idx} className="pc-sol-tx-item">
                       <div className="pc-sol-tx-header">
                         <span className="pc-sol-tx-date">
-                          {new Date(tx.timestamp).toLocaleString()}
+                          {new Date(tx.created_at || tx.timestamp).toLocaleString()}
                         </span>
-                        <span className={`pc-sol-tx-status ${tx.status || "unknown"}`}>
-                          {tx.status || "Unknown"}
+                        <span className={`pc-sol-tx-status ${tx.fulfilment_status || tx.status || "pending"}`}>
+                          {tx.fulfilment_status === 'fulfilled' ? 'Confirmed' : tx.fulfilment_status || tx.status || 'Pending'}
                         </span>
                       </div>
                       
                       <div className="pc-sol-tx-row">
                         <span className="pc-sol-tx-label">Amount:</span>
-                        <span className="pc-sol-tx-value">{tx.amount} SOL</span>
+                        <span className="pc-sol-tx-value">{tx.amount_sol || tx.amount || 0} SOL</span>
+                      </div>
+                      
+                      <div className="pc-sol-tx-row">
+                        <span className="pc-sol-tx-label">USD Value:</span>
+                        <span className="pc-sol-tx-value">${(tx.usd_invested || tx.usdInvested || 0).toLocaleString()}</span>
                       </div>
                       
                       <div className="pc-sol-tx-row">
                         <span className="pc-sol-tx-label">BITS:</span>
-                        <span className="pc-sol-tx-value">{tx.bitsReceived?.toLocaleString()}</span>
+                        <span className="pc-sol-tx-value">{(tx.bits_to_receive || tx.bitsToReceive || tx.bitsReceived || 0).toLocaleString()}</span>
                       </div>
                       
                       <div className="pc-sol-tx-row">
-                        <span className="pc-sol-tx-label">USD:</span>
-                        <span className="pc-sol-tx-value">${tx.usdInvested?.toFixed(2)}</span>
+                        <span className="pc-sol-tx-label">Wallet:</span>
+                        <span className="pc-sol-tx-value mono" title={tx.evm_wallet || tx.walletAddress}>
+                          {shortAddr(tx.evm_wallet || tx.walletAddress || '—', 6, 4)}
+                        </span>
                       </div>
                       
                       <div className="pc-sol-tx-row">
                         <span className="pc-sol-tx-label">Signature:</span>
-                        <span className="pc-sol-tx-value mono" title={tx.signature}>
-                          {shortAddr(tx.signature, 8, 8)}
+                        <span className="pc-sol-tx-value mono" title={tx.tx_signature || tx.signature}>
+                          {shortAddr(tx.tx_signature || tx.signature, 8, 8)}
                         </span>
                       </div>
                       
@@ -934,14 +984,14 @@ const PresaleCopilot = ({
                         <button
                           type="button"
                           className="pc-btn pc-btn--copy"
-                          onClick={() => handleCopy(tx.signature)}
+                          onClick={() => handleCopy(tx.tx_signature || tx.signature)}
                         >
                           Copy
                         </button>
                         <button
                           type="button"
                           className="pc-btn pc-btn--open"
-                          onClick={() => window.open(`https://solscan.io/tx/${tx.signature}`, "_blank", "noopener,noreferrer")}
+                          onClick={() => window.open(`https://solscan.io/tx/${tx.tx_signature || tx.signature}`, "_blank", "noopener,noreferrer")}
                         >
                           View on Solscan
                         </button>

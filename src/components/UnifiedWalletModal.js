@@ -916,7 +916,7 @@ const UnifiedWalletModal = () => {
             .catch((err) => {
               console.error('❌ [Phantom] Direct connection failed:', err);
               throw err;
-            });
+          });
         } else {
           console.log('🔌 [Solana] Using adapter.connect() for:', wallet.adapter.name);
           solanaConnectPromise = wallet.adapter.connect();

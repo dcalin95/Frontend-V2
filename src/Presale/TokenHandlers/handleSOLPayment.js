@@ -266,7 +266,7 @@ const handleSOLPayment = async ({
       audit.lastValidBlockHeight = blockhashData.lastValidBlockHeight;
       console.log("   - NEW blockhash:", blockhashData.blockhash.substring(0, 12) + "...");
       console.log("   - NEW last valid height:", blockhashData.lastValidBlockHeight);
-      
+
       // Create new transaction with fresh blockhash
       tx = new Transaction().add(
         SystemProgram.transfer({
@@ -558,8 +558,8 @@ const handleSOLPayment = async ({
             `Time: ${elapsed}s`
           ]);
           break;
-        }
-        
+    }
+    
         if (status?.err) {
           console.error("❌ Transaction FAILED on-chain:", JSON.stringify(status.err));
           dispatchProgress(9, 'Confirming Transaction', [], `Transaction failed: ${JSON.stringify(status.err)}`);
@@ -672,7 +672,7 @@ const handleSOLPayment = async ({
     } catch (e) {
       console.warn("Could not send Telegram notification:", e);
     }
-    
+
     return {
       success: true,
       txHash: signature,
