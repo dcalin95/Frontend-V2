@@ -6,45 +6,69 @@ import {
   getAssociatedTokenAddress,
   createTransferInstruction,
 } from "@solana/spl-token";
+import { SOLANA_CONFIG } from "../../contract/solanaConfig";
 
 // 📍 Config - MAINNET
-const SOLANA_RPC_ENDPOINTS = [
-  "https://api.mainnet-beta.solana.com",
-  "https://solana-api.projectserum.com",
-  "https://rpc.ankr.com/solana"
-];
+// ✅ Remove ProjectSerum completely (timeouts / reliability issues)
+// ✅ Keep primary + fallback, and freeze selection for the whole lifecycle.
+// IMPORTANT: In production, NEVER use devnet/testnet for real payments even if env is misconfigured.
+const isNonMainnetSolanaUrl = (u) => {
+  const s = String(u || "").toLowerCase();
+  return s.includes("devnet") || s.includes("testnet");
+};
+
+const envPrimary = process.env.REACT_APP_SOL_RPC_HTTP;
+const envFallback = process.env.REACT_APP_SOL_RPC_HTTP_FALLBACK;
+const cfgPrimary = SOLANA_CONFIG.rpcHttp || "https://api.mainnet-beta.solana.com";
+
+const SOLANA_RPC_PRIMARY =
+  (process.env.NODE_ENV === "production" && isNonMainnetSolanaUrl(envPrimary))
+    ? cfgPrimary
+    : (envPrimary || cfgPrimary);
+
+const SOLANA_RPC_FALLBACK =
+  (process.env.NODE_ENV === "production" && isNonMainnetSolanaUrl(envFallback))
+    ? "https://rpc.ankr.com/solana"
+    : (envFallback || "https://rpc.ankr.com/solana");
 const USDC_MINT = new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"); // USDC mainnet mint
 const RECEIVER_WALLET = new PublicKey("63u6aWZJdFd1vh6VfCya5DJkXTUEmHBbs14SiqHNt4GQ"); // adresa ta de primire USDC
 
 // HTTP-only RPC call to avoid WebSocket issues
-const callSolanaRPC = async (method, params = []) => {
-  for (const endpoint of SOLANA_RPC_ENDPOINTS) {
+const rpcPost = async (endpoint, method, params = []) => {
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      id: 1,
+      method,
+      params,
+    }),
+  });
+  const data = await response.json();
+  if (data?.error) throw new Error(data.error.message);
+  return data.result;
+};
+
+const pickSolanaRpcEndpoint = async () => {
+  const candidates = [SOLANA_RPC_PRIMARY, SOLANA_RPC_FALLBACK].filter(Boolean);
+  for (const endpoint of candidates) {
     try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: 1,
-          method,
-          params,
-        }),
-      });
-      const data = await response.json();
-      if (data.error) throw new Error(data.error.message);
-      return data.result;
-    } catch (error) {
-      console.warn(`❌ RPC ${endpoint} failed:`, error.message);
-      if (endpoint === SOLANA_RPC_ENDPOINTS[SOLANA_RPC_ENDPOINTS.length - 1]) {
-        throw error; // Last endpoint failed
-      }
+      // lightweight health probe
+      await rpcPost(endpoint, 'getLatestBlockhash', [{ commitment: 'processed' }]);
+      console.log(`✅ [USDC-Solana] Using RPC (frozen): ${endpoint}`);
+      return endpoint;
+    } catch (e) {
+      console.warn(`⚠️ [USDC-Solana] RPC failed: ${endpoint} - ${e?.message || e}`);
     }
   }
+  throw new Error('No healthy Solana RPC endpoints available');
 };
 
 const handleUSDCOnSolanaPayment = async ({ amount, bitsToReceive, walletAddress }) => {
   try {
     console.log("🟦 Solana USDC Payment started...");
+    const rpcEndpoint = await pickSolanaRpcEndpoint();
 
     // Development mode bypass
     if (process.env.NODE_ENV === 'development') {
@@ -91,16 +115,16 @@ const handleUSDCOnSolanaPayment = async ({ amount, bitsToReceive, walletAddress 
     );
 
     // Get latest blockhash via HTTP RPC
-    const latestBlockhash = await callSolanaRPC('getLatestBlockhash');
+    const latestBlockhash = await rpcPost(rpcEndpoint, 'getLatestBlockhash', [{ commitment: 'confirmed' }]);
     tx.recentBlockhash = latestBlockhash.blockhash;
     tx.feePayer = fromWallet;
 
     const signedTx = await provider.signTransaction(tx);
     
     // Send transaction via HTTP RPC
-    const signature = await callSolanaRPC('sendRawTransaction', [
+    const signature = await rpcPost(rpcEndpoint, 'sendRawTransaction', [
       signedTx.serialize().toString('base64'),
-      { encoding: 'base64' }
+      { encoding: 'base64', skipPreflight: true, preflightCommitment: 'processed', maxRetries: 5 }
     ]);
 
     console.log("✅ USDC transfer TX:", signature);

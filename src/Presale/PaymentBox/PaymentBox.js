@@ -14,6 +14,9 @@ import PaymentMethodSelector from "./PaymentMethodSelector";
 import StripeAmountSelector from "./components/StripeAmountSelector";
 import { tokenList } from "../TokenHandlers/tokenData";
 import useCellManagerData from "../hooks/useCellManagerData";
+import PRESALE_CONFIG from "../../config/presaleConfig";
+import SOLPaymentProgress from "../components/SOLPaymentProgress";
+import { useSOLPaymentProgress } from "../components/useSOLPaymentProgress";
 // Import separated styles
 import "./PaymentBox.desktop.css";
 import "./PaymentBox.mobile.css";
@@ -26,6 +29,9 @@ const PaymentBox = ({
   tokenPrices,
   pricesLoading,
 }) => {
+  // 🎨 SOL Payment Progress Popup
+  const solProgress = useSOLPaymentProgress();
+  
   // 🎯 Custom Hook pentru toată logica de state
   const paymentState = usePaymentState({
     selectedToken,
@@ -106,8 +112,15 @@ const PaymentBox = ({
   React.useEffect(() => {
     if (selectedToken !== "SOL") return;
     if (solReceivingTouched) return;
+    
+    // Check if the current walletAddress is EVM (0x...)
     const w = (paymentState.walletAddress || "").toString().trim();
-    if (w) setSolReceivingEvmWallet(w);
+    if (w && w.startsWith('0x') && ethers.utils.isAddress(w)) {
+      setSolReceivingEvmWallet(w);
+    } else {
+      // If connected via Solana (base58), don't auto-fill the EVM box with it
+      setSolReceivingEvmWallet("");
+    }
   }, [selectedToken, paymentState.walletAddress, solReceivingTouched]);
 
   const isValidEvmWallet = useMemo(() => {
@@ -265,8 +278,8 @@ const PaymentBox = ({
     );
   }
 
-  // 🔢 Dynamic minimum in token for $10
-  const minUsd = 10;
+  // 🔢 Dynamic minimum in token for minimum USD purchase
+  const minUsd = PRESALE_CONFIG.MIN_PURCHASE_USD;
   const price = Number(paymentState.selectedTokenPrice) || 0;
   let minTokenNumber = null;
   let minTokenDecimals = 2;
@@ -285,6 +298,16 @@ const PaymentBox = ({
 
   return (
     <div className="payment-box">
+      {/* 🎨 SOL Payment Progress Popup */}
+      <SOLPaymentProgress
+        isOpen={solProgress.isOpen}
+        onClose={solProgress.close}
+        steps={solProgress.steps}
+        currentStep={solProgress.currentStep}
+        error={solProgress.error}
+        signature={solProgress.signature}
+      />
+      
       {/* 🎯 Transaction Popup */}
       <TransactionPopup
         visible={isPopupVisible}
@@ -414,6 +437,118 @@ const PaymentBox = ({
         />
       )}
 
+      {/* 🟣 SOL: receiving wallet (BSC/EVM) - CLEAN STYLE */}
+      {selectedToken === "SOL" && (
+        <div 
+          className="referral-code-container" 
+          style={{ 
+            marginTop: 16, 
+            marginBottom: 16, 
+            border: '1px solid rgba(255, 255, 255, 0.15)', 
+            padding: '14px', 
+            borderRadius: '12px', 
+            background: 'rgba(15, 19, 26, 0.9)',
+            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.45)',
+            position: 'relative'
+          }}
+        >
+          <label 
+            className="referral-code-label" 
+            style={{ 
+              color: '#e9f5ff', 
+              fontWeight: '800', 
+              fontSize: '1rem',
+              letterSpacing: '-0.2px',
+              position: 'relative',
+              zIndex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+          >
+            <span style={{ fontSize: '1.1rem' }}>🟣</span>
+            <span style={{ color: '#cde7ff' }}>
+              Add your BSC / EVM wallet to receive BITS
+            </span>
+          </label>
+          
+          <input
+            type="text"
+            placeholder="0x... your EVM/BSC address to receive BITS"
+            value={solReceivingEvmWallet}
+            onChange={(e) => {
+              setSolReceivingTouched(true);
+              setSolReceivingEvmWallet(e.target.value.trim());
+            }}
+            className="referral-code-input"
+            style={{ 
+              borderColor: isValidEvmWallet ? '#14F195' : 'rgba(255, 68, 68, 0.6)',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+              background: 'rgba(10, 13, 18, 0.8)',
+              color: '#e9f5ff',
+              fontSize: '0.95rem',
+              padding: '12px',
+              borderRadius: '10px',
+              boxShadow: isValidEvmWallet 
+                ? '0 0 12px rgba(20, 241, 149, 0.35)'
+                : 'none',
+              transition: 'all 0.2s ease',
+              position: 'relative'
+            }}
+            maxLength={64}
+          />
+          
+          <div 
+            className="referral-code-info" 
+            style={{ 
+              opacity: 1, 
+              fontSize: '0.84rem', 
+              marginTop: '10px',
+              padding: '10px 12px',
+              borderRadius: '8px',
+              background: isValidEvmWallet 
+                ? 'rgba(20, 241, 149, 0.12)'
+                : 'rgba(255, 68, 68, 0.12)',
+              border: isValidEvmWallet 
+                ? '1px solid rgba(20, 241, 149, 0.4)'
+                : '1px solid rgba(255, 68, 68, 0.4)'
+            }}
+          >
+            {isValidEvmWallet ? (
+              <span style={{ 
+                color: '#14F195', 
+                fontWeight: '700',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <span style={{ fontSize: '1.2rem' }}>✅</span>
+                Receiving wallet set: <strong style={{ 
+                  color: '#00D9FF'
+                }}>{solReceivingEvmWallet.slice(0,6)}...{solReceivingEvmWallet.slice(-4)}</strong>
+              </span>
+            ) : (
+              <span style={{ 
+                color: '#ff6b6b', 
+                fontWeight: '600',
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '8px',
+                lineHeight: '1.5'
+              }}>
+                <span style={{ fontSize: '1.1rem', marginTop: '2px' }}>⚠️</span>
+                <span>
+                  <strong style={{ color: '#ff4444' }}>Required:</strong> Enter a valid <strong style={{ 
+                    color: '#fff'
+                  }}>0x…</strong> address (BSC network) where you will receive your BITS tokens.
+                </span>
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* 🎯 Action Buttons */}
       {!paymentState.walletAddress && !(selectedToken === "SOL" && isValidEvmWallet) ? (
         <button onClick={paymentState.connectWallet} className="connect-wallet-button">
@@ -502,33 +637,6 @@ const PaymentBox = ({
             : null
         }
       />
-
-      {/* 🟣 SOL: receiving wallet (BSC/EVM) */}
-      {selectedToken === "SOL" && (
-        <div className="referral-code-container" style={{ marginTop: 12 }}>
-          <label className="referral-code-label">
-            🟣 Receive BITS on (BSC / EVM wallet 0x…)
-          </label>
-          <input
-            type="text"
-            placeholder="Paste your EVM wallet address (0x...) to receive BITS + rewards"
-            value={solReceivingEvmWallet}
-            onChange={(e) => {
-              setSolReceivingTouched(true);
-              setSolReceivingEvmWallet(e.target.value.trim());
-            }}
-            className="referral-code-input"
-            maxLength={64}
-          />
-          <div className="referral-code-info" style={{ opacity: 0.95 }}>
-            {isValidEvmWallet ? (
-              <>✅ Receiving wallet set: <strong>{solReceivingEvmWallet}</strong></>
-            ) : (
-              <>⚠️ Required: enter a valid <strong>0x…</strong> address (this is where you will receive BITS + claimable rewards).</>
-            )}
-          </div>
-        </div>
-      )}
 
       {/* 🎯 Bonus Information */}
       <div className="bonus-line">

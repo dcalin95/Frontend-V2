@@ -22,8 +22,6 @@ const getTimeLeft = (endTime) => {
 const PresaleCountdownMini = () => {
   const { endTime, isLoaded } = usePresaleState();
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  
-  console.log('🕒 [PresaleCountdownMini] endTime:', endTime, 'isLoaded:', isLoaded);
 
   useEffect(() => {
     if (!isLoaded || !endTime) return;

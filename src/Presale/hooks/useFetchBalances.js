@@ -1,110 +1,96 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import { ethers } from "ethers";
 import { CONTRACTS } from "../../contract/contracts";
 import ERC20ABI from "../../abi/erc20ABI.js";
 import { PublicKey } from "@solana/web3.js";
 import { getAssociatedTokenAddress } from "@solana/spl-token";
+import WalletContext from "../../context/WalletContext";
 
 const useFetchBalances = (walletAddress, selectedToken) => {
   const [balances, setBalances] = useState({});
+  const { ethBalance, nativeSymbol, walletType } = useContext(WalletContext);
+  const lastEthBalanceRef = useRef(null);
 
   useEffect(() => {
+    // 🟣 Robust Solana Balance Sync: If WalletContext already has the Solana balance, use it immediately
+    const isSolana = (walletType === "SOLANA" || walletType === "Solana");
+    if (isSolana && selectedToken === "SOL" && ethBalance && nativeSymbol === "SOL") {
+      // Only update if ethBalance changed (avoid infinite loop)
+      if (lastEthBalanceRef.current === ethBalance) {
+        return;
+      }
+      
+      lastEthBalanceRef.current = ethBalance;
+      const parsedBalance = parseFloat(ethBalance);
+      
+      console.log("✅ [useFetchBalances] Syncing SOL balance from WalletContext:");
+      console.log("   - Raw ethBalance:", ethBalance, typeof ethBalance);
+      console.log("   - Parsed balance:", parsedBalance);
+      console.log("   - Will set balances.SOL to:", parsedBalance);
+      
+      setBalances(prev => ({
+        ...prev,
+        SOL: parsedBalance
+      }));
+      return;
+    }
+
     const fetchBalances = async () => {
       if (!walletAddress || !selectedToken) return;
 
       try {
         // 🌟 SOL Balance - Browser-friendly approach
         if (selectedToken === "SOL") {
-          if (!window.solana || !window.solana.isPhantom) {
-            console.warn("⚠️ Phantom wallet not detected for SOL balance");
-            // Set development fallback
-            setBalances(prev => ({
-              ...prev,
-              [selectedToken]: 2.0, // Development balance
-            }));
+          const solAddress = (walletAddress || "").toString().trim();
+          if (!solAddress || solAddress.startsWith('0x')) {
+            console.log("ℹ️ Skipping SOL balance fetch for non-Solana address");
             return;
           }
 
           try {
-            // 🛑 CRITICAL FIX: DO NOT call connect() for balance fetch
-            // Balance should only be fetched if the wallet is already connected
-            if (!window.solana.isConnected || !window.solana.publicKey) {
-              console.log("ℹ️ Phantom not connected, skipping SOL balance fetch");
-              return;
-            }
-
-            const publicKey = window.solana.publicKey;
-            console.log("👛 Fetching SOL balance for:", publicKey.toBase58());
+            console.log("👛 Fetching SOL balance for:", solAddress);
             
-            // 🚀 BYPASS WebSocket issues - Use HTTP-only RPC call
-            const solAddress = publicKey.toBase58();
+            // Multiple RPCs for redundancy
+            const rpcs = [
+              "https://solana-mainnet.rpc.extrnode.com",
+              "https://api.mainnet-beta.solana.com",
+              "https://rpc.ankr.com/solana"
+            ];
             
-            try {
-              // Direct HTTP POST to Solana RPC (no WebSocket)
-              const response = await window.fetch("https://api.devnet.solana.com", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  jsonrpc: "2.0",
-                  id: 1,
-                  method: "getBalance",
-                  params: [solAddress]
-                })
-              });
-
-              const data = await response.json();
-              
-              if (data.result && data.result.value !== undefined) {
-                const solBalance = data.result.value / 1e9; // lamports to SOL
-                console.log("🟣 [SOL Balance via HTTP RPC]:", solBalance, "SOL");
-                
-                setBalances(prev => ({
-                  ...prev,
-                  [selectedToken]: solBalance,
-                }));
-              } else {
-                throw new Error("Invalid RPC response");
-              }
-            } catch (httpErr) {
-              console.warn("⚠️ HTTP RPC failed, using development balance:", httpErr.message);
-              // Development fallback when RPC fails
-              setBalances(prev => ({
-                ...prev,
-                [selectedToken]: 1.5, // Development balance with SOL
-              }));
+            let success = false;
+            for (const rpc of rpcs) {
+              try {
+                const response = await window.fetch(rpc, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    jsonrpc: "2.0", id: 1, method: "getBalance", params: [solAddress]
+                  })
+                });
+                const data = await response.json();
+                if (data.result && data.result.value !== undefined) {
+                  const solBalance = data.result.value / 1e9;
+                  console.log(`🟣 [SOL Balance via ${rpc}]:`, solBalance, "SOL");
+                  setBalances(prev => ({ ...prev, [selectedToken]: solBalance }));
+                  success = true;
+                  break;
+                }
+              } catch (e) {}
             }
-          } catch (solErr) {
-            console.error("❌ Failed to connect Phantom:", solErr);
-            // Set fallback balance for testing
-            setBalances(prev => ({
-              ...prev,
-              [selectedToken]: 2.0, // High balance for development
-            }));
+            if (!success) throw new Error("All Solana RPCs failed");
+          } catch (httpErr) {
+            console.warn("⚠️ Solana RPC failed:", httpErr.message);
           }
           return;
         }
 
         // 🟦 USDC-Solana Balance
         if (selectedToken === "USDC-Solana") {
-          if (!window.solana || !window.solana.isPhantom) {
-            console.warn("⚠️ Phantom wallet not detected for USDC-Solana balance");
-            setBalances(prev => ({
-              ...prev,
-              [selectedToken]: 100.0, // Development balance
-            }));
-            return;
-          }
+          const solAddress = (walletAddress || "").toString().trim();
+          if (!solAddress || solAddress.startsWith('0x')) return;
 
           try {
-            // 🛑 CRITICAL FIX: DO NOT call connect() for balance fetch
-            if (!window.solana.isConnected || !window.solana.publicKey) {
-              console.log("ℹ️ Phantom not connected, skipping USDC-Solana balance fetch");
-              return;
-            }
-
-            const publicKey = window.solana.publicKey;
+            const publicKey = new PublicKey(solAddress);
             const USDC_MINT = new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v");
             
             // Get associated token account
@@ -132,15 +118,9 @@ const useFetchBalances = (walletAddress, selectedToken) => {
                 ...prev,
                 [selectedToken]: usdcBalance,
               }));
-            } else {
-              throw new Error("Invalid token account or no balance");
             }
           } catch (usdcErr) {
-            console.warn("⚠️ USDC-Solana balance fetch failed, using development balance:", usdcErr.message);
-            setBalances(prev => ({
-              ...prev,
-              [selectedToken]: 50.0, // Development balance
-            }));
+            console.warn("⚠️ USDC-Solana balance fetch failed:", usdcErr.message);
           }
           return;
         }
@@ -184,7 +164,7 @@ const useFetchBalances = (walletAddress, selectedToken) => {
     };
 
     fetchBalances();
-  }, [walletAddress, selectedToken]);
+  }, [walletAddress, selectedToken, ethBalance, nativeSymbol, walletType]);
 
   return balances;
 };

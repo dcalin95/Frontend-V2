@@ -28,6 +28,7 @@ const MobileUI = ({ children }) => {
   const [isSlowConnection, setIsSlowConnection] = useState(false);
 
   // 🚀 Aplicăm clasele IMEDIAT, înainte de paint
+  // ✅ FIX: Adăugăm state în dependencies pentru re-aplicare la schimbări
   useLayoutEffect(() => {
     const updateClasses = () => {
       const mobile = window.matchMedia('(max-width: 768px)').matches;
@@ -70,7 +71,7 @@ const MobileUI = ({ children }) => {
     };
 
     updateClasses();
-  }, []);
+  }, [isMobile, isLandscape]); // ✅ Re-aplică când state se schimbă
 
   useEffect(() => {
     const mobileQuery = window.matchMedia('(max-width: 768px)');

@@ -9,19 +9,22 @@ import { SolanaProvider } from "./context/SolanaWalletContext"; // Solana Provid
 import { ThemeProvider } from "./context/ThemeContext";
 import { GeoLocationProvider } from "./context/GeoLocationContext"; // 🌍 GeoSystem
 import { AuthProvider } from "./context/AuthContext"; // 🔐 Auth System
+import { CellManagerProvider } from "./context/CellManagerContext"; // 📊 CellManager - Single source of truth
 
 const AppWrapper = () => {
   return (
     <AuthProvider>
-      <WalletProvider>
-        <SolanaProvider>
-            <GeoLocationProvider>
+      <SolanaProvider>
+        <WalletProvider>
+          <GeoLocationProvider>
+            <CellManagerProvider>
               <ThemeProvider>
                 <App />
               </ThemeProvider>
-            </GeoLocationProvider>
-        </SolanaProvider>
-      </WalletProvider>
+            </CellManagerProvider>
+          </GeoLocationProvider>
+        </WalletProvider>
+      </SolanaProvider>
     </AuthProvider>
   );
 };

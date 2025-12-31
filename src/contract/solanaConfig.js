@@ -2,9 +2,9 @@
 // Keep Solana addresses/config here, not scattered across handlers/components.
 
 export const SOLANA_CONFIG = {
-  // RPC endpoints (default: mainnet)
-  rpcHttp: process.env.REACT_APP_SOL_RPC_HTTP || "https://api.mainnet-beta.solana.com",
-  rpcWs: process.env.REACT_APP_SOL_RPC_WS || "wss://api.mainnet-beta.solana.com",
+  // RPC endpoints (default: mainnet) - Using HELIUS PREMIUM for fast confirmations
+  rpcHttp: process.env.REACT_APP_SOL_RPC_HTTP || "https://mainnet.helius-rpc.com/?api-key=e09cf31a-1745-4314-847f-0999aa459705",
+  rpcWs: process.env.REACT_APP_SOL_RPC_WS || "wss://mainnet.helius-rpc.com/?api-key=e09cf31a-1745-4314-847f-0999aa459705",
 
   // Where SOL payments are sent (your Solana treasury/destination wallet)
   // IMPORTANT: set this in frontend .env as REACT_APP_SOL_DESTINATION_WALLET for production.

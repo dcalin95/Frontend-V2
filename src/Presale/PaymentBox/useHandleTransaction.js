@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import { useCallback, useRef } from "react";
 import { handlePayment } from "../TokenHandlers/TokenHandlerManager";
 import { tokenList } from "../TokenHandlers/tokenData";
+import PRESALE_CONFIG from "../../config/presaleConfig";
 
 const useHandleTransaction = ({
   selectedToken,
@@ -89,12 +90,12 @@ const useHandleTransaction = ({
       let payableAmount;
       
       if (selectedToken === "SOL" || selectedToken === "USDC-Solana") {
-        gasBuffer = 0.001; // Solana has much lower fees
+        gasBuffer = PRESALE_CONFIG.GAS_BUFFERS.SOLANA; // Solana has much lower fees
         amountToSend = parseFloat(amountPay) + gasBuffer; // doar pentru verificare balanță
         payableAmount = parseFloat(amountPay); // valoarea reală pentru tranzacție
         console.log(`⛽ Estimated ${selectedToken} Fee Buffer:`, gasBuffer);
       } else {
-        gasBuffer = 0.003; // BSC/ETH gas buffer
+        gasBuffer = PRESALE_CONFIG.GAS_BUFFERS.EVM; // BSC/ETH gas buffer
         amountToSend = parseFloat(amountPay) + gasBuffer; // doar pentru verificare balanță
         payableAmount = parseFloat(amountPay); // valoarea reală pentru tranzacție (msg.value)
         console.log("⛽ Estimated Gas Buffer (BNB/ETH):", gasBuffer);

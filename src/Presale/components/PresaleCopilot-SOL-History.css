@@ -1,0 +1,218 @@
+/* Adăugat la sfârșitul fișierului PresaleCopilot.css */
+
+/* 🆕 SOL Transaction History Modal */
+.pc-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: pc-modal-fade-in 0.2s ease;
+}
+
+@keyframes pc-modal-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.pc-modal-content {
+  background: rgba(10, 12, 16, 0.95);
+  border: 1px solid rgba(20, 241, 149, 0.3);
+  border-radius: 16px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+  animation: pc-modal-slide-up 0.3s ease;
+}
+
+@keyframes pc-modal-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pc-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(20, 241, 149, 0.2);
+}
+
+.pc-modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #14f195;
+}
+
+.pc-modal-close {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.pc-modal-close:hover {
+  color: #14f195;
+}
+
+.pc-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 24px;
+}
+
+.pc-modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid rgba(20, 241, 149, 0.2);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.pc-sol-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pc-sol-tx-item {
+  background: rgba(20, 241, 149, 0.05);
+  border: 1px solid rgba(20, 241, 149, 0.15);
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.2s;
+}
+
+.pc-sol-tx-item:hover {
+  background: rgba(20, 241, 149, 0.08);
+  border-color: rgba(20, 241, 149, 0.25);
+}
+
+.pc-sol-tx-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(20, 241, 149, 0.1);
+}
+
+.pc-sol-tx-date {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.pc-sol-tx-status {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+.pc-sol-tx-status.confirmed {
+  color: #14f195;
+  background: rgba(20, 241, 149, 0.15);
+}
+
+.pc-sol-tx-status.pending {
+  color: #ffa500;
+  background: rgba(255, 165, 0, 0.15);
+}
+
+.pc-sol-tx-status.unknown,
+.pc-sol-tx-status.failed {
+  color: #ff4444;
+  background: rgba(255, 68, 68, 0.15);
+}
+
+.pc-sol-tx-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 0.9rem;
+}
+
+.pc-sol-tx-label {
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+}
+
+.pc-sol-tx-value {
+  color: #fff;
+  font-weight: 600;
+}
+
+.pc-sol-tx-value.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.85rem;
+  color: #14f195;
+}
+
+.pc-sol-tx-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(20, 241, 149, 0.1);
+}
+
+.presale-copilot__sol-history-btn {
+  padding: 0 16px;
+  margin: 12px 0;
+}
+
+.presale-copilot__sol-history-btn .pc-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .pc-modal-content {
+    max-width: 100%;
+    max-height: 90vh;
+    margin: 10px;
+  }
+  
+  .pc-modal-header,
+  .pc-modal-body,
+  .pc-modal-footer {
+    padding: 16px;
+  }
+  
+  .pc-sol-tx-item {
+    padding: 12px;
+  }
+  
+  .pc-sol-tx-actions {
+    flex-direction: column;
+  }
+  
+  .pc-sol-tx-actions .pc-btn {
+    width: 100%;
+  }
+}
+

@@ -30,41 +30,38 @@ export const GeoLocationProvider = ({ children }) => {
       }
 
       try {
-        // 2. Interogăm API-ul de geolocație (Folosim ipapi.co - reliable & free tier)
-        const response = await fetch('https://ipapi.co/json/');
+        // 2. Simple IP detection (no CORS issues) - ipify is CORS-friendly
+        const ipResponse = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipResponse.json();
         
-        if (!response.ok) {
-            throw new Error('Geo API failed');
-        }
-
-        const data = await response.json();
-
-        // Structurăm datele utile
+        // 3. Use simple fallback without geolocation API (avoid CORS)
         const geoInfo = {
-          country: data.country_name || 'Global',
-          countryCode: data.country_code || 'GL',
-          city: data.city || '',
-          currency: data.currency || 'USD',
-          ip: data.ip,
+          country: 'Global',
+          countryCode: 'GL',
+          city: '',
+          currency: 'USD',
+          ip: ipData.ip || 'Unknown',
           isLoading: false,
           error: null
         };
 
-        // 3. Salvăm în State și Cache
+        // 4. Save to State and Cache
         setLocationData(geoInfo);
         sessionStorage.setItem('bits_user_geo', JSON.stringify(geoInfo));
-        console.log("🌍 [GeoSystem] Detected Location:", geoInfo.country);
+        console.log("🌍 [GeoSystem] IP detected:", geoInfo.ip);
 
       } catch (error) {
-        console.error("🌍 [GeoSystem] Error detecting location:", error);
-        // Fallback safe state
-        setLocationData(prev => ({
-          ...prev,
+        console.log("🌍 [GeoSystem] Skipping geo detection (optional feature)");
+        // Fallback safe state - don't show error, it's optional
+        setLocationData({
           country: 'Global',
+          countryCode: 'GL',
+          city: '',
           currency: 'USD',
+          ip: '',
           isLoading: false,
-          error: error.message
-        }));
+          error: null // Silent fail - geo is optional
+        });
       }
     };
 

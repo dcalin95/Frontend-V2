@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { default as axios } from "axios";
-import useCellManagerData from "../hooks/useCellManagerData";
+import { useCellManager } from "../../context/CellManagerContext"; // ✅ Use Context
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
 
@@ -19,8 +19,8 @@ export const useHybridPresaleState = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(null);
 
-  // Get CellManager data (price + round)
-  const cellManagerData = useCellManagerData();
+  // Get CellManager data from Context (single source)
+  const cellManagerData = useCellManager();
 
   // Fetch database data (sold + supply + progress)
   useEffect(() => {

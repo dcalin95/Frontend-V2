@@ -106,10 +106,17 @@ export const filterEVMConnectors = (connectors) => {
   return connectors.filter(connector => {
     const name = (connector.name || '').toLowerCase();
     const id = (connector.id || '').toLowerCase();
+    const uid = (connector.uid || '').toLowerCase();
     
-    // Phantom EVM connectors are a frequent source of "hijack" in multi-wallet setups.
-    // Keep Phantom out of the EVM connector list; Phantom Solana is handled via window.solana / wallet-adapter.
-    if (name.includes('phantom') || id.includes('phantom')) {
+    // 🛑 CRITICAL: BLOCK ALL PHANTOM VARIATIONS
+    // Phantom is SOLANA-ONLY, should NEVER appear in EVM list
+    const phantomKeywords = ['phantom', 'com.phantom', 'app.phantom', 'io.phantom'];
+    const isPhantom = phantomKeywords.some(keyword => 
+      name.includes(keyword) || id.includes(keyword) || uid.includes(keyword)
+    );
+    
+    if (isPhantom) {
+      console.warn(`🛑 [WalletFilter] BLOCKED Phantom connector: ${connector.name} (ID: ${connector.id})`);
       return false;
     }
 
@@ -147,7 +154,7 @@ export const filterEVMConnectors = (connectors) => {
       }
     }
 
-    console.log(`✅ [WalletFilter] ALLOWED EVM connector: ${connector.name} (ID: ${connector.id})`);
+    // Connector is allowed
     return true;
   });
 };

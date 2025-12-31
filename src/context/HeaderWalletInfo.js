@@ -127,17 +127,26 @@ const HeaderWalletInfo = () => {
   }, []);
 
   // 🎯 ALSO AUTO-OPEN WHEN WALLET ADDRESS BECOMES AVAILABLE (fallback)
+  // Use a ref to ensure we only auto-open ONCE per session/connection event
+  const hasAutoOpenedRef = useRef(false);
+
   useEffect(() => {
-    if (walletAddress && !showWalletBox) {
+    if (walletAddress && !showWalletBox && !hasAutoOpenedRef.current) {
       // Only auto-open if we just connected (not if wallet was already connected)
       const justConnected = sessionStorage.getItem('wallet_just_connected');
       if (justConnected === 'true') {
         console.log('📦 [HeaderWalletInfo] Wallet address available, auto-opening wallet box...');
+        hasAutoOpenedRef.current = true; // Mark as opened
+        
         setTimeout(() => {
           setShowWalletBox(true);
           sessionStorage.removeItem('wallet_just_connected');
+          console.log('✅ [HeaderWalletInfo] Wallet box auto-opened successfully');
         }, 500);
       }
+    } else if (!walletAddress) {
+      // Reset flag when wallet is disconnected
+      hasAutoOpenedRef.current = false;
     }
   }, [walletAddress, showWalletBox]);
 
@@ -367,7 +376,7 @@ const HeaderWalletInfo = () => {
               
               <div className="token-balance">
                 <div className="balance-left">
-                  {walletType === "SOLANA" ? (
+                  {(walletType === "SOLANA" || walletType === "Solana") ? (
                     <SolanaIcon />
                   ) : chainId === 56 ? (
                     <img src={binanceLogo} alt="BSC" style={{ width: '20px', height: '20px', borderRadius: '50%' }} />

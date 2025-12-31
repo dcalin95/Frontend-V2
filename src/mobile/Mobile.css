@@ -1078,12 +1078,13 @@ body.presale-copilot-closed .mobile-presale-wrapper {
    WALLET BUTTON - SOLANA AI STYLE
    ================================ */
 
-/* Target Web3Modal / WalletConnect button */
-w3m-button,
-w3m-connect-button,
+/* Wallet button (our own UI) */
 [class*="wallet-connect"],
 [class*="connect-wallet"],
-button[class*="wallet"] {
+button[class*="wallet"],
+.wallet-option,
+.wallet-toggle-btn,
+.wallet-toggle-btn-minimal {
   /* Override default styles */
   background: linear-gradient(135deg, #14f195, #9945ff) !important;
   border: 2px solid rgba(20, 241, 149, 0.5) !important;
@@ -1100,11 +1101,12 @@ button[class*="wallet"] {
   overflow: hidden !important;
 }
 
-w3m-button::before,
-w3m-connect-button::before,
 [class*="wallet-connect"]::before,
 [class*="connect-wallet"]::before,
-button[class*="wallet"]::before {
+button[class*="wallet"]::before,
+.wallet-option::before,
+.wallet-toggle-btn::before,
+.wallet-toggle-btn-minimal::before {
   content: '' !important;
   position: absolute !important;
   inset: 0 !important;
@@ -1113,39 +1115,43 @@ button[class*="wallet"]::before {
   transition: opacity 0.3s ease !important;
 }
 
-w3m-button:hover::before,
-w3m-connect-button:hover::before,
 [class*="wallet-connect"]:hover::before,
 [class*="connect-wallet"]:hover::before,
-button[class*="wallet"]:hover::before {
+button[class*="wallet"]:hover::before,
+.wallet-option:hover::before,
+.wallet-toggle-btn:hover::before,
+.wallet-toggle-btn-minimal:hover::before {
   opacity: 1 !important;
 }
 
-w3m-button:hover,
-w3m-connect-button:hover,
 [class*="wallet-connect"]:hover,
 [class*="connect-wallet"]:hover,
-button[class*="wallet"]:hover {
+button[class*="wallet"]:hover,
+.wallet-option:hover,
+.wallet-toggle-btn:hover,
+.wallet-toggle-btn-minimal:hover {
   box-shadow: 0 0 25px rgba(20, 241, 149, 0.6),
               0 0 50px rgba(153, 69, 255, 0.4) !important;
   transform: translateY(-2px) scale(1.05) !important;
 }
 
-w3m-button:active,
-w3m-connect-button:active,
 [class*="wallet-connect"]:active,
 [class*="connect-wallet"]:active,
-button[class*="wallet"]:active {
+button[class*="wallet"]:active,
+.wallet-option:active,
+.wallet-toggle-btn:active,
+.wallet-toggle-btn-minimal:active {
   transform: translateY(0) scale(1) !important;
 }
 
 /* Mobile specific wallet button */
 @media (max-width: 768px) {
-  w3m-button,
-  w3m-connect-button,
   [class*="wallet-connect"],
   [class*="connect-wallet"],
-  button[class*="wallet"] {
+  button[class*="wallet"],
+  .wallet-option,
+  .wallet-toggle-btn,
+  .wallet-toggle-btn-minimal {
     padding: 14px 20px !important;
     font-size: 14px !important;
     border-radius: 10px !important;
@@ -1154,11 +1160,12 @@ button[class*="wallet"]:active {
 }
 
 @media (max-width: 480px) {
-  w3m-button,
-  w3m-connect-button,
   [class*="wallet-connect"],
   [class*="connect-wallet"],
-  button[class*="wallet"] {
+  button[class*="wallet"],
+  .wallet-option,
+  .wallet-toggle-btn,
+  .wallet-toggle-btn-minimal {
     padding: 12px 18px !important;
     font-size: 13px !important;
     border-radius: 8px !important;

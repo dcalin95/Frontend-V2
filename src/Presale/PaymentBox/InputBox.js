@@ -5,25 +5,28 @@ import "./InputBox.css";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { GiBroom, GiWallet } from "react-icons/gi";
 import SmartTooltip from "../components/SmartTooltip";
+import PRESALE_CONFIG from "../../config/presaleConfig";
 
 const InputBox = ({ amountPay, setAmountPay, userBalance, selectedToken, minAmountToken, minAmountDecimals }) => {
-  // 🌟 Different minimum amounts and steps by token
-  const DEFAULT_MIN = (selectedToken === "SOL") ? 0.001 :
-                      (selectedToken === "USDC-Solana") ? 0.01 :
-                      (selectedToken === "BTCB") ? 0.0001 : 0.01;
+  // 🌟 Different minimum amounts and steps by token (from config)
+  const DEFAULT_MIN = PRESALE_CONFIG.DEFAULT_MIN_AMOUNTS[selectedToken] || 0.01;
   const MIN_AMOUNT = typeof minAmountToken === 'number' && minAmountToken > 0 ? minAmountToken : DEFAULT_MIN;
-  const STEP = (selectedToken === "SOL") ? 0.001 :
-               (selectedToken === "USDC-Solana") ? 0.01 :
-               (selectedToken === "BTCB") ? 0.0001 : 0.01;
-  const DEFAULT_DECIMALS = (selectedToken === "SOL") ? 3 :
-                           (selectedToken === "BTCB") ? 4 :
-                           (selectedToken === "USDC-Solana") ? 2 : 2;
+  const STEP = PRESALE_CONFIG.STEP_AMOUNTS[selectedToken] || 0.01;
+  const DEFAULT_DECIMALS = PRESALE_CONFIG.DECIMALS[selectedToken] || 2;
   const DECIMALS = typeof minAmountDecimals === 'number' ? Math.max(minAmountDecimals, DEFAULT_DECIMALS) : DEFAULT_DECIMALS;
 
   const [internalValue, setInternalValue] = useState(
     typeof amountPay === "number" && !isNaN(amountPay) ? amountPay : MIN_AMOUNT
   );
 
+  // 🔥 FIX: Force correction if current amount is below minimum when minimum changes
+  useEffect(() => {
+    if (typeof amountPay === "number" && !isNaN(amountPay) && amountPay < MIN_AMOUNT) {
+      console.warn("⚠️ [InputBox] Current amount", amountPay, "is below minimum", MIN_AMOUNT, "- auto-correcting!");
+      setAmountPay(MIN_AMOUNT);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [MIN_AMOUNT]); // Only when MIN_AMOUNT changes, not amountPay (to avoid loop)
 
   useEffect(() => {
     if (typeof amountPay !== "number" || isNaN(amountPay)) return;
@@ -49,9 +52,19 @@ const InputBox = ({ amountPay, setAmountPay, userBalance, selectedToken, minAmou
   }, [amountPay, internalValue]);
 
   const handleInputChange = (e) => {
-    let value = parseFloat(e.target.value);
+    // 🔥 FIX: Normalize comma to dot for mobile keyboards (European locale)
+    const normalizedValue = e.target.value.replace(/,/g, '.');
+    
+    console.log("⌨️ [handleInputChange] Input changed:");
+    console.log("   - Raw value:", e.target.value);
+    console.log("   - Normalized value:", normalizedValue);
+    
+    let value = parseFloat(normalizedValue);
     if (isNaN(value) || value < MIN_AMOUNT) {
+      console.log("   - Value is invalid or below minimum, setting to:", MIN_AMOUNT);
       value = MIN_AMOUNT;
+    } else {
+      console.log("   - Final value to set:", value);
     }
     setAmountPay(value);
   };
@@ -78,9 +91,37 @@ const InputBox = ({ amountPay, setAmountPay, userBalance, selectedToken, minAmou
   // 🎯 Percentage buttons handler (25%, 50%, 75%, MAX)
   const handlePercentage = (percent) => {
     const balance = parseFloat(userBalance || 0);
+    
+    console.log("🎯 [handlePercentage] Button clicked:");
+    console.log("   - Requested percent:", percent);
+    console.log("   - User balance (raw):", userBalance, "| type:", typeof userBalance);
+    console.log("   - User balance (parsed):", balance);
+    console.log("   - Selected token:", selectedToken);
+    console.log("   - MIN_AMOUNT:", MIN_AMOUNT);
+    console.log("   - DECIMALS:", DECIMALS);
+    console.log("   - Device info:", {
+      isMobile: document.body.classList.contains('mode-mobile'),
+      width: window.innerWidth,
+      height: window.innerHeight
+    });
+    
     if (balance > 0) {
-      const calculatedAmount = parseFloat(((balance * percent) / 100).toFixed(DECIMALS));
-      setAmountPay(Math.max(calculatedAmount, MIN_AMOUNT));
+      const rawCalculation = (balance * percent) / 100;
+      const calculatedAmount = parseFloat(rawCalculation.toFixed(DECIMALS));
+      
+      console.log("   - Raw calculation:", rawCalculation);
+      console.log("   - Formula:", `(${balance} * ${percent}) / 100 = ${rawCalculation}`);
+      console.log(`   - After toFixed(${DECIMALS}):`, calculatedAmount);
+      console.log("   - Will compare:", calculatedAmount, "vs MIN_AMOUNT:", MIN_AMOUNT);
+      console.log("   - Final amount (max of calculated or MIN):", Math.max(calculatedAmount, MIN_AMOUNT));
+      
+      const finalAmount = Math.max(calculatedAmount, MIN_AMOUNT);
+      console.log("   - 🔥 SETTING amountPay to:", finalAmount);
+      setAmountPay(finalAmount);
+    } else {
+      console.warn("⚠️ [handlePercentage] Balance is 0 or invalid!");
+      console.warn("   - userBalance was:", userBalance);
+      console.warn("   - parsed balance was:", balance);
     }
   };
 

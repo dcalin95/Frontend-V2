@@ -4,6 +4,7 @@ import useFetchBalances from "../../hooks/useFetchBalances";
 import useAvailableBits from "../../hooks/useAvailableBits";
 import useBitsPrice from "../../prices/useBitsPrice";
 import useBitsEstimate from "../../hooks/useBitsEstimate";
+import PRESALE_CONFIG from "../../../config/presaleConfig";
 
 const usePaymentState = ({
   selectedToken,
@@ -32,21 +33,20 @@ const usePaymentState = ({
     error: priceError,
   } = useBitsPrice(walletAddress);
 
-  // 💰 Token Price Calculation
+  // 💰 Token Price Calculation (use config fallback if price is missing or zero)
   const selectedTokenPrice = useMemo(() => {
     let price = tokenPrices?.[selectedToken]?.price || 0;
-    if (selectedToken === "SOL" && (!price || price === 0)) price = 150;
+    if (!price || price === 0) {
+      price = PRESALE_CONFIG.FALLBACK_PRICES[selectedToken] || 0;
+    }
     return price;
   }, [tokenPrices, selectedToken]);
 
-  // 🛡️ Safe Amount Validation
+  // 🛡️ Safe Amount Validation (use config defaults)
   const safeAmountPay = useMemo(() => {
     const numAmount = parseFloat(amountPay);
     if (!amountPay || amountPay === "" || isNaN(numAmount) || numAmount === undefined || numAmount === null || numAmount <= 0) {
-      if (selectedToken === 'SOL') return 0.001;
-      if (selectedToken === 'BTCB') return 0.0001;
-      if (selectedToken === 'USDC-Solana') return 0.01;
-      return 0.01;
+      return PRESALE_CONFIG.DEFAULT_MIN_AMOUNTS[selectedToken] || 0.01;
     }
     return numAmount;
   }, [amountPay, selectedToken]);

@@ -20,20 +20,10 @@ export const useSolanaWallet = () => useContext(SolanaContext);
 const SolanaAutoConnect = ({ children }) => {
   const { connected, publicKey, wallet } = useWallet();
 
-  // Restore connection from localStorage on mount - DISABLED to prevent auto-connect
-  // User must manually connect via the wallet modal
-  useEffect(() => {
-    // Auto-connect disabled - user must manually select and connect
-    // This prevents Phantom from auto-connecting when user wants to use MetaMask
-    console.log('ℹ️ [SolanaAutoConnect] Auto-connect disabled - user must manually connect');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Only run on mount
-
-  // Save connection state when connected - DISABLED as per security policy
-  // Wallets should not be persisted in localStorage
+  // Log only when wallet connects (not on every mount)
   useEffect(() => {
     if (connected && publicKey && wallet) {
-      console.log('✅ Solana wallet connected:', publicKey.toBase58());
+      console.log('✅ [Solana] Wallet connected:', publicKey.toBase58());
     }
   }, [connected, publicKey, wallet]);
 
@@ -44,29 +34,60 @@ export const SolanaProvider = ({ children }) => {
   // Solana network (mainnet-beta for production)
   const network = WalletAdapterNetwork.Mainnet;
   
-  // RPC endpoint
-  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  // 🚀 IMPROVED: Use high-performance RPC endpoints (fallback chain)
+  // Priority: Paid RPCs > Public RPCs with better rate limits
+  const endpoint = useMemo(() => {
+    // Try multiple endpoints for better reliability
+    const endpoints = [
+      'https://solana-mainnet.g.alchemy.com/v2/demo', // Alchemy (demo key - replace with your own)
+      'https://api.mainnet-beta.solana.com',           // Official Solana RPC
+      'https://solana-mainnet.rpc.extrnode.com',       // ExtrNode (good uptime)
+      'https://rpc.ankr.com/solana',                   // Ankr (reliable)
+      clusterApiUrl(network)                           // Fallback to default
+    ];
+    
+    // Return first endpoint (you can add health checks here if needed)
+    return endpoints[1]; // Using official Solana RPC for stability
+  }, [network]);
   
-  // 🛑 DISABLED: Never auto-connect - prevents Phantom from opening on refresh
+  // 🛑 CRITICAL: Never auto-connect - prevents Phantom from opening on refresh
+  // User MUST explicitly click "Connect Wallet" button
   const shouldAutoConnect = false;
 
-  // Configure supported Solana wallets
+  // Configure supported Solana wallets (Phantom first for priority)
   const wallets = useMemo(
     () => [
-      new PhantomWalletAdapter(),
-      new SolflareWalletAdapter(),
-      new TorusWalletAdapter(),
-      new NightlyWalletAdapter(),
-      new MathWalletAdapter(),
-      new Coin98WalletAdapter(),
-      new CloverWalletAdapter(),
+      new PhantomWalletAdapter(),      // 🟣 Primary wallet
+      new SolflareWalletAdapter(),     // 🟠 Alternative
+      new TorusWalletAdapter(),        // 🔵 Web-based
+      new NightlyWalletAdapter(),      // 🌙 Mobile-friendly
+      new MathWalletAdapter(),         // 🧮 Multi-chain
+      new Coin98WalletAdapter(),       // 💰 Popular in Asia
+      new CloverWalletAdapter(),       // 🍀 Multi-chain
     ],
     []
   );
 
   return (
-    <ConnectionProvider endpoint={endpoint}>
-      <SolanaWalletProvider wallets={wallets} autoConnect={shouldAutoConnect}>
+    <ConnectionProvider 
+      endpoint={endpoint}
+      config={{
+        commitment: 'confirmed',           // Faster than 'finalized', safer than 'processed'
+        confirmTransactionInitialTimeout: 60000, // 60s timeout for tx confirmation
+        wsEndpoint: undefined,             // Let it auto-derive from endpoint
+      }}
+    >
+      <SolanaWalletProvider 
+        wallets={wallets} 
+        autoConnect={shouldAutoConnect}
+        onError={(error) => {
+          console.error('🔴 [SolanaWalletProvider] Error:', error);
+          // Don't show error to user for connection rejections (code 4001)
+          if (error?.code !== 4001) {
+            console.error('🔴 [SolanaWalletProvider] Non-rejection error:', error.message);
+          }
+        }}
+      >
         <SolanaAutoConnect>
           <SolanaContext.Provider value={{}}>
             {children}

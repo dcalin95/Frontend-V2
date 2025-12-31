@@ -7,6 +7,7 @@ import { CONTRACT_MAP } from "../../contract/contractMap";
 import bitsLogo from "../../assets/logo.png";
 import { ethers } from "ethers";
 import "./PresaleCopilot.css";
+import "./PresaleCopilot-SOL-History.css";
 
 const getExplorerBase = (desiredChainId) => {
   // BSC Mainnet
@@ -82,13 +83,18 @@ const PresaleCopilot = ({
   defaultOpen = true,
   variant = "presale", // "presale" | "global"
 }) => {
-  const { walletAddress, chainId, connectWallet, walletName } = useWallet();
+  const { walletAddress, chainId, connectWallet, walletName, walletType, nativeSymbol, ethBalance } = useWallet();
   const [open, setOpen] = useState(() => !!defaultOpen);
   const [txHash, setTxHash] = useState("");
   const [lastTx, setLastTx] = useState(null);
   const [lastTxStatus, setLastTxStatus] = useState(null); // 'pending' | 'confirmed' | 'failed' | null
   const [faqOpen, setFaqOpen] = useState(false);
+  const [txHistoryOpen, setTxHistoryOpen] = useState(false); // 🆕 Pentru istoricul SOL
+  const [solTxHistory, setSolTxHistory] = useState([]); // 🆕 Lista TX-urilor SOL
   const [tgInfo, setTgInfo] = useState({ loading: false, eligible: false, reward: 0, timeSpent: 0, messages: 0, error: null });
+
+  // 🎯 Detect if we are actually connected to Solana
+  const isActuallySolana = walletType?.toUpperCase() === "SOLANA";
 
   // Let Presale layout reserve space for the fixed Copilot (no overlap).
   useEffect(() => {
@@ -122,15 +128,17 @@ const PresaleCopilot = ({
   }, [selectedChain, selectedToken]);
 
   const isSolana = useMemo(() => {
+    // If actually connected to Solana, respect that
+    if (isActuallySolana) return true;
     const t = String(selectedToken || "").toUpperCase();
     return selectedChain === "solana" || ["SOL", "USDC-SOLANA", "USDT-SOLANA"].includes(t);
-  }, [selectedChain, selectedToken]);
+  }, [selectedChain, selectedToken, isActuallySolana]);
 
   const isEvmFlow = selectedChain === "evm" && !isFiat && !isSolana;
-  const walletOk = !!walletAddress || !isEvmFlow;
-  const chainOk = !isEvmFlow || Number(chainId) === desiredChainId;
-  const connectedNetworkLabel = useMemo(() => getChainLabel(chainId), [chainId]);
-  const desiredNetworkLabel = useMemo(() => getChainLabel(desiredChainId), [desiredChainId]);
+  const walletOk = !!walletAddress; // show connected only when we really have an address
+  const chainOk = !isEvmFlow || Number(chainId) === desiredChainId || isActuallySolana;
+  const connectedNetworkLabel = isActuallySolana ? "Solana Mainnet" : getChainLabel(chainId);
+  const desiredNetworkLabel = getChainLabel(desiredChainId);
 
   const walletLogo = useMemo(() => {
     const n = String(walletName || "").toLowerCase();
@@ -141,6 +149,7 @@ const PresaleCopilot = ({
     if (n.includes("rainbow")) return "https://avatars.githubusercontent.com/u/48327834?s=200&v=4";
     if (n.includes("walletconnect")) return "https://docs.walletconnect.com/img/walletconnect-logo.png";
     if (n.includes("binance")) return "https://cryptologos.cc/logos/bnb-bnb-logo.png";
+    if (n.includes("phantom")) return "https://raw.githubusercontent.com/solana-labs/wallet-adapter/master/packages/wallets/icons/phantom.svg";
     return null;
   }, [walletName]);
 
@@ -195,12 +204,16 @@ const PresaleCopilot = ({
   const headerSub = useMemo(() => {
     // Dacă nu e wallet conectat, arată clar
     if (!walletAddress) return "Not connected";
+    
+    // IF CONNECTED TO SOLANA, SHOW SOLANA INFO
+    if (isActuallySolana) return "SOLANA • OK";
+
     const t = String(selectedToken || "").toUpperCase();
     const c = String(selectedChain || "").trim();
     if (!t && !c) return variant === "global" ? "Open Presale" : "—";
     if (t && c) return `${t} • ${c}`;
     return t || c || "—";
-  }, [selectedToken, selectedChain, variant, walletAddress]);
+  }, [selectedToken, selectedChain, variant, walletAddress, isActuallySolana]);
 
   const BACKEND_URL = useMemo(() => {
     return (process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com").toString().replace(/\/+$/, "");
@@ -237,6 +250,14 @@ const PresaleCopilot = ({
       setLastTx(parsed);
     } else {
       setLastTx(null);
+    }
+    
+    // 🆕 Load SOL transaction history
+    const solHistoryRaw = localStorage.getItem("presale_sol_tx_history");
+    const solHistory = safeJsonParse(solHistoryRaw) || [];
+    if (Array.isArray(solHistory)) {
+      // Sort by timestamp, newest first
+      setSolTxHistory(solHistory.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)));
     }
   }, []);
 
@@ -592,6 +613,17 @@ const PresaleCopilot = ({
                 )}
               </span>
             </div>
+            
+            {/* 💰 New Balance Line in Copilot */}
+            {walletAddress && (
+              <div className="pc-check ok">
+                <span className="pc-dot" />
+                <span className="pc-label">
+                  Balance: <strong>{ethBalance || "0.0000"} {nativeSymbol}</strong>
+                </span>
+              </div>
+            )}
+
             <div className="pc-check ok">
               <span className="pc-dot" />
               <span className="pc-label">Payment: choose amount and confirm</span>
@@ -676,6 +708,22 @@ const PresaleCopilot = ({
           )}
 
           {lastTx?.hash && <div className="presale-copilot__divider" />}
+
+          {/* 🆕 SOL Transaction History Button */}
+          {solTxHistory.length > 0 && (
+            <>
+              <div className="presale-copilot__sol-history-btn">
+                <button 
+                  type="button" 
+                  className="pc-btn primary" 
+                  onClick={() => setTxHistoryOpen(true)}
+                >
+                  📜 View SOL History ({solTxHistory.length})
+                </button>
+              </div>
+              <div className="presale-copilot__divider" />
+            </>
+          )}
 
           <div className="presale-copilot__trust">
             <div className="pc-trust__title">
@@ -827,6 +875,94 @@ const PresaleCopilot = ({
           </div>
         </div>
         </>
+      )}
+      
+      {/* 🆕 SOL Transaction History Modal */}
+      {txHistoryOpen && (
+        <div className="pc-modal-overlay" onClick={() => setTxHistoryOpen(false)}>
+          <div className="pc-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="pc-modal-header">
+              <h3>📜 SOL Transaction History</h3>
+              <button 
+                type="button" 
+                className="pc-modal-close" 
+                onClick={() => setTxHistoryOpen(false)}
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="pc-modal-body">
+              {solTxHistory.length === 0 ? (
+                <div className="pc-tx__hint">No SOL transactions yet.</div>
+              ) : (
+                <div className="pc-sol-history-list">
+                  {solTxHistory.map((tx, idx) => (
+                    <div key={tx.signature || idx} className="pc-sol-tx-item">
+                      <div className="pc-sol-tx-header">
+                        <span className="pc-sol-tx-date">
+                          {new Date(tx.timestamp).toLocaleString()}
+                        </span>
+                        <span className={`pc-sol-tx-status ${tx.status || "unknown"}`}>
+                          {tx.status || "Unknown"}
+                        </span>
+                      </div>
+                      
+                      <div className="pc-sol-tx-row">
+                        <span className="pc-sol-tx-label">Amount:</span>
+                        <span className="pc-sol-tx-value">{tx.amount} SOL</span>
+                      </div>
+                      
+                      <div className="pc-sol-tx-row">
+                        <span className="pc-sol-tx-label">BITS:</span>
+                        <span className="pc-sol-tx-value">{tx.bitsReceived?.toLocaleString()}</span>
+                      </div>
+                      
+                      <div className="pc-sol-tx-row">
+                        <span className="pc-sol-tx-label">USD:</span>
+                        <span className="pc-sol-tx-value">${tx.usdInvested?.toFixed(2)}</span>
+                      </div>
+                      
+                      <div className="pc-sol-tx-row">
+                        <span className="pc-sol-tx-label">Signature:</span>
+                        <span className="pc-sol-tx-value mono" title={tx.signature}>
+                          {shortAddr(tx.signature, 8, 8)}
+                        </span>
+                      </div>
+                      
+                      <div className="pc-sol-tx-actions">
+                        <button
+                          type="button"
+                          className="pc-btn pc-btn--copy"
+                          onClick={() => handleCopy(tx.signature)}
+                        >
+                          Copy
+                        </button>
+                        <button
+                          type="button"
+                          className="pc-btn pc-btn--open"
+                          onClick={() => window.open(`https://solscan.io/tx/${tx.signature}`, "_blank", "noopener,noreferrer")}
+                        >
+                          View on Solscan
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            <div className="pc-modal-footer">
+              <button 
+                type="button" 
+                className="pc-btn" 
+                onClick={() => setTxHistoryOpen(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </aside>
   );

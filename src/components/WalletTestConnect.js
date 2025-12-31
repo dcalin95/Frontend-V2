@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { createConfig, http, useAccount, useConnect, useDisconnect, WagmiProvider } from "wagmi";
 import { mainnet, bsc } from "wagmi/chains";
-import { walletConnect } from "wagmi/connectors";
+import { walletConnect, injected } from "wagmi/connectors";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createWeb3Modal } from "@web3modal/wagmi/react";
-import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 
 // ⚙️ CONFIGURARE WALLET CONNECT (Modern Setup)
 // NOTĂ: În producție, obține un projectId gratuit de pe https://cloud.walletconnect.com
@@ -19,23 +17,18 @@ const metadata = {
 
 const chains = [mainnet, bsc];
 
-// Configurare Wagmi folosind helper-ul Web3Modal pentru simplitate maximă
-const config = defaultWagmiConfig({
+// ✅ Test config WITHOUT Web3Modal/AppKit (no iframe)
+const config = createConfig({
   chains,
-  projectId,
-  metadata,
-});
-
-// Inițializare modal Web3
-createWeb3Modal({
-  wagmiConfig: config,
-  projectId,
-  enableAnalytics: true, // Opțional
-  themeMode: 'dark',
-  themeVariables: {
-    '--w3m-accent': '#00FFA3', // Solana Green
-    '--w3m-border-radius-master': '12px'
-  }
+  connectors: [
+    injected({ shimDisconnect: true }),
+    walletConnect({ projectId, metadata, showQrModal: true }),
+  ],
+  transports: {
+    [mainnet.id]: http(),
+    [bsc.id]: http(),
+  },
+  ssr: false,
 });
 
 const queryClient = new QueryClient();
@@ -44,6 +37,7 @@ const queryClient = new QueryClient();
 const WalletConnectLogic = () => {
   const { address, isConnected, connector } = useAccount();
   const { disconnect } = useDisconnect();
+  const { connect, connectors } = useConnect();
   const [statusMsg, setStatusMsg] = useState("");
 
   // 3. Detectare automată Mobil vs Desktop
@@ -78,12 +72,11 @@ const WalletConnectLogic = () => {
     }
   };
 
-  // Opens Web3Modal (automatically handles Deep Link on mobile and QR on desktop)
+  // Opens WalletConnect connector (automatically handles deep-link on mobile and QR on desktop)
   const handleConnect = async () => {
-    // Web3Modal opens automatically via the internal hook of the <w3m-button /> button
-    // or we can use useWeb3Modal() if we want a custom button.
-    // For simplicity and modernity, we use their native component or custom button that triggers the modal.
-    document.querySelector("w3m-button")?.click(); 
+    const wc = connectors.find(c => c.id === 'walletConnect' || String(c.name || '').toLowerCase().includes('walletconnect'));
+    if (!wc) return;
+    await connect({ connector: wc });
   };
 
   return (
@@ -106,8 +99,20 @@ const WalletConnectLogic = () => {
 
       {!isConnected ? (
         <div style={{ display: "flex", justifyContent: "center" }}>
-          {/* Official Web3Modal Button - Handles everything automatically */}
-          <w3m-button />
+          <button
+            onClick={() => handleConnect().catch(() => {})}
+            style={{
+              background: "#00FFA3",
+              border: "none",
+              color: "#000",
+              padding: "10px 16px",
+              borderRadius: "10px",
+              cursor: "pointer",
+              fontWeight: "bold",
+            }}
+          >
+            Connect (WalletConnect)
+          </button>
         </div>
       ) : (
         <div>

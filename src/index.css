@@ -33,11 +33,7 @@
   
   --container-padding: clamp(1rem, 5vw, 2rem);
   
-  /* 🔗 WEB3MODAL - Compact pe mobil */
-  --w3m-z-index: 99999;
-  --w3m-accent-color: #14F195;
-  --w3m-background-color: #0a0a14;
-  --wcm-z-index: 99999;
+  /* Wallet modals are handled by our own UI; no Web3Modal/AppKit variables here. */
 }
 
 /* === Token inline (logo + text) — GLOBAL === */
@@ -59,13 +55,7 @@
   color: rgba(255, 255, 255, 0.92);
 }
 
-/* Web3Modal Mobile Override - Mai sus și mai compact */
-@media (max-width: 768px) {
-  :root {
-    --w3m-modal-margin: 40px auto auto auto;
-    --wcm-modal-margin: 40px auto auto auto;
-  }
-}
+/* (removed) Web3Modal/AppKit overrides */
 
 /* === HTML Scaling === */
 html {

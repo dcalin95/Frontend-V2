@@ -396,23 +396,25 @@
   top: -12px;
   right: -12px;
   background: linear-gradient(135deg, #14f195 0%, #9945ff 100%);
-  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid #fff;
   color: #000;
-  border-radius: 50%;
-  width: 34px;
+  border-radius: 20px;
   height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
+  padding: 0 12px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   z-index: 10005;
-  box-shadow: 0 4px 15px rgba(20, 241, 149, 0.5);
+  box-shadow: 0 4px 15px rgba(20, 241, 149, 0.6);
+  width: auto;
 }
 
 .wallet-minimize-btn:hover {
-  transform: scale(1.2) rotate(90deg);
-  box-shadow: 0 6px 20px rgba(20, 241, 149, 0.7);
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(20, 241, 149, 0.8);
   background: #fff;
 }
 
@@ -423,12 +425,17 @@
 .wallet-minimize-btn svg {
   width: 14px;
   height: 14px;
-  stroke: #000;
+  stroke: #000 !important;
   stroke-width: 3px;
 }
 
 .wallet-minimize-btn .minimize-text {
-  display: none; /* Ascundem textul pentru stil minimalist */
+  display: block !important;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #000;
 }
 
 .wallet-remember-toggle {

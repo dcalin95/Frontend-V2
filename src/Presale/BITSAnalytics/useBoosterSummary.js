@@ -120,7 +120,59 @@ export const useBoosterSummary = () => {
         });
       }
       
-      console.log("🎯 FINAL TOTAL BITS:", totalBits);
+      console.log("🎯 FINAL TOTAL BITS (EVM only):", totalBits);
+      
+      // 🌐 ADAUGĂ PLĂȚILE SOLANA DIN BACKEND
+      let solanaBits = 0;
+      let solanaUSD = 0;
+      try {
+        const backendURL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+        const solanaResponse = await fetch(`${backendURL}/api/solana/payments/user/${walletAddress}`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (solanaResponse.ok) {
+          const solanaData = await solanaResponse.json();
+          console.log("🟣 [useBoosterSummary] Solana payments from backend:", solanaData);
+          
+          if (Array.isArray(solanaData) && solanaData.length > 0) {
+            solanaData.forEach((payment, idx) => {
+              const bits = parseFloat(payment.bits_received || payment.bits_to_receive || 0);
+              const usd = parseFloat(payment.usd_invested || 0);
+              solanaBits += bits;
+              solanaUSD += usd;
+              console.log(`🟣 Solana payment ${idx}: ${bits} BITS ($${usd})`);
+            });
+          }
+        } else {
+          console.warn("⚠️ [useBoosterSummary] Backend Solana endpoint returned:", solanaResponse.status);
+        }
+      } catch (solanaErr) {
+        console.warn("⚠️ [useBoosterSummary] Failed to fetch Solana payments:", solanaErr.message);
+        
+        // Fallback: citește din localStorage
+        try {
+          const localHistory = JSON.parse(localStorage.getItem('presale_sol_tx_history') || '[]');
+          if (Array.isArray(localHistory) && localHistory.length > 0) {
+            console.log("🟣 [useBoosterSummary] Using Solana history from localStorage:", localHistory.length);
+            localHistory.forEach((tx, idx) => {
+              const bits = parseFloat(tx.bitsToReceive || 0);
+              solanaBits += bits;
+              console.log(`🟣 Solana localStorage tx ${idx}: ${bits} BITS`);
+            });
+          }
+        } catch (localErr) {
+          console.warn("⚠️ [useBoosterSummary] localStorage read failed:", localErr.message);
+        }
+      }
+      
+      // Agregare finală
+      totalBits += solanaBits;
+      totalUSD += solanaUSD;
+      
+      console.log("🎯 FINAL TOTAL BITS (EVM + Solana):", totalBits);
+      console.log(`🎯 SOLANA CONTRIBUTION: ${solanaBits} BITS, $${solanaUSD}`);
       
       // Să încerc să obțin date din CellManager pentru prețul curent
       let currentPrice = 1; // fallback
@@ -353,7 +405,7 @@ export const useBoosterSummary = () => {
         totalBits: totalBits,
         realInvestedUSD: totalUSD,
         investedUSD: totalUSD,
-        investedUSDOnSolana: 0,
+        investedUSDOnSolana: solanaUSD,
         referralBonus: 0,
         telegramBonus: telegramRewardBits || 0,
         additionalBonus: additionalRewardData,

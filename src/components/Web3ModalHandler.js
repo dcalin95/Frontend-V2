@@ -1,36 +1,40 @@
 import React, { useEffect } from 'react';
-import { useWeb3Modal } from '@web3modal/wagmi/react';
-import { useAccount } from 'wagmi';
+import { useAccount, useConnect } from 'wagmi';
 import { useWallet } from '../context/WalletContext';
 import walletConnectLogo from '../assets/icons/wallet-connect-logo.png';
 
 /**
- * 🔐 Web3Modal Handler - Separate component for Web3Modal logic
- * Handles Web3Modal connection independently from EVM Direct and Solana Direct
+ * 🔐 WalletConnect Handler - Dedicated component for WalletConnect connector logic
+ * Handles WalletConnect connection independently from EVM Direct and Solana Direct
  */
 const Web3ModalHandler = ({ onClose }) => {
-  const { open: openEvmModal } = useWeb3Modal();
+  const { connect, connectors } = useConnect();
   const { isConnected, address } = useAccount();
   const { setShowWalletModal } = useWallet();
 
-  // Auto-open Web3Modal when component mounts
+  // Auto-open WalletConnect (non-iframe) when component mounts
   useEffect(() => {
-    const openModal = async () => {
+    const openWalletConnect = async () => {
       try {
-        console.log("🌐 [Web3ModalHandler] Opening Web3Modal...");
-        await openEvmModal();
+        const wc = connectors.find(c => c.id === 'walletConnect' || String(c.name || '').toLowerCase().includes('walletconnect'));
+        if (!wc) {
+          console.warn("⚠️ [Web3ModalHandler] WalletConnect connector not found.");
+          return;
+        }
+        console.log("🌐 [Web3ModalHandler] Opening WalletConnect connector...");
+        await connect({ connector: wc });
       } catch (error) {
-        console.error("❌ [Web3ModalHandler] Error opening Web3Modal:", error);
+        console.error("❌ [Web3ModalHandler] Error opening WalletConnect:", error);
       }
     };
 
-    openModal();
-  }, [openEvmModal]);
+    openWalletConnect();
+  }, [connect, connectors]);
 
   // Auto-close this component when connection is successful
   useEffect(() => {
     if (isConnected && address) {
-      console.log('✅ [Web3ModalHandler] EVM wallet connected via Web3Modal, closing...');
+      console.log('✅ [WalletConnectHandler] EVM wallet connected via WalletConnect, closing...');
       setTimeout(() => {
         if (onClose) {
           onClose();
@@ -44,21 +48,23 @@ const Web3ModalHandler = ({ onClose }) => {
 
   return (
     <div className="web3modal-handler">
-      <h2 className="modal-title">Web3Modal</h2>
+      <h2 className="modal-title">WalletConnect</h2>
       <div className="web3modal-content">
-        <p>Opening Web3Modal to select from all available wallets...</p>
+        <p>Opening WalletConnect (QR on desktop / deep link on mobile)...</p>
         <button
           className="wallet-option-btn"
           onClick={async () => {
             try {
-              await openEvmModal();
+              const wc = connectors.find(c => c.id === 'walletConnect' || String(c.name || '').toLowerCase().includes('walletconnect'));
+              if (!wc) return;
+              await connect({ connector: wc });
             } catch (error) {
               console.error("❌ [Web3ModalHandler] Error:", error);
             }
           }}
         >
           <img src={walletConnectLogo} alt="Web3Modal" style={{width: 32, height: 32}} />
-          <span>Open Web3Modal</span>
+          <span>Open WalletConnect</span>
         </button>
       </div>
     </div>

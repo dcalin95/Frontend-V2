@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { toast } from "react-toastify";
+import { ethers } from "ethers";
 import usePaymentState from "../../Presale/PaymentBox/hooks/usePaymentState";
 import useHandleTransaction from "../../Presale/PaymentBox/useHandleTransaction";
 import PaymentTitleBridgeMobile from "./PaymentTitleBridgeMobile";
@@ -32,6 +33,10 @@ const CryptoBoxMobile = ({
   const [, setPopupVisible] = useState(false);
   const [, setIsConfirmed] = useState(false);
   const [referralCode, setReferralCode] = useState("");
+  
+  // 🟣 SOL-only: receiving wallet on BSC/EVM (0x...)
+  const [solReceivingEvmWallet, setSolReceivingEvmWallet] = useState("");
+  const [solReceivingTouched, setSolReceivingTouched] = useState(false);
 
   const paymentState = usePaymentState({
     selectedToken,
@@ -42,6 +47,34 @@ const CryptoBoxMobile = ({
     pricesLoading: false,
   });
 
+  // Auto-fill EVM wallet if available
+  useEffect(() => {
+    if (selectedToken !== "SOL") return;
+    if (solReceivingTouched) return;
+    const w = (paymentState.walletAddress || "").toString().trim();
+    if (w && w.startsWith('0x') && ethers.utils.isAddress(w)) {
+      setSolReceivingEvmWallet(w);
+    } else {
+      setSolReceivingEvmWallet("");
+    }
+  }, [selectedToken, paymentState.walletAddress, solReceivingTouched]);
+
+  const isValidEvmWallet = useMemo(() => {
+    const w = (solReceivingEvmWallet || "").toString().trim();
+    try {
+      return !!w && ethers.utils.isAddress(w);
+    } catch (_) {
+      return false;
+    }
+  }, [solReceivingEvmWallet]);
+
+  const effectiveEvmWallet = useMemo(() => {
+    if (selectedToken === "SOL") {
+      return (solReceivingEvmWallet || "").toString().trim();
+    }
+    return paymentState.walletAddress;
+  }, [selectedToken, solReceivingEvmWallet, paymentState.walletAddress]);
+
   const { handleBuy } = useHandleTransaction({
     selectedToken,
     selectedChain,
@@ -50,7 +83,7 @@ const CryptoBoxMobile = ({
     usdValue: paymentState.usdValue,
     pricePerBitsUSD: paymentState.pricePerBitsUSD,
     selectedTokenPrice: paymentState.selectedTokenPrice,
-    walletAddress: paymentState.walletAddress,
+    walletAddress: effectiveEvmWallet,
     balances: paymentState.balances,
     availableBits: paymentState.availableBits,
     setTransactionHash,
@@ -61,11 +94,18 @@ const CryptoBoxMobile = ({
     selectedPaymentMethod: null,
     referralCode: referralCode,
     stripeAmountEUR: undefined,
+    signer: paymentState.signer,
+    provider: paymentState.provider,
   });
 
   const handleBuyClick = async () => {
     if (!walletAddress) {
       toast.error("Please connect your wallet first");
+      return;
+    }
+
+    if (selectedToken === "SOL" && !isValidEvmWallet) {
+      toast.error("Please enter a valid BSC/EVM receiving address (0x...)");
       return;
     }
 
@@ -88,7 +128,7 @@ const CryptoBoxMobile = ({
     try {
       await handleBuy();
       toast.success(`🎉 Payment successful!`);
-      setAmountPay(0);
+      setAmountPay("");
     } catch (error) {
       console.error("Payment error:", error);
       toast.error(`Payment failed: ${error.message}`);
@@ -348,7 +388,7 @@ const CryptoBoxMobile = ({
       </div>
 
       {/* Referral (Optional) */}
-      <div style={{marginTop: '15px', marginBottom: '20px'}}>
+      <div style={{marginTop: '15px', marginBottom: '10px'}}>
         <input
           type="text"
           className="mobile-input"
@@ -366,6 +406,41 @@ const CryptoBoxMobile = ({
           }}
         />
       </div>
+
+      {/* 🟣 SOL: receiving wallet (BSC/EVM) */}
+      {selectedToken === "SOL" && (
+        <div style={{marginTop: '10px', marginBottom: '20px'}}>
+          <label style={{display: 'block', fontSize: '12px', color: '#14f195', marginBottom: '8px', fontWeight: 'bold'}}>
+            🟣 Receive BITS on (BSC / EVM wallet 0x…)
+          </label>
+          <input
+            type="text"
+            placeholder="Paste your EVM wallet address (0x...)"
+            value={solReceivingEvmWallet}
+            onChange={(e) => {
+              setSolReceivingTouched(true);
+              setSolReceivingEvmWallet(e.target.value.trim());
+            }}
+            style={{
+              width: '100%',
+              background: 'rgba(20, 241, 149, 0.05)',
+              border: `1px solid ${isValidEvmWallet ? 'rgba(20, 241, 149, 0.5)' : 'rgba(255, 107, 107, 0.5)'}`,
+              fontSize: '14px',
+              padding: '12px',
+              borderRadius: '12px',
+              color: '#fff',
+              outline: 'none'
+            }}
+          />
+          <div style={{fontSize: '11px', marginTop: '6px', color: isValidEvmWallet ? 'rgba(255,255,255,0.6)' : '#ff6b6b'}}>
+            {isValidEvmWallet ? (
+              <>✅ Receiving wallet set: <strong>{solReceivingEvmWallet.slice(0,6)}...{solReceivingEvmWallet.slice(-4)}</strong></>
+            ) : (
+              <>⚠️ Required: enter a valid <strong>0x…</strong> address to receive your BITS tokens on BSC.</>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Summary Card */}
       {amountPay > 0 && (

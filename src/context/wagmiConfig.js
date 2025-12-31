@@ -1,5 +1,6 @@
-import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
+import { createConfig, http } from "wagmi";
 import { mainnet, bsc, polygon, arbitrum, optimism, base, avalanche } from "wagmi/chains";
+import { injected, walletConnect, coinbaseWallet } from "wagmi/connectors";
 
 const REMEMBER_WALLET_KEY = "bits_remember_wallet"; // "true" | "false" (default false)
 
@@ -16,7 +17,20 @@ const shouldRememberWallet = () => {
 
 // ⚙️ WALLET CONNECT CONFIGURATION (Modern Setup)
 // NOTE: Get a free projectId from https://cloud.walletconnect.com
-export const projectId = "3a8170812b534d0ff9d794f19a901d64"; // ID Public de test Web3Modal 
+export const projectId = process.env.REACT_APP_WALLETCONNECT_PROJECT_ID || "";
+
+// Dev fallback (keeps local dev + emergency prod hotfix working if env var is not set)
+const DEV_FALLBACK_PROJECT_ID = "3a8170812b534d0ff9d794f19a901d64";
+const effectiveProjectId = projectId || DEV_FALLBACK_PROJECT_ID;
+
+// Production safety: do NOT crash the whole app if env is missing (avoid white-screen).
+// Instead, log loudly; check-env.js should prevent deploying without this.
+if (process.env.NODE_ENV === "production" && !projectId) {
+  // eslint-disable-next-line no-console
+  console.error(
+    "[ENV] Missing REACT_APP_WALLETCONNECT_PROJECT_ID. WalletConnect will use a fallback projectId; please set the env var and redeploy."
+  );
+}
 
 const metadata = {
   name: "BitSwapDEX AI",
@@ -36,23 +50,40 @@ export const chains = [
   avalanche     // Avalanche C-Chain
 ];
 
-export const config = defaultWagmiConfig({
+/**
+ * ✅ IMPORTANT (CSP / WalletConnect):
+ * We DO NOT use Web3Modal/AppKit here because it can load wallet UI via embedded iframes,
+ * which may be blocked by CSP / frame-ancestors.
+ *
+ * Instead, we use wagmi native connectors (WalletConnect v2 + injected + Coinbase SDK),
+ * which do NOT rely on embedded iframe wallet UIs.
+ */
+export const config = createConfig({
   chains,
-  projectId,
-  metadata,
-  defaultChain: bsc, // ✅ Force BSC as default (prevents WC from opening on Ethereum)
-  enableCoinbase: true,
-  enableEmail: true,
-  enableEIP6963: true, // Detects multiple injected wallets (MetaMask, Trust, Phantom, etc.)
-  enableInjected: true, // Essential for dApp browsers (Trust Wallet Browser, MetaMask Browser)
-  enableWalletConnect: true, // Standard connection for external wallets
-
-  // ✅ ENABLE persistent connection:
-  // wagmi will persist the last connector in storage and reconnect on refresh/restart
-  ssr: false, // Disable server-side rendering features that might trigger auto-connect
-
+  ssr: false,
+  connectors: [
+    injected({ shimDisconnect: true }),
+    coinbaseWallet({
+      appName: metadata.name,
+      appLogoUrl: metadata.icons?.[0],
+    }),
+    walletConnect({
+      projectId: effectiveProjectId,
+      metadata,
+      showQrModal: true,
+    }),
+  ],
+  transports: {
+    [bsc.id]: http(),
+    [mainnet.id]: http(),
+    [polygon.id]: http(),
+    [arbitrum.id]: http(),
+    [optimism.id]: http(),
+    [base.id]: http(),
+    [avalanche.id]: http(),
+  },
   // ✅ Conditional persistence (user-controlled):
-  // If the user disables "Remember my wallet", we block wagmi storage reads/writes
+  // If the user disables "Remember my wallet", we block wagmi storage reads
   // so the site behaves like manual-connect-only until re-enabled.
   storage: {
     getItem(key) {
@@ -67,7 +98,6 @@ export const config = defaultWagmiConfig({
       try {
         // Always allow writes so that if user later enables "Remember wallet",
         // the last connection state is already available to restore.
-        // Reads are still blocked when "Remember wallet" is OFF.
         localStorage.setItem(key, value);
       } catch (_) {}
     },

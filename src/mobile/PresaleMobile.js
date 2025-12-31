@@ -5,7 +5,7 @@ import { useWallet } from "../context/WalletContext";
 import { trackTikTokEvent } from "../utils/tiktok";
 import { useSelectedToken } from "../Presale/hooks/useSelectedToken";
 import useTokenPrices from "../Presale/prices/useTokenPrices";
-import useCellManagerData from "../Presale/hooks/useCellManagerData"; // ✅ Import data hook
+import { useCellManager } from "../context/CellManagerContext"; // ✅ Use Context instead of direct hook
 import bitsLogo from "../assets/logo.png";
 import StakingSummary from "../Staking/components/StakingSummary"; // ✅ Use Responsive Component
 import RewardsHub from "../components/RewardsHub"; // ✅ Use Responsive Component
@@ -35,8 +35,8 @@ const PresaleMobile = () => {
     setSelectedChain,
   } = useSelectedToken();
 
-  // ✅ Fetch Real Presale Data
-  const { currentPrice, roundNumber, soldBits, availableBits } = useCellManagerData();
+  // ✅ Fetch Real Presale Data from Context (single source)
+  const { currentPrice, roundNumber, soldBits, availableBits } = useCellManager();
 
   const { prices: tokenPrices } = useTokenPrices();
   const [amountPay, setAmountPay] = useState("");

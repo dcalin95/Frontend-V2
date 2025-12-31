@@ -9,9 +9,19 @@
 const fs = require('fs');
 const path = require('path');
 
+// Hard-required vars: without these the app cannot function correctly.
 const REQUIRED_VARS = [
   'REACT_APP_BACKEND_URL',
   'REACT_APP_ADMIN_PASS'
+];
+
+// Soft-required vars: warn loudly (and still deployable), but do not block build.
+// NOTE: We keep these as WARN to avoid white-screen deployments from missing env
+// while still allowing emergency deploys. Production should always set these.
+const WARN_VARS = [
+  'REACT_APP_WALLETCONNECT_PROJECT_ID',
+  'REACT_APP_SOL_RPC_HTTP',
+  'REACT_APP_SOL_RPC_HTTP_FALLBACK'
 ];
 
 // ✅ BSC Mainnet Contract Addresses (Source of Truth)
@@ -48,6 +58,7 @@ const env = { ...envBase, ...envLocal, ...process.env };
 
 // ✅ Check for missing required variables
 const missing = REQUIRED_VARS.filter((k) => !env[k] || String(env[k]).trim() === '');
+const missingWarn = WARN_VARS.filter((k) => !env[k] || String(env[k]).trim() === '');
 
 if (missing.length > 0) {
   console.error('\n\x1b[31m[ENV CHECK] Missing required variables:\x1b[0m');
@@ -60,6 +71,12 @@ if (missing.length > 0) {
 }
 
 console.log('\x1b[32m[ENV CHECK] ✅ All required environment variables are present.\x1b[0m');
+
+if (missingWarn.length > 0) {
+  console.warn('\n\x1b[33m[ENV CHECK] ⚠️ Missing recommended variables (build will continue):\x1b[0m');
+  missingWarn.forEach((k) => console.warn(` - ${k}`));
+  console.warn('\x1b[33mRecommendation:\x1b[0m set these in .env.local / CI for reliable WalletConnect + Solana payments.\n');
+}
 
 // ✅ Validate BSC Mainnet Contract Addresses
 console.log('\n\x1b[36m[ADDRESS CHECK] Validating BSC Mainnet contract addresses...\x1b[0m');

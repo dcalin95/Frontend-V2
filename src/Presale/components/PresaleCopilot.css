@@ -188,17 +188,24 @@ body.mode-mobile .pc-tele__actions {
 }
 
 .presale-copilot__toggle {
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.06);
-  color: #fff;
-  padding: 8px 10px;
-  border-radius: 10px;
-  font-weight: 700;
+  border: 2px solid rgba(20, 241, 149, 0.85);
+  background: rgba(20, 241, 149, 0.15);
+  color: #14f195;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.05em;
   cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(20, 241, 149, 0.2);
 }
 
 .presale-copilot__toggle:hover {
-  background: rgba(255, 255, 255, 0.10);
+  background: rgba(20, 241, 149, 0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(20, 241, 149, 0.3);
 }
 
 .presale-copilot__body {

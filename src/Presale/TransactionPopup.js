@@ -22,9 +22,17 @@ const getExplorerLink = (txHash, token) => {
   try {
     // Presale is mainnet-only
     const chain = 'mainnet';
-    // Prefer BscScan for BNB token, otherwise delegate to util
+    // Use appropriate explorer based on token
+    if (token === "SOL" || token === "USDC-Solana") {
+      return `https://solscan.io/tx/${txHash}`;
+    }
+    // For other tokens, delegate to util
     return getExplorerLinkUtil(txHash, token || 'BNB', chain);
   } catch (_) {
+    // Fallback based on token type
+    if (token === "SOL" || token === "USDC-Solana") {
+      return `https://solscan.io/tx/${txHash}`;
+    }
     return `https://bscscan.com/tx/${txHash}`;
   }
 };
@@ -194,7 +202,7 @@ const TransactionPopup = ({
           {explorerLink && (
             <SmartTooltip content={`Block Explorer\nVerify this transaction on the public blockchain explorer.`}>
             <a className="btn" href={explorerLink} target="_blank" rel="noreferrer">
-              🔗 Open on BscScan
+              🔗 {token === "SOL" || token === "USDC-Solana" ? "Open on Solscan" : "Open on BscScan"}
             </a>
             </SmartTooltip>
           )}

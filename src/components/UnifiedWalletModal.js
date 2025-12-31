@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useConnect, useAccount } from 'wagmi'; // 🔌 IMPORT CRITIC: Direct Connection Hook
-import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useWallet as useSolanaWalletAdapter } from '@solana/wallet-adapter-react';
 import { useWallet } from '../context/WalletContext';
 import { prepareForConnection, handleConnectionError } from '../utils/walletConnectionFix';
@@ -17,23 +16,11 @@ const UnifiedWalletModal = () => {
   const { showWalletModal, setShowWalletModal, hardReset, markConnectIntent } = useWallet();
   const { connect, disconnect: disconnectEVM, connectors } = useConnect(); // 🔌 Get direct connectors
   const { isConnected, address } = useAccount(); // 🔍 Monitor connection status
-  const { open: openEvmModal } = useWeb3Modal();
   
   // 🛡️ Filter and prioritize EVM connectors (exclude Phantom and other non-EVM wallets)
   const filteredConnectors = useMemo(() => {
-    const filtered = prioritizeEVMWallets(connectors);
-    
-    // Log detected wallets for debugging
-    if (showWalletModal) {
-      console.log('🛡️ [UnifiedWalletModal] ========== CONNECTOR FILTERING ==========');
-      console.log('🛡️ [UnifiedWalletModal] ALL connectors:', connectors.map(c => `${c.name} (${c.id})`));
-      logDetectedWallets();
-      console.log('✅ [UnifiedWalletModal] FILTERED EVM connectors:', filtered.map(c => c.name));
-      console.log('🛡️ [UnifiedWalletModal] ====================================');
-    }
-    
-    return filtered;
-  }, [connectors, showWalletModal]);
+    return prioritizeEVMWallets(connectors);
+  }, [connectors]);
   const { 
     select: selectSolanaWallet, 
     connect: connectSolanaWallet,
@@ -893,15 +880,47 @@ const UnifiedWalletModal = () => {
       console.log(`🔌 [Solana] Connecting to ${walletName} (State: ${wallet.readyState})`);
 
       // ✅ CRITICAL FIX: connect via Solana Wallet Adapter so React state updates (connected/publicKey)
-      // Also preserve user-gesture: call connectSolanaWallet() immediately, do not await anything before it.
+      // Also preserve user-gesture: call wallet.adapter.connect() immediately.
       if (walletNameLower === 'phantom') {
         try {
-          // Select wallet in adapter context (sync)
+          // Select wallet in adapter context (sync call in most versions)
+          console.log('🔌 [Phantom] Selecting wallet in adapter...');
           selectSolanaWallet(wallet.adapter.name);
-        } catch (_) {}
+        } catch (e) {
+          console.warn('⚠️ [Phantom] Error selecting wallet:', e);
+        }
 
-        // Call adapter connect immediately (this should trigger Phantom popup within user gesture)
-        const solanaConnectPromise = connectSolanaWallet();
+        // Small delay to ensure adapter state is ready after selection
+        await new Promise(r => setTimeout(r, 100));
+
+        let solanaConnectPromise;
+        
+        // 🔥 DIRECT PHANTOM CONNECTION: Always use direct window.solana for Phantom
+        if (wallet.adapter.name === 'Phantom' && typeof window !== 'undefined' && (window.solana?.isPhantom || window.phantom?.solana)) {
+          console.log('🔥 [Phantom] Using DIRECT window.solana.connect() (bypassing adapter to avoid errors)...');
+          const provider = window.phantom?.solana || window.solana;
+          
+          // Force connection popup - wrap in try/catch for safety
+          solanaConnectPromise = provider.connect({ onlyIfTrusted: false })
+            .then((response) => {
+              console.log('✅ [Phantom] Direct connection successful:', response.publicKey.toString());
+              
+              // 🔄 CRITICAL: Sync the adapter state so useSolanaWalletAdapter() updates
+              // This is non-blocking - if it fails, we still have the direct connection
+              setTimeout(() => {
+                wallet.adapter.connect().catch(e => console.warn('⚠️ [Phantom] Adapter sync error (non-critical):', e));
+              }, 100);
+              
+              return response;
+            })
+            .catch((err) => {
+              console.error('❌ [Phantom] Direct connection failed:', err);
+              throw err;
+            });
+        } else {
+          console.log('🔌 [Solana] Using adapter.connect() for:', wallet.adapter.name);
+          solanaConnectPromise = wallet.adapter.connect();
+        }
 
         // Cleanup EVM in background (do not await)
         try { if (isConnected || address) disconnectEVM().catch(() => {}); } catch (_) {}
@@ -1288,23 +1307,23 @@ const UnifiedWalletModal = () => {
               <button 
                 className="network-card web3-card"
                 onClick={() => {
-                  // Open Web3Modal directly and close this custom modal to avoid overlap
+                  // ✅ Universal option without Web3Modal/AppKit (no iframe):
+                  // Connect using WalletConnect connector (QR on desktop, deep-link on mobile).
                   try { if (typeof markConnectIntent === 'function') markConnectIntent(); } catch (_) {}
-                  setShowWalletModal(false);
-                  setSelectedNetwork(null);
-                  window.setTimeout(() => {
-                    openEvmModal().catch(() => {});
-                  }, 50);
+                  // Keep modal open so user sees progress/errors
+                  setError(null);
+                  setIsConnecting(true);
+                  connectToSpecificWallet('WalletConnect');
                 }}
-                title="All wallets via Web3Modal"
+                title="Universal connection via WalletConnect (no iframe)"
               >
                 <div className="network-icon-wrapper">
                   <img src={walletConnectLogo} alt="Web3" className="network-icon-img" />
                 </div>
                 <div className="network-info">
-                  <div className="network-name">Web3Modal</div>
+                  <div className="network-name">WalletConnect</div>
                   <div className="network-chains">350+ Wallets</div>
-                  <div className="network-chains">All Networks</div>
+                  <div className="network-chains">QR / Deep Link</div>
                   <div 
                     className="network-tooltip"
                     onMouseEnter={(e) => {
@@ -1326,10 +1345,10 @@ const UnifiedWalletModal = () => {
                           <span className="tooltip-icon">🌐</span>
                           <span className="tooltip-icon">⭐</span>
                         </div>
-                        <strong>Web3Modal - Universal Wallet</strong>
+                        <strong>WalletConnect - Universal Wallet</strong>
                       </div>
                       <div className="tooltip-body">
-                        Access 350+ wallets including Ledger, Trezor, WalletConnect, and more. Supports all EVM chains and Solana. Best for hardware wallets and advanced users.
+                        Access 350+ wallets including Ledger, Trezor, and mobile wallets. Uses WalletConnect v2 (QR / deep link) and avoids embedded iframe UIs for CSP safety.
                       </div>
                     </div>
                   </div>
@@ -1555,7 +1574,20 @@ const UnifiedWalletModal = () => {
                     await new Promise((r) => setTimeout(r, 200));
                     setError(null);
                     setIsConnecting(true);
-                    await connectSolanaWallet();
+                    
+                    // ✅ CRITICAL: Use robust connection logic for Force Reconnect
+                    const walletNameLower = selectedSolanaWallet?.adapter?.name?.toLowerCase() || "";
+                    if (walletNameLower === "phantom" && typeof window !== 'undefined' && (window.solana?.isPhantom || window.phantom?.solana)) {
+                      console.log(`🔌 [Solana] Force reconnecting Phantom via direct window.solana...`);
+                      const provider = window.phantom?.solana || window.solana;
+                      await provider.connect({ onlyIfTrusted: false });
+                    } else if (selectedSolanaWallet?.adapter) {
+                      console.log(`🔌 [Solana] Force reconnecting via adapter: ${selectedSolanaWallet.adapter.name}`);
+                      await selectedSolanaWallet.adapter.connect();
+                    } else {
+                      console.log(`🔌 [Solana] Force reconnecting via generic connect()`);
+                      await connectSolanaWallet();
+                    }
                   } catch (e) {
                     setError(`Force reconnect failed: ${e?.message || String(e)}`);
                   } finally {
