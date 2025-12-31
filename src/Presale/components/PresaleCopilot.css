@@ -212,6 +212,15 @@ body.mode-mobile .pc-tele__actions {
   padding: 12px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  
+  /* 🎨 Hide scrollbar for all browsers */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.presale-copilot__body::-webkit-scrollbar {
+  display: none;
 }
 
 .presale-copilot__checks {

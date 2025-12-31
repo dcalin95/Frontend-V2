@@ -753,7 +753,7 @@ const PresaleCopilot = ({
           {lastTx?.hash && <div className="presale-copilot__divider" />}
 
           {/* 🆕 SOL Transaction History Button */}
-          {solTxHistory.length > 0 && (
+          {solTxHistory.length > 0 ? (
             <>
               <div className="presale-copilot__sol-history-btn">
                 <button 
@@ -766,6 +766,43 @@ const PresaleCopilot = ({
               </div>
               <div className="presale-copilot__divider" />
             </>
+          ) : (
+            walletAddress && (
+              <>
+                <div className="presale-copilot__sol-history-btn">
+                  <div style={{ padding: '10px', fontSize: '12px', color: '#888', textAlign: 'center' }}>
+                    📊 No SOL transactions yet for this wallet
+                  </div>
+                  <button 
+                    type="button" 
+                    className="pc-btn ghost" 
+                    onClick={async () => {
+                      console.log("🔍 [DEBUG] Checking SOL history for:", walletAddress);
+                      console.log("🔍 [DEBUG] Backend URL:", BACKEND_URL);
+                      console.log("🔍 [DEBUG] Full endpoint:", `${BACKEND_URL}/api/solana/payments/user/${walletAddress}`);
+                      console.log("🔍 [DEBUG] Current solTxHistory state:", solTxHistory);
+                      
+                      // Try to fetch again
+                      try {
+                        const response = await fetch(`${BACKEND_URL}/api/solana/payments/user/${walletAddress}`, {
+                          method: 'GET',
+                          headers: { 'Content-Type': 'application/json' }
+                        });
+                        const data = await response.json();
+                        console.log("🔍 [DEBUG] Backend response:", data);
+                        console.log("🔍 [DEBUG] Response status:", response.status);
+                        console.log("🔍 [DEBUG] Response ok:", response.ok);
+                      } catch (e) {
+                        console.error("❌ [DEBUG] Fetch error:", e);
+                      }
+                    }}
+                  >
+                    🔍 Debug SOL History
+                  </button>
+                </div>
+                <div className="presale-copilot__divider" />
+              </>
+            )
           )}
 
           <div className="presale-copilot__trust">
