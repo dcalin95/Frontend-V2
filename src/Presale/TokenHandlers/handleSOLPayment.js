@@ -638,15 +638,15 @@ const handleSOLPayment = async ({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          tx_signature: signature,
-          solana_wallet: publicKey.toBase58(),
-          evm_wallet: walletAddress,
-          amount_sol: amount,
-          bits_to_receive: bitsToReceive,
-          usd_invested: usdInvestedFromUI,
-          bonus_amount: bonusAmount,
-          bonus_percentage: bonusPercentage,
-          referral_code: referralCode
+          signature: signature,                    // Backend expects "signature"
+          solanaFrom: publicKey.toBase58(),       // Backend expects "solanaFrom"
+          userWallet: walletAddress,              // Backend expects "userWallet" (EVM)
+          amount: amount,                         // Backend expects "amount"
+          bitsReceived: bitsToReceive,            // Backend expects "bitsReceived"
+          usdInvested: usdInvestedFromUI,         // Backend expects "usdInvested"
+          bonusPercentage: bonusPercentage,
+          bonusBits: bonusAmount,                 // Backend expects "bonusBits"
+          referralCode: referralCode
         })
     });
 
