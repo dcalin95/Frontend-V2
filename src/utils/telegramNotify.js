@@ -13,7 +13,9 @@ const TG_WEBHOOK_SECRET = process.env.REACT_APP_TG_WEBHOOK_SECRET || '';
  * @param {string} data.type - Transaction type: 'presale_buy', 'certificate', 'staking_deposit', 'staking_withdraw', 'staking_claim', 'rewards_claim', 'dex_swap'
  * @param {string} data.status - 'success' or 'error'
  * @param {string} data.network - Network name (BNB, ETH, Polygon, Solana, etc.)
- * @param {string} data.wallet - User wallet address
+ * @param {string} data.wallet - User wallet address (primary)
+ * @param {string} data.evmWallet - EVM wallet for BITS delivery (for Solana payments)
+ * @param {string} data.solanaWallet - Solana wallet (for Solana payments)
  * @param {string} data.amount - Amount (BITS, USD, etc.)
  * @param {string} data.currency - Currency (BITS, BNB, USDT, USD, etc.)
  * @param {string} data.txHash - Transaction hash
@@ -26,6 +28,8 @@ export async function sendTelegramNotification(data) {
       status = 'success',
       network = 'Unknown',
       wallet = 'N/A',
+      evmWallet = null,
+      solanaWallet = null,
       amount = '0',
       currency = 'UNKNOWN',
       txHash = null,
@@ -50,6 +54,8 @@ export async function sendTelegramNotification(data) {
       status,
       network,
       wallet,
+      evmWallet,
+      solanaWallet,
       amount,
       currency,
       txHash,
@@ -88,13 +94,23 @@ export async function sendTelegramNotification(data) {
 
 /**
  * Notify Presale BUY transaction
+ * @param {Object} params
+ * @param {string} params.wallet - Primary wallet (Solana for SOL payments, EVM for others)
+ * @param {string} params.evmWallet - EVM wallet for BITS delivery (optional, for Solana payments)
+ * @param {string} params.solanaWallet - Solana wallet (optional, for Solana payments)
+ * @param {string} params.bits - Amount of BITS
+ * @param {string} params.usd - USD value
+ * @param {string} params.network - Network name
+ * @param {string} params.txHash - Transaction hash
  */
-export function notifyPresaleBuy({ wallet, bits, usd, network, txHash }) {
+export function notifyPresaleBuy({ wallet, evmWallet, solanaWallet, bits, usd, network, txHash }) {
   return sendTelegramNotification({
     type: 'presale_buy',
     status: 'success',
     network,
     wallet,
+    evmWallet,
+    solanaWallet,
     amount: `${bits} BITS ($${usd})`,
     currency: 'BITS',
     txHash,

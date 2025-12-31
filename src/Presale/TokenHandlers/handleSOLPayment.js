@@ -662,7 +662,9 @@ const handleSOLPayment = async ({
     // 📢 TELEGRAM NOTIFICATION - Send to Telegram group
     try {
       await notifyPresaleBuy({
-        wallet: walletAddress,
+        wallet: publicKey.toBase58(), // Primary wallet (Solana - where payment came from)
+        solanaWallet: publicKey.toBase58(), // Solana wallet (payment source)
+        evmWallet: walletAddress, // EVM wallet (BITS delivery destination)
         bits: parseFloat(bitsToReceive).toFixed(2),
         usd: Math.round(usdInvestedFromUI),
         network: 'Solana',
