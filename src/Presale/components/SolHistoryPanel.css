@@ -73,13 +73,16 @@
 
 /* HEADER */
 .sol-history-header {
-  padding: 17px 20px;
-  background: linear-gradient(135deg, rgba(20, 241, 149, 0.12) 0%, rgba(20, 241, 149, 0.05) 100%);
-  border-bottom: 1.5px solid rgba(20, 241, 149, 0.2);
+  padding: 20px 24px;
+  background: linear-gradient(135deg, rgba(20, 241, 149, 0.15) 0%, rgba(20, 241, 149, 0.08) 100%);
+  border-bottom: 2px solid rgba(20, 241, 149, 0.3);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+  min-height: 100px;
 }
 
 /* Top Row: Wallet + Close Button */
@@ -100,28 +103,29 @@
 }
 
 .sol-history-wallet-label {
-  font-size: 0.6rem;
-  color: rgba(255, 255, 255, 0.5);
-  font-weight: 500;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   white-space: nowrap;
 }
 
 .sol-history-wallet-address {
-  font-size: 0.67rem;
+  font-size: 0.75rem;
   color: #14f195;
   font-family: 'Courier New', monospace;
-  font-weight: 600;
-  background: rgba(20, 241, 149, 0.1);
-  padding: 4px 10px;
-  border-radius: 6px;
-  border: 1px solid rgba(20, 241, 149, 0.2);
+  font-weight: 700;
+  background: rgba(20, 241, 149, 0.15);
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(20, 241, 149, 0.3);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   cursor: default;
   transition: all 0.2s ease;
+  box-shadow: 0 0 10px rgba(20, 241, 149, 0.2);
 }
 
 .sol-history-wallet-address:hover {
@@ -146,53 +150,56 @@
 }
 
 .sol-history-title-text {
-  font-size: 1.05rem;
+  font-size: 1.2rem;
   font-weight: 800;
   color: #14f195;
-  text-shadow: 0 0 14px rgba(20, 241, 149, 0.5);
+  text-shadow: 0 0 20px rgba(20, 241, 149, 0.5);
   letter-spacing: -0.02em;
+  margin: 0;
 }
 
 .sol-history-title-icon {
-  font-size: 1.26rem;
-  filter: drop-shadow(0 0 7px rgba(20, 241, 149, 0.6));
+  font-size: 1.4rem;
+  filter: drop-shadow(0 0 10px rgba(20, 241, 149, 0.6));
 }
 
 .sol-history-badge {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  background: rgba(20, 241, 149, 0.15);
-  border: 1px solid rgba(20, 241, 149, 0.3);
-  border-radius: 14px;
-  font-size: 0.49rem;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(20, 241, 149, 0.2);
+  border: 1.5px solid rgba(20, 241, 149, 0.4);
+  border-radius: 16px;
+  font-size: 0.65rem;
   font-weight: 700;
   color: #14f195;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  box-shadow: 0 0 15px rgba(20, 241, 149, 0.3);
 }
 
 .sol-history-close-btn {
   background: linear-gradient(135deg, #ff1744 0%, #f50057 100%);
-  border: 1.5px solid #ff1744;
+  border: 2px solid #ff1744;
   border-radius: 50%;
   color: #fff;
-  font-size: 1.05rem;
+  font-size: 1.3rem;
   font-weight: 900;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-shadow: 
-    0 0 21px rgba(255, 23, 68, 0.6),
-    0 3px 8px rgba(0, 0, 0, 0.3);
+    0 0 30px rgba(255, 23, 68, 0.8),
+    0 4px 12px rgba(0, 0, 0, 0.4);
   flex-shrink: 0;
   padding: 0;
   line-height: 1;
+  z-index: 10;
 }
 
 .sol-history-close-btn:hover {
