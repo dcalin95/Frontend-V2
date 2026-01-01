@@ -975,23 +975,25 @@ const PresaleCopilot = ({
             onClick={() => setTxHistoryOpen(false)}
             style={{
               position: 'fixed',
-              top: '20px',
-              right: '20px',
-              zIndex: 99999999,
-              background: '#ff4444',
-              border: 'none',
+              top: '50%',
+              right: '50%',
+              transform: 'translate(50%, -50%)',
+              zIndex: 999999999,
+              background: '#ff0000',
+              border: '5px solid #fff',
               borderRadius: '50%',
               color: '#fff',
-              fontSize: '3rem',
+              fontSize: '4rem',
               fontWeight: '900',
               cursor: 'pointer',
-              width: '80px',
-              height: '80px',
+              width: '120px',
+              height: '120px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 0 40px rgba(255, 68, 68, 1)',
-              transition: 'all 0.2s'
+              boxShadow: '0 0 80px rgba(255, 0, 0, 1), inset 0 0 40px rgba(255, 0, 0, 0.5)',
+              transition: 'all 0.2s',
+              pointerEvents: 'auto'
             }}
             onMouseOver={(e) => {
               e.target.style.transform = 'scale(1.2) rotate(90deg)';
