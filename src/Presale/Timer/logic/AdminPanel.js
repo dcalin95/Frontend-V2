@@ -87,6 +87,12 @@ const AdminPanel = () => {
   const [solanaLastRawResponse, setSolanaLastRawResponse] = useState(null);
   const [solanaLoyaltyCurrency, setSolanaLoyaltyCurrency] = useState("BITS"); // BITS | USDT
   const [solanaLoyaltyLast, setSolanaLoyaltyLast] = useState(null);
+  
+  // ===== NEW: Missing transactions alert =====
+  const [solanaMissingCount, setSolanaMissingCount] = useState(0);
+  const [solanaMissingList, setSolanaMissingList] = useState([]);
+  const [solanaSyncing, setSolanaSyncing] = useState(false);
+  const [solanaCheckingMissing, setSolanaCheckingMissing] = useState(false);
 
   // ===== Leaderboard demo (marketing) =====
   const [leaderboardDemoRows, setLeaderboardDemoRows] = useState([]);
@@ -230,6 +236,9 @@ const AdminPanel = () => {
         setSolanaLastRawResponse(res.data);
         setSolanaApiStatus({ ok: true, msg: "" });
         setSolanaDbInfo(null);
+        
+        // Auto-check for missing transactions
+        checkMissingTransactions();
       } else {
         setSolanaLastFetchAt(Date.now());
         setSolanaLastRawResponse(res.data);
@@ -262,6 +271,60 @@ const AdminPanel = () => {
     } finally {
       setSolanaPaymentsLoading(false);
     }
+  };
+  
+  // ===== NEW: Check for missing transactions =====
+  const checkMissingTransactions = async () => {
+    setSolanaCheckingMissing(true);
+    try {
+      const res = await axios.post(`${API_URL}/api/solana/admin/check-missing`, { 
+        password: ADMIN_PASS 
+      });
+      
+      if (res.data?.ok) {
+        setSolanaMissingCount(res.data.missing_count || 0);
+        setSolanaMissingList(res.data.missing_transactions || []);
+        
+        if (res.data.missing_count > 0) {
+          console.log(`⚠️ [Admin] Found ${res.data.missing_count} missing Solana transaction(s)`);
+        }
+      }
+    } catch (e) {
+      console.error("❌ [Admin] Failed to check missing transactions:", e);
+    }
+    setSolanaCheckingMissing(false);
+  };
+  
+  // ===== NEW: Sync missing transactions =====
+  const syncMissingTransactions = async () => {
+    if (solanaSyncing) return;
+    
+    setSolanaSyncing(true);
+    try {
+      toast.info("🔄 Sincronizare în curs... (poate dura 10-30 secunde)");
+      
+      const res = await axios.post(`${API_URL}/api/solana/admin/sync-missing`, { 
+        password: ADMIN_PASS 
+      });
+      
+      if (res.data?.ok) {
+        const saved = res.data.saved || 0;
+        if (saved > 0) {
+          toast.success(`✅ ${saved} tranzacție/tranzacții sincronizate!`);
+          await fetchSolanaPayments(); // Refresh list
+        } else {
+          toast.info("ℹ️ Nu au fost găsite tranzacții noi");
+        }
+        setSolanaMissingCount(0);
+        setSolanaMissingList([]);
+      } else {
+        toast.error("❌ Sincronizare eșuată");
+      }
+    } catch (e) {
+      const errMsg = e.response?.data?.error || e.message;
+      toast.error("❌ Sincronizare eșuată: " + errMsg);
+    }
+    setSolanaSyncing(false);
   };
 
   const fetchSolanaDbInfo = async () => {
@@ -1528,6 +1591,67 @@ const AdminPanel = () => {
                 <button onClick={fetchSolanaPayments} disabled={solanaPaymentsLoading} style={{ marginTop: 10 }}>
                   {solanaPaymentsLoading ? "⏳ Refreshing..." : "🔄 Refresh"}
                 </button>
+                
+                {/* ===== NEW: Missing Transactions Alert ===== */}
+                {solanaMissingCount > 0 && (
+                  <div style={{
+                    marginTop: 15,
+                    padding: '12px 16px',
+                    borderRadius: 10,
+                    border: '2px solid rgba(255, 69, 58, 0.6)',
+                    background: 'rgba(255, 69, 58, 0.15)',
+                    color: '#fff',
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: 10
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <span style={{ fontSize: 24 }}>⚠️</span>
+                      <div>
+                        <div style={{ fontSize: 16, marginBottom: 4 }}>
+                          {solanaMissingCount} tranzacție{solanaMissingCount > 1 ? 'ii' : ''} Solana neverificat{solanaMissingCount > 1 ? 'e' : 'ă'}!
+                        </div>
+                        <div style={{ fontSize: 12, opacity: 0.9, fontWeight: 'normal' }}>
+                          Tranzacții SUCCESS pe blockchain care lipsesc din baza de date
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={syncMissingTransactions}
+                      disabled={solanaSyncing}
+                      style={{
+                        background: 'linear-gradient(135deg, #10b981, #059669)',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '8px',
+                        padding: '10px 20px',
+                        cursor: solanaSyncing ? 'not-allowed' : 'pointer',
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)',
+                        transition: 'all 0.2s ease',
+                        opacity: solanaSyncing ? 0.6 : 1
+                      }}
+                      onMouseOver={(e) => {
+                        if (!solanaSyncing) {
+                          e.target.style.transform = 'translateY(-2px)';
+                          e.target.style.boxShadow = '0 6px 16px rgba(16, 185, 129, 0.6)';
+                        }
+                      }}
+                      onMouseOut={(e) => {
+                        e.target.style.transform = 'translateY(0)';
+                        e.target.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.4)';
+                      }}
+                    >
+                      {solanaSyncing ? '⏳ Sincronizare...' : '✅ Sincronizează Acum'}
+                    </button>
+                  </div>
+                )}
+                
                 <button
                   type="button"
                   onClick={() => setSolanaDebugOpen((v) => !v)}
