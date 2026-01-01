@@ -287,7 +287,27 @@ const InnerWalletProvider = ({ children }) => {
     let retryCount = 0;
     const MAX_RETRIES = 3;
     
+    // 🛑 CRITICAL: Do NOT fetch Solana balances if EVM wallet is active!
+    // Check walletType first - if it's EVM, skip all Solana operations
+    const currentWalletType = walletType?.toUpperCase();
+    if (currentWalletType === "EVM" || (isConnected && address && !isSolanaConnected)) {
+      console.log("🛑 [SolanaBalance] EVM wallet active - skipping Solana balance fetch");
+      // Clear Solana balance if EVM is active
+      if (!cancelled) {
+        setSolanaBalance("0");
+      }
+      return () => {
+        cancelled = true;
+      };
+    }
+    
     const fetchSolanaBalances = async () => {
+      // 🛑 CRITICAL: Double-check walletType before fetching
+      if (cancelled || walletType?.toUpperCase() === "EVM" || (isConnected && address && !isSolanaConnected)) {
+        console.warn("🛑 [SolanaBalance] EVM wallet active - aborting fetch");
+        return;
+      }
+      
       // 🚀 TRY MULTIPLE SOURCES: adapter OR direct window.solana
         const directPk = typeof window !== 'undefined' ? (window.phantom?.solana?.publicKey || window.solana?.publicKey) : null;
         const adapterPk = solanaPublicKey;
@@ -298,6 +318,7 @@ const InnerWalletProvider = ({ children }) => {
       const isAnyConnected = isConnectedViaAdapter || isConnectedViaDirect;
       
       console.log("🔍 [SolanaBalance] Check:", {
+        walletType: currentWalletType,
         adapterConnected: isSolanaConnected,
         adapterPk: adapterPk?.toBase58() || 'null',
         directConnected: isConnectedViaDirect,
@@ -368,6 +389,12 @@ const InnerWalletProvider = ({ children }) => {
     const updateInternalBalances = (sol, usdc) => {
       if (cancelled) return;
       
+      // 🛑 CRITICAL: Do NOT update if EVM wallet is active!
+      if (walletType?.toUpperCase() === "EVM" || (isConnected && address && !isSolanaConnected)) {
+        console.warn("🛑 [SolanaBalance] EVM wallet active - NOT updating Solana balances");
+        return;
+      }
+      
       setSolanaBalance(sol.toFixed(4));
       
       // Show USDC if user has USDC and very little SOL
@@ -383,21 +410,31 @@ const InnerWalletProvider = ({ children }) => {
     };
 
     // Initial fetch (immediate) - CHECK BOTH SOURCES
-    const directPk = typeof window !== 'undefined' ? (window.phantom?.solana?.publicKey || window.solana?.publicKey) : null;
-    const isConnectedViaDirect = typeof window !== 'undefined' && window.solana?.isConnected && directPk;
-    
-    if ((isSolanaConnected && solanaPublicKey) || isConnectedViaDirect) {
-      console.log("🚀 [SolanaBalance] Initial fetch triggered");
-      fetchSolanaBalances();
+    // 🛑 CRITICAL: Only fetch if walletType is NOT EVM
+    if (currentWalletType !== "EVM" && !(isConnected && address && !isSolanaConnected)) {
+      const directPk = typeof window !== 'undefined' ? (window.phantom?.solana?.publicKey || window.solana?.publicKey) : null;
+      const isConnectedViaDirect = typeof window !== 'undefined' && window.solana?.isConnected && directPk;
+      
+      if ((isSolanaConnected && solanaPublicKey) || isConnectedViaDirect) {
+        console.log("🚀 [SolanaBalance] Initial fetch triggered");
+        fetchSolanaBalances();
+      }
     }
     
     // Periodic refresh (every 10 seconds)
+    // 🛑 CRITICAL: Only refresh if walletType is NOT EVM
     const id = setInterval(() => {
+      // Check current walletType again (it might have changed)
+      if (cancelled || walletType?.toUpperCase() === "EVM" || (isConnected && address && !isSolanaConnected)) {
+        console.log("🛑 [SolanaBalance] Interval skipped - EVM wallet active");
+        return;
+      }
+      
       const directPkInterval = typeof window !== 'undefined' ? (window.phantom?.solana?.publicKey || window.solana?.publicKey) : null;
       const isConnectedViaDirectInterval = typeof window !== 'undefined' && window.solana?.isConnected && directPkInterval;
       
       if ((isSolanaConnected && solanaPublicKey) || isConnectedViaDirectInterval) {
-    fetchSolanaBalances();
+        fetchSolanaBalances();
       }
     }, 10000);
     
@@ -405,7 +442,7 @@ const InnerWalletProvider = ({ children }) => {
       cancelled = true;
       clearInterval(id);
     };
-  }, [isSolanaConnected, solanaPublicKey, selectedSolanaWallet]); // Added selectedSolanaWallet to trigger on wallet change
+  }, [isSolanaConnected, solanaPublicKey, selectedSolanaWallet, walletType, isConnected, address]); // Added walletType, isConnected, address to dependencies
 
   // 🔄 Automatic sync: Wagmi/Solana -> Local State (IMPROVED)
   useEffect(() => {
@@ -536,7 +573,8 @@ const InnerWalletProvider = ({ children }) => {
     }
     
     // 🎯 PRIORITY 2: SOLANA CONNECTION (only if EVM is NOT connected)
-    if (isSolanaConnected && solanaPublicKey) {
+    // 🛑 CRITICAL: Do NOT set Solana if EVM is already active!
+    if (isSolanaConnected && solanaPublicKey && !(isConnected && address)) {
       const addr = solanaPublicKey.toBase58();
       console.log("✅ [WalletContext] Detected Solana connection:", addr);
       
@@ -552,6 +590,22 @@ const InnerWalletProvider = ({ children }) => {
         connectIntentRef.current.at = 0;
         sessionStorage.removeItem(CONNECT_INTENT_KEY);
       }
+      return;
+    } else if (isSolanaConnected && solanaPublicKey && isConnected && address) {
+      // 🛑 CRITICAL: EVM is active, ignore Solana connection and force disconnect
+      console.warn("🛑 [WalletContext] Solana detected but EVM is active - ignoring Solana and forcing disconnect");
+      // Force disconnect Solana immediately
+      (async () => {
+        try {
+          await disconnectSolana();
+          if (typeof window !== 'undefined' && window.solana) {
+            await window.solana.disconnect().catch(() => {});
+          }
+          console.log("✅ [WalletContext] Solana force-disconnected because EVM is active");
+        } catch (e) {
+          console.warn("⚠️ [WalletContext] Error force-disconnecting Solana:", e);
+        }
+      })();
       return;
     }
 
