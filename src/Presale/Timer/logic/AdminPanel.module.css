@@ -36,25 +36,21 @@
   box-shadow: 0 0 20px rgba(0, 255, 163, 0.5), 0 0 40px rgba(220, 31, 255, 0.3);
 }
 
-/* ✅ Admin Panel - IMPROVED VISIBILITY */
+/* ✅ Admin Panel - CLEAR AND CENTERED */
 .admin-panel {
   position: relative;
-  padding: 1.5rem;
-  background: linear-gradient(135deg, rgba(10, 12, 20, 0.98), rgba(20, 24, 35, 0.98));
-  border: 2px solid rgba(0, 255, 163, 0.4);
-  border-radius: 1.5rem;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  z-index: 1;
+  padding: 2rem;
+  background: #0a0c14;
+  border: 3px solid #14f195;
+  border-radius: 20px;
   width: 100%;
-  max-width: 1100px;
-  margin: 18px auto;
+  max-width: 1200px;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: 0 auto;
   font-family: 'Inter', sans-serif;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 255, 163, 0.2);
-  max-height: none;
-  overflow: visible;
-  color: rgba(255, 255, 255, 0.95);
-  transition: all 0.3s ease;
+  box-shadow: 0 0 60px rgba(20, 241, 149, 0.4), 0 20px 80px rgba(0, 0, 0, 0.9);
+  color: #fff;
 }
 
 /* ✅ Optional manual resize mode (drag corner) */
@@ -96,16 +92,26 @@
 }
 
 .admin-panel:hover {
-  border-color: rgba(0, 255, 163, 0.6);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 60px rgba(0, 255, 163, 0.35);
-  background: linear-gradient(135deg, rgba(10, 12, 20, 1), rgba(20, 24, 35, 1));
+  border-color: #14f195;
+  box-shadow: 0 0 80px rgba(20, 241, 149, 0.6), 0 20px 80px rgba(0, 0, 0, 0.9);
 }
 
-/* ✅ Page wrapper (independent page layout) */
+/* ✅ Page wrapper - FULL SCREEN OVERLAY */
 .admin-page {
-  width: 100%;
-  padding: 18px 14px 80px;
-  min-height: 80vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 999999;
+  overflow-y: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 }
 
 /* ✅ Sections - IMPROVED VISIBILITY */
