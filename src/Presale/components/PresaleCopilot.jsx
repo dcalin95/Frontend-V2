@@ -969,89 +969,70 @@ const PresaleCopilot = ({
       {/* 🆕 SOL Transaction History Modal - SIMPLIFIED */}
       {txHistoryOpen && (
         <>
-          {/* CLOSE BUTTON - OUTSIDE EVERYTHING */}
-          <button 
-            type="button" 
-            onClick={() => setTxHistoryOpen(false)}
-            style={{
-              position: 'fixed',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              zIndex: 999999999,
-              background: '#ff0000',
-              border: '5px solid #fff',
-              borderRadius: '50%',
-              color: '#fff',
-              fontSize: '4rem',
-              fontWeight: '900',
-              cursor: 'pointer',
-              width: '120px',
-              height: '120px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 0 80px rgba(255, 0, 0, 1), inset 0 0 40px rgba(255, 0, 0, 0.5)',
-              transition: 'all 0.2s',
-              pointerEvents: 'auto'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.transform = 'translate(-50%, -50%) scale(1.2) rotate(90deg)';
-              e.target.style.boxShadow = '0 0 100px rgba(255, 0, 0, 1)';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.transform = 'translate(-50%, -50%) scale(1) rotate(0deg)';
-              e.target.style.boxShadow = '0 0 80px rgba(255, 0, 0, 1)';
-            }}
-          >
-            ✕
-          </button>
-          
-          {/* OVERLAY */}
+          {/* HISTORY SIDE PANEL */}
           <div 
             style={{
               position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'rgba(0, 0, 0, 0.95)',
-              zIndex: 9999999,
+              top: '20px',
+              right: '20px',
+              width: '420px',
+              maxHeight: 'calc(100vh - 40px)',
+              background: 'rgba(10, 12, 16, 0.98)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: '3px solid #14f195',
+              borderRadius: '20px',
+              boxShadow: '0 0 60px rgba(20, 241, 149, 0.5), inset 0 0 40px rgba(20, 241, 149, 0.1)',
+              zIndex: 999999,
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '40px 20px',
-              overflowY: 'auto'
+              flexDirection: 'column',
+              overflow: 'hidden',
+              animation: 'slideInRight 0.3s ease-out'
             }}
-            onClick={() => setTxHistoryOpen(false)}
           >
-            {/* CONTENT */}
-            <div 
-              style={{
-                background: '#0a0c10',
-                border: '3px solid #14f195',
-                borderRadius: '16px',
-                boxShadow: '0 0 60px rgba(20, 241, 149, 0.4)',
-                maxWidth: '600px',
-                width: '100%',
-                maxHeight: 'calc(100vh - 80px)',
-                margin: 'auto',
-                overflow: 'hidden',
-                display: 'flex',
-                flexDirection: 'column'
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* HEADER */}
-              <div style={{
-                padding: '20px',
-                borderBottom: '1px solid rgba(20, 241, 149, 0.3)',
-                textAlign: 'center'
-              }}>
-                <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#14f195' }}>
-                  📜 SOL Transaction History
-                </h3>
-              </div>
+            {/* HEADER */}
+            <div style={{
+              padding: '20px',
+              borderBottom: '1px solid rgba(20, 241, 149, 0.3)',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              background: 'rgba(20, 241, 149, 0.05)'
+            }}>
+              <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#14f195', fontWeight: '700' }}>
+                📜 SOL History
+              </h3>
+              <button
+                type="button"
+                onClick={() => setTxHistoryOpen(false)}
+                style={{
+                  background: 'rgba(255, 68, 68, 0.15)',
+                  border: '2px solid rgba(255, 68, 68, 0.5)',
+                  borderRadius: '50%',
+                  color: '#ff4444',
+                  fontSize: '1.5rem',
+                  fontWeight: '900',
+                  cursor: 'pointer',
+                  width: '40px',
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.2s',
+                  padding: 0
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.background = 'rgba(255, 68, 68, 0.3)';
+                  e.target.style.transform = 'rotate(90deg) scale(1.1)';
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.background = 'rgba(255, 68, 68, 0.15)';
+                  e.target.style.transform = 'rotate(0deg) scale(1)';
+                }}
+              >
+                ✕
+              </button>
+            </div>
               
               {/* BODY */}
               <div style={{
@@ -1123,49 +1104,55 @@ const PresaleCopilot = ({
                             {(tx.tx_signature || tx.signature || '—').slice(0, 8)}...{(tx.tx_signature || tx.signature || '—').slice(-8)}
                           </span>
                         </div>
+                        
+                        <div style={{ display: 'flex', gap: '8px', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(20, 241, 149, 0.1)' }}>
+                          <button
+                            type="button"
+                            style={{
+                              flex: 1,
+                              background: 'rgba(20, 241, 149, 0.1)',
+                              border: '1px solid rgba(20, 241, 149, 0.3)',
+                              borderRadius: '8px',
+                              color: '#14f195',
+                              fontWeight: '700',
+                              fontSize: '0.85rem',
+                              padding: '8px 16px',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s'
+                            }}
+                            onClick={() => navigator.clipboard.writeText(tx.tx_signature || tx.signature)}
+                          >
+                            📋 Copy
+                          </button>
+                          <button
+                            type="button"
+                            style={{
+                              flex: 1,
+                              background: 'rgba(20, 241, 149, 0.1)',
+                              border: '1px solid rgba(20, 241, 149, 0.3)',
+                              borderRadius: '8px',
+                              color: '#14f195',
+                              fontWeight: '700',
+                              fontSize: '0.85rem',
+                              padding: '8px 16px',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s'
+                            }}
+                            onClick={() => window.open(`https://solscan.io/tx/${tx.tx_signature || tx.signature}`, "_blank", "noopener,noreferrer")}
+                          >
+                            🔍 Solscan
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
-              
-              {/* FOOTER */}
-              <div style={{
-                padding: '20px',
-                borderTop: '1px solid rgba(20, 241, 149, 0.3)',
-                textAlign: 'center'
-              }}>
-                <button 
-                  onClick={() => setTxHistoryOpen(false)}
-                  style={{
-                    background: '#ff4444',
-                    color: '#fff',
-                    border: 'none',
-                    padding: '12px 40px',
-                    borderRadius: '8px',
-                    fontSize: '1.1rem',
-                    fontWeight: '700',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s'
-                  }}
-                  onMouseOver={(e) => {
-                    e.target.style.background = '#ff6666';
-                    e.target.style.transform = 'scale(1.1)';
-                  }}
-                  onMouseOut={(e) => {
-                    e.target.style.background = '#ff4444';
-                    e.target.style.transform = 'scale(1)';
-                  }}
-                >
-                  ✕ Close
-                </button>
-              </div>
             </div>
-          </div>
-        </>
-      )}
-    </aside>
-  );
+          </>
+        )}
+      </aside>
+    );
 };
 
 export default PresaleCopilot;
