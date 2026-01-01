@@ -84,7 +84,7 @@ const PresaleCopilot = ({
   defaultOpen = true,
   variant = "presale", // "presale" | "global"
 }) => {
-  const { walletAddress, chainId, connectWallet, walletName, walletType, nativeSymbol, ethBalance } = useWallet();
+  const { walletAddress, chainId, connectWallet, disconnectWallet, walletName, walletType, nativeSymbol, ethBalance } = useWallet();
   const [open, setOpen] = useState(() => !!defaultOpen);
   const [txHash, setTxHash] = useState("");
   const [lastTx, setLastTx] = useState(null);
@@ -606,14 +606,21 @@ const PresaleCopilot = ({
               </button>
             )}
             {walletOk && (
-              <button type="button" className="pc-btn" onClick={() => {
-                if (typeof window !== 'undefined' && window.disconnectWallet) {
-                  window.disconnectWallet();
-                } else {
-                  // fallback
-                  connectWallet(); // va redeschide și poți deconecta din modal
-                }
-              }}>
+              <button 
+                type="button" 
+                className="pc-btn" 
+                onClick={async () => {
+                  try {
+                    if (disconnectWallet) {
+                      await disconnectWallet();
+                    } else {
+                      console.warn("⚠️ [PresaleCopilot] disconnectWallet not available");
+                    }
+                  } catch (error) {
+                    console.error("❌ [PresaleCopilot] Disconnect failed:", error);
+                  }
+                }}
+              >
                 Disconnect Wallet
               </button>
             )}
