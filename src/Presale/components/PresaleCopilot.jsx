@@ -768,7 +768,14 @@ const PresaleCopilot = ({
                 <button 
                   type="button" 
                   className="pc-btn primary" 
-                  onClick={() => setTxHistoryOpen(true)}
+                  onClick={() => {
+                    console.log("🟢 [SOL HISTORY] Button clicked! Opening panel...");
+                    console.log("🟢 [SOL HISTORY] Current txHistoryOpen state:", txHistoryOpen);
+                    console.log("🟢 [SOL HISTORY] solTxHistory length:", solTxHistory.length);
+                    setTxHistoryOpen(true);
+                    console.log("🟢 [SOL HISTORY] setTxHistoryOpen(true) called");
+                  }}
+                  style={{ position: 'relative', zIndex: 1 }}
                 >
                   📜 View SOL History ({solTxHistory.length})
                 </button>
@@ -981,13 +988,14 @@ const PresaleCopilot = ({
             border: '3px solid #14f195',
             borderRadius: '20px',
             boxShadow: '0 0 60px rgba(20, 241, 149, 0.5), inset 0 0 40px rgba(20, 241, 149, 0.1)',
-            zIndex: 100002,
+            zIndex: 999999,
             pointerEvents: 'auto',
-            transform: 'translateZ(0)', // hint GPU, avoid overlap issues
+            transform: 'translateZ(0)',
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden'
           }}
+          onClick={() => console.log("🔵 [SOL HISTORY] Panel is visible and clickable")}
         >
             {/* HEADER */}
             <div style={{
