@@ -317,16 +317,27 @@ const UnifiedWalletModal = () => {
       if (walletName === 'MetaMask') {
         const isPhantom = typeof window !== 'undefined' && !!window.ethereum?.isPhantom;
         const isMetaMask = typeof window !== 'undefined' && !!window.ethereum?.isMetaMask;
-        const hasProviders = typeof window !== 'undefined' && !!window.ethereum?.providers;
+        const hasProviders = typeof window !== 'undefined' && Array.isArray(window.ethereum?.providers) && window.ethereum.providers.length > 0;
+        const hasMetaMaskInProviders = hasProviders && 
+          window.ethereum.providers.some(p => p.isMetaMask && !p.isPhantom);
 
-        console.log(`🔍 [MetaMask Check] isMetaMask: ${isMetaMask}, isPhantom: ${isPhantom}, hasProviders: ${hasProviders}`);
+        console.log(`🔍 [MetaMask Check] isMetaMask: ${isMetaMask}, isPhantom: ${isPhantom}, hasProviders: ${hasProviders}, hasMetaMaskInProviders: ${hasMetaMaskInProviders}`);
 
-        // If ONLY Phantom is present and it claims to be MetaMask (hijacking)
-        // AND we don't have multiple providers (where MetaMask would be separate)
-        if (isPhantom && !hasProviders) {
-          setError(`MetaMask is not detected. Phantom has taken over your EVM connection. Please install MetaMask or disable "EVM Support" in Phantom settings.`);
+        // If ONLY Phantom is present (no providers array OR no MetaMask in providers)
+        // AND window.ethereum itself is Phantom (not MetaMask)
+        if (isPhantom && !isMetaMask && !hasMetaMaskInProviders) {
+          setError(`MetaMask is not detected. Phantom has taken over your EVM connection.\n\nPlease:\n1. Install MetaMask extension\n2. OR disable "EVM Support" in Phantom settings\n3. OR use Solana network for Phantom`);
           unlockConnection();
           return;
+        }
+        
+        // If we have providers array, force swap to MetaMask if available
+        if (hasMetaMaskInProviders && isPhantom) {
+          const metamaskProvider = window.ethereum.providers.find(p => p.isMetaMask && !p.isPhantom);
+          if (metamaskProvider) {
+            console.log('🛡️ [MetaMask] Swapping window.ethereum to MetaMask provider before connection...');
+            window.ethereum = metamaskProvider;
+          }
         }
       }
 
@@ -458,17 +469,20 @@ const UnifiedWalletModal = () => {
 
           // 🛑 CRITICAL: Only allow connectors that are explicitly MetaMask
           // EIP-6963 IDs: 'io.metamask', 'metamask'
-          // We EXPLICITLY REJECT 'injected' if Phantom is around to avoid hijack
           const isExplicitMetaMask = id === 'io.metamask' || id === 'metamask';
-          // 🛑 CRITICAL: If there are multiple injected providers, "injected" is ambiguous (Trust/Rabby/etc can hijack)
-          // Only allow injected when it's the ONLY provider (simple environments).
-          const isInjectedWithoutPhantom =
-            id === 'injected' &&
-            typeof window !== 'undefined' &&
-            !window.ethereum?.isPhantom &&
-            !hasMultipleProviders;
           
-          if (isExplicitMetaMask || isInjectedWithoutPhantom) {
+          // 🛑 IMPROVED: Allow "injected" if MetaMask is available (even if Phantom is present)
+          // We'll handle Phantom hijack by swapping window.ethereum to MetaMask provider
+          const hasMetaMaskInProviders = hasMultipleProviders && 
+            window.ethereum.providers.some(p => p.isMetaMask && !p.isPhantom);
+          const isMetaMaskAfterFix = typeof window !== 'undefined' && 
+            window.ethereum?.isMetaMask && !window.ethereum?.isPhantom;
+          
+          const isInjectedWithMetaMask =
+            id === 'injected' &&
+            (hasMetaMaskInProviders || isMetaMaskAfterFix);
+          
+          if (isExplicitMetaMask || isInjectedWithMetaMask) {
             console.log(`✅ [MetaMask] Found safe connector: ${c.name} (ID: ${c.id})`);
             return true;
           }
@@ -509,12 +523,28 @@ const UnifiedWalletModal = () => {
           return;
         }
         
-        // 🛑 CRITICAL: If connector is "injected" and Phantom is present, REJECT completely
+        // 🛑 CRITICAL: If connector is "injected" and Phantom is present, check if MetaMask is ALSO available
         if (connector.id === 'injected' && typeof window !== 'undefined' && window.ethereum?.isPhantom) {
-          console.error(`❌ [CRITICAL] Cannot use "injected" connector when Phantom is present!`);
-          setError(`Cannot connect via injected connector when Phantom is present. Please ensure MetaMask is installed and try again, or use Solana network for Phantom.`);
-          unlockConnection();
-          return;
+          // Check if we have multiple providers (MetaMask should be in the array)
+          const hasMultipleProviders = Array.isArray(window.ethereum?.providers) && window.ethereum.providers.length > 1;
+          const hasMetaMask = window.ethereum?.providers?.some(p => p.isMetaMask && !p.isPhantom) || 
+                             (window.ethereum?.isMetaMask && !window.ethereum?.isPhantom);
+          
+          if (!hasMultipleProviders && !hasMetaMask) {
+            console.error(`❌ [CRITICAL] Cannot use "injected" connector - only Phantom detected, no MetaMask!`);
+            setError(`MetaMask is not detected. Phantom has taken over your EVM connection.\n\nPlease:\n1. Install MetaMask extension\n2. OR disable "EVM Support" in Phantom settings\n3. OR use Solana network for Phantom`);
+            unlockConnection();
+            return;
+          }
+          
+          // If MetaMask is available, force swap window.ethereum to MetaMask
+          if (hasMultipleProviders) {
+            const metamaskProvider = window.ethereum.providers.find(p => p.isMetaMask && !p.isPhantom);
+            if (metamaskProvider) {
+              console.log('🛡️ [MetaMask] Swapping window.ethereum to MetaMask provider...');
+              window.ethereum = metamaskProvider;
+            }
+          }
         }
         
         try {
@@ -531,17 +561,21 @@ const UnifiedWalletModal = () => {
             return;
           }
           
-          // 🛑 CRITICAL: If connector is "injected" and Phantom is present, we MUST have MetaMask too
+          // 🛑 CRITICAL: If connector is "injected" and Phantom is present, verify MetaMask is available
           if (connector.id === 'injected' && typeof window !== 'undefined' && window.ethereum?.isPhantom) {
-            // Check if MetaMask is ALSO present
-            if (!window.ethereum.isMetaMask) {
+            // Check if MetaMask is in providers array OR if window.ethereum itself is MetaMask (after swap)
+            const hasMetaMaskInProviders = window.ethereum?.providers?.some(p => p.isMetaMask && !p.isPhantom);
+            const isMetaMaskAfterSwap = window.ethereum?.isMetaMask && !window.ethereum?.isPhantom;
+            
+            if (!hasMetaMaskInProviders && !isMetaMaskAfterSwap) {
               console.error(`❌ [CRITICAL] Cannot use "injected" connector - only Phantom detected, no MetaMask!`);
-              setError(`Cannot connect via injected connector. Only Phantom is detected. Please install MetaMask or use Solana network for Phantom.`);
+              setError(`MetaMask is not detected. Phantom has taken over your EVM connection.\n\nPlease:\n1. Install MetaMask extension\n2. OR disable "EVM Support" in Phantom settings\n3. OR use Solana network for Phantom`);
               unlockConnection();
               return;
             }
-            // MetaMask is present, but we should prefer EIP6963 connector if available
-            console.warn(`⚠️ [MetaMask] Using "injected" connector but Phantom is also present - this might cause conflicts!`);
+            
+            // MetaMask is present - log warning but proceed
+            console.warn(`⚠️ [MetaMask] Using "injected" connector but Phantom is also present - proceeding with MetaMask...`);
           }
           
           console.log(`🔌 [EVM] Calling connect({ connector: ${connector.name}, id: ${connector.id} })...`);
