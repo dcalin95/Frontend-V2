@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { default as axios } from "axios";
 import { ethers } from "ethers";
+import { copyWalletAddress } from "../../../utils/copyUtils";
 import styles from "./AdminPanel.module.css";
 import { toast } from "react-toastify";
 import PresaleHistory from "../PresaleHistory";
@@ -2031,7 +2032,36 @@ const AdminPanel = () => {
                               >
                                 <div>{createdAt}</div>
                                 <div style={{ color: statusColor, fontWeight: 800 }}>{tx.status || "pending"}</div>
-                                <div title={`Buyer: ${buyer}\nSOL From: ${solFrom}`}>{shortW}</div>
+                                <div 
+                                  title={`Buyer: ${buyer}\nSOL From: ${solFrom}`}
+                                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                                >
+                                  <span>{shortW}</span>
+                                  {buyer && (
+                                    <button
+                                      onClick={() => copyWalletAddress(buyer, (msg) => toast.success(msg || "Copied!"))}
+                                      title="Copy wallet address"
+                                      style={{
+                                        background: 'rgba(255, 255, 255, 0.1)',
+                                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                                        borderRadius: '3px',
+                                        color: 'rgba(255, 255, 255, 0.9)',
+                                        fontSize: '10px',
+                                        padding: '2px 6px',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s ease'
+                                      }}
+                                      onMouseEnter={(e) => {
+                                        e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                                      }}
+                                      onMouseLeave={(e) => {
+                                        e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                                      }}
+                                    >
+                                      📋
+                                    </button>
+                                  )}
+                                </div>
                                 <div>{Number.isFinite(solAmount) ? solAmount.toFixed(4) : "—"}</div>
                                 <div title={impliedSol > 0 ? `Implied SOL price: $${fmt(impliedSol, 2)} (usd_invested / SOL)` : ""}>
                                   {usd > 0 ? `$${fmt(usd, 2)}` : "—"}

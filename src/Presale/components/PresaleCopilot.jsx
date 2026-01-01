@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useWallet } from "../../context/WalletContext";
 import { switchNetwork as presaleSwitchNetwork } from "../networkSwitcher";
 import { BITS_TREASURY_WALLET } from "../../utils/paymentService";
+import { copyWalletAddress } from "../../utils/copyUtils";
 import aiAvatarVideo from "../../assets/BitSwapDEX_AI.mp4";
 import { CONTRACT_MAP } from "../../contract/contractMap";
 import bitsLogo from "../../assets/logo.png";
@@ -889,6 +890,17 @@ const PresaleCopilot = ({
                   <span className="sol-history-wallet-address" title={walletAddress || ""}>
                     {walletAddress ? shortAddr(walletAddress, 6, 4) : "Not connected"}
                   </span>
+                  {walletAddress && (
+                    <button
+                      type="button"
+                      className="sol-history-copy-btn"
+                      onClick={() => copyWalletAddress(walletAddress)}
+                      title="Copy wallet address"
+                      aria-label="Copy wallet address"
+                    >
+                      📋
+                    </button>
+                  )}
                 </div>
                 <button
                   type="button"

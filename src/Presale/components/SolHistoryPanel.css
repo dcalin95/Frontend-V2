@@ -134,6 +134,33 @@
   border-color: rgba(255, 255, 255, 0.15);
 }
 
+.sol-history-copy-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.sol-history-copy-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.sol-history-copy-btn:active {
+  transform: scale(0.95);
+}
+
 /* Bottom Row: Title + Badge */
 .sol-history-title-row {
   display: flex;

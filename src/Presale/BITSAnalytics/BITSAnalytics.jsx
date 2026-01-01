@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useBoosterSummary } from "./useBoosterSummary";
 import WalletContext from "../../context/WalletContext";
+import { copyWalletAddress } from "../../utils/copyUtils";
 import { ethers } from "ethers";
 import "./BITSAnalytics.desktop.css";
 import "./BITSAnalytics.mobile.css";
@@ -583,18 +584,42 @@ const BITSAnalytics = () => {
         <div className="widget holdings">
           <div className="widget-icon"><IconWallet /></div>
           <div className="widget-title">Wallet Address</div>
-          <div className="widget-value">
+          <div className="widget-value" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {walletAddress ? (
-              <a
-                href={walletContextValue?.walletType === 'Solana' 
-                  ? `https://solscan.io/account/${walletAddress}?cluster=devnet` 
-                  : `https://bscscan.com/address/${walletAddress}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="wallet-link"
-              >
-                {shortenAddress(walletAddress, 6, 4)} ↗
-              </a>
+              <>
+                <a
+                  href={walletContextValue?.walletType === 'Solana' 
+                    ? `https://solscan.io/account/${walletAddress}?cluster=devnet` 
+                    : `https://bscscan.com/address/${walletAddress}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="wallet-link"
+                >
+                  {shortenAddress(walletAddress, 6, 4)} ↗
+                </a>
+                <button
+                  onClick={() => copyWalletAddress(walletAddress)}
+                  title="Copy wallet address"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    borderRadius: '4px',
+                    color: 'rgba(255, 255, 255, 0.9)',
+                    fontSize: '0.7rem',
+                    padding: '4px 8px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                  }}
+                >
+                  📋
+                </button>
+              </>
             ) : (
               "Not Connected"
             )}

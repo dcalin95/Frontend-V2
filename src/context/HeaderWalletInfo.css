@@ -338,11 +338,44 @@
   letter-spacing: 0.8px; /* Mărit de la 0.5px */
 }
 
+.wallet-address-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 28px; /* Ajustat pentru iconița mai mare */
+}
+
 .wallet-address {
   font-size: 0.85rem; /* Mărit de la 0.7rem */
   color: rgba(255, 255, 255, 0.7); /* Mai vizibil */
   font-family: 'Roboto Mono', 'Courier New', monospace; /* Sharp, clear font */
-  margin-left: 28px; /* Ajustat pentru iconița mai mare */
+}
+
+.wallet-copy-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.wallet-copy-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.wallet-copy-btn:active {
+  transform: scale(0.95);
 }
 
 /* 🎯 SLOGAN LINK - $BITS Presale */

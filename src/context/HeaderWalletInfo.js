@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useWallet } from "../context/WalletContext";
 import { useGeoLocation } from "../context/GeoLocationContext"; 
+import { copyWalletAddress } from "../utils/copyUtils";
 import SwapModal from "../components/SwapModal";
 import HistoryModal from "../components/HistoryModal";
 import axios from "axios"; 
@@ -363,7 +364,18 @@ const HeaderWalletInfo = () => {
                   )}
                   <span className="wallet-name">{walletName || "Wallet"}</span>
                 </div>
-                <span className="wallet-address">{walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}</span>
+                <div className="wallet-address-row">
+                  <span className="wallet-address">{walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}</span>
+                  <button
+                    type="button"
+                    className="wallet-copy-btn"
+                    onClick={() => copyWalletAddress(walletAddress)}
+                    title="Copy wallet address"
+                    aria-label="Copy wallet address"
+                  >
+                    📋
+                  </button>
+                </div>
                 
                 {countryCode && (
                   <div className="geo-location-row">
