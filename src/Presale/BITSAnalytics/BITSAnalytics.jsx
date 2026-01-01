@@ -66,7 +66,7 @@ const IconStatus = () => (
 
 const BITSAnalytics = () => {
   const walletContextValue = useContext(WalletContext);
-  const { walletAddress } = walletContextValue || {};
+  const { walletAddress, walletType, chainId } = walletContextValue || {};
   const { loading, data } = useBoosterSummary();
   const { stakes: stakingStakes, totalReward: stakingTotalRewardBN } = useStakingData(walletContextValue?.signer, walletAddress);
   
@@ -248,17 +248,47 @@ const BITSAnalytics = () => {
     return `Chain ${cid}`;
   };
 
+  // Auto-detect network from WalletContext (works for both EVM and Solana)
   useEffect(() => {
-    const fetchNet = async () => {
+    const updateNetwork = async () => {
       try {
-        if (!walletContextValue?.signer) return;
-        const net = await walletContextValue.signer.provider.getNetwork();
-        setNetworkInfo({ name: getNetworkLabelByChainId(net.chainId), chainId: Number(net.chainId) });
-        setTargetChainId(Number(net.chainId) || 56);
-      } catch {}
+        // For Solana wallets
+        if (walletType?.toUpperCase() === 'SOLANA') {
+          setNetworkInfo({ name: 'Solana Devnet', chainId: null });
+          setTargetChainId(null); // Solana doesn't use chainId
+          return;
+        }
+
+        // For EVM wallets - use chainId from WalletContext first
+        if (chainId && Number.isFinite(Number(chainId))) {
+          const cid = Number(chainId);
+          setNetworkInfo({ name: getNetworkLabelByChainId(cid), chainId: cid });
+          setTargetChainId(cid);
+          return;
+        }
+
+        // Fallback: try to get from signer.provider (for EVM)
+        if (walletContextValue?.signer?.provider) {
+          try {
+            const net = await walletContextValue.signer.provider.getNetwork();
+            const cid = Number(net.chainId);
+            setNetworkInfo({ name: getNetworkLabelByChainId(cid), chainId: cid });
+            setTargetChainId(cid);
+          } catch {}
+        } else if (walletAddress && !walletType) {
+          // Default to BSC if wallet is connected but type unknown
+          setNetworkInfo({ name: 'BSC Mainnet', chainId: 56 });
+          setTargetChainId(56);
+        }
+      } catch (err) {
+        console.warn('[BITSAnalytics] Network detection error:', err);
+      }
     };
-    fetchNet();
-    if (typeof window !== 'undefined' && window.ethereum) {
+
+    updateNetwork();
+
+    // Listen for EVM chain changes
+    if (typeof window !== 'undefined' && window.ethereum && walletType?.toUpperCase() !== 'SOLANA') {
       const onChainChanged = (hexId) => {
         const id = parseInt(hexId, 16);
         setNetworkInfo({ name: getNetworkLabelByChainId(id), chainId: id });
@@ -269,7 +299,7 @@ const BITSAnalytics = () => {
         try { window.ethereum.removeListener('chainChanged', onChainChanged); } catch {}
       };
     }
-  }, [walletContextValue?.signer, getNetworkLabelByChainId]);
+  }, [walletType, chainId, walletContextValue?.signer, walletAddress, getNetworkLabelByChainId]);
 
   const switchNetwork = async (target) => {
     try {
@@ -505,7 +535,7 @@ const BITSAnalytics = () => {
           </div>
           <div>
             <button 
-              onClick={() => walletContextValue?.connectViaMetamask?.()} 
+              onClick={() => walletContextValue?.connectWallet?.(WALLET_TYPES.EVM)} 
               style={{
                 padding: '10px 18px',
                 fontSize: '14px',
@@ -517,10 +547,10 @@ const BITSAnalytics = () => {
                 marginRight: 10
               }}
             >
-              🦊 Connect MetaMask
+              🦊 Connect EVM Wallet
             </button>
             <button 
-              onClick={() => walletContextValue?.connectViaPhantom?.()} 
+              onClick={() => walletContextValue?.connectWallet?.(WALLET_TYPES.SOLANA)} 
               style={{
                 padding: '10px 18px',
                 fontSize: '14px',
@@ -538,45 +568,59 @@ const BITSAnalytics = () => {
       )}
 
       {/* Inline Network & Wallet controls */}
-      <div className="network-wallet-inline">
-        <div className="nw-group">
-          <span className="nw-label">Network:</span>
-          <select
-            className="nw-select"
-            value={String(targetChainId)}
-            onChange={(e) => setTargetChainId(parseInt(e.target.value))}
-          >
-            {Object.keys(SUPPORTED_NETWORKS)
-              .map((cid) => Number(cid))
-              .sort((a, b) => {
-                const an = SUPPORTED_NETWORKS[a];
-                const bn = SUPPORTED_NETWORKS[b];
-                return an.chainName.localeCompare(bn.chainName);
-              })
-              .map((cid) => (
-                <option key={cid} value={cid}>
-                  {SUPPORTED_NETWORKS[cid].icon} {SUPPORTED_NETWORKS[cid].chainName}
-                </option>
-              ))}
-          </select>
-          <button
-            className="nw-btn"
-            onClick={() => switchNetwork(targetChainId)}
-            disabled={isSwitchingNet || !window?.ethereum}
-          >
-            Switch
-          </button>
-          {(Number(targetChainId) === 30 || Number(targetChainId) === 31) && (
-            <span className="nw-badge">RSK Beta{rskNativeBalance ? ` • ${parseFloat(rskNativeBalance).toFixed(5)} RBTC` : ''}</span>
+      {walletAddress && (
+        <div className="network-wallet-inline">
+          {/* Network selector - only show for EVM wallets */}
+          {walletType?.toUpperCase() !== 'SOLANA' && (
+            <div className="nw-group">
+              <span className="nw-label">Network:</span>
+              <select
+                className="nw-select"
+                value={String(targetChainId || 56)}
+                onChange={(e) => setTargetChainId(parseInt(e.target.value))}
+              >
+                {Object.keys(SUPPORTED_NETWORKS)
+                  .map((cid) => Number(cid))
+                  .sort((a, b) => {
+                    const an = SUPPORTED_NETWORKS[a];
+                    const bn = SUPPORTED_NETWORKS[b];
+                    return an.chainName.localeCompare(bn.chainName);
+                  })
+                  .map((cid) => (
+                    <option key={cid} value={cid}>
+                      {SUPPORTED_NETWORKS[cid].icon} {SUPPORTED_NETWORKS[cid].chainName}
+                    </option>
+                  ))}
+              </select>
+              <button
+                className="nw-btn"
+                onClick={() => switchNetwork(targetChainId)}
+                disabled={isSwitchingNet || !window?.ethereum || walletType?.toUpperCase() === 'SOLANA'}
+              >
+                Switch
+              </button>
+              {(Number(targetChainId) === 30 || Number(targetChainId) === 31) && (
+                <span className="nw-badge">RSK Beta{rskNativeBalance ? ` • ${parseFloat(rskNativeBalance).toFixed(5)} RBTC` : ''}</span>
+              )}
+            </div>
           )}
+          {/* Show current network for Solana */}
+          {walletType?.toUpperCase() === 'SOLANA' && (
+            <div className="nw-group">
+              <span className="nw-label">Network:</span>
+              <span className="nw-select" style={{ background: 'rgba(20, 241, 149, 0.1)', borderColor: 'rgba(20, 241, 149, 0.3)' }}>
+                🔷 Solana Devnet
+              </span>
+            </div>
+          )}
+          <div className="nw-wallets">
+            <button className="nw-wallet-btn" onClick={() => walletContextValue?.connectWallet?.(WALLET_TYPES.EVM)}>🦊 MetaMask</button>
+            <button className="nw-wallet-btn" onClick={() => walletContextValue?.connectWallet?.(WALLET_TYPES.WALLETCONNECT)}>🔗 WalletConnect</button>
+            <button className="nw-wallet-btn" onClick={() => walletContextValue?.connectWallet?.(WALLET_TYPES.COINBASE)}>🪙 Coinbase</button>
+            <button className="nw-wallet-btn" onClick={() => walletContextValue?.connectWallet?.(WALLET_TYPES.SOLANA)}>👻 Phantom</button>
+          </div>
         </div>
-        <div className="nw-wallets">
-          <button className="nw-wallet-btn" onClick={() => walletContextValue?.connectWallet?.(WALLET_TYPES.EVM)}>🦊 MetaMask</button>
-          <button className="nw-wallet-btn" onClick={() => walletContextValue?.connectWallet?.(WALLET_TYPES.WALLETCONNECT)}>🔗 WalletConnect</button>
-          <button className="nw-wallet-btn" onClick={() => walletContextValue?.connectWallet?.(WALLET_TYPES.COINBASE)}>🪙 Coinbase</button>
-          <button className="nw-wallet-btn" onClick={() => walletContextValue?.connectWallet?.(WALLET_TYPES.SOLANA)}>👻 Phantom</button>
-        </div>
-      </div>
+      )}
 
       <div className="widget-grid">
         {/* Wallet */}

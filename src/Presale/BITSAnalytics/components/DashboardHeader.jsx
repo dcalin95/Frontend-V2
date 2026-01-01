@@ -1,4 +1,5 @@
 import React from "react";
+import bitsLogo from "../../../assets/logo.png";
 
 const DashboardHeader = ({ pulseEffect, isVisible }) => {
   return (
@@ -6,9 +7,9 @@ const DashboardHeader = ({ pulseEffect, isVisible }) => {
       {/* Background Pattern */}
       <div className="portfolio-header-background"></div>
 
-      {/* Portfolio Icon - use BITS favicon for clarity */}
+      {/* Portfolio Icon - use BITS logo */}
       <div className={`portfolio-header-icon ${pulseEffect ? 'pulse-active' : ''}`}>
-        <img src="/favicon.ico" alt="BITS" className="portfolio-header-icon-img" />
+        <img src={bitsLogo} alt="BITS" className="portfolio-header-icon-img" />
       </div>
       
       {/* Main Title */}
