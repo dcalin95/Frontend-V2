@@ -7,6 +7,7 @@ import { CONTRACT_MAP } from "../../contract/contractMap";
 import bitsLogo from "../../assets/logo.png";
 import { ethers } from "ethers";
 import "./PresaleCopilot.css";
+import "./SolHistoryPanel.css";
 
 const getExplorerBase = (desiredChainId) => {
   // BSC Mainnet
@@ -868,203 +869,135 @@ const PresaleCopilot = ({
         </>
       )}
       
-      {/* 🆕 SOL Transaction History Panel - Next to Copilot (right-bottom) */}
+      {/* 🆕 SOL HISTORY PANEL - Modern Glassmorphism Modal */}
       {txHistoryOpen && (
-        <div 
-          style={{
-            position: 'fixed',
-            bottom: '14px',
-            right: 'calc(clamp(14px, calc(14px + 1vw), 40px) + min(380px, calc(100vw - 28px)) + 24px)',
-            width: '420px',
-            maxHeight: '70vh',
-            background: 'rgba(10, 12, 16, 0.98)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            border: '3px solid #14f195',
-            borderRadius: '20px',
-            boxShadow: '0 0 60px rgba(20, 241, 149, 0.5), inset 0 0 40px rgba(20, 241, 149, 0.1)',
-            zIndex: 999999,
-            pointerEvents: 'auto',
-            transform: 'translateZ(0)',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden'
-          }}
-        >
-            {/* HEADER */}
-            <div style={{
-              padding: '20px',
-              borderBottom: '1px solid rgba(20, 241, 149, 0.3)',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              background: 'rgba(20, 241, 149, 0.05)',
-              position: 'sticky',
-              top: 0,
-              zIndex: 2
-            }}>
-              <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#14f195', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                📜 SOL History
-                <span style={{ fontSize: '0.75rem', color: '#00f0ff', letterSpacing: '0.08em' }}>RIGHT PANEL v3</span>
-              </h3>
+        <>
+          {/* Overlay (backdrop) */}
+          <div 
+            className="sol-history-overlay" 
+            onClick={() => setTxHistoryOpen(false)}
+          />
+          
+          {/* Main Panel */}
+          <div className="sol-history-panel">
+            {/* Header */}
+            <div className="sol-history-header">
+              <div className="sol-history-title">
+                <span className="sol-history-title-icon">📜</span>
+                <h3 className="sol-history-title-text">SOL History</h3>
+                <div className="sol-history-badge">
+                  <span>{solTxHistory.length}</span>
+                  <span>TX</span>
+                </div>
+              </div>
               <button
                 type="button"
+                className="sol-history-close-btn"
                 onClick={() => setTxHistoryOpen(false)}
-                style={{
-                  background: '#ff1744',
-                  border: '3px solid #ff1744',
-                  borderRadius: '50%',
-                  color: '#fff',
-                  fontSize: '1.3rem',
-                  fontWeight: '900',
-                  cursor: 'pointer',
-                  width: '48px',
-                  height: '48px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'all 0.2s',
-                  padding: 0,
-                  boxShadow: '0 0 20px rgba(255, 23, 68, 0.8)',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  lineHeight: 1
-                }}
-                onMouseOver={(e) => {
-                  e.target.style.background = '#ff4569';
-                  e.target.style.transform = 'scale(1.08)';
-                }}
-                onMouseOut={(e) => {
-                  e.target.style.background = '#ff1744';
-                  e.target.style.transform = 'scale(1)';
-                }}
+                aria-label="Close SOL History"
               >
                 ✕
               </button>
             </div>
-              
-              {/* BODY */}
-              <div style={{
-                flex: 1,
-                overflowY: 'auto',
-                padding: '20px'
-              }}>
-                {(!Array.isArray(solTxHistory) || solTxHistory.length === 0) ? (
-                  <div style={{ textAlign: 'center', padding: '40px', color: 'rgba(255, 255, 255, 0.6)' }}>
-                    <p>No SOL transactions yet.</p>
-                  </div>
-                ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    {solTxHistory.map((tx, idx) => {
-                      // Defensive: ensure tx is an object
-                      if (!tx || typeof tx !== 'object') return null;
-                      return (
-                      <div key={tx.tx_signature || tx.signature || idx} style={{
-                        background: 'rgba(20, 241, 149, 0.05)',
-                        border: '1px solid rgba(20, 241, 149, 0.15)',
-                        borderRadius: '12px',
-                        padding: '16px'
-                      }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '1px solid rgba(20, 241, 149, 0.1)' }}>
-                          <span style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.6)' }}>
+            
+            {/* Body */}
+            <div className="sol-history-body">
+              {(!Array.isArray(solTxHistory) || solTxHistory.length === 0) ? (
+                <div className="sol-history-empty">
+                  <div className="sol-history-empty-icon">📭</div>
+                  <p className="sol-history-empty-text">No SOL transactions yet</p>
+                </div>
+              ) : (
+                <div className="sol-history-list">
+                  {solTxHistory.map((tx, idx) => {
+                    if (!tx || typeof tx !== 'object') return null;
+                    
+                    const status = tx.fulfilment_status === 'fulfilled' ? 'confirmed' : 
+                                 (tx.fulfilment_status || tx.status || 'pending').toLowerCase();
+                    
+                    return (
+                      <div key={tx.tx_signature || tx.signature || idx} className="sol-tx-card">
+                        {/* Header */}
+                        <div className="sol-tx-header">
+                          <span className="sol-tx-date">
                             {(() => {
                               try {
-                                return new Date(tx.created_at || tx.timestamp || Date.now()).toLocaleString();
+                                return new Date(tx.created_at || tx.timestamp || Date.now()).toLocaleString('en-US', {
+                                  month: 'short',
+                                  day: 'numeric',
+                                  year: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                });
                               } catch {
                                 return 'N/A';
                               }
                             })()}
                           </span>
-                          <span style={{
-                            fontSize: '0.75rem',
-                            fontWeight: '700',
-                            textTransform: 'uppercase',
-                            padding: '4px 8px',
-                            borderRadius: '4px',
-                            color: '#14f195',
-                            background: 'rgba(20, 241, 149, 0.15)'
-                          }}>
-                            {tx.fulfilment_status === 'fulfilled' ? 'Confirmed' : tx.fulfilment_status || tx.status || 'Pending'}
+                          <span className={`sol-tx-status ${status}`}>
+                            {status === 'confirmed' ? '✓ Confirmed' : status === 'pending' ? '⏳ Pending' : '✗ Failed'}
                           </span>
                         </div>
                         
-                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: '0.9rem' }}>
-                          <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Amount:</span>
-                          <span style={{ color: '#fff', fontWeight: '600' }}>{(tx.amount_sol || tx.amount || 0)} SOL</span>
+                        {/* Details */}
+                        <div className="sol-tx-details">
+                          <div className="sol-tx-row">
+                            <span className="sol-tx-label">Amount SOL</span>
+                            <span className="sol-tx-value highlight">
+                              ◎ {Number(tx.amount_sol || tx.amount || 0).toFixed(4)}
+                            </span>
+                          </div>
+                          
+                          <div className="sol-tx-row">
+                            <span className="sol-tx-label">USD Value</span>
+                            <span className="sol-tx-value">
+                              ${Number(tx.usd_invested || tx.usdInvested || 0).toFixed(2)}
+                            </span>
+                          </div>
+                          
+                          <div className="sol-tx-row">
+                            <span className="sol-tx-label">BITS Received</span>
+                            <span className="sol-tx-value">
+                              🪙 {Number(tx.bits_to_receive || tx.bits_received || 0).toLocaleString()}
+                            </span>
+                          </div>
+                          
+                          <div className="sol-tx-row">
+                            <span className="sol-tx-label">Signature</span>
+                            <span className="sol-tx-signature">
+                              {String(tx.tx_signature || tx.signature || '—').slice(0, 8)}...{String(tx.tx_signature || tx.signature || '—').slice(-6)}
+                            </span>
+                          </div>
                         </div>
                         
-                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: '0.9rem' }}>
-                          <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>USD Value:</span>
-                          <span style={{ color: '#fff', fontWeight: '600' }}>${Number(tx.usd_invested || tx.usdInvested || 0).toFixed(2)}</span>
-                        </div>
-                        
-                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: '0.9rem' }}>
-                          <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>BITS:</span>
-                          <span style={{ color: '#fff', fontWeight: '600' }}>{Number(tx.bits_to_receive || tx.bits_received || 0).toLocaleString()}</span>
-                        </div>
-                        
-                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: '0.9rem' }}>
-                          <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Signature:</span>
-                          <span style={{ 
-                            color: '#14f195', 
-                            fontFamily: 'monospace', 
-                            fontSize: '0.85rem',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            maxWidth: '200px'
-                          }}>
-                            {String(tx.tx_signature || tx.signature || '—').slice(0, 8)}...{String(tx.tx_signature || tx.signature || '—').slice(-8)}
-                          </span>
-                        </div>
-                        
-                        <div style={{ display: 'flex', gap: '8px', marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(20, 241, 149, 0.1)' }}>
+                        {/* Actions */}
+                        <div className="sol-tx-actions">
                           <button
                             type="button"
-                            style={{
-                              flex: 1,
-                              background: 'rgba(20, 241, 149, 0.1)',
-                              border: '1px solid rgba(20, 241, 149, 0.3)',
-                              borderRadius: '8px',
-                              color: '#14f195',
-                              fontWeight: '700',
-                              fontSize: '0.85rem',
-                              padding: '8px 16px',
-                              cursor: 'pointer',
-                              transition: 'all 0.2s'
-                            }}
+                            className="sol-tx-btn"
                             onClick={() => navigator.clipboard.writeText(tx.tx_signature || tx.signature)}
                           >
                             📋 Copy
                           </button>
                           <button
                             type="button"
-                            style={{
-                              flex: 1,
-                              background: 'rgba(20, 241, 149, 0.1)',
-                              border: '1px solid rgba(20, 241, 149, 0.3)',
-                              borderRadius: '8px',
-                              color: '#14f195',
-                              fontWeight: '700',
-                              fontSize: '0.85rem',
-                              padding: '8px 16px',
-                              cursor: 'pointer',
-                              transition: 'all 0.2s'
-                            }}
+                            className="sol-tx-btn"
                             onClick={() => window.open(`https://solscan.io/tx/${tx.tx_signature || tx.signature}`, "_blank", "noopener,noreferrer")}
                           >
                             🔍 Solscan
                           </button>
                         </div>
                       </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
-          )}
-        </aside>
-      );
+          </div>
+        </>
+      )}
+    </aside>
+  );
 };
 
 export default PresaleCopilot;
