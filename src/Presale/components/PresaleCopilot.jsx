@@ -976,8 +976,8 @@ const PresaleCopilot = ({
             style={{
               position: 'fixed',
               top: '50%',
-              right: '50%',
-              transform: 'translate(50%, -50%)',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
               zIndex: 999999999,
               background: '#ff0000',
               border: '5px solid #fff',
@@ -996,12 +996,12 @@ const PresaleCopilot = ({
               pointerEvents: 'auto'
             }}
             onMouseOver={(e) => {
-              e.target.style.transform = 'scale(1.2) rotate(90deg)';
-              e.target.style.boxShadow = '0 0 60px rgba(255, 68, 68, 1)';
+              e.target.style.transform = 'translate(-50%, -50%) scale(1.2) rotate(90deg)';
+              e.target.style.boxShadow = '0 0 100px rgba(255, 0, 0, 1)';
             }}
             onMouseOut={(e) => {
-              e.target.style.transform = 'scale(1) rotate(0deg)';
-              e.target.style.boxShadow = '0 0 40px rgba(255, 68, 68, 1)';
+              e.target.style.transform = 'translate(-50%, -50%) scale(1) rotate(0deg)';
+              e.target.style.boxShadow = '0 0 80px rgba(255, 0, 0, 1)';
             }}
           >
             ✕
