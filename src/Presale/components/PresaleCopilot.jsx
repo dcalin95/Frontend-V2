@@ -996,7 +996,10 @@ const PresaleCopilot = ({
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              background: 'rgba(20, 241, 149, 0.05)'
+              background: 'rgba(20, 241, 149, 0.05)',
+              position: 'sticky',
+              top: 0,
+              zIndex: 2
             }}>
               <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#14f195', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '10px' }}>
                 📜 SOL History
@@ -1006,28 +1009,32 @@ const PresaleCopilot = ({
                 type="button"
                 onClick={() => setTxHistoryOpen(false)}
                 style={{
-                  background: 'rgba(255, 68, 68, 0.15)',
-                  border: '2px solid rgba(255, 68, 68, 0.5)',
+                  background: '#ff1744',
+                  border: '3px solid #ff1744',
                   borderRadius: '50%',
-                  color: '#ff4444',
-                  fontSize: '1.5rem',
+                  color: '#fff',
+                  fontSize: '1.3rem',
                   fontWeight: '900',
                   cursor: 'pointer',
-                  width: '40px',
-                  height: '40px',
+                  width: '48px',
+                  height: '48px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   transition: 'all 0.2s',
-                  padding: 0
+                  padding: 0,
+                  boxShadow: '0 0 20px rgba(255, 23, 68, 0.8)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  lineHeight: 1
                 }}
                 onMouseOver={(e) => {
-                  e.target.style.background = 'rgba(255, 68, 68, 0.3)';
-                  e.target.style.transform = 'rotate(90deg) scale(1.1)';
+                  e.target.style.background = '#ff4569';
+                  e.target.style.transform = 'scale(1.08)';
                 }}
                 onMouseOut={(e) => {
-                  e.target.style.background = 'rgba(255, 68, 68, 0.15)';
-                  e.target.style.transform = 'rotate(0deg) scale(1)';
+                  e.target.style.background = '#ff1744';
+                  e.target.style.transform = 'scale(1)';
                 }}
               >
                 ✕
