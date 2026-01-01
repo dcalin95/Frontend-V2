@@ -77,10 +77,65 @@
   background: linear-gradient(135deg, rgba(20, 241, 149, 0.12) 0%, rgba(20, 241, 149, 0.05) 100%);
   border-bottom: 1.5px solid rgba(20, 241, 149, 0.2);
   display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* Top Row: Wallet + Close Button */
+.sol-history-top-row {
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 11px;
-  flex-shrink: 0;
+  gap: 12px;
+  width: 100%;
+}
+
+.sol-history-wallet {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.sol-history-wallet-label {
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.sol-history-wallet-address {
+  font-size: 0.67rem;
+  color: #14f195;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  background: rgba(20, 241, 149, 0.1);
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(20, 241, 149, 0.2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
+  transition: all 0.2s ease;
+}
+
+.sol-history-wallet-address:hover {
+  background: rgba(20, 241, 149, 0.15);
+  border-color: rgba(20, 241, 149, 0.3);
+}
+
+/* Bottom Row: Title + Badge */
+.sol-history-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
 }
 
 .sol-history-title {
@@ -125,8 +180,8 @@
   color: #fff;
   font-size: 1.05rem;
   font-weight: 900;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -136,6 +191,8 @@
     0 0 21px rgba(255, 23, 68, 0.6),
     0 3px 8px rgba(0, 0, 0, 0.3);
   flex-shrink: 0;
+  padding: 0;
+  line-height: 1;
 }
 
 .sol-history-close-btn:hover {
@@ -349,6 +406,24 @@
 
   .sol-history-header {
     padding: 14px 14px;
+    gap: 10px;
+  }
+
+  .sol-history-top-row {
+    gap: 10px;
+  }
+
+  .sol-history-wallet-label {
+    font-size: 0.53rem;
+  }
+
+  .sol-history-wallet-address {
+    font-size: 0.6rem;
+    padding: 3px 8px;
+  }
+
+  .sol-history-title-row {
+    gap: 10px;
   }
 
   .sol-history-title-text {
@@ -361,8 +436,8 @@
   }
 
   .sol-history-close-btn {
-    width: 31px;
-    height: 31px;
+    width: 28px;
+    height: 28px;
     font-size: 0.91rem;
   }
 

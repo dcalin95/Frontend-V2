@@ -882,22 +882,35 @@ const PresaleCopilot = ({
           <div className="sol-history-panel">
             {/* Header */}
             <div className="sol-history-header">
-              <div className="sol-history-title">
-                <span className="sol-history-title-icon">📜</span>
-                <h3 className="sol-history-title-text">SOL History</h3>
+              {/* Top Row: Wallet Address + Close Button */}
+              <div className="sol-history-top-row">
+                <div className="sol-history-wallet">
+                  <span className="sol-history-wallet-label">Wallet:</span>
+                  <span className="sol-history-wallet-address" title={walletAddress || ""}>
+                    {walletAddress ? shortAddr(walletAddress, 6, 4) : "Not connected"}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  className="sol-history-close-btn"
+                  onClick={() => setTxHistoryOpen(false)}
+                  aria-label="Close SOL History"
+                >
+                  ✕
+                </button>
+              </div>
+              
+              {/* Bottom Row: Title + Badge */}
+              <div className="sol-history-title-row">
+                <div className="sol-history-title">
+                  <span className="sol-history-title-icon">📜</span>
+                  <h3 className="sol-history-title-text">SOL History</h3>
+                </div>
                 <div className="sol-history-badge">
                   <span>{solTxHistory.length}</span>
                   <span>TX</span>
                 </div>
               </div>
-              <button
-                type="button"
-                className="sol-history-close-btn"
-                onClick={() => setTxHistoryOpen(false)}
-                aria-label="Close SOL History"
-              >
-                ✕
-              </button>
             </div>
             
             {/* Body */}
