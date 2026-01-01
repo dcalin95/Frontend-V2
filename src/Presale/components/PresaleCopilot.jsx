@@ -1047,28 +1047,31 @@ const PresaleCopilot = ({
                 overflowY: 'auto',
                 padding: '20px'
               }}>
-                {solTxHistory.length === 0 ? (
+                {(!Array.isArray(solTxHistory) || solTxHistory.length === 0) ? (
                   <div style={{ textAlign: 'center', padding: '40px', color: 'rgba(255, 255, 255, 0.6)' }}>
                     <p>No SOL transactions yet.</p>
                   </div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    {solTxHistory.map((tx, idx) => (
+                    {solTxHistory.map((tx, idx) => {
+                      // Defensive: ensure tx is an object
+                      if (!tx || typeof tx !== 'object') return null;
+                      return (
                       <div key={tx.tx_signature || tx.signature || idx} style={{
                         background: 'rgba(20, 241, 149, 0.05)',
                         border: '1px solid rgba(20, 241, 149, 0.15)',
                         borderRadius: '12px',
                         padding: '16px'
                       }}>
-                        <div style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          marginBottom: '12px',
-                          paddingBottom: '12px',
-                          borderBottom: '1px solid rgba(20, 241, 149, 0.1)'
-                        }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '1px solid rgba(20, 241, 149, 0.1)' }}>
                           <span style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.6)' }}>
-                            {new Date(tx.created_at || tx.timestamp).toLocaleString()}
+                            {(() => {
+                              try {
+                                return new Date(tx.created_at || tx.timestamp || Date.now()).toLocaleString();
+                              } catch {
+                                return 'N/A';
+                              }
+                            })()}
                           </span>
                           <span style={{
                             fontSize: '0.75rem',
@@ -1085,17 +1088,17 @@ const PresaleCopilot = ({
                         
                         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: '0.9rem' }}>
                           <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Amount:</span>
-                          <span style={{ color: '#fff', fontWeight: '600' }}>{tx.amount_sol || tx.amount || 0} SOL</span>
+                          <span style={{ color: '#fff', fontWeight: '600' }}>{(tx.amount_sol || tx.amount || 0)} SOL</span>
                         </div>
                         
                         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: '0.9rem' }}>
                           <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>USD Value:</span>
-                          <span style={{ color: '#fff', fontWeight: '600' }}>${(tx.usd_invested || tx.usdInvested || 0).toFixed(2)}</span>
+                          <span style={{ color: '#fff', fontWeight: '600' }}>${Number(tx.usd_invested || tx.usdInvested || 0).toFixed(2)}</span>
                         </div>
                         
                         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: '0.9rem' }}>
                           <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>BITS:</span>
-                          <span style={{ color: '#fff', fontWeight: '600' }}>{(tx.bits_to_receive || tx.bits_received || 0).toLocaleString()}</span>
+                          <span style={{ color: '#fff', fontWeight: '600' }}>{Number(tx.bits_to_receive || tx.bits_received || 0).toLocaleString()}</span>
                         </div>
                         
                         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: '0.9rem' }}>
@@ -1108,7 +1111,7 @@ const PresaleCopilot = ({
                             textOverflow: 'ellipsis',
                             maxWidth: '200px'
                           }}>
-                            {(tx.tx_signature || tx.signature || '—').slice(0, 8)}...{(tx.tx_signature || tx.signature || '—').slice(-8)}
+                            {String(tx.tx_signature || tx.signature || '—').slice(0, 8)}...{String(tx.tx_signature || tx.signature || '—').slice(-8)}
                           </span>
                         </div>
                         
@@ -1151,7 +1154,8 @@ const PresaleCopilot = ({
                           </button>
                         </div>
                       </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
