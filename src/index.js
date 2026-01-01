@@ -14,6 +14,13 @@ import './Presale/CrystalClear.css'; // 💎 Crystal clear text - NO BLUR, NO SH
 import AppWrapper from './AppWrapper';
 import reportWebVitals from './reportWebVitals';
 
+// 🚫 DISABLE ALL console.log IN PRODUCTION (Performance Optimization)
+if (process.env.NODE_ENV === 'production') {
+  console.log = () => {};
+  console.debug = () => {};
+  console.info = () => {};
+}
+
 // 🔗 Montare aplicație în DOM
 const root = ReactDOM.createRoot(document.getElementById('root'));
 

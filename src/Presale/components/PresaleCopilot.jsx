@@ -256,43 +256,23 @@ const PresaleCopilot = ({
       // 🆕 Load SOL transaction history from BACKEND (not localStorage)
       if (walletAddress) {
         try {
-          console.log("🔍 [Copilot] Fetching SOL history from backend for wallet:", walletAddress);
-          console.log("🔍 [Copilot] Backend URL:", BACKEND_URL);
-          console.log("🔍 [Copilot] Full endpoint:", `${BACKEND_URL}/api/solana/payments/user/${walletAddress}`);
-          
           const response = await fetch(`${BACKEND_URL}/api/solana/payments/user/${walletAddress}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
           });
           
-          console.log("📊 [Copilot] Response status:", response.status, response.statusText);
-          
           if (response.ok) {
             const data = await response.json();
-            console.log("✅ [Copilot] SOL history from backend:", data);
-            
-            // Backend returns { ok: true, payments: [...] }
             const payments = Array.isArray(data.payments) ? data.payments : [];
-            
-            console.log("📋 [Copilot] Payments array:", payments);
-            
-            // Sort by timestamp, newest first
             const sorted = payments.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
-            console.log("🔍 [Copilot] Setting solTxHistory state:", sorted.length, "transactions");
-            console.log("🔍 [Copilot] First transaction:", sorted[0]);
             setSolTxHistory(sorted);
           } else {
-            const errorText = await response.text().catch(() => 'Unknown error');
-            console.warn("⚠️ [Copilot] Backend returned error:", response.status, errorText);
             setSolTxHistory([]);
           }
         } catch (error) {
-          console.error("❌ [Copilot] Failed to fetch SOL history from backend:", error);
-          console.error("❌ [Copilot] Error details:", error.message, error.stack);
           setSolTxHistory([]);
         }
       } else {
-        console.log("ℹ️ [Copilot] No wallet connected, skipping SOL history fetch");
         setSolTxHistory([]);
       }
     };
@@ -302,7 +282,6 @@ const PresaleCopilot = ({
 
     // Listen for SOL payment success events to refresh history
     const handleSolPaymentSuccess = () => {
-      console.log("✅ [Copilot] SOL payment success event detected, reloading history");
       loadHistory();
     };
 
@@ -353,34 +332,22 @@ const PresaleCopilot = ({
 
   const handleAddBitsToWallet = useCallback(async () => {
     if (!bitsTokenAddress) {
-      console.error('❌ [PresaleCopilot] BITS token address not available');
       return;
     }
 
     if (!window.ethereum) {
-      console.error('❌ [PresaleCopilot] No Ethereum provider found');
       alert('❌ No crypto wallet detected. Please install MetaMask.');
       return;
     }
 
     try {
-      console.log('🔄 [PresaleCopilot] ===== ATTEMPTING TO ADD BITS TOKEN =====');
-      
-      // 🎯 DETECT MULTIPLE PROVIDERS (MetaMask, Coinbase, Trust, etc.)
-      console.log('🔍 [PresaleCopilot] Checking for multiple providers...');
-      console.log('🔍 [PresaleCopilot] window.ethereum.providers:', window.ethereum.providers);
-      
       let ethereum = window.ethereum;
       
       // 🦊 IF MULTIPLE PROVIDERS, TRY TO FIND METAMASK
       if (window.ethereum.providers && Array.isArray(window.ethereum.providers)) {
-        console.log('🔍 [PresaleCopilot] Multiple providers detected:', window.ethereum.providers.length);
         const metamaskProvider = window.ethereum.providers.find(p => p.isMetaMask);
         if (metamaskProvider) {
-          console.log('✅ [PresaleCopilot] Found MetaMask provider in array');
           ethereum = metamaskProvider;
-        } else {
-          console.log('⚠️ [PresaleCopilot] MetaMask not found in providers array, using default');
         }
       }
       
@@ -392,50 +359,25 @@ const PresaleCopilot = ({
         }
       })();
 
-      console.log('📋 [PresaleCopilot] Token Details:', {
-        address: bitsTokenAddress,
-        symbol: 'BITS',
-        decimals: 18,
-        image
-      });
-
-      // 🔍 DETECT WALLET TYPE & CAPABILITIES
       const walletType = ethereum.isCoinbaseWallet ? 'Coinbase Wallet' :
                          ethereum.isTrust ? 'Trust Wallet' :
                          ethereum.isMetaMask ? 'MetaMask' :
                          ethereum.isBraveWallet ? 'Brave Wallet' :
                          'Unknown Wallet';
       
-      console.log('🔍 [PresaleCopilot] Selected Provider:', walletType);
-      console.log('🔍 [PresaleCopilot] Wallet Capabilities:', {
-        isMetaMask: ethereum.isMetaMask,
-        isCoinbaseWallet: ethereum.isCoinbaseWallet,
-        isTrust: ethereum.isTrust,
-        isBraveWallet: ethereum.isBraveWallet,
-        hasRequest: typeof ethereum.request === 'function'
-      });
-
-      // 🔍 CHECK IF wallet_watchAsset IS SUPPORTED
       const supportsRequest = typeof ethereum.request === 'function';
       
       if (!supportsRequest) {
-        console.warn('⚠️ [PresaleCopilot] Wallet does not support ethereum.request()');
-        
-        // 📋 COPY CONTRACT ADDRESS AS FALLBACK
         try {
           await navigator.clipboard.writeText(bitsTokenAddress);
-          console.log('📋 [PresaleCopilot] Contract address copied as fallback:', bitsTokenAddress);
           alert(`⚠️ ${walletType} doesn't support automatic token adding.\n\n📋 Contract address copied to clipboard!\n\nPlease add manually:\nAddress: ${bitsTokenAddress}\nSymbol: BITS\nDecimals: 18\nNetwork: BSC (BEP-20)`);
         } catch (clipError) {
-          console.error('[PresaleCopilot] Failed to copy to clipboard:', clipError);
           alert(`Please add BITS token manually:\n\nAddress: ${bitsTokenAddress}\nSymbol: BITS\nDecimals: 18\nNetwork: BSC (BEP-20)`);
         }
         return;
       }
 
-      // 🚀 TRY TO ADD TOKEN VIA wallet_watchAsset
-      console.log('🚀 [PresaleCopilot] Calling wallet_watchAsset...');
-      const wasAdded = await ethereum.request({
+      await ethereum.request({
         method: "wallet_watchAsset",
         params: {
           type: "ERC20",
@@ -448,66 +390,32 @@ const PresaleCopilot = ({
         },
       });
 
-      console.log('✅ [PresaleCopilot] Token addition result:', wasAdded);
-
-      if (wasAdded) {
-        console.log('✅ [PresaleCopilot] User confirmed token addition');
-      } else {
-        console.log('ℹ️ [PresaleCopilot] User cancelled token addition');
-      }
     } catch (error) {
-      console.error('❌ [PresaleCopilot] ===== ERROR ADDING BITS TOKEN =====');
-      console.error('❌ [PresaleCopilot] Error Object:', error);
-      console.error('❌ [PresaleCopilot] Error Code:', error.code);
-      console.error('❌ [PresaleCopilot] Error Message:', error.message);
-      console.error('❌ [PresaleCopilot] Error Stack:', error.stack);
-      
-      // 🔍 DETAILED ERROR HANDLING
       if (error.code === 4001) {
-        console.log('⚠️ [PresaleCopilot] User rejected the request (code 4001)');
-        // User rejected - silent, no alert needed
-        
+        // User rejected - silent
       } else if (error.code === -32002) {
-        console.log('⚠️ [PresaleCopilot] Request already pending (code -32002)');
         alert('⚠️ Request already pending. Please check your wallet.');
-        
       } else if (error.message && (
         error.message.includes('wallet_watchAsset') || 
         error.message.includes("isn't implemented") ||
         error.message.includes('not supported')
       )) {
-        // ⚠️ WALLET DOESN'T SUPPORT wallet_watchAsset
-        console.warn('⚠️ [PresaleCopilot] Wallet does not support wallet_watchAsset method');
-        
-        // 📋 FALLBACK: COPY CONTRACT ADDRESS TO CLIPBOARD
         try {
           await navigator.clipboard.writeText(bitsTokenAddress);
-          console.log('📋 [PresaleCopilot] Contract address copied as fallback:', bitsTokenAddress);
           alert(`⚠️ Your wallet doesn't support automatic token adding.\n\n📋 Contract address copied to clipboard!\n\nPlease add manually in your wallet:\n\nAddress: ${bitsTokenAddress}\nSymbol: BITS\nDecimals: 18\nNetwork: BSC (BEP-20)`);
         } catch (clipError) {
-          console.error('[PresaleCopilot] Failed to copy to clipboard:', clipError);
           alert(`Please add BITS token manually:\n\nAddress: ${bitsTokenAddress}\nSymbol: BITS\nDecimals: 18\nNetwork: BSC (BEP-20)`);
         }
-        
       } else if (error.message && error.message.includes('network')) {
-        console.log('⚠️ [PresaleCopilot] Wrong network detected');
         alert('❌ Please switch to BSC Network (Binance Smart Chain) in your wallet.');
-        
       } else {
-        // GENERIC ERROR
-        console.log('❌ [PresaleCopilot] Generic error occurred');
-        
-        // 📋 FALLBACK: COPY CONTRACT ADDRESS
         try {
           await navigator.clipboard.writeText(bitsTokenAddress);
-          console.log('📋 [PresaleCopilot] Fallback: Contract address copied:', bitsTokenAddress);
           alert(`❌ Failed to add BITS token: ${error.message || 'Unknown error'}\n\n📋 Contract address copied to clipboard.\n\nPlease add manually:\nAddress: ${bitsTokenAddress}\nSymbol: BITS\nDecimals: 18`);
         } catch (clipError) {
-          console.error('[PresaleCopilot] Failed to copy to clipboard:', clipError);
+          // Silent fail
         }
       }
-      
-      console.log('🔄 [PresaleCopilot] ===== END ERROR HANDLING =====');
     }
   }, [bitsTokenAddress]);
 
@@ -769,11 +677,7 @@ const PresaleCopilot = ({
                   type="button" 
                   className="pc-btn primary" 
                   onClick={() => {
-                    console.log("🟢 [SOL HISTORY] Button clicked! Opening panel...");
-                    console.log("🟢 [SOL HISTORY] Current txHistoryOpen state:", txHistoryOpen);
-                    console.log("🟢 [SOL HISTORY] solTxHistory length:", solTxHistory.length);
                     setTxHistoryOpen(true);
-                    console.log("🟢 [SOL HISTORY] setTxHistoryOpen(true) called");
                   }}
                   style={{ position: 'relative', zIndex: 1 }}
                 >
@@ -793,23 +697,14 @@ const PresaleCopilot = ({
                     type="button" 
                     className="pc-btn ghost" 
                     onClick={async () => {
-                      console.log("🔍 [DEBUG] Checking SOL history for:", walletAddress);
-                      console.log("🔍 [DEBUG] Backend URL:", BACKEND_URL);
-                      console.log("🔍 [DEBUG] Full endpoint:", `${BACKEND_URL}/api/solana/payments/user/${walletAddress}`);
-                      console.log("🔍 [DEBUG] Current solTxHistory state:", solTxHistory);
-                      
-                      // Try to fetch again
                       try {
                         const response = await fetch(`${BACKEND_URL}/api/solana/payments/user/${walletAddress}`, {
                           method: 'GET',
                           headers: { 'Content-Type': 'application/json' }
                         });
-                        const data = await response.json();
-                        console.log("🔍 [DEBUG] Backend response:", data);
-                        console.log("🔍 [DEBUG] Response status:", response.status);
-                        console.log("🔍 [DEBUG] Response ok:", response.ok);
+                        await response.json();
                       } catch (e) {
-                        console.error("❌ [DEBUG] Fetch error:", e);
+                        // Silent fail
                       }
                     }}
                   >
@@ -995,7 +890,6 @@ const PresaleCopilot = ({
             flexDirection: 'column',
             overflow: 'hidden'
           }}
-          onClick={() => console.log("🔵 [SOL HISTORY] Panel is visible and clickable")}
         >
             {/* HEADER */}
             <div style={{
