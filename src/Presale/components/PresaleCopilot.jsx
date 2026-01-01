@@ -966,30 +966,27 @@ const PresaleCopilot = ({
         </>
       )}
       
-      {/* 🆕 SOL Transaction History Modal - SIMPLIFIED */}
+      {/* 🆕 SOL Transaction History Panel - Next to Copilot */}
       {txHistoryOpen && (
-        <>
-          {/* HISTORY SIDE PANEL */}
-          <div 
-            style={{
-              position: 'fixed',
-              top: '20px',
-              right: '20px',
-              width: '420px',
-              maxHeight: 'calc(100vh - 40px)',
-              background: 'rgba(10, 12, 16, 0.98)',
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              border: '3px solid #14f195',
-              borderRadius: '20px',
-              boxShadow: '0 0 60px rgba(20, 241, 149, 0.5), inset 0 0 40px rgba(20, 241, 149, 0.1)',
-              zIndex: 999999,
-              display: 'flex',
-              flexDirection: 'column',
-              overflow: 'hidden',
-              animation: 'slideInRight 0.3s ease-out'
-            }}
-          >
+        <div 
+          style={{
+            position: 'fixed',
+            bottom: '20px',
+            left: '420px',
+            width: '420px',
+            maxHeight: 'calc(100vh - 40px)',
+            background: 'rgba(10, 12, 16, 0.98)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            border: '3px solid #14f195',
+            borderRadius: '20px',
+            boxShadow: '0 0 60px rgba(20, 241, 149, 0.5), inset 0 0 40px rgba(20, 241, 149, 0.1)',
+            zIndex: 999998,
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden'
+          }}
+        >
             {/* HEADER */}
             <div style={{
               padding: '20px',
@@ -1149,10 +1146,9 @@ const PresaleCopilot = ({
                 )}
               </div>
             </div>
-          </>
-        )}
-      </aside>
-    );
+          )}
+        </aside>
+      );
 };
 
 export default PresaleCopilot;
