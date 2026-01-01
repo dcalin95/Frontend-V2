@@ -971,17 +971,17 @@ const PresaleCopilot = ({
         <div 
           style={{
             position: 'fixed',
-            bottom: '20px',
-            left: '420px',
+            bottom: '14px',
+            right: 'calc(clamp(14px, calc(14px + 1vw), 40px) + min(380px, calc(100vw - 28px)) + 20px)',
             width: '420px',
-            maxHeight: 'calc(100vh - 40px)',
+            maxHeight: '70vh',
             background: 'rgba(10, 12, 16, 0.98)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
             border: '3px solid #14f195',
             borderRadius: '20px',
             boxShadow: '0 0 60px rgba(20, 241, 149, 0.5), inset 0 0 40px rgba(20, 241, 149, 0.1)',
-            zIndex: 999998,
+            zIndex: 99989,
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden'
