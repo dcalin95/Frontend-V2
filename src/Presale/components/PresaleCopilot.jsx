@@ -7,7 +7,6 @@ import { CONTRACT_MAP } from "../../contract/contractMap";
 import bitsLogo from "../../assets/logo.png";
 import { ethers } from "ethers";
 import "./PresaleCopilot.css";
-import "./PresaleCopilot-SOL-History.css";
 
 const getExplorerBase = (desiredChainId) => {
   // BSC Mainnet
@@ -258,10 +257,15 @@ const PresaleCopilot = ({
       if (walletAddress) {
         try {
           console.log("🔍 [Copilot] Fetching SOL history from backend for wallet:", walletAddress);
+          console.log("🔍 [Copilot] Backend URL:", BACKEND_URL);
+          console.log("🔍 [Copilot] Full endpoint:", `${BACKEND_URL}/api/solana/payments/user/${walletAddress}`);
+          
           const response = await fetch(`${BACKEND_URL}/api/solana/payments/user/${walletAddress}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
           });
+          
+          console.log("📊 [Copilot] Response status:", response.status, response.statusText);
           
           if (response.ok) {
             const data = await response.json();
@@ -270,16 +274,21 @@ const PresaleCopilot = ({
             // Backend returns { ok: true, payments: [...] }
             const payments = Array.isArray(data.payments) ? data.payments : [];
             
+            console.log("📋 [Copilot] Payments array:", payments);
+            
             // Sort by timestamp, newest first
             const sorted = payments.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
             console.log("🔍 [Copilot] Setting solTxHistory state:", sorted.length, "transactions");
+            console.log("🔍 [Copilot] First transaction:", sorted[0]);
             setSolTxHistory(sorted);
           } else {
-            console.warn("⚠️ [Copilot] Backend returned error:", response.status);
+            const errorText = await response.text().catch(() => 'Unknown error');
+            console.warn("⚠️ [Copilot] Backend returned error:", response.status, errorText);
             setSolTxHistory([]);
           }
         } catch (error) {
           console.error("❌ [Copilot] Failed to fetch SOL history from backend:", error);
+          console.error("❌ [Copilot] Error details:", error.message, error.stack);
           setSolTxHistory([]);
         }
       } else {
@@ -957,99 +966,198 @@ const PresaleCopilot = ({
         </>
       )}
       
-      {/* 🆕 SOL Transaction History Modal */}
+      {/* 🆕 SOL Transaction History Modal - SIMPLIFIED */}
       {txHistoryOpen && (
-        <div className="pc-modal-overlay" onClick={() => setTxHistoryOpen(false)}>
-          <div className="pc-modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="pc-modal-header">
-              <h3>📜 SOL Transaction History</h3>
-              <button 
-                type="button" 
-                className="pc-modal-close" 
-                onClick={() => setTxHistoryOpen(false)}
-              >
-                ✕
-              </button>
-            </div>
-            
-            <div className="pc-modal-body">
-              {solTxHistory.length === 0 ? (
-                <div className="pc-tx__hint">No SOL transactions yet.</div>
-              ) : (
-                <div className="pc-sol-history-list">
-                  {solTxHistory.map((tx, idx) => (
-                    <div key={tx.tx_signature || tx.signature || idx} className="pc-sol-tx-item">
-                      <div className="pc-sol-tx-header">
-                        <span className="pc-sol-tx-date">
-                          {new Date(tx.created_at || tx.timestamp).toLocaleString()}
-                        </span>
-                        <span className={`pc-sol-tx-status ${tx.fulfilment_status || tx.status || "pending"}`}>
-                          {tx.fulfilment_status === 'fulfilled' ? 'Confirmed' : tx.fulfilment_status || tx.status || 'Pending'}
-                        </span>
+        <>
+          {/* CLOSE BUTTON - OUTSIDE EVERYTHING */}
+          <button 
+            type="button" 
+            onClick={() => setTxHistoryOpen(false)}
+            style={{
+              position: 'fixed',
+              top: '20px',
+              right: '20px',
+              zIndex: 99999999,
+              background: '#ff4444',
+              border: 'none',
+              borderRadius: '50%',
+              color: '#fff',
+              fontSize: '3rem',
+              fontWeight: '900',
+              cursor: 'pointer',
+              width: '80px',
+              height: '80px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 0 40px rgba(255, 68, 68, 1)',
+              transition: 'all 0.2s'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.transform = 'scale(1.2) rotate(90deg)';
+              e.target.style.boxShadow = '0 0 60px rgba(255, 68, 68, 1)';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.transform = 'scale(1) rotate(0deg)';
+              e.target.style.boxShadow = '0 0 40px rgba(255, 68, 68, 1)';
+            }}
+          >
+            ✕
+          </button>
+          
+          {/* OVERLAY */}
+          <div 
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0, 0, 0, 0.9)',
+              zIndex: 9999999,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '20px'
+            }}
+            onClick={() => setTxHistoryOpen(false)}
+          >
+            {/* CONTENT */}
+            <div 
+              style={{
+                background: '#0a0c10',
+                border: '2px solid #14f195',
+                borderRadius: '16px',
+                maxWidth: '600px',
+                width: '100%',
+                maxHeight: '80vh',
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column'
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* HEADER */}
+              <div style={{
+                padding: '20px',
+                borderBottom: '1px solid rgba(20, 241, 149, 0.3)',
+                textAlign: 'center'
+              }}>
+                <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#14f195' }}>
+                  📜 SOL Transaction History
+                </h3>
+              </div>
+              
+              {/* BODY */}
+              <div style={{
+                flex: 1,
+                overflowY: 'auto',
+                padding: '20px'
+              }}>
+                {solTxHistory.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '40px', color: 'rgba(255, 255, 255, 0.6)' }}>
+                    <p>No SOL transactions yet.</p>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    {solTxHistory.map((tx, idx) => (
+                      <div key={tx.tx_signature || tx.signature || idx} style={{
+                        background: 'rgba(20, 241, 149, 0.05)',
+                        border: '1px solid rgba(20, 241, 149, 0.15)',
+                        borderRadius: '12px',
+                        padding: '16px'
+                      }}>
+                        <div style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          marginBottom: '12px',
+                          paddingBottom: '12px',
+                          borderBottom: '1px solid rgba(20, 241, 149, 0.1)'
+                        }}>
+                          <span style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.6)' }}>
+                            {new Date(tx.created_at || tx.timestamp).toLocaleString()}
+                          </span>
+                          <span style={{
+                            fontSize: '0.75rem',
+                            fontWeight: '700',
+                            textTransform: 'uppercase',
+                            padding: '4px 8px',
+                            borderRadius: '4px',
+                            color: '#14f195',
+                            background: 'rgba(20, 241, 149, 0.15)'
+                          }}>
+                            {tx.fulfilment_status === 'fulfilled' ? 'Confirmed' : tx.fulfilment_status || tx.status || 'Pending'}
+                          </span>
+                        </div>
+                        
+                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: '0.9rem' }}>
+                          <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Amount:</span>
+                          <span style={{ color: '#fff', fontWeight: '600' }}>{tx.amount_sol || tx.amount || 0} SOL</span>
+                        </div>
+                        
+                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: '0.9rem' }}>
+                          <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>USD Value:</span>
+                          <span style={{ color: '#fff', fontWeight: '600' }}>${(tx.usd_invested || tx.usdInvested || 0).toFixed(2)}</span>
+                        </div>
+                        
+                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: '0.9rem' }}>
+                          <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>BITS:</span>
+                          <span style={{ color: '#fff', fontWeight: '600' }}>{(tx.bits_to_receive || tx.bits_received || 0).toLocaleString()}</span>
+                        </div>
+                        
+                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: '0.9rem' }}>
+                          <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Signature:</span>
+                          <span style={{ 
+                            color: '#14f195', 
+                            fontFamily: 'monospace', 
+                            fontSize: '0.85rem',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            maxWidth: '200px'
+                          }}>
+                            {(tx.tx_signature || tx.signature || '—').slice(0, 8)}...{(tx.tx_signature || tx.signature || '—').slice(-8)}
+                          </span>
+                        </div>
                       </div>
-                      
-                      <div className="pc-sol-tx-row">
-                        <span className="pc-sol-tx-label">Amount:</span>
-                        <span className="pc-sol-tx-value">{tx.amount_sol || tx.amount || 0} SOL</span>
-                      </div>
-                      
-                      <div className="pc-sol-tx-row">
-                        <span className="pc-sol-tx-label">USD Value:</span>
-                        <span className="pc-sol-tx-value">${(tx.usd_invested || tx.usdInvested || 0).toLocaleString()}</span>
-                      </div>
-                      
-                      <div className="pc-sol-tx-row">
-                        <span className="pc-sol-tx-label">BITS:</span>
-                        <span className="pc-sol-tx-value">{(tx.bits_to_receive || tx.bitsToReceive || tx.bitsReceived || 0).toLocaleString()}</span>
-                      </div>
-                      
-                      <div className="pc-sol-tx-row">
-                        <span className="pc-sol-tx-label">Wallet:</span>
-                        <span className="pc-sol-tx-value mono" title={tx.evm_wallet || tx.walletAddress}>
-                          {shortAddr(tx.evm_wallet || tx.walletAddress || '—', 6, 4)}
-                        </span>
-                      </div>
-                      
-                      <div className="pc-sol-tx-row">
-                        <span className="pc-sol-tx-label">Signature:</span>
-                        <span className="pc-sol-tx-value mono" title={tx.tx_signature || tx.signature}>
-                          {shortAddr(tx.tx_signature || tx.signature, 8, 8)}
-                        </span>
-                      </div>
-                      
-                      <div className="pc-sol-tx-actions">
-                        <button
-                          type="button"
-                          className="pc-btn pc-btn--copy"
-                          onClick={() => handleCopy(tx.tx_signature || tx.signature)}
-                        >
-                          Copy
-                        </button>
-                        <button
-                          type="button"
-                          className="pc-btn pc-btn--open"
-                          onClick={() => window.open(`https://solscan.io/tx/${tx.tx_signature || tx.signature}`, "_blank", "noopener,noreferrer")}
-                        >
-                          View on Solscan
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            
-            <div className="pc-modal-footer">
-              <button 
-                type="button" 
-                className="pc-btn" 
-                onClick={() => setTxHistoryOpen(false)}
-              >
-                Close
-              </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              {/* FOOTER */}
+              <div style={{
+                padding: '20px',
+                borderTop: '1px solid rgba(20, 241, 149, 0.3)',
+                textAlign: 'center'
+              }}>
+                <button 
+                  onClick={() => setTxHistoryOpen(false)}
+                  style={{
+                    background: '#ff4444',
+                    color: '#fff',
+                    border: 'none',
+                    padding: '12px 40px',
+                    borderRadius: '8px',
+                    fontSize: '1.1rem',
+                    fontWeight: '700',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseOver={(e) => {
+                    e.target.style.background = '#ff6666';
+                    e.target.style.transform = 'scale(1.1)';
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.background = '#ff4444';
+                    e.target.style.transform = 'scale(1)';
+                  }}
+                >
+                  ✕ Close
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
     </aside>
   );
