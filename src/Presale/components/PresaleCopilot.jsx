@@ -966,13 +966,13 @@ const PresaleCopilot = ({
         </>
       )}
       
-      {/* 🆕 SOL Transaction History Panel - Next to Copilot */}
+      {/* 🆕 SOL Transaction History Panel - Next to Copilot (right-bottom) */}
       {txHistoryOpen && (
         <div 
           style={{
             position: 'fixed',
             bottom: '14px',
-            right: 'calc(clamp(14px, calc(14px + 1vw), 40px) + min(380px, calc(100vw - 28px)) + 20px)',
+            right: 'calc(clamp(14px, calc(14px + 1vw), 40px) + min(380px, calc(100vw - 28px)) + 24px)',
             width: '420px',
             maxHeight: '70vh',
             background: 'rgba(10, 12, 16, 0.98)',
@@ -981,7 +981,9 @@ const PresaleCopilot = ({
             border: '3px solid #14f195',
             borderRadius: '20px',
             boxShadow: '0 0 60px rgba(20, 241, 149, 0.5), inset 0 0 40px rgba(20, 241, 149, 0.1)',
-            zIndex: 99989,
+            zIndex: 100002,
+            pointerEvents: 'auto',
+            transform: 'translateZ(0)', // hint GPU, avoid overlap issues
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden'
@@ -996,8 +998,9 @@ const PresaleCopilot = ({
               alignItems: 'center',
               background: 'rgba(20, 241, 149, 0.05)'
             }}>
-              <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#14f195', fontWeight: '700' }}>
+              <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#14f195', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '10px' }}>
                 📜 SOL History
+                <span style={{ fontSize: '0.75rem', color: '#00f0ff', letterSpacing: '0.08em' }}>RIGHT PANEL v3</span>
               </h3>
               <button
                 type="button"
