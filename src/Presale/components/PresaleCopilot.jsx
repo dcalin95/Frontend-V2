@@ -1015,12 +1015,13 @@ const PresaleCopilot = ({
               left: 0,
               right: 0,
               bottom: 0,
-              background: 'rgba(0, 0, 0, 0.9)',
+              background: 'rgba(0, 0, 0, 0.95)',
               zIndex: 9999999,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: '20px'
+              padding: '40px 20px',
+              overflowY: 'auto'
             }}
             onClick={() => setTxHistoryOpen(false)}
           >
@@ -1028,11 +1029,13 @@ const PresaleCopilot = ({
             <div 
               style={{
                 background: '#0a0c10',
-                border: '2px solid #14f195',
+                border: '3px solid #14f195',
                 borderRadius: '16px',
+                boxShadow: '0 0 60px rgba(20, 241, 149, 0.4)',
                 maxWidth: '600px',
                 width: '100%',
-                maxHeight: '80vh',
+                maxHeight: 'calc(100vh - 80px)',
+                margin: 'auto',
                 overflow: 'hidden',
                 display: 'flex',
                 flexDirection: 'column'

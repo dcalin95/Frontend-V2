@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Force Reload BITS.AI</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+</head>
+<body>
+    <h1>Force Reload BITS.AI</h1>
+    <p>Click butonul de mai jos pentru a forța reîncărcarea completă:</p>
+    <button onclick="forceReload()" style="padding: 20px; font-size: 18px; background: #ff0000; color: #fff; border: none; border-radius: 8px; cursor: pointer;">
+        🔄 FORCE RELOAD NOW
+    </button>
+    
+    <script>
+        function forceReload() {
+            // Clear all cache
+            if ('caches' in window) {
+                caches.keys().then(function(names) {
+                    for (let name of names) caches.delete(name);
+                });
+            }
+            
+            // Clear localStorage
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            // Add timestamp to force fresh load
+            const timestamp = new Date().getTime();
+            window.location.href = `https://bits-ai.io/?nocache=${timestamp}#/presale`;
+        }
+    </script>
+</body>
+</html>
+
