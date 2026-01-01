@@ -159,7 +159,7 @@ const InnerWalletProvider = ({ children }) => {
 
   // Safe Disconnect Wrapper (defined early to be used in useEffect)
   // Disconnects BOTH EVM and Solana wallets completely
-  const safeDisconnect = useCallback(async () => {
+  const safeDisconnect = useCallback(async (shouldReload = true) => {
     try {
       console.log("🔌 [WalletContext] Starting complete disconnect...");
       const hasEvm = isConnected && address;
@@ -232,14 +232,16 @@ const InnerWalletProvider = ({ children }) => {
       
       console.log("✅ [WalletContext] Complete disconnect finished");
       
-      // Reload page to ensure clean state
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
+      // Reload page to ensure clean state (ONLY if explicitly requested - default true for manual disconnect)
+      if (shouldReload) {
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
+      }
     } catch (e) {
         console.warn("[WalletContext] Disconnect failed suppressed:", e);
     }
-  }, [disconnect, disconnectSolana]);
+  }, [disconnect, disconnectSolana, isConnected, address, isSolanaConnected, solanaPublicKey]);
 
   const setRememberWalletEnabled = useCallback(async (enabled) => {
     const next = !!enabled;
@@ -464,7 +466,7 @@ const InnerWalletProvider = ({ children }) => {
         // Only disconnect if it's NOT a Phantom-EVM hijack situation we're already handling
         const isPhantomEVM = connector?.name?.toLowerCase().includes('phantom');
         if (!isPhantomEVM) {
-          safeDisconnect();
+          safeDisconnect(false); // Don't reload on auto-disconnect
           return;
         }
       }
