@@ -229,8 +229,26 @@ const BITSAnalytics = () => {
 
   // Network Logic
   const [networkInfo, setNetworkInfo] = useState({ name: null, chainId: null });
-  const [targetChainId, setTargetChainId] = useState(56);
+  const [targetChainId, setTargetChainId] = useState(56); // Default to BSC
   const [isSwitchingNet, setIsSwitchingNet] = useState(false);
+  
+  // 🔥 CRITICAL: Sync targetChainId with WalletContext chainId when it changes
+  useEffect(() => {
+    if (walletType?.toUpperCase() === 'SOLANA') {
+      // For Solana, targetChainId should be null
+      setTargetChainId(null);
+      return;
+    }
+    
+    // For EVM wallets, sync targetChainId with chainId from WalletContext
+    if (chainId && Number.isFinite(Number(chainId))) {
+      const cid = Number(chainId);
+      setTargetChainId(cid);
+    } else if (!walletAddress) {
+      // No wallet connected, reset to default
+      setTargetChainId(56);
+    }
+  }, [chainId, walletType, walletAddress]);
 
   const SUPPORTED_NETWORKS = {
     56:  { icon: '🟡', chainId: '0x38',   chainName: 'BSC Mainnet',   nativeCurrency: { name: 'BNB',  symbol: 'BNB',  decimals: 18 }, rpcUrls: ['https://bsc-dataseed.binance.org'],            blockExplorerUrls: ['https://bscscan.com'] },
@@ -254,16 +272,17 @@ const BITSAnalytics = () => {
       try {
         // For Solana wallets
         if (walletType?.toUpperCase() === 'SOLANA') {
-          setNetworkInfo({ name: 'Solana Devnet', chainId: null });
-          setTargetChainId(null); // Solana doesn't use chainId
+          setNetworkInfo({ name: 'Solana Mainnet', chainId: null });
+          // targetChainId is managed by separate useEffect
           return;
         }
 
-        // For EVM wallets - use chainId from WalletContext first
+        // For EVM wallets - use chainId from WalletContext first (HIGHEST PRIORITY)
         if (chainId && Number.isFinite(Number(chainId))) {
           const cid = Number(chainId);
-          setNetworkInfo({ name: getNetworkLabelByChainId(cid), chainId: cid });
-          setTargetChainId(cid);
+          const networkName = getNetworkLabelByChainId(cid);
+          setNetworkInfo({ name: networkName, chainId: cid });
+          // targetChainId is managed by separate useEffect
           return;
         }
 
@@ -272,13 +291,16 @@ const BITSAnalytics = () => {
           try {
             const net = await walletContextValue.signer.provider.getNetwork();
             const cid = Number(net.chainId);
-            setNetworkInfo({ name: getNetworkLabelByChainId(cid), chainId: cid });
-            setTargetChainId(cid);
+            const networkName = getNetworkLabelByChainId(cid);
+            setNetworkInfo({ name: networkName, chainId: cid });
+            // targetChainId is managed by separate useEffect
           } catch {}
         } else if (walletAddress && !walletType) {
           // Default to BSC if wallet is connected but type unknown
           setNetworkInfo({ name: 'BSC Mainnet', chainId: 56 });
-          setTargetChainId(56);
+        } else if (!walletAddress) {
+          // No wallet connected - reset to default
+          setNetworkInfo({ name: null, chainId: null });
         }
       } catch (err) {
         console.warn('[BITSAnalytics] Network detection error:', err);
@@ -291,8 +313,9 @@ const BITSAnalytics = () => {
     if (typeof window !== 'undefined' && window.ethereum && walletType?.toUpperCase() !== 'SOLANA') {
       const onChainChanged = (hexId) => {
         const id = parseInt(hexId, 16);
-        setNetworkInfo({ name: getNetworkLabelByChainId(id), chainId: id });
-        setTargetChainId(id);
+        const networkName = getNetworkLabelByChainId(id);
+        setNetworkInfo({ name: networkName, chainId: id });
+        // targetChainId is managed by separate useEffect
       };
       window.ethereum.on('chainChanged', onChainChanged);
       return () => {
