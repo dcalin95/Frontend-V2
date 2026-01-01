@@ -11,10 +11,11 @@
   backdrop-filter: blur(8px);
   z-index: 999999;
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* Aliniază sus în loc de centru */
   justify-content: center;
-  padding: 20px;
+  padding: 40px 20px 20px 20px; /* Mai mult padding sus pentru vizibilitate */
   animation: pc-modal-fade-in 0.2s ease;
+  overflow-y: auto; /* Permite scroll dacă modal-ul e prea mare */
 }
 
 @keyframes pc-modal-fade-in {
@@ -28,11 +29,12 @@
   border-radius: 16px;
   max-width: 600px;
   width: 100%;
-  max-height: 80vh;
+  max-height: calc(100vh - 80px); /* Lasă spațiu sus și jos */
   display: flex;
   flex-direction: column;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
   animation: pc-modal-slide-up 0.3s ease;
+  position: relative; /* Asigură că butonul X rămâne vizibil */
 }
 
 @keyframes pc-modal-slide-up {
@@ -62,18 +64,33 @@
 }
 
 .pc-modal-close {
-  background: transparent;
-  border: none;
+  background: rgba(255, 68, 68, 0.35);
+  border: 3px solid #ff4444;
+  border-radius: 12px;
   color: #fff;
-  font-size: 1.5rem;
+  font-size: 2.2rem;
+  font-weight: 900;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 12px 20px;
   line-height: 1;
-  transition: color 0.2s;
+  transition: all 0.2s;
+  z-index: 99999999;
+  min-width: 60px;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 16px rgba(255, 68, 68, 0.5);
+  flex-shrink: 0; /* Nu se micșorează niciodată */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .pc-modal-close:hover {
-  color: #14f195;
+  background: rgba(255, 68, 68, 0.6);
+  border-color: #ff6666;
+  color: #fff;
+  transform: scale(1.15) rotate(90deg);
+  box-shadow: 0 8px 24px rgba(255, 68, 68, 0.7);
 }
 
 .pc-modal-body {
@@ -200,10 +217,14 @@
 }
 
 @media (max-width: 640px) {
+  .pc-modal-overlay {
+    padding: 20px 10px 10px 10px; /* Mai puțin padding pe mobile */
+  }
+  
   .pc-modal-content {
     max-width: 100%;
-    max-height: 90vh;
-    margin: 10px;
+    max-height: calc(100vh - 40px); /* Mai mult spațiu pe mobile */
+    margin: 0;
   }
   
   .pc-modal-header,
@@ -222,6 +243,12 @@
   
   .pc-sol-tx-actions .pc-btn {
     width: 100%;
+  }
+  
+  .pc-modal-close {
+    min-width: 56px;
+    min-height: 56px;
+    font-size: 2rem;
   }
 }
 
