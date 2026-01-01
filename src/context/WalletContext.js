@@ -759,6 +759,7 @@ const InnerWalletProvider = ({ children }) => {
         walletAddress,
         isConnected,
         ethBalance,
+        solanaBalance, // ✅ Expose Solana balance
         nativeSymbol, // Exportăm simbolul
         bitsBalance,
         walletType,

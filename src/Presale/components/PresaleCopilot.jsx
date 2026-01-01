@@ -84,7 +84,7 @@ const PresaleCopilot = ({
   defaultOpen = true,
   variant = "presale", // "presale" | "global"
 }) => {
-  const { walletAddress, chainId, connectWallet, disconnectWallet, walletName, walletType, nativeSymbol, ethBalance } = useWallet();
+  const { walletAddress, chainId, connectWallet, disconnectWallet, walletName, walletType, nativeSymbol, ethBalance, solanaBalance } = useWallet();
   const [open, setOpen] = useState(() => !!defaultOpen);
   const [txHash, setTxHash] = useState("");
   const [lastTx, setLastTx] = useState(null);
@@ -537,10 +537,23 @@ const PresaleCopilot = ({
                       <>
                         {" "}
                         •{" "}
-                        {walletLogo ? (
-                          <img className="pc-wallet-icon" src={walletLogo} alt="" aria-hidden />
-                        ) : null}
-                        <span className="pc-value">{walletName || "Wallet"}</span>
+                        {isActuallySolana ? (
+                          // 🛑 CRITICAL: If walletType is SOLANA, show Solana wallet info
+                          <>
+                            {walletLogo ? (
+                              <img className="pc-wallet-icon" src={walletLogo} alt="" aria-hidden />
+                            ) : null}
+                            <span className="pc-value">{walletName || "Phantom"}</span>
+                          </>
+                        ) : (
+                          // EVM wallet
+                          <>
+                            {walletLogo ? (
+                              <img className="pc-wallet-icon" src={walletLogo} alt="" aria-hidden />
+                            ) : null}
+                            <span className="pc-value">{walletName || "Wallet"}</span>
+                          </>
+                        )}
                       </>
                     ) : null}
                   </>
@@ -553,9 +566,12 @@ const PresaleCopilot = ({
               <span className="pc-dot" />
               <span className="pc-label">
                 Network:{" "}
-                {isSolana ? (
-                  // 🟣 SOLANA: No network check needed
+                {isActuallySolana ? (
+                  // 🛑 CRITICAL: If walletType is SOLANA, show Solana network
                   "Solana • OK"
+                ) : isSolana && !isActuallySolana ? (
+                  // Selected Solana but wallet is EVM - show warning
+                  <>Solana selected • <strong style={{color: '#ff6b6b'}}>Wallet mismatch!</strong></>
                 ) : connectedNetworkLabel ? (
                   <>
                     connected to <strong>{connectedNetworkLabel}</strong>
@@ -581,7 +597,12 @@ const PresaleCopilot = ({
               <div className="pc-check ok">
                 <span className="pc-dot" />
                 <span className="pc-label">
-                  Balance: <strong>{ethBalance || "0.0000"} {nativeSymbol}</strong>
+                  Balance: <strong>
+                    {isActuallySolana 
+                      ? `${solanaBalance || "0.0000"} SOL`
+                      : `${ethBalance || "0.0000"} ${nativeSymbol || "ETH"}`
+                    }
+                  </strong>
                 </span>
               </div>
             )}
