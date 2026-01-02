@@ -101,6 +101,18 @@ const AdminPanel = () => {
   const [leaderboardSaving, setLeaderboardSaving] = useState(false);
   const [leaderboardJitterEnabled, setLeaderboardJitterEnabled] = useState(true);
   
+  // ===== Email Sender (Newsletter Management) =====
+  const [newsletterSubscribers, setNewsletterSubscribers] = useState([]);
+  const [newsletterLoading, setNewsletterLoading] = useState(false);
+  const [emailSubject, setEmailSubject] = useState('');
+  const [emailContent, setEmailContent] = useState('');
+  const [emailRecipients, setEmailRecipients] = useState([]);
+  const [emailSending, setEmailSending] = useState(false);
+  const [emailTemplateType, setEmailTemplateType] = useState('custom'); // custom | ai
+  const [emailAIContent, setEmailAIContent] = useState('');
+  const [emailPreview, setEmailPreview] = useState('');
+  const [showEmailPreview, setShowEmailPreview] = useState(false);
+  
   // Get data directly from CellManager contract
   const cellManagerData = useCellManagerData();
 
@@ -126,6 +138,24 @@ const AdminPanel = () => {
   // Load Solana payments only when the user opens the tab (prevents 404/toast spam)
   useEffect(() => {
     if (!isAuthorized) return;
+    
+    if (activeTab === "email-sender" && newsletterSubscribers.length === 0) {
+      // Auto-load newsletter subscribers when opening email-sender tab
+      setNewsletterLoading(true);
+      axios.get(`${API_URL}/api/email/admin/newsletter/subscribers`, {
+        params: { password: ADMIN_PASS, activeOnly: 'true' }
+      })
+      .then(response => {
+        setNewsletterSubscribers(response.data.subscribers || []);
+      })
+      .catch(err => {
+        console.error('❌ Failed to load newsletter subscribers:', err);
+      })
+      .finally(() => {
+        setNewsletterLoading(false);
+      });
+    }
+    
     if (activeTab === "solana-payments") {
       fetchSolanaPayments();
     }
@@ -1123,6 +1153,21 @@ const AdminPanel = () => {
               }}
             >
               🏆 Leaderboard
+            </button>
+            <button 
+              onClick={() => setActiveTab("email-sender")}
+              className={activeTab === "email-sender" ? styles["tab-active"] : styles["tab-inactive"]}
+              style={{
+                padding: '10px 20px',
+                border: 'none',
+                borderRadius: '6px 6px 0 0',
+                background: activeTab === "email-sender" ? '#14F195' : '#444',
+                color: activeTab === "email-sender" ? '#000' : '#fff',
+                cursor: 'pointer',
+                fontWeight: 'bold'
+              }}
+            >
+              📧 Email Sender
             </button>
           </div>
 
@@ -2605,6 +2650,339 @@ const AdminPanel = () => {
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Email Sender Tab */}
+      {activeTab === "email-sender" && (
+        <div className={styles["section"]}>
+          <h3>📧 Email Sender - Newsletter Management</h3>
+          
+          {/* Load Newsletter Subscribers */}
+          <div style={{ marginBottom: '20px' }}>
+            <button
+              onClick={async () => {
+                setNewsletterLoading(true);
+                try {
+                  const response = await axios.get(`${API_URL}/api/email/admin/newsletter/subscribers`, {
+                    params: { password: ADMIN_PASS, activeOnly: 'true' }
+                  });
+                  setNewsletterSubscribers(response.data.subscribers || []);
+                  toast.success(`✅ Loaded ${response.data.count || 0} newsletter subscribers`);
+                } catch (err) {
+                  console.error('❌ Failed to load newsletter subscribers:', err);
+                  toast.error('❌ Failed to load newsletter subscribers: ' + (err.response?.data?.error || err.message));
+                } finally {
+                  setNewsletterLoading(false);
+                }
+              }}
+              disabled={newsletterLoading}
+              style={{
+                padding: '10px 20px',
+                background: '#14F195',
+                color: '#000',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: newsletterLoading ? 'not-allowed' : 'pointer',
+                fontWeight: 'bold'
+              }}
+            >
+              {newsletterLoading ? '⏳ Loading...' : '📥 Load Newsletter Subscribers'}
+            </button>
+            
+            {newsletterSubscribers.length > 0 && (
+              <div style={{ marginTop: '15px', padding: '10px', background: '#1a1a1a', borderRadius: '6px' }}>
+                <strong>Subscribers ({newsletterSubscribers.length}):</strong>
+                <div style={{ maxHeight: '200px', overflowY: 'auto', marginTop: '10px' }}>
+                  {newsletterSubscribers.map((sub, idx) => (
+                    <div key={idx} style={{ padding: '5px', fontSize: '12px', color: '#ccc' }}>
+                      {sub.email} {sub.emailCount > 0 && <span style={{ color: '#14F195' }}>({sub.emailCount} emails)</span>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Email Form */}
+          <div style={{ marginTop: '30px' }}>
+            <h4>✉️ Compose Email</h4>
+            
+            {/* Template Type */}
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', marginBottom: '5px', color: '#fff' }}>Template Type:</label>
+              <select
+                value={emailTemplateType}
+                onChange={(e) => setEmailTemplateType(e.target.value)}
+                style={{
+                  padding: '8px',
+                  background: '#2a2a2a',
+                  color: '#fff',
+                  border: '1px solid #555',
+                  borderRadius: '4px',
+                  width: '200px'
+                }}
+              >
+                <option value="custom">Custom HTML</option>
+                <option value="ai">AI Template</option>
+              </select>
+            </div>
+
+            {/* Subject */}
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', marginBottom: '5px', color: '#fff' }}>Subject:</label>
+              <input
+                type="text"
+                value={emailSubject}
+                onChange={(e) => setEmailSubject(e.target.value)}
+                placeholder="Email subject..."
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  background: '#2a2a2a',
+                  color: '#fff',
+                  border: '1px solid #555',
+                  borderRadius: '4px'
+                }}
+              />
+            </div>
+
+            {/* Recipients */}
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', marginBottom: '5px', color: '#fff' }}>
+                Recipients (comma-separated emails or select from newsletter):
+              </label>
+              <textarea
+                value={emailRecipients.join(', ')}
+                onChange={(e) => setEmailRecipients(e.target.value.split(',').map(e => e.trim()).filter(Boolean))}
+                placeholder="email1@example.com, email2@example.com"
+                rows={3}
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  background: '#2a2a2a',
+                  color: '#fff',
+                  border: '1px solid #555',
+                  borderRadius: '4px',
+                  fontFamily: 'monospace',
+                  fontSize: '12px'
+                }}
+              />
+              {newsletterSubscribers.length > 0 && (
+                <button
+                  onClick={() => {
+                    const allEmails = newsletterSubscribers.map(s => s.email).join(', ');
+                    setEmailRecipients(newsletterSubscribers.map(s => s.email));
+                  }}
+                  style={{
+                    marginTop: '5px',
+                    padding: '5px 10px',
+                    background: '#444',
+                    color: '#fff',
+                    border: '1px solid #555',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: '12px'
+                  }}
+                >
+                  📋 Use All Newsletter Subscribers ({newsletterSubscribers.length})
+                </button>
+              )}
+            </div>
+
+            {/* Content based on template type */}
+            {emailTemplateType === 'ai' ? (
+              <div style={{ marginBottom: '15px' }}>
+                <label style={{ display: 'block', marginBottom: '5px', color: '#fff' }}>AI Content:</label>
+                <textarea
+                  value={emailAIContent}
+                  onChange={(e) => setEmailAIContent(e.target.value)}
+                  placeholder="Enter AI-generated content here..."
+                  rows={10}
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    background: '#2a2a2a',
+                    color: '#fff',
+                    border: '1px solid #555',
+                    borderRadius: '4px',
+                    fontFamily: 'monospace'
+                  }}
+                />
+              </div>
+            ) : (
+              <div style={{ marginBottom: '15px' }}>
+                <label style={{ display: 'block', marginBottom: '5px', color: '#fff' }}>HTML Content:</label>
+                <textarea
+                  value={emailContent}
+                  onChange={(e) => setEmailContent(e.target.value)}
+                  placeholder="Enter HTML content here..."
+                  rows={15}
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    background: '#2a2a2a',
+                    color: '#fff',
+                    border: '1px solid #555',
+                    borderRadius: '4px',
+                    fontFamily: 'monospace',
+                    fontSize: '12px'
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Preview Button */}
+            <div style={{ marginBottom: '15px', display: 'flex', gap: '10px' }}>
+              <button
+                onClick={() => {
+                  if (emailTemplateType === 'ai') {
+                    // Generate preview for AI template
+                    const preview = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
+    .email-container { max-width: 600px; margin: 0 auto; background: #fff; }
+    .header { background: linear-gradient(135deg, #00FFA3 0%, #DC1FFF 100%); padding: 30px; text-align: center; }
+    .content { padding: 40px; }
+    .ai-content { background: linear-gradient(135deg, rgba(0, 255, 163, 0.1) 0%, rgba(220, 31, 255, 0.1) 100%); padding: 20px; border-radius: 12px; border-left: 4px solid #00FFA3; }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="header">
+      <h1 style="color: #000; margin: 0;">🚀 BITS AI</h1>
+      <div style="color: #000; margin-top: 5px;">Revolutionary Cryptocurrency Platform</div>
+    </div>
+    <div class="content">
+      <div class="ai-content">
+        <h2 style="color: #00FFA3; margin-top: 0;">🤖 AI-Powered Content</h2>
+        ${emailAIContent.replace(/\n/g, '<br>')}
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
+                    setEmailPreview(preview);
+                  } else {
+                    setEmailPreview(emailContent);
+                  }
+                  setShowEmailPreview(true);
+                }}
+                disabled={!emailSubject || (!emailContent && !emailAIContent)}
+                style={{
+                  padding: '10px 20px',
+                  background: '#444',
+                  color: '#fff',
+                  border: '1px solid #555',
+                  borderRadius: '6px',
+                  cursor: 'pointer'
+                }}
+              >
+                👁️ Preview Email
+              </button>
+              
+              <button
+                onClick={async () => {
+                  if (!emailSubject || (!emailContent && !emailAIContent) || emailRecipients.length === 0) {
+                    toast.error('❌ Please fill all fields');
+                    return;
+                  }
+
+                  setEmailSending(true);
+                  try {
+                    const response = await axios.post(`${API_URL}/api/email/admin/send`, {
+                      password: ADMIN_PASS,
+                      to: emailRecipients,
+                      subject: emailSubject,
+                      htmlContent: emailTemplateType === 'ai' ? null : emailContent,
+                      templateType: emailTemplateType,
+                      aiContent: emailTemplateType === 'ai' ? emailAIContent : null
+                    });
+
+                    toast.success(`✅ Email sent to ${response.data.sent} recipient(s)`);
+                    if (response.data.failed > 0) {
+                      toast.warning(`⚠️ ${response.data.failed} email(s) failed`);
+                    }
+
+                    // Clear form
+                    setEmailSubject('');
+                    setEmailContent('');
+                    setEmailAIContent('');
+                    setEmailRecipients([]);
+                  } catch (err) {
+                    console.error('❌ Failed to send email:', err);
+                    toast.error('❌ Failed to send email: ' + (err.response?.data?.error || err.message));
+                  } finally {
+                    setEmailSending(false);
+                  }
+                }}
+                disabled={emailSending || !emailSubject || (!emailContent && !emailAIContent) || emailRecipients.length === 0}
+                style={{
+                  padding: '10px 20px',
+                  background: emailSending ? '#666' : '#14F195',
+                  color: '#000',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: emailSending ? 'not-allowed' : 'pointer',
+                  fontWeight: 'bold'
+                }}
+              >
+                {emailSending ? '⏳ Sending...' : '📤 Send Email'}
+              </button>
+            </div>
+          </div>
+
+          {/* Email Preview Modal */}
+          {showEmailPreview && (
+            <div style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100vw',
+              height: '100vh',
+              background: 'rgba(0, 0, 0, 0.9)',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              zIndex: 10000
+            }}>
+              <div style={{
+                background: '#1a1a1a',
+                border: '2px solid #14F195',
+                borderRadius: '12px',
+                padding: '20px',
+                maxWidth: '90%',
+                maxHeight: '90vh',
+                overflow: 'auto',
+                position: 'relative'
+              }}>
+                <button
+                  onClick={() => setShowEmailPreview(false)}
+                  style={{
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    background: '#ff4444',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '50%',
+                    width: '30px',
+                    height: '30px',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  ✕
+                </button>
+                <h3 style={{ color: '#14F195', marginTop: 0 }}>Email Preview</h3>
+                <div dangerouslySetInnerHTML={{ __html: emailPreview }} />
+              </div>
+            </div>
+          )}
         </div>
       )}
 
