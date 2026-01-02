@@ -2832,6 +2832,41 @@ const AdminPanel = () => {
               </div>
             )}
 
+            {/* Load PresalePage HTML Button */}
+            <div style={{ marginBottom: '15px' }}>
+              <button
+                onClick={async () => {
+                  try {
+                    const response = await axios.get(`${API_URL}/api/email/admin/generate-presale-html`, {
+                      params: { password: ADMIN_PASS }
+                    });
+                    
+                    if (response.data.success && response.data.html) {
+                      setEmailContent(response.data.html);
+                      setEmailSubject(`🚀 BitSwapDEX AI Presale - Round ${response.data.data.roundNumber} - Join Now!`);
+                      setEmailTemplateType('custom');
+                      toast.success(`✅ PresalePage HTML loaded! Round ${response.data.data.roundNumber}, Price: $${response.data.data.price.toFixed(6)}`);
+                    }
+                  } catch (err) {
+                    console.error('❌ Failed to load PresalePage HTML:', err);
+                    toast.error('❌ Failed to load PresalePage HTML: ' + (err.response?.data?.error || err.message));
+                  }
+                }}
+                style={{
+                  padding: '10px 20px',
+                  background: '#DC1FFF',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  marginBottom: '10px'
+                }}
+              >
+                📄 Load PresalePage HTML (Live Data)
+              </button>
+            </div>
+
             {/* Preview Button */}
             <div style={{ marginBottom: '15px', display: 'flex', gap: '10px' }}>
               <button
