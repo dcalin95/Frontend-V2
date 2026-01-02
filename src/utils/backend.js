@@ -216,3 +216,17 @@ export const resetPassword = async (token, password) => {
     throw err;
   }
 };
+
+// GET /api/auth/wallets - get user's associated wallets
+export const getUserWallets = async () => {
+  try {
+    const response = await apiRequest('/api/auth/wallets', 'GET');
+    return response.wallets || [];
+  } catch (err) {
+    // If not authenticated, return empty array
+    if (err.message.includes('Not authenticated') || err.message.includes('401')) {
+      return [];
+    }
+    throw err;
+  }
+};
