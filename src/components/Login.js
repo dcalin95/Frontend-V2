@@ -25,20 +25,12 @@ export default function Login() {
   const [userWallets, setUserWallets] = useState([]);
   const [loadingWallets, setLoadingWallets] = useState(false);
 
-  useEffect(() => {
-    // If already logged in, redirect to Presale (optional)
-    if (existing) {
-      // navigate('/presale'); // Optional: Redirect automatically
-      // Load user wallets when authenticated
-      loadUserWallets();
-    } else {
-      setUserWallets([]);
-    }
-  }, [existing, navigate]);
-
   // Load user wallets
-  const loadUserWallets = async () => {
-    if (!existing) return;
+  const loadUserWallets = useCallback(async () => {
+    if (!existing) {
+      setUserWallets([]);
+      return;
+    }
     
     setLoadingWallets(true);
     try {
@@ -50,7 +42,18 @@ export default function Login() {
     } finally {
       setLoadingWallets(false);
     }
-  };
+  }, [existing]);
+
+  useEffect(() => {
+    // If already logged in, redirect to Presale (optional)
+    if (existing) {
+      // navigate('/presale'); // Optional: Redirect automatically
+      // Load user wallets when authenticated
+      loadUserWallets();
+    } else {
+      setUserWallets([]);
+    }
+  }, [existing, loadUserWallets]);
 
   // Password validation
   const validatePassword = (pwd) => {
@@ -342,35 +345,52 @@ export default function Login() {
           </div>
 
           {/* User Wallets Section */}
-          {userWallets.length > 0 && (
+          {existing && (
             <div className="user-wallets-section">
               <h3>
                 <i className="fa-solid fa-wallet"></i> Your Wallets
               </h3>
-              <div className="wallets-list">
-                {userWallets.map((wallet, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => {
-                      setShowWalletModal(true);
-                    }}
-                    className="wallet-item-btn"
-                  >
-                    <div>
-                      <i className={`fa-solid ${wallet.wallet_type === 'SOLANA' ? 'fa-sun' : 'fa-ethereum'}`} style={{ color: wallet.wallet_type === 'SOLANA' ? '#9945FF' : '#00FFA3' }}></i>
-                      <div>
-                        <span>{wallet.wallet_address.slice(0, 6)}...{wallet.wallet_address.slice(-4)}</span>
-                        <span>{wallet.wallet_type} • {wallet.network || 'Mainnet'}</span>
-                      </div>
-                    </div>
-                    <i className="fa-solid fa-arrow-right"></i>
-                  </button>
-                ))}
-              </div>
-              {loadingWallets && (
+              {loadingWallets ? (
                 <div className="loading-text">
                   <i className="fas fa-spinner fa-spin"></i> Loading wallets...
+                </div>
+              ) : userWallets.length > 0 ? (
+                <div className="wallets-list">
+                  {userWallets.map((wallet) => {
+                    const walletAddress = wallet.wallet_address || '';
+                    const displayAddress = walletAddress.length > 10 
+                      ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
+                      : walletAddress;
+                    
+                    return (
+                      <button
+                        key={`${wallet.wallet_type}-${walletAddress}`}
+                        type="button"
+                        onClick={() => {
+                          setShowWalletModal(true);
+                        }}
+                        className="wallet-item-btn"
+                        aria-label={`Connect ${wallet.wallet_type} wallet ${displayAddress}`}
+                      >
+                        <div>
+                          <i 
+                            className={`fa-solid ${wallet.wallet_type === 'SOLANA' ? 'fa-sun' : 'fa-ethereum'}`} 
+                            style={{ color: wallet.wallet_type === 'SOLANA' ? '#9945FF' : '#00FFA3' }}
+                            aria-hidden="true"
+                          ></i>
+                          <div>
+                            <span>{displayAddress}</span>
+                            <span>{wallet.wallet_type} • {wallet.network || 'Mainnet'}</span>
+                          </div>
+                        </div>
+                        <i className="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="loading-text" style={{ opacity: 0.6 }}>
+                  <i className="fa-solid fa-info-circle"></i> No wallets associated yet. Connect a wallet to get started.
                 </div>
               )}
             </div>
