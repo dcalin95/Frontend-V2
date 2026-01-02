@@ -24,13 +24,11 @@ export const useBoosterSummary = () => {
     try {
       console.log("🔄 [ChatGPT Patch] Starting real contract calls...");
       
-      if (!walletAddress || !provider || !signer) {
-        console.warn("❌ Missing requirements for contract calls", {
-          walletAddress: !!walletAddress,
-          provider: !!provider,
-          signer: !!signer
-        });
-        setData({ ok: false, error: "Missing wallet requirements" });
+      // 🔥 CRITICAL FIX: Don't require provider/signer - we use read-only RPC providers
+      if (!walletAddress) {
+        console.warn("❌ Missing walletAddress for contract calls");
+        setData({ ok: false, error: "Missing wallet address" });
+        setLoading(false);
         return;
       }
 
@@ -617,15 +615,29 @@ export const useBoosterSummary = () => {
   useEffect(() => {
     console.log("=== USEEFFECT TRIGGERED!!! ===", { walletAddress, hasProvider: !!provider, hasSigner: !!signer });
 
-    if (walletAddress && provider) {
+    // 🔥 CRITICAL FIX: Call fetchData even if provider is null (for Solana wallets)
+    // fetchData uses read-only RPC providers, so it doesn't need the wallet provider
+    if (walletAddress) {
       console.log("🔥 CALLING fetchData() NOW!");
       fetchData();
     } else {
-      console.log("🚨 NOT CALLING fetchData - Missing requirements:");
-      console.log("🚨 walletAddress:", !!walletAddress);
-      console.log("🚨 provider:", !!provider);
+      // No wallet connected - set loading to false and data to default
+      console.log("🚨 NOT CALLING fetchData - No walletAddress");
+      setLoading(false);
+      setData({
+        totalBits: 0,
+        currentPrice: 0,
+        roiPercent: 0,
+        realInvestedUSD: 0,
+        referralBonus: 0,
+        telegramBonus: 0,
+        bonusCalculatedLocally: 0,
+        txCount: 0,
+        hasError: false,
+        investedUSDOnSolana: 0,
+      });
     }
-  }, [walletAddress, provider, signer, fetchData]);
+  }, [walletAddress, fetchData]);
 
   return { loading, data, refetchData: fetchData };
 };
