@@ -386,6 +386,117 @@
 }
 
 /* ============================================
+   USER WALLETS SECTION
+   ============================================ */
+.user-wallets-section {
+  margin-top: 24px;
+  padding: 20px;
+  background: rgba(0, 255, 163, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 255, 163, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.user-wallets-section h3 {
+  font-size: 16px;
+  margin-bottom: 16px;
+  color: #00FFA3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.user-wallets-section h3 i {
+  font-size: 18px;
+}
+
+.wallets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wallet-item-btn {
+  padding: 12px 16px;
+  background: rgba(0, 255, 163, 0.1);
+  border: 1px solid rgba(0, 255, 163, 0.3);
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  width: 100%;
+  text-align: left;
+}
+
+.wallet-item-btn:hover {
+  background: rgba(0, 255, 163, 0.2);
+  border-color: #00FFA3;
+  transform: translateX(2px);
+}
+
+.wallet-item-btn:active {
+  transform: translateX(0);
+}
+
+.wallet-item-btn > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.wallet-item-btn i.fa-sun,
+.wallet-item-btn i.fa-ethereum {
+  font-size: 18px;
+  width: 20px;
+  text-align: center;
+}
+
+.wallet-item-btn > div:first-child > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.wallet-item-btn > div:first-child > div > span:first-child {
+  font-weight: 600;
+  font-size: 13px;
+  color: #fff;
+}
+
+.wallet-item-btn > div:first-child > div > span:last-child {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.wallet-item-btn > i.fa-arrow-right {
+  font-size: 12px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.wallet-item-btn:hover > i.fa-arrow-right {
+  opacity: 1;
+}
+
+.wallets-list .loading-text {
+  text-align: center;
+  padding: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+}
+
+.wallets-list .loading-text i {
+  margin-right: 8px;
+}
+
+/* ============================================
    MOBILE OPTIMIZATION
    Moved to Login.mobile.css as per System Requirements
    ============================================ */

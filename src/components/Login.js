@@ -343,11 +343,11 @@ export default function Login() {
 
           {/* User Wallets Section */}
           {userWallets.length > 0 && (
-            <div className="user-wallets-section" style={{ marginTop: '24px', padding: '20px', background: 'rgba(0, 255, 163, 0.05)', borderRadius: '12px', border: '1px solid rgba(0, 255, 163, 0.2)' }}>
-              <h3 style={{ fontSize: '16px', marginBottom: '16px', color: '#00FFA3', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="user-wallets-section">
+              <h3>
                 <i className="fa-solid fa-wallet"></i> Your Wallets
               </h3>
-              <div className="wallets-list" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div className="wallets-list">
                 {userWallets.map((wallet, idx) => (
                   <button
                     key={idx}
@@ -356,45 +356,20 @@ export default function Login() {
                       setShowWalletModal(true);
                     }}
                     className="wallet-item-btn"
-                    style={{
-                      padding: '12px 16px',
-                      background: 'rgba(0, 255, 163, 0.1)',
-                      border: '1px solid rgba(0, 255, 163, 0.3)',
-                      borderRadius: '8px',
-                      color: '#fff',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      transition: 'all 0.2s ease',
-                      fontSize: '13px'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(0, 255, 163, 0.2)';
-                      e.currentTarget.style.borderColor = '#00FFA3';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(0, 255, 163, 0.1)';
-                      e.currentTarget.style.borderColor = 'rgba(0, 255, 163, 0.3)';
-                    }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div>
                       <i className={`fa-solid ${wallet.wallet_type === 'SOLANA' ? 'fa-sun' : 'fa-ethereum'}`} style={{ color: wallet.wallet_type === 'SOLANA' ? '#9945FF' : '#00FFA3' }}></i>
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                        <span style={{ fontWeight: 600 }}>
-                          {wallet.wallet_address.slice(0, 6)}...{wallet.wallet_address.slice(-4)}
-                        </span>
-                        <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)' }}>
-                          {wallet.wallet_type} • {wallet.network || 'Mainnet'}
-                        </span>
+                      <div>
+                        <span>{wallet.wallet_address.slice(0, 6)}...{wallet.wallet_address.slice(-4)}</span>
+                        <span>{wallet.wallet_type} • {wallet.network || 'Mainnet'}</span>
                       </div>
                     </div>
-                    <i className="fa-solid fa-arrow-right" style={{ fontSize: '12px', opacity: 0.7 }}></i>
+                    <i className="fa-solid fa-arrow-right"></i>
                   </button>
                 ))}
               </div>
               {loadingWallets && (
-                <div style={{ textAlign: 'center', padding: '12px', color: 'rgba(255,255,255,0.6)', fontSize: '12px' }}>
+                <div className="loading-text">
                   <i className="fas fa-spinner fa-spin"></i> Loading wallets...
                 </div>
               )}
