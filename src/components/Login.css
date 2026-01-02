@@ -210,6 +210,10 @@
   color: #fff;
   font-size: 14px;
   transition: all 0.3s ease;
+  /* Prevent zoom on iOS when focusing inputs */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .field input:focus {

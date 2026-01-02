@@ -109,6 +109,8 @@ const PresalePage = lazyWithRetry(() => import("./Presale/PresalePage"));
 
 // 🔐 Auth & AI Hub
 const Login = lazyWithRetry(() => import("./components/Login"));
+const VerifyEmail = lazyWithRetry(() => import("./components/VerifyEmail"));
+const ResetPassword = lazyWithRetry(() => import("./components/ResetPassword"));
 const StressTest = lazyWithRetry(() => import("./components/AIHub/StressTest"));
 const LieDetector = lazyWithRetry(() => import("./components/AIHub/LieDetector"));
 const SmartAudit = lazyWithRetry(() => import("./components/AIHub/SmartAudit"));
@@ -449,6 +451,8 @@ const App = () => {
                       
                       {/* 🔐 Login & AI Hub */}
                       <Route path="/login" element={<Login />} />
+                      <Route path="/verify-email" element={<VerifyEmail />} />
+                      <Route path="/reset-password" element={<ResetPassword />} />
                       <Route path="/ai-hub" element={<AIHub />} />
                       <Route path="/ai-hub/market-oracle" element={<MarketOracle />} />
                       <Route path="/ai-hub/portfolio-stress" element={<StressTest />} />

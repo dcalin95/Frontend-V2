@@ -98,4 +98,193 @@
     padding: 12px 20px;
     font-size: 13px;
   }
+
+  /* ==============================
+     FORGOT PASSWORD MOBILE STYLES
+     ============================== */
+  .login-form input[type="email"] {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .login-form input[type="password"] {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .login-form input[type="text"] {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  /* Toggle buttons mobile */
+  .login-toggle-container {
+    gap: 4px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .login-toggle-container button {
+    padding: 10px 8px !important;
+    font-size: 13px !important;
+  }
+
+  /* Error and success messages mobile */
+  .error,
+  div[style*="background: rgba(0, 255, 163"] {
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+
+  /* Forgot password form mobile */
+  form[style*="display: flex"] {
+    gap: 10px;
+  }
+
+  form[style*="display: flex"] input {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  form[style*="display: flex"] button {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  /* Verification email sent message mobile */
+  div[style*="background: rgba(0, 214, 255"] {
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+
+  div[style*="background: rgba(0, 214, 255"] button {
+    font-size: 11px;
+    margin-top: 6px;
+  }
+
+  /* Icons mobile sizing */
+  .verify-icon-container .fa-spinner,
+  .verify-icon-container .fa-check-circle,
+  .verify-icon-container .fa-exclamation-circle {
+    font-size: 48px !important;
+  }
+
+  .fa-spinner,
+  .fa-check-circle,
+  .fa-exclamation-circle {
+    font-size: 40px !important;
+  }
+
+  /* VerifyEmail and ResetPassword specific mobile styles */
+  .login-card h1[style*="color"] {
+    font-size: 1.4rem;
+  }
+
+  .login-card .sub {
+    font-size: 13px;
+  }
+
+  /* Success/Error message boxes mobile */
+  .login-card > div[style*="background: rgba(0, 255, 163"] {
+    padding: 10px 12px !important;
+    font-size: 12px !important;
+  }
+
+  .login-card > div[style*="background: rgba(0, 214, 255"] {
+    padding: 10px 12px !important;
+    font-size: 12px !important;
+    margin-top: 6px !important;
+  }
+
+  /* Forgot password container mobile */
+  .login-card > div[style*="marginTop: '16px'"] {
+    margin-top: 12px !important;
+    padding: 12px !important;
+  }
+
+  .login-card > div[style*="marginTop: '16px'"] p {
+    font-size: 12px !important;
+    margin-bottom: 10px !important;
+  }
+
+  /* Buttons in forgot password mobile */
+  .login-card > div[style*="marginTop: '16px'"] button {
+    padding: 10px 14px !important;
+    font-size: 12px !important;
+  }
+
+  /* Toggle buttons container mobile */
+  .login-card > div[style*="display: 'flex'"]:first-child {
+    margin-bottom: 20px !important;
+  }
+
+  /* Form inputs mobile - prevent zoom on iOS */
+  .login-form input[type="email"],
+  .login-form input[type="password"],
+  .login-form input[type="text"] {
+    font-size: 16px !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /* Prevent iOS zoom on focus */
+    transform: scale(1);
+  }
+  
+  /* Forgot password input mobile */
+  form[style*="display: flex"] input[type="email"] {
+    font-size: 16px !important;
+  }
+
+  /* Buttons mobile */
+  .login-form .btn {
+    width: 100%;
+    padding: 14px 20px !important;
+  }
+
+  /* Links mobile */
+  .login-card a,
+  .login-card button[style*="textDecoration: 'underline'"] {
+    font-size: 12px !important;
+    padding: 8px 0 !important;
+  }
+
+  /* VerifyEmail success/error states mobile */
+  .login-card > div[style*="marginTop: '24px'"] {
+    margin-top: 16px !important;
+    padding: 12px !important;
+  }
+
+  .login-card > div[style*="marginTop: '24px'"] p {
+    font-size: 12px !important;
+  }
+
+  .login-card > div[style*="display: 'flex'"]:not(:first-child) {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .login-card > div[style*="display: 'flex'"]:not(:first-child) button {
+    width: 100% !important;
+  }
+
+  /* VerifyEmail and ResetPassword buttons mobile */
+  .verify-actions button,
+  .login-form .btn.primary,
+  .login-card .btn.primary {
+    width: 100% !important;
+  }
+
+  /* Icon containers mobile */
+  .verify-icon-container {
+    margin-top: 16px !important;
+  }
+
+  .verify-icon-container i {
+    font-size: 48px !important;
+  }
+
+  /* User welcome message mobile */
+  .login-card > div[style*="marginTop: '24px'"]:not(.verify-actions):not(.verify-icon-container) {
+    margin-top: 16px !important;
+    padding: 12px !important;
+  }
+
+  .login-card > div[style*="marginTop: '24px'"]:not(.verify-actions):not(.verify-icon-container) p {
+    font-size: 12px !important;
+  }
 }
