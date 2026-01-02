@@ -8,31 +8,24 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Load user from local storage on mount
+  // Load user from backend session on mount (prioritize backend over localStorage)
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const savedUser = localStorage.getItem('bits_user');
-        if (savedUser) {
-          const parsedUser = JSON.parse(savedUser);
-          setUser(parsedUser);
+        // First, try to get user from backend session (cookies)
+        const response = await getUserProfile();
+        if (response && response.user) {
+          setUser(response.user);
           setIsAuthenticated(true);
+          localStorage.setItem('bits_user', JSON.stringify(response.user));
         } else {
-          // Optional: Check backend if needed, but for now trust localStorage or failing that
-          // we could call getUserProfile() which now mocks checking localStorage too.
-          try {
-             const response = await getUserProfile();
-             if (response && response.user) {
-               setUser(response.user);
-               setIsAuthenticated(true);
-               localStorage.setItem('bits_user', JSON.stringify(response.user));
-             }
-          } catch (e) {
-             // Silent fail
-          }
+          // Backend says no session, clear localStorage
+          setUser(null);
+          setIsAuthenticated(false);
+          localStorage.removeItem('bits_user');
         }
-      } catch (error) {
-        console.log('Auth init error:', error);
+      } catch (e) {
+        // Backend session not found or error - clear everything
         setUser(null);
         setIsAuthenticated(false);
         localStorage.removeItem('bits_user');
