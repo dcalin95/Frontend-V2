@@ -4,6 +4,7 @@ import { useWallet as useSolanaWalletAdapter } from '@solana/wallet-adapter-reac
 import { useWallet } from '../context/WalletContext';
 import { prepareForConnection, handleConnectionError } from '../utils/walletConnectionFix';
 import { prioritizeEVMWallets, logDetectedWallets, forceFixPhantomHijack } from '../utils/walletFilter';
+import DOMPurify from 'dompurify'; // 🔒 SECURITY: XSS protection
 import walletConnectLogo from '../assets/icons/wallet-connect-logo.png'; 
 import evmIcon from '../assets/icons/evm-logo.jpg'; // Import EVM logo
 import solanaIcon from '../assets/icons/solana-logo.png'; // Import Solana logo
@@ -1595,7 +1596,16 @@ const UnifiedWalletModal = () => {
             textAlign: 'left',
             lineHeight: '1.5'
           }}>
-            ⚠️ <span dangerouslySetInnerHTML={{ __html: error.replace(/(https?:\/\/[^\s)]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: #14F195; text-decoration: underline; word-break: break-all;">$1</a>') }} />
+            ⚠️ <span dangerouslySetInnerHTML={{ 
+              __html: DOMPurify.sanitize(
+                error.replace(/(https?:\/\/[^\s)]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: #14F195; text-decoration: underline; word-break: break-all;">$1</a>'),
+                { 
+                  ALLOWED_TAGS: ['a', 'span', 'strong', 'em'],
+                  ALLOWED_ATTR: ['href', 'target', 'rel', 'style'],
+                  ALLOW_DATA_ATTR: false
+                }
+              )
+            }} />
             {selectedNetwork === "SOLANA" && (
               <button
                 type="button"

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Send, Cpu, Activity, ShieldCheck, Zap, Brain, MessageSquare, BookOpen, TestTube } from 'lucide-react';
+import DOMPurify from 'dompurify'; // 🔒 SECURITY: XSS protection
 import './DEX.css';
 import './AIIntelligencePage.css';
 import { NeuralIntelligencePage } from '../../NeuralIntelligence';
@@ -146,7 +147,11 @@ const AIIntelligencePage = () => {
     // Line breaks
     formatted = formatted.replace(/\n/g, '<br/>');
     
-    return formatted;
+    // 🔒 SECURITY: Sanitize HTML to prevent XSS
+    return DOMPurify.sanitize(formatted, {
+      ALLOWED_TAGS: ['strong', 'code', 'br'],
+      ALLOWED_ATTR: []
+    });
   };
 
   return (

@@ -17,8 +17,15 @@ import "./Header.mobile.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu }) => {
-  const { user, isAuthenticated, signOut } = useAuth(); // Auth state
+  const { user, isAuthenticated, signOut: contextSignOut } = useAuth(); // Auth state
   const navigate = useNavigate();
+  
+  // Enhanced sign out function with reload
+  const handleSignOut = async () => {
+    await contextSignOut();
+    navigate('/');
+    window.location.reload(); // Reload to ensure all state is cleared
+  };
   const [internalIsMenuOpen, setInternalIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -256,7 +263,7 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
           
           {isAuthenticated ? (
             <SmartTooltip content={`Sign Out\nLogged in as ${user?.email || 'User'}`}>
-              <button className="btn-logout" onClick={signOut}>
+              <button className="btn-logout" onClick={handleSignOut}>
                 <i className="fas fa-sign-out-alt"></i> Logout
               </button>
             </SmartTooltip>
@@ -368,7 +375,7 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
               <i className="fas fa-brain"></i> <span className="mobile-text">AI Hub</span>
             </Link>
             {isAuthenticated ? (
-              <button className="mobile-btn-logout" onClick={() => { closeMenu(); signOut(); }} style={{background: 'rgba(255, 50, 50, 0.2)', border: '1px solid rgba(255, 50, 50, 0.5)'}}>
+              <button className="mobile-btn-logout" onClick={() => { closeMenu(); handleSignOut(); }} style={{background: 'rgba(255, 50, 50, 0.2)', border: '1px solid rgba(255, 50, 50, 0.5)'}}>
                 <i className="fas fa-sign-out-alt"></i> <span className="mobile-text">Logout</span>
               </button>
             ) : (

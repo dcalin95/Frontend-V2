@@ -19,12 +19,22 @@ const AIAssistantBox = () => {
     setAnswer("");
 
     try {
-      const res = await fetch("http://localhost:5000/ai-test", {
+      // SECURITY: Use environment variable for API URL and token, no hardcoded secrets
+      const aiApiUrl = process.env.REACT_APP_AI_API_URL || "http://localhost:5000/ai-test";
+      const aiApiToken = process.env.REACT_APP_AI_API_TOKEN;
+      
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      
+      // Only add Authorization header if token is configured
+      if (aiApiToken) {
+        headers.Authorization = `Bearer ${aiApiToken}`;
+      }
+      
+      const res = await fetch(aiApiUrl, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer supersecret123",
-        },
+        headers: headers,
         body: JSON.stringify({ prompt: question }),
       });
 

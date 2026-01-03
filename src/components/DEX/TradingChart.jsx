@@ -87,7 +87,10 @@ const TradingChart = ({
       
       // Clear container completely
       if (containerRef.current) {
-        containerRef.current.innerHTML = '';
+        // SECURITY: Use textContent or removeChild instead of innerHTML
+        while (containerRef.current.firstChild) {
+          containerRef.current.removeChild(containerRef.current.firstChild);
+        }
       }
       
       // Remove from global registry

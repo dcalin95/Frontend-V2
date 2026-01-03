@@ -1,4 +1,6 @@
 // Frontend MoonPay Integration - Widget-based fiat onramp
+import DOMPurify from 'dompurify'; // 🔒 SECURITY: XSS protection
+
 const handleMoonPayPayment = async ({ 
   amount, 
   bitsToReceive, 
@@ -36,7 +38,12 @@ Thank you for your patience! 🙏`);
 
     // MoonPay Widget Configuration
     const moonPayUrl = new URL('https://buy-sandbox.moonpay.com');
-    moonPayUrl.searchParams.append('apiKey', process.env.REACT_APP_MOONPAY_API_KEY || 'pk_test_123');
+    // SECURITY: Require API key, no fallback
+    const moonPayApiKey = process.env.REACT_APP_MOONPAY_API_KEY;
+    if (!moonPayApiKey) {
+      throw new Error('MoonPay API key is not configured');
+    }
+    moonPayUrl.searchParams.append('apiKey', moonPayApiKey);
     moonPayUrl.searchParams.append('currencyCode', 'eth'); // Buy ETH then convert to BITS
     moonPayUrl.searchParams.append('walletAddress', walletAddress);
     moonPayUrl.searchParams.append('baseCurrencyAmount', (usdInvested || amount).toString());
@@ -87,9 +94,29 @@ Thank you for your patience! 🙏`);
 
 // 🎨 MoonPay Modal with Embedded Widget
 const createMoonPayModal = ({ widgetUrl, amount, bitsToReceive, walletAddress, onClose, onSuccess }) => {
+  // 🔒 SECURITY: Validate and sanitize URL
+  const sanitizedWidgetUrl = (() => {
+    try {
+      const url = new URL(widgetUrl);
+      if (url.protocol !== 'https:') {
+        throw new Error('Only HTTPS URLs are allowed');
+      }
+      return url.toString();
+    } catch (e) {
+      console.error('[SECURITY] Invalid widget URL:', e);
+      return '#';
+    }
+  })();
+
+  // 🔒 SECURITY: Sanitize user inputs
+  const sanitizedAmount = DOMPurify.sanitize(String(amount || 0), { ALLOWED_TAGS: [] });
+  const sanitizedBits = DOMPurify.sanitize(String(bitsToReceive || 0), { ALLOWED_TAGS: [] });
+  const sanitizedWallet = DOMPurify.sanitize(String(walletAddress || ''), { ALLOWED_TAGS: [] });
+  const walletDisplay = sanitizedWallet ? `${sanitizedWallet.slice(0, 6)}...${sanitizedWallet.slice(-4)}` : 'N/A';
+
   const modal = document.createElement('div');
   modal.className = 'moonpay-modal';
-  modal.innerHTML = `
+  modal.innerHTML = DOMPurify.sanitize(`
     <div class="moonpay-modal-overlay">
       <div class="moonpay-modal-content">
         <div class="moonpay-modal-header">
@@ -100,15 +127,15 @@ const createMoonPayModal = ({ widgetUrl, amount, bitsToReceive, walletAddress, o
           <div class="payment-details">
             <div class="detail-item">
               <span class="label">Amount:</span>
-              <span class="value">$${amount}</span>
+              <span class="value">$${sanitizedAmount}</span>
             </div>
             <div class="detail-item">
               <span class="label">You'll Receive:</span>
-              <span class="value">${bitsToReceive} $BITS</span>
+              <span class="value">${sanitizedBits} $BITS</span>
             </div>
             <div class="detail-item">
               <span class="label">Wallet:</span>
-              <span class="value">${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}</span>
+              <span class="value">${walletDisplay}</span>
             </div>
           </div>
           <div class="moonpay-status">
@@ -119,7 +146,7 @@ const createMoonPayModal = ({ widgetUrl, amount, bitsToReceive, walletAddress, o
           </div>
         </div>
         <div class="moonpay-iframe-container">
-          <iframe src="${widgetUrl}" frameborder="0" allowtransparency="true"></iframe>
+          <iframe src="${sanitizedWidgetUrl}" frameborder="0" allowtransparency="true"></iframe>
         </div>
         <div class="moonpay-footer">
           <p>🔒 Secure payment powered by MoonPay</p>
@@ -127,7 +154,7 @@ const createMoonPayModal = ({ widgetUrl, amount, bitsToReceive, walletAddress, o
         </div>
       </div>
     </div>
-  `;
+  `, { ALLOWED_TAGS: ['div', 'h3', 'button', 'span', 'p', 'iframe'], ALLOWED_ATTR: ['class', 'src', 'frameborder', 'allowtransparency'] });
 
   // Add modal styles
   const styles = document.createElement('style');

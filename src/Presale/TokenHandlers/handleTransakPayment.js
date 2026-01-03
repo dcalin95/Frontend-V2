@@ -1,4 +1,6 @@
 // Frontend Transak Integration - Widget-based fiat onramp
+import DOMPurify from 'dompurify'; // 🔒 SECURITY: XSS protection
+
 const handleTransakPayment = async ({ 
   amount, 
   bitsToReceive, 
@@ -36,7 +38,12 @@ Thank you for your patience! 🙏`);
 
     // Transak Widget Configuration
     const transakUrl = new URL('https://global-stg.transak.com');
-    transakUrl.searchParams.append('apiKey', process.env.REACT_APP_TRANSAK_API_KEY || 'your_api_key');
+    // SECURITY: Require API key, no fallback
+    const transakApiKey = process.env.REACT_APP_TRANSAK_API_KEY;
+    if (!transakApiKey) {
+      throw new Error('Transak API key is not configured');
+    }
+    transakUrl.searchParams.append('apiKey', transakApiKey);
     transakUrl.searchParams.append('environment', process.env.NODE_ENV === 'production' ? 'PRODUCTION' : 'STAGING');
     transakUrl.searchParams.append('defaultCryptoCurrency', 'ETH');
     transakUrl.searchParams.append('walletAddress', walletAddress);
@@ -90,9 +97,30 @@ Thank you for your patience! 🙏`);
 
 // 🎨 Transak Modal with Embedded Widget
 const createTransakModal = ({ widgetUrl, amount, bitsToReceive, walletAddress, onClose, onSuccess }) => {
+  // 🔒 SECURITY: Validate and sanitize URL
+  const sanitizedWidgetUrl = (() => {
+    try {
+      const url = new URL(widgetUrl);
+      // Only allow https URLs from trusted domains
+      if (url.protocol !== 'https:') {
+        throw new Error('Only HTTPS URLs are allowed');
+      }
+      return url.toString();
+    } catch (e) {
+      console.error('[SECURITY] Invalid widget URL:', e);
+      return '#';
+    }
+  })();
+
+  // 🔒 SECURITY: Sanitize user inputs
+  const sanitizedAmount = DOMPurify.sanitize(String(amount || 0), { ALLOWED_TAGS: [] });
+  const sanitizedBits = DOMPurify.sanitize(String(bitsToReceive || 0), { ALLOWED_TAGS: [] });
+  const sanitizedWallet = DOMPurify.sanitize(String(walletAddress || ''), { ALLOWED_TAGS: [] });
+  const walletDisplay = sanitizedWallet ? `${sanitizedWallet.slice(0, 6)}...${sanitizedWallet.slice(-4)}` : 'N/A';
+
   const modal = document.createElement('div');
   modal.className = 'transak-modal';
-  modal.innerHTML = `
+  modal.innerHTML = DOMPurify.sanitize(`
     <div class="transak-modal-overlay">
       <div class="transak-modal-content">
         <div class="transak-modal-header">
@@ -103,15 +131,15 @@ const createTransakModal = ({ widgetUrl, amount, bitsToReceive, walletAddress, o
           <div class="payment-details">
             <div class="detail-item">
               <span class="label">Amount:</span>
-              <span class="value">$${amount}</span>
+              <span class="value">$${sanitizedAmount}</span>
             </div>
             <div class="detail-item">
               <span class="label">You'll Receive:</span>
-              <span class="value">${bitsToReceive} $BITS</span>
+              <span class="value">${sanitizedBits} $BITS</span>
             </div>
             <div class="detail-item">
               <span class="label">Wallet:</span>
-              <span class="value">${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}</span>
+              <span class="value">${walletDisplay}</span>
             </div>
           </div>
           <div class="transak-status">
@@ -122,7 +150,7 @@ const createTransakModal = ({ widgetUrl, amount, bitsToReceive, walletAddress, o
           </div>
         </div>
         <div class="transak-iframe-container">
-          <iframe src="${widgetUrl}" frameborder="0" allowtransparency="true"></iframe>
+          <iframe src="${sanitizedWidgetUrl}" frameborder="0" allowtransparency="true"></iframe>
         </div>
         <div class="transak-footer">
           <p>🔒 Secure payment powered by Transak</p>
@@ -130,7 +158,7 @@ const createTransakModal = ({ widgetUrl, amount, bitsToReceive, walletAddress, o
         </div>
       </div>
     </div>
-  `;
+  `, { ALLOWED_TAGS: ['div', 'h3', 'button', 'span', 'p', 'iframe'], ALLOWED_ATTR: ['class', 'src', 'frameborder', 'allowtransparency'] });
 
   // Add modal styles
   const styles = document.createElement('style');

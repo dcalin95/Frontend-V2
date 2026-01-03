@@ -99,9 +99,8 @@ export const formatPrice = (value, enhanced = false) => {
   
   if (convertedValue === 0) return "$0.00";
   
-  // Smart formatting for prices - cleaner display
-  if (convertedValue < 0.000001) return "<$0.000001";
-  if (convertedValue < 0.01) return `$${convertedValue.toFixed(6)}`;
+  // For small prices (< 0.01), show 4 decimal places like $0.0010
+  if (convertedValue < 0.01) return `$${convertedValue.toFixed(4)}`;
   if (convertedValue < 1) return `$${convertedValue.toFixed(4)}`;
   
   // For normal prices (>= $1), show 2 decimal places like $1.00

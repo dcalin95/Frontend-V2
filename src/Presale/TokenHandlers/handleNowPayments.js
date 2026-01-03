@@ -1,3 +1,5 @@
+import DOMPurify from 'dompurify'; // 🔒 SECURITY: XSS protection
+
 const handleNowPayments = async ({ 
   amount, 
   bitsToReceive, 
@@ -139,9 +141,27 @@ Thank you for your patience! 🙏`);
 
 // 🎨 Enhanced Payment Modal with Embedded Iframe
 const createEnhancedPaymentModal = ({ invoiceUrl, paymentId, amount, bitsToReceive, onClose }) => {
+  // 🔒 SECURITY: Validate and sanitize URL
+  const sanitizedInvoiceUrl = (() => {
+    try {
+      const url = new URL(invoiceUrl);
+      if (url.protocol !== 'https:') {
+        throw new Error('Only HTTPS URLs are allowed');
+      }
+      return url.toString();
+    } catch (e) {
+      console.error('[SECURITY] Invalid invoice URL:', e);
+      return '#';
+    }
+  })();
+
+  // 🔒 SECURITY: Sanitize user inputs
+  const sanitizedAmount = DOMPurify.sanitize(String(amount || 0), { ALLOWED_TAGS: [] });
+  const sanitizedBits = DOMPurify.sanitize(String(bitsToReceive || 0), { ALLOWED_TAGS: [] });
+
   const modal = document.createElement('div');
   modal.className = 'nowpayments-modal';
-  modal.innerHTML = `
+  modal.innerHTML = DOMPurify.sanitize(`
     <div class="nowpayments-modal-overlay">
       <div class="nowpayments-modal-content">
         <div class="nowpayments-modal-header">
@@ -152,11 +172,11 @@ const createEnhancedPaymentModal = ({ invoiceUrl, paymentId, amount, bitsToRecei
           <div class="payment-details">
             <div class="detail-item">
               <span class="label">Amount:</span>
-              <span class="value">$${amount}</span>
+              <span class="value">$${sanitizedAmount}</span>
             </div>
             <div class="detail-item">
               <span class="label">You'll Receive:</span>
-              <span class="value">${bitsToReceive} $BITS</span>
+              <span class="value">${sanitizedBits} $BITS</span>
             </div>
           </div>
           <div class="payment-status">
@@ -167,11 +187,11 @@ const createEnhancedPaymentModal = ({ invoiceUrl, paymentId, amount, bitsToRecei
           </div>
         </div>
         <div class="nowpayments-iframe-container">
-          <iframe src="${invoiceUrl}" frameborder="0" allowtransparency="true"></iframe>
+          <iframe src="${sanitizedInvoiceUrl}" frameborder="0" allowtransparency="true"></iframe>
         </div>
       </div>
     </div>
-  `;
+  `, { ALLOWED_TAGS: ['div', 'h3', 'button', 'span', 'p', 'iframe'], ALLOWED_ATTR: ['class', 'src', 'frameborder', 'allowtransparency'] });
 
   // Add modal styles
   const styles = document.createElement('style');

@@ -405,7 +405,15 @@ const BITSAnalytics = () => {
   
   const bitsForRoi = Number(safeData.totalBits) || 0;
   const priceForRoi = Number(safeData.currentPrice) || 0;
-  const rawInvested = Number((safeData.investedUsdFromPurchases ?? safeData.realInvestedUSD ?? safeData.investedUSD ?? 0)) || 0;
+  // Include Solana investments in ROI calculation
+  const rawInvested = Number((
+    safeData.investedUsdFromPurchases ?? 
+    safeData.realInvestedUSD ?? 
+    safeData.investedUSD ?? 
+    safeData.totalInvestedUSD ?? 
+    safeData.investedUSDOnSolana ?? 
+    0
+  )) || 0;
 
   const expectedValue = bitsForRoi * priceForRoi;
   let investedUsdForRoi = rawInvested;
@@ -497,7 +505,7 @@ const BITSAnalytics = () => {
       : formattedUSD;
 
   if (loading && walletAddress) {
-    const networkLabel = walletContextValue?.walletType === 'Solana' ? 'Solana Devnet' : 'BSC Mainnet';
+    const networkLabel = walletContextValue?.walletType === 'Solana' ? 'Solana Mainnet' : 'BSC Mainnet';
     return (
       <div className="ai-analytics-loader">
         <div className="ai-gemini-loader">
@@ -632,7 +640,7 @@ const BITSAnalytics = () => {
             <div className="nw-group">
               <span className="nw-label">Network:</span>
               <span className="nw-select" style={{ background: 'rgba(20, 241, 149, 0.1)', borderColor: 'rgba(20, 241, 149, 0.3)' }}>
-                🔷 Solana Devnet
+                🔷 Solana Mainnet
               </span>
             </div>
           )}
@@ -656,7 +664,7 @@ const BITSAnalytics = () => {
               <>
                 <a
                   href={walletContextValue?.walletType === 'Solana' 
-                    ? `https://solscan.io/account/${walletAddress}?cluster=devnet` 
+                    ? `https://solscan.io/account/${walletAddress}` 
                     : `https://bscscan.com/address/${walletAddress}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -691,7 +699,7 @@ const BITSAnalytics = () => {
               "Not Connected"
             )}
           </div>
-          <div className="widget-subtitle">{walletContextValue?.walletType === 'Solana' ? 'Solana Devnet' : 'BSC Network'}</div>
+          <div className="widget-subtitle">{walletContextValue?.walletType === 'Solana' ? 'Solana Mainnet' : 'BSC Network'}</div>
         </div>
         </SmartTooltip>
 
@@ -756,7 +764,7 @@ const BITSAnalytics = () => {
 
         {/* $BITS Price */}
         <SmartTooltip content={`Current Presale Price\nPrice per 1 BITS token.\nNext Stage Price: Higher (+5-10%)`}>
-        <div className="widget market">
+        <div className="widget rewards">
           <div className="widget-icon"><IconPrice /></div>
           <div className="widget-title">$BITS Price (Current)</div>
           <div className="widget-value">

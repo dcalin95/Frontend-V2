@@ -623,10 +623,14 @@ const WhaleTransactions = ({ minAmount = 10000000 }) => {
         // Visual feedback - could add toast notification here
         const button = document.querySelector('.copy-tx-btn');
         if (button) {
-          const originalText = button.innerHTML;
-          button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+          const originalText = button.textContent || button.innerHTML;
+          const icon = document.createElement('i');
+          icon.className = 'fas fa-check';
+          button.textContent = '';
+          button.appendChild(icon);
+          button.appendChild(document.createTextNode(' Copied!'));
           setTimeout(() => {
-            button.innerHTML = originalText;
+            button.textContent = originalText;
           }, 2000);
         }
       });

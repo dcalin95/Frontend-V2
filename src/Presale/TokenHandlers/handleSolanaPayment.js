@@ -12,9 +12,9 @@ import {
   TOKEN_PROGRAM_ID
 } from "@solana/spl-token";
 
-// Devnet info
-const SOLANA_RPC = process.env.REACT_APP_SOL_RPC_HTTP || "https://api.devnet.solana.com";
-const SOLANA_WS = process.env.REACT_APP_SOL_RPC_WS || "wss://api.devnet.solana.com";
+// Mainnet info
+const SOLANA_RPC = process.env.REACT_APP_SOL_RPC_HTTP || "https://api.mainnet-beta.solana.com";
+const SOLANA_WS = process.env.REACT_APP_SOL_RPC_WS || "wss://api.mainnet-beta.solana.com";
 const USDC_MINT = new PublicKey("HBUpnm43PjQdWJoFFLeUWbG8raduosdkmz8tg1C4mvGT");
 const DESTINATION_WALLET = new PublicKey("63u6aWZJdFd1vh6VfCya5DJkXTUEmHBbs14SiqHNt4GQ");
 

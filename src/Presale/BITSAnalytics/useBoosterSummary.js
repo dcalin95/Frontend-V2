@@ -5,11 +5,15 @@ import WalletContext from "../../context/WalletContext";
 import { CONTRACT_MAP as CONTRACTS, getActiveNetwork } from "../../contract/contractMap";
 
 export const useBoosterSummary = () => {
-  const { walletAddress, provider, signer } = useContext(WalletContext);
+  const { walletAddress, provider, signer, walletType } = useContext(WalletContext);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
 
-  console.log("👀 HOOK MOUNTED with:", { walletAddress, hasProvider: !!provider, hasSigner: !!signer });
+  // Detectează dacă e wallet Solana (adresa nu începe cu 0x)
+  const isSolanaWallet = walletType?.toUpperCase() === 'SOLANA' || 
+    (walletAddress && !walletAddress.startsWith('0x') && walletAddress.length >= 32);
+
+  console.log("👀 HOOK MOUNTED with:", { walletAddress, hasProvider: !!provider, hasSigner: !!signer, walletType, isSolanaWallet });
 
   const fetchData = useCallback(async () => {
     console.log("🚀🚀🚀 fetchData STARTED! 🚀🚀🚀");
@@ -20,7 +24,7 @@ export const useBoosterSummary = () => {
       ADDITIONAL_REWARD: CONTRACTS.ADDITIONAL_REWARD.address,
       TELEGRAM_REWARD: CONTRACTS.TELEGRAM_REWARD.address
     });
-    console.log("🔍 [DEBUG] Wallet Info:", { walletAddress, hasProvider: !!provider, hasSigner: !!signer });
+    console.log("🔍 [DEBUG] Wallet Info:", { walletAddress, hasProvider: !!provider, hasSigner: !!signer, isSolanaWallet });
     try {
       console.log("🔄 [ChatGPT Patch] Starting real contract calls...");
       
@@ -32,6 +36,124 @@ export const useBoosterSummary = () => {
         return;
       }
 
+      // 🟣 SOLANA WALLET: Skip BSC contract calls, fetch from backend + Solana blockchain
+      if (isSolanaWallet) {
+        console.log("🟣 [useBoosterSummary] SOLANA WALLET DETECTED - fetching from backend + Solana RPC");
+        
+        let solanaBits = 0;
+        let solanaUSD = 0;
+        let solanaTransactions = 0;
+        let solanaPayments = [];
+        
+        // 1. Try backend first
+        try {
+          const backendURL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+          console.log(`🟣 [Solana] Fetching from backend: ${backendURL}/api/solana/payments/user/${walletAddress}`);
+          
+          const solanaResponse = await fetch(`${backendURL}/api/solana/payments/user/${walletAddress}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+          });
+          
+          if (solanaResponse.ok) {
+            const responseData = await solanaResponse.json();
+            console.log("🟣 [Solana] Backend returned:", responseData);
+            
+            // Backend returns { payments: [...] } not direct array
+            solanaPayments = Array.isArray(responseData.payments) ? responseData.payments : 
+                            (Array.isArray(responseData) ? responseData : []);
+            
+            console.log("🟣 [Solana] Extracted payments array:", solanaPayments.length, "items");
+            
+            if (solanaPayments.length > 0) {
+              solanaPayments.forEach((payment, idx) => {
+                const bits = parseFloat(payment.bits_received || payment.bits_to_receive || payment.bitsReceived || 0);
+                const usd = parseFloat(payment.usd_invested || payment.usdInvested || 0);
+                solanaBits += bits;
+                solanaUSD += usd;
+                console.log(`🟣 Solana payment ${idx}: ${bits} BITS ($${usd})`);
+              });
+              solanaTransactions = solanaPayments.length;
+            }
+          } else {
+            console.warn("⚠️ [Solana] Backend returned status:", solanaResponse.status);
+          }
+        } catch (backendErr) {
+          console.warn("⚠️ [Solana] Backend fetch failed:", backendErr.message);
+        }
+        
+        // 2. Also check localStorage as fallback
+        try {
+          const localHistory = JSON.parse(localStorage.getItem('presale_sol_tx_history') || '[]');
+          if (Array.isArray(localHistory) && localHistory.length > 0) {
+            console.log("🟣 [Solana] Found localStorage history:", localHistory.length);
+            
+            // Only add if not already counted from backend
+            if (solanaPayments.length === 0) {
+              localHistory.forEach((tx, idx) => {
+                const bits = parseFloat(tx.bitsToReceive || tx.bits_received || 0);
+                const usd = parseFloat(tx.usdInvested || tx.usd_invested || 0);
+                solanaBits += bits;
+                solanaUSD += usd;
+                console.log(`🟣 Solana localStorage tx ${idx}: ${bits} BITS ($${usd})`);
+              });
+              solanaTransactions = localHistory.length;
+            }
+          }
+        } catch (localErr) {
+          console.warn("⚠️ [Solana] localStorage read failed:", localErr.message);
+        }
+        
+        // 3. Get current BITS price from BSC CellManager (still works for pricing)
+        let currentPrice = 0.065; // fallback
+        try {
+          const roProvider = new ethers.providers.JsonRpcProvider("https://bsc-dataseed1.binance.org");
+          const cellManagerRO = new ethers.Contract(CONTRACTS.CELL_MANAGER.address, CONTRACTS.CELL_MANAGER.abi, roProvider);
+          const cellId = await cellManagerRO.getCurrentOpenCellId();
+          const cell = await cellManagerRO.getCell(cellId);
+          const standardPriceRaw = cell?.standardPrice ?? (cell?.[2]);
+          currentPrice = Number(ethers.BigNumber.from(standardPriceRaw).toString()) / 1000;
+          console.log("🎯 [Solana] Current BITS price:", currentPrice);
+        } catch (priceErr) {
+          console.warn("⚠️ [Solana] Failed to get price, using fallback:", currentPrice);
+        }
+        
+        // 4. Calculate values
+        const totalValueUSD = solanaBits * currentPrice;
+        const roi = solanaUSD > 0 ? ((totalValueUSD - solanaUSD) / solanaUSD) * 100 : 0;
+        const pnl = totalValueUSD - solanaUSD;
+        
+        console.log("🟣 [Solana] FINAL STATS:", {
+          solanaBits,
+          solanaUSD,
+          solanaTransactions,
+          currentPrice,
+          totalValueUSD,
+          roi,
+          pnl
+        });
+        
+        setData({
+          ok: true,
+          totalBits: solanaBits,
+          totalInvestedUSD: solanaUSD,
+          investedUSDOnSolana: solanaUSD,
+          transactionCount: solanaTransactions,
+          currentPrice,
+          totalValueUSD,
+          roi,
+          pnl,
+          stakingStakedBits: 0,
+          stakingPendingRewards: 0,
+          additionalBonusBits: 0,
+          referralBonusBits: 0,
+          isSolanaWallet: true
+        });
+        setLoading(false);
+        return;
+      }
+
+      // --- EVM WALLET LOGIC (BSC) ---
       // Use read-only provider with multi-RPC fallback to avoid wallet RPC errors
       const net = getActiveNetwork();
       const rpcCandidates = [
@@ -131,10 +253,16 @@ export const useBoosterSummary = () => {
         });
         
         if (solanaResponse.ok) {
-          const solanaData = await solanaResponse.json();
-          console.log("🟣 [useBoosterSummary] Solana payments from backend:", solanaData);
+          const responseData = await solanaResponse.json();
+          console.log("🟣 [useBoosterSummary] Solana payments from backend:", responseData);
           
-          if (Array.isArray(solanaData) && solanaData.length > 0) {
+          // Backend returns { payments: [...] } not direct array
+          const solanaData = Array.isArray(responseData.payments) ? responseData.payments : 
+                            (Array.isArray(responseData) ? responseData : []);
+          
+          console.log("🟣 [useBoosterSummary] Extracted payments array:", solanaData.length, "items");
+          
+          if (solanaData.length > 0) {
             solanaData.forEach((payment, idx) => {
               const bits = parseFloat(payment.bits_received || payment.bits_to_receive || 0);
               const usd = parseFloat(payment.usd_invested || 0);
@@ -547,7 +675,7 @@ export const useBoosterSummary = () => {
     } finally {
       setLoading(false);
     }
-  }, [walletAddress, provider, signer]);
+  }, [walletAddress, provider, signer, isSolanaWallet]);
 
   useEffect(() => {
     console.log("🟢 USEEFFECT REGISTERED!");

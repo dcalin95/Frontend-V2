@@ -5,52 +5,130 @@ import { getBackendUrl } from './getBackendUrl';
 const API_URL = getBackendUrl();
 
 // Helper function for API requests with credentials
-async function apiRequest(endpoint, method = 'GET', body = null) {
+// Includes timeout, retry logic, and better error handling
+async function apiRequest(endpoint, method = 'GET', body = null, retries = 1) {
   const url = `${API_URL}${endpoint}`;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+  
   const options = {
     method,
     headers: {
       'Content-Type': 'application/json',
     },
     credentials: 'include', // Important: include cookies for session management
+    signal: controller.signal
   };
   
   if (body) {
     options.body = JSON.stringify(body);
   }
   
-  const response = await fetch(url, options);
+  let lastError;
   
-  // Handle non-JSON responses gracefully
-  let data;
-  const contentType = response.headers.get('content-type');
-  if (contentType && contentType.includes('application/json')) {
+  for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      data = await response.json();
-    } catch (e) {
-      throw new Error(`Failed to parse response: ${e.message}`);
+      const response = await fetch(url, options);
+      clearTimeout(timeoutId);
+      
+      // Handle non-JSON responses gracefully
+      let data;
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        try {
+          data = await response.json();
+        } catch (e) {
+          throw new Error(`Failed to parse response: ${e.message}`);
+        }
+      } else {
+        // If not JSON, try to get text
+        const text = await response.text();
+        throw new Error(text || `HTTP error! status: ${response.status}`);
+      }
+      
+      if (!response.ok) {
+        // Don't retry on client errors (4xx)
+        if (response.status >= 400 && response.status < 500) {
+          throw new Error(data.error || data.message || `HTTP error! status: ${response.status}`);
+        }
+        // Retry on server errors (5xx) or network errors
+        if (attempt < retries) {
+          await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1))); // Exponential backoff
+          continue;
+        }
+        throw new Error(data.error || data.message || `HTTP error! status: ${response.status}`);
+      }
+      
+      return data;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      lastError = error;
+      
+      // Don't retry on abort (timeout) or client errors
+      if (error.name === 'AbortError') {
+        throw new Error('Request timeout. Please check your connection and try again.');
+      }
+      
+      if (error.message && error.message.includes('HTTP error! status: 4')) {
+        throw error; // Don't retry client errors
+      }
+      
+      // Retry on network errors or server errors
+      if (attempt < retries) {
+        await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1))); // Exponential backoff
+        continue;
+      }
     }
-  } else {
-    // If not JSON, try to get text
-    const text = await response.text();
-    throw new Error(text || `HTTP error! status: ${response.status}`);
   }
   
-  if (!response.ok) {
-    throw new Error(data.error || data.message || `HTTP error! status: ${response.status}`);
-  }
-  
-  return data;
+  throw lastError || new Error('Request failed after retries');
 }
 
-// POST /api/auth/login - login with email and password
-export const signInWithEmail = async (email, password) => {
-  if (!email || !password) {
-    throw new Error('Email and password are required');
+// POST /api/auth/auto-login - auto-login with refresh token (trusted device)
+// Now includes IP and location for security verification
+export const autoLogin = async (refreshToken, deviceFingerprint, deviceInfo = null) => {
+  if (!refreshToken || !deviceFingerprint) {
+    throw new Error('Refresh token and device fingerprint are required');
   }
   
   try {
-    const response = await apiRequest('/api/auth/login', 'POST', { email, password });
+    // Import here to avoid circular dependency - use dynamic import for better error handling
+    const deviceFingerprintModule = await import('./deviceFingerprint');
+    const { getIPAndLocation, storeLastLocation, getLastLocation, hasLocationChanged } = deviceFingerprintModule;
+    
+    // Get current IP and location
+    const currentLocation = deviceInfo ? {
+      ip: deviceInfo.ip,
+      country: deviceInfo.country,
+      countryCode: deviceInfo.countryCode,
+      city: deviceInfo.city
+    } : await getIPAndLocation();
+    
+    // Get last known location
+    const lastLocation = getLastLocation();
+    
+    // Check if location changed significantly
+    const locationChanged = hasLocationChanged(currentLocation, lastLocation);
+    
+    // Prepare request body with security info
+    const requestBody = {
+      refreshToken,
+      deviceFingerprint,
+      ip: currentLocation.ip,
+      country: currentLocation.country,
+      countryCode: currentLocation.countryCode,
+      city: currentLocation.city,
+      locationChanged // Flag to indicate if location changed
+    };
+    
+    const response = await apiRequest('/api/auth/auto-login', 'POST', requestBody);
+    
+    // If location changed, backend should return requiresVerification flag
+    if (response.requiresVerification && locationChanged) {
+      // Location changed significantly - require additional verification
+      // Backend should handle this, but we can also show a warning
+      console.warn('[AutoLogin] Location changed - additional verification may be required');
+    }
     
     // Save user data to localStorage for quick access (session is managed by cookies)
     const userSession = {
@@ -63,7 +141,92 @@ export const signInWithEmail = async (email, password) => {
     };
     
     localStorage.setItem('bits_user', JSON.stringify(userSession));
-    return { user: userSession };
+    
+    // Update last known location
+    storeLastLocation(
+      currentLocation.ip,
+      currentLocation.country,
+      currentLocation.countryCode,
+      currentLocation.city
+    );
+    
+    return { 
+      user: userSession,
+      locationChanged: response.locationChanged || locationChanged,
+      requiresVerification: response.requiresVerification || false
+    };
+  } catch (err) {
+    // Clear refresh token if auto-login fails (except for network errors)
+    if (err.message && !err.message.includes('timeout') && !err.message.includes('connection')) {
+      localStorage.removeItem('bits_refresh_token');
+    }
+    
+    // Provide user-friendly error messages
+    if (err.message.includes('Invalid or expired')) {
+      throw new Error('Session expired. Please log in again.');
+    }
+    if (err.message.includes('timeout')) {
+      throw new Error('Connection timeout. Please check your internet connection.');
+    }
+    
+    throw err;
+  }
+};
+
+// POST /api/auth/login - login with email and password
+export const signInWithEmail = async (email, password, deviceInfo = null) => {
+  if (!email || !password) {
+    throw new Error('Email and password are required');
+  }
+  
+  try {
+    const requestBody = { email, password };
+    
+    // Add device info if provided (for trusted device)
+    if (deviceInfo) {
+      // Validate and sanitize device info
+      requestBody.deviceFingerprint = deviceInfo.deviceFingerprint || null;
+      requestBody.screenResolution = deviceInfo.screenResolution || null;
+      requestBody.timezone = deviceInfo.timezone || null;
+      requestBody.language = deviceInfo.language || null;
+      // Add IP and location for security tracking (sanitize)
+      requestBody.ip = (deviceInfo.ip && deviceInfo.ip !== 'Unknown') ? deviceInfo.ip.trim() : null;
+      requestBody.country = (deviceInfo.country && deviceInfo.country !== 'Global') ? deviceInfo.country.trim().substring(0, 100) : null;
+      requestBody.countryCode = (deviceInfo.countryCode && deviceInfo.countryCode !== 'GL') ? deviceInfo.countryCode.trim().substring(0, 10) : null;
+      requestBody.city = deviceInfo.city ? deviceInfo.city.trim().substring(0, 100) : null;
+    }
+    
+    const response = await apiRequest('/api/auth/login', 'POST', requestBody);
+    
+    // Save user data to localStorage for quick access (session is managed by cookies)
+    const userSession = {
+      id: response.id,
+      email: response.email,
+      username: response.username,
+      provider: 'email',
+      isMember: response.isMember || false,
+      emailVerified: response.emailVerified || false
+    };
+    
+    localStorage.setItem('bits_user', JSON.stringify(userSession));
+    
+    // Save refresh token if provided (for auto-login)
+    if (response.refreshToken) {
+      localStorage.setItem('bits_refresh_token', response.refreshToken);
+    }
+    
+    // Store current location for future comparison
+    if (deviceInfo && deviceInfo.ip) {
+      const { storeLastLocation } = await import('./deviceFingerprint');
+      storeLastLocation(
+        deviceInfo.ip,
+        deviceInfo.country || 'Global',
+        deviceInfo.countryCode || 'GL',
+        deviceInfo.city || ''
+      );
+    }
+    
+    return { user: userSession, refreshToken: response.refreshToken };
   } catch (err) {
     // Re-throw with user-friendly message
     throw err;
@@ -129,14 +292,17 @@ export const getUserProfile = async () => {
 };
 
 // POST /api/auth/signout - sign out and destroy session
-export const signOut = async () => {
+export const signOut = async (refreshToken = null) => {
   try {
-    await apiRequest('/api/auth/signout', 'POST');
+    const requestBody = refreshToken ? { refreshToken } : {};
+    await apiRequest('/api/auth/signout', 'POST', requestBody);
     localStorage.removeItem('bits_user');
+    localStorage.removeItem('bits_refresh_token');
     return { success: true };
   } catch (err) {
     // Clear localStorage even if request fails
     localStorage.removeItem('bits_user');
+    localStorage.removeItem('bits_refresh_token');
     throw err;
   }
 };

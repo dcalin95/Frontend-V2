@@ -5,6 +5,13 @@ import './Login.mobile.css'; // 📱 Separate Mobile System
 import { signInWithEmail, signUpWithEmail, signInWithProvider, forgotPassword, resendVerification, getUserWallets } from '../utils/backend';
 import { useAuth } from '../context/AuthContext';
 import { useWallet } from '../context/WalletContext';
+import { getDeviceInfo } from '../utils/deviceFingerprint';
+import { 
+  isBiometricAvailable, 
+  authenticateBiometric, 
+  hasBiometricCredential,
+  getBiometricErrorMessage 
+} from '../utils/biometricAuth';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -24,6 +31,9 @@ export default function Login() {
   const [forgotPasswordSent, setForgotPasswordSent] = useState(false);
   const [userWallets, setUserWallets] = useState([]);
   const [loadingWallets, setLoadingWallets] = useState(false);
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [biometricRegistered, setBiometricRegistered] = useState(false);
+  const [isBiometricLoggingIn, setIsBiometricLoggingIn] = useState(false);
 
   // Load user wallets
   const loadUserWallets = useCallback(async () => {
@@ -44,16 +54,59 @@ export default function Login() {
     }
   }, [existing]);
 
+  // Check biometric availability on mount
   useEffect(() => {
-    // If already logged in, redirect to Presale (optional)
-    if (existing) {
-      // navigate('/presale'); // Optional: Redirect automatically
-      // Load user wallets when authenticated
-      loadUserWallets();
-    } else {
+    const checkBiometric = async () => {
+      try {
+        const availability = await isBiometricAvailable();
+        setBiometricAvailable(availability.available);
+        setBiometricRegistered(hasBiometricCredential());
+      } catch (error) {
+        console.error('[Login] Error checking biometric:', error);
+        setBiometricAvailable(false);
+      }
+    };
+    checkBiometric();
+  }, []);
+
+  useEffect(() => {
+    // If already logged in, redirect to Presale automatically
+    if (existing && !authLoading) {
+      // Redirect automatically if user is already logged in
+      const timer = setTimeout(() => {
+        navigate('/presale', { replace: true });
+      }, 100);
+      return () => clearTimeout(timer);
+    } else if (!existing && !authLoading) {
       setUserWallets([]);
     }
-  }, [existing, loadUserWallets]);
+  }, [existing, authLoading, navigate]);
+
+  // Biometric login handler
+  const handleBiometricLogin = async () => {
+    setError('');
+    setSuccess('');
+    setIsBiometricLoggingIn(true);
+    
+    try {
+      const result = await authenticateBiometric();
+      
+      if (result && result.user) {
+        loginSuccess(result.user);
+        setSuccess('Biometric authentication successful!');
+        navigate('/presale');
+      }
+    } catch (err) {
+      const errorMsg = getBiometricErrorMessage(err);
+      setError(errorMsg);
+      // Don't show error if user cancelled - just silently fail
+      if (err.message && err.message.includes('cancelled')) {
+        setError('');
+      }
+    } finally {
+      setIsBiometricLoggingIn(false);
+    }
+  };
 
   // Password validation
   const validatePassword = (pwd) => {
@@ -86,10 +139,12 @@ export default function Login() {
       return;
     }
     
-    // Email format validation and normalization
+    // SECURITY: Email format validation and normalization with sanitization
     const emailTrimmed = email.trim().toLowerCase();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(emailTrimmed)) {
+    // Remove any potentially dangerous characters
+    const emailSanitized = emailTrimmed.replace(/[<>\"'&]/g, '');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/; // TLD must be at least 2 characters
+    if (!emailRegex.test(emailSanitized) || emailSanitized.length > 254) {
       setError('Please enter a valid email address.');
       return;
     }
@@ -101,8 +156,9 @@ export default function Login() {
         return;
       }
       
-      // Username validation (3-20 characters, only letters, numbers, underscores, hyphens)
+      // SECURITY: Username validation and sanitization (3-20 characters, only letters, numbers, underscores, hyphens)
       const usernameTrimmed = username.trim();
+      const usernameSanitized = usernameTrimmed.replace(/[<>\"'&]/g, '');
       if (usernameTrimmed.length < 3) {
         setError('Username must be at least 3 characters long.');
         return;
@@ -134,7 +190,8 @@ export default function Login() {
       
       setIsLoggingIn(true);
       try {
-        const response = await signUpWithEmail(emailTrimmed, password, usernameTrimmed);
+               // SECURITY: Use sanitized email
+               const response = await signUpWithEmail(emailSanitized, password, usernameTrimmed);
         if (response && response.user) {
           setSuccess(response.message || 'Account created successfully! Please check your email to verify your account.');
           setEmailVerificationSent(true);
@@ -168,7 +225,11 @@ export default function Login() {
       
       setIsLoggingIn(true);
       try {
-        const response = await signInWithEmail(emailTrimmed, password);
+        // Get device info for trusted device (auto-login) - now includes IP and location
+        const deviceInfo = await getDeviceInfo();
+        
+        // SECURITY: Use sanitized email
+        const response = await signInWithEmail(emailSanitized, password, deviceInfo);
         if (response && response.user) {
           loginSuccess(response.user);
           navigate('/presale');
@@ -213,7 +274,9 @@ export default function Login() {
 
   async function handleSignOut() {
     await contextSignOut();
-    // window.location.reload(); // No need to reload, context updates
+    // Redirect to home after sign out
+    navigate('/');
+    window.location.reload(); // Reload to ensure all state is cleared
   }
 
   async function handleForgotPassword(e) {
@@ -226,20 +289,29 @@ export default function Login() {
       return;
     }
     
+    // SECURITY: Email validation and sanitization
     const emailTrimmed = forgotPasswordEmail.trim().toLowerCase();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(emailTrimmed)) {
+    const emailSanitized = emailTrimmed.replace(/[<>\"'&]/g, '');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/; // TLD must be at least 2 characters
+    if (!emailRegex.test(emailSanitized) || emailSanitized.length > 254) {
       setError('Please enter a valid email address.');
       return;
     }
     
     setIsLoggingIn(true);
+    setError(''); // Clear previous errors
+    setSuccess(''); // Clear previous success messages
     try {
-      await forgotPassword(emailTrimmed);
+      // SECURITY: Don't log sensitive data (email addresses), use sanitized email
+      const response = await forgotPassword(emailSanitized);
       setForgotPasswordSent(true);
       setSuccess('If an account exists with this email, a password reset link has been sent.');
       setForgotPasswordEmail(''); // Clear email after success
     } catch (err) {
+      // SECURITY: Only log error message, not sensitive data
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[FORGOT PASSWORD] Error:', err.message);
+      }
       let errorMsg = err.message || 'Failed to send password reset email.';
       
       // Provide more specific error messages
@@ -248,6 +320,7 @@ export default function Login() {
       }
       
       setError(errorMsg);
+      setForgotPasswordSent(false); // Reset sent state on error
     } finally {
       setIsLoggingIn(false);
     }
@@ -264,16 +337,19 @@ export default function Login() {
       return;
     }
     
+    // SECURITY: Email validation and sanitization
     const emailTrimmed = email.trim().toLowerCase();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(emailTrimmed)) {
+    const emailSanitized = emailTrimmed.replace(/[<>\"'&]/g, '');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/; // TLD must be at least 2 characters
+    if (!emailRegex.test(emailSanitized) || emailSanitized.length > 254) {
       setError('Please enter a valid email address.');
       setIsLoggingIn(false);
       return;
     }
     
     try {
-      await resendVerification(emailTrimmed);
+      // SECURITY: Use sanitized email
+      await resendVerification(emailSanitized);
       setSuccess('Verification email sent! Please check your inbox.');
       setEmailVerificationSent(true);
     } catch (err) {
@@ -396,15 +472,52 @@ export default function Login() {
             </div>
           )}
           
+          {/* PROMINENT DISCONNECT BUTTON */}
+          <div style={{padding: '0 24px 24px', marginTop: '24px'}}>
+            <button 
+              className="btn-disconnect-large" 
+              onClick={handleSignOut}
+              style={{
+                width: '100%',
+                padding: '16px 24px',
+                background: 'linear-gradient(135deg, rgba(255, 50, 50, 0.2) 0%, rgba(255, 100, 100, 0.2) 100%)',
+                border: '2px solid rgba(255, 50, 50, 0.5)',
+                borderRadius: '12px',
+                color: '#ff5050',
+                fontSize: '16px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '12px',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 16px rgba(255, 50, 50, 0.3)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255, 50, 50, 0.3) 0%, rgba(255, 100, 100, 0.3) 100%)';
+                e.currentTarget.style.borderColor = '#ff5050';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 6px 24px rgba(255, 50, 50, 0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255, 50, 50, 0.2) 0%, rgba(255, 100, 100, 0.2) 100%)';
+                e.currentTarget.style.borderColor = 'rgba(255, 50, 50, 0.5)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 16px rgba(255, 50, 50, 0.3)';
+              }}
+            >
+              <i className="fa-solid fa-arrow-right-from-bracket" style={{fontSize: '18px'}}></i>
+              <span>Disconnect Account</span>
+            </button>
+          </div>
+          
           <div className="existing-actions">
             <button className="btn primary" onClick={() => navigate('/ai-hub')}>
               <i className="fa-solid fa-brain"></i> Go to AI Hub
             </button>
              <button className="btn primary" onClick={() => navigate('/presale')} style={{background: 'linear-gradient(135deg, #00FFA3 0%, #00D4FF 100%)', color: '#000'}}>
               <i className="fa-solid fa-rocket"></i> Go to Presale
-            </button>
-            <button className="btn secondary" onClick={handleSignOut}>
-              <i className="fa-solid fa-arrow-right-from-bracket"></i> Sign out
             </button>
           </div>
         </div>
@@ -538,6 +651,72 @@ export default function Login() {
             <i className="fas fa-check-circle"></i> {success}
           </div>}
           
+          {/* Biometric Authentication Button - Only show on Sign In, not Sign Up */}
+          {!isSignUp && biometricAvailable && biometricRegistered && (
+            <div style={{ marginTop: '16px', marginBottom: '12px' }}>
+              <button
+                type="button"
+                onClick={handleBiometricLogin}
+                disabled={isBiometricLoggingIn || isLoggingIn}
+                style={{
+                  width: '100%',
+                  padding: '14px 20px',
+                  background: 'linear-gradient(135deg, rgba(0, 255, 163, 0.1), rgba(0, 214, 255, 0.1))',
+                  border: '2px solid rgba(0, 255, 163, 0.3)',
+                  borderRadius: '12px',
+                  color: '#00FFA3',
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  cursor: (isBiometricLoggingIn || isLoggingIn) ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '10px',
+                  transition: 'all 0.3s ease',
+                  opacity: (isBiometricLoggingIn || isLoggingIn) ? 0.6 : 1
+                }}
+                onMouseEnter={(e) => {
+                  if (!isBiometricLoggingIn && !isLoggingIn) {
+                    e.target.style.background = 'linear-gradient(135deg, rgba(0, 255, 163, 0.2), rgba(0, 214, 255, 0.2))';
+                    e.target.style.borderColor = 'rgba(0, 255, 163, 0.5)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isBiometricLoggingIn && !isLoggingIn) {
+                    e.target.style.background = 'linear-gradient(135deg, rgba(0, 255, 163, 0.1), rgba(0, 214, 255, 0.1))';
+                    e.target.style.borderColor = 'rgba(0, 255, 163, 0.3)';
+                  }
+                }}
+              >
+                {isBiometricLoggingIn ? (
+                  <>
+                    <i className="fas fa-spinner fa-spin"></i>
+                    <span>Authenticating...</span>
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-fingerprint" style={{ fontSize: '18px' }}></i>
+                    <span>Sign in with Biometric</span>
+                  </>
+                )}
+              </button>
+              <div style={{ 
+                textAlign: 'center', 
+                marginTop: '8px', 
+                fontSize: '12px', 
+                color: 'rgba(255, 255, 255, 0.5)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px'
+              }}>
+                <span style={{ height: '1px', flex: 1, background: 'rgba(255, 255, 255, 0.1)' }}></span>
+                <span>OR</span>
+                <span style={{ height: '1px', flex: 1, background: 'rgba(255, 255, 255, 0.1)' }}></span>
+              </div>
+            </div>
+          )}
+          
           {emailVerificationSent && (
             <div style={{ background: 'rgba(0, 214, 255, 0.1)', border: '1px solid rgba(0, 214, 255, 0.3)', color: '#00D4FF', padding: '12px 16px', borderRadius: '8px', fontSize: '13px', marginTop: '8px' }}>
               <i className="fas fa-envelope"></i> Verification email sent! Please check your inbox and click the verification link.
@@ -604,13 +783,33 @@ export default function Login() {
                   <p style={{ margin: '0 0 12px', fontSize: '12px', opacity: 0.6 }}>
                     The reset link will expire in 1 hour.
                   </p>
-                  <form onSubmit={handleForgotPassword} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {error && (
+                    <div className="error" style={{ marginBottom: '12px', padding: '12px', background: 'rgba(255, 80, 80, 0.1)', border: '1px solid rgba(255, 80, 80, 0.3)', borderRadius: '8px', color: '#ff5050' }}>
+                      <i className="fas fa-exclamation-circle"></i> {error}
+                    </div>
+                  )}
+                  {success && (
+                    <div className="success" style={{ marginBottom: '12px', padding: '12px', background: 'rgba(0, 255, 163, 0.1)', border: '1px solid rgba(0, 255, 163, 0.3)', borderRadius: '8px', color: '#00FFA3' }}>
+                      <i className="fas fa-check-circle"></i> {success}
+                    </div>
+                  )}
+                  <                           form
+                             onSubmit={async (e) => {
+                               e.preventDefault(); // Prevent default form submission
+                               e.stopPropagation();
+                               await handleForgotPassword(e);
+                             }}
+                    style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
+                    noValidate
+                  >
                     <input 
                       type="email" 
                       value={forgotPasswordEmail}
-                      onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                      onChange={(e) => {
+                        setForgotPasswordEmail(e.target.value);
+                        setError(''); // Clear error when typing
+                      }}
                       placeholder="you@example.com"
-                      required
                       disabled={isLoggingIn}
                       style={{
                         padding: '12px 16px',
@@ -623,10 +822,24 @@ export default function Login() {
                     />
                     <div style={{ display: 'flex', gap: '8px' }}>
                       <button 
-                        type="submit" 
+                        type="button" 
                         className="btn primary" 
                         disabled={isLoggingIn}
                         style={{ flex: 1 }}
+                        onClick={async (e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          console.error('[FORGOT PASSWORD] Button clicked directly');
+                          
+                          // Force submit by calling handler directly
+                          if (!forgotPasswordEmail || forgotPasswordEmail.trim() === '') {
+                            setError('Please enter your email address.');
+                            return;
+                          }
+                          
+                          // Call handler directly
+                          await handleForgotPassword(e);
+                        }}
                       >
                         {isLoggingIn ? 'Sending...' : 'Send Reset Link'}
                       </button>

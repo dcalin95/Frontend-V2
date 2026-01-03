@@ -10,11 +10,16 @@ import RoundEndDisplay from "../RoundEndDisplay";
 import useCellManagerData from "../../hooks/useCellManagerData";
 import useAdditionalBonus from "../../hooks/useAdditionalBonus";
 import { CONTRACTS } from "../../../contract/contracts";
+import DOMPurify from 'dompurify'; // 🔒 SECURITY: XSS protection
 // NOTE: SolanaRewardsManager is legacy (old endpoints + contract-based). We use Solana Payments (DB + cron verify + manual fulfilment).
 import { getBackendUrl } from "../../../utils/getBackendUrl";
 
 const API_URL = getBackendUrl();
-const ADMIN_PASS = process.env.REACT_APP_ADMIN_PASS || "fallback123";
+// SECURITY: Require ADMIN_PASS in production, no fallback
+const ADMIN_PASS = process.env.REACT_APP_ADMIN_PASS;
+if (!ADMIN_PASS && process.env.NODE_ENV === 'production') {
+  console.error('[SECURITY] REACT_APP_ADMIN_PASS is required in production!');
+}
 
 // AdditionalReward tiers (aligned with RewardsHub + backend SOL loyalty tiers)
 const SOL_BONUS_TIERS = [
@@ -1035,6 +1040,7 @@ const AdminPanel = () => {
 
 
   return (
+    <>
     <div className={styles["admin-page"]}>
       {!isAuthorized ? (
         <div className={styles["admin-panel"]} style={getPanelStyle()}>
@@ -1097,13 +1103,14 @@ const AdminPanel = () => {
               onClick={() => setActiveTab("overview")}
               className={activeTab === "overview" ? styles["tab-active"] : styles["tab-inactive"]}
               style={{
-                padding: '10px 20px',
+                padding: '6px 14px',
                 border: 'none',
                 borderRadius: '6px 6px 0 0',
                 background: activeTab === "overview" ? '#14F195' : '#444',
                 color: activeTab === "overview" ? '#000' : '#fff',
                 cursor: 'pointer',
-                fontWeight: 'bold'
+                fontWeight: '600',
+                fontSize: '12px'
               }}
             >
               📊 Overview
@@ -1112,13 +1119,14 @@ const AdminPanel = () => {
               onClick={() => setActiveTab("treasury")}
               className={activeTab === "treasury" ? styles["tab-active"] : styles["tab-inactive"]}
               style={{
-                padding: '10px 20px',
+                padding: '6px 14px',
                 border: 'none',
                 borderRadius: '6px 6px 0 0',
                 background: activeTab === "treasury" ? '#14F195' : '#444',
                 color: activeTab === "treasury" ? '#000' : '#fff',
                 cursor: 'pointer',
-                fontWeight: 'bold'
+                fontWeight: '600',
+                fontSize: '12px'
               }}
             >
               💳 USDT Payouts
@@ -1128,13 +1136,14 @@ const AdminPanel = () => {
               onClick={() => setActiveTab("solana-payments")}
               className={activeTab === "solana-payments" ? styles["tab-active"] : styles["tab-inactive"]}
               style={{
-                padding: '10px 20px',
+                padding: '6px 14px',
                 border: 'none',
                 borderRadius: '6px 6px 0 0',
                 background: activeTab === "solana-payments" ? '#14F195' : '#444',
                 color: activeTab === "solana-payments" ? '#000' : '#fff',
                 cursor: 'pointer',
-                fontWeight: 'bold'
+                fontWeight: '600',
+                fontSize: '12px'
               }}
             >
               🧾 Solana Payments
@@ -1143,13 +1152,14 @@ const AdminPanel = () => {
               onClick={() => setActiveTab("leaderboard")}
               className={activeTab === "leaderboard" ? styles["tab-active"] : styles["tab-inactive"]}
               style={{
-                padding: '10px 20px',
+                padding: '6px 14px',
                 border: 'none',
                 borderRadius: '6px 6px 0 0',
                 background: activeTab === "leaderboard" ? '#14F195' : '#444',
                 color: activeTab === "leaderboard" ? '#000' : '#fff',
                 cursor: 'pointer',
-                fontWeight: 'bold'
+                fontWeight: '600',
+                fontSize: '12px'
               }}
             >
               🏆 Leaderboard
@@ -1158,19 +1168,21 @@ const AdminPanel = () => {
               onClick={() => setActiveTab("email-sender")}
               className={activeTab === "email-sender" ? styles["tab-active"] : styles["tab-inactive"]}
               style={{
-                padding: '10px 20px',
+                padding: '6px 14px',
                 border: 'none',
                 borderRadius: '6px 6px 0 0',
                 background: activeTab === "email-sender" ? '#14F195' : '#444',
                 color: activeTab === "email-sender" ? '#000' : '#fff',
                 cursor: 'pointer',
-                fontWeight: 'bold'
+                fontWeight: '600',
+                fontSize: '12px'
               }}
             >
               📧 Email Sender
             </button>
           </div>
 
+          <>
           {activeTab === "overview" && (
             <>
               <div style={{ 
@@ -1505,9 +1517,10 @@ const AdminPanel = () => {
                 color: '#000',
                 border: 'none',
                 borderRadius: '6px',
-                padding: '10px 20px',
+                padding: '6px 14px',
                 cursor: 'pointer',
-                fontWeight: 'bold'
+                fontWeight: '600',
+                fontSize: '12px'
               }}
             >
               📊 View Round History
@@ -1557,11 +1570,11 @@ const AdminPanel = () => {
                   color: '#fff',
                   border: 'none',
                   borderRadius: '6px',
-                  padding: '8px 14px',
+                  padding: '6px 12px',
                   cursor: 'pointer',
                   fontSize: '11px',
-                  fontWeight: 'bold',
-                  boxShadow: '0 2px 8px rgba(255, 51, 102, 0.3)',
+                  fontWeight: '600',
+                  boxShadow: '0 2px 6px rgba(255, 51, 102, 0.3)',
                   transition: 'all 0.2s ease'
                 }}
                 onMouseOver={(e) => {
@@ -1634,7 +1647,16 @@ const AdminPanel = () => {
                     </a>
                   </div>
                 </div>
-                <button onClick={fetchSolanaPayments} disabled={solanaPaymentsLoading} style={{ marginTop: 10 }}>
+                <button 
+                  onClick={fetchSolanaPayments} 
+                  disabled={solanaPaymentsLoading} 
+                  style={{ 
+                    marginTop: '8px',
+                    padding: '6px 12px',
+                    fontSize: '12px',
+                    fontWeight: '600'
+                  }}
+                >
                   {solanaPaymentsLoading ? "⏳ Refreshing..." : "🔄 Refresh"}
                 </button>
                 
@@ -1673,12 +1695,12 @@ const AdminPanel = () => {
                         background: 'linear-gradient(135deg, #10b981, #059669)',
                         color: '#fff',
                         border: 'none',
-                        borderRadius: '8px',
-                        padding: '10px 20px',
+                        borderRadius: '6px',
+                        padding: '6px 14px',
                         cursor: solanaSyncing ? 'not-allowed' : 'pointer',
-                        fontSize: '14px',
-                        fontWeight: 'bold',
-                        boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)',
                         transition: 'all 0.2s ease',
                         opacity: solanaSyncing ? 0.6 : 1
                       }}
@@ -1701,11 +1723,26 @@ const AdminPanel = () => {
                 <button
                   type="button"
                   onClick={() => setSolanaDebugOpen((v) => !v)}
-                  style={{ marginTop: 10, marginLeft: 10 }}
+                  style={{ 
+                    marginTop: '8px', 
+                    marginLeft: '8px',
+                    padding: '6px 12px',
+                    fontSize: '12px',
+                    fontWeight: '600'
+                  }}
                 >
                   {solanaDebugOpen ? "🧪 Hide debug" : "🧪 Show debug"}
                 </button>
-                <button onClick={fetchSolanaDbInfo} style={{ marginTop: 10, marginLeft: 10 }}>
+                <button 
+                  onClick={fetchSolanaDbInfo} 
+                  style={{ 
+                    marginTop: '8px', 
+                    marginLeft: '8px',
+                    padding: '6px 12px',
+                    fontSize: '12px',
+                    fontWeight: '600'
+                  }}
+                >
                   🧩 DB diagnostics
                 </button>
                 {solanaDebugOpen && (
@@ -2167,12 +2204,15 @@ const AdminPanel = () => {
                                       onClick={() => markSolanaFulfilled(tx.id)}
                                       disabled={solanaMarkingSig === tx.id}
                                       style={{
-                                        padding: "3px 8px",
-                                        borderRadius: 8,
-                                        border: "1px solid rgba(255,255,255,0.18)",
-                                        background: "rgba(0,0,0,0.25)",
+                                        padding: "4px 10px",
+                                        borderRadius: 6,
+                                        border: "1px solid rgba(0, 255, 163, 0.4)",
+                                        background: solanaMarkingSig === tx.id ? "rgba(0,0,0,0.4)" : "rgba(0, 255, 163, 0.15)",
                                         color: "#fff",
-                                        cursor: "pointer"
+                                        cursor: solanaMarkingSig === tx.id ? "not-allowed" : "pointer",
+                                        fontSize: "11px",
+                                        fontWeight: "600",
+                                        transition: "all 0.2s ease"
                                       }}
                                       title="After you manually send BITS, paste the BSC tx hash to link it here"
                                     >
@@ -2538,10 +2578,7 @@ const AdminPanel = () => {
             </>
           )}
 
-        </div>
-      )}
-
-      {/* Treasury Guide Modal */}
+          {/* Treasury Guide Modal */}
       {showTreasuryGuide && (
         <div style={{
           position: 'fixed',
@@ -2653,227 +2690,496 @@ const AdminPanel = () => {
         </div>
       )}
 
-      {/* Email Sender Tab */}
-      {activeTab === "email-sender" && (
-        <div className={styles["section"]}>
-          <h3>📧 Email Sender - Newsletter Management</h3>
-          
-          {/* Load Newsletter Subscribers */}
-          <div style={{ marginBottom: '20px' }}>
-            <button
-              onClick={async () => {
-                setNewsletterLoading(true);
-                try {
-                  const response = await axios.get(`${API_URL}/api/email/admin/newsletter/subscribers`, {
-                    params: { password: ADMIN_PASS, activeOnly: 'true' }
-                  });
-                  setNewsletterSubscribers(response.data.subscribers || []);
-                  toast.success(`✅ Loaded ${response.data.count || 0} newsletter subscribers`);
-                } catch (err) {
-                  console.error('❌ Failed to load newsletter subscribers:', err);
-                  toast.error('❌ Failed to load newsletter subscribers: ' + (err.response?.data?.error || err.message));
-                } finally {
-                  setNewsletterLoading(false);
-                }
-              }}
-              disabled={newsletterLoading}
-              style={{
-                padding: '10px 20px',
-                background: '#14F195',
-                color: '#000',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: newsletterLoading ? 'not-allowed' : 'pointer',
-                fontWeight: 'bold'
-              }}
-            >
-              {newsletterLoading ? '⏳ Loading...' : '📥 Load Newsletter Subscribers'}
-            </button>
-            
-            {newsletterSubscribers.length > 0 && (
-              <div style={{ marginTop: '15px', padding: '10px', background: '#1a1a1a', borderRadius: '6px' }}>
-                <strong>Subscribers ({newsletterSubscribers.length}):</strong>
-                <div style={{ maxHeight: '200px', overflowY: 'auto', marginTop: '10px' }}>
-                  {newsletterSubscribers.map((sub, idx) => (
-                    <div key={idx} style={{ padding: '5px', fontSize: '12px', color: '#ccc' }}>
-                      {sub.email} {sub.emailCount > 0 && <span style={{ color: '#14F195' }}>({sub.emailCount} emails)</span>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Email Form */}
-          <div style={{ marginTop: '30px' }}>
-            <h4>✉️ Compose Email</h4>
-            
-            {/* Template Type */}
-            <div style={{ marginBottom: '15px' }}>
-              <label style={{ display: 'block', marginBottom: '5px', color: '#fff' }}>Template Type:</label>
-              <select
-                value={emailTemplateType}
-                onChange={(e) => setEmailTemplateType(e.target.value)}
-                style={{
-                  padding: '8px',
-                  background: '#2a2a2a',
-                  color: '#fff',
-                  border: '1px solid #555',
-                  borderRadius: '4px',
-                  width: '200px'
-                }}
-              >
-                <option value="custom">Custom HTML</option>
-                <option value="ai">AI Template</option>
-              </select>
-            </div>
-
-            {/* Subject */}
-            <div style={{ marginBottom: '15px' }}>
-              <label style={{ display: 'block', marginBottom: '5px', color: '#fff' }}>Subject:</label>
-              <input
-                type="text"
-                value={emailSubject}
-                onChange={(e) => setEmailSubject(e.target.value)}
-                placeholder="Email subject..."
-                style={{
-                  width: '100%',
-                  padding: '10px',
-                  background: '#2a2a2a',
-                  color: '#fff',
-                  border: '1px solid #555',
-                  borderRadius: '4px'
-                }}
-              />
-            </div>
-
-            {/* Recipients */}
-            <div style={{ marginBottom: '15px' }}>
-              <label style={{ display: 'block', marginBottom: '5px', color: '#fff' }}>
-                Recipients (comma-separated emails or select from newsletter):
-              </label>
-              <textarea
-                value={emailRecipients.join(', ')}
-                onChange={(e) => setEmailRecipients(e.target.value.split(',').map(e => e.trim()).filter(Boolean))}
-                placeholder="email1@example.com, email2@example.com"
-                rows={3}
-                style={{
-                  width: '100%',
-                  padding: '10px',
-                  background: '#2a2a2a',
-                  color: '#fff',
-                  border: '1px solid #555',
-                  borderRadius: '4px',
-                  fontFamily: 'monospace',
-                  fontSize: '12px'
-                }}
-              />
-              {newsletterSubscribers.length > 0 && (
-                <button
-                  onClick={() => {
-                    const allEmails = newsletterSubscribers.map(s => s.email).join(', ');
-                    setEmailRecipients(newsletterSubscribers.map(s => s.email));
-                  }}
-                  style={{
-                    marginTop: '5px',
-                    padding: '5px 10px',
-                    background: '#444',
-                    color: '#fff',
-                    border: '1px solid #555',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontSize: '12px'
-                  }}
-                >
-                  📋 Use All Newsletter Subscribers ({newsletterSubscribers.length})
-                </button>
-              )}
-            </div>
-
-            {/* Content based on template type */}
-            {emailTemplateType === 'ai' ? (
-              <div style={{ marginBottom: '15px' }}>
-                <label style={{ display: 'block', marginBottom: '5px', color: '#fff' }}>AI Content:</label>
-                <textarea
-                  value={emailAIContent}
-                  onChange={(e) => setEmailAIContent(e.target.value)}
-                  placeholder="Enter AI-generated content here..."
-                  rows={10}
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    background: '#2a2a2a',
-                    color: '#fff',
-                    border: '1px solid #555',
-                    borderRadius: '4px',
-                    fontFamily: 'monospace'
-                  }}
-                />
-              </div>
-            ) : (
-              <div style={{ marginBottom: '15px' }}>
-                <label style={{ display: 'block', marginBottom: '5px', color: '#fff' }}>HTML Content:</label>
-                <textarea
-                  value={emailContent}
-                  onChange={(e) => setEmailContent(e.target.value)}
-                  placeholder="Enter HTML content here..."
-                  rows={15}
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    background: '#2a2a2a',
-                    color: '#fff',
-                    border: '1px solid #555',
-                    borderRadius: '4px',
-                    fontFamily: 'monospace',
-                    fontSize: '12px'
-                  }}
-                />
-              </div>
-            )}
-
-            {/* Load PresalePage HTML Button */}
-            <div style={{ marginBottom: '15px' }}>
+          {/* Email Sender Tab */}
+          {activeTab === "email-sender" && (
+        <div className={styles["section"]} style={{ padding: '25px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {/* Header Section */}
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center',
+              paddingBottom: '18px',
+              marginBottom: '5px',
+              borderBottom: '2px solid rgba(0, 255, 163, 0.4)'
+            }}>
+              <h3 style={{ margin: 0, color: '#00FFA3', fontSize: '26px', fontWeight: '700', letterSpacing: '-0.5px' }}>📧 Email Sender</h3>
               <button
                 onClick={async () => {
+                  setNewsletterLoading(true);
                   try {
-                    const response = await axios.get(`${API_URL}/api/email/admin/generate-presale-html`, {
-                      params: { password: ADMIN_PASS }
+                    const response = await axios.get(`${API_URL}/api/email/admin/newsletter/subscribers`, {
+                      params: { password: ADMIN_PASS, activeOnly: 'true' }
                     });
-                    
-                    if (response.data.success && response.data.html) {
-                      setEmailContent(response.data.html);
-                      setEmailSubject(`🚀 BitSwapDEX AI Presale - Round ${response.data.data.roundNumber} - Join Now!`);
-                      setEmailTemplateType('custom');
-                      toast.success(`✅ PresalePage HTML loaded! Round ${response.data.data.roundNumber}, Price: $${response.data.data.price.toFixed(6)}`);
-                    }
+                    setNewsletterSubscribers(response.data.subscribers || []);
+                    toast.success(`✅ Loaded ${response.data.count || 0} newsletter subscribers`);
                   } catch (err) {
-                    console.error('❌ Failed to load PresalePage HTML:', err);
-                    toast.error('❌ Failed to load PresalePage HTML: ' + (err.response?.data?.error || err.message));
+                    console.error('❌ Failed to load newsletter subscribers:', err);
+                    toast.error('❌ Failed to load newsletter subscribers: ' + (err.response?.data?.error || err.message));
+                  } finally {
+                    setNewsletterLoading(false);
                   }
                 }}
+                disabled={newsletterLoading}
                 style={{
                   padding: '10px 20px',
-                  background: '#DC1FFF',
-                  color: '#fff',
+                  background: newsletterLoading ? '#555' : 'linear-gradient(135deg, #00FFA3, #DC1FFF)',
+                  color: '#000',
                   border: 'none',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
+                  borderRadius: '8px',
+                  cursor: newsletterLoading ? 'not-allowed' : 'pointer',
                   fontWeight: 'bold',
-                  marginBottom: '10px'
+                  fontSize: '14px',
+                  boxShadow: '0 4px 15px rgba(0, 255, 163, 0.3)',
+                  transition: 'all 0.3s ease'
                 }}
               >
-                📄 Load PresalePage HTML (Live Data)
+                {newsletterLoading ? '⏳ Loading...' : `📋 Load Subscribers (${newsletterSubscribers.length})`}
               </button>
             </div>
 
-            {/* Preview Button */}
-            <div style={{ marginBottom: '15px', display: 'flex', gap: '10px' }}>
-              <button
-                onClick={() => {
-                  if (emailTemplateType === 'ai') {
-                    // Generate preview for AI template
-                    const preview = `<!DOCTYPE html>
+            {/* Two Column Layout */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '24px', alignItems: 'start' }}>
+              {/* Left Column: Newsletter Subscribers */}
+              <div style={{
+                background: 'rgba(0, 255, 163, 0.05)',
+                border: '1px solid rgba(0, 255, 163, 0.3)',
+                borderRadius: '12px',
+                padding: '15px',
+                maxHeight: '600px',
+                overflowY: 'auto'
+              }}>
+                <h4 style={{ margin: '0 0 18px 0', color: '#00FFA3', fontSize: '18px', fontWeight: '600', letterSpacing: '-0.3px' }}>
+                  📬 Newsletter Subscribers
+                </h4>
+                
+                {newsletterSubscribers.length === 0 ? (
+                  <div style={{ 
+                    textAlign: 'center', 
+                    color: '#888', 
+                    padding: '40px 20px',
+                    fontSize: '14px'
+                  }}>
+                    <div style={{ fontSize: '48px', marginBottom: '10px' }}>📭</div>
+                    <div>No subscribers loaded yet.</div>
+                    <div style={{ marginTop: '5px', fontSize: '12px' }}>
+                      Click "Load Subscribers" to fetch the list.
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div style={{ 
+                      marginBottom: '10px', 
+                      padding: '8px 12px',
+                      background: 'rgba(0, 255, 163, 0.1)',
+                      borderRadius: '6px',
+                      fontSize: '12px',
+                      color: '#00FFA3',
+                      fontWeight: 'bold'
+                    }}>
+                      Total: {newsletterSubscribers.length} subscriber(s)
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {newsletterSubscribers.map((sub, idx) => (
+                        <div 
+                          key={idx} 
+                          style={{ 
+                            padding: '12px', 
+                            background: 'rgba(255, 255, 255, 0.03)',
+                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'rgba(0, 255, 163, 0.1)';
+                            e.currentTarget.style.borderColor = '#00FFA3';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
+                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                          }}
+                          onClick={() => {
+                            if (!emailRecipients.includes(sub.email)) {
+                              setEmailRecipients([...emailRecipients, sub.email]);
+                              toast.success(`✅ Added ${sub.email} to recipients`);
+                            }
+                          }}
+                        >
+                          <div style={{ 
+                            color: '#fff', 
+                            fontWeight: '600',
+                            fontSize: '13px',
+                            marginBottom: '4px',
+                            wordBreak: 'break-all'
+                          }}>
+                            {sub.email}
+                          </div>
+                          <div style={{ 
+                            color: '#888', 
+                            fontSize: '11px',
+                            display: 'flex',
+                            gap: '12px'
+                          }}>
+                            <span>📅 {new Date(sub.subscribed_at).toLocaleDateString('en-US', { 
+                              month: 'short', 
+                              day: 'numeric',
+                              year: 'numeric'
+                            })}</span>
+                            {sub.email_count > 0 && (
+                              <span>📧 {sub.email_count} sent</span>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    {newsletterSubscribers.length > 0 && (
+                      <button
+                        onClick={() => {
+                          setEmailRecipients(newsletterSubscribers.map(s => s.email));
+                          toast.success(`✅ Added all ${newsletterSubscribers.length} subscribers to recipients`);
+                        }}
+                        style={{
+                          marginTop: '15px',
+                          width: '100%',
+                          padding: '10px',
+                          background: 'linear-gradient(135deg, #00FFA3, #DC1FFF)',
+                          color: '#000',
+                          border: 'none',
+                          borderRadius: '8px',
+                          cursor: 'pointer',
+                          fontWeight: 'bold',
+                          fontSize: '13px',
+                          boxShadow: '0 4px 15px rgba(0, 255, 163, 0.3)'
+                        }}
+                      >
+                        ➕ Add All to Recipients
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+
+              {/* Right Column: Compose Email */}
+              <div style={{
+                background: 'rgba(220, 31, 255, 0.05)',
+                border: '1px solid rgba(220, 31, 255, 0.3)',
+                borderRadius: '12px',
+                padding: '20px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '15px'
+              }}>
+                <h4 style={{ margin: '0 0 15px 0', color: '#DC1FFF', fontSize: '18px', fontWeight: '600', letterSpacing: '-0.3px' }}>
+                  ✉️ Compose Email
+                </h4>
+                
+                  {/* Template Type & Quick Actions */}
+                  <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+                    <div style={{ flex: '1', minWidth: '220px' }}>
+                      <label style={{ display: 'block', marginBottom: '8px', color: '#fff', fontSize: '13px', fontWeight: '600' }}>
+                        📝 Template Type:
+                      </label>
+                      <select
+                        value={emailTemplateType}
+                        onChange={(e) => {
+                          setEmailTemplateType(e.target.value);
+                          if (e.target.value === 'custom') {
+                            setEmailAIContent('');
+                          } else {
+                            setEmailContent('');
+                          }
+                        }}
+                        style={{
+                          width: '100%',
+                          padding: '10px',
+                          background: '#1a1a1a',
+                          color: '#fff',
+                          border: '2px solid #555',
+                          borderRadius: '8px',
+                          fontSize: '14px',
+                          cursor: 'pointer',
+                          transition: 'border-color 0.3s ease'
+                        }}
+                        onFocus={(e) => e.target.style.borderColor = '#00FFA3'}
+                        onBlur={(e) => e.target.style.borderColor = '#555'}
+                      >
+                        <option value="custom">📄 Custom HTML</option>
+                        <option value="ai">🤖 AI Template</option>
+                      </select>
+                    </div>
+                    <div style={{ flex: '1', minWidth: '220px' }}>
+                      <label style={{ display: 'block', marginBottom: '8px', color: '#fff', fontSize: '13px', fontWeight: '600' }}>
+                        ⚡ Quick Actions:
+                      </label>
+                      <button
+                        onClick={async () => {
+                          try {
+                            console.log('[ADMIN PANEL] Loading PresalePage HTML...');
+                            console.log('[ADMIN PANEL] API URL:', `${API_URL}/api/email/admin/generate-presale-html`);
+                            console.log('[ADMIN PANEL] Password:', ADMIN_PASS ? '***' : 'MISSING');
+                            
+                            const response = await axios.get(`${API_URL}/api/email/admin/generate-presale-html`, {
+                              params: { password: ADMIN_PASS }
+                            });
+                            
+                            console.log('[ADMIN PANEL] Response received:', {
+                              status: response.status,
+                              hasData: !!response.data,
+                              success: response.data?.success,
+                              hasHtml: !!response.data?.html,
+                              htmlLength: response.data?.html?.length,
+                              hasPresaleData: !!response.data?.data
+                            });
+                            
+                            if (response.data && response.data.success && response.data.html) {
+                              setEmailContent(response.data.html);
+                              const roundNumber = response.data.data?.roundNumber || 1;
+                              const price = response.data.data?.price || 0.001;
+                              setEmailSubject(`🚀 BitSwapDEX AI Presale - Round ${roundNumber} - Join Now!`);
+                              setEmailTemplateType('custom');
+                              toast.success(`✅ PresalePage HTML loaded! Round ${roundNumber}, Price: $${price.toFixed(6)}`);
+                              console.log('[ADMIN PANEL] ✅ PresalePage HTML loaded successfully');
+                            } else {
+                              console.error('[ADMIN PANEL] ❌ Invalid response format:', response.data);
+                              toast.error('❌ Invalid response format from server');
+                            }
+                          } catch (err) {
+                            console.error('❌ [ADMIN PANEL] Failed to load PresalePage HTML:', err);
+                            console.error('❌ [ADMIN PANEL] Error response:', err.response?.data);
+                            console.error('❌ [ADMIN PANEL] Error status:', err.response?.status);
+                            const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message;
+                            toast.error('❌ Failed to load PresalePage HTML: ' + errorMessage);
+                          }
+                        }}
+                        style={{
+                          width: '100%',
+                          padding: '10px',
+                          background: 'linear-gradient(135deg, #DC1FFF, #00FFA3)',
+                          color: '#000',
+                          border: 'none',
+                          borderRadius: '8px',
+                          cursor: 'pointer',
+                          fontWeight: 'bold',
+                          fontSize: '13px',
+                          boxShadow: '0 4px 15px rgba(220, 31, 255, 0.3)',
+                          transition: 'all 0.3s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                          e.currentTarget.style.boxShadow = '0 6px 20px rgba(220, 31, 255, 0.5)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 4px 15px rgba(220, 31, 255, 0.3)';
+                        }}
+                      >
+                        📄 Load PresalePage HTML
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Subject */}
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '8px', color: '#fff', fontSize: '13px', fontWeight: '600' }}>
+                      📌 Subject: <span style={{ color: emailSubject ? '#00FFA3' : '#ff4444', marginLeft: '4px' }}>*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={emailSubject}
+                      onChange={(e) => setEmailSubject(e.target.value)}
+                      placeholder="Enter email subject..."
+                      style={{
+                        width: '100%',
+                        padding: '12px',
+                        background: '#1a1a1a',
+                        color: '#fff',
+                        border: `2px solid ${emailSubject ? '#00FFA3' : '#555'}`,
+                        borderRadius: '8px',
+                        fontSize: '14px',
+                        transition: 'border-color 0.3s ease'
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = '#00FFA3'}
+                      onBlur={(e) => e.target.style.borderColor = emailSubject ? '#00FFA3' : '#555'}
+                    />
+                  </div>
+
+                  {/* Recipients */}
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '8px', color: '#fff', fontSize: '13px', fontWeight: '600' }}>
+                      📧 Recipients: <span style={{ color: emailRecipients.length > 0 ? '#00FFA3' : '#ff4444', marginLeft: '4px' }}>*</span>
+                      {emailRecipients.length > 0 && (
+                        <span style={{ 
+                          marginLeft: '10px', 
+                          color: '#00FFA3', 
+                          fontSize: '12px',
+                          fontWeight: 'normal'
+                        }}>
+                          ({emailRecipients.length} recipient{emailRecipients.length !== 1 ? 's' : ''})
+                        </span>
+                      )}
+                    </label>
+                    <textarea
+                      value={emailRecipients.join(', ')}
+                      onChange={(e) => setEmailRecipients(e.target.value.split(',').map(e => e.trim()).filter(Boolean))}
+                      placeholder="email1@example.com, email2@example.com&#10;Or click on subscribers from the left panel to add them"
+                      rows={4}
+                      style={{
+                        width: '100%',
+                        padding: '12px',
+                        background: '#1a1a1a',
+                        color: '#fff',
+                        border: `2px solid ${emailRecipients.length > 0 ? '#00FFA3' : '#555'}`,
+                        borderRadius: '8px',
+                        fontFamily: 'monospace',
+                        fontSize: '12px',
+                        resize: 'vertical',
+                        transition: 'border-color 0.3s ease'
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = '#00FFA3'}
+                      onBlur={(e) => e.target.style.borderColor = emailRecipients.length > 0 ? '#00FFA3' : '#555'}
+                    />
+                    {emailRecipients.length > 0 && (
+                      <div style={{ 
+                        marginTop: '8px', 
+                        display: 'flex', 
+                        flexWrap: 'wrap', 
+                        gap: '6px' 
+                      }}>
+                        {emailRecipients.map((email, idx) => (
+                          <div
+                            key={idx}
+                            style={{
+                              padding: '6px 12px',
+                              background: 'rgba(0, 255, 163, 0.2)',
+                              border: '1px solid #00FFA3',
+                              borderRadius: '20px',
+                              fontSize: '12px',
+                              color: '#00FFA3',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px'
+                            }}
+                          >
+                            <span>{email}</span>
+                            <button
+                              onClick={() => {
+                                setEmailRecipients(emailRecipients.filter((_, i) => i !== idx));
+                                toast.success(`✅ Removed ${email}`);
+                              }}
+                              style={{
+                                background: 'transparent',
+                                border: 'none',
+                                color: '#ff4444',
+                                cursor: 'pointer',
+                                fontSize: '16px',
+                                padding: '0',
+                                width: '18px',
+                                height: '18px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderRadius: '50%',
+                                transition: 'background 0.2s ease'
+                              }}
+                              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 68, 68, 0.2)'}
+                              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Content based on template type */}
+                  <div>
+                    {emailTemplateType === 'ai' ? (
+                      <>
+                        <label style={{ display: 'block', marginBottom: '8px', color: '#fff', fontSize: '13px', fontWeight: '600' }}>
+                          🤖 AI Content: <span style={{ color: emailAIContent ? '#00FFA3' : '#ff4444', marginLeft: '4px' }}>*</span>
+                          <span style={{ 
+                            marginLeft: '10px', 
+                            color: '#888', 
+                            fontSize: '11px',
+                            fontWeight: 'normal'
+                          }}>
+                            (Plain text - will be wrapped in professional template)
+                          </span>
+                        </label>
+                        <textarea
+                          value={emailAIContent}
+                          onChange={(e) => setEmailAIContent(e.target.value)}
+                          placeholder="Enter your email content here...&#10;&#10;This will be wrapped in a professional AI template with header and footer."
+                          rows={12}
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            background: '#1a1a1a',
+                            color: '#fff',
+                            border: `2px solid ${emailAIContent ? '#00FFA3' : '#555'}`,
+                            borderRadius: '8px',
+                            fontFamily: 'inherit',
+                            fontSize: '14px',
+                            resize: 'vertical',
+                            lineHeight: '1.6',
+                            transition: 'border-color 0.3s ease'
+                          }}
+                          onFocus={(e) => e.target.style.borderColor = '#00FFA3'}
+                          onBlur={(e) => e.target.style.borderColor = emailAIContent ? '#00FFA3' : '#555'}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <label style={{ display: 'block', marginBottom: '8px', color: '#fff', fontSize: '13px', fontWeight: '600' }}>
+                          📄 HTML Content: <span style={{ color: emailContent ? '#00FFA3' : '#ff4444', marginLeft: '4px' }}>*</span>
+                          <span style={{ 
+                            marginLeft: '10px', 
+                            color: '#888', 
+                            fontSize: '11px',
+                            fontWeight: 'normal'
+                          }}>
+                            (Full HTML - will be sent as-is)
+                          </span>
+                        </label>
+                        <textarea
+                          value={emailContent}
+                          onChange={(e) => setEmailContent(e.target.value)}
+                          placeholder="Enter HTML content here...&#10;&#10;Or use 'Load PresalePage HTML' button above to load live presale data."
+                          rows={15}
+                          style={{
+                            width: '100%',
+                            padding: '12px',
+                            background: '#1a1a1a',
+                            color: '#fff',
+                            border: `2px solid ${emailContent ? '#00FFA3' : '#555'}`,
+                            borderRadius: '8px',
+                            fontFamily: 'monospace',
+                            fontSize: '12px',
+                            resize: 'vertical',
+                            transition: 'border-color 0.3s ease'
+                          }}
+                          onFocus={(e) => e.target.style.borderColor = '#00FFA3'}
+                          onBlur={(e) => e.target.style.borderColor = emailContent ? '#00FFA3' : '#555'}
+                        />
+                      </>
+                    )}
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div style={{ 
+                    display: 'flex', 
+                    gap: '12px', 
+                    marginTop: '8px',
+                    paddingTop: '18px',
+                    borderTop: '1px solid rgba(255, 255, 255, 0.12)'
+                  }}>
+                    <button
+                      onClick={() => {
+                        if (emailTemplateType === 'ai') {
+                          // Generate preview for AI template
+                          const preview = `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -2900,238 +3206,308 @@ const AdminPanel = () => {
   </div>
 </body>
 </html>`;
-                    setEmailPreview(preview);
-                  } else {
-                    setEmailPreview(emailContent);
-                  }
-                  setShowEmailPreview(true);
-                }}
-                disabled={!emailSubject || (!emailContent && !emailAIContent)}
-                style={{
-                  padding: '10px 20px',
-                  background: '#444',
-                  color: '#fff',
-                  border: '1px solid #555',
-                  borderRadius: '6px',
-                  cursor: 'pointer'
-                }}
-              >
-                👁️ Preview Email
-              </button>
-              
-              <button
-                onClick={async () => {
-                  if (!emailSubject || (!emailContent && !emailAIContent) || emailRecipients.length === 0) {
-                    toast.error('❌ Please fill all fields');
-                    return;
-                  }
+                          setEmailPreview(preview);
+                        } else {
+                          setEmailPreview(emailContent);
+                        }
+                        setShowEmailPreview(true);
+                      }}
+                      disabled={!emailSubject || (!emailContent && !emailAIContent)}
+                      style={{
+                        flex: 1,
+                        padding: '6px 14px',
+                        background: !emailSubject || (!emailContent && !emailAIContent) 
+                          ? '#444' 
+                          : 'linear-gradient(135deg, #555, #777)',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '6px',
+                        cursor: !emailSubject || (!emailContent && !emailAIContent) ? 'not-allowed' : 'pointer',
+                        fontWeight: '600',
+                        fontSize: '12px',
+                        transition: 'all 0.3s ease',
+                        opacity: !emailSubject || (!emailContent && !emailAIContent) ? 0.5 : 1
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!(!emailSubject || (!emailContent && !emailAIContent))) {
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                          e.currentTarget.style.boxShadow = '0 4px 15px rgba(255, 255, 255, 0.2)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
+                    >
+                      👁️ Preview Email
+                    </button>
+                    
+                    <button
+                      onClick={async () => {
+                        if (!emailSubject || (!emailContent && !emailAIContent) || emailRecipients.length === 0) {
+                          toast.error('❌ Please fill all required fields: Subject, Content, and Recipients');
+                          return;
+                        }
 
-                  setEmailSending(true);
-                  try {
-                    const response = await axios.post(`${API_URL}/api/email/admin/send`, {
-                      password: ADMIN_PASS,
-                      to: emailRecipients,
-                      subject: emailSubject,
-                      htmlContent: emailTemplateType === 'ai' ? null : emailContent,
-                      templateType: emailTemplateType,
-                      aiContent: emailTemplateType === 'ai' ? emailAIContent : null
-                    });
+                        setEmailSending(true);
+                        try {
+                          console.log('[ADMIN PANEL] Sending email request:', {
+                            recipients: emailRecipients,
+                            subject: emailSubject,
+                            templateType: emailTemplateType,
+                            hasContent: !!emailContent,
+                            hasAIContent: !!emailAIContent
+                          });
 
-                    toast.success(`✅ Email sent to ${response.data.sent} recipient(s)`);
-                    if (response.data.failed > 0) {
-                      toast.warning(`⚠️ ${response.data.failed} email(s) failed`);
-                    }
+                          const requestData = {
+                            password: ADMIN_PASS,
+                            to: emailRecipients,
+                            subject: emailSubject,
+                            htmlContent: emailTemplateType === 'ai' ? null : emailContent,
+                            templateType: emailTemplateType,
+                            aiContent: emailTemplateType === 'ai' ? emailAIContent : null
+                          };
 
-                    // Clear form
-                    setEmailSubject('');
-                    setEmailContent('');
-                    setEmailAIContent('');
-                    setEmailRecipients([]);
-                  } catch (err) {
-                    console.error('❌ Failed to send email:', err);
-                    toast.error('❌ Failed to send email: ' + (err.response?.data?.error || err.message));
-                  } finally {
-                    setEmailSending(false);
-                  }
+                          console.log('[ADMIN PANEL] Request data:', {
+                            ...requestData,
+                            password: '***',
+                            aiContent: requestData.aiContent ? requestData.aiContent.substring(0, 50) + '...' : null
+                          });
+
+                          const response = await axios.post(`${API_URL}/api/email/admin/send`, requestData);
+
+                          console.log('[ADMIN PANEL] Response received:', response.data);
+
+                          toast.success(`✅ Email sent to ${response.data.sent} recipient(s)`);
+                          if (response.data.failed > 0) {
+                            toast.warning(`⚠️ ${response.data.failed} email(s) failed`);
+                            if (response.data.results) {
+                              response.data.results.forEach(result => {
+                                if (!result.success) {
+                                  console.error(`[ADMIN PANEL] Failed for ${result.email}:`, result.error);
+                                }
+                              });
+                            }
+                          }
+
+                          // Clear form
+                          setEmailSubject('');
+                          setEmailContent('');
+                          setEmailAIContent('');
+                          setEmailRecipients([]);
+                        } catch (err) {
+                          console.error('❌ [ADMIN PANEL] Failed to send email:', err);
+                          console.error('❌ [ADMIN PANEL] Error response:', err.response?.data);
+                          console.error('❌ [ADMIN PANEL] Error status:', err.response?.status);
+                          const errorMessage = err.response?.data?.error || err.response?.data?.details || err.message;
+                          toast.error('❌ Failed to send email: ' + errorMessage);
+                        } finally {
+                          setEmailSending(false);
+                        }
                 }}
                 disabled={emailSending || !emailSubject || (!emailContent && !emailAIContent) || emailRecipients.length === 0}
                 style={{
-                  padding: '10px 20px',
+                  padding: '6px 14px',
                   background: emailSending ? '#666' : '#14F195',
                   color: '#000',
                   border: 'none',
                   borderRadius: '6px',
                   cursor: emailSending ? 'not-allowed' : 'pointer',
-                  fontWeight: 'bold'
+                  fontWeight: '600',
+                  fontSize: '12px'
                 }}
               >
                 {emailSending ? '⏳ Sending...' : '📤 Send Email'}
               </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          )}
+
+          {/* Round End Statistics Display */}
+          {showRoundEndStats && roundEndData && (
+            <RoundEndDisplay 
+              roundData={roundEndData}
+              onStartNewRound={handleStartNewRound}
+            />
+          )}
+          </>
+        </div>
+      )}
+    </div>
+
+    {/* History Modal - Outside AdminPanel container */}
+    {showHistoryModal && (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        background: 'rgba(0, 0, 0, 0.9)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 9999
+      }}>
+        <div style={{
+          background: '#1a1a1a',
+          border: '2px solid #00d4ff',
+          borderRadius: '12px',
+          padding: '20px',
+          width: '95vw',
+          height: '90vh',
+          overflow: 'hidden',
+          position: 'relative',
+          display: 'flex',
+          flexDirection: 'column'
+        }}>
+          {/* Header with close and export buttons */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '15px',
+            paddingRight: '40px'
+          }}>
+            <h2 style={{ color: '#00d4ff', margin: 0 }}>📜 Round History</h2>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button 
+                onClick={() => exportToTelegram()}
+                style={{
+                  background: '#0088cc',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '6px',
+                  padding: '8px 12px',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  fontWeight: 'bold'
+                }}
+              >
+                📱 Export to Telegram
+              </button>
+              <button 
+                onClick={() => exportToFile()}
+                style={{
+                  background: '#28a745',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '6px',
+                  padding: '8px 12px',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  fontWeight: 'bold'
+                }}
+              >
+                💾 Save as File
+              </button>
             </div>
           </div>
 
-          {/* Email Preview Modal */}
-          {showEmailPreview && (
-            <div style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100vw',
-              height: '100vh',
-              background: 'rgba(0, 0, 0, 0.9)',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
+          <button 
+            onClick={() => setShowHistoryModal(false)}
+            style={{
+              position: 'absolute',
+              top: '15px',
+              right: '15px',
+              background: '#ff4444',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '50%',
+              width: '30px',
+              height: '30px',
+              cursor: 'pointer',
+              fontSize: '16px',
+              fontWeight: 'bold',
               zIndex: 10000
-            }}>
-              <div style={{
-                background: '#1a1a1a',
-                border: '2px solid #14F195',
-                borderRadius: '12px',
-                padding: '20px',
-                maxWidth: '90%',
-                maxHeight: '90vh',
-                overflow: 'auto',
-                position: 'relative'
-              }}>
-                <button
-                  onClick={() => setShowEmailPreview(false)}
-                  style={{
-                    position: 'absolute',
-                    top: '10px',
-                    right: '10px',
-                    background: '#ff4444',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '50%',
-                    width: '30px',
-                    height: '30px',
-                    cursor: 'pointer',
-                    fontSize: '16px',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  ✕
-                </button>
-                <h3 style={{ color: '#14F195', marginTop: 0 }}>Email Preview</h3>
-                <div dangerouslySetInnerHTML={{ __html: emailPreview }} />
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+            }}
+          >
+            ✕
+          </button>
 
-      {/* History Modal - Outside AdminPanel container */}
-      {showHistoryModal && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          background: 'rgba(0, 0, 0, 0.9)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 9999
-        }}>
+          {/* Content area */}
           <div style={{
-            background: '#1a1a1a',
-            border: '2px solid #00d4ff',
-            borderRadius: '12px',
-            padding: '20px',
-            width: '95vw',
-            height: '90vh',
-            overflow: 'hidden',
-            position: 'relative',
+            flex: 1,
+            overflow: 'auto',
             display: 'flex',
             flexDirection: 'column'
           }}>
-            {/* Header with close and export buttons */}
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '15px',
-              paddingRight: '40px'
-            }}>
-              <h2 style={{ color: '#00d4ff', margin: 0 }}>📜 Round History</h2>
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <button 
-                  onClick={() => exportToTelegram()}
-                  style={{
-                    background: '#0088cc',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '6px',
-                    padding: '8px 12px',
-                    cursor: 'pointer',
-                    fontSize: '12px',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  📱 Export to Telegram
-                </button>
-                <button 
-                  onClick={() => exportToFile()}
-                  style={{
-                    background: '#28a745',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '6px',
-                    padding: '8px 12px',
-                    cursor: 'pointer',
-                    fontSize: '12px',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  💾 Save as File
-                </button>
-              </div>
-            </div>
-
-            <button 
-              onClick={() => setShowHistoryModal(false)}
-              style={{
-                position: 'absolute',
-                top: '15px',
-                right: '15px',
-                background: '#ff4444',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '50%',
-                width: '30px',
-                height: '30px',
-                cursor: 'pointer',
-                fontSize: '16px',
-                fontWeight: 'bold',
-                zIndex: 10000
-              }}
-            >
-              ✕
-            </button>
-
-            {/* Content area */}
-            <div style={{
-              flex: 1,
-              overflow: 'auto', /* Enable scrolling */
-              display: 'flex',
-              flexDirection: 'column'
-            }}>
-              <PresaleHistory />
-            </div>
+            <PresaleHistory />
           </div>
         </div>
-      )}
+      </div>
+    )}
 
-      {/* Round End Statistics Display */}
-      {showRoundEndStats && roundEndData && (
-        <RoundEndDisplay 
-          roundData={roundEndData}
-          onStartNewRound={handleStartNewRound}
-        />
-      )}
-    </div>
+    {/* Email Preview Modal - Outside AdminPanel container */}
+    {showEmailPreview && (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        background: 'rgba(0, 0, 0, 0.95)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 10000,
+        padding: '20px'
+      }}>
+        <div style={{
+          background: '#1a1a1a',
+          border: '2px solid #14F195',
+          borderRadius: '12px',
+          padding: '20px',
+          maxWidth: '90%',
+          maxHeight: '90vh',
+          overflow: 'auto',
+          position: 'relative',
+          width: '100%',
+          boxSizing: 'border-box'
+        }}>
+          <button
+            onClick={() => setShowEmailPreview(false)}
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              padding: '6px 12px',
+              background: '#ff4444',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontWeight: '600',
+              fontSize: '12px',
+              zIndex: 10001
+            }}
+          >
+            ✕ Close
+          </button>
+          <div 
+            style={{
+              marginTop: '10px',
+              width: '100%',
+              maxWidth: '100%',
+              overflow: 'auto',
+              boxSizing: 'border-box'
+            }}
+            dangerouslySetInnerHTML={{ 
+              __html: DOMPurify.sanitize(emailPreview, {
+                ALLOWED_TAGS: ['p', 'div', 'span', 'br', 'strong', 'em', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+                ALLOWED_ATTR: ['href', 'target', 'rel', 'style', 'class'],
+                ALLOW_DATA_ATTR: false,
+                ALLOW_UNKNOWN_PROTOCOLS: false
+              })
+            }}
+          />
+        </div>
+      </div>
+    )}
+    </>
   );
 };
 

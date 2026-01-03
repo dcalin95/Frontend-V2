@@ -17,8 +17,14 @@ const HistoryModal = ({ isOpen, onClose }) => {
     const fetchTransactions = async () => {
       setLoading(true);
       try {
-        // BSCScan API - free tier (limited to 5 requests/sec)
-        const apiKey = 'YourBSCScanAPIKey'; // Replace with actual API key
+        // SECURITY: BSCScan API - use environment variable, no hardcoded keys
+        const apiKey = process.env.REACT_APP_BSCSCAN_API_KEY;
+        if (!apiKey) {
+          // Fallback to mock data if API key not configured
+          setTransactions(getMockTransactions(walletAddress));
+          setLoading(false);
+          return;
+        }
         const url = `https://api.bscscan.com/api?module=account&action=txlist&address=${walletAddress}&startblock=0&endblock=99999999&page=1&offset=10&sort=desc&apikey=${apiKey}`;
         
         const response = await fetch(url);
