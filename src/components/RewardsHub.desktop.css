@@ -215,24 +215,8 @@
 }
 
 .col-type { display: flex; align-items: center; gap: 8px; }
-.col-amount { 
-  color: #00ffc3; 
-  font-weight: 700;
-  /* SHARP CLEAR FONT */
-  font-family: 'Inter', 'Roboto', 'Arial', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-variant-numeric: tabular-nums;
-}
-.col-usd { 
-  color: rgba(255,255,255,0.82); 
-  font-weight: 700;
-  /* SHARP CLEAR FONT */
-  font-family: 'Inter', 'Roboto', 'Arial', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-variant-numeric: tabular-nums;
-}
+.col-amount { color: #00ffc3; font-weight: 900; }
+.col-usd { color: rgba(255,255,255,0.82); font-weight: 800; }
 .col-date { opacity: .80; font-size: 12px; }
 .col-tx a { color: #7dd3fc; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; font-weight: 800; }
 .col-tx a:hover { text-decoration: underline; }
@@ -480,13 +464,8 @@
 }
 
 .lb-reward .lb-bits {
-  font-weight: 700;
+  font-weight: 900;
   color: #00ffc3;
-  /* SHARP CLEAR FONT */
-  font-family: 'Inter', 'Roboto', 'Arial', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-variant-numeric: tabular-nums;
 }
 
 .lb-reward .lb-usd {
@@ -549,14 +528,9 @@
 
 .stat-value {
   font-size: 1.2em;
-  font-weight: 700;
+  font-weight: bold;
   color: #00ffc3;
   margin: 0;
-  /* SHARP CLEAR FONT */
-  font-family: 'Inter', 'Roboto', 'Arial', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-variant-numeric: tabular-nums;
 }
 
 /* Pending Rewards Section - COMPACT */
@@ -604,13 +578,8 @@
 }
 
 .reward-amount {
-  font-weight: 700;
+  font-weight: bold;
   color: #00ffc3;
-  /* SHARP CLEAR FONT */
-  font-family: 'Inter', 'Roboto', 'Arial', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-variant-numeric: tabular-nums;
 }
 
 .reward-date {
@@ -672,13 +641,8 @@
 }
 
 .payout-amount {
-  font-weight: 700;
+  font-weight: 800;
   color: #00ffc3;
-  /* SHARP CLEAR FONT */
-  font-family: 'Inter', 'Roboto', 'Arial', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-variant-numeric: tabular-nums;
 }
 
 .payout-estimate {
@@ -780,12 +744,7 @@
 }
 
 .token-amount-value {
-  font-weight: 700;
-  /* SHARP CLEAR FONT */
-  font-family: 'Inter', 'Roboto', 'Arial', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-variant-numeric: tabular-nums;
+  font-weight: 900;
 }
 
 .pill {
@@ -1074,13 +1033,8 @@
 
 .bonus-value {
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: bold;
   color: #14F195;
-  /* SHARP CLEAR FONT */
-  font-family: 'Inter', 'Roboto', 'Arial', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-variant-numeric: tabular-nums;
 }
 
 .bonus-actions {

@@ -33,9 +33,24 @@ const handleSHIBPayment = async ({
 
     console.log("✅ SHIB Payment complete:", receipt.transactionHash);
 
+    // 🎯 TikTok CompletePayment event - SHIB payment successful
+    const usdInvested = parseFloat(bitsToReceive) * tokenPrice; // SHIB to USD
+    if (typeof window !== 'undefined' && window.ttq && typeof window.ttq.track === 'function') {
+      try {
+        window.ttq.track('CompletePayment', {
+          content_type: 'product',
+          content_name: 'BITS Token Purchase',
+          payment_method: 'SHIB',
+          value: Math.round(usdInvested),
+          currency: 'USD',
+        });
+      } catch (err) {
+        console.warn('[TikTok] CompletePayment tracking error:', err);
+      }
+    }
+
     // 📢 TELEGRAM NOTIFICATION
     const bitsFormatted = parseFloat(bitsToReceive).toFixed(2);
-    const usdInvested = parseFloat(bitsToReceive) * tokenPrice; // SHIB to USD
     await notifyPresaleBuy({
       wallet: walletAddress,
       bits: bitsFormatted,

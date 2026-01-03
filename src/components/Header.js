@@ -107,7 +107,13 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
             </div>
           )}
           <div className="social">
-            <a href="https://t.me/BitSwapDEX_AI/" target="_blank" rel="noopener noreferrer" className="social-link">
+            <a 
+              href="https://t.me/BitSwapDEX_AI/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="social-link"
+              onClick={() => { try { if (window.ttq && typeof window.ttq.track === 'function') { window.ttq.track('CompleteRegistration', { content_name: 'Telegram Join', method: 'header' }); } } catch(_){} }}
+            >
               <img src={telegramLogo} alt="Telegram" width={24} height={24} />
             </a>
             <a href="https://x.com/BitSwapDEX_AI" target="_blank" rel="noopener noreferrer" className="social-link">
@@ -289,7 +295,13 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
             )}
             <HeaderPrice />
             <div className="social">
-              <a href="https://t.me/BitSwapDEX_AI/" target="_blank" rel="noopener noreferrer" className="social-link">
+              <a 
+                href="https://t.me/BitSwapDEX_AI/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="social-link"
+                onClick={() => { try { if (window.ttq && typeof window.ttq.track === 'function') { window.ttq.track('CompleteRegistration', { content_name: 'Telegram Join', method: 'header' }); } } catch(_){} }}
+              >
                 <img src={telegramLogo} alt="Telegram" width={24} height={24} />
               </a>
               <a href="https://x.com/BitSwapDEX_AI" target="_blank" rel="noopener noreferrer" className="social-link">

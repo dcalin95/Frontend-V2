@@ -259,6 +259,17 @@ const PresalePage = () => {
       toast.success("✅ Stripe payment confirmed. Check your inbox for the receipt.");
       setSelectedChain("fiat");
       setSelectedToken("STRIPE");
+      
+      // 🎯 TikTok CompletePayment event - Stripe payment successful
+      try {
+        trackTikTokEvent('CompletePayment', {
+          content_type: 'product',
+          content_name: 'BITS Token Purchase',
+          payment_method: 'stripe',
+          currency: 'EUR',
+          // Note: Exact amount not available in URL params, but conversion is tracked
+        });
+      } catch (_) {}
     } else if (paymentStatus === "stripe-cancel") {
       setStripeFeedback({
         type: "warning",

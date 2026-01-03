@@ -393,20 +393,16 @@ body {
 
 /* Value - SOLANA/AI STYLE */
 .widget-value {
-  font-family: 'Inter', 'Roboto', 'Arial', sans-serif; /* SHARP CLEAR NUMBERS */
+  font-family: 'Orbitron', 'Space Grotesk', sans-serif; /* TECH NUMBERS */
   font-size: 1.6rem;
-  font-weight: 700;
-  /* NEON GRADIENT TEXT - KEEP FOR VISIBILITY */
+  font-weight: 900;
+  /* NEON GRADIENT TEXT */
   background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  /* SHARP FONT RENDERING */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-variant-numeric: tabular-nums; /* Sharp, aligned numbers */
   margin-bottom: 4px;
-  letter-spacing: 0;
+  letter-spacing: -0.02em;
   word-break: break-word; /* Prevent overflow */
 }
 
@@ -494,7 +490,7 @@ body {
   font-weight: 900;
   font-size: 1.2rem;
   color: #fff;
-  text-shadow: none; /* Removed for crisp text */
+  text-shadow: 0 0 10px #00FFA3;
   animation: pulse-text 1.5s infinite ease-in-out;
 }
 
@@ -505,8 +501,8 @@ body {
   100% { stroke-dashoffset: 283; transform: rotate(450deg); }
 }
 @keyframes pulse-text {
-  0%, 100% { opacity: 1; text-shadow: none; }
-  50% { opacity: 0.7; text-shadow: none; }
+  0%, 100% { opacity: 1; text-shadow: 0 0 10px #00FFA3; }
+  50% { opacity: 0.7; text-shadow: 0 0 20px #DC1FFF; }
 }
 
 /* Skeleton Grid */

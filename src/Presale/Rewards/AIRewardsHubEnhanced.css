@@ -179,11 +179,6 @@
 .stat-value {
   font-size: 1rem;
   font-weight: 600;
-  /* SHARP CLEAR FONT */
-  font-family: 'Inter', 'Roboto', 'Arial', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-variant-numeric: tabular-nums;
 }
 
 .stat-value.loading {
@@ -360,22 +355,19 @@
 
 .amount-value {
   font-size: 3.5rem;
-  font-weight: 700;
+  font-weight: 900;
   background: linear-gradient(90deg, #00D4FF, #00FF88);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   display: block;
   line-height: 1;
-  /* SHARP CLEAR FONT - Same as BITSAnalytics */
-  font-family: 'Inter', 'Roboto', 'Arial', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-variant-numeric: tabular-nums;
+  /* ROG Crystal Font for dramatic effect */
+  font-family: 'ROG Fonts', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   text-shadow: 
     0 0 10px rgba(0, 212, 255, 0.4),
     0 0 20px rgba(0, 255, 136, 0.3);
-  letter-spacing: 0;
+  letter-spacing: 2px;
 }
 
 .amount-currency {
@@ -421,11 +413,6 @@
 .breakdown-value {
   font-weight: 700;
   color: #00FF88;
-  /* SHARP CLEAR FONT */
-  font-family: 'Inter', 'Roboto', 'Arial', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-variant-numeric: tabular-nums;
 }
 
 .claim-actions {
@@ -543,11 +530,6 @@
   font-weight: 700;
   color: #ffffff;
   line-height: 1;
-  /* SHARP CLEAR FONT */
-  font-family: 'Inter', 'Roboto', 'Arial', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-variant-numeric: tabular-nums;
 }
 
 .metric-label {
@@ -609,11 +591,6 @@
   font-size: 1.3rem;
   font-weight: 700;
   color: #00FF88;
-  /* SHARP CLEAR FONT */
-  font-family: 'Inter', 'Roboto', 'Arial', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-variant-numeric: tabular-nums;
 }
 
 .stat-label {
@@ -679,11 +656,6 @@
 .item-value {
   font-weight: 600;
   color: #ffffff;
-  /* SHARP CLEAR FONT */
-  font-family: 'Inter', 'Roboto', 'Arial', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-variant-numeric: tabular-nums;
 }
 
 /* ========== Loading Overlay ========== */

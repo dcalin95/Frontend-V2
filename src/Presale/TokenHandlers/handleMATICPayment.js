@@ -153,6 +153,21 @@ const handleMATICPayment = async ({
       const response = await axios.post(API_ENDPOINT, transactionData);
       console.log("✅ MATIC Transaction saved in backend:", response.data);
 
+      // 🎯 TikTok CompletePayment event - MATIC payment successful
+      if (typeof window !== 'undefined' && window.ttq && typeof window.ttq.track === 'function') {
+        try {
+          window.ttq.track('CompletePayment', {
+            content_type: 'product',
+            content_name: 'BITS Token Purchase',
+            payment_method: 'MATIC',
+            value: Math.round(usdInvested),
+            currency: 'USD',
+          });
+        } catch (err) {
+          console.warn('[TikTok] CompletePayment tracking error:', err);
+        }
+      }
+
       // 📢 TELEGRAM NOTIFICATION
       const bitsFormatted = ethers.utils.formatUnits(bitsToReceiveBN, 18);
       await notifyPresaleBuy({

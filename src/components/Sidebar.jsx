@@ -74,7 +74,14 @@ export default function Sidebar() {
             <i className="fa-solid fa-user-plus"></i>
             <span>Join</span>
           </Link>
-          <a href="https://t.me/BitSwapDEX_AI" target="_blank" rel="noopener noreferrer" className="sidebar-btn sidebar-telegram-btn" title="Join our Telegram community">
+          <a 
+            href="https://t.me/BitSwapDEX_AI" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="sidebar-btn sidebar-telegram-btn" 
+            title="Join our Telegram community"
+            onClick={() => { try { if (window.ttq && typeof window.ttq.track === 'function') { window.ttq.track('CompleteRegistration', { content_name: 'Telegram Join', method: 'sidebar' }); } } catch(_){} }}
+          >
             <i className="fa-brands fa-telegram"></i>
             <span>Telegram</span>
           </a>

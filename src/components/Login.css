@@ -1,4 +1,4 @@
-/* 🔐 LOGIN PAGE - Modern 2026 Design - Glassmorphism & Neon */
+/* 🔐 LOGIN PAGE - Cyber/Glassmorphism Style */
 
 .login-page { 
   padding: 100px 16px 48px; 
@@ -12,44 +12,14 @@
 
 .login-card {
   width: 100%;
-  max-width: 480px;
-  border: 2px solid rgba(0, 255, 163, 0.3);
-  background: linear-gradient(135deg, rgba(12,14,18,0.95) 0%, rgba(20,22,28,0.95) 100%);
-  border-radius: 24px;
+  max-width: 720px;
+  border: 1px solid rgba(0, 255, 163, 0.2);
+  background: rgba(12,14,18,0.8);
+  border-radius: 16px;
   padding: 0;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6); /* Reduced shadows for clarity */
+  box-shadow: 0 16px 40px rgba(0,0,0,0.5), 0 0 30px rgba(0, 255, 163, 0.1);
   overflow: hidden;
-  backdrop-filter: blur(30px) saturate(180%);
-  position: relative;
-  animation: cardEntrance 0.6s ease-out;
-  margin: 0 auto; /* Center card */
-}
-
-@keyframes cardEntrance {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.login-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #00FFA3, #DC1FFF, transparent);
-  animation: shimmer 3s infinite;
-}
-
-@keyframes shimmer {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
+  backdrop-filter: blur(20px);
 }
 
 .login-card:not(.profile-card) {
@@ -57,23 +27,18 @@
 }
 
 .login-card h1 { 
-  margin: 0 0 12px; 
-  font-size: 2rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, #00FFA3 0%, #00D4FF 50%, #DC1FFF 100%);
+  margin: 0 0 8px; 
+  font-size: 1.8rem;
+  background: linear-gradient(135deg, #00FFA3 0%, #DC1FFF 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  letter-spacing: -0.5px;
-  /* text-shadow removed for crisp text */
 }
 
 .login-card .sub { 
-  margin: 0 0 32px; 
-  opacity: .85;
-  font-size: 15px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 24px; 
+  opacity: .8;
+  font-size: 14px;
 }
 
 /* ============================================
@@ -131,7 +96,7 @@
   color: #fff;
   font-size: 48px;
   font-weight: 700;
-  /* text-shadow removed for crisp text */
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .profile-username {
@@ -238,29 +203,24 @@
 }
 
 .field input {
-  padding: 16px 20px;
-  background: rgba(0, 255, 163, 0.08);
-  border: 2px solid rgba(0, 255, 163, 0.25);
-  border-radius: 12px;
+  padding: 14px 16px;
+  background: rgba(0, 255, 163, 0.05);
+  border: 1px solid rgba(0, 255, 163, 0.2);
+  border-radius: 8px;
   color: #fff;
-  font-size: 15px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 14px;
+  transition: all 0.3s ease;
   /* Prevent zoom on iOS when focusing inputs */
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  font-weight: 500;
 }
 
 .field input:focus {
   outline: none;
   border-color: #00FFA3;
-  box-shadow: 
-    0 0 0 4px rgba(0, 255, 163, 0.1),
-    0 0 24px rgba(0, 255, 163, 0.4),
-    inset 0 0 20px rgba(0, 255, 163, 0.05);
-  background: rgba(0, 255, 163, 0.12);
-  transform: translateY(-1px);
+  box-shadow: 0 0 16px rgba(0, 255, 163, 0.3);
+  background: rgba(0, 255, 163, 0.1);
 }
 
 .field input::placeholder {
@@ -294,29 +254,14 @@
 }
 
 .btn.primary {
-  background: linear-gradient(135deg, #00FFA3 0%, #00D4FF 50%, #DC1FFF 100%);
-  background-size: 200% 200%;
+  background: linear-gradient(135deg, #00FFA3 0%, #DC1FFF 100%);
   color: #000;
-  box-shadow: 
-    0 6px 24px rgba(0, 255, 163, 0.5),
-    0 0 40px rgba(220, 31, 255, 0.3),
-    inset 0 1px 0 rgba(255,255,255,0.2);
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  animation: gradientShift 3s ease infinite;
-}
-
-@keyframes gradientShift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+  box-shadow: 0 4px 16px rgba(0, 255, 163, 0.4);
 }
 
 .btn.primary:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 
-    0 8px 32px rgba(0, 255, 163, 0.7),
-    0 0 60px rgba(220, 31, 255, 0.5),
-    inset 0 1px 0 rgba(255,255,255,0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0, 255, 163, 0.6);
 }
 
 .btn.secondary {

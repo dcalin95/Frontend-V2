@@ -111,6 +111,25 @@ const handleGenericPayment = async ({
       console.log("💾 [generic] Sending transaction to backend:", transactionData);
       await axios.post(API_ENDPOINT, transactionData);
       
+      // 🎯 TikTok CompletePayment event - Generic payment successful (ETH/USDT/USDC/MATIC)
+      if (typeof window !== 'undefined' && window.ttq && typeof window.ttq.track === 'function') {
+        try {
+          const tokenName = paymentTokenAddress === ethers.constants.AddressZero ? 'ETH' : 
+                           (paymentTokenAddress.toLowerCase() === CONTRACTS?.USDT?.address?.toLowerCase() ? 'USDT' :
+                           (paymentTokenAddress.toLowerCase() === CONTRACTS?.USDC?.address?.toLowerCase() ? 'USDC' :
+                           (paymentTokenAddress.toLowerCase() === CONTRACTS?.MATIC?.address?.toLowerCase() ? 'MATIC' : 'CRYPTO')));
+          window.ttq.track('CompletePayment', {
+            content_type: 'product',
+            content_name: 'BITS Token Purchase',
+            payment_method: tokenName,
+            value: Math.round(Number(usdInvested) || 0),
+            currency: 'USD',
+          });
+        } catch (err) {
+          console.warn('[TikTok] CompletePayment tracking error:', err);
+        }
+      }
+      
       // 📢 TELEGRAM NOTIFICATION
       const bitsFormatted = ethers.utils.formatUnits(bitsInWei, 18);
       await notifyPresaleBuy({

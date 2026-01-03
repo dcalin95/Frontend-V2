@@ -9,7 +9,6 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './Presale/CrystalClear.css'; // 💎 Crystal clear text - NO BLUR, NO SHADOWS
-import './styles/CrispDisplay.css'; // 🔥 Crisp display system - sharp fonts, centered containers, clear logos
 
 // 🧩 Wrapping App
 import AppWrapper from './AppWrapper';

@@ -27,20 +27,18 @@ body::-webkit-scrollbar {
   height: 0;
 }
 
-/* 🔥 CRISP SHARP FONT RENDERING - GLOBAL */
+/* 🔥 LASER-SHARP FONT RENDERING - GLOBAL */
 * {
-  -webkit-font-smoothing: antialiased !important;
-  -moz-osx-font-smoothing: grayscale !important;
-  text-rendering: optimizeLegibility !important;
-  text-shadow: none !important; /* Remove all text shadows for clarity */
+  -webkit-font-smoothing: never !important;
+  -moz-osx-font-smoothing: unset !important;
+  text-rendering: geometricPrecision !important;
 }
 
 .laser-sharp {
-  text-shadow: none !important;
-  filter: none !important;
-  -webkit-font-smoothing: antialiased !important;
-  -moz-osx-font-smoothing: grayscale !important;
-  text-rendering: optimizeLegibility !important;
+  text-shadow: 0.5px 0.5px 0px rgba(0, 0, 0, 0.1);
+  filter: contrast(2.2) brightness(1.3);
+  -webkit-font-smoothing: never;
+  text-rendering: geometricPrecision;
 }
 
 /* === GLOBAL VARIABLES & RESPONSIVE SCALE SYSTEM === */
@@ -254,16 +252,14 @@ body {
 /* === GLOBAL RESET Box sizing === */
 *, *::before, *::after {
   box-sizing: border-box;
-  -webkit-font-smoothing: antialiased !important;
-  -moz-osx-font-smoothing: grayscale !important;
-  text-rendering: optimizeLegibility !important;
-  text-shadow: none !important; /* Remove all text shadows for clarity */
+  -webkit-font-smoothing: never !important;
+  -moz-osx-font-smoothing: unset !important;
+  text-rendering: geometricPrecision !important;
 }
 
 .laser-sharp {
-  text-shadow: none !important;
-  filter: none !important;
-  -webkit-font-smoothing: antialiased !important;
-  -moz-osx-font-smoothing: grayscale !important;
-  text-rendering: optimizeLegibility !important;
+  text-shadow: 0.5px 0.5px 0px rgba(0, 0, 0, 0.1);
+  filter: contrast(2.2) brightness(1.3);
+  -webkit-font-smoothing: never;
+  text-rendering: geometricPrecision;
 }

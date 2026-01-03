@@ -193,7 +193,7 @@ body h1, body h2, body h3, body h4, body h5, body h6,
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   color: transparent !important;
-  text-shadow: none !important; /* Removed for crisp text */
+  text-shadow: 0 0 20px rgba(0, 255, 163, 0.3) !important;
 }
 
 p, a, button, input, label, span {
