@@ -1,5 +1,6 @@
 import React from 'react';
 import telegramLogo from '../assets/icons/telegram.svg';
+import { trackTikTokEvent } from '../utils/tiktok';
 import './MobileTelegramButton.css';
 
 /**
@@ -9,11 +10,12 @@ import './MobileTelegramButton.css';
 const MobileTelegramButton = () => {
   return (
     <a 
-      href="https://t.me/BitSwapDEX_AI/" 
+      href="https://t.me/BitSwapDEX_AI" 
       target="_blank" 
       rel="noopener noreferrer" 
       className="mobile-telegram-button"
       aria-label="Join our Telegram community"
+      onClick={() => { trackTikTokEvent('CompleteRegistration', { content_name: 'Telegram Join', method: 'mobile_button' }, { retry: true }); }}
     >
       <img src={telegramLogo} alt="Telegram" width={22} height={22} />
     </a>

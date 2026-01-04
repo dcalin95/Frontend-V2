@@ -7,6 +7,7 @@ import aiAvatarVideo from "../../assets/BitSwapDEX_AI.mp4";
 import { CONTRACT_MAP } from "../../contract/contractMap";
 import bitsLogo from "../../assets/logo.png";
 import { ethers } from "ethers";
+import { trackTikTokEvent } from "../../utils/tiktok";
 import "./PresaleCopilot.css";
 import "./SolHistoryPanel.css";
 
@@ -816,6 +817,7 @@ const PresaleCopilot = ({
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Join the official Telegram community"
+                onClick={() => { trackTikTokEvent('CompleteRegistration', { content_name: 'Telegram Join', method: 'presale_copilot' }, { retry: true }); }}
               >
                 Join Telegram
               </a>

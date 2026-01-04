@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { CONTRACTS } from '../../contract/contracts';
 import Icon from '../../assets/icons/Icon';
+import { trackTikTokEvent } from '../../utils/tiktok';
 import '../Mobile.css';
 
 const TelegramBonusClaimMobile = ({ onClaimed }) => {
@@ -133,6 +134,7 @@ const TelegramBonusClaimMobile = ({ onClaimed }) => {
             target="_blank" 
             rel="noreferrer"
             className="mobile-telegram-join-link"
+            onClick={() => { trackTikTokEvent('CompleteRegistration', { content_name: 'Telegram Join', method: 'mobile_bonus_claim' }, { retry: true }); }}
           >
             <Icon name="telegram" size="small" />
             <span>Join Telegram</span>

@@ -3,6 +3,7 @@ import styles from "./NewPresaleStats.module.css";
 import axios from "axios";
 import { ethers } from "ethers";
 import { CONTRACTS } from "../../contract/contracts";
+import { trackTikTokEvent } from "../../utils/tiktok";
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
 
@@ -390,7 +391,7 @@ const NewPresaleStats = ({ sold, supply, price, roundNumber }) => {
               <AnimatedNumber value={roundWallets || 12001} suffix=" Users/Wallet" />
             </div>
             <div className={styles.subValue}>
-              <a href="https://t.me/BitSwapDEX_AI" target="_blank" rel="noreferrer" style={{fontSize:'12px', color:'#2aa1ff', textDecoration:'underline', display:'inline-flex', alignItems:'center', gap:'6px', fontWeight:600}}>
+              <a href="https://t.me/BitSwapDEX_AI" target="_blank" rel="noreferrer" style={{fontSize:'12px', color:'#2aa1ff', textDecoration:'underline', display:'inline-flex', alignItems:'center', gap:'6px', fontWeight:600}} onClick={() => { trackTikTokEvent('CompleteRegistration', { content_name: 'Telegram Join', method: 'presale_stats_wallet_users' }, { retry: true }); }}>
                 <span role="img" aria-label="link">🔗</span>
                 t.me/BitSwapDEX_AI
               </a>
@@ -420,7 +421,7 @@ const NewPresaleStats = ({ sold, supply, price, roundNumber }) => {
             <div className={styles.statLabel}>Telegram Members</div>
             <div className={styles.statValue}><AnimatedNumber value={tgTotalCount || 0} /></div>
             <div className={styles.subValue}>
-              <a href="https://t.me/BitSwapDEX_AI" target="_blank" rel="noreferrer" style={{fontSize:'12px', color:'#2aa1ff', textDecoration:'underline', display:'inline-flex', alignItems:'center', gap:'6px', fontWeight:600}}>
+              <a href="https://t.me/BitSwapDEX_AI" target="_blank" rel="noreferrer" style={{fontSize:'12px', color:'#2aa1ff', textDecoration:'underline', display:'inline-flex', alignItems:'center', gap:'6px', fontWeight:600}} onClick={() => { trackTikTokEvent('CompleteRegistration', { content_name: 'Telegram Join', method: 'presale_stats_members' }, { retry: true }); }}>
                 <span role="img" aria-label="link">🔗</span>
                 t.me/BitSwapDEX_AI
               </a>

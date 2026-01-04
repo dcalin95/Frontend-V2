@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import PageRouter from './PageRouter';
 import TopicCard from './components/TopicCard';
 import ProgressNavigator from './components/ProgressNavigator';
+import { trackTikTokEvent } from '../../utils/tiktok';
 import './BitcoinAcademy.css';
 
 const BitcoinAcademyHome = () => {
@@ -382,7 +383,7 @@ const BitcoinAcademyHome = () => {
       >
         <div className="reward-summary-banner">
           Learn faster with AI: track progress, test yourself, and get curated tips. 
-          <a href="https://t.me/BitSwapDEX_AI/" target="_blank" rel="noreferrer" style={{marginLeft:8, fontWeight:800}}>Join Telegram →</a>
+          <a href="https://t.me/BitSwapDEX_AI" target="_blank" rel="noreferrer" style={{marginLeft:8, fontWeight:800}} onClick={() => { trackTikTokEvent('CompleteRegistration', { content_name: 'Telegram Join', method: 'bitcoin_academy' }, { retry: true }); }}>Join Telegram →</a>
           <span style={{margin: '0 8px'}}>•</span>
           <a href="#resume" onClick={(e)=>{ e.preventDefault(); try { if (window.gtag) { window.gtag('event', 'education_resume_learning', { source: 'academy_banner' }); } if (window.ttq && window.ttq.track) { window.ttq.track('ViewContent', { content_name: 'Resume learning' }); } } catch {} window.scrollTo({top:0, behavior:'smooth'}); }} style={{fontWeight:700}}>Resume where you left off →</a>
         </div>

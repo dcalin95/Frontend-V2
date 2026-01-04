@@ -140,7 +140,7 @@ const WelcomePage = () => {
 
           <a
             className="welcome-cta small"
-            href="https://t.me/BitSwapDEX_AI_BITS"
+            href="https://t.me/BitSwapDEX_AI"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Open BitSwapDEX AI Telegram channel"
@@ -152,7 +152,7 @@ const WelcomePage = () => {
 
           <a
             className="welcome-cta"
-            href="https://t.me/BitSwapDEX_AI_BITS"
+            href="https://t.me/BitSwapDEX_AI"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Open BitSwapDEX AI Telegram channel"

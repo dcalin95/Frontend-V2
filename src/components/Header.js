@@ -109,7 +109,7 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
           )}
           <div className="social">
             <a 
-              href="https://t.me/BitSwapDEX_AI/" 
+              href="https://t.me/BitSwapDEX_AI" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="social-link"
@@ -297,7 +297,7 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
             <HeaderPrice />
             <div className="social">
               <a 
-                href="https://t.me/BitSwapDEX_AI/" 
+                href="https://t.me/BitSwapDEX_AI" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="social-link"
