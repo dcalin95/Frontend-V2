@@ -67,9 +67,9 @@ const AdminPanel = () => {
   // ===== Treasury / USDC payouts admin =====
   const [treasuryAddress, setTreasuryAddress] = useState("");
   const [treasuryBalances, setTreasuryBalances] = useState(null);
-  const [usdtSpent, setUsdtSpent] = useState(null);
-  const [usdtCap, setUsdtCap] = useState(null);
-  const [newUsdtCap, setNewUsdtCap] = useState("");
+  const [usdcSpent, setUsdcSpent] = useState(null);
+  const [usdcCap, setUsdcCap] = useState(null);
+  const [newUsdcCap, setNewUsdcCap] = useState("");
   const [recentPayouts, setRecentPayouts] = useState([]);
   const [loadingPayouts, setLoadingPayouts] = useState(false);
   const [showTreasuryGuide, setShowTreasuryGuide] = useState(false);
@@ -425,9 +425,9 @@ const AdminPanel = () => {
       }
 
       if (spentRes?.data?.ok) {
-        setUsdtSpent(spentRes.data.spent);
-        setUsdtCap(spentRes.data.cap);
-        setNewUsdtCap(String(spentRes.data.cap ?? ""));
+        setUsdcSpent(spentRes.data.spent);
+        setUsdcCap(spentRes.data.cap);
+        setNewUsdcCap(String(spentRes.data.cap ?? ""));
       }
 
       if (treasRes?.data?.ok) {
@@ -467,8 +467,8 @@ const AdminPanel = () => {
       const payoutsRes = results[2].status === "fulfilled" ? results[2].value : null;
 
       if (spentRes?.data?.ok) {
-        setUsdtSpent(spentRes.data.spent);
-        setUsdtCap(spentRes.data.cap);
+        setUsdcSpent(spentRes.data.spent);
+        setUsdcCap(spentRes.data.cap);
       }
       if (treasRes?.data?.ok) setTreasuryBalances(treasRes.data.balances);
       if (payoutsRes?.data?.ok) setRecentPayouts(payoutsRes.data.rows || []);
@@ -486,8 +486,8 @@ const AdminPanel = () => {
     }
   };
 
-  const handleSetUsdtCap = async () => {
-    const n = Number(newUsdtCap);
+  const handleSetUsdcCap = async () => {
+    const n = Number(newUsdcCap);
     if (!Number.isFinite(n) || n <= 0) {
       toast.error("⚠️ Enter a valid cap > 0");
       return;
@@ -495,8 +495,8 @@ const AdminPanel = () => {
     try {
       const res = await axios.post(`${API_URL}/api/rewards/usdc-cap`, { password: ADMIN_PASS, cap: n });
       if (res.data?.ok) {
-        toast.success(`✅ USDT cap updated: ${n} / day`);
-        setUsdtCap(n);
+        toast.success(`✅ USDC cap updated: ${n} / day`);
+        setUsdcCap(n);
       } else {
         toast.error("❌ Failed to set cap");
       }
@@ -1129,7 +1129,7 @@ const AdminPanel = () => {
                 fontSize: '12px'
               }}
             >
-              💳 USDT Payouts
+              💳 USDC Payouts
             </button>
             {/* 🟣 Solana Rewards (legacy) removed */}
             <button 
@@ -1859,7 +1859,7 @@ const AdminPanel = () => {
                             onChange={(e) => setSolanaLoyaltyCurrency(e.target.value)}
                           >
                             <option value="BITS">BITS</option>
-                            <option value="USDT">USDT</option>
+                            <option value="USDC">USDC</option>
                           </select>
                         </label>
                         <button
@@ -2396,28 +2396,28 @@ const AdminPanel = () => {
                   📘 Open Treasury Guide (How to manage everything)
                 </button>
                 <div style={{ fontSize: '12px', color: '#ccc', lineHeight: 1.5 }}>
-                  <div><strong>1)</strong> Send <strong>USDT (BEP-20 on BSC Mainnet)</strong> to the treasury address.</div>
+                  <div><strong>1)</strong> Send <strong>USDC (BEP-20 on BSC Mainnet)</strong> to the treasury address.</div>
                   <div><strong>2)</strong> Send <strong>BNB</strong> for gas (required for every payout tx).</div>
                   <div style={{ marginTop: 8, opacity: 0.9 }}>
                     <div><strong>Recommended minimums (safe):</strong></div>
                     <div>• BNB: <strong>0.01</strong> (gas buffer)</div>
-                    <div>• USDT: at least <strong>{usdtCap != null ? Number(usdtCap).toFixed(2) : '30.00'}</strong> to cover today’s cap</div>
+                    <div>• USDC: at least <strong>{usdcCap != null ? Number(usdcCap).toFixed(2) : '30.00'}</strong> to cover today's cap</div>
                   </div>
                 </div>
 
                 {treasuryBalances && (
                   (() => {
                     const bnb = Number(treasuryBalances.bnb || 0);
-                    const usdt = Number(treasuryBalances.usdt || 0);
-                    const spent = Number(usdtSpent || 0);
-                    const cap = Number(usdtCap || 30);
+                    const usdc = Number(treasuryBalances.usdc || 0);
+                    const spent = Number(usdcSpent || 0);
+                    const cap = Number(usdcCap || 30);
                     const remaining = Math.max(0, cap - spent);
 
                     const bnbLow = bnb < 0.003;
                     const bnbWarn = bnb < 0.01;
-                    const usdtLow = usdt < Math.max(1, remaining);
+                    const usdcLow = usdc < Math.max(1, remaining);
 
-                    if (!bnbLow && !bnbWarn && !usdtLow) return null;
+                    if (!bnbLow && !bnbWarn && !usdcLow) return null;
                     return (
                       <div style={{
                         marginTop: 10,
@@ -2431,7 +2431,7 @@ const AdminPanel = () => {
                         <div style={{ fontWeight: 800, marginBottom: 6 }}>⚠️ Treasury Warnings</div>
                         {bnbLow && (<div>• <strong>BNB is very low</strong> ({bnb.toFixed(4)}). Payouts may fail due to gas.</div>)}
                         {!bnbLow && bnbWarn && (<div>• <strong>BNB is low</strong> ({bnb.toFixed(4)}). Recommended ≥ 0.01 BNB.</div>)}
-                        {usdtLow && (<div>• <strong>USDT may be insufficient</strong> ({usdt.toFixed(4)}). Remaining cap today ≈ {remaining.toFixed(4)} USDT.</div>)}
+                        {usdcLow && (<div>• <strong>USDC may be insufficient</strong> ({usdc.toFixed(4)}). Remaining cap today ≈ {remaining.toFixed(4)} USDC.</div>)}
                         <div style={{ marginTop: 6, opacity: 0.9 }}>
                           Tip: top up treasury and press <strong>Refresh</strong>.
                         </div>
@@ -2442,7 +2442,7 @@ const AdminPanel = () => {
               </div>
 
               <div className={styles["section"]}>
-                <h3>🏦 Treasury Wallet (Top-up USDT/BNB)</h3>
+                <h3>🏦 Treasury Wallet (Top-up USDC/BNB)</h3>
                 <div style={{ fontSize: '12px', color: '#ccc', lineHeight: 1.4 }}>
                   <div><strong>Address:</strong> <span style={{ wordBreak: 'break-all' }}>{treasuryAddress || '—'}</span></div>
                   <div style={{ marginTop: 6 }}>
@@ -2468,7 +2468,7 @@ const AdminPanel = () => {
                   </div>
                   <div style={{ marginTop: 10, opacity: 0.9 }}>
                     <div>✅ Top up this address with:</div>
-                    <div>• <strong>USDT (BEP-20 on BSC Mainnet)</strong> — used for payouts</div>
+                    <div>• <strong>USDC (BEP-20 on BSC Mainnet)</strong> — used for payouts</div>
                     <div>• <strong>BNB</strong> — gas for transfers</div>
                   </div>
                 </div>
@@ -2478,7 +2478,7 @@ const AdminPanel = () => {
                 <h3>📊 Treasury Balances</h3>
                 <div style={{ fontSize: '12px', color: '#ccc' }}>
                   <div><strong>BNB:</strong> {treasuryBalances ? Number(treasuryBalances.bnb || 0).toFixed(4) : '—'}</div>
-                  <div><strong>USDT:</strong> {treasuryBalances ? Number(treasuryBalances.usdt || 0).toFixed(4) : '—'}</div>
+                  <div><strong>USDC:</strong> {treasuryBalances ? Number(treasuryBalances.usdc || 0).toFixed(4) : '—'}</div>
                   <div><strong>BITS:</strong> {treasuryBalances ? Number(treasuryBalances.bits || 0).toFixed(2) : '—'}</div>
                 </div>
                 <button onClick={refreshPayouts} disabled={loadingPayouts}>
@@ -2487,19 +2487,19 @@ const AdminPanel = () => {
               </div>
 
               <div className={styles["section"]}>
-                <h3>🚦 USDT Daily Cap</h3>
+                <h3>🚦 USDC Daily Cap</h3>
                 <div style={{ fontSize: '12px', color: '#ccc' }}>
-                  <div><strong>Spent today:</strong> {usdtSpent != null ? `${Number(usdtSpent).toFixed(4)} USDT` : '—'}</div>
-                  <div><strong>Cap:</strong> {usdtCap != null ? `${Number(usdtCap).toFixed(2)} USDT/day` : '—'}</div>
-                  <div><strong>Remaining:</strong> {(usdtSpent != null && usdtCap != null) ? `${Math.max(0, Number(usdtCap) - Number(usdtSpent)).toFixed(4)} USDT` : '—'}</div>
+                  <div><strong>Spent today:</strong> {usdcSpent != null ? `${Number(usdcSpent).toFixed(4)} USDC` : '—'}</div>
+                  <div><strong>Cap:</strong> {usdcCap != null ? `${Number(usdcCap).toFixed(2)} USDC/day` : '—'}</div>
+                  <div><strong>Remaining:</strong> {(usdcSpent != null && usdcCap != null) ? `${Math.max(0, Number(usdcCap) - Number(usdcSpent)).toFixed(4)} USDC` : '—'}</div>
                 </div>
                 <input
                   type="number"
                   placeholder="Set new cap (e.g. 30, 100)"
-                  value={newUsdtCap}
-                  onChange={(e) => setNewUsdtCap(e.target.value)}
+                  value={newUsdcCap}
+                  onChange={(e) => setNewUsdcCap(e.target.value)}
                 />
-                <button onClick={handleSetUsdtCap}>
+                <button onClick={handleSetUsdcCap}>
                   ✅ Update Cap
                 </button>
                 <div style={{ fontSize: '11px', color: '#aaa', marginTop: 6 }}>
@@ -2539,7 +2539,7 @@ const AdminPanel = () => {
                     const tx = p.tx_hash || '';
                     const txShort = tx ? `${tx.slice(0, 10)}...` : '—';
                     const cur = String(p.payout_currency || '').toUpperCase();
-                    const amt = cur === 'USDT' ? p.payout_usdt : p.payout_bits;
+                    const amt = cur === 'USDC' ? p.payout_usdc : p.payout_bits;
                     return (
                       <div key={p.id} style={{
                         display: 'grid',
@@ -2552,7 +2552,7 @@ const AdminPanel = () => {
                         <div>{p.reward_type}</div>
                         <div title={w} style={{ wordBreak: 'break-all' }}>{shortW}</div>
                         <div>{cur || '—'}</div>
-                        <div>{amt != null ? Number(amt).toFixed(cur === 'USDT' ? 4 : 0) : '—'}</div>
+                        <div>{amt != null ? Number(amt).toFixed(cur === 'USDC' ? 4 : 0) : '—'}</div>
                         <div>
                           {tx ? (
                             <a
@@ -2609,7 +2609,7 @@ const AdminPanel = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
-              <h2 style={{ margin: 0, color: '#00ffc3', fontSize: '16px' }}>📘 Treasury Guide (USDT/BITS Rewards)</h2>
+              <h2 style={{ margin: 0, color: '#00ffc3', fontSize: '16px' }}>📘 Treasury Guide (USDC/BITS Rewards)</h2>
               <button
                 onClick={() => setShowTreasuryGuide(false)}
                 style={{
@@ -2635,7 +2635,7 @@ const AdminPanel = () => {
                 </div>
                 <div style={{ marginTop: 6, opacity: 0.95 }}>
                   <div>✅ Network: <strong>BSC Mainnet</strong></div>
-                  <div>✅ Token: <strong>USDT (BEP-20)</strong> for USDT payouts</div>
+                  <div>✅ Token: <strong>USDC (BEP-20)</strong> for USDC payouts</div>
                   <div>✅ Also send: <strong>BNB</strong> (gas for every transfer)</div>
                 </div>
               </div>
@@ -2644,45 +2644,45 @@ const AdminPanel = () => {
                 <div style={{ fontWeight: 800, color: '#14F195' }}>2) Recommended top-up amounts</div>
                 <div>For smooth payouts:</div>
                 <div>• BNB: <strong>0.01</strong> (gas buffer)</div>
-                <div>• USDT: <strong>cap/day × 2</strong> (safe buffer)</div>
+                <div>• USDC: <strong>cap/day × 2</strong> (safe buffer)</div>
                 <div style={{ opacity: 0.9, marginTop: 6 }}>
-                  Example: cap = {usdtCap != null ? Number(usdtCap).toFixed(2) : '30.00'} → top-up {usdtCap != null ? (Number(usdtCap) * 2).toFixed(2) : '60.00'} USDT + 0.01 BNB
+                  Example: cap = {usdcCap != null ? Number(usdcCap).toFixed(2) : '30.00'} → top-up {usdcCap != null ? (Number(usdcCap) * 2).toFixed(2) : '60.00'} USDC + 0.01 BNB
                 </div>
               </div>
 
               <div style={{ marginBottom: 10 }}>
                 <div style={{ fontWeight: 800, color: '#14F195' }}>3) How “automatic claim” works</div>
                 <div>User goes to <strong>Rewards Hub</strong> and chooses payout currency:</div>
-                <div>• Telegram Activity Reward → Claim in <strong>BITS</strong> or <strong>USDT</strong></div>
-                <div>• Invite/Referral Reward → Claim in <strong>BITS</strong> or <strong>USDT</strong></div>
+                <div>• Telegram Activity Reward → Claim in <strong>BITS</strong> or <strong>USDC</strong></div>
+                <div>• Invite/Referral Reward → Claim in <strong>BITS</strong> or <strong>USDC</strong></div>
                 <div style={{ marginTop: 6 }}>
                   Backend then:
                   <div>• Calculates pending reward server-side</div>
-                  <div>• For USDT: converts using live price from <code>/api/presale/current</code> (CellManager)</div>
-                  <div>• Sends tokens from treasury: <strong>USDT.transfer()</strong> or <strong>BITS.transfer()</strong></div>
+                  <div>• For USDC: converts using live price from <code>/api/presale/current</code> (CellManager)</div>
+                  <div>• Sends tokens from treasury: <strong>USDC.transfer()</strong> or <strong>BITS.transfer()</strong></div>
                   <div>• Writes tx + snapshot into DB and updates claimed counters</div>
                 </div>
               </div>
 
               <div style={{ marginBottom: 10 }}>
-                <div style={{ fontWeight: 800, color: '#14F195' }}>4) How to increase the 30 USDT/day cap</div>
+                <div style={{ fontWeight: 800, color: '#14F195' }}>4) How to increase the 30 USDC/day cap</div>
                 <div>In this tab:</div>
-                <div>• Change “USDT Daily Cap” and press <strong>Update Cap</strong></div>
+                <div>• Change "USDC Daily Cap" and press <strong>Update Cap</strong></div>
                 <div>Cap is global (Telegram + Referral combined).</div>
               </div>
 
               <div style={{ marginBottom: 10 }}>
                 <div style={{ fontWeight: 800, color: '#14F195' }}>5) How to monitor payouts</div>
                 <div>Use:</div>
-                <div>• <strong>Treasury Balances</strong> (BNB/USDT/BITS)</div>
+                <div>• <strong>Treasury Balances</strong> (BNB/USDC/BITS)</div>
                 <div>• <strong>Spent today / Remaining</strong></div>
                 <div>• <strong>Recent Payouts</strong> (tx links to BscScan)</div>
               </div>
 
               <div style={{ marginBottom: 0 }}>
                 <div style={{ fontWeight: 800, color: '#ffcc66' }}>Troubleshooting</div>
-                <div>• If USDT cap reached, UI auto-switches to BITS.</div>
-                <div>• If transfers fail: usually <strong>BNB too low</strong> or <strong>USDT insufficient</strong> in treasury.</div>
+                <div>• If USDC cap reached, UI auto-switches to BITS.</div>
+                <div>• If transfers fail: usually <strong>BNB too low</strong> or <strong>USDC insufficient</strong> in treasury.</div>
                 <div>• Always top up on <strong>BSC Mainnet</strong> (wrong network = funds won’t be usable here).</div>
               </div>
             </div>
