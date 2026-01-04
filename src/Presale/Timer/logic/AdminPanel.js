@@ -64,7 +64,7 @@ const AdminPanel = () => {
   const [showRoundEndStats, setShowRoundEndStats] = useState(false);
   const [roundEndData, setRoundEndData] = useState(null);
 
-  // ===== Treasury / USDT payouts admin =====
+  // ===== Treasury / USDC payouts admin =====
   const [treasuryAddress, setTreasuryAddress] = useState("");
   const [treasuryBalances, setTreasuryBalances] = useState(null);
   const [usdtSpent, setUsdtSpent] = useState(null);
@@ -91,7 +91,7 @@ const AdminPanel = () => {
   const [solanaDebugOpen, setSolanaDebugOpen] = useState(false);
   const [solanaSelectedEvmWallet, setSolanaSelectedEvmWallet] = useState("");
   const [solanaLastRawResponse, setSolanaLastRawResponse] = useState(null);
-  const [solanaLoyaltyCurrency, setSolanaLoyaltyCurrency] = useState("BITS"); // BITS | USDT
+  const [solanaLoyaltyCurrency, setSolanaLoyaltyCurrency] = useState("BITS"); // BITS | USDC
   const [solanaLoyaltyLast, setSolanaLoyaltyLast] = useState(null);
   
   // ===== NEW: Missing transactions alert =====
@@ -404,7 +404,7 @@ const AdminPanel = () => {
     try {
       const results = await Promise.allSettled([
         axios.get(`${API_URL}/api/rewards/treasury-address`),
-        axios.get(`${API_URL}/api/rewards/usdt-spent-today`),
+        axios.get(`${API_URL}/api/rewards/usdc-spent-today`),
         axios.post(`${API_URL}/api/rewards/admin/treasury-status`, { password: ADMIN_PASS }),
         axios.post(`${API_URL}/api/rewards/admin/payouts/recent`, { password: ADMIN_PASS, limit: 50 })
       ]);
@@ -457,7 +457,7 @@ const AdminPanel = () => {
     setLoadingPayouts(true);
     try {
       const results = await Promise.allSettled([
-        axios.get(`${API_URL}/api/rewards/usdt-spent-today`),
+        axios.get(`${API_URL}/api/rewards/usdc-spent-today`),
         axios.post(`${API_URL}/api/rewards/admin/treasury-status`, { password: ADMIN_PASS }),
         axios.post(`${API_URL}/api/rewards/admin/payouts/recent`, { password: ADMIN_PASS, limit: 50 })
       ]);
@@ -493,7 +493,7 @@ const AdminPanel = () => {
       return;
     }
     try {
-      const res = await axios.post(`${API_URL}/api/rewards/usdt-cap`, { password: ADMIN_PASS, cap: n });
+      const res = await axios.post(`${API_URL}/api/rewards/usdc-cap`, { password: ADMIN_PASS, cap: n });
       if (res.data?.ok) {
         toast.success(`✅ USDT cap updated: ${n} / day`);
         setUsdtCap(n);
@@ -1920,7 +1920,7 @@ const AdminPanel = () => {
                             }
                           }}
                           style={{ padding: '6px 10px', borderRadius: 10 }}
-                          title="Executes treasury payout for pending SOL loyalty rewards (BITS or USDT)"
+                          title="Executes treasury payout for pending SOL loyalty rewards (BITS or USDC)"
                         >
                           💸 Pay now
                         </button>

@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 import { CONTRACT_MAP as CONTRACTS } from "../contract/contractMap";
 import { toBitsInteger, formatBITS } from "../utils/bitsUtils";
 import bitsLogo from "../assets/logo.png";
-import usdtLogo from "../assets/icons/tether-usdt-logo.png";
+import usdcLogo from "../assets/icons/usdc.svg";
 import TokenInline from "./common/TokenInline";
 import CosmicRewardBurst from "./common/CosmicRewardBurst";
 import RealLeaderboard from "./RealLeaderboard";
@@ -91,7 +91,7 @@ const RewardsHub = () => {
   const [confirmPayload, setConfirmPayload] = useState(null);
   const [showBurst, setShowBurst] = useState(false);
   const [burstAmount, setBurstAmount] = useState(0);
-  const [burstUsdt, setBurstUsdt] = useState(null);
+  const [burstUsdc, setBurstUsdc] = useState(null);
   const [burstTitle, setBurstTitle] = useState("Reward detected ✨");
 
   const formatUSD = (v) => {
@@ -146,7 +146,7 @@ const RewardsHub = () => {
 
   // Load rewards data
   useEffect(() => {
-    // Always fetch live BITS price for public preview / USDT estimates copy.
+    // Always fetch live BITS price for public preview / USDC estimates copy.
     fetchBitsPrice();
     if (walletAddress) {
       loadRewards();
@@ -199,8 +199,8 @@ const RewardsHub = () => {
 
     setBurstTitle(`${topType} reward found`);
     setBurstAmount(toBitsInteger(topAmt));
-    const est = estimateUsdt(topAmt);
-    setBurstUsdt(est != null ? Number(est).toFixed(4) : null);
+    const est = estimateUsdc(topAmt);
+    setBurstUsdc(est != null ? Number(est).toFixed(4) : null);
     setShowBurst(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletAddress, rewards.loading, rewards.telegram?.pending, rewards.unified?.byType?.referral?.pending]);
@@ -367,7 +367,7 @@ const RewardsHub = () => {
     return { msg, json };
   };
 
-  const estimateUsdt = (bits) => {
+  const estimateUsdc = (bits) => {
     if (!bitsPriceMillicents) return null;
     const priceUsd = Number(bitsPriceMillicents) / 1000;
     if (!Number.isFinite(priceUsd) || priceUsd <= 0) return null;
@@ -401,8 +401,8 @@ const RewardsHub = () => {
             const lines = [
               `Wallet: ${walletAddress}`,
               `Reward: ${toBitsInteger(pendingBits)} $BITS`,
-              telegramPayoutCurrency === "USDT"
-                ? `Estimated payout: ${estimateUsdt(pendingBits) ?? 0} USDT (live price at claim)`
+              telegramPayoutCurrency === "USDC"
+                ? `Estimated payout: ${estimateUsdc(pendingBits) ?? 0} USDC (live price at claim)`
                 : `Payout: ${toBitsInteger(pendingBits)} $BITS`,
               "Status: Fallback mode (quote endpoint unavailable). Claim will still work; backend validates caps/processing."
             ].filter(Boolean);
@@ -426,11 +426,11 @@ const RewardsHub = () => {
       const lines = [
         `Wallet: ${walletAddress}`,
         `Reward: ${toBitsInteger(Number(data.pending_bits || 0))} $BITS`,
-        telegramPayoutCurrency === "USDT"
-          ? `Estimated payout: ${Number(data.payout_usdt || 0)} USDT (rate: $${(Number(data.price_millicents || 0) / 1000).toFixed(6)} / BITS)`
+        telegramPayoutCurrency === "USDC"
+          ? `Estimated payout: ${Number(data.payout_usdc || data.payout_usdt || 0)} USDC (rate: $${(Number(data.price_millicents || 0) / 1000).toFixed(6)} / BITS)`
           : `Payout: ${toBitsInteger(Number(data.pending_bits || 0))} $BITS`,
-        telegramPayoutCurrency === "USDT"
-          ? `USDT cap: ${Number(data.usdt_spent_today || 0)} / ${Number(data.usdt_daily_cap || 0)} spent today`
+        telegramPayoutCurrency === "USDC"
+          ? `USDC cap: ${Number(data.usdc_spent_today || data.usdt_spent_today || 0)} / ${Number(data.usdc_daily_cap || data.usdt_daily_cap || 0)} spent today`
           : null,
         data?.reason ? `Status: ${data.reason}` : "Status: OK"
       ].filter(Boolean);
@@ -460,7 +460,7 @@ const RewardsHub = () => {
         const { msg, json } = await parseBackendError(res);
         if (res.status === 403 && (msg || "").toLowerCase().includes("cap")) {
           setTelegramPayoutCurrency("BITS");
-          setStatusMsg(`⚠️ USDT daily cap reached. Switched to BITS — please claim again.`);
+          setStatusMsg(`⚠️ USDC daily cap reached. Switched to BITS — please claim again.`);
         } else {
           setStatusMsg(`❌ Telegram payout failed: ${msg}`);
         }
@@ -469,13 +469,13 @@ const RewardsHub = () => {
       }
       const data = await res.json();
       const paidBits = Number(data?.payout_bits || 0);
-      const paidUsdt = data?.payout_usdt;
+      const paidUsdc = data?.payout_usdc || data?.payout_usdt;
       setStatusMsg(`✅ Telegram payout sent. Tx: ${(data?.tx_hash || "").slice(0, 10)}…`);
       setModalPayload({
         title: "Telegram Payout Successful",
         lines: [
-          `Payout: ${telegramPayoutCurrency === "USDT" ? `${paidUsdt} USDT` : `${toBitsInteger(paidBits)} $BITS`}`,
-          telegramPayoutCurrency === "USDT" && data?.price_millicents ? `Rate: $${(Number(data.price_millicents) / 1000).toFixed(6)} per BITS` : null,
+          `Payout: ${telegramPayoutCurrency === "USDC" ? `${paidUsdc} USDC` : `${toBitsInteger(paidBits)} $BITS`}`,
+          telegramPayoutCurrency === "USDC" && data?.price_millicents ? `Rate: $${(Number(data.price_millicents) / 1000).toFixed(6)} per BITS` : null,
           `Tx: ${data?.tx_hash}`
         ].filter(Boolean),
         tx: data?.tx_hash
@@ -509,11 +509,11 @@ const RewardsHub = () => {
       const lines = [
         `Wallet: ${walletAddress}`,
         `Reward: ${toBitsInteger(Number(data.pending_bits || 0))} $BITS`,
-        referralPayoutCurrency === "USDT"
-          ? `Estimated payout: ${Number(data.payout_usdt || 0)} USDT (rate: $${(Number(data.price_millicents || 0) / 1000).toFixed(6)} / BITS)`
+        referralPayoutCurrency === "USDC"
+          ? `Estimated payout: ${Number(data.payout_usdc || data.payout_usdt || 0)} USDC (rate: $${(Number(data.price_millicents || 0) / 1000).toFixed(6)} / BITS)`
           : `Payout: ${toBitsInteger(Number(data.pending_bits || 0))} $BITS`,
-        referralPayoutCurrency === "USDT"
-          ? `USDT cap: ${Number(data.usdt_spent_today || 0)} / ${Number(data.usdt_daily_cap || 0)} spent today`
+        referralPayoutCurrency === "USDC"
+          ? `USDC cap: ${Number(data.usdc_spent_today || data.usdt_spent_today || 0)} / ${Number(data.usdc_daily_cap || data.usdt_daily_cap || 0)} spent today`
           : null,
         data?.reason ? `Status: ${data.reason}` : "Status: OK"
       ].filter(Boolean);
@@ -549,11 +549,11 @@ const RewardsHub = () => {
       const lines = [
         `Wallet: ${walletAddress}`,
         `Reward: ${toBitsInteger(Number(data.pending_bits || 0))} $BITS`,
-        solanaPayoutCurrency === "USDT"
-          ? `Estimated payout: ${Number(data.payout_usdt || 0)} USDT (rate: $${(Number(data.price_millicents || 0) / 1000).toFixed(6)} / BITS)`
+        solanaPayoutCurrency === "USDC"
+          ? `Estimated payout: ${Number(data.payout_usdc || data.payout_usdt || 0)} USDC (rate: $${(Number(data.price_millicents || 0) / 1000).toFixed(6)} / BITS)`
           : `Payout: ${toBitsInteger(Number(data.pending_bits || 0))} $BITS`,
-        solanaPayoutCurrency === "USDT"
-          ? `USDT cap: ${Number(data.usdt_spent_today || 0)} / ${Number(data.usdt_daily_cap || 0)} spent today`
+        solanaPayoutCurrency === "USDC"
+          ? `USDC cap: ${Number(data.usdc_spent_today || data.usdt_spent_today || 0)} / ${Number(data.usdc_daily_cap || data.usdt_daily_cap || 0)} spent today`
           : null,
         data?.reason ? `Status: ${data.reason}` : "Status: OK"
       ].filter(Boolean);
@@ -583,7 +583,7 @@ const RewardsHub = () => {
         const { msg, json } = await parseBackendError(res);
         if (res.status === 403 && (msg || "").toLowerCase().includes("cap")) {
           setSolanaPayoutCurrency("BITS");
-          setStatusMsg(`⚠️ USDT daily cap reached. Switched to BITS — please claim again.`);
+          setStatusMsg(`⚠️ USDC daily cap reached. Switched to BITS — please claim again.`);
         } else {
           setStatusMsg(`❌ SOL loyalty payout failed: ${msg}`);
         }
@@ -592,13 +592,13 @@ const RewardsHub = () => {
       }
       const data = await res.json();
       const paidBits = Number(data?.payout_bits || 0);
-      const paidUsdt = data?.payout_usdt;
+      const paidUsdc = data?.payout_usdc || data?.payout_usdt;
       setStatusMsg(`✅ SOL loyalty payout sent. Tx: ${(data?.tx_hash || "").slice(0, 10)}…`);
       setModalPayload({
         title: "SOL Loyalty Payout Successful",
         lines: [
-          `Payout: ${solanaPayoutCurrency === "USDT" ? `${paidUsdt} USDT` : `${toBitsInteger(paidBits)} $BITS`}`,
-          solanaPayoutCurrency === "USDT" && data?.price_millicents ? `Rate: $${(Number(data.price_millicents) / 1000).toFixed(6)} per BITS` : null,
+          `Payout: ${solanaPayoutCurrency === "USDC" ? `${paidUsdc} USDC` : `${toBitsInteger(paidBits)} $BITS`}`,
+          solanaPayoutCurrency === "USDC" && data?.price_millicents ? `Rate: $${(Number(data.price_millicents) / 1000).toFixed(6)} per BITS` : null,
           `Tx: ${data?.tx_hash}`
         ].filter(Boolean),
         tx: data?.tx_hash
@@ -626,7 +626,7 @@ const RewardsHub = () => {
         const { msg, json } = await parseBackendError(res);
         if (res.status === 403 && (msg || "").toLowerCase().includes("cap")) {
           setReferralPayoutCurrency("BITS");
-          setStatusMsg(`⚠️ USDT daily cap reached. Switched to BITS — please claim again.`);
+          setStatusMsg(`⚠️ USDC daily cap reached. Switched to BITS — please claim again.`);
         } else {
           setStatusMsg(`❌ Referral payout failed: ${msg}`);
         }
@@ -635,13 +635,13 @@ const RewardsHub = () => {
       }
       const data = await res.json();
       const paidBits = Number(data?.payout_bits || 0);
-      const paidUsdt = data?.payout_usdt;
+      const paidUsdc = data?.payout_usdc || data?.payout_usdt;
       setStatusMsg(`✅ Referral payout sent. Tx: ${(data?.tx_hash || "").slice(0, 10)}…`);
       setModalPayload({
         title: "Referral Payout Successful",
         lines: [
-          `Payout: ${referralPayoutCurrency === "USDT" ? `${paidUsdt} USDT` : `${toBitsInteger(paidBits)} $BITS`}`,
-          referralPayoutCurrency === "USDT" && data?.price_millicents ? `Rate: $${(Number(data.price_millicents) / 1000).toFixed(6)} per BITS` : null,
+          `Payout: ${referralPayoutCurrency === "USDC" ? `${paidUsdc} USDC` : `${toBitsInteger(paidBits)} $BITS`}`,
+          referralPayoutCurrency === "USDC" && data?.price_millicents ? `Rate: $${(Number(data.price_millicents) / 1000).toFixed(6)} per BITS` : null,
           `Tx: ${data?.tx_hash}`
         ].filter(Boolean),
         tx: data?.tx_hash
@@ -796,10 +796,10 @@ const RewardsHub = () => {
         onClose={() => setShowBurst(false)}
         amount={burstAmount}
         token="BITS"
-        secondaryAmount={burstUsdt}
-        secondaryToken="USDT"
+        secondaryAmount={burstUsdc}
+        secondaryToken="USDC"
         title={burstTitle}
-        subtitle="Rewards detected. Open the claim section to send to your wallet (choose BITS or USDT)."
+        subtitle="Rewards detected. Open the claim section to send to your wallet (choose BITS or USDC)."
         autoCloseMs={6500}
       />
       <div className="hub-container">
@@ -809,9 +809,9 @@ const RewardsHub = () => {
             <div className="hub-title-wrap">
               <h1 className="hub-title">Rewards Hub</h1>
               <div className="hub-badges">
-                <span className="hub-badge hub-badge-usdt" title="A rare presale feature: instant USDT payouts from treasury">
-                  <img className="badge-icon" src={usdtLogo} alt="USDT" />
-                  USDT payout (new)
+                <span className="hub-badge hub-badge-usdc" title="A rare presale feature: instant USDC payouts from treasury">
+                  <img className="badge-icon" src={usdcLogo} alt="USDC" />
+                  USDC payout (new)
                 </span>
               </div>
             </div>
@@ -988,27 +988,27 @@ const RewardsHub = () => {
 
               {/* Action Buttons */}
               <div className="action-section">
-                <h3>🚀 Claim your rewards (choose BITS or USDT)</h3>
-                <div className="usdt-callout">
-                  <div className="usdt-callout-title">
-                    <img className="badge-icon" src={usdtLogo} alt="USDT" />
-                    USDT payout during presale
+                <h3>🚀 Claim your rewards (choose BITS or USDC)</h3>
+                <div className="usdc-callout">
+                  <div className="usdc-callout-title">
+                    <img className="badge-icon" src={usdcLogo} alt="USDC" />
+                    USDC payout during presale
                   </div>
-                  <div className="usdt-callout-body">
-                    <div className="usdt-callout-lead">
+                  <div className="usdc-callout-body">
+                    <div className="usdc-callout-lead">
                       Choose payout <strong>per reward</strong>:
-                      <span className="pill pill-usdt">
-                        <img className="pill-icon" src={usdtLogo} alt="USDT" /> USDT
+                      <span className="pill pill-usdc">
+                        <img className="pill-icon" src={usdcLogo} alt="USDC" /> USDC
                       </span>
                       <span className="pill pill-bits">
                         <img className="pill-icon" src={bitsLogo} alt="BITS" /> $BITS
                       </span>
                     </div>
 
-                    <ul className="usdt-callout-list">
-                      <li><strong>USDT:</strong> paid instantly from treasury, using CellManager live price at claim (fixed snapshot).</li>
+                    <ul className="usdc-callout-list">
+                      <li><strong>USDC:</strong> paid instantly from treasury, using CellManager live price at claim (fixed snapshot).</li>
                       <li><strong>$BITS:</strong> always available; value can increase over time (not guaranteed).</li>
-                      <li><strong>Limits:</strong> USDT depends on daily cap + treasury balance.</li>
+                      <li><strong>Limits:</strong> USDC depends on daily cap + treasury balance.</li>
                     </ul>
                   </div>
                 </div>
@@ -1033,7 +1033,7 @@ const RewardsHub = () => {
                 </div>
 
                 <div className="payout-grid">
-                  <div className={`payout-card ${telegramPayoutCurrency === "USDT" ? "payout-card-usdt" : ""}`}>
+                  <div className={`payout-card ${telegramPayoutCurrency === "USDC" ? "payout-card-usdc" : ""}`}>
                     <h4>💬 Telegram Activity Reward</h4>
                     <div className="payout-row">
                       <div className="payout-amount">
@@ -1051,14 +1051,14 @@ const RewardsHub = () => {
                               <TokenInline token="BITS" />
                             </span>
                           ) : ""
-                        ) : telegramPayoutCurrency === "USDT"
-                          ? (estimateUsdt(rewards.telegram?.pending) != null ? (
+                        ) : telegramPayoutCurrency === "USDC"
+                          ? (estimateUsdc(rewards.telegram?.pending) != null ? (
                               <span className="estimate">
-                                ≈ <strong>{estimateUsdt(rewards.telegram?.pending)}</strong> <TokenInline token="USDT" />
+                                ≈ <strong>{estimateUsdc(rewards.telegram?.pending)}</strong> <TokenInline token="USDC" />
                               </span>
                             ) : (
                               <span className="estimate">
-                                ≈ <TokenInline token="USDT" /> (loading price...)
+                                ≈ <TokenInline token="USDC" /> (loading price...)
                               </span>
                             ))
                           : (bitsPriceMillicents ? `≈ ${formatUSD((Number(bitsPriceMillicents) / 1000) * Number(rewards.telegram?.pending || 0))}` : "")}
@@ -1078,13 +1078,13 @@ const RewardsHub = () => {
                         </button>
                         <button
                           type="button"
-                          className={`payout-toggle-btn usdt ${telegramPayoutCurrency === "USDT" ? "active" : ""}`}
-                          onClick={() => setTelegramPayoutCurrency("USDT")}
+                          className={`payout-toggle-btn usdc ${telegramPayoutCurrency === "USDC" ? "active" : ""}`}
+                          onClick={() => setTelegramPayoutCurrency("USDC")}
                           disabled={!walletAddress}
-                          title="Claim in USDT"
+                          title="Claim in USDC"
                         >
-                          <img className="toggle-icon" src={usdtLogo} alt="USDT" />
-                          USDT
+                          <img className="toggle-icon" src={usdcLogo} alt="USDC" />
+                          USDC
                         </button>
                       </div>
                       <button
@@ -1095,10 +1095,10 @@ const RewardsHub = () => {
                         {!walletAddress ? "Connect wallet to claim" : (claiming ? "⏳ Processing..." : "Claim")}
                       </button>
                     </div>
-                    <div className="payout-help">Paid instantly from treasury. USDT is limited daily.</div>
+                    <div className="payout-help">Paid instantly from treasury. USDC is limited daily.</div>
                   </div>
 
-                  <div className={`payout-card ${referralPayoutCurrency === "USDT" ? "payout-card-usdt" : ""}`}>
+                  <div className={`payout-card ${referralPayoutCurrency === "USDC" ? "payout-card-usdc" : ""}`}>
                     <h4>👥 Invite / Referral Reward</h4>
                     <div className="payout-row">
                       <div className="payout-amount">
@@ -1116,14 +1116,14 @@ const RewardsHub = () => {
                               <TokenInline token="BITS" />
                             </span>
                           ) : ""
-                        ) : referralPayoutCurrency === "USDT"
-                          ? (estimateUsdt(rewards.unified?.byType?.referral?.pending) != null ? (
+                        ) : referralPayoutCurrency === "USDC"
+                          ? (estimateUsdc(rewards.unified?.byType?.referral?.pending) != null ? (
                               <span className="estimate">
-                                ≈ <strong>{estimateUsdt(rewards.unified?.byType?.referral?.pending)}</strong> <TokenInline token="USDT" />
+                                ≈ <strong>{estimateUsdc(rewards.unified?.byType?.referral?.pending)}</strong> <TokenInline token="USDC" />
                               </span>
                             ) : (
                               <span className="estimate">
-                                ≈ <TokenInline token="USDT" /> (loading price...)
+                                ≈ <TokenInline token="USDC" /> (loading price...)
                               </span>
                             ))
                           : (bitsPriceMillicents ? `≈ ${formatUSD((Number(bitsPriceMillicents) / 1000) * Number(rewards.unified?.byType?.referral?.pending || 0))}` : "")}
@@ -1143,13 +1143,13 @@ const RewardsHub = () => {
                         </button>
                         <button
                           type="button"
-                          className={`payout-toggle-btn usdt ${referralPayoutCurrency === "USDT" ? "active" : ""}`}
-                          onClick={() => setReferralPayoutCurrency("USDT")}
+                          className={`payout-toggle-btn usdc ${referralPayoutCurrency === "USDC" ? "active" : ""}`}
+                          onClick={() => setReferralPayoutCurrency("USDC")}
                           disabled={!walletAddress}
-                          title="Claim in USDT"
+                          title="Claim in USDC"
                         >
-                          <img className="toggle-icon" src={usdtLogo} alt="USDT" />
-                          USDT
+                          <img className="toggle-icon" src={usdcLogo} alt="USDC" />
+                          USDC
                         </button>
                       </div>
                       <button
@@ -1163,7 +1163,7 @@ const RewardsHub = () => {
                     <div className="payout-help">Referral rewards are earned from invite purchases.</div>
                   </div>
 
-                  <div className={`payout-card ${solanaPayoutCurrency === "USDT" ? "payout-card-usdt" : ""}`}>
+                  <div className={`payout-card ${solanaPayoutCurrency === "USDC" ? "payout-card-usdc" : ""}`}>
                     <h4>🟣 SOL Loyalty Reward</h4>
                     <div className="payout-row">
                       <div className="payout-amount">
@@ -1181,14 +1181,14 @@ const RewardsHub = () => {
                               <TokenInline token="BITS" />
                             </span>
                           ) : ""
-                        ) : solanaPayoutCurrency === "USDT"
-                          ? (estimateUsdt(rewards.unified?.byType?.solana_loyalty?.pending) != null ? (
+                        ) : solanaPayoutCurrency === "USDC"
+                          ? (estimateUsdc(rewards.unified?.byType?.solana_loyalty?.pending) != null ? (
                               <span className="estimate">
-                                ≈ <strong>{estimateUsdt(rewards.unified?.byType?.solana_loyalty?.pending)}</strong> <TokenInline token="USDT" />
+                                ≈ <strong>{estimateUsdc(rewards.unified?.byType?.solana_loyalty?.pending)}</strong> <TokenInline token="USDC" />
                               </span>
                             ) : (
                               <span className="estimate">
-                                ≈ <TokenInline token="USDT" /> (loading price...)
+                                ≈ <TokenInline token="USDC" /> (loading price...)
                               </span>
                             ))
                           : (bitsPriceMillicents ? `≈ ${formatUSD((Number(bitsPriceMillicents) / 1000) * Number(rewards.unified?.byType?.solana_loyalty?.pending || 0))}` : "")}
@@ -1208,13 +1208,13 @@ const RewardsHub = () => {
                         </button>
                         <button
                           type="button"
-                          className={`payout-toggle-btn usdt ${solanaPayoutCurrency === "USDT" ? "active" : ""}`}
-                          onClick={() => setSolanaPayoutCurrency("USDT")}
+                          className={`payout-toggle-btn usdc ${solanaPayoutCurrency === "USDC" ? "active" : ""}`}
+                          onClick={() => setSolanaPayoutCurrency("USDC")}
                           disabled={!walletAddress}
-                          title="Claim in USDT"
+                          title="Claim in USDC"
                         >
-                          <img className="toggle-icon" src={usdtLogo} alt="USDT" />
-                          USDT
+                          <img className="toggle-icon" src={usdcLogo} alt="USDC" />
+                          USDC
                         </button>
                       </div>
                       <button

@@ -176,23 +176,23 @@ const ClaimInviteComponent = () => {
         title="Invite reward detected"
         secondaryAmount={burstUsdt}
         secondaryToken="USDT"
-        subtitle="On-chain reward detected. Claim now, or use Rewards Hub to claim in USDT."
+        subtitle="On-chain reward detected. Claim now, or use Rewards Hub to claim in USDC."
         autoCloseMs={6500}
       />
       <h2>🎁 Claim Invite Reward (Node.sol)</h2>
-      <div className="invite-claim-usdt-callout">
-        <div className="invite-claim-usdt-title">
+      <div className="invite-claim-usdc-callout">
+        <div className="invite-claim-usdc-title">
           Want to claim in{" "}
-          <span className="invite-claim-usdt-badge">
-            <TokenInline token="USDT" size={14} />
+          <span className="invite-claim-usdc-badge">
+            <TokenInline token="USDC" size={14} />
           </span>
           ?
         </div>
-        <div className="invite-claim-usdt-text">
+        <div className="invite-claim-usdc-text">
           Open <strong>Rewards Hub</strong> to claim Invite + Telegram rewards in{" "}
-          <strong><TokenInline token="BITS" /></strong> or <strong><TokenInline token="USDT" /></strong>.
+          <strong><TokenInline token="BITS" /></strong> or <strong><TokenInline token="USDC" /></strong>.
         </div>
-        <a className="invite-claim-usdt-link" href="/#/rewards-hub">
+        <a className="invite-claim-usdc-link" href="/#/rewards-hub">
           Open Rewards Hub →
         </a>
       </div>

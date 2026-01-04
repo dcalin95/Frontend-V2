@@ -69,17 +69,17 @@
   background: rgba(255,255,255,0.05);
 }
 
-.hub-badge-usdt {
-  border-color: rgba(255, 215, 0, 0.30);
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.14), rgba(0, 255, 195, 0.06));
-  box-shadow: 0 0 18px rgba(255, 215, 0, 0.14);
+.hub-badge-usdc {
+  border-color: rgba(39, 117, 202, 0.30);
+  background: linear-gradient(135deg, rgba(39, 117, 202, 0.14), rgba(0, 255, 195, 0.06));
+  box-shadow: 0 0 18px rgba(39, 117, 202, 0.14);
 }
 
 .badge-icon {
   width: 16px;
   height: 16px;
   object-fit: contain;
-  filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.25));
+  filter: drop-shadow(0 0 6px rgba(39, 117, 202, 0.25));
 }
 
 .hub-subtitle {
@@ -620,10 +620,10 @@
   transform: translateY(-1px);
 }
 
-.payout-card-usdt {
-  border-color: rgba(255, 215, 0, 0.25);
-  background: linear-gradient(180deg, rgba(255, 215, 0, 0.06), rgba(255,255,255,0.02));
-  box-shadow: 0 0 22px rgba(255, 215, 0, 0.10);
+.payout-card-usdc {
+  border-color: rgba(39, 117, 202, 0.25);
+  background: linear-gradient(180deg, rgba(39, 117, 202, 0.06), rgba(255,255,255,0.02));
+  box-shadow: 0 0 22px rgba(39, 117, 202, 0.10);
 }
 
 .payout-card h4 {
@@ -668,10 +668,10 @@
   height: 44px;
 }
 
-.payout-select-usdt {
-  border-color: rgba(255, 215, 0, 0.35);
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.12), rgba(0, 0, 0, 0.22));
-  box-shadow: 0 0 14px rgba(255, 215, 0, 0.12);
+.payout-select-usdc {
+  border-color: rgba(39, 117, 202, 0.35);
+  background: linear-gradient(135deg, rgba(39, 117, 202, 0.12), rgba(0, 0, 0, 0.22));
+  box-shadow: 0 0 14px rgba(39, 117, 202, 0.12);
 }
 
 .payout-help {
@@ -680,20 +680,20 @@
   opacity: 0.75;
 }
 
-/* USDT callout (inedit / highlight) */
-.usdt-callout {
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.10), rgba(0, 170, 255, 0.08));
-  border: 1px solid rgba(255, 215, 0, 0.28);
+/* USDC callout (inedit / highlight) */
+.usdc-callout {
+  background: linear-gradient(135deg, rgba(39, 117, 202, 0.10), rgba(0, 170, 255, 0.08));
+  border: 1px solid rgba(39, 117, 202, 0.28);
   border-radius: 12px;
   padding: 12px 14px;
   margin-bottom: 14px;
   text-align: left;
-  box-shadow: 0 12px 30px rgba(255, 215, 0, 0.08);
+  box-shadow: 0 12px 30px rgba(39, 117, 202, 0.08);
   position: relative;
   overflow: hidden;
 }
 
-.usdt-callout-title {
+.usdc-callout-title {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -702,25 +702,25 @@
   color: rgba(255,255,255,0.95);
 }
 
-.usdt-callout-body {
+.usdc-callout-body {
   margin-top: 6px;
   font-size: 0.88em;
   color: rgba(255,255,255,0.80);
   line-height: 1.5;
 }
 
-.usdt-callout::after {
+.usdc-callout::after {
   content: "";
   position: absolute;
   inset: -40% -20% auto auto;
   width: 240px;
   height: 240px;
-  background: radial-gradient(circle at center, rgba(255,215,0,0.18), rgba(255,215,0,0) 60%);
+  background: radial-gradient(circle at center, rgba(39, 117, 202, 0.18), rgba(39, 117, 202, 0) 60%);
   pointer-events: none;
   filter: blur(0.2px);
 }
 
-.usdt-callout-lead {
+.usdc-callout-lead {
   margin-bottom: 10px;
   font-size: 0.95em;
   color: rgba(255,255,255,0.9);
@@ -734,7 +734,7 @@
   width: 14px;
   height: 14px;
   object-fit: contain;
-  filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.15));
+  filter: drop-shadow(0 0 6px rgba(39, 117, 202, 0.15));
 }
 
 .token-amount {
@@ -759,10 +759,10 @@
   font-size: 0.88em;
 }
 
-.pill-usdt {
-  border-color: rgba(255, 215, 0, 0.35);
-  background: linear-gradient(135deg, rgba(255,215,0,0.16), rgba(0,0,0,0.18));
-  box-shadow: 0 0 14px rgba(255,215,0,0.10);
+.pill-usdc {
+  border-color: rgba(39, 117, 202, 0.35);
+  background: linear-gradient(135deg, rgba(39, 117, 202, 0.16), rgba(0,0,0,0.18));
+  box-shadow: 0 0 14px rgba(39, 117, 202, 0.10);
 }
 
 .pill-bits {
@@ -770,14 +770,14 @@
   background: linear-gradient(135deg, rgba(0,255,195,0.12), rgba(0,0,0,0.18));
 }
 
-.usdt-callout-list {
+.usdc-callout-list {
   margin: 0;
   padding-left: 18px;
   display: grid;
   gap: 8px;
 }
 
-.usdt-callout-list li {
+.usdc-callout-list li {
   margin: 0;
 }
 
@@ -809,9 +809,9 @@
   box-shadow: 0 10px 22px rgba(0, 255, 195, 0.08);
 }
 
-.payout-toggle-btn.usdt:hover:not(:disabled) {
-  border-color: rgba(255, 215, 0, 0.30);
-  box-shadow: 0 10px 22px rgba(255, 215, 0, 0.10);
+.payout-toggle-btn.usdc:hover:not(:disabled) {
+  border-color: rgba(39, 117, 202, 0.30);
+  box-shadow: 0 10px 22px rgba(39, 117, 202, 0.10);
 }
 
 .payout-toggle-btn.active {
@@ -819,10 +819,10 @@
   background: linear-gradient(135deg, rgba(0,255,195,0.14), rgba(0,0,0,0.18));
 }
 
-.payout-toggle-btn.usdt.active {
-  border-color: rgba(255, 215, 0, 0.35);
-  background: linear-gradient(135deg, rgba(255,215,0,0.16), rgba(0,0,0,0.18));
-  box-shadow: 0 0 14px rgba(255,215,0,0.10);
+.payout-toggle-btn.usdc.active {
+  border-color: rgba(39, 117, 202, 0.35);
+  background: linear-gradient(135deg, rgba(39, 117, 202, 0.16), rgba(0,0,0,0.18));
+  box-shadow: 0 0 14px rgba(39, 117, 202, 0.10);
 }
 
 .payout-toggle-btn:disabled {

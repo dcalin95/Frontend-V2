@@ -17,7 +17,7 @@
   overflow: hidden;
 }
 
-.invite-claim-usdt-callout {
+.invite-claim-usdc-callout {
   margin: 10px 0 14px;
   padding: 12px 12px;
   border-radius: 14px;
@@ -26,14 +26,14 @@
   text-align: center;
 }
 
-.invite-claim-usdt-title {
+.invite-claim-usdc-title {
   font-weight: 900;
   letter-spacing: 0.3px;
   margin-bottom: 6px;
   color: rgba(255, 255, 255, 0.92);
 }
 
-.invite-claim-usdt-badge {
+.invite-claim-usdc-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -46,14 +46,14 @@
   font-size: 0.85rem;
 }
 
-.invite-claim-usdt-text {
+.invite-claim-usdc-text {
   color: rgba(255, 255, 255, 0.78);
   font-size: 0.95rem;
   line-height: 1.35;
   margin-bottom: 10px;
 }
 
-.invite-claim-usdt-link {
+.invite-claim-usdc-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -270,7 +270,7 @@
     border-radius: 12px;
   }
 
-  .invite-claim-usdt-callout {
+  .invite-claim-usdc-callout {
     padding: 10px;
   }
   
