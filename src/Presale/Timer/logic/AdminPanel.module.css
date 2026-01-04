@@ -16,41 +16,46 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin: 12px auto 0;
+  margin: 15.6px auto 0;
   padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
-  color: #000000;
-  font-weight: 700;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 600;
   font-family: 'Inter', sans-serif;
-  border: 1px solid rgba(0, 255, 163, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
   cursor: pointer;
-  box-shadow: 0 0 12px rgba(0, 255, 163, 0.2);
-  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
   z-index: 1;
-  font-size: 0.9rem;
+  font-size: 1.17rem;
 }
 
 .login-btn:hover {
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 0 20px rgba(0, 255, 163, 0.5), 0 0 40px rgba(220, 31, 255, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.15);
 }
 
-/* ✅ Admin Panel - CLEAR AND CENTERED */
+/* ✅ Admin Panel - Sonnet Style */
 .admin-panel {
   position: relative;
-  padding: 2rem;
-  background: #0a0c14;
-  border: 3px solid #14f195;
-  border-radius: 20px;
+  padding: 2.6rem;
+  background: rgba(10, 12, 20, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
   width: 100%;
   max-width: 1200px;
   max-height: 90vh;
   overflow-y: auto;
   margin: 0 auto;
   font-family: 'Inter', sans-serif;
-  box-shadow: 0 0 60px rgba(20, 241, 149, 0.4), 0 20px 80px rgba(0, 0, 0, 0.9);
-  color: #fff;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 1.04rem;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 /* ✅ Optional manual resize mode (drag corner) */
@@ -74,14 +79,14 @@
 }
 
 .panel-control-btn {
-  padding: 0.35rem 0.55rem;
+  padding: 0.455rem 0.715rem;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.16);
   background: rgba(0, 0, 0, 0.35);
   color: rgba(255, 255, 255, 0.9);
   cursor: pointer;
-  font-size: 0.78rem;
-  font-weight: 700;
+  font-size: 1.014rem;
+  font-weight: 600;
   transition: all 0.2s ease;
 }
 
@@ -92,8 +97,8 @@
 }
 
 .admin-panel:hover {
-  border-color: #14f195;
-  box-shadow: 0 0 80px rgba(20, 241, 149, 0.6), 0 20px 80px rgba(0, 0, 0, 0.9);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
 }
 
 /* ✅ Page wrapper - FULL SCREEN OVERLAY */
@@ -114,86 +119,84 @@
   justify-content: center;
 }
 
-/* ✅ Sections - IMPROVED VISIBILITY */
+/* ✅ Sections - Sonnet Style */
 .section {
   margin-bottom: 1rem;
-  padding: 1rem;
-  background: rgba(20, 24, 35, 0.6);
-  border-radius: 12px;
-  border: 1px solid rgba(0, 255, 163, 0.25);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(0, 255, 163, 0.1);
+  padding: 1.3rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   font-family: 'Inter', sans-serif;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  font-size: 1.04rem;
 }
 
 .section:hover {
-  border-color: rgba(0, 255, 163, 0.5);
-  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(0, 255, 163, 0.2);
-  background: rgba(20, 24, 35, 0.8);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .section h3 {
   margin: 0 0 0.8rem 0;
   font-family: 'Inter', sans-serif;
-  font-weight: 800;
-  font-size: 1.1rem;
-  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 0 12px rgba(0, 255, 163, 0.5));
+  font-weight: 700;
+  font-size: 1.43rem;
+  color: rgba(255, 255, 255, 0.95);
   text-align: center;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
 /* ✅ Inputs - IMPROVED VISIBILITY */
 .section input {
   width: 100%;
-  margin: 0.4rem 0;
-  padding: 0.6rem;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  margin: 0.52rem 0;
+  padding: 0.78rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: rgba(255, 255, 255, 0.95);
-  border: 2px solid rgba(0, 255, 163, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
-  font-size: 16px; /* Prevent iOS zoom */
+  font-size: 1.04rem;
   font-family: 'Inter', sans-serif;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 2px 8px rgba(0, 255, 163, 0.1);
-  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
 }
 
 .section input:focus {
   outline: none;
-  border-color: rgba(0, 255, 163, 0.7);
-  box-shadow: 0 0 0 3px rgba(0, 255, 163, 0.25), 0 6px 24px rgba(0, 0, 0, 0.4);
-  background: rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1), 0 4px 16px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.08);
 }
 
-/* ✅ Buttons - IMPROVED VISIBILITY */
+/* ✅ Buttons - NORMAL SIZE, Sonnet Style */
 .section button {
   width: 100%;
   margin: 0.4rem 0;
-  padding: 0.7rem;
-  font-weight: 800;
+  padding: 0.5rem 0.8rem;
+  font-weight: 600;
   font-family: 'Inter', sans-serif;
-  border: 2px solid rgba(0, 255, 163, 0.5);
-  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.95rem;
-  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
-  color: #000000;
-  box-shadow: 0 4px 20px rgba(0, 255, 163, 0.3), 0 0 15px rgba(0, 255, 163, 0.2);
-  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+  font-size: 0.91rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.3px;
 }
 
 .section button:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 6px 30px rgba(0, 255, 163, 0.5), 0 0 40px rgba(220, 31, 255, 0.3);
-  border-color: rgba(0, 255, 163, 0.8);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 /* ✅ Info Section - SOLANA/AI STYLE */
@@ -217,47 +220,44 @@
 }
 
 .info-section h3 {
-  margin: 0 0 0.3rem 0;
+  margin: 0 0 0.39rem 0;
   font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: 0.9rem;
-  background: linear-gradient(135deg, #00FFA3, #DC1FFF);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 0 8px rgba(0, 255, 163, 0.3));
+  font-weight: 600;
+  font-size: 1.17rem;
+  color: rgba(255, 255, 255, 0.95);
   text-align: center;
 }
 
 .info-section p {
-  margin: 0.2rem 0;
-  font-size: 0.85rem;
+  margin: 0.26rem 0;
+  font-size: 1.105rem;
   font-family: 'Inter', sans-serif;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 /* ✅ Logout Button - SOLANA/AI STYLE */
 .logout-btn {
   position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  padding: 0.4rem 0.75rem;
-  background: rgba(255, 0, 51, 0.8);
-  color: #ffffff;
-  border: 1px solid rgba(255, 0, 51, 0.5);
+  top: 0.975rem;
+  right: 0.975rem;
+  padding: 0.52rem 0.975rem;
+  background: rgba(255, 0, 51, 0.15);
+  color: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 0, 51, 0.3);
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 8px rgba(255, 0, 51, 0.3);
-  font-size: 0.9rem;
-  font-weight: 700;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  font-size: 1.17rem;
+  font-weight: 600;
   font-family: 'Inter', sans-serif;
 }
 
 .logout-btn:hover {
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 0 15px rgba(255, 0, 51, 0.5);
-  background: rgba(255, 0, 51, 0.9);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 0, 51, 0.25);
+  border-color: rgba(255, 0, 51, 0.4);
 }
 
 /* ✅ Tab Navigation */

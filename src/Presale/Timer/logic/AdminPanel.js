@@ -73,7 +73,7 @@ const AdminPanel = () => {
   const [recentPayouts, setRecentPayouts] = useState([]);
   const [loadingPayouts, setLoadingPayouts] = useState(false);
   const [showTreasuryGuide, setShowTreasuryGuide] = useState(false);
-  const [panelPreset, setPanelPreset] = useState("normal"); // normal | half | large
+  const [panelPreset, setPanelPreset] = useState("half"); // normal | half | large
   const [panelResizable, setPanelResizable] = useState(true);
   const treasuryToastGateRef = useRef({ at: 0 });
 
@@ -1050,7 +1050,7 @@ const AdminPanel = () => {
             style={{ background: "#f00" }}
           />
           <div style={{ textAlign: "center", paddingTop: "10px" }}>
-            <h2 style={{ margin: "6px 0 10px", fontSize: "18px" }}>Admin Panel</h2>
+            <h2 style={{ margin: "6px 0 10px", fontSize: "23.4px" }}>Admin Panel</h2>
             <p style={{ margin: "0 0 12px", opacity: 0.85 }}>
               Autentificare necesară pentru acces.
             </p>
@@ -1110,7 +1110,7 @@ const AdminPanel = () => {
                 color: activeTab === "overview" ? '#000' : '#fff',
                 cursor: 'pointer',
                 fontWeight: '600',
-                fontSize: '12px'
+                fontSize: '15.6px'
               }}
             >
               📊 Overview
@@ -1126,7 +1126,7 @@ const AdminPanel = () => {
                 color: activeTab === "treasury" ? '#000' : '#fff',
                 cursor: 'pointer',
                 fontWeight: '600',
-                fontSize: '12px'
+                fontSize: '15.6px'
               }}
             >
               💳 USDC Payouts
@@ -1143,7 +1143,7 @@ const AdminPanel = () => {
                 color: activeTab === "solana-payments" ? '#000' : '#fff',
                 cursor: 'pointer',
                 fontWeight: '600',
-                fontSize: '12px'
+                fontSize: '15.6px'
               }}
             >
               🧾 Solana Payments
@@ -1159,7 +1159,7 @@ const AdminPanel = () => {
                 color: activeTab === "leaderboard" ? '#000' : '#fff',
                 cursor: 'pointer',
                 fontWeight: '600',
-                fontSize: '12px'
+                fontSize: '15.6px'
               }}
             >
               🏆 Leaderboard
@@ -1175,7 +1175,7 @@ const AdminPanel = () => {
                 color: activeTab === "email-sender" ? '#000' : '#fff',
                 cursor: 'pointer',
                 fontWeight: '600',
-                fontSize: '12px'
+                fontSize: '15.6px'
               }}
             >
               📧 Email Sender
@@ -1191,7 +1191,7 @@ const AdminPanel = () => {
                 borderRadius: '4px', 
                 padding: '10px', 
                 margin: '10px 0',
-                fontSize: '12px',
+                fontSize: '15.6px',
                 color: '#cccccc',
                 textAlign: 'left'
               }}>
@@ -1214,7 +1214,7 @@ const AdminPanel = () => {
               borderRadius: '6px',
               padding: '12px',
               marginBottom: '12px',
-              fontSize: '13px',
+              fontSize: '16.9px',
               color: '#cccccc'
             }}>
               <div style={{ color: '#00ff88', marginBottom: '8px' }}>
@@ -1233,7 +1233,7 @@ const AdminPanel = () => {
               <div><strong>Transactions:</strong> {cellManagerData.loading ? "⏳ Loading..." : (cellManagerData.totalTransactions || 0)}</div>
               <div><strong>Unique Wallets:</strong> {cellManagerData.loading ? "⏳ Loading..." : (cellManagerData.uniqueWallets || 0)}</div>
               {!cellManagerData.loading && (cellManagerData.availableBits || 0) === 0 && (
-                <div style={{ fontSize: '11px', color: '#ff6b35', marginTop: '4px' }}>
+                <div style={{ fontSize: '14.3px', color: '#ff6b35', marginTop: '4px' }}>
                   💡 Cell {cellManagerData.cellId} needs BITS supply set in CellManager contract
                   <br />
                   <strong>Use "Add Cell to CellManager" button below to configure it</strong>
@@ -1249,7 +1249,7 @@ const AdminPanel = () => {
                 borderRadius: '6px',
                 padding: '12px',
                 marginBottom: '12px',
-                fontSize: '13px',
+                fontSize: '16.9px',
                 color: '#cccccc'
               }}>
                 <div style={{ color: '#ffaa00', marginBottom: '8px' }}>
@@ -1274,7 +1274,7 @@ const AdminPanel = () => {
                 border: '1px solid #555',
                 background: '#1a1a1a',
                 color: '#fff',
-                fontSize: '12px'
+                fontSize: '15.6px'
               }}
             />
             
@@ -1290,7 +1290,7 @@ const AdminPanel = () => {
                 background: cellManagerData.loading ? '#666' : '#00aa00',
                 color: '#fff',
                 cursor: cellManagerData.loading ? 'not-allowed' : 'pointer',
-                fontSize: '12px',
+                fontSize: '15.6px',
                 fontWeight: 'bold',
                 marginBottom: '8px'
               }}
@@ -1309,7 +1309,7 @@ const AdminPanel = () => {
                 background: '#ff4444',
                 color: '#fff',
                 cursor: 'pointer',
-                fontSize: '12px',
+                fontSize: '15.6px',
                 fontWeight: 'bold',
                 marginBottom: '8px'
               }}
@@ -1330,7 +1330,7 @@ const AdminPanel = () => {
                   background: !supplyInput ? '#666' : '#ff6600',
                   color: '#fff',
                   cursor: !supplyInput ? 'not-allowed' : 'pointer',
-                  fontSize: '12px',
+                  fontSize: '15.6px',
                   fontWeight: 'bold',
                   marginBottom: '8px'
                 }}
@@ -1340,7 +1340,7 @@ const AdminPanel = () => {
             )}
             
             {/* Info text */}
-            <div style={{ fontSize: '10px', color: '#888', textAlign: 'center', marginTop: '4px' }}>
+            <div style={{ fontSize: '16.9px', color: '#888', textAlign: 'center', marginTop: '4px' }}>
               {!cellManagerData.loading && (cellManagerData.availableBits || 0) === 0 ? 
                 "This will create a new cell in CellManager with the specified BITS supply" :
                 "This will set simulation supply in database (CellManager already configured)"
@@ -1384,7 +1384,7 @@ const AdminPanel = () => {
               borderRadius: '6px',
               padding: '8px',
               marginBottom: '12px',
-              fontSize: '13px',
+              fontSize: '16.9px',
               color: '#cccccc'
             }}>
               <strong>Available BITS:</strong> {
@@ -1431,7 +1431,7 @@ const AdminPanel = () => {
                 borderRadius: '4px',
                 padding: '8px',
                 marginTop: '8px',
-                fontSize: '12px',
+                fontSize: '15.6px',
                 color: '#ff6b35',
                 textAlign: 'center'
               }}>
@@ -1442,7 +1442,7 @@ const AdminPanel = () => {
               ⏹️ Stop AutoSim
             </button>
             
-            <p style={{ fontSize: "14px", marginTop: "8px" }}>
+            <p style={{ fontSize: "18.2px", marginTop: "8px" }}>
               Status: {autoSimRunning ? "🟢 Active" : "🔴 Inactive"}
             </p>
           </div>
@@ -1456,7 +1456,7 @@ const AdminPanel = () => {
       borderRadius: '6px',
       padding: '8px',
       marginBottom: '12px',
-      fontSize: '13px',
+      fontSize: '16.9px',
       color: '#cccccc'
     }}>
       <strong>Available BITS:</strong> {
@@ -1520,7 +1520,7 @@ const AdminPanel = () => {
                 padding: '6px 14px',
                 cursor: 'pointer',
                 fontWeight: '600',
-                fontSize: '12px'
+                fontSize: '15.6px'
               }}
             >
               📊 View Round History
@@ -1539,11 +1539,11 @@ const AdminPanel = () => {
               padding: '12px 16px',
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ fontSize: '16px' }}>🚀</span>
+                <span style={{ fontSize: '20.8px' }}>🚀</span>
                 <div>
                   <div style={{ 
                     color: '#ff3366', 
-                    fontSize: '13px', 
+                    fontSize: '16.9px', 
                     fontWeight: 'bold',
                     marginBottom: '2px'
                   }}>
@@ -1551,7 +1551,7 @@ const AdminPanel = () => {
                   </div>
                   <div style={{ 
                     color: '#ccc', 
-                    fontSize: '11px'
+                    fontSize: '14.3px'
                   }}>
                     Pre-authorize NFT purchases
                   </div>
@@ -1572,7 +1572,7 @@ const AdminPanel = () => {
                   borderRadius: '6px',
                   padding: '6px 12px',
                   cursor: 'pointer',
-                  fontSize: '11px',
+                  fontSize: '14.3px',
                   fontWeight: '600',
                   boxShadow: '0 2px 6px rgba(255, 51, 102, 0.3)',
                   transition: 'all 0.2s ease'
@@ -1608,7 +1608,7 @@ const AdminPanel = () => {
                     border: '1px solid rgba(255, 165, 0, 0.35)',
                     background: 'rgba(255, 165, 0, 0.08)',
                     color: '#ffd7a3',
-                    fontSize: 12,
+                    fontSize: 15.6,
                     lineHeight: 1.4
                   }}>
                     <div style={{ fontWeight: 900, marginBottom: 6 }}>⚠️ Solana API not available</div>
@@ -1618,7 +1618,7 @@ const AdminPanel = () => {
                     </div>
                   </div>
                 ) : null}
-                <div style={{ fontSize: '12px', color: '#ccc', lineHeight: 1.5 }}>
+                <div style={{ fontSize: '15.6px', color: '#ccc', lineHeight: 1.5 }}>
                   <div><strong>Backend:</strong> <span style={{ wordBreak: 'break-all' }}>{API_URL}</span></div>
                   <div><strong>Destination (Solana):</strong> <span style={{ wordBreak: 'break-all' }}>{solanaDestination || '—'}</span></div>
                   <div><strong>Treasury (BSC):</strong> <span style={{ wordBreak: 'break-all' }}>{solanaTreasury || '—'}</span></div>
@@ -1653,7 +1653,7 @@ const AdminPanel = () => {
                   style={{ 
                     marginTop: '8px',
                     padding: '6px 12px',
-                    fontSize: '12px',
+                    fontSize: '15.6px',
                     fontWeight: '600'
                   }}
                 >
@@ -1669,7 +1669,7 @@ const AdminPanel = () => {
                     border: '2px solid rgba(255, 69, 58, 0.6)',
                     background: 'rgba(255, 69, 58, 0.15)',
                     color: '#fff',
-                    fontSize: 14,
+                    fontSize: 18.2,
                     fontWeight: 'bold',
                     display: 'flex',
                     alignItems: 'center',
@@ -1678,12 +1678,12 @@ const AdminPanel = () => {
                     gap: 10
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <span style={{ fontSize: 24 }}>⚠️</span>
+                      <span style={{ fontSize: 31.2 }}>⚠️</span>
                       <div>
-                        <div style={{ fontSize: 16, marginBottom: 4 }}>
+                        <div style={{ fontSize: 20.8, marginBottom: 4 }}>
                           {solanaMissingCount} tranzacție{solanaMissingCount > 1 ? 'ii' : ''} Solana neverificat{solanaMissingCount > 1 ? 'e' : 'ă'}!
                         </div>
-                        <div style={{ fontSize: 12, opacity: 0.9, fontWeight: 'normal' }}>
+                        <div style={{ fontSize: 15.6, opacity: 0.9, fontWeight: 'normal' }}>
                           Tranzacții SUCCESS pe blockchain care lipsesc din baza de date
                         </div>
                       </div>
@@ -1698,7 +1698,7 @@ const AdminPanel = () => {
                         borderRadius: '6px',
                         padding: '6px 14px',
                         cursor: solanaSyncing ? 'not-allowed' : 'pointer',
-                        fontSize: '12px',
+                        fontSize: '15.6px',
                         fontWeight: '600',
                         boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)',
                         transition: 'all 0.2s ease',
@@ -1727,7 +1727,7 @@ const AdminPanel = () => {
                     marginTop: '8px', 
                     marginLeft: '8px',
                     padding: '6px 12px',
-                    fontSize: '12px',
+                    fontSize: '15.6px',
                     fontWeight: '600'
                   }}
                 >
@@ -1739,7 +1739,7 @@ const AdminPanel = () => {
                     marginTop: '8px', 
                     marginLeft: '8px',
                     padding: '6px 12px',
-                    fontSize: '12px',
+                    fontSize: '15.6px',
                     fontWeight: '600'
                   }}
                 >
@@ -1753,7 +1753,7 @@ const AdminPanel = () => {
                     border: '1px solid rgba(125, 211, 252, 0.25)',
                     background: 'rgba(125, 211, 252, 0.06)',
                     color: '#dbeafe',
-                    fontSize: 12,
+                    fontSize: 15.6,
                     lineHeight: 1.45
                   }}>
                     <div style={{ fontWeight: 900, marginBottom: 6 }}>🧪 Solana Payments Debug</div>
@@ -1926,7 +1926,7 @@ const AdminPanel = () => {
                         </button>
                       </div>
                       {solanaLoyaltyLast ? (
-                        <div style={{ marginTop: 8, fontSize: 12, opacity: 0.9 }}>
+                        <div style={{ marginTop: 8, fontSize: 15.6, opacity: 0.9 }}>
                           <div><strong>Last response:</strong> {JSON.stringify(solanaLoyaltyLast)}</div>
                         </div>
                       ) : null}
@@ -1934,7 +1934,7 @@ const AdminPanel = () => {
                   </div>
                 )}
                 {solanaDbInfo?.ok && (
-                  <div style={{ marginTop: 10, fontSize: 12, color: "#ccc", lineHeight: 1.5 }}>
+                  <div style={{ marginTop: 10, fontSize: 15.6, color: "#ccc", lineHeight: 1.5 }}>
                     <div><strong>DB:</strong> {solanaDbInfo.db?.host || "—"} / {solanaDbInfo.db?.name || "—"}</div>
                     <div style={{ opacity: 0.9 }}>
                       <strong>Counts:</strong>{" "}
@@ -1959,7 +1959,7 @@ const AdminPanel = () => {
                       border: '1px solid rgba(255, 165, 0, 0.25)',
                       background: 'rgba(255, 165, 0, 0.08)',
                       color: '#ffd7a3',
-                      fontSize: 12,
+                      fontSize: 15.6,
                       display: 'flex',
                       gap: 12,
                       flexWrap: 'wrap',
@@ -1981,7 +1981,7 @@ const AdminPanel = () => {
                   alignItems: 'center',
                   marginTop: 8
                 }}>
-                  <label style={{ fontSize: 12, color: '#ccc' }}>
+                  <label style={{ fontSize: 15.6, color: '#ccc' }}>
                     <strong>Status:</strong>{" "}
                     <select
                       value={solanaStatusFilter}
@@ -1994,7 +1994,7 @@ const AdminPanel = () => {
                       <option value="failed">Failed</option>
                     </select>
                   </label>
-                  <label style={{ fontSize: 12, color: '#ccc', flex: '1 1 280px' }}>
+                  <label style={{ fontSize: 15.6, color: '#ccc', flex: '1 1 280px' }}>
                     <strong>Search:</strong>{" "}
                     <input
                       value={solanaSearch}
@@ -2015,7 +2015,7 @@ const AdminPanel = () => {
                     gridTemplateColumns: '1fr 0.8fr 1fr 0.7fr 0.8fr 0.8fr 0.9fr 0.9fr 1.6fr',
                     gap: 8,
                     padding: '10px',
-                    fontSize: '11px',
+                    fontSize: '14.3px',
                     fontWeight: 700,
                     background: 'rgba(255,255,255,0.04)'
                   }}>
@@ -2128,7 +2128,7 @@ const AdminPanel = () => {
                                         border: '1px solid rgba(255, 255, 255, 0.2)',
                                         borderRadius: '3px',
                                         color: 'rgba(255, 255, 255, 0.9)',
-                                        fontSize: '10px',
+                                        fontSize: '16.9px',
                                         padding: '2px 6px',
                                         cursor: 'pointer',
                                         transition: 'all 0.2s ease'
@@ -2225,7 +2225,7 @@ const AdminPanel = () => {
                           })}
 
                           {rawRows.length === 0 && (
-                            <div style={{ padding: 12, fontSize: 12, color: "#aaa" }}>
+                            <div style={{ padding: 12, fontSize: 15.6, color: "#aaa" }}>
                               No Solana payments found yet.
                             </div>
                           )}
@@ -2243,7 +2243,7 @@ const AdminPanel = () => {
             <>
               <div className={styles["section"]}>
                 <h3>🏆 Leaderboard (Demo / Marketing)</h3>
-                <div style={{ fontSize: 12, color: '#ccc', lineHeight: 1.5 }}>
+                <div style={{ fontSize: 15.6, color: '#ccc', lineHeight: 1.5 }}>
                   This leaderboard is <strong>demo</strong> for marketing (5 rows). You can edit it manually here.
                   RewardsHub will display it publicly (even without wallet connected).
                 </div>
@@ -2254,7 +2254,7 @@ const AdminPanel = () => {
                   border: '1px solid rgba(255, 215, 0, 0.22)',
                   background: 'rgba(255, 215, 0, 0.06)',
                   color: '#ffd7a3',
-                  fontSize: 12,
+                  fontSize: 15.6,
                   display: 'flex',
                   gap: 12,
                   flexWrap: 'wrap',
@@ -2311,7 +2311,7 @@ const AdminPanel = () => {
                     gridTemplateColumns: '80px 1fr 1fr 1fr 1fr',
                     gap: 8,
                     padding: '10px',
-                    fontSize: '11px',
+                    fontSize: '14.3px',
                     fontWeight: 700,
                     background: 'rgba(255,255,255,0.04)'
                   }}>
@@ -2365,7 +2365,7 @@ const AdminPanel = () => {
                   ))}
 
                   {(leaderboardDemoRows || []).length === 0 && (
-                    <div style={{ padding: 12, fontSize: 12, color: '#aaa' }}>
+                    <div style={{ padding: 12, fontSize: 15.6, color: '#aaa' }}>
                       No rows yet. Press “Reset default” to generate 5 demo rows.
                     </div>
                   )}
@@ -2395,7 +2395,7 @@ const AdminPanel = () => {
                 >
                   📘 Open Treasury Guide (How to manage everything)
                 </button>
-                <div style={{ fontSize: '12px', color: '#ccc', lineHeight: 1.5 }}>
+                <div style={{ fontSize: '15.6px', color: '#ccc', lineHeight: 1.5 }}>
                   <div><strong>1)</strong> Send <strong>USDC (BEP-20 on BSC Mainnet)</strong> to the treasury address.</div>
                   <div><strong>2)</strong> Send <strong>BNB</strong> for gas (required for every payout tx).</div>
                   <div style={{ marginTop: 8, opacity: 0.9 }}>
@@ -2426,7 +2426,7 @@ const AdminPanel = () => {
                         border: '1px solid rgba(255, 165, 0, 0.35)',
                         background: 'rgba(255, 165, 0, 0.08)',
                         color: '#ffd7a3',
-                        fontSize: '12px'
+                        fontSize: '15.6px'
                       }}>
                         <div style={{ fontWeight: 800, marginBottom: 6 }}>⚠️ Treasury Warnings</div>
                         {bnbLow && (<div>• <strong>BNB is very low</strong> ({bnb.toFixed(4)}). Payouts may fail due to gas.</div>)}
@@ -2443,7 +2443,7 @@ const AdminPanel = () => {
 
               <div className={styles["section"]}>
                 <h3>🏦 Treasury Wallet (Top-up USDC/BNB)</h3>
-                <div style={{ fontSize: '12px', color: '#ccc', lineHeight: 1.4 }}>
+                <div style={{ fontSize: '15.6px', color: '#ccc', lineHeight: 1.4 }}>
                   <div><strong>Address:</strong> <span style={{ wordBreak: 'break-all' }}>{treasuryAddress || '—'}</span></div>
                   <div style={{ marginTop: 6 }}>
                     <button
@@ -2469,20 +2469,20 @@ const AdminPanel = () => {
                   <div style={{ marginTop: 10, opacity: 0.9 }}>
                     <div>✅ Top up this address with:</div>
                     <div>• <strong>USDC (BEP-20 on BSC Mainnet)</strong> — used for payouts</div>
-                    <div style={{ marginLeft: 20, fontSize: '11px', color: '#aaa', marginTop: 4 }}>
+                    <div style={{ marginLeft: 20, fontSize: '14.3px', color: '#aaa', marginTop: 4 }}>
                       USDC Contract: <code style={{ background: '#333', padding: '2px 6px', borderRadius: 3 }}>0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d</code>
                       <button
                         onClick={() => {
                           navigator.clipboard.writeText('0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d');
                           toast.success("✅ USDC address copied");
                         }}
-                        style={{ marginLeft: 8, fontSize: '10px', padding: '2px 6px' }}
+                        style={{ marginLeft: 8, fontSize: '16.9px', padding: '2px 6px' }}
                       >
                         📋
                       </button>
                       <button
                         onClick={() => window.open('https://bscscan.com/token/0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', '_blank')}
-                        style={{ marginLeft: 4, fontSize: '10px', padding: '2px 6px' }}
+                        style={{ marginLeft: 4, fontSize: '16.9px', padding: '2px 6px' }}
                       >
                         🔎
                       </button>
@@ -2494,7 +2494,7 @@ const AdminPanel = () => {
 
               <div className={styles["section"]}>
                 <h3>📊 Treasury Balances</h3>
-                <div style={{ fontSize: '12px', color: '#ccc' }}>
+                <div style={{ fontSize: '15.6px', color: '#ccc' }}>
                   <div><strong>BNB:</strong> {treasuryBalances ? Number(treasuryBalances.bnb || 0).toFixed(4) : '—'}</div>
                   <div><strong>USDC:</strong> {treasuryBalances ? Number(treasuryBalances.usdc || 0).toFixed(4) : '—'}</div>
                   <div><strong>BITS:</strong> {treasuryBalances ? Number(treasuryBalances.bits || 0).toFixed(2) : '—'}</div>
@@ -2506,7 +2506,7 @@ const AdminPanel = () => {
 
               <div className={styles["section"]}>
                 <h3>🚦 USDC Daily Cap</h3>
-                <div style={{ fontSize: '12px', color: '#ccc' }}>
+                <div style={{ fontSize: '15.6px', color: '#ccc' }}>
                   <div><strong>Spent today:</strong> {usdcSpent != null ? `${Number(usdcSpent).toFixed(4)} USDC` : '—'}</div>
                   <div><strong>Cap:</strong> {usdcCap != null ? `${Number(usdcCap).toFixed(2)} USDC/day` : '—'}</div>
                   <div><strong>Remaining:</strong> {(usdcSpent != null && usdcCap != null) ? `${Math.max(0, Number(usdcCap) - Number(usdcSpent)).toFixed(4)} USDC` : '—'}</div>
@@ -2520,7 +2520,7 @@ const AdminPanel = () => {
                 <button onClick={handleSetUsdcCap}>
                   ✅ Update Cap
                 </button>
-                <div style={{ fontSize: '11px', color: '#aaa', marginTop: 6 }}>
+                <div style={{ fontSize: '14.3px', color: '#aaa', marginTop: 6 }}>
                   Cap is enforced globally (Telegram + Referral). If cap is reached, UI auto-switches to BITS.
                 </div>
               </div>
@@ -2541,7 +2541,7 @@ const AdminPanel = () => {
                     gridTemplateColumns: '1fr 1fr 0.9fr 0.9fr 1.2fr',
                     gap: 8,
                     padding: '10px',
-                    fontSize: '11px',
+                    fontSize: '14.3px',
                     fontWeight: 700,
                     background: 'rgba(255,255,255,0.04)'
                   }}>
@@ -2564,7 +2564,7 @@ const AdminPanel = () => {
                         gridTemplateColumns: '1fr 1fr 0.9fr 0.9fr 1.2fr',
                         gap: 8,
                         padding: '10px',
-                        fontSize: '11px',
+                        fontSize: '14.3px',
                         borderTop: '1px solid rgba(255,255,255,0.08)'
                       }}>
                         <div>{p.reward_type}</div>
@@ -2587,7 +2587,7 @@ const AdminPanel = () => {
                     );
                   })}
                   {(!recentPayouts || recentPayouts.length === 0) && (
-                    <div style={{ padding: '10px', fontSize: '12px', opacity: 0.8 }}>
+                    <div style={{ padding: '10px', fontSize: '15.6px', opacity: 0.8 }}>
                       No treasury payouts yet.
                     </div>
                   )}
@@ -2627,7 +2627,7 @@ const AdminPanel = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
-              <h2 style={{ margin: 0, color: '#00ffc3', fontSize: '16px' }}>📘 Treasury Guide (USDC/BITS Rewards)</h2>
+              <h2 style={{ margin: 0, color: '#00ffc3', fontSize: '20.8px' }}>📘 Treasury Guide (USDC/BITS Rewards)</h2>
               <button
                 onClick={() => setShowTreasuryGuide(false)}
                 style={{
@@ -2644,7 +2644,7 @@ const AdminPanel = () => {
               </button>
             </div>
 
-            <div style={{ marginTop: 12, fontSize: '12px', lineHeight: 1.6, color: 'rgba(255,255,255,0.85)' }}>
+            <div style={{ marginTop: 12, fontSize: '15.6px', lineHeight: 1.6, color: 'rgba(255,255,255,0.85)' }}>
               <div style={{ marginBottom: 10 }}>
                 <div style={{ fontWeight: 800, color: '#14F195' }}>1) Where to send funds</div>
                 <div>Send funds to this <strong>Treasury Address</strong> (derived from <code>BACKEND_PRIVATE_KEY</code>):</div>
@@ -2654,20 +2654,20 @@ const AdminPanel = () => {
                 <div style={{ marginTop: 6, opacity: 0.95 }}>
                   <div>✅ Network: <strong>BSC Mainnet</strong></div>
                   <div>✅ Token: <strong>USDC (BEP-20)</strong> for USDC payouts</div>
-                  <div style={{ marginLeft: 20, fontSize: '11px', color: '#aaa', marginTop: 4 }}>
+                  <div style={{ marginLeft: 20, fontSize: '14.3px', color: '#aaa', marginTop: 4 }}>
                     Contract Address: <code style={{ background: '#333', padding: '2px 6px', borderRadius: 3 }}>0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d</code>
                     <button
                       onClick={() => {
                         navigator.clipboard.writeText('0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d');
                         toast.success("✅ USDC address copied");
                       }}
-                      style={{ marginLeft: 8, fontSize: '10px', padding: '2px 6px' }}
+                      style={{ marginLeft: 8, fontSize: '16.9px', padding: '2px 6px' }}
                     >
                       📋
                     </button>
                     <button
                       onClick={() => window.open('https://bscscan.com/token/0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', '_blank')}
-                      style={{ marginLeft: 4, fontSize: '10px', padding: '2px 6px' }}
+                      style={{ marginLeft: 4, fontSize: '16.9px', padding: '2px 6px' }}
                     >
                       🔎
                     </button>
@@ -2739,7 +2739,7 @@ const AdminPanel = () => {
               marginBottom: '5px',
               borderBottom: '2px solid rgba(0, 255, 163, 0.4)'
             }}>
-              <h3 style={{ margin: 0, color: '#00FFA3', fontSize: '26px', fontWeight: '700', letterSpacing: '-0.5px' }}>📧 Email Sender</h3>
+              <h3 style={{ margin: 0, color: '#00FFA3', fontSize: '33.8px', fontWeight: '700', letterSpacing: '-0.5px' }}>📧 Email Sender</h3>
               <button
                 onClick={async () => {
                   setNewsletterLoading(true);
@@ -2765,7 +2765,7 @@ const AdminPanel = () => {
                   borderRadius: '8px',
                   cursor: newsletterLoading ? 'not-allowed' : 'pointer',
                   fontWeight: 'bold',
-                  fontSize: '14px',
+                  fontSize: '18.2px',
                   boxShadow: '0 4px 15px rgba(0, 255, 163, 0.3)',
                   transition: 'all 0.3s ease'
                 }}
@@ -2785,7 +2785,7 @@ const AdminPanel = () => {
                 maxHeight: '600px',
                 overflowY: 'auto'
               }}>
-                <h4 style={{ margin: '0 0 18px 0', color: '#00FFA3', fontSize: '18px', fontWeight: '600', letterSpacing: '-0.3px' }}>
+                <h4 style={{ margin: '0 0 18px 0', color: '#00FFA3', fontSize: '23.4px', fontWeight: '600', letterSpacing: '-0.3px' }}>
                   📬 Newsletter Subscribers
                 </h4>
                 
@@ -2794,11 +2794,11 @@ const AdminPanel = () => {
                     textAlign: 'center', 
                     color: '#888', 
                     padding: '40px 20px',
-                    fontSize: '14px'
+                    fontSize: '18.2px'
                   }}>
-                    <div style={{ fontSize: '48px', marginBottom: '10px' }}>📭</div>
+                    <div style={{ fontSize: '62.4px', marginBottom: '10px' }}>📭</div>
                     <div>No subscribers loaded yet.</div>
-                    <div style={{ marginTop: '5px', fontSize: '12px' }}>
+                    <div style={{ marginTop: '5px', fontSize: '15.6px' }}>
                       Click "Load Subscribers" to fetch the list.
                     </div>
                   </div>
@@ -2809,7 +2809,7 @@ const AdminPanel = () => {
                       padding: '8px 12px',
                       background: 'rgba(0, 255, 163, 0.1)',
                       borderRadius: '6px',
-                      fontSize: '12px',
+                      fontSize: '15.6px',
                       color: '#00FFA3',
                       fontWeight: 'bold'
                     }}>
@@ -2845,7 +2845,7 @@ const AdminPanel = () => {
                           <div style={{ 
                             color: '#fff', 
                             fontWeight: '600',
-                            fontSize: '13px',
+                            fontSize: '16.9px',
                             marginBottom: '4px',
                             wordBreak: 'break-all'
                           }}>
@@ -2853,7 +2853,7 @@ const AdminPanel = () => {
                           </div>
                           <div style={{ 
                             color: '#888', 
-                            fontSize: '11px',
+                            fontSize: '14.3px',
                             display: 'flex',
                             gap: '12px'
                           }}>
@@ -2885,7 +2885,7 @@ const AdminPanel = () => {
                           borderRadius: '8px',
                           cursor: 'pointer',
                           fontWeight: 'bold',
-                          fontSize: '13px',
+                          fontSize: '16.9px',
                           boxShadow: '0 4px 15px rgba(0, 255, 163, 0.3)'
                         }}
                       >
@@ -2906,14 +2906,14 @@ const AdminPanel = () => {
                 flexDirection: 'column',
                 gap: '15px'
               }}>
-                <h4 style={{ margin: '0 0 15px 0', color: '#DC1FFF', fontSize: '18px', fontWeight: '600', letterSpacing: '-0.3px' }}>
+                <h4 style={{ margin: '0 0 15px 0', color: '#DC1FFF', fontSize: '23.4px', fontWeight: '600', letterSpacing: '-0.3px' }}>
                   ✉️ Compose Email
                 </h4>
                 
                   {/* Template Type & Quick Actions */}
                   <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-end', flexWrap: 'wrap' }}>
                     <div style={{ flex: '1', minWidth: '220px' }}>
-                      <label style={{ display: 'block', marginBottom: '8px', color: '#fff', fontSize: '13px', fontWeight: '600' }}>
+                      <label style={{ display: 'block', marginBottom: '8px', color: '#fff', fontSize: '16.9px', fontWeight: '600' }}>
                         📝 Template Type:
                       </label>
                       <select
@@ -2933,7 +2933,7 @@ const AdminPanel = () => {
                           color: '#fff',
                           border: '2px solid #555',
                           borderRadius: '8px',
-                          fontSize: '14px',
+                          fontSize: '18.2px',
                           cursor: 'pointer',
                           transition: 'border-color 0.3s ease'
                         }}
@@ -2945,7 +2945,7 @@ const AdminPanel = () => {
                       </select>
                     </div>
                     <div style={{ flex: '1', minWidth: '220px' }}>
-                      <label style={{ display: 'block', marginBottom: '8px', color: '#fff', fontSize: '13px', fontWeight: '600' }}>
+                      <label style={{ display: 'block', marginBottom: '8px', color: '#fff', fontSize: '16.9px', fontWeight: '600' }}>
                         ⚡ Quick Actions:
                       </label>
                       <button
@@ -2997,7 +2997,7 @@ const AdminPanel = () => {
                           borderRadius: '8px',
                           cursor: 'pointer',
                           fontWeight: 'bold',
-                          fontSize: '13px',
+                          fontSize: '16.9px',
                           boxShadow: '0 4px 15px rgba(220, 31, 255, 0.3)',
                           transition: 'all 0.3s ease'
                         }}
@@ -3017,7 +3017,7 @@ const AdminPanel = () => {
 
                   {/* Subject */}
                   <div>
-                    <label style={{ display: 'block', marginBottom: '8px', color: '#fff', fontSize: '13px', fontWeight: '600' }}>
+                    <label style={{ display: 'block', marginBottom: '8px', color: '#fff', fontSize: '16.9px', fontWeight: '600' }}>
                       📌 Subject: <span style={{ color: emailSubject ? '#00FFA3' : '#ff4444', marginLeft: '4px' }}>*</span>
                     </label>
                     <input
@@ -3032,7 +3032,7 @@ const AdminPanel = () => {
                         color: '#fff',
                         border: `2px solid ${emailSubject ? '#00FFA3' : '#555'}`,
                         borderRadius: '8px',
-                        fontSize: '14px',
+                        fontSize: '18.2px',
                         transition: 'border-color 0.3s ease'
                       }}
                       onFocus={(e) => e.target.style.borderColor = '#00FFA3'}
@@ -3042,13 +3042,13 @@ const AdminPanel = () => {
 
                   {/* Recipients */}
                   <div>
-                    <label style={{ display: 'block', marginBottom: '8px', color: '#fff', fontSize: '13px', fontWeight: '600' }}>
+                    <label style={{ display: 'block', marginBottom: '8px', color: '#fff', fontSize: '16.9px', fontWeight: '600' }}>
                       📧 Recipients: <span style={{ color: emailRecipients.length > 0 ? '#00FFA3' : '#ff4444', marginLeft: '4px' }}>*</span>
                       {emailRecipients.length > 0 && (
                         <span style={{ 
                           marginLeft: '10px', 
                           color: '#00FFA3', 
-                          fontSize: '12px',
+                          fontSize: '15.6px',
                           fontWeight: 'normal'
                         }}>
                           ({emailRecipients.length} recipient{emailRecipients.length !== 1 ? 's' : ''})
@@ -3068,7 +3068,7 @@ const AdminPanel = () => {
                         border: `2px solid ${emailRecipients.length > 0 ? '#00FFA3' : '#555'}`,
                         borderRadius: '8px',
                         fontFamily: 'monospace',
-                        fontSize: '12px',
+                        fontSize: '15.6px',
                         resize: 'vertical',
                         transition: 'border-color 0.3s ease'
                       }}
@@ -3090,7 +3090,7 @@ const AdminPanel = () => {
                               background: 'rgba(0, 255, 163, 0.2)',
                               border: '1px solid #00FFA3',
                               borderRadius: '20px',
-                              fontSize: '12px',
+                              fontSize: '15.6px',
                               color: '#00FFA3',
                               display: 'flex',
                               alignItems: 'center',
@@ -3108,7 +3108,7 @@ const AdminPanel = () => {
                                 border: 'none',
                                 color: '#ff4444',
                                 cursor: 'pointer',
-                                fontSize: '16px',
+                                fontSize: '20.8px',
                                 padding: '0',
                                 width: '18px',
                                 height: '18px',
@@ -3133,12 +3133,12 @@ const AdminPanel = () => {
                   <div>
                     {emailTemplateType === 'ai' ? (
                       <>
-                        <label style={{ display: 'block', marginBottom: '8px', color: '#fff', fontSize: '13px', fontWeight: '600' }}>
+                        <label style={{ display: 'block', marginBottom: '8px', color: '#fff', fontSize: '16.9px', fontWeight: '600' }}>
                           🤖 AI Content: <span style={{ color: emailAIContent ? '#00FFA3' : '#ff4444', marginLeft: '4px' }}>*</span>
                           <span style={{ 
                             marginLeft: '10px', 
                             color: '#888', 
-                            fontSize: '11px',
+                            fontSize: '14.3px',
                             fontWeight: 'normal'
                           }}>
                             (Plain text - will be wrapped in professional template)
@@ -3157,7 +3157,7 @@ const AdminPanel = () => {
                             border: `2px solid ${emailAIContent ? '#00FFA3' : '#555'}`,
                             borderRadius: '8px',
                             fontFamily: 'inherit',
-                            fontSize: '14px',
+                            fontSize: '18.2px',
                             resize: 'vertical',
                             lineHeight: '1.6',
                             transition: 'border-color 0.3s ease'
@@ -3168,12 +3168,12 @@ const AdminPanel = () => {
                       </>
                     ) : (
                       <>
-                        <label style={{ display: 'block', marginBottom: '8px', color: '#fff', fontSize: '13px', fontWeight: '600' }}>
+                        <label style={{ display: 'block', marginBottom: '8px', color: '#fff', fontSize: '16.9px', fontWeight: '600' }}>
                           📄 HTML Content: <span style={{ color: emailContent ? '#00FFA3' : '#ff4444', marginLeft: '4px' }}>*</span>
                           <span style={{ 
                             marginLeft: '10px', 
                             color: '#888', 
-                            fontSize: '11px',
+                            fontSize: '14.3px',
                             fontWeight: 'normal'
                           }}>
                             (Full HTML - will be sent as-is)
@@ -3192,7 +3192,7 @@ const AdminPanel = () => {
                             border: `2px solid ${emailContent ? '#00FFA3' : '#555'}`,
                             borderRadius: '8px',
                             fontFamily: 'monospace',
-                            fontSize: '12px',
+                            fontSize: '15.6px',
                             resize: 'vertical',
                             transition: 'border-color 0.3s ease'
                           }}
@@ -3260,7 +3260,7 @@ const AdminPanel = () => {
                         borderRadius: '6px',
                         cursor: !emailSubject || (!emailContent && !emailAIContent) ? 'not-allowed' : 'pointer',
                         fontWeight: '600',
-                        fontSize: '12px',
+                        fontSize: '15.6px',
                         transition: 'all 0.3s ease',
                         opacity: !emailSubject || (!emailContent && !emailAIContent) ? 0.5 : 1
                       }}
@@ -3350,7 +3350,7 @@ const AdminPanel = () => {
                   borderRadius: '6px',
                   cursor: emailSending ? 'not-allowed' : 'pointer',
                   fontWeight: '600',
-                  fontSize: '12px'
+                  fontSize: '15.6px'
                 }}
               >
                 {emailSending ? '⏳ Sending...' : '📤 Send Email'}
@@ -3419,7 +3419,7 @@ const AdminPanel = () => {
                   borderRadius: '6px',
                   padding: '8px 12px',
                   cursor: 'pointer',
-                  fontSize: '12px',
+                  fontSize: '15.6px',
                   fontWeight: 'bold'
                 }}
               >
@@ -3434,7 +3434,7 @@ const AdminPanel = () => {
                   borderRadius: '6px',
                   padding: '8px 12px',
                   cursor: 'pointer',
-                  fontSize: '12px',
+                  fontSize: '15.6px',
                   fontWeight: 'bold'
                 }}
               >
@@ -3456,7 +3456,7 @@ const AdminPanel = () => {
               width: '30px',
               height: '30px',
               cursor: 'pointer',
-              fontSize: '16px',
+              fontSize: '20.8px',
               fontWeight: 'bold',
               zIndex: 10000
             }}
@@ -3517,7 +3517,7 @@ const AdminPanel = () => {
               borderRadius: '6px',
               cursor: 'pointer',
               fontWeight: '600',
-              fontSize: '12px',
+              fontSize: '15.6px',
               zIndex: 10001
             }}
           >
