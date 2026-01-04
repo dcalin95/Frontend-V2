@@ -12,6 +12,7 @@ import logo from "../assets/logo.png";
 import telegramLogo from "../assets/TLogo.png";
 import xLogo from "../assets/XLogo.png";
 import youtubeLogo from "../assets/YLogo.png";
+import { trackTikTokEvent } from "../utils/tiktok";
 import "./Header.desktop.css";
 import "./Header.mobile.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -112,7 +113,7 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
               target="_blank" 
               rel="noopener noreferrer" 
               className="social-link"
-              onClick={() => { try { if (window.ttq && typeof window.ttq.track === 'function') { window.ttq.track('CompleteRegistration', { content_name: 'Telegram Join', method: 'header' }); } } catch(_){} }}
+              onClick={() => { trackTikTokEvent('CompleteRegistration', { content_name: 'Telegram Join', method: 'header' }, { retry: true }); }}
             >
               <img src={telegramLogo} alt="Telegram" width={24} height={24} />
             </a>
@@ -300,7 +301,7 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="social-link"
-                onClick={() => { try { if (window.ttq && typeof window.ttq.track === 'function') { window.ttq.track('CompleteRegistration', { content_name: 'Telegram Join', method: 'header' }); } } catch(_){} }}
+                onClick={() => { trackTikTokEvent('CompleteRegistration', { content_name: 'Telegram Join', method: 'header' }, { retry: true }); }}
               >
                 <img src={telegramLogo} alt="Telegram" width={24} height={24} />
               </a>

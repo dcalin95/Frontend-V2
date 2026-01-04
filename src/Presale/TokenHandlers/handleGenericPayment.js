@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import axios from "axios";
 import { getContractInstance } from "../../contract/getContract";
 import { CONTRACTS } from "../../contract/contracts";
+import { trackTikTokEvent } from "../../utils/tiktok";
 import ERC20ABI from "../../abi/erc20ABI.js";
 import { notifyPresaleBuy } from "../../utils/telegramNotify";
 
@@ -112,23 +113,17 @@ const handleGenericPayment = async ({
       await axios.post(API_ENDPOINT, transactionData);
       
       // 🎯 TikTok CompletePayment event - Generic payment successful (ETH/USDT/USDC/MATIC)
-      if (typeof window !== 'undefined' && window.ttq && typeof window.ttq.track === 'function') {
-        try {
-          const tokenName = paymentTokenAddress === ethers.constants.AddressZero ? 'ETH' : 
-                           (paymentTokenAddress.toLowerCase() === CONTRACTS?.USDT?.address?.toLowerCase() ? 'USDT' :
-                           (paymentTokenAddress.toLowerCase() === CONTRACTS?.USDC?.address?.toLowerCase() ? 'USDC' :
-                           (paymentTokenAddress.toLowerCase() === CONTRACTS?.MATIC?.address?.toLowerCase() ? 'MATIC' : 'CRYPTO')));
-          window.ttq.track('CompletePayment', {
-            content_type: 'product',
-            content_name: 'BITS Token Purchase',
-            payment_method: tokenName,
-            value: Math.round(Number(usdInvested) || 0),
-            currency: 'USD',
-          });
-        } catch (err) {
-          console.warn('[TikTok] CompletePayment tracking error:', err);
-        }
-      }
+      const tokenName = paymentTokenAddress === ethers.constants.AddressZero ? 'ETH' : 
+                       (paymentTokenAddress.toLowerCase() === CONTRACTS?.USDT?.address?.toLowerCase() ? 'USDT' :
+                       (paymentTokenAddress.toLowerCase() === CONTRACTS?.USDC?.address?.toLowerCase() ? 'USDC' :
+                       (paymentTokenAddress.toLowerCase() === CONTRACTS?.MATIC?.address?.toLowerCase() ? 'MATIC' : 'CRYPTO')));
+      trackTikTokEvent('CompletePayment', {
+        content_type: 'product',
+        content_name: 'BITS Token Purchase',
+        payment_method: tokenName,
+        value: Math.round(Number(usdInvested) || 0),
+        currency: 'USD',
+      }, { retry: true });
       
       // 📢 TELEGRAM NOTIFICATION
       const bitsFormatted = ethers.utils.formatUnits(bitsInWei, 18);

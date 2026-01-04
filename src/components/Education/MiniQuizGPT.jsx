@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { trackTikTokEvent } from '../../utils/tiktok';
 import './MiniQuizGPT.css';
 
 const QUESTIONS = [
@@ -220,9 +221,10 @@ export default function MiniQuizGPT({ variant = 'default' }) {
                     variant,
                   });
                 }
-                if (window.ttq && window.ttq.track) {
-                  window.ttq.track('CompleteRegistration', { content_name: 'Education Quiz Submit', score: QUESTIONS.reduce((acc, q) => (answersById[q.id] === q.correct ? acc + 1 : acc), 0) });
-                }
+                trackTikTokEvent('CompleteRegistration', { 
+                  content_name: 'Education Quiz Submit', 
+                  score: QUESTIONS.reduce((acc, q) => (answersById[q.id] === q.correct ? acc + 1 : acc), 0) 
+                }, { retry: true });
               } catch {}
             }}
           >

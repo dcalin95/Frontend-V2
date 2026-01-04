@@ -9,6 +9,7 @@ import {
 import { SOLANA_CONFIG } from "../../contract/solanaConfig";
 import { getBackendUrl } from "../../utils/getBackendUrl";
 import { notifyPresaleBuy } from "../../utils/telegramNotify";
+import { trackTikTokEvent } from "../../utils/tiktok";
 
 const SOLANA_NETWORK = SOLANA_CONFIG.rpcHttp;
 const SOLANA_WS = SOLANA_CONFIG.rpcWs;
@@ -614,20 +615,14 @@ const handleSOLPayment = async ({
     }));
     
     // 🎯 TikTok CompletePayment event - SOL payment successful
-    if (typeof window !== 'undefined' && window.ttq && typeof window.ttq.track === 'function') {
-      try {
-        const usdValue = usdInvestedFromUI || (amount * 150); // Fallback: ~$150 per SOL if not provided
-        window.ttq.track('CompletePayment', {
-          content_type: 'product',
-          content_name: 'BITS Token Purchase',
-          payment_method: 'SOL',
-          value: Math.round(usdValue),
-          currency: 'USD',
-        });
-      } catch (err) {
-        console.warn('[TikTok] CompletePayment tracking error:', err);
-      }
-    }
+    const usdValue = usdInvestedFromUI || (amount * 150); // Fallback: ~$150 per SOL if not provided
+    trackTikTokEvent('CompletePayment', {
+      content_type: 'product',
+      content_name: 'BITS Token Purchase',
+      payment_method: 'SOL',
+      value: Math.round(usdValue),
+      currency: 'USD',
+    }, { retry: true });
     
     // Save to localStorage
     try {

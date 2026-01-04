@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./WelcomePage.css";
+import { trackTikTokEvent } from "../utils/tiktok";
 import orbitIllustration from "../assets/orbit-background.webp";
 
 const Typewriter = ({ text, speed = 20, startDelay = 0 }) => {
@@ -144,7 +145,7 @@ const WelcomePage = () => {
             rel="noopener noreferrer"
             aria-label="Open BitSwapDEX AI Telegram channel"
             style={{ marginRight: 10 }}
-            onClick={() => { try { if (window.ttq && typeof window.ttq.track === 'function') { window.ttq.track('CompleteRegistration', { content_name: 'Telegram Join', method: 'welcome_page' }); } } catch(_){} }}
+            onClick={() => { trackTikTokEvent('CompleteRegistration', { content_name: 'Telegram Join', method: 'welcome_page' }, { retry: true }); }}
           >
             Join Telegram Channel
           </a>

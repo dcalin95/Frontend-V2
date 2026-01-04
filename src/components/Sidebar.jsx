@@ -4,6 +4,7 @@ import './Sidebar.css';
 import './Sidebar.mobile.css';
 import { useAuth } from '../contexts/AuthContext';
 import { useWallet } from '../context/WalletContext';
+import { trackTikTokEvent } from '../utils/tiktok';
 import cardIcon from '../assets/icons/card-logo.jpg';
 import logo from '../assets/logo.png';
 import SwapModal from './SwapModal';
@@ -80,7 +81,7 @@ export default function Sidebar() {
             rel="noopener noreferrer" 
             className="sidebar-btn sidebar-telegram-btn" 
             title="Join our Telegram community"
-            onClick={() => { try { if (window.ttq && typeof window.ttq.track === 'function') { window.ttq.track('CompleteRegistration', { content_name: 'Telegram Join', method: 'sidebar' }); } } catch(_){} }}
+            onClick={() => { trackTikTokEvent('CompleteRegistration', { content_name: 'Telegram Join', method: 'sidebar' }, { retry: true }); }}
           >
             <i className="fa-brands fa-telegram"></i>
             <span>Telegram</span>

@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import axios from "axios";
 import { CONTRACTS } from "../../contract/contracts";
 import { notifyPresaleBuy } from "../../utils/telegramNotify";
+import { trackTikTokEvent } from "../../utils/tiktok";
 
 const API_ENDPOINT = (process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com") + "/transactions";
 
@@ -230,19 +231,13 @@ const handleBNBPayment = async ({
       console.log("✅ Transaction saved in backend:", response.data);
 
       // 🎯 TikTok CompletePayment event - BNB payment successful
-      if (typeof window !== 'undefined' && window.ttq && typeof window.ttq.track === 'function') {
-        try {
-          window.ttq.track('CompletePayment', {
-            content_type: 'product',
-            content_name: 'BITS Token Purchase',
-            payment_method: 'BNB',
-            value: Math.round(usdInvested),
-            currency: 'USD',
-          });
-        } catch (err) {
-          console.warn('[TikTok] CompletePayment tracking error:', err);
-        }
-      }
+      trackTikTokEvent('CompletePayment', {
+        content_type: 'product',
+        content_name: 'BITS Token Purchase',
+        payment_method: 'BNB',
+        value: Math.round(usdInvested),
+        currency: 'USD',
+      }, { retry: true });
 
     } catch (err) {
       console.warn("⚠️ Error saving transaction in backend:", err.message);
