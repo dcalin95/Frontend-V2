@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 import { CONTRACT_MAP as CONTRACTS } from "../contract/contractMap";
 import { toBitsInteger, formatBITS } from "../utils/bitsUtils";
 import bitsLogo from "../assets/logo.png";
-import usdcLogo from "../assets/icons/usdc.svg";
+import usdcLogo from "../assets/usdc-logo.png";
 import TokenInline from "./common/TokenInline";
 import CosmicRewardBurst from "./common/CosmicRewardBurst";
 import RealLeaderboard from "./RealLeaderboard";

@@ -1,10 +1,10 @@
 import React from "react";
 import bitsLogo from "../../assets/logo.png";
-import usdtLogo from "../../assets/icons/tether-usdt-logo.png";
+import usdcLogo from "../../assets/usdc-logo.png";
 
 const TOKENS = {
   BITS: { src: bitsLogo, label: "BITS", alt: "BITS" },
-  USDT: { src: usdtLogo, label: "USDT", alt: "USDT" },
+  USDC: { src: usdcLogo, label: "USDC", alt: "USDC" },
 };
 
 export default function TokenInline({

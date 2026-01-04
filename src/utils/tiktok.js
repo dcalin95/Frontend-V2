@@ -62,7 +62,7 @@ export async function trackTikTokEvent(eventName, payload = {}, options = {}) {
   const shouldRetry = retry || importantEvents.includes(eventName);
 
   const attemptTrack = async (attempt = 1) => {
-    try {
+  try {
       if (typeof window === 'undefined') {
         return false;
       }
@@ -121,7 +121,7 @@ export async function trackTikTokEvent(eventName, payload = {}, options = {}) {
   try {
     if (typeof window !== 'undefined' && window.ttq) {
       if (typeof window.ttq.track === 'function') {
-        window.ttq.track(eventName, payload || {});
+      window.ttq.track(eventName, payload || {});
       } else if (Array.isArray(window.ttq)) {
         // Pixel not loaded yet, but queue exists - push to queue
         window.ttq.push(['track', eventName, payload || {}]);
