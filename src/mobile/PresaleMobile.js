@@ -56,7 +56,7 @@ const PresaleMobile = () => {
   // Track TikTok event
   useEffect(() => {
     try {
-      trackTikTokEvent('ViewContent', { content_type: 'presale_page_mobile' });
+      trackTikTokEvent('ViewContent', { content_type: 'product', content_name: 'BITS Token Presale' });
     } catch (_) {}
   }, []);
 

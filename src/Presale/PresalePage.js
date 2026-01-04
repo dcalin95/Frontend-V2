@@ -73,7 +73,7 @@ const PresalePage = () => {
   // 🔎 TikTok ViewContent (non-sensibil): doar semnal că utilizatorul a vizitat Presale
   useEffect(() => {
     try {
-      trackTikTokEvent('ViewContent', { content_type: 'presale_page' });
+      trackTikTokEvent('ViewContent', { content_type: 'product', content_name: 'BITS Token Presale' });
     } catch (_) {}
   }, []);
 
@@ -90,7 +90,8 @@ const PresalePage = () => {
           trackTikTokEvent('Quick_Visitor', { 
             page: 'presale',
             time_spent_seconds: 45,
-            content_type: 'presale_engagement'
+            content_type: 'product',
+            content_name: 'BITS Token Presale'
           });
           tracked45 = true;
           console.log('✅ [TikTok] Quick_Visitor (45s) tracked');
@@ -104,7 +105,8 @@ const PresalePage = () => {
           trackTikTokEvent('Engaged_User', { 
             page: 'presale',
             time_spent_seconds: 90,
-            content_type: 'presale_engagement',
+            content_type: 'product',
+            content_name: 'BITS Token Presale',
             value: 1 // Valoare symbolică pentru optimizare CPA
           });
           tracked90 = true;
@@ -119,7 +121,8 @@ const PresalePage = () => {
           trackTikTokEvent('Hot_Lead', { 
             page: 'presale',
             time_spent_seconds: 150,
-            content_type: 'presale_engagement',
+            content_type: 'product',
+            content_name: 'BITS Token Presale',
             value: 3 // Valoare mai mare pentru lead-uri hot
           });
           tracked150 = true;
