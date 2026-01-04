@@ -2469,6 +2469,24 @@ const AdminPanel = () => {
                   <div style={{ marginTop: 10, opacity: 0.9 }}>
                     <div>✅ Top up this address with:</div>
                     <div>• <strong>USDC (BEP-20 on BSC Mainnet)</strong> — used for payouts</div>
+                    <div style={{ marginLeft: 20, fontSize: '11px', color: '#aaa', marginTop: 4 }}>
+                      USDC Contract: <code style={{ background: '#333', padding: '2px 6px', borderRadius: 3 }}>0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d</code>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText('0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d');
+                          toast.success("✅ USDC address copied");
+                        }}
+                        style={{ marginLeft: 8, fontSize: '10px', padding: '2px 6px' }}
+                      >
+                        📋
+                      </button>
+                      <button
+                        onClick={() => window.open('https://bscscan.com/token/0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', '_blank')}
+                        style={{ marginLeft: 4, fontSize: '10px', padding: '2px 6px' }}
+                      >
+                        🔎
+                      </button>
+                    </div>
                     <div>• <strong>BNB</strong> — gas for transfers</div>
                   </div>
                 </div>
@@ -2636,6 +2654,24 @@ const AdminPanel = () => {
                 <div style={{ marginTop: 6, opacity: 0.95 }}>
                   <div>✅ Network: <strong>BSC Mainnet</strong></div>
                   <div>✅ Token: <strong>USDC (BEP-20)</strong> for USDC payouts</div>
+                  <div style={{ marginLeft: 20, fontSize: '11px', color: '#aaa', marginTop: 4 }}>
+                    Contract Address: <code style={{ background: '#333', padding: '2px 6px', borderRadius: 3 }}>0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d</code>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText('0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d');
+                        toast.success("✅ USDC address copied");
+                      }}
+                      style={{ marginLeft: 8, fontSize: '10px', padding: '2px 6px' }}
+                    >
+                      📋
+                    </button>
+                    <button
+                      onClick={() => window.open('https://bscscan.com/token/0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', '_blank')}
+                      style={{ marginLeft: 4, fontSize: '10px', padding: '2px 6px' }}
+                    >
+                      🔎
+                    </button>
+                  </div>
                   <div>✅ Also send: <strong>BNB</strong> (gas for every transfer)</div>
                 </div>
               </div>
