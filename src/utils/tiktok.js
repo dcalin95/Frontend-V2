@@ -1,6 +1,97 @@
 // TikTok Pixel event tracker with wait mechanism and retry logic
 // Usage: trackTikTokEvent('CompletePayment', { value: 100, currency: 'USD' })
 
+// 🧪 Lista de adrese wallet-uri de test (adaugă aici adresele tale de test)
+const TEST_WALLET_ADDRESSES = [
+  // Adaugă aici adresele tale de test (lowercase pentru comparație)
+  // Exemplu: '0x1234567890123456789012345678901234567890',
+  // 'So11111111111111111111111111111111111111112', // Solana test
+];
+
+// 🛑 Check if we should disable tracking (localhost, development, test wallets, or explicit disable)
+const shouldDisableTracking = (walletAddress = null) => {
+  if (typeof window === 'undefined') return true;
+  
+  // Disable in development mode
+  if (process.env.NODE_ENV === 'development') return true;
+  
+  // Disable on localhost
+  const hostname = window.location.hostname;
+  if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0') {
+    return true;
+  }
+  
+  // Disable if explicitly requested via URL parameter
+  if (window.location.search.includes('disable_tiktok=true')) {
+    // Set flag in localStorage for future sessions
+    try {
+      localStorage.setItem('disable_tiktok_tracking', 'true');
+    } catch (e) {}
+    return true;
+  }
+  
+  // Disable if flag is set in localStorage
+  try {
+    if (localStorage.getItem('disable_tiktok_tracking') === 'true') {
+      return true;
+    }
+  } catch (e) {}
+  
+  // Disable if current wallet is a test wallet
+  if (walletAddress) {
+    const addressLower = walletAddress.toLowerCase();
+    if (TEST_WALLET_ADDRESSES.some(addr => addr.toLowerCase() === addressLower)) {
+      if (TIKTOK_DEBUG) {
+        debugLog(`🚫 Test wallet detected, tracking disabled: ${walletAddress.substring(0, 10)}...`);
+      }
+      return true;
+    }
+  }
+  
+  return false;
+};
+
+// 🔧 Helper function to enable/disable tracking manually
+export const setTikTokTrackingEnabled = (enabled) => {
+  try {
+    if (enabled) {
+      localStorage.removeItem('disable_tiktok_tracking');
+      console.log('✅ TikTok tracking enabled');
+    } else {
+      localStorage.setItem('disable_tiktok_tracking', 'true');
+      console.log('🚫 TikTok tracking disabled');
+    }
+  } catch (e) {
+    console.error('Error setting TikTok tracking:', e);
+  }
+};
+
+// 🔧 Helper function to add test wallet addresses
+export const addTestWalletAddress = (address) => {
+  if (!address) return;
+  const addressLower = address.toLowerCase();
+  if (!TEST_WALLET_ADDRESSES.includes(addressLower)) {
+    TEST_WALLET_ADDRESSES.push(addressLower);
+    console.log(`🧪 Test wallet added: ${address.substring(0, 10)}...`);
+  }
+};
+
+// 🐛 Debug mode - set to true to see detailed logs
+const TIKTOK_DEBUG = process.env.NODE_ENV === 'development' || 
+  (typeof window !== 'undefined' && window.location.search.includes('tiktok_debug=true'));
+
+function debugLog(...args) {
+  if (TIKTOK_DEBUG) {
+    console.log('🔵 [TikTok Pixel]', ...args);
+  }
+}
+
+function debugError(...args) {
+  if (TIKTOK_DEBUG) {
+    console.error('🔴 [TikTok Pixel]', ...args);
+  }
+}
+
 /**
  * Wait for TikTok Pixel to be ready
  * @returns {Promise<boolean>} True if pixel is ready, false otherwise
@@ -48,9 +139,20 @@ function waitForTikTokPixel(maxWait = 5000) {
  * Track TikTok event with automatic retry for important events
  * @param {string} eventName - Event name (e.g., 'CompletePayment', 'ViewContent')
  * @param {object} payload - Event payload
- * @param {object} options - Options: { retry: boolean, maxRetries: number, retryDelay: number }
+ * @param {object} options - Options: { retry: boolean, maxRetries: number, retryDelay: number, walletAddress: string }
  */
 export async function trackTikTokEvent(eventName, payload = {}, options = {}) {
+  // Extract walletAddress from options or payload
+  const walletAddress = options.walletAddress || payload.wallet_address || payload.walletAddress || null;
+  
+  // 🛑 Skip tracking if disabled (localhost/development/test wallet)
+  if (shouldDisableTracking(walletAddress)) {
+    if (TIKTOK_DEBUG) {
+      debugLog(`🚫 Tracking disabled: ${eventName}`, { reason: walletAddress ? 'test_wallet' : 'localhost/dev', wallet: walletAddress?.substring(0, 10) });
+    }
+    return;
+  }
+
   const {
     retry = false,
     maxRetries = 3,
@@ -76,18 +178,22 @@ export async function trackTikTokEvent(eventName, payload = {}, options = {}) {
           return attemptTrack(attempt + 1);
         }
         if (!isReady) {
+          debugError(`⚠️ TikTok Pixel not ready after ${shouldRetry ? 3000 : 1000}ms`);
           // Pixel not available - TikTok queue system will handle it if pixel loads later
           // But we can also push to queue manually as fallback
           if (window.ttq && Array.isArray(window.ttq)) {
+            debugLog(`📤 Queuing event (pixel not ready): ${eventName}`, payload);
             window.ttq.push(['track', eventName, payload || {}]);
             return true;
           }
+          debugError(`❌ Cannot track ${eventName} - ttq not available`);
           return false;
         }
       }
 
       // Pixel is ready, track event
       if (window.ttq && typeof window.ttq.track === 'function') {
+        debugLog(`✅ Tracking event: ${eventName}`, payload);
         window.ttq.track(eventName, payload || {});
         return true;
       }
@@ -121,14 +227,65 @@ export async function trackTikTokEvent(eventName, payload = {}, options = {}) {
   try {
     if (typeof window !== 'undefined' && window.ttq) {
       if (typeof window.ttq.track === 'function') {
-      window.ttq.track(eventName, payload || {});
+        debugLog(`✅ Tracking event (sync): ${eventName}`, payload);
+        window.ttq.track(eventName, payload || {});
       } else if (Array.isArray(window.ttq)) {
         // Pixel not loaded yet, but queue exists - push to queue
+        debugLog(`📤 Queuing event (sync): ${eventName}`, payload);
         window.ttq.push(['track', eventName, payload || {}]);
+      } else {
+        debugError(`❌ Cannot track ${eventName} - ttq.track not available`);
       }
+    } else {
+      debugError(`❌ Cannot track ${eventName} - window.ttq not available`);
     }
   } catch (err) {
+    debugError(`❌ Error tracking ${eventName}:`, err);
     // Silently fail - analytics should never break UX
+  }
+}
+
+/**
+ * Track TikTok PageView event (for SPA hash routing)
+ * @param {string} pagePath - Current page path (e.g., '/presale')
+ * @param {object} additionalData - Additional page data (can include walletAddress)
+ */
+export function trackTikTokPageView(pagePath = '/', additionalData = {}) {
+  // Extract walletAddress from additionalData
+  const walletAddress = additionalData.walletAddress || additionalData.wallet_address || null;
+  
+  // 🛑 Skip tracking if disabled (localhost/development/test wallet)
+  if (shouldDisableTracking(walletAddress)) {
+    if (TIKTOK_DEBUG) {
+      debugLog(`🚫 PageView tracking disabled: ${pagePath}`, { reason: walletAddress ? 'test_wallet' : 'localhost/dev' });
+    }
+    return;
+  }
+
+  try {
+    if (typeof window === 'undefined' || !window.ttq) {
+      debugError('❌ Cannot track PageView - window.ttq not available');
+      return;
+    }
+
+    const payload = {
+      content_name: pagePath,
+      ...additionalData
+    };
+
+    if (window.ttq.page) {
+      debugLog('📄 Tracking PageView:', payload);
+      window.ttq.page(payload);
+    } else if (typeof window.ttq.track === 'function') {
+      // Fallback: use track with ViewContent
+      debugLog('📄 Tracking PageView (via ViewContent):', payload);
+      window.ttq.track('ViewContent', payload);
+    } else if (Array.isArray(window.ttq)) {
+      debugLog('📤 Queuing PageView:', payload);
+      window.ttq.push(['page', payload]);
+    }
+  } catch (err) {
+    debugError('❌ Error tracking PageView:', err);
   }
 }
 

@@ -33,10 +33,33 @@ body.mode-mobile .chart-canvas {
 
 /* 📊 CHART BODY - Full height */
 body.mode-mobile .dex-chart-body {
-  height: calc(100vh - 180px) !important;
-  min-height: calc(100vh - 180px) !important;
+  height: calc(100vh - 140px) !important; /* More space - simplified header */
+  min-height: calc(100vh - 140px) !important;
   padding: 0 !important;
   margin: 0 !important;
+}
+
+/* Fullscreen on mobile - Binance style */
+body.mode-mobile .dex-chart-fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 999999 !important;
+}
+
+body.mode-mobile .dex-chart-fullscreen .dex-chart-header {
+  min-height: 44px !important;
+  max-height: 44px !important;
+  padding: 8px 12px !important;
+}
+
+body.mode-mobile .dex-chart-fullscreen .dex-chart-body {
+  height: calc(100vh - 44px) !important;
+  min-height: calc(100vh - 44px) !important;
 }
 
 body.mode-mobile .dex-chart {
@@ -46,12 +69,36 @@ body.mode-mobile .dex-chart {
   flex-direction: column !important;
 }
 
-/* 🎯 COMPACT HEADER on mobile - Show controls */
+/* 🎯 COMPACT HEADER on mobile - Binance style (simplified) */
 body.mode-mobile .dex-chart-header {
-  padding: 8px 12px !important;
-  min-height: 45px !important;
-  background: rgba(10, 10, 14, 0.95) !important;
-  border-bottom: 1px solid rgba(0, 255, 163, 0.15) !important;
+  padding: 6px 10px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  background: rgba(10, 10, 14, 0.98) !important;
+  border-bottom: 1px solid rgba(0, 255, 163, 0.2) !important;
+  /* Hide most controls on mobile - keep only essential */
+}
+
+/* Hide wallet info on mobile - more space for chart */
+body.mode-mobile .dex-chart-header-actions {
+  gap: 6px !important;
+}
+
+body.mode-mobile .chart-wallet-balance-pill,
+body.mode-mobile .chart-wallet-address-chip,
+body.mode-mobile .network-pill {
+  display: none !important; /* Binance style - hide on mobile */
+}
+
+/* Simplify timeframe buttons on mobile */
+body.mode-mobile .dex-chart-title > div {
+  gap: 3px !important;
+}
+
+body.mode-mobile .dex-chart-title button {
+  padding: 3px 8px !important;
+  font-size: 0.65rem !important;
+  min-width: 32px !important;
 }
 
 body.mode-mobile .dex-chart-title {

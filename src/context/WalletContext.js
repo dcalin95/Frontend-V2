@@ -317,7 +317,18 @@ const InnerWalletProvider = ({ children }) => {
       const isConnectedViaDirect = typeof window !== 'undefined' && window.solana?.isConnected && directPk;
       const isAnyConnected = isConnectedViaAdapter || isConnectedViaDirect;
       
-      console.log("🔍 [SolanaBalance] Check:", {
+      // 🛑 SKIP logging if not connected (reduces console noise)
+      if (!isAnyConnected || !currentPk) {
+        // Only set balance to 0 if it's not already 0
+        if (solanaBalance !== "0") {
+          console.log("🔍 [SolanaBalance] NOT CONNECTED - skipping fetch (already 0)");
+          setSolanaBalance("0");
+        }
+        return;
+      }
+      
+      // Only log when actually connected
+      console.log("🔍 [SolanaBalance] Connected wallet detected:", {
         walletType: currentWalletType,
         adapterConnected: isSolanaConnected,
         adapterPk: adapterPk?.toBase58() || 'null',
@@ -325,11 +336,6 @@ const InnerWalletProvider = ({ children }) => {
         directPk: directPk?.toBase58?.() || directPk?.toString() || 'null',
         finalPk: currentPk?.toBase58?.() || currentPk?.toString() || 'null'
       });
-      
-      if (!isAnyConnected || !currentPk) {
-        console.warn("⚠️ [SolanaBalance] NOT CONNECTED - skipping fetch");
-          return;
-        }
 
       try {
         const addrStr = currentPk.toBase58 ? currentPk.toBase58() : currentPk.toString();
@@ -685,38 +691,20 @@ const InnerWalletProvider = ({ children }) => {
         console.warn('⚠️ [WalletContext] Error clearing pending requests:', clearErr);
       }
       
-      // 🎯 DETECT AND SET PREFERRED EVM PROVIDER
+      // 🛑 IMPORTANT: Do NOT auto-select or auto-connect to any wallet
+      // Just prepare the environment and open the modal for user selection
       if (window.ethereum) {
-        const detected = detectAllInjectedWallets();
-        const evmList = detected.evm || [];
-        const preferred =
-          evmList.find(w => w.name?.toLowerCase().includes('metamask')) ||
-          evmList.find(w => w.name?.toLowerCase().includes('trust')) ||
-          evmList.find(w => w.name?.toLowerCase().includes('coinbase')) ||
-          evmList[0];
-
-        if (preferred?.provider) {
-          window.ethereum = preferred.provider;
-        } else if (window.ethereum.providers && Array.isArray(window.ethereum.providers)) {
-          const metamaskProvider = window.ethereum.providers.find(p => p.isMetaMask && !p.isPhantom);
-          const trustProvider = window.ethereum.providers.find(p => p.isTrust);
-          const coinbaseProvider = window.ethereum.providers.find(p => p.isCoinbaseWallet);
-          
-          if (metamaskProvider) {
-            window.ethereum = metamaskProvider;
-          } else if (trustProvider) {
-            window.ethereum = trustProvider;
-          } else if (coinbaseProvider) {
-            window.ethereum = coinbaseProvider;
-          }
-        } else if (window.ethereum.isPhantom && !window.ethereum.isMetaMask) {
-          console.warn('🛑 [WalletContext] Phantom EVM hijack detected. Install MetaMask or disable Phantom EVM Support.');
+        // Only fix Phantom hijack if needed, but don't auto-select Trust Wallet
+        if (window.ethereum.isPhantom && !window.ethereum.isMetaMask) {
+          console.warn('🛑 [WalletContext] Phantom EVM hijack detected. Will let user choose in modal.');
+          // Don't auto-switch - let user choose in modal
         }
+        // Don't auto-set window.ethereum to Trust Wallet - let user choose
       }
       
       // Record explicit user intent so any resulting connection is allowed
       markConnectIntent();
-      // ✅ Open our own unified modal (non-iframe) instead of Web3Modal/AppKit
+      // ✅ Open our own unified modal (non-iframe) - user will select network and wallet
       setShowWalletModal(true);
     } catch (err) {
       console.error("❌ [WalletContext] Failed to open wallet modal:", err);

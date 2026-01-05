@@ -54,6 +54,12 @@
   /* Force escape from any parent positioning context */
   inset: 0 !important;
   contain: layout !important;
+  /* Ensure it's truly fullscreen */
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
 }
 
 /* Ensure fullscreen chart is above everything */
@@ -403,21 +409,40 @@ body.chart-fullscreen-active .dex-chart-fullscreen {
   flex: 1 !important; 
   position: relative !important; 
   width: 100% !important; 
+  height: 100% !important;
+  min-height: 400px !important;
   overflow: hidden !important;
   margin: 0 !important;  /* ✅ Force no margin */
   margin-top: 0 !important;  /* ✅ No negative margin needed */
   padding: 0 !important; /* ✅ Force no padding */
   box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Ensure TradingView container has dimensions */
+.dex-chart-body > div[id*="tradingview"],
+.dex-chart-body > div[id*="tv"] {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 400px !important;
+  display: block !important;
+  position: relative !important;
+  flex: 1 !important;
 }
 
 .dex-chart-fullscreen .dex-chart-body {
-  height: calc(100vh - 120px) !important;
+  height: calc(100vh - 60px) !important;
   width: 100% !important;
+  min-height: calc(100vh - 60px) !important;
+  max-height: calc(100vh - 60px) !important;
 }
 
-.dex-chart-fullscreen .chart-container-div {
+.dex-chart-fullscreen .chart-container-div,
+.dex-chart-fullscreen #tradingview-container {
   width: 100% !important;
   height: 100% !important;
+  min-height: calc(100vh - 80px) !important;
 }
 
 .dex-chart-fullscreen .dex-chart-header-modern {
@@ -433,6 +458,28 @@ body.chart-fullscreen-active .dex-chart-fullscreen {
 
 .dex-chart-fullscreen .watermark {
   opacity: 0.015 !important;
+}
+
+/* Fullscreen button styling - make it more visible */
+.dex-chart-fullscreen .chart-action-btn:has(svg) {
+  background: rgba(255, 71, 87, 0.15) !important;
+  border: 1px solid rgba(255, 71, 87, 0.4) !important;
+}
+
+.dex-chart-fullscreen .chart-action-btn:has(svg):hover {
+  background: rgba(255, 71, 87, 0.25) !important;
+  border-color: #FF4757 !important;
+  box-shadow: 0 0 15px rgba(255, 71, 87, 0.5) !important;
+  transform: scale(1.05) !important;
+}
+
+.dex-chart-fullscreen .dex-chart-header {
+  padding: 12px 20px !important;
+  background: rgba(0, 0, 0, 0.95) !important;
+  border-bottom: 2px solid rgba(0, 255, 163, 0.3) !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000001 !important;
 }
 
 

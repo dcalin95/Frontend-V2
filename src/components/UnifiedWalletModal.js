@@ -4,6 +4,7 @@ import { useWallet as useSolanaWalletAdapter } from '@solana/wallet-adapter-reac
 import { useWallet } from '../context/WalletContext';
 import { prepareForConnection, handleConnectionError } from '../utils/walletConnectionFix';
 import { prioritizeEVMWallets, logDetectedWallets, forceFixPhantomHijack } from '../utils/walletFilter';
+import { trackTikTokEvent } from '../utils/tiktok';
 import DOMPurify from 'dompurify'; // 🔒 SECURITY: XSS protection
 import walletConnectLogo from '../assets/icons/wallet-connect-logo.png'; 
 import evmIcon from '../assets/icons/evm-logo.jpg'; // Import EVM logo
@@ -16,7 +17,7 @@ import './UnifiedWalletModal.additions.css';
 const UnifiedWalletModal = () => {
   const { showWalletModal, setShowWalletModal, hardReset, markConnectIntent } = useWallet();
   const { connect, disconnect: disconnectEVM, connectors } = useConnect(); // 🔌 Get direct connectors
-  const { isConnected, address } = useAccount(); // 🔍 Monitor connection status
+  const { isConnected, address, connector, chainId } = useAccount(); // 🔍 Monitor connection status + get connector & chainId
   
   // 🛡️ Filter and prioritize EVM connectors (exclude Phantom and other non-EVM wallets)
   const filteredConnectors = useMemo(() => {
@@ -36,6 +37,7 @@ const UnifiedWalletModal = () => {
   const [isConnecting, setIsConnecting] = useState(false); // ⏳ New connecting state
   const [error, setError] = useState(null);
   const [connectionLock, setConnectionLock] = useState(false); // 🔒 CONNECTION GUARD
+  const [walletConnectedTracked, setWalletConnectedTracked] = useState(false); // 🎯 Guard pentru TikTok tracking
 
   // (Debug panel removed)
 
@@ -54,6 +56,27 @@ const UnifiedWalletModal = () => {
     // 🛑 CRITICAL: Only check EVM if we're on EVM network (not Solana)
     if (isConnecting && isConnected && address && selectedNetwork !== "SOLANA") {
       console.log('✅ [UnifiedWalletModal] EVM wallet connected successfully, closing modal...');
+      
+      // 🎯 TikTok Tracking: Connect Wallet (InitiateCheckout event)
+      if (!walletConnectedTracked && address && connector) {
+        const walletName = connector?.name || 'Unknown';
+        const chainName = chainId === 56 ? 'BSC' : chainId === 1 ? 'Ethereum' : chainId === 137 ? 'Polygon' : `Chain-${chainId}`;
+        const currentPage = window.location.hash ? window.location.hash.replace('#', '') : (window.location.pathname || '/presale');
+        
+        trackTikTokEvent('InitiateCheckout', {
+          content_type: 'wallet_connection',
+          content_name: 'Connect Wallet',
+          page: currentPage,
+          chain: chainName,
+          wallet: walletName.toLowerCase(),
+          wallet_address: address.substring(0, 6) + '...' + address.substring(address.length - 4), // First 6 + last 4 chars only
+          method: 'evm_direct'
+        }, { retry: true, walletAddress: address });
+        
+        setWalletConnectedTracked(true);
+        console.log('🎯 [TikTok] InitiateCheckout tracked for wallet connection:', { wallet: walletName, chain: chainName, page: currentPage });
+      }
+      
       unlockConnection();
       setError(null);
       
@@ -79,6 +102,27 @@ const UnifiedWalletModal = () => {
     // 🛑 CRITICAL: Only check Solana if we're on Solana network (not EVM)
     if (isConnecting && isSolanaConnected && solanaPublicKey && selectedNetwork !== "EVM") {
       console.log('✅ [UnifiedWalletModal] Solana wallet connected successfully, closing modal...');
+      
+      // 🎯 TikTok Tracking: Connect Wallet (Solana)
+      if (!walletConnectedTracked && solanaPublicKey && selectedSolanaWallet) {
+        const walletName = selectedSolanaWallet?.adapter?.name || 'Unknown';
+        const publicKeyStr = solanaPublicKey.toBase58();
+        const currentPage = window.location.hash ? window.location.hash.replace('#', '') : (window.location.pathname || '/presale');
+        
+        trackTikTokEvent('InitiateCheckout', {
+          content_type: 'wallet_connection',
+          content_name: 'Connect Wallet',
+          page: currentPage,
+          chain: 'Solana',
+          wallet: walletName.toLowerCase(),
+          wallet_address: publicKeyStr.substring(0, 6) + '...' + publicKeyStr.substring(publicKeyStr.length - 4),
+          method: 'solana_direct'
+        }, { retry: true, walletAddress: publicKeyStr });
+        
+        setWalletConnectedTracked(true);
+        console.log('🎯 [TikTok] InitiateCheckout tracked for Solana wallet connection:', { wallet: walletName, page: currentPage });
+      }
+      
       unlockConnection();
       setError(null);
       
@@ -98,7 +142,7 @@ const UnifiedWalletModal = () => {
         setSelectedNetwork(null);
       }, 500);
     }
-  }, [isConnecting, isConnected, address, isSolanaConnected, solanaPublicKey, selectedNetwork, setShowWalletModal, disconnectEVM]);
+  }, [isConnecting, isConnected, address, isSolanaConnected, solanaPublicKey, selectedNetwork, setShowWalletModal, disconnectEVM, connector, chainId, walletConnectedTracked, selectedSolanaWallet]);
 
   if (!showWalletModal) return null;
 
@@ -112,6 +156,7 @@ const UnifiedWalletModal = () => {
     setShowWalletModal(false);
     setSelectedNetwork(null);
     setError(null);
+    setWalletConnectedTracked(false); // Reset tracking guard when modal closes
     unlockConnection();
   };
 
