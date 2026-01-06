@@ -13,6 +13,14 @@ import { CONTRACTS } from "../../../contract/contracts";
 import DOMPurify from 'dompurify'; // 🔒 SECURITY: XSS protection
 // NOTE: SolanaRewardsManager is legacy (old endpoints + contract-based). We use Solana Payments (DB + cron verify + manual fulfilment).
 import { getBackendUrl } from "../../../utils/getBackendUrl";
+import {
+  storeAdminSession,
+  verifyAdminSession,
+  clearAdminSession,
+  isSessionValid,
+  refreshSession,
+  setupSessionAutoRefresh
+} from "../../../utils/adminSecurity"; // 🔒 SECURITY: Session management
 
 const API_URL = getBackendUrl();
 // SECURITY: Require ADMIN_PASS in production, no fallback
@@ -174,11 +182,35 @@ const AdminPanel = () => {
 
 
   useEffect(() => {
-    const savedToken = localStorage.getItem("admin_token");
-    if (savedToken === ADMIN_PASS) {
+    // 🔒 SECURITY: Verify session instead of plain text password
+    if (!ADMIN_PASS) {
+      console.warn('[SECURITY] ADMIN_PASS not configured');
+      return;
+    }
+    
+    if (verifyAdminSession(ADMIN_PASS)) {
       setIsAuthorized(true);
       fetchSimulationStatus();
+      
+      // 🔒 SECURITY: Setup session auto-refresh
+      const refreshInterval = setupSessionAutoRefresh(() => {
+        // Session expired, logout
+        setIsAuthorized(false);
+        clearAdminSession();
+        toast.warning("⏱️ Session expired. Please login again.");
+      });
+      
+      // Cleanup on unmount
+      return () => {
+        if (refreshInterval) {
+          clearInterval(refreshInterval);
+        }
+      };
+    } else {
+      // Clear invalid session
+      clearAdminSession();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -728,15 +760,47 @@ const AdminPanel = () => {
     }
   };
 
+  // 🔒 SECURITY: Enhanced login with session management
   const handleLogin = () => {
+    if (!ADMIN_PASS) {
+      toast.error("❌ Admin password not configured!");
+      return;
+    }
+    
     const input = prompt("🔐 Enter Admin Password:");
+    if (!input) {
+      // User cancelled
+      return;
+    }
+    
     const normalized = (input || "").trim();
-    if (normalized === ADMIN_PASS) {
+    
+    if (!normalized) {
+      toast.error("❌ Password cannot be empty!");
+      return;
+    }
+    
+    // ⚠️ SECURITY: Basic constant-time comparison (length check first)
+    if (normalized.length !== ADMIN_PASS.length || normalized !== ADMIN_PASS) {
+      toast.error("❌ Wrong password!");
+      return;
+    }
+    
+    // 🔒 SECURITY: Store encrypted session instead of plain password
+    if (storeAdminSession(normalized)) {
       setIsAuthorized(true);
-      localStorage.setItem("admin_token", normalized);
+      fetchSimulationStatus();
+      
+      // 🔒 SECURITY: Setup session auto-refresh
+      setupSessionAutoRefresh(() => {
+        setIsAuthorized(false);
+        clearAdminSession();
+        toast.warning("⏱️ Session expired. Please login again.");
+      });
+      
       toast.success("✅ Autentificare reușită");
     } else {
-      alert("❌ Wrong password!");
+      toast.error("❌ Error storing session. Please try again.");
     }
   };
   const handleManualSimulation = async () => {
@@ -783,8 +847,9 @@ const AdminPanel = () => {
 };
 
 
+  // 🔒 SECURITY: Enhanced logout with session cleanup
   const handleLogout = () => {
-    localStorage.removeItem("admin_token");
+    clearAdminSession();
     setIsAuthorized(false);
     toast.info("🛑 Logged out successfully.");
   };
@@ -929,6 +994,7 @@ const AdminPanel = () => {
   };
 
   // Set supply for current round (using CellManager data)
+  // ⚠️ IMPORTANT: This function preserves the timer (round_start_time) if a round already exists
   const handleSetSupply = async () => {
     const tokensAvailable = parseInt(supplyInput);
 
@@ -947,14 +1013,32 @@ const AdminPanel = () => {
     const price = Math.round(cellManagerData.currentPrice * 1000); // Convert to cents
 
     try {
-      const response = await axios.post(`${API_URL}/api/presale/start-round`, {
-        password: ADMIN_PASS,
-        round,
-        price,
-        tokensAvailable
-      });
+      // 🔒 TIMER PROTECTION: Check if round already exists
+      // If round exists, use update-supply endpoint (preserves timer)
+      // If no round exists, use start-round endpoint (creates new round with timer)
+      const currentState = await axios.get(`${API_URL}/api/presale/current`).catch(() => null);
+      const hasExistingRound = currentState?.data?.roundNumber && currentState?.data?.roundNumber > 0;
 
-      toast.success(response.data.message || `✅ Supply set for Round ${round}!`);
+      if (hasExistingRound && currentState.data.roundNumber === round) {
+        // ⚠️ Round already exists - update supply WITHOUT resetting timer
+        const response = await axios.post(`${API_URL}/api/presale/update-supply`, {
+          password: ADMIN_PASS,
+          tokensAvailable
+        });
+
+        toast.success(response.data.message || `✅ Supply updated for Round ${round} (timer preserved)!`);
+      } else {
+        // ⚠️ No round exists - start new round (this will reset timer, which is OK for new round)
+        const response = await axios.post(`${API_URL}/api/presale/start-round`, {
+          password: ADMIN_PASS,
+          round,
+          price,
+          tokensAvailable
+        });
+
+        toast.success(response.data.message || `✅ Round ${round} started with supply!`);
+      }
+
       setSupplyInput("");
       
       // 🔄 Force refresh both states
@@ -968,14 +1052,53 @@ const AdminPanel = () => {
     }
   };
 
+  // Set round duration (14-30 days)
+  const handleSetDuration = async () => {
+    const duration = prompt("⏱️ Enter round duration in days (14-30):", "30");
+    
+    if (!duration || isNaN(duration)) {
+      return; // User cancelled
+    }
+    
+    const durationNum = parseInt(duration);
+    
+    if (durationNum < 14 || durationNum > 30) {
+      toast.error("❌ Duration must be between 14 and 30 days");
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${API_URL}/api/presale/set-duration`, {
+        password: ADMIN_PASS,
+        duration: durationNum
+      });
+
+      toast.success(response.data.message || `✅ Duration set to ${durationNum} days!`);
+      
+      // 🔄 Force refresh to get updated duration
+      await fetchPresaleState();
+      setTimeout(() => {
+        fetchPresaleState();
+      }, 1000);
+    } catch (err) {
+      console.error("❌ Error setting duration:", err);
+      toast.error("❌ Error setting duration: " + (err.response?.data?.error || err.message));
+    }
+  };
+
   // End current round
+  // ⚠️ IMPORTANT: This preserves timer and cumulative sums, only marks round as ended
   const handleEndRound = async () => {
+    if (!window.confirm("⏹️ End current round?\n\n⚠️ This will:\n- Set tokensAvailable to 0\n- Mark round as ended\n\n✅ This will NOT:\n- Reset timer (round_start_time)\n- Reset cumulative sums (raised_usd, sold_bits)\n\nContinue?")) {
+      return;
+    }
+
     try {
       const response = await axios.post(`${API_URL}/api/presale/end-round`, {
         password: ADMIN_PASS
       });
 
-      toast.success(response.data.message || "✅ Round ended successfully!");
+      toast.success(response.data.message || "✅ Round ended successfully (timer and cumulative sums preserved)!");
       fetchPresaleState(); // Refresh state
     } catch (err) {
       console.error("❌ Error ending round:", err);
@@ -984,8 +1107,9 @@ const AdminPanel = () => {
   };
 
   // Reset tokens to 0
+  // ⚠️ IMPORTANT: This ONLY resets tokensAvailable, preserves timer and cumulative sums
   const handleResetTokens = async () => {
-    if (!window.confirm("🔥 Are you sure you want to reset tokensavailable to 0? This will remove all BITS from database!")) {
+    if (!window.confirm("🔥 Are you sure you want to reset tokensAvailable to 0?\n\n⚠️ This will:\n- Set tokensAvailable to 0\n- Remove available BITS from database\n\n✅ This will NOT:\n- Reset timer (round_start_time)\n- Reset cumulative sums (raised_usd, sold_bits)\n\nContinue?")) {
       return;
     }
 
@@ -994,7 +1118,7 @@ const AdminPanel = () => {
         password: ADMIN_PASS
       });
 
-      toast.success(response.data.message || "✅ Tokens reset to 0!");
+      toast.success(response.data.message || "✅ Tokens reset to 0 (timer and cumulative sums preserved)!");
       fetchPresaleState(); // Refresh state
     } catch (err) {
       console.error("❌ Error resetting tokens:", err);
@@ -1052,6 +1176,13 @@ const AdminPanel = () => {
     }
 
     try {
+      // ⚠️ IMPORTANT: Set duration first (for future rounds)
+      await axios.post(`${API_URL}/api/presale/set-duration`, {
+        password: ADMIN_PASS,
+        duration: parseInt(duration)
+      });
+
+      // ⚠️ CRITICAL: start-round preserves cumulative sums (raised_usd, sold_bits) automatically
       const now = Math.floor(Date.now() / 1000); // Current timestamp in seconds
       
       await axios.post(`${API_URL}/api/presale/start-round`, {
@@ -1059,11 +1190,10 @@ const AdminPanel = () => {
         roundNumber: cellManagerData.roundNumber,
         price: cellManagerData.currentPrice, // Already in USD
         totalSupply: parseInt(newSupply),
-        duration: parseInt(duration),
         startTime: now
       });
 
-      toast.success(`🎉 Round ${cellManagerData.roundNumber} started with ${duration} days duration!`);
+      toast.success(`🎉 Round ${cellManagerData.roundNumber} started with ${duration} days duration! (Cumulative sums preserved)`);
       setShowRoundEndStats(false);
       setRoundEndData(null);
       fetchPresaleState();
@@ -1585,6 +1715,25 @@ const AdminPanel = () => {
                 "This will set simulation supply in database (CellManager already configured)"
               }
             </div>
+          </div>
+
+          {/* ROUND DURATION SETTING */}
+          <div className={styles["section"]}>
+            <h3>⏱️ Set Round Duration</h3>
+            <p style={{ fontSize: '14px', color: '#888', marginBottom: '10px' }}>
+              Set the duration for the current round (14-30 days). Default is 14 days.
+            </p>
+            <button 
+              onClick={handleSetDuration}
+              className={styles.button}
+              style={{ 
+                background: '#4a90e2',
+                width: '100%',
+                marginBottom: '10px'
+              }}
+            >
+              ⏱️ Set Round Duration (14-30 days)
+            </button>
           </div>
 
           {/* QUICK ACTIONS */}

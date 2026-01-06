@@ -37,7 +37,9 @@ const SolanaRewardsManager = ({ onBack }) => {
       
       const response = await fetch(`${API_URL}/api/admin/solana-investments`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('admin_token')}`
+          // ⚠️ NOTE: This component uses its own auth - admin_token is legacy
+          // For AdminPanel, use adminSecurity utilities instead
+          'Authorization': `Bearer ${localStorage.getItem('admin_token') || ''}`
         }
       });
 
@@ -350,7 +352,9 @@ const SolanaRewardsManager = ({ onBack }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('admin_token')}`
+          // ⚠️ NOTE: This component uses its own auth - admin_token is legacy
+          // For AdminPanel, use adminSecurity utilities instead
+          'Authorization': `Bearer ${localStorage.getItem('admin_token') || ''}`
         },
         body: JSON.stringify({
           wallet: investment.wallet,
