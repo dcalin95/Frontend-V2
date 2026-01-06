@@ -33,9 +33,9 @@ const ZoomRecommendationBanner = () => {
       // Folosim media celor două metode pentru precizie mai bună
       const averageZoom = Math.round((zoomLevel + zoomLevel2) / 2);
 
-      // Afișăm banner-ul dacă zoom-ul nu este între 80% și 90% (aproximativ 85%)
-      // Toleranță de ±5% pentru a acoperi 80-90%
-      if (averageZoom < 80 || averageZoom > 90) {
+      // Afișăm banner-ul dacă zoom-ul nu este între 75% și 95% (pentru a acoperi 80% și 90% în Chrome)
+      // Chrome ajustează zoom-ul din 10% în 10%, deci 80% sau 90% sunt acceptabile
+      if (averageZoom < 75 || averageZoom > 95) {
         setShowBanner(true);
       }
     };
@@ -69,10 +69,10 @@ const ZoomRecommendationBanner = () => {
       <div className="zoom-banner-content">
         <div className="zoom-banner-icon">🔍</div>
         <div className="zoom-banner-text">
-          <strong>Recomandare:</strong> Acest site este optimizat pentru <strong>85% zoom</strong> în Chrome. 
-          Pentru cea mai bună experiență, ajustează zoom-ul la 85%.
+          <strong>Recommendation:</strong> This site is optimized for <strong>80-90% zoom</strong> in Chrome. 
+          For the best experience, adjust your zoom level to 80% or 90%.
         </div>
-        <button className="zoom-banner-close" onClick={handleClose} aria-label="Închide">
+        <button className="zoom-banner-close" onClick={handleClose} aria-label="Close">
           ✕
         </button>
       </div>
