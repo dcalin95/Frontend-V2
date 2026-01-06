@@ -9,41 +9,71 @@
 /* Controls Container - Fixed on Desktop */
 .tokenomics-controls {
   position: fixed;
-  top: 170px; /* Clear 150px header + 20px gap */
+  top: 250px !important; /* Mutat mai jos pentru a nu se suprapune cu BoostedBanner (160px + ~80px înălțime banner) */
   left: 280px; /* Move to left but clear Sidebar (240px) */
   right: auto;
   z-index: 990;
   display: flex;
-  gap: 1rem;
+  gap: 1.2rem; /* Mărit gap pentru mai mult spațiu */
   align-items: center;
 }
 
-/* Toggle Button */
+/* Toggle Button - MAI VIZIBIL */
 .tokenomics-toggle {
   position: static; /* Inside flex container */
-  padding: 10px 20px;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(20, 241, 149, 0.4);
-  border-radius: 12px;
-  color: #00FFA3;
-  font-size: 0.85rem;
-  font-weight: 600;
+  padding: 14px 28px !important; /* Mărit padding pentru mai multă vizibilitate */
+  background: rgba(0, 0, 0, 0.85) !important; /* Background mai opac */
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(20, 241, 149, 0.6) !important; /* Border mai gros și mai vizibil */
+  border-radius: 14px;
+  color: #00FFA3 !important;
+  font-size: 1rem !important; /* Mărit font-size */
+  font-weight: 700 !important; /* Font mai bold */
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5), 
+              0 0 20px rgba(20, 241, 149, 0.3) !important; /* Shadow mai puternic */
   transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .tokenomics-toggle:hover {
-  background: rgba(20, 241, 149, 0.1);
-  border-color: #00FFA3;
-  transform: translateY(-2px);
-  box-shadow: 0 0 15px rgba(20, 241, 149, 0.3);
-  color: #fff;
+  background: rgba(20, 241, 149, 0.15) !important;
+  border-color: #00FFA3 !important;
+  border-width: 2px !important;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), 
+              0 0 30px rgba(20, 241, 149, 0.5) !important; /* Shadow mai puternic la hover */
+  color: #fff !important;
 }
 
 .tokenomics-toggle:active {
-  transform: translateY(0);
+  transform: translateY(-1px) scale(1.02);
+}
+
+/* AddTokenButton în containerul tokenomics-controls - MAI VIZIBIL */
+.tokenomics-controls .add-token-button,
+.tokenomics-controls button[class*="add-token"],
+.tokenomics-controls [class*="AddToken"] {
+  padding: 14px 28px !important; /* Mărit padding pentru consistență */
+  font-size: 1rem !important; /* Mărit font-size */
+  font-weight: 700 !important; /* Font mai bold */
+  border: 2px solid rgba(20, 241, 149, 0.6) !important; /* Border mai gros și mai vizibil */
+  border-radius: 14px !important;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5), 
+              0 0 20px rgba(20, 241, 149, 0.3) !important; /* Shadow mai puternic */
+  background: rgba(0, 0, 0, 0.85) !important; /* Background mai opac */
+  transition: all 0.3s ease;
+}
+
+.tokenomics-controls .add-token-button:hover,
+.tokenomics-controls button[class*="add-token"]:hover,
+.tokenomics-controls [class*="AddToken"]:hover {
+  border-color: #00FFA3 !important;
+  border-width: 2px !important;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6), 
+              0 0 30px rgba(20, 241, 149, 0.5) !important;
 }
 
 /* Mobile adjustments */

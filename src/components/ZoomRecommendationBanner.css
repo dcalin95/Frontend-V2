@@ -1,50 +1,54 @@
-/* Zoom Recommendation Banner */
+/* Zoom Recommendation Banner - MAI PUȚIN INVAZIV, ÎN COLȚUL DREAPTA SUS */
 .zoom-recommendation-banner {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100001; /* Cel mai mare z-index pentru a fi deasupra tuturor (inclusiv Header) */
-  background: linear-gradient(135deg, rgba(0, 255, 163, 0.95) 0%, rgba(220, 31, 255, 0.95) 100%);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  animation: slideDown 0.4s ease-out;
-  padding: clamp(0.5rem, 1vw, 0.75rem) clamp(1rem, 2vw, 1.5rem);
+  top: 20px !important; /* Mutat mai jos de la top: 0 */
+  right: 20px !important; /* Poziționat în colțul dreapta */
+  left: auto !important; /* Nu ocupă toată lățimea */
+  width: auto !important; /* Lățime automată */
+  max-width: 420px !important; /* Lățime maximă pentru a nu fi prea mare */
+  z-index: 9998 !important; /* Sub Header (1000) dar peste conținut */
+  background: linear-gradient(135deg, rgba(0, 255, 163, 0.92) 0%, rgba(220, 31, 255, 0.92) 100%) !important;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 2px solid rgba(255, 255, 255, 0.4) !important; /* Border mai vizibil */
+  border-radius: 14px !important; /* Border radius pentru a fi mai puțin invaziv */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 
+              0 0 20px rgba(0, 255, 163, 0.3) !important; /* Shadow mai puternic */
+  animation: slideDownFromRight 0.4s ease-out; /* Animație din dreapta */
+  padding: clamp(0.75rem, 1.5vw, 1rem) clamp(1.25rem, 2.5vw, 1.75rem) !important; /* Padding mai mare */
 }
 
-/* Ajustare pentru Header când banner-ul este afișat */
-body:has(.zoom-recommendation-banner:not(.closing)) .header {
-  top: clamp(2.5rem, 4vw, 3.5rem); /* Mută Header-ul mai jos când banner-ul este afișat */
+/* ELIMINAT: Nu mai mută Header-ul - banner-ul este în colț și nu afectează layout-ul */
+/* body:has(.zoom-recommendation-banner:not(.closing)) .header {
+  top: clamp(2.5rem, 4vw, 3.5rem);
 }
 
 body:has(.zoom-recommendation-banner:not(.closing)) .header-spacer {
-  margin-top: clamp(2.5rem, 4vw, 3.5rem); /* Spatiu pentru banner */
-}
+  margin-top: clamp(2.5rem, 4vw, 3.5rem);
+} */
 
-@keyframes slideDown {
+@keyframes slideDownFromRight {
   from {
-    transform: translateY(-100%);
+    transform: translateX(120%) translateY(-20px);
     opacity: 0;
   }
   to {
-    transform: translateY(0);
+    transform: translateX(0) translateY(0);
     opacity: 1;
   }
 }
 
 .zoom-recommendation-banner.closing {
-  animation: slideUp 0.3s ease-in forwards;
+  animation: slideUpToRight 0.3s ease-in forwards;
 }
 
-@keyframes slideUp {
+@keyframes slideUpToRight {
   from {
-    transform: translateY(0);
+    transform: translateX(0) translateY(0);
     opacity: 1;
   }
   to {
-    transform: translateY(-100%);
+    transform: translateX(120%) translateY(-20px);
     opacity: 0;
   }
 }
@@ -65,17 +69,19 @@ body:has(.zoom-recommendation-banner:not(.closing)) .header-spacer {
 }
 
 .zoom-banner-text {
-  color: #000;
-  font-size: clamp(0.75rem, 1.2vw, 0.9rem);
-  font-weight: 500;
-  line-height: 1.5;
-  text-align: center;
+  color: #000 !important; /* Text negru pentru contrast maxim */
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem) !important; /* Font mai mare pentru vizibilitate */
+  font-weight: 600 !important; /* Font mai bold */
+  line-height: 1.6 !important;
+  text-align: left !important; /* Text aliniat la stânga pentru a fi mai ușor de citit */
   flex: 1;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5) !important; /* Text shadow pentru claritate */
 }
 
 .zoom-banner-text strong {
-  font-weight: 700;
-  color: #000;
+  font-weight: 800 !important; /* Font foarte bold pentru cuvintele importante */
+  color: #000 !important;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.7) !important;
 }
 
 .zoom-banner-close {
@@ -109,23 +115,37 @@ body:has(.zoom-recommendation-banner:not(.closing)) .header-spacer {
 /* Mobile responsive */
 @media (max-width: 768px) {
   .zoom-recommendation-banner {
-    padding: clamp(0.4rem, 1.5vw, 0.6rem) clamp(0.75rem, 3vw, 1rem);
+    top: 15px !important;
+    right: 15px !important;
+    left: 15px !important; /* Pe mobile ocupă mai mult spațiu dar totuși nu toată lățimea */
+    max-width: calc(100vw - 30px) !important;
+    padding: clamp(0.6rem, 2vw, 0.9rem) clamp(1rem, 3vw, 1.5rem) !important;
   }
 
   .zoom-banner-content {
     flex-wrap: wrap;
-    gap: clamp(0.3rem, 1vw, 0.5rem);
+    gap: clamp(0.5rem, 1.5vw, 0.75rem);
   }
 
   .zoom-banner-text {
-    font-size: clamp(0.65rem, 2vw, 0.8rem);
-    flex-basis: calc(100% - 60px);
+    font-size: clamp(0.8rem, 2.5vw, 1rem) !important; /* Font mai mare pe mobile */
+    flex-basis: calc(100% - 50px);
+    text-align: center !important; /* Centrat pe mobile */
   }
 
   .zoom-banner-close {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 8px;
+    right: 8px;
+  }
+}
+
+/* Ajustare pentru a nu se suprapune cu Sidebar */
+@media (min-width: 769px) {
+  .zoom-recommendation-banner {
+    /* Pe desktop, asigură-te că nu se suprapune cu Sidebar (care este la ~240px) */
+    right: 20px !important;
+    max-width: min(420px, calc(100vw - 280px)) !important; /* Lăsă spațiu pentru Sidebar */
   }
 }
 

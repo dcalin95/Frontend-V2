@@ -398,8 +398,8 @@
 
 .header-mini-timer > div:last-child span,
 .header-mini-timer > a:last-child span {
-  font-size: 1rem;
-  font-weight: 600; /* Lighter, sharper weight - same as HeaderPrice */
+  font-size: clamp(1.1rem, 1.3vw, 1.4rem) !important; /* Mărit de la 1rem pentru mai multă vizibilitate */
+  font-weight: 700 !important; /* Mărit de la 600 pentru mai multă claritate */
   font-family: 'Roboto Mono', 'Courier New', monospace; /* Sharp, clear font - same as HeaderPrice */
   letter-spacing: 0.5px; /* Tighter spacing - same as HeaderPrice */
   padding: 0;
@@ -414,11 +414,14 @@
   border-radius: 0;
   box-shadow: none !important;
   
-  /* SOLANA GRADIENT TEXT */
-  background-image: linear-gradient(90deg, #14F195 0%, #00D4FF 50%, #9945FF 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  /* SOLANA GRADIENT TEXT - MAI VIZIBIL */
+  background-image: linear-gradient(90deg, #14F195 0%, #00D4FF 50%, #9945FF 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  
+  /* Text shadow subtil pentru mai multă claritate */
+  filter: drop-shadow(0 1px 2px rgba(20, 241, 149, 0.3));
   color: transparent;
   
   /* Sharp text */

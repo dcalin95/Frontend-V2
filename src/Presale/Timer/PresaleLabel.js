@@ -105,8 +105,8 @@ const PresaleLabel = ({ compact = false, sloganOnly = false }) => {
               border: 'none',
               borderBottom: 'none',
               display: 'block',
-              fontSize: idx === 0 && lines.length > 1 ? '0.9em' : '1em', // Primul rând ușor mai mic dacă sunt două
-              opacity: idx === 1 ? 0.9 : 1, // Al doilea rând ușor mai transparent
+              fontSize: idx === 0 && lines.length > 1 ? '1em' : '1.1em', // Mărit de la 0.9em/1em pentru mai multă vizibilitate
+              opacity: idx === 1 ? 0.95 : 1, // Al doilea rând ușor mai transparent (mărit de la 0.9)
               whiteSpace: 'nowrap'
             }}
           >

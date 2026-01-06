@@ -73,8 +73,8 @@
    ============================================ */
 .suffixRow {
   font-family: 'Orbitron', 'Rajdhani', system-ui, sans-serif;
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: clamp(1.1rem, 1.3vw, 1.4rem) !important; /* Mărit de la 1rem pentru mai multă vizibilitate */
+  font-weight: 700 !important;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   text-align: center;
@@ -84,12 +84,12 @@
   overflow: visible;
   margin-top: 4px;
   
-  /* SOLANA GRADIENT TEXT - CLAR */
-  background: linear-gradient(90deg, #14F195 0%, #00D4FF 50%, #9945FF 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  /* SOLANA GRADIENT TEXT - MAI VIZIBIL */
+  background: linear-gradient(90deg, #14F195 0%, #00D4FF 50%, #9945FF 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
   
   /* FĂRĂ EFECTE - FĂRĂ SUBLINIERE */
   text-shadow: none !important;
@@ -98,10 +98,11 @@
   border-bottom: none !important;
   box-shadow: none !important;
   
-  /* ULTRA SHARP rendering */
+  /* ULTRA SHARP rendering cu shadow subtil pentru claritate */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: geometricPrecision;
+  filter: drop-shadow(0 1px 2px rgba(20, 241, 149, 0.3)) !important;
   
   /* Tranziție lină pentru fade și blur */
   transition: opacity 0.8s ease-in-out, filter 0.8s ease-in-out;
@@ -217,13 +218,13 @@
   
   /* SLOGAN TEXT - MARE ȘI CLAR PE MOBIL */
   .suffixRow {
-    font-size: 0.9rem !important;
+    font-size: clamp(1rem, 2.5vw, 1.2rem) !important; /* Mărit de la 0.9rem pentru mai multă vizibilitate */
     font-weight: 700 !important;
     letter-spacing: 0.04em;
     padding: 0 !important;
     margin-top: 5px !important;
     
-    /* SOLANA GRADIENT TEXT */
+    /* SOLANA GRADIENT TEXT - MAI VIZIBIL */
     background: linear-gradient(90deg, #14F195 0%, #00D4FF 50%, #9945FF 100%) !important;
     -webkit-background-clip: text !important;
     background-clip: text !important;
@@ -232,6 +233,7 @@
     text-shadow: none !important;
     border: none !important;
     box-shadow: none !important;
+    filter: drop-shadow(0 1px 2px rgba(20, 241, 149, 0.3)) !important; /* Shadow subtil pentru claritate */
   }
   
   .sloganContainer {
