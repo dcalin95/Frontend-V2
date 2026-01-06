@@ -677,6 +677,12 @@ const UnifiedWalletModal = () => {
             }
           }
           
+          // 🛑 CRITICAL: Mark user intent BEFORE connecting (required for WalletContext to accept connection)
+          if (typeof markConnectIntent === 'function') {
+            markConnectIntent();
+            console.log('✅ [UnifiedWalletModal] User intent marked before connection');
+          }
+          
           console.log(`🔌 [EVM] Calling final Wagmi connect({ connector: ${connector.name} })...`);
           await connect({ connector });
           
@@ -684,8 +690,67 @@ const UnifiedWalletModal = () => {
           
           console.log(`✅ [UnifiedWalletModal] Connected to ${connector.name}`);
           
+          // 🛑 CRITICAL: Wait longer for wagmi to update state after connection
+          // Sometimes wagmi takes time to sync isConnected and address, especially with MetaMask
+          // MetaMask can take 1-2 seconds to fully sync state after user approval
+          await new Promise(resolve => setTimeout(resolve, 2000)); // Increased to 2000ms for MetaMask
+          
+          // 🔄 FORCE RE-CHECK: Verify connection by checking provider directly
+          // Sometimes wagmi state doesn't update immediately, but provider already has accounts
+          try {
+            const provider = await connector?.getProvider?.();
+            if (provider) {
+              const accounts = await provider.request({ method: 'eth_accounts' });
+              if (accounts && accounts.length > 0 && (!isConnected || !address)) {
+                console.log(`🔄 [UnifiedWalletModal] Provider has accounts but wagmi state not updated yet. Waiting...`);
+                await new Promise(resolve => setTimeout(resolve, 1000));
+              }
+            }
+          } catch (providerErr) {
+            console.warn('⚠️ [UnifiedWalletModal] Error checking provider:', providerErr);
+          }
+          
+          // Final check - if still not connected after all waits, try to force state update
+          if (!isConnected || !address) {
+            console.error('❌ [UnifiedWalletModal] Connection state not updated after wait!');
+            console.error('   isConnected:', isConnected, 'address:', address);
+            
+            // 🔄 FALLBACK: Try to get address directly from provider and trigger state update
+            try {
+              const provider = await connector?.getProvider?.();
+              if (provider) {
+                const accounts = await provider.request({ method: 'eth_accounts' });
+                if (accounts && accounts.length > 0) {
+                  console.log(`🔄 [UnifiedWalletModal] Provider has accounts: ${accounts[0]}, but wagmi state not updated. Triggering reconnect...`);
+                  // Force wagmi to reconnect by calling connect again (should be instant if already connected)
+                  await connect({ connector });
+                  await new Promise(resolve => setTimeout(resolve, 1000));
+                  
+                  // If still not updated, there's a deeper issue
+                  if (!isConnected || !address) {
+                    console.error('❌ [UnifiedWalletModal] State still not updated after reconnect attempt');
+                    setError('Connection approved but state not updated. Please refresh the page.');
+                    unlockConnection();
+                    return;
+                  }
+                } else {
+                  console.error('❌ [UnifiedWalletModal] Provider has no accounts after connection');
+                  setError('Connection approved but no accounts found. Please try again.');
+                  unlockConnection();
+                  return;
+                }
+              }
+            } catch (fallbackErr) {
+              console.error('❌ [UnifiedWalletModal] Fallback check failed:', fallbackErr);
+              setError('Connection approved but state not updated. Please refresh the page and try again.');
+              unlockConnection();
+              return;
+            }
+          } else {
+            console.log(`✅ [UnifiedWalletModal] Connection state confirmed: ${address}`);
+          }
+          
           // 🛑 CRITICAL: Verify after connection that we didn't connect to Phantom
-          await new Promise(resolve => setTimeout(resolve, 500)); // Wait for connection to settle
           if (typeof window !== 'undefined' && window.ethereum?.isPhantom && !window.ethereum.isMetaMask) {
             console.error(`❌ [CRITICAL] Connected to Phantom instead of MetaMask! Disconnecting...`);
             try {
