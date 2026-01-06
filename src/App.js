@@ -33,6 +33,7 @@ import ScrollToTop from "./components/ScrollToTop"; // ✅ Scroll to top on navi
 import USBlocker from "./components/USBlock/USBlocker"; // 🚫 US Geo-Blocking
 import USBlockedPage from "./components/USBlock/USBlockedPage"; // 🚫 US Blocked Page
 import GeoNoticeBanner from "./components/GeoNoticeBanner"; // 🌍 Global Geo-Notice Banner
+import ZoomRecommendationBanner from "./components/ZoomRecommendationBanner"; // 🔍 Zoom Recommendation Banner
 
 // 🔄 State/Loading
 import CosmicLoader from "./components/DEX/CosmicLoader";
@@ -203,6 +204,7 @@ const MainLayout = ({ children, isMobile, menuOpen, setMenuOpen, headerMenuOpen,
       {/* 📱 PWA Install Prompt - Runs automatically */}
       <InstallAppModal />
       <StarfieldBackground />
+      <ZoomRecommendationBanner /> {/* 🔍 Zoom Recommendation Banner - Shows once if zoom is not 85% */}
       <Header 
         isMenuOpen={headerMenuOpen} 
         toggleMenu={toggleHeaderMenu} 
