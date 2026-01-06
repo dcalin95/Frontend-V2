@@ -3,10 +3,12 @@
    Status: Standardized with body.mode-mobile pattern
    ========================================================================== */
 
-/* Wallet Toggle Wrapper & Button - POZIȚIE CORECTĂ */
+/* ✅ Wallet Toggle Wrapper - POZIȚIE FIXĂ PE MOBILE */
 body.mode-mobile .wallet-toggle-wrapper {
-  top: 160px !important; /* Mai sus */
-  right: 15px !important; /* Mai spre dreapta */
+  position: fixed !important;
+  top: 120px !important; /* Sub header pe mobile */
+  right: 15px !important;
+  left: auto !important;
   transform: none !important;
   z-index: 9999 !important;
 }

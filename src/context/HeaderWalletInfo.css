@@ -1,52 +1,69 @@
 /* 🌟 ULTRA MODERN WALLET STYLE - CLEAN SVG ONLY 🌟 */
 
-/* DESKTOP SPECIFIC OVERRIDE - Fără selector complex */
+/* ✅ POZIȚIE FIXĂ - SUS ÎN DREAPTA, SUB HEADER */
 .wallet-toggle-wrapper {
-  position: fixed; /* Fără !important la position */
-  /* Top și Right sunt controlate de JS pentru Drag & Drop */
-  /* top: 250px !important;  <- SCOS */
-  /* right: 220px !important; <- SCOS */
-  left: auto;
-  z-index: 2147483647 !important;
+  position: fixed !important;
+  top: 130px !important; /* Sub header (header ~110-150px) */
+  right: 20px !important; /* Margine dreapta */
+  left: auto !important;
+  z-index: 9999 !important; /* Sub header (1000) dar peste conținut */
   font-family: 'Inter', 'Segoe UI', sans-serif;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: visible; /* ✅ Permite butonului Minimize să fie vizibil în exterior */
+  overflow: visible !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: block !important;
+  pointer-events: auto !important;
 }
 
-/* ✨ MINIMAL BUTTON - DOAR SVG, FĂRĂ FUNDAL, FĂRĂ CHENAR */
+/* ✨ BUTON WALLET - FIX SUS ÎN DREAPTA - EXPLICIT ȘI VIZIBIL */
 .wallet-toggle-btn-minimal {
-  /* COMPLET TRANSPARENT - FĂRĂ NIMIC */
-  background: transparent !important;
-  border: none !important; /* Fără chenar roșu */
-  box-shadow: none !important;
-  padding: 5px !important; /* Padding mic să nu fie lipit */
+  /* ✅ FUNDAL SUBTIL PENTRU VIZIBILITATE */
+  background: rgba(20, 241, 149, 0.1) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 2px solid rgba(20, 241, 149, 0.3) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px rgba(20, 241, 149, 0.2), 
+              0 0 15px rgba(153, 69, 255, 0.15) !important;
+  padding: 8px !important;
   margin: 0 !important;
   outline: none !important;
   
-  /* Dimensiuni mai mari pentru SVG */
-  width: 68px;
-  height: 85px;
+  /* Dimensiuni mai mari pentru vizibilitate */
+  width: 72px !important;
+  height: 72px !important;
+  min-width: 72px !important;
+  min-height: 72px !important;
   
   /* Layout */
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  cursor: pointer;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
   
   /* Transition pentru hover */
-  transition: transform 0.3s ease, filter 0.3s ease;
+  transition: all 0.3s ease !important;
   
   /* Overflow pentru simbolurile care cad */
-  overflow: visible;
+  overflow: visible !important;
+  
+  /* ✅ FORȚAT vizibilitate */
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
 .wallet-toggle-btn-minimal:hover {
-  transform: scale(1.1);
-  filter: drop-shadow(0 0 15px rgba(20, 241, 149, 0.7));
+  transform: scale(1.08) !important;
+  background: rgba(20, 241, 149, 0.15) !important;
+  border-color: rgba(20, 241, 149, 0.5) !important;
+  box-shadow: 0 6px 30px rgba(20, 241, 149, 0.3), 
+              0 0 25px rgba(153, 69, 255, 0.25) !important;
 }
 
 .wallet-toggle-btn-minimal:active {
-  transform: scale(0.95);
+  transform: scale(0.95) !important;
 }
 
 /* 🎨 SVG ANIMAT - 100% SHARP - FĂRĂ BLUR */
@@ -67,15 +84,15 @@
   transform: scale(1.1);
 }
 
-/* 🖼️ WALLET LOGO IMAGE - NOU */
+/* 🖼️ WALLET LOGO IMAGE - MAI MARE PENTRU VIZIBILITATE */
 .wallet-logo-img {
-  width: 70px;
-  height: 70px;
-  object-fit: contain;
-  transition: transform 0.3s ease, filter 0.3s ease;
-  filter: drop-shadow(0 4px 12px rgba(153, 69, 255, 0.4));
-  position: relative;
-  z-index: 2;
+  width: 56px !important;
+  height: 56px !important;
+  object-fit: contain !important;
+  transition: transform 0.3s ease, filter 0.3s ease !important;
+  filter: drop-shadow(0 4px 12px rgba(153, 69, 255, 0.6)) !important;
+  position: relative !important;
+  z-index: 2 !important;
 }
 
 .wallet-toggle-btn-minimal:hover .wallet-logo-img {

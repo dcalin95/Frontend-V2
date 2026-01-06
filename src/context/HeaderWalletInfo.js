@@ -66,15 +66,8 @@ const HeaderWalletInfo = () => {
     BITS: CURRENT_STAGE_PRICE 
   });
 
-  // 🖱️ DRAG & DROP STATE
-  const [position, setPosition] = useState(() => {
-    const saved = localStorage.getItem('wallet_widget_pos');
-    if (saved) return JSON.parse(saved);
-    return { top: 250, left: window.innerWidth - 300 };
-  });
-
-  const [isDragging, setIsDragging] = useState(false);
-  const [showWalletBox, setShowWalletBox] = useState(false); // ✅ Define showWalletBox early
+  // ✅ POZIȚIE FIXĂ - SUS ÎN DREAPTA, SUB HEADER
+  const [showWalletBox, setShowWalletBox] = useState(false);
 
   // 🎯 NAVIGATION AUTO-MINIMIZE
   useEffect(() => {
@@ -82,33 +75,7 @@ const HeaderWalletInfo = () => {
     setShowWalletBox(false);
   }, [location.pathname]);
 
-  const dragOffset = useRef({ x: 0, y: 0 });
   const wrapperRef = useRef(null);
-
-  // 🛠️ HANDLER DE DRAG IMBUNATATIT
-  const handleMouseDown = (e) => {
-    if (window.innerWidth <= 768) return;
-    
-    // Ignorăm click-urile pe butoane, link-uri sau input-uri
-    if (e.target.closest('button') || e.target.closest('a') || e.target.closest('input')) {
-        // Dacă e butonul principal (iconița), vrem să îl putem trage totuși
-        if (!e.target.closest('.wallet-toggle-btn-minimal')) {
-            return;
-        }
-    }
-
-    setIsDragging(true);
-    
-    // Calculăm offset-ul față de colțul stânga-sus al elementului
-    const rect = wrapperRef.current.getBoundingClientRect();
-    dragOffset.current = {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    };
-    
-    // Prevenim selecția textului în timpul drag-ului
-    e.preventDefault();
-  };
 
   // 🎯 AUTO-OPEN WALLET BOX AFTER CONNECTION
   useEffect(() => {
@@ -126,6 +93,7 @@ const HeaderWalletInfo = () => {
       window.removeEventListener('openWalletBox', handleOpenWalletBox);
     };
   }, []);
+
 
   // 🎯 ALSO AUTO-OPEN WHEN WALLET ADDRESS BECOMES AVAILABLE (fallback)
   // Use a ref to ensure we only auto-open ONCE per session/connection event
@@ -151,38 +119,6 @@ const HeaderWalletInfo = () => {
     }
   }, [walletAddress, showWalletBox]);
 
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (!isDragging) return;
-      
-      const newLeft = e.clientX - dragOffset.current.x;
-      const newTop = e.clientY - dragOffset.current.y;
-
-      // Limităm mișcarea în interiorul ferestrei
-      const maxLeft = window.innerWidth - (wrapperRef.current?.offsetWidth || 50);
-      const maxTop = window.innerHeight - (wrapperRef.current?.offsetHeight || 50);
-
-      setPosition({
-        left: Math.max(0, Math.min(newLeft, maxLeft)),
-        top: Math.max(0, Math.min(newTop, maxTop))
-      });
-    };
-
-    const handleMouseUp = () => {
-      setIsDragging(false);
-      localStorage.setItem('wallet_widget_pos', JSON.stringify(position));
-    };
-
-    if (isDragging) {
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
-    }
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isDragging, position]); // Dependența 'position' e importantă pentru closure
 
 
   // Fetch Live Prices (Dynamic)
@@ -269,23 +205,7 @@ const HeaderWalletInfo = () => {
     <>
       <div 
         ref={wrapperRef}
-        className={`wallet-toggle-wrapper ${showWalletBox ? "open" : "closed"} ${isDragging ? "dragging" : ""}`}
-        // 🛑 MUTAT HANDLERUL AICI PE WRAPPER
-        onMouseDown={handleMouseDown}
-        style={
-          typeof window !== 'undefined' && window.innerWidth > 768 
-            ? { 
-                position: 'fixed', 
-                top: `${position.top}px`, 
-                left: `${position.left}px`,
-                right: 'auto', 
-                zIndex: 2147483647,
-                cursor: isDragging ? 'grabbing' : 'grab',
-                // Important pentru drag:
-                touchAction: 'none' 
-              } 
-            : {}
-        }
+        className={`wallet-toggle-wrapper ${showWalletBox ? "open" : "closed"}`}
       >
       {!showWalletBox && (
         <button className="wallet-toggle-btn-minimal" onClick={() => setShowWalletBox(true)} aria-label="Open Wallet">
