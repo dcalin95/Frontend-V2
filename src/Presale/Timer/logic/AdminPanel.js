@@ -118,6 +118,57 @@ const AdminPanel = () => {
   const [emailPreview, setEmailPreview] = useState('');
   const [showEmailPreview, setShowEmailPreview] = useState(false);
   
+  // ===== TikTok Ads Integration =====
+  const [tiktokAdsData, setTiktokAdsData] = useState([]);
+  const [tiktokAdsLoading, setTiktokAdsLoading] = useState(false);
+  const [tiktokAdGroupName, setTiktokAdGroupName] = useState('');
+  const [tiktokCost, setTiktokCost] = useState('');
+  const [tiktokImpressions, setTiktokImpressions] = useState('');
+  const [tiktokCPM, setTiktokCPM] = useState('');
+  const [tiktokFocusedViews, setTiktokFocusedViews] = useState('');
+  const [tiktokFocusedViewRate, setTiktokFocusedViewRate] = useState('');
+  const [tiktokClicks, setTiktokClicks] = useState('');
+  const [tiktokPaidLikes, setTiktokPaidLikes] = useState('');
+  const [tiktokPaidShares, setTiktokPaidShares] = useState('');
+  const [tiktokPaidComments, setTiktokPaidComments] = useState('');
+  const [tiktokPaidFollows, setTiktokPaidFollows] = useState('');
+  const [tiktokAdStatus, setTiktokAdStatus] = useState('Active');
+  
+  // TikTok API Configuration
+  const [tiktokAccessToken, setTiktokAccessToken] = useState(() => {
+    try {
+      return localStorage.getItem('tiktok_access_token') || '';
+    } catch {
+      return '';
+    }
+  });
+  const [tiktokAdvertiserId, setTiktokAdvertiserId] = useState(() => {
+    try {
+      return localStorage.getItem('tiktok_advertiser_id') || '';
+    } catch {
+      return '';
+    }
+  });
+  const [tiktokApiEnabled, setTiktokApiEnabled] = useState(() => {
+    try {
+      return localStorage.getItem('tiktok_api_enabled') === 'true';
+    } catch {
+      return false;
+    }
+  });
+  const [tiktokAutoRefresh, setTiktokAutoRefresh] = useState(() => {
+    try {
+      return localStorage.getItem('tiktok_auto_refresh') === 'true';
+    } catch {
+      return false;
+    }
+  });
+  const [tiktokLastFetch, setTiktokLastFetch] = useState(null);
+  const [tiktokApiError, setTiktokApiError] = useState(null);
+  const tiktokRefreshIntervalRef = useRef(null);
+  const [tiktokExpandedDetails, setTiktokExpandedDetails] = useState({}); // Track which ad groups have expanded details
+  const [tiktokRawData, setTiktokRawData] = useState([]); // Store raw API response for each ad group
+  
   // Get data directly from CellManager contract
   const cellManagerData = useCellManagerData();
 
@@ -164,8 +215,33 @@ const AdminPanel = () => {
     if (activeTab === "solana-payments") {
       fetchSolanaPayments();
     }
+    
+    if (activeTab === "tiktok-ads" && tiktokApiEnabled && tiktokAccessToken && tiktokAdvertiserId) {
+      fetchTiktokAdsFromAPI();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, isAuthorized]);
+  
+  // Auto-refresh TikTok Ads data
+  useEffect(() => {
+    if (tiktokAutoRefresh && tiktokApiEnabled && tiktokAccessToken && tiktokAdvertiserId && activeTab === "tiktok-ads") {
+      // Refresh every 5 minutes
+      tiktokRefreshIntervalRef.current = setInterval(() => {
+        fetchTiktokAdsFromAPI();
+      }, 5 * 60 * 1000);
+      
+      return () => {
+        if (tiktokRefreshIntervalRef.current) {
+          clearInterval(tiktokRefreshIntervalRef.current);
+        }
+      };
+    } else {
+      if (tiktokRefreshIntervalRef.current) {
+        clearInterval(tiktokRefreshIntervalRef.current);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tiktokAutoRefresh, tiktokApiEnabled, tiktokAccessToken, tiktokAdvertiserId, activeTab]);
 
   // Auto-pick an EVM wallet from SOL rows for on-chain AdditionalReward debug
   useEffect(() => {
@@ -192,6 +268,153 @@ const AdminPanel = () => {
       console.warn("⚠️ Leaderboard demo fetch failed:", e.message);
     } finally {
       setLeaderboardLoading(false);
+    }
+  };
+
+  // Fetch TikTok Ads data from API
+  const fetchTiktokAdsFromAPI = async () => {
+    // Validation
+    if (!tiktokAccessToken || !tiktokAccessToken.trim()) {
+      setTiktokApiError('Access Token is required');
+      toast.error('❌ Please enter TikTok Access Token');
+      return;
+    }
+    
+    if (!tiktokAdvertiserId || !tiktokAdvertiserId.trim()) {
+      setTiktokApiError('Advertiser ID is required');
+      toast.error('❌ Please enter Advertiser ID');
+      return;
+    }
+
+    // Validate Advertiser ID format (should be numeric)
+    if (!/^\d+$/.test(tiktokAdvertiserId.trim())) {
+      setTiktokApiError('Advertiser ID must be numeric');
+      toast.error('❌ Advertiser ID must be numeric');
+      return;
+    }
+
+    setTiktokAdsLoading(true);
+    setTiktokApiError(null);
+
+    try {
+      // Calculate date range (last 7 days by default, matching the URL parameters)
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(endDate.getDate() - 7);
+      
+      // Ensure dates are valid
+      if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+        throw new Error('Invalid date range');
+      }
+      
+      const startDateStr = startDate.toISOString().split('T')[0]; // YYYY-MM-DD
+      const endDateStr = endDate.toISOString().split('T')[0]; // YYYY-MM-DD
+
+      // TikTok Ads API endpoint for ad groups with metrics
+      // Using backend proxy to avoid CORS issues
+      const response = await axios.post(
+        `${API_URL}/api/tiktok-ads/fetch`,
+        {
+          access_token: tiktokAccessToken.trim(),
+          advertiser_id: tiktokAdvertiserId.trim(),
+          start_date: startDateStr,
+          end_date: endDateStr,
+          // Columns matching the URL: stat_cost, show_cnt, cpm, engaged_view, engaged_view_6s_rate, click_cnt, ad_net_like, ad_share, ad_comment, ad_net_follow
+          metrics: [
+            'stat_cost',      // Cost
+            'show_cnt',       // Impressions
+            'cpm',            // CPM
+            'engaged_view',   // 6-second focused views
+            'engaged_view_6s_rate', // Focused view rate
+            'click_cnt',      // Clicks
+            'ad_net_like',    // Paid likes
+            'ad_share',       // Paid shares
+            'ad_comment',     // Paid comments
+            'ad_net_follow'   // Paid follows
+          ],
+          password: ADMIN_PASS
+        },
+        {
+          timeout: 30000 // 30 seconds timeout
+        }
+      );
+
+      if (response.data?.ok && response.data?.data) {
+        const adsData = Array.isArray(response.data.data) ? response.data.data : [];
+        
+        if (adsData.length === 0) {
+          toast.info('ℹ️ No ad groups found for the selected date range');
+          setTiktokAdsData([]);
+          setTiktokLastFetch(new Date());
+          return;
+        }
+        
+        // Transform TikTok API response to our format
+        // TikTok API returns data in format: { dimensions: {...}, metrics: {...} }
+        const transformedAds = adsData.map((ad, index) => {
+          const metrics = ad.metrics || ad;
+          const dimensions = ad.dimensions || {};
+          
+          // Safe parsing with fallbacks
+          const cost = parseFloat(metrics.stat_cost || metrics.cost || 0) || 0;
+          const impressions = parseInt(metrics.show_cnt || metrics.impressions || 0) || 0;
+          const cpm = impressions > 0 ? (cost / impressions) * 1000 : parseFloat(metrics.cpm || 0) || 0;
+          
+          return {
+            id: dimensions.adgroup_id || dimensions.ad_id || `api-${Date.now()}-${index}`,
+            adGroupName: (dimensions.adgroup_name || dimensions.ad_name || `Ad Group ${index + 1}`).trim(),
+            status: dimensions.status === 'ENABLE' ? 'Active' : dimensions.status === 'DISABLE' ? 'Paused' : 'Deleted',
+            cost: cost,
+            impressions: impressions,
+            cpm: cpm,
+            focusedViews: parseInt(metrics.engaged_view || metrics.video_views_6s || 0) || 0,
+            focusedViewRate: parseFloat(metrics.engaged_view_6s_rate || metrics.video_views_6s_rate || 0) || 0,
+            clicks: parseInt(metrics.click_cnt || metrics.clicks || 0) || 0,
+            paidLikes: parseInt(metrics.ad_net_like || metrics.likes || 0) || 0,
+            paidShares: parseInt(metrics.ad_share || metrics.shares || 0) || 0,
+            paidComments: parseInt(metrics.ad_comment || metrics.comments || 0) || 0,
+            paidFollows: parseInt(metrics.ad_net_follow || metrics.follows || 0) || 0,
+            createdAt: dimensions.create_time || new Date().toISOString(),
+            source: 'api',
+            rawData: ad // Store complete raw data for detailed view
+          };
+        }).filter(ad => ad.adGroupName); // Filter out invalid entries
+
+        if (transformedAds.length === 0) {
+          toast.warning('⚠️ No valid ad groups found in response');
+          setTiktokAdsData([]);
+        } else {
+          setTiktokAdsData(transformedAds);
+          toast.success(`✅ Fetched ${transformedAds.length} ad group(s) from TikTok API`);
+        }
+        setTiktokLastFetch(new Date());
+      } else {
+        const errorMsg = response.data?.error || response.data?.message || 'Failed to fetch TikTok Ads data';
+        throw new Error(errorMsg);
+      }
+    } catch (error) {
+      console.error('❌ TikTok Ads API fetch failed:', error);
+      
+      let errorMessage = 'Failed to fetch TikTok Ads data';
+      
+      if (error.response) {
+        // Server responded with error status
+        errorMessage = error.response.data?.error || 
+                      error.response.data?.message || 
+                      `Server error: ${error.response.status}`;
+      } else if (error.request) {
+        // Request made but no response
+        errorMessage = 'No response from server. Please check your connection.';
+      } else if (error.code === 'ECONNABORTED') {
+        errorMessage = 'Request timeout. Please try again.';
+      } else {
+        errorMessage = error.message || 'Unknown error occurred';
+      }
+      
+      setTiktokApiError(errorMessage);
+      toast.error(`❌ TikTok API Error: ${errorMessage}`);
+    } finally {
+      setTiktokAdsLoading(false);
     }
   };
 
@@ -1179,6 +1402,22 @@ const AdminPanel = () => {
               }}
             >
               📧 Email Sender
+            </button>
+            <button 
+              onClick={() => setActiveTab("tiktok-ads")}
+              className={activeTab === "tiktok-ads" ? styles["tab-active"] : styles["tab-inactive"]}
+              style={{
+                padding: '6px 14px',
+                border: 'none',
+                borderRadius: '6px 6px 0 0',
+                background: activeTab === "tiktok-ads" ? '#14F195' : '#444',
+                color: activeTab === "tiktok-ads" ? '#000' : '#fff',
+                cursor: 'pointer',
+                fontWeight: '600',
+                fontSize: '15.6px'
+              }}
+            >
+              🎵 TikTok Ads
             </button>
           </div>
 
@@ -3360,6 +3599,701 @@ const AdminPanel = () => {
               </div>
             </div>
           </div>
+          )}
+
+          {/* TikTok Ads Section */}
+          {activeTab === "tiktok-ads" && (
+            <div className={styles["section"]} style={{ padding: '25px' }}>
+              <h3 style={{ marginBottom: '20px', textAlign: 'center' }}>🎵 TikTok Ads Analytics</h3>
+              
+              {/* API Configuration */}
+              <div style={{ 
+                background: 'rgba(220, 31, 255, 0.05)', 
+                border: '1px solid rgba(220, 31, 255, 0.2)', 
+                borderRadius: '12px', 
+                padding: '20px', 
+                marginBottom: '25px' 
+              }}>
+                <h4 style={{ marginTop: 0, marginBottom: '15px', color: '#DC1FFF' }}>🔌 TikTok Ads API Configuration</h4>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', color: 'rgba(255,255,255,0.9)' }}>
+                      Access Token:
+                    </label>
+                    <input
+                      type="password"
+                      value={tiktokAccessToken}
+                      onChange={(e) => {
+                        setTiktokAccessToken(e.target.value);
+                        localStorage.setItem('tiktok_access_token', e.target.value);
+                      }}
+                      placeholder="Enter TikTok Access Token"
+                      style={{ width: '100%', padding: '8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', color: 'rgba(255,255,255,0.9)' }}>
+                      Advertiser ID:
+                    </label>
+                    <input
+                      type="text"
+                      value={tiktokAdvertiserId}
+                      onChange={(e) => {
+                        setTiktokAdvertiserId(e.target.value);
+                        localStorage.setItem('tiktok_advertiser_id', e.target.value);
+                      }}
+                      placeholder="e.g., 7541096795200585744"
+                      style={{ width: '100%', padding: '8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '10px', marginBottom: '15px', alignItems: 'center' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px', color: 'rgba(255,255,255,0.9)' }}>
+                    <input
+                      type="checkbox"
+                      checked={tiktokApiEnabled}
+                      onChange={(e) => {
+                        setTiktokApiEnabled(e.target.checked);
+                        localStorage.setItem('tiktok_api_enabled', e.target.checked.toString());
+                        if (e.target.checked && tiktokAccessToken && tiktokAdvertiserId) {
+                          fetchTiktokAdsFromAPI();
+                        }
+                      }}
+                      style={{ cursor: 'pointer' }}
+                    />
+                    Enable API Integration
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px', color: 'rgba(255,255,255,0.9)' }}>
+                    <input
+                      type="checkbox"
+                      checked={tiktokAutoRefresh}
+                      onChange={(e) => {
+                        setTiktokAutoRefresh(e.target.checked);
+                        localStorage.setItem('tiktok_auto_refresh', e.target.checked.toString());
+                      }}
+                      disabled={!tiktokApiEnabled}
+                      style={{ cursor: 'pointer' }}
+                    />
+                    Auto-refresh (every 5 min)
+                  </label>
+                </div>
+
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button
+                    onClick={fetchTiktokAdsFromAPI}
+                    disabled={!tiktokApiEnabled || !tiktokAccessToken || !tiktokAdvertiserId || tiktokAdsLoading}
+                    style={{
+                      flex: 1,
+                      padding: '10px',
+                      background: tiktokApiEnabled && tiktokAccessToken && tiktokAdvertiserId ? '#DC1FFF' : '#666',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '8px',
+                      cursor: (tiktokApiEnabled && tiktokAccessToken && tiktokAdvertiserId && !tiktokAdsLoading) ? 'pointer' : 'not-allowed',
+                      fontWeight: '600',
+                      fontSize: '15.6px',
+                      opacity: (tiktokApiEnabled && tiktokAccessToken && tiktokAdvertiserId && !tiktokAdsLoading) ? 1 : 0.6
+                    }}
+                  >
+                    {tiktokAdsLoading ? '⏳ Fetching...' : '🔄 Refresh from API'}
+                  </button>
+                  {tiktokLastFetch && (
+                    <div style={{ 
+                      padding: '10px', 
+                      background: 'rgba(255,255,255,0.05)', 
+                      borderRadius: '8px', 
+                      fontSize: '12px', 
+                      color: 'rgba(255,255,255,0.7)',
+                      display: 'flex',
+                      alignItems: 'center'
+                    }}>
+                      Last: {new Date(tiktokLastFetch).toLocaleTimeString()}
+                    </div>
+                  )}
+                </div>
+
+                {tiktokApiError && (
+                  <div style={{ 
+                    marginTop: '15px', 
+                    padding: '10px', 
+                    background: 'rgba(255, 0, 51, 0.1)', 
+                    border: '1px solid rgba(255, 0, 51, 0.3)', 
+                    borderRadius: '6px', 
+                    color: '#ff4444',
+                    fontSize: '13px'
+                  }}>
+                    ⚠️ {tiktokApiError}
+                  </div>
+                )}
+
+                <div style={{ marginTop: '15px', padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', fontSize: '12px', color: 'rgba(255,255,255,0.6)' }}>
+                  💡 <strong>How to get credentials:</strong><br/>
+                  1. Go to TikTok Ads Manager → Tools → API<br/>
+                  2. Create an app and get Access Token<br/>
+                  3. Find your Advertiser ID in Account Settings
+                </div>
+              </div>
+              
+              {/* Import Manual Data Form */}
+              <div style={{ 
+                background: 'rgba(0, 255, 163, 0.05)', 
+                border: '1px solid rgba(0, 255, 163, 0.2)', 
+                borderRadius: '12px', 
+                padding: '20px', 
+                marginBottom: '25px' 
+              }}>
+                <h4 style={{ marginTop: 0, marginBottom: '15px', color: '#00FFA3' }}>📥 Import Ad Group Data</h4>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', color: 'rgba(255,255,255,0.9)' }}>
+                      Ad Group Name:
+                    </label>
+                    <input
+                      type="text"
+                      value={tiktokAdGroupName}
+                      onChange={(e) => setTiktokAdGroupName(e.target.value)}
+                      placeholder="e.g., Copy 1 of Ad group 20251230090357"
+                      style={{ width: '100%', padding: '8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', color: 'rgba(255,255,255,0.9)' }}>
+                      Status:
+                    </label>
+                    <select
+                      value={tiktokAdStatus}
+                      onChange={(e) => setTiktokAdStatus(e.target.value)}
+                      style={{ width: '100%', padding: '8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
+                    >
+                      <option value="Active">Active</option>
+                      <option value="Paused">Paused</option>
+                      <option value="Deleted">Deleted</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', color: 'rgba(255,255,255,0.9)' }}>
+                      Cost (EUR):
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={tiktokCost}
+                      onChange={(e) => setTiktokCost(e.target.value)}
+                      placeholder="24.00"
+                      style={{ width: '100%', padding: '8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', color: 'rgba(255,255,255,0.9)' }}>
+                      Impressions:
+                    </label>
+                    <input
+                      type="number"
+                      value={tiktokImpressions}
+                      onChange={(e) => setTiktokImpressions(e.target.value)}
+                      placeholder="45219"
+                      style={{ width: '100%', padding: '8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', color: 'rgba(255,255,255,0.9)' }}>
+                      CPM (EUR):
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={tiktokCPM}
+                      onChange={(e) => setTiktokCPM(e.target.value)}
+                      placeholder="0.53"
+                      style={{ width: '100%', padding: '8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', color: 'rgba(255,255,255,0.9)' }}>
+                      6-second Focused Views:
+                    </label>
+                    <input
+                      type="number"
+                      value={tiktokFocusedViews}
+                      onChange={(e) => setTiktokFocusedViews(e.target.value)}
+                      placeholder="338"
+                      style={{ width: '100%', padding: '8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', color: 'rgba(255,255,255,0.9)' }}>
+                      Focused View Rate (%):
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={tiktokFocusedViewRate}
+                      onChange={(e) => setTiktokFocusedViewRate(e.target.value)}
+                      placeholder="0.75"
+                      style={{ width: '100%', padding: '8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '15px', marginBottom: '20px' }}>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', color: 'rgba(255,255,255,0.9)' }}>
+                      Clicks:
+                    </label>
+                    <input
+                      type="number"
+                      value={tiktokClicks}
+                      onChange={(e) => setTiktokClicks(e.target.value)}
+                      placeholder="76"
+                      style={{ width: '100%', padding: '8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', color: 'rgba(255,255,255,0.9)' }}>
+                      Paid Likes:
+                    </label>
+                    <input
+                      type="number"
+                      value={tiktokPaidLikes}
+                      onChange={(e) => setTiktokPaidLikes(e.target.value)}
+                      placeholder="18"
+                      style={{ width: '100%', padding: '8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', color: 'rgba(255,255,255,0.9)' }}>
+                      Paid Shares:
+                    </label>
+                    <input
+                      type="number"
+                      value={tiktokPaidShares}
+                      onChange={(e) => setTiktokPaidShares(e.target.value)}
+                      placeholder="0"
+                      style={{ width: '100%', padding: '8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', color: 'rgba(255,255,255,0.9)' }}>
+                      Paid Comments:
+                    </label>
+                    <input
+                      type="number"
+                      value={tiktokPaidComments}
+                      onChange={(e) => setTiktokPaidComments(e.target.value)}
+                      placeholder="0"
+                      style={{ width: '100%', padding: '8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', color: 'rgba(255,255,255,0.9)' }}>
+                    Paid Follows:
+                  </label>
+                  <input
+                    type="number"
+                    value={tiktokPaidFollows}
+                    onChange={(e) => setTiktokPaidFollows(e.target.value)}
+                    placeholder="3"
+                    style={{ width: '100%', padding: '8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
+                  />
+                </div>
+
+                <button
+                  onClick={() => {
+                    if (!tiktokAdGroupName || !tiktokCost) {
+                      toast.error('Please fill in at least Ad Group Name and Cost');
+                      return;
+                    }
+                    const newAd = {
+                      id: Date.now(),
+                      adGroupName: tiktokAdGroupName,
+                      status: tiktokAdStatus,
+                      cost: parseFloat(tiktokCost) || 0,
+                      impressions: parseInt(tiktokImpressions) || 0,
+                      cpm: parseFloat(tiktokCPM) || 0,
+                      focusedViews: parseInt(tiktokFocusedViews) || 0,
+                      focusedViewRate: parseFloat(tiktokFocusedViewRate) || 0,
+                      clicks: parseInt(tiktokClicks) || 0,
+                      paidLikes: parseInt(tiktokPaidLikes) || 0,
+                      paidShares: parseInt(tiktokPaidShares) || 0,
+                      paidComments: parseInt(tiktokPaidComments) || 0,
+                      paidFollows: parseInt(tiktokPaidFollows) || 0,
+                      createdAt: new Date().toISOString(),
+                      source: 'manual'
+                    };
+                    setTiktokAdsData([...tiktokAdsData, newAd]);
+                    // Clear form
+                    setTiktokAdGroupName('');
+                    setTiktokCost('');
+                    setTiktokImpressions('');
+                    setTiktokCPM('');
+                    setTiktokFocusedViews('');
+                    setTiktokFocusedViewRate('');
+                    setTiktokClicks('');
+                    setTiktokPaidLikes('');
+                    setTiktokPaidShares('');
+                    setTiktokPaidComments('');
+                    setTiktokPaidFollows('');
+                    toast.success('✅ Ad group data added successfully!');
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    background: '#00FFA3',
+                    color: '#000',
+                    border: 'none',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    fontWeight: '600',
+                    fontSize: '15.6px'
+                  }}
+                >
+                  ➕ Add Ad Group
+                </button>
+              </div>
+
+              {/* Display Ad Groups Table */}
+              {tiktokAdsData.length > 0 && (
+                <div style={{ marginTop: '30px' }}>
+                  <h4 style={{ marginBottom: '15px', color: '#00FFA3' }}>📊 Ad Groups Summary</h4>
+                  <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', overflow: 'hidden' }}>
+                      <thead>
+                        <tr style={{ background: 'rgba(0, 255, 163, 0.1)' }}>
+                          <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#00FFA3' }}>Ad Group</th>
+                          <th style={{ padding: '12px', textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#00FFA3' }}>Status</th>
+                          <th style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#00FFA3' }}>Cost (EUR)</th>
+                          <th style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#00FFA3' }}>Impressions</th>
+                          <th style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#00FFA3' }}>CPM</th>
+                          <th style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#00FFA3' }}>Clicks</th>
+                          <th style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#00FFA3' }}>CTR</th>
+                          <th style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#00FFA3' }}>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {tiktokAdsData.map((ad, index) => {
+                          const ctr = ad.impressions > 0 ? ((ad.clicks / ad.impressions) * 100).toFixed(2) : '0.00';
+                          return (
+                            <React.Fragment key={ad.id}>
+                            <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                              <td style={{ padding: '12px', color: 'rgba(255,255,255,0.9)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  {ad.adGroupName}
+                                  {ad.source === 'api' && (
+                                    <span style={{
+                                      padding: '2px 6px',
+                                      borderRadius: '4px',
+                                      background: 'rgba(220, 31, 255, 0.2)',
+                                      color: '#DC1FFF',
+                                      fontSize: '10px',
+                                      fontWeight: '600',
+                                      border: '1px solid rgba(220, 31, 255, 0.3)'
+                                    }}>
+                                      API
+                                    </span>
+                                  )}
+                                  {ad.source === 'manual' && (
+                                    <span style={{
+                                      padding: '2px 6px',
+                                      borderRadius: '4px',
+                                      background: 'rgba(0, 255, 163, 0.2)',
+                                      color: '#00FFA3',
+                                      fontSize: '10px',
+                                      fontWeight: '600',
+                                      border: '1px solid rgba(0, 255, 163, 0.3)'
+                                    }}>
+                                      Manual
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
+                              <td style={{ padding: '12px', textAlign: 'center' }}>
+                                <span style={{
+                                  padding: '4px 8px',
+                                  borderRadius: '4px',
+                                  background: ad.status === 'Active' ? 'rgba(0, 255, 163, 0.2)' : 'rgba(255,255,255,0.1)',
+                                  color: ad.status === 'Active' ? '#00FFA3' : 'rgba(255,255,255,0.7)',
+                                  fontSize: '12px',
+                                  fontWeight: '600'
+                                }}>
+                                  {ad.status}
+                                </span>
+                              </td>
+                              <td style={{ padding: '12px', textAlign: 'right', color: 'rgba(255,255,255,0.9)' }}>{fmt(ad.cost, 2)}</td>
+                              <td style={{ padding: '12px', textAlign: 'right', color: 'rgba(255,255,255,0.9)' }}>{fmt(ad.impressions, 0)}</td>
+                              <td style={{ padding: '12px', textAlign: 'right', color: 'rgba(255,255,255,0.9)' }}>{fmt(ad.cpm, 2)}</td>
+                              <td style={{ padding: '12px', textAlign: 'right', color: 'rgba(255,255,255,0.9)' }}>{fmt(ad.clicks, 0)}</td>
+                              <td style={{ padding: '12px', textAlign: 'right', color: 'rgba(255,255,255,0.9)' }}>{ctr}%</td>
+                              <td style={{ padding: '12px', textAlign: 'center' }}>
+                                <div style={{ display: 'flex', gap: '5px', justifyContent: 'center' }}>
+                                  <button
+                                    onClick={() => {
+                                      setTiktokExpandedDetails(prev => ({
+                                        ...prev,
+                                        [ad.id]: !prev[ad.id]
+                                      }));
+                                    }}
+                                    style={{
+                                      padding: '4px 8px',
+                                      background: tiktokExpandedDetails[ad.id] ? 'rgba(220, 31, 255, 0.2)' : 'rgba(0, 255, 163, 0.2)',
+                                      color: tiktokExpandedDetails[ad.id] ? '#DC1FFF' : '#00FFA3',
+                                      border: `1px solid ${tiktokExpandedDetails[ad.id] ? 'rgba(220, 31, 255, 0.3)' : 'rgba(0, 255, 163, 0.3)'}`,
+                                      borderRadius: '4px',
+                                      cursor: 'pointer',
+                                      fontSize: '12px',
+                                      fontWeight: '600'
+                                    }}
+                                    title={tiktokExpandedDetails[ad.id] ? 'Hide details' : 'Show all data'}
+                                  >
+                                    {tiktokExpandedDetails[ad.id] ? '📋' : '👁️'}
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      setTiktokAdsData(tiktokAdsData.filter((_, i) => i !== index));
+                                      toast.info('🗑️ Ad group removed');
+                                    }}
+                                    style={{
+                                      padding: '4px 8px',
+                                      background: 'rgba(255, 0, 51, 0.2)',
+                                      color: '#ff4444',
+                                      border: '1px solid rgba(255, 0, 51, 0.3)',
+                                      borderRadius: '4px',
+                                      cursor: 'pointer',
+                                      fontSize: '12px'
+                                    }}
+                                    title="Remove ad group"
+                                  >
+                                    🗑️
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            {tiktokExpandedDetails[ad.id] && (
+                              <tr key={`${ad.id}-details`} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                <td colSpan="8" style={{ padding: '20px', background: 'rgba(0, 0, 0, 0.3)' }}>
+                                  <div style={{ 
+                                    background: 'rgba(0, 0, 0, 0.5)', 
+                                    borderRadius: '8px', 
+                                    padding: '20px',
+                                    border: '1px solid rgba(220, 31, 255, 0.3)'
+                                  }}>
+                                    <h5 style={{ 
+                                      marginTop: 0, 
+                                      marginBottom: '15px', 
+                                      color: '#DC1FFF',
+                                      fontSize: '16px',
+                                      fontWeight: '600'
+                                    }}>
+                                      📊 Complete Data for: {ad.adGroupName}
+                                    </h5>
+                                    
+                                    {/* All Metrics Grid */}
+                                    <div style={{ 
+                                      display: 'grid', 
+                                      gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+                                      gap: '15px',
+                                      marginBottom: '20px'
+                                    }}>
+                                      <div style={{ padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px' }}>
+                                        <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', marginBottom: '4px' }}>Cost (EUR)</div>
+                                        <div style={{ fontSize: '16px', fontWeight: '600', color: '#00FFA3' }}>{fmt(ad.cost, 2)}</div>
+                                      </div>
+                                      <div style={{ padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px' }}>
+                                        <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', marginBottom: '4px' }}>Impressions</div>
+                                        <div style={{ fontSize: '16px', fontWeight: '600', color: '#00FFA3' }}>{fmt(ad.impressions, 0)}</div>
+                                      </div>
+                                      <div style={{ padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px' }}>
+                                        <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', marginBottom: '4px' }}>CPM (EUR)</div>
+                                        <div style={{ fontSize: '16px', fontWeight: '600', color: '#00FFA3' }}>{fmt(ad.cpm, 2)}</div>
+                                      </div>
+                                      <div style={{ padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px' }}>
+                                        <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', marginBottom: '4px' }}>Clicks</div>
+                                        <div style={{ fontSize: '16px', fontWeight: '600', color: '#00FFA3' }}>{fmt(ad.clicks, 0)}</div>
+                                      </div>
+                                      <div style={{ padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px' }}>
+                                        <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', marginBottom: '4px' }}>CTR (%)</div>
+                                        <div style={{ fontSize: '16px', fontWeight: '600', color: '#00FFA3' }}>{ctr}%</div>
+                                      </div>
+                                      <div style={{ padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px' }}>
+                                        <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', marginBottom: '4px' }}>6s Focused Views</div>
+                                        <div style={{ fontSize: '16px', fontWeight: '600', color: '#DC1FFF' }}>{fmt(ad.focusedViews, 0)}</div>
+                                      </div>
+                                      <div style={{ padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px' }}>
+                                        <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', marginBottom: '4px' }}>Focused View Rate (%)</div>
+                                        <div style={{ fontSize: '16px', fontWeight: '600', color: '#DC1FFF' }}>{fmt(ad.focusedViewRate, 2)}%</div>
+                                      </div>
+                                      <div style={{ padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px' }}>
+                                        <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', marginBottom: '4px' }}>Paid Likes</div>
+                                        <div style={{ fontSize: '16px', fontWeight: '600', color: '#DC1FFF' }}>{fmt(ad.paidLikes, 0)}</div>
+                                      </div>
+                                      <div style={{ padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px' }}>
+                                        <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', marginBottom: '4px' }}>Paid Shares</div>
+                                        <div style={{ fontSize: '16px', fontWeight: '600', color: '#DC1FFF' }}>{fmt(ad.paidShares, 0)}</div>
+                                      </div>
+                                      <div style={{ padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px' }}>
+                                        <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', marginBottom: '4px' }}>Paid Comments</div>
+                                        <div style={{ fontSize: '16px', fontWeight: '600', color: '#DC1FFF' }}>{fmt(ad.paidComments, 0)}</div>
+                                      </div>
+                                      <div style={{ padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px' }}>
+                                        <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', marginBottom: '4px' }}>Paid Follows</div>
+                                        <div style={{ fontSize: '16px', fontWeight: '600', color: '#DC1FFF' }}>{fmt(ad.paidFollows, 0)}</div>
+                                      </div>
+                                    </div>
+
+                                    {/* Raw JSON Data */}
+                                    <div style={{ marginTop: '20px' }}>
+                                      <div style={{ 
+                                        display: 'flex', 
+                                        justifyContent: 'space-between', 
+                                        alignItems: 'center',
+                                        marginBottom: '10px'
+                                      }}>
+                                        <h6 style={{ 
+                                          margin: 0, 
+                                          color: '#DC1FFF',
+                                          fontSize: '14px',
+                                          fontWeight: '600'
+                                        }}>
+                                          📋 Raw JSON Data (Copy this for analysis)
+                                        </h6>
+                                        <button
+                                          onClick={() => {
+                                            const jsonStr = JSON.stringify(ad.rawData || ad, null, 2);
+                                            navigator.clipboard.writeText(jsonStr);
+                                            toast.success('✅ Raw JSON data copied to clipboard!');
+                                          }}
+                                          style={{
+                                            padding: '6px 12px',
+                                            background: 'rgba(220, 31, 255, 0.2)',
+                                            color: '#DC1FFF',
+                                            border: '1px solid rgba(220, 31, 255, 0.3)',
+                                            borderRadius: '6px',
+                                            cursor: 'pointer',
+                                            fontSize: '12px',
+                                            fontWeight: '600'
+                                          }}
+                                        >
+                                          📋 Copy JSON
+                                        </button>
+                                      </div>
+                                      <pre style={{
+                                        background: 'rgba(0, 0, 0, 0.5)',
+                                        padding: '15px',
+                                        borderRadius: '6px',
+                                        overflow: 'auto',
+                                        fontSize: '12px',
+                                        color: 'rgba(255,255,255,0.9)',
+                                        border: '1px solid rgba(220, 31, 255, 0.2)',
+                                        maxHeight: '400px',
+                                        fontFamily: 'monospace',
+                                        whiteSpace: 'pre-wrap',
+                                        wordBreak: 'break-word'
+                                      }}>
+                                        {JSON.stringify(ad.rawData || ad, null, 2)}
+                                      </pre>
+                                    </div>
+
+                                    {/* Formatted Data Table */}
+                                    <div style={{ marginTop: '20px' }}>
+                                      <h6 style={{ 
+                                        margin: '0 0 10px 0', 
+                                        color: '#DC1FFF',
+                                        fontSize: '14px',
+                                        fontWeight: '600'
+                                      }}>
+                                        📊 Formatted Data (Easy to Copy)
+                                      </h6>
+                                      <div style={{
+                                        background: 'rgba(0, 0, 0, 0.3)',
+                                        padding: '15px',
+                                        borderRadius: '6px',
+                                        fontSize: '13px',
+                                        fontFamily: 'monospace',
+                                        color: 'rgba(255,255,255,0.9)',
+                                        lineHeight: '1.8',
+                                        border: '1px solid rgba(220, 31, 255, 0.2)'
+                                      }}>
+                                        <div><strong>Ad Group Name:</strong> {ad.adGroupName}</div>
+                                        <div><strong>Status:</strong> {ad.status}</div>
+                                        <div><strong>Cost (EUR):</strong> {fmt(ad.cost, 2)}</div>
+                                        <div><strong>Impressions:</strong> {fmt(ad.impressions, 0)}</div>
+                                        <div><strong>CPM (EUR):</strong> {fmt(ad.cpm, 2)}</div>
+                                        <div><strong>6-second Focused Views:</strong> {fmt(ad.focusedViews, 0)}</div>
+                                        <div><strong>Focused View Rate (%):</strong> {fmt(ad.focusedViewRate, 2)}%</div>
+                                        <div><strong>Clicks:</strong> {fmt(ad.clicks, 0)}</div>
+                                        <div><strong>CTR (%):</strong> {ctr}%</div>
+                                        <div><strong>Paid Likes:</strong> {fmt(ad.paidLikes, 0)}</div>
+                                        <div><strong>Paid Shares:</strong> {fmt(ad.paidShares, 0)}</div>
+                                        <div><strong>Paid Comments:</strong> {fmt(ad.paidComments, 0)}</div>
+                                        <div><strong>Paid Follows:</strong> {fmt(ad.paidFollows, 0)}</div>
+                                        <div><strong>Source:</strong> {ad.source}</div>
+                                        <div><strong>Created At:</strong> {new Date(ad.createdAt).toLocaleString()}</div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+                            )}
+                            </React.Fragment>
+                          );
+                        })}
+                      </tbody>
+                      <tfoot>
+                        <tr style={{ background: 'rgba(0, 255, 163, 0.05)', fontWeight: '600' }}>
+                          <td style={{ padding: '12px', color: '#00FFA3' }}>Total</td>
+                          <td style={{ padding: '12px', textAlign: 'center', color: '#00FFA3' }}>-</td>
+                          <td style={{ padding: '12px', textAlign: 'right', color: '#00FFA3' }}>
+                            {fmt(tiktokAdsData.reduce((sum, ad) => sum + (ad.cost || 0), 0), 2)}
+                          </td>
+                          <td style={{ padding: '12px', textAlign: 'right', color: '#00FFA3' }}>
+                            {fmt(tiktokAdsData.reduce((sum, ad) => sum + (ad.impressions || 0), 0), 0)}
+                          </td>
+                          <td style={{ padding: '12px', textAlign: 'right', color: '#00FFA3' }}>
+                            {tiktokAdsData.length > 0 ? fmt(
+                              tiktokAdsData.reduce((sum, ad) => sum + (ad.cost || 0), 0) / 
+                              tiktokAdsData.reduce((sum, ad) => sum + (ad.impressions || 0), 0) * 1000, 2
+                            ) : '0.00'}
+                          </td>
+                          <td style={{ padding: '12px', textAlign: 'right', color: '#00FFA3' }}>
+                            {fmt(tiktokAdsData.reduce((sum, ad) => sum + (ad.clicks || 0), 0), 0)}
+                          </td>
+                          <td style={{ padding: '12px', textAlign: 'right', color: '#00FFA3' }}>
+                            {tiktokAdsData.length > 0 && tiktokAdsData.reduce((sum, ad) => sum + (ad.impressions || 0), 0) > 0
+                              ? ((tiktokAdsData.reduce((sum, ad) => sum + (ad.clicks || 0), 0) / 
+                                  tiktokAdsData.reduce((sum, ad) => sum + (ad.impressions || 0), 0)) * 100).toFixed(2)
+                              : '0.00'}%
+                          </td>
+                          <td style={{ padding: '12px', textAlign: 'center', color: '#00FFA3' }}>-</td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {tiktokAdsData.length === 0 && (
+                <div style={{ 
+                  textAlign: 'center', 
+                  padding: '40px', 
+                  color: 'rgba(255,255,255,0.5)',
+                  background: 'rgba(255,255,255,0.02)',
+                  borderRadius: '12px',
+                  border: '1px dashed rgba(255,255,255,0.1)'
+                }}>
+                  📊 No ad groups imported yet. Fill in the form above to add your first ad group.
+                </div>
+              )}
+            </div>
           )}
 
           {/* Round End Statistics Display */}

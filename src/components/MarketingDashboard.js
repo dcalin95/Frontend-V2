@@ -39,6 +39,7 @@ const KPI_SEGMENTS = {
 };
 
 const CHANNEL_METRICS = [
+  { channel: 'TikTok Ads', icon: '🎵', cpa: 0.32, roas: 8.5, trend: 24.3 }, // 24 EUR / 76 clicks = 0.32 EUR CPA
   { channel: 'Email automation', icon: '📬', cpa: 8.6, roas: 5.4, trend: 18.4 },
   { channel: 'Telegram community', icon: '💬', cpa: 6.2, roas: 6.1, trend: 22.0 },
   { channel: 'Twitter paid', icon: '🐦', cpa: 9.4, roas: 4.2, trend: 12.6 },
