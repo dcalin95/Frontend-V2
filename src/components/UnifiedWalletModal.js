@@ -64,12 +64,17 @@ const UnifiedWalletModal = () => {
         const currentPage = window.location.hash ? window.location.hash.replace('#', '') : (window.location.pathname || '/presale');
         
         trackTikTokEvent('InitiateCheckout', {
-          content_type: 'wallet_connection',
+          content_id: 'wallet_connect',
+          content_type: 'product',
           content_name: 'Connect Wallet',
+          contents: [{
+            content_id: 'wallet_connect',
+            content_type: 'product',
+            content_name: 'Connect Wallet'
+          }],
           page: currentPage,
           chain: chainName,
           wallet: walletName.toLowerCase(),
-          wallet_address: address.substring(0, 6) + '...' + address.substring(address.length - 4), // First 6 + last 4 chars only
           method: 'evm_direct'
         }, { retry: true, walletAddress: address });
         
@@ -110,12 +115,17 @@ const UnifiedWalletModal = () => {
         const currentPage = window.location.hash ? window.location.hash.replace('#', '') : (window.location.pathname || '/presale');
         
         trackTikTokEvent('InitiateCheckout', {
-          content_type: 'wallet_connection',
+          content_id: 'wallet_connect',
+          content_type: 'product',
           content_name: 'Connect Wallet',
+          contents: [{
+            content_id: 'wallet_connect',
+            content_type: 'product',
+            content_name: 'Connect Wallet'
+          }],
           page: currentPage,
           chain: 'Solana',
           wallet: walletName.toLowerCase(),
-          wallet_address: publicKeyStr.substring(0, 6) + '...' + publicKeyStr.substring(publicKeyStr.length - 4),
           method: 'solana_direct'
         }, { retry: true, walletAddress: publicKeyStr });
         

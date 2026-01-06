@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import './ProofOfWorkCard.css';
 
 const ProofOfWorkCard = () => {
   const [hovered, setHovered] = useState(false);

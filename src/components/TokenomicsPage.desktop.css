@@ -16,6 +16,18 @@
   display: flex;
   gap: 1.2rem; /* Mărit gap pentru mai mult spațiu */
   align-items: center;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+  visibility: visible;
+}
+
+/* Ascunde butoanele când utilizatorul face scroll în jos */
+.tokenomics-controls.scrolled-down {
+  opacity: 0 !important;
+  transform: translateY(-20px) !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 /* Toggle Button - MAI VIZIBIL */
