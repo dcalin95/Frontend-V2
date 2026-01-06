@@ -161,7 +161,7 @@ const handleMATICPayment = async ({
         payment_method: 'MATIC',
         value: Math.round(usdInvested),
         currency: 'USD',
-      }, { retry: true });
+      }, { retry: true, walletAddress: walletAddress });
 
       // 📢 TELEGRAM NOTIFICATION
       const bitsFormatted = ethers.utils.formatUnits(bitsToReceiveBN, 18);

@@ -15,13 +15,24 @@
 
   .presale-grid {
     grid-template-areas:
+      "hero"
+      "trust"
       "select"
       "payment"
       "panel"
+      "why-invest"
+      "advanced-toggle"
       "referral"
       "summary";
     grid-template-columns: 1fr;
     gap: 1.25rem;
+  }
+
+  /* Hero & Trust sections mobile spacing */
+  .grid-hero,
+  .grid-trust {
+    width: 100%;
+    margin: 0 auto;
   }
 
   .grid-payment,
@@ -87,6 +98,14 @@
     width: 100%;
   }
 
+  /* Hero & Trust sections - ensure proper width */
+  .grid-hero,
+  .grid-trust {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+  }
+
   .grid-payment,
   .grid-panel,
   .grid-claim,
@@ -128,6 +147,14 @@
 
   .presale-grid {
     gap: 0.8rem;
+  }
+
+  /* Hero & Trust sections - small phone */
+  .grid-hero,
+  .grid-trust {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
   }
 
   .grid-payment,
@@ -202,6 +229,12 @@ body.in-app-browser .presale-wrapper {
 }
 
 /* Fix pentru carduri în in-app browser - să nu fie tăiate */
+body.in-app-browser .grid-hero,
+body.in-app-browser .grid-trust {
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+
 body.in-app-browser .grid-payment,
 body.in-app-browser .grid-panel,
 body.in-app-browser .grid-claim,

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import './ProofOfTransfer.css';
+// CSS import moved to App.js to avoid chunk loading issues
 
 const ProofOfTransfer = () => {
   const [activeStep, setActiveStep] = useState(0);

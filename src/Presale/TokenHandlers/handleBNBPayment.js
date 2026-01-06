@@ -237,7 +237,7 @@ const handleBNBPayment = async ({
         payment_method: 'BNB',
         value: Math.round(usdInvested),
         currency: 'USD',
-      }, { retry: true });
+      }, { retry: true, walletAddress: walletAddress });
 
     } catch (err) {
       console.warn("⚠️ Error saving transaction in backend:", err.message);

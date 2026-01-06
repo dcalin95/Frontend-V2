@@ -42,7 +42,7 @@ const handleSHIBPayment = async ({
       payment_method: 'SHIB',
       value: Math.round(usdInvested),
       currency: 'USD',
-    }, { retry: true });
+    }, { retry: true, walletAddress: walletAddress });
 
     // 📢 TELEGRAM NOTIFICATION
     const bitsFormatted = parseFloat(bitsToReceive).toFixed(2);

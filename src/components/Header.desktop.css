@@ -6,15 +6,15 @@
 
 /* Force header background to non-transparent to avoid white flash */
 .header { background: rgba(15, 20, 25, 0.85); backdrop-filter: none; }
-/* === HEADER - SOLANA/AI STYLE === */
+/* === HEADER - SOLANA/AI STYLE - FULLY DYNAMIC === */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: rgba(15, 20, 25, 0.85);
   color: white;
-  padding: 2.5rem 2rem 0.5rem 2rem;
-  height: 150px;
+  padding: clamp(1.5rem, 3.5vh, 2.5rem) clamp(1rem, 2vw, 2rem) clamp(0.3rem, 0.8vh, 0.5rem) clamp(1rem, 2vw, 2rem);
+  height: clamp(110px, 15vh, 150px);
   width: 100%;
   position: fixed;
   top: 0;
@@ -24,7 +24,7 @@
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   box-shadow: none;
-  gap: 2rem;
+  gap: clamp(1rem, 2vw, 2rem);
   font-family: 'Inter', sans-serif;
   transition: all 0.3s ease; /* Smooth transition for dynamic header */
   overflow: visible; /* Allow slogan to overflow */
@@ -32,26 +32,26 @@
 
 /* === DYNAMIC SCROLLED STATE === */
 .header.scrolled {
-  padding: 1rem 2rem;
-  height: 110px;
+  padding: clamp(0.75rem, 1.5vh, 1rem) clamp(1rem, 2vw, 2rem);
+  height: clamp(80px, 11vh, 110px);
   background: rgba(10, 14, 18, 0.95);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: none;
 }
 
-/* === LOGO === */
+/* === LOGO - DYNAMIC === */
 .logo-container {
   flex: 0 0 auto;
-  min-width: 80px;
+  min-width: clamp(60px, 8vw, 80px);
   display: flex;
   justify-content: flex-start;
   align-items: center;
 }
 
 .logo-container .logo {
-  width: 60px !important;
-  height: 60px !important;
+  width: clamp(45px, 6vw, 60px) !important;
+  height: clamp(45px, 6vw, 60px) !important;
   border-radius: 50%;
   object-fit: cover;
   box-shadow: 0 0 30px rgba(0, 255, 163, 0.5), 0 0 60px rgba(220, 31, 255, 0.3);
@@ -60,8 +60,8 @@
 }
 
 .header.scrolled .logo-container .logo {
-  width: 50px !important;
-  height: 50px !important;
+  width: clamp(38px, 5vw, 50px) !important;
+  height: clamp(38px, 5vw, 50px) !important;
 }
 
 .logo:hover {
@@ -70,16 +70,17 @@
   filter: drop-shadow(0 6px 20px rgba(0, 255, 163, 0.6));
 }
 
-/* === NAVIGATION === */
+/* === NAVIGATION - FULLY DYNAMIC - OPTIMIZED FOR 90% ZOOM === */
 .navigation {
   display: flex;
-  gap: 0.5rem;
+  gap: clamp(0.25rem, 0.4vw, 0.45rem);
   flex-wrap: wrap;
   align-items: center;
   flex: 1;
   justify-content: center;
-  margin: 0 1rem;
-  max-width: calc(100% - 400px);
+  margin: 0 clamp(0.4rem, 0.9vw, 0.9rem);
+  max-width: calc(100% - clamp(200px, 25vw, 350px)); /* Reduced for 90% zoom */
+  min-width: 0; /* Allow shrinking */
 }
 
 /* Desktop navigation open styles - only apply above mobile breakpoint */
@@ -96,19 +97,19 @@
   }
 }
 
-/* === BUTTONS - SOLANA/AI STYLE === */
+/* === BUTTONS - SOLANA/AI STYLE - OPTIMIZED FOR 85% ZOOM === */
 .navigation a,
 .navigation button {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
-  padding: 4px 10px;
-  font-size: 1rem;
+  gap: clamp(2px, 0.3vw, 3px);
+  padding: clamp(0.35rem, 0.6vw, 0.45rem) clamp(0.7rem, 1.1vw, 0.9rem);
+  font-size: clamp(0.8rem, 1.15vw, 0.95rem); /* Increased for better visibility */
   font-weight: 600;
   font-family: 'Inter', sans-serif;
-  border-radius: 30px;
+  border-radius: clamp(20px, 3vw, 28px);
   background: transparent;
-  border: 2px solid transparent;
+  border: clamp(1.2px, 0.2vw, 1.8px) solid transparent;
   position: relative;
   text-decoration: none;
   white-space: nowrap;
@@ -120,6 +121,10 @@
   -webkit-text-fill-color: transparent;
   animation: shine 14s linear infinite;
   transition: all 0.3s ease;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  flex-shrink: 0; /* Prevent buttons from shrinking too much */
 }
 
 /* 🔧 FIX: Override for buttons that need SOLID text (not gradient) */
@@ -334,25 +339,25 @@
   transform: scale(1.05);
 }
 
-/* === TIMER - AI SOLANA STYLE === */
+/* === TIMER - AI SOLANA STYLE - DYNAMIC === */
 .header-mini-timer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: clamp(1px, 0.2vw, 2px);
   text-align: center;
   overflow: visible;
   position: relative;
-  padding-bottom: 2px;
-  margin-right: 15px; /* Distanță față de social */
-  margin-left: -10px; /* Tragere ușoară spre stânga */
+  padding-bottom: clamp(1px, 0.2vw, 2px);
+  margin-right: clamp(10px, 1.5vw, 15px); /* Distanță față de social - dynamic */
+  margin-left: clamp(-8px, -1vw, -10px); /* Tragere ușoară spre stânga - dynamic */
   
   /* Smooth transitions */
   transition: all 0.3s ease;
-  /* Make timer+slogans smaller (enforced) */
-  transform: scale(0.85) !important;
+  /* Make timer+slogans smaller (enforced) - now dynamic */
+  transform: scale(clamp(0.75, 0.85vw, 0.85)) !important;
   transform-origin: center center;
-  font-size: 0.85em;
+  font-size: clamp(0.75em, 0.85vw, 0.85em);
 }
 
 .header-mini-timer:hover {
@@ -439,24 +444,24 @@
   }
 }
 
-/* === SOCIAL === */
+/* === SOCIAL - DYNAMIC === */
 .right-section {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: clamp(0.6rem, 1vw, 1rem);
   flex: 0 0 auto;
-  min-width: 200px;
+  min-width: clamp(150px, 18vw, 200px);
   justify-content: flex-end;
 }
 
 .social {
   display: flex;
-  gap: 12px;
+  gap: clamp(8px, 1vw, 12px);
 }
 
 .social-link {
-  width: 38px;
-  height: 38px;
+  width: clamp(30px, 4vw, 38px);
+  height: clamp(30px, 4vw, 38px);
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -468,8 +473,8 @@
 }
 
 .social-link img {
-  width: 24px !important;
-  height: 24px !important;
+  width: clamp(18px, 2.5vw, 24px) !important;
+  height: clamp(18px, 2.5vw, 24px) !important;
   filter: drop-shadow(0 2px 8px rgba(0, 255, 163, 0.3));
 }
 
@@ -533,39 +538,20 @@
   100% { background-position: 200% center; }
 }
 
-/* === RESPONSIVE ADJUSTMENTS FOR DESKTOP === */
-@media (max-width: 1400px) {
-  .navigation {
-    gap: 0.4rem;
-    max-width: calc(100% - 350px);
-  }
-  
-  .navigation a,
-  .navigation button {
-    padding: 3px 8px;
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 1300px) {
-  .navigation {
-    gap: 0.3rem;
-    max-width: calc(100% - 300px);
-  }
-  
-  .navigation a,
-  .navigation button {
-    padding: 2px 6px;
-    font-size: 0.8rem;
-  }
-  
-  .right-section {
-    min-width: 150px;
-  }
-}
+/* === RESPONSIVE ADJUSTMENTS - NOW USING VIEWPORT UNITS === */
+/* Aceste media queries sunt acum redundante - totul este dinamic cu clamp() */
+/* Păstrăm doar pentru Opera și cazuri speciale */
 
 /* Opera desktop: reduce padding și font ca să încapă primul rând de butoane */
-body.opera .navigation { max-width: calc(100% - 320px) !important; gap: 0.35rem !important; }
+body.opera .navigation { 
+  max-width: calc(100% - clamp(200px, 25vw, 320px)) !important; 
+  gap: clamp(0.25rem, 0.4vw, 0.35rem) !important; 
+}
 body.opera .navigation a,
-body.opera .navigation button { padding: 2px 6px !important; font-size: 0.85rem !important; }
-body.opera .right-section { min-width: 160px !important; }
+body.opera .navigation button { 
+  padding: clamp(0.15rem, 0.3vw, 0.2rem) clamp(0.4rem, 0.7vw, 0.6rem) !important; 
+  font-size: clamp(0.7rem, 1vw, 0.85rem) !important; 
+}
+body.opera .right-section { 
+  min-width: clamp(120px, 15vw, 160px) !important; 
+}

@@ -147,8 +147,8 @@ canvas[class*="background"],
 
 .presale-wrapper {
   flex: 1;
-  padding: 140px 2rem 2rem 2rem; /* 🔽 UPDATED: Increased top padding to 140px to prevent header overlap */
-  margin-top: 2vh; /* 🔽 UPDATED: Added 2vh margin top for safety */
+  padding: clamp(70px, 8.8vh, 106px) clamp(0.88rem, 1.76vw, 1.76rem) clamp(0.88rem, 1.76vw, 1.76rem) clamp(0.88rem, 1.76vw, 1.76rem);
+  margin-top: clamp(0, 0.88vh, 1.76vh);
   display: flex;
   justify-content: center;
   box-sizing: border-box;
@@ -156,29 +156,84 @@ canvas[class*="background"],
   min-height: calc(100svh - 80px);
 }
 
-/* Reserve space for the fixed Presale Copilot (desktop) to prevent overlap */
+/* Reserve space for the fixed Presale Copilot (desktop) to prevent overlap - OPTIMIZED FOR 90% ZOOM */
 @media (min-width: 993px) {
   body.presale-copilot-open .presale-wrapper {
-    padding-right: 446px; /* slightly reduced */
+    padding-right: clamp(320px, 35vw, 420px); /* Increased to prevent overlap */
   }
   body.presale-copilot-closed .presale-wrapper {
-    padding-right: 369px; /* slightly reduced */
+    padding-right: clamp(280px, 30vw, 360px); /* Increased to prevent overlap */
   }
 }
 
 .presale-grid {
   display: grid;
   grid-template-areas:
+    "hero hero"
+    "trust trust"
     "select select"
     "payment panel"
+    "why-invest why-invest"
+    "advanced-toggle advanced-toggle"
     "referral summary";
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+  gap: clamp(0.3rem, 0.52vw, 0.68rem); /* Optimized for 85% zoom */
+  row-gap: clamp(0.38rem, 0.6vw, 0.76rem); /* Optimized for 85% zoom */
   width: 100%;
-  max-width: 1280px;
+  max-width: min(912px, 92vw); /* Optimized for 85% zoom */
   position: relative;
   overflow: visible; /* Allow content to overflow naturally */
-  align-items: stretch;
+  align-items: start; /* Changed from stretch to start */
+}
+
+/* Compact mode pentru zoom redus sau ecrane mai mici */
+@media (max-width: 1440px), (max-height: 900px) {
+  .presale-grid {
+    gap: clamp(0.53rem, 0.88vw, 1.1rem);
+  }
+  
+  .presale-hero {
+    padding: clamp(0.88rem, 1.32vw, 1.32rem) clamp(0.66rem, 0.88vw, 0.88rem);
+    margin-bottom: clamp(0.66rem, 1.056vw, 1.32rem);
+  }
+  
+  .presale-hero-title {
+    font-size: clamp(1.32rem, 2.64vw, 1.94rem);
+    margin-bottom: clamp(0.44rem, 0.704vw, 0.66rem);
+  }
+  
+  .presale-hero-subtitle {
+    font-size: clamp(0.79rem, 1.32vw, 1.01rem);
+    margin: clamp(0.26rem, 0.44vw, 0.35rem) 0;
+  }
+  
+  .presale-hero-timer {
+    font-size: clamp(0.75rem, 1.056vw, 0.88rem);
+    margin: clamp(0.26rem, 0.44vw, 0.35rem) 0 clamp(0.66rem, 1.056vw, 0.88rem) 0;
+  }
+  
+  .presale-hero-buttons {
+    gap: clamp(0.44rem, 0.704vw, 0.66rem);
+    margin-top: clamp(0.66rem, 1.056vw, 0.88rem);
+  }
+  
+  .presale-hero-cta-primary {
+    padding: clamp(0.75rem, 1.056vw, 0.88rem) clamp(1.32rem, 2.2vw, 2.2rem);
+    font-size: clamp(0.84rem, 1.232vw, 1.01rem);
+  }
+  
+  .presale-hero-cta-secondary {
+    padding: clamp(0.66rem, 0.88vw, 0.79rem) clamp(1.1rem, 1.76vw, 1.76rem);
+    font-size: clamp(0.75rem, 1.056vw, 0.88rem);
+  }
+  
+  .card-box,
+  .grid-payment,
+  .grid-panel,
+  .grid-claim,
+  .grid-summary {
+    padding: clamp(0.79rem, 1.056vw, 1.1rem);
+  }
 }
 
 /* 🚨 FIX NUCLEAR: Toate elementele absolute/fixed din grid = pointer-events none */
@@ -193,6 +248,24 @@ canvas[class*="background"],
   height: 100%;
 }
 
+.grid-hero {
+  grid-area: hero;
+  height: fit-content !important;
+  min-height: unset !important;
+  align-self: start !important;
+}
+
+.grid-trust {
+  grid-area: trust;
+  height: fit-content !important;
+  min-height: unset !important;
+  align-self: start !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
 .grid-select   { 
   grid-area: select; 
   height: fit-content !important; /* 🎯 DOAR cât conținutul SelectPaymentMethod! */
@@ -204,8 +277,87 @@ canvas[class*="background"],
   border: none !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
-  padding: 0 !important; /* Remove padding to ensure no ghost box */
+  padding-top: clamp(1.1rem, 1.76vw, 1.76rem) !important; /* Reduced by 12% */
+  padding-bottom: clamp(0.44rem, 0.704vw, 0.88rem) !important; /* Reduced by 12% */
+  margin-bottom: clamp(0.44rem, 0.704vw, 0.88rem) !important; /* Reduced by 12% */
+  margin-top: clamp(0.66rem, 1.056vw, 1.32rem) !important; /* Reduced by 12% */
   position: relative;
+  z-index: 1; /* Ensure it's above other elements */
+}
+
+.grid-why-invest {
+  grid-area: why-invest;
+  height: fit-content !important;
+  min-height: unset !important;
+  align-self: start !important;
+}
+
+.why-invest-container {
+  padding: clamp(1.1rem, 1.76vw, 1.76rem);
+  background: linear-gradient(135deg, rgba(0, 255, 163, 0.1) 0%, rgba(220, 31, 255, 0.1) 100%);
+  border-radius: clamp(0.88rem, 1.32vw, 17.6px);
+  border: 1px solid rgba(0, 255, 163, 0.2);
+}
+
+.why-invest-title {
+  font-size: clamp(1.23rem, 2.2vw, 1.58rem);
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: clamp(0.66rem, 0.88vw, 0.88rem);
+  text-align: center;
+}
+
+.why-invest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(clamp(158px, 17.6vw, 176px), 1fr));
+  gap: clamp(0.88rem, 1.32vw, 1.32rem);
+  margin-top: clamp(0.88rem, 1.32vw, 1.32rem);
+}
+
+.why-invest-item {
+  text-align: center;
+}
+
+.why-invest-icon {
+  font-size: clamp(1.76rem, 2.64vw, 2.2rem);
+  margin-bottom: clamp(0.35rem, 0.528vw, 0.44rem);
+}
+
+.why-invest-item-title {
+  color: #00FFA3;
+  font-size: clamp(0.88rem, 1.32vw, 1.06rem);
+  font-weight: 600;
+  margin-bottom: clamp(0.35rem, 0.528vw, 0.44rem);
+}
+
+.why-invest-item-text {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: clamp(0.75rem, 1.056vw, 0.84rem);
+}
+
+.grid-advanced-toggle {
+  grid-area: advanced-toggle;
+  height: fit-content !important;
+  min-height: unset !important;
+  align-self: start !important;
+}
+
+.grid-advanced-section {
+  grid-area: advanced;
+  height: fit-content !important;
+  min-height: unset !important;
+  align-self: start !important;
+  padding: 1rem 0;
+}
+
+.advanced-section-title {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  margin: 0;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
 /* 🚨 NUCLEAR CLEANUP: Hide any phantom pseudo-elements behind the selection area */
@@ -222,11 +374,15 @@ canvas[class*="background"],
 
 .grid-payment  { 
   grid-area: payment; 
-  margin-top: 10vh; /* 🔽 Push down 10% from the top component */
+  margin-top: clamp(0.44rem, 0.88vw, 0.88rem); /* Reduced by 12% */
+  position: relative;
+  z-index: 1;
 }
 .grid-panel    { 
   grid-area: panel; 
-  margin-top: 10vh; /* 🔽 Push down 10% from the top component */
+  margin-top: clamp(0.44rem, 0.88vw, 0.88rem); /* Reduced by 12% */
+  position: relative;
+  z-index: 1;
 }
 .grid-claim    { grid-area: referral; }
 .grid-summary  { grid-area: summary; }
@@ -245,8 +401,8 @@ canvas[class*="background"],
 .grid-panel,
 .grid-claim,
 .grid-summary {
-  padding: 1.5rem;
-  border-radius: 1.5rem;
+  padding: clamp(0.68rem, 0.96vw, 1rem); /* Optimized for 90% zoom */
+  border-radius: clamp(0.68rem, 0.96vw, 1rem); /* Optimized for 90% zoom */
   background: rgba(0, 0, 0, 0.25); /* 🎨 Fundal subtil transparent */
   border: 1px solid rgba(0, 255, 163, 0.2); /* 🌟 Linie neon foarte fină */
   backdrop-filter: none;

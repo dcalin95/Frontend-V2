@@ -1238,6 +1238,25 @@ const EducationPageModern = () => {
               </Link>
             </div>
 
+            {/* 🆕 Blockchain Tools - 3 Specific Buttons */}
+            <div className="ai-cta-actions-compact" style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+              <h3 style={{ textAlign: 'center', marginBottom: '1rem', color: '#00ffc8', fontSize: '1.3rem' }}>🔧 Blockchain Tools</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', maxWidth: '900px', margin: '0 auto' }}>
+                <Link to="/education/bitcoin-mempool" className="ai-cta-button primary compact">
+                  <span className="cta-text">₿ Bitcoin Mempool</span>
+                  <div className="cta-icon">₿</div>
+                </Link>
+                <Link to="/education/stacks-mempool" className="ai-cta-button secondary compact">
+                  <span className="cta-text">🟧 Stacks Mempool</span>
+                  <div className="cta-icon">🟧</div>
+                </Link>
+                <Link to="/education/ai-system-status" className="ai-cta-button primary compact" style={{ background: 'linear-gradient(135deg, #DC1FFF 0%, #00FFA3 100%)' }}>
+                  <span className="cta-text">🔧 AI System Status</span>
+                  <div className="cta-icon">🔧</div>
+                </Link>
+              </div>
+            </div>
+
           {/* BitPulse Lightning Quiz */}
           <div style={{ marginTop: 16 }}>
             <MiniQuizGPT />

@@ -4,7 +4,7 @@ import PageRouter from './PageRouter';
 import TopicCard from './components/TopicCard';
 import ProgressNavigator from './components/ProgressNavigator';
 import { trackTikTokEvent } from '../../utils/tiktok';
-import './BitcoinAcademy.css';
+// CSS imports moved to App.js to avoid chunk loading issues
 
 const BitcoinAcademyHome = () => {
   const [currentPage, setCurrentPage] = useState(null);

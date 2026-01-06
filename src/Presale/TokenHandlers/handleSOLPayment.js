@@ -622,7 +622,7 @@ const handleSOLPayment = async ({
       payment_method: 'SOL',
       value: Math.round(usdValue),
       currency: 'USD',
-    }, { retry: true });
+      }, { retry: true, walletAddress: walletAddress });
     
     // Save to localStorage
     try {

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import ProofOfTransfer from './ProofOfTransfer';
-import './ProofOfTransfer.css';
+// CSS import moved to App.js to avoid chunk loading issues
 
 const ProofOfTransferPage = () => {
   // 🎯 GOOGLE ADS CONVERSION TRACKING - PROOF OF TRANSFER PAGE

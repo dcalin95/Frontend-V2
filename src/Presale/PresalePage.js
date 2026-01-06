@@ -17,9 +17,11 @@ import { useSelectedToken } from "./hooks/useSelectedToken";
 import useTokenPrices from "./prices/useTokenPrices";
 import { useWallet } from "../context/WalletContext";
 import AdjustFontButton from "../components/AdjustFontButton";
-import RecentBTCFeed from "./BITSAnalytics/RecentBTCFeed";
-import RecentStacksFeed from "./BITSAnalytics/RecentStacksFeed";
 import PresaleCopilot from "./components/PresaleCopilot";
+import PresaleHero from "./components/PresaleHero";
+import TrustIndicators from "./components/TrustIndicators";
+import { useHybridPresaleState } from "./Timer/useHybridPresaleState";
+import useCellManagerData from "./hooks/useCellManagerData";
 
 // Lazy loaded components for better performance
 const PaymentBox = lazy(() => import("./PaymentBox/PaymentBox"));
@@ -62,6 +64,38 @@ const PresalePage = () => {
   const [particleCount, setParticleCount] = useState(40);
   const [showParticles, setShowParticles] = useState(false); // 🎨 Toggle particles
   const [darkMode, setDarkMode] = useState(true); // 🌑 Dark mode - Apple Super Dark
+  const [showAdvanced, setShowAdvanced] = useState(false); // 📊 Toggle advanced sections for new investors
+
+  // Get presale data for Hero Section
+  const hybridState = useHybridPresaleState();
+  const cellManagerData = useCellManagerData();
+  const currentPrice = cellManagerData?.currentPrice && cellManagerData.currentPrice > 0 
+    ? cellManagerData.currentPrice 
+    : null;
+  const [daysRemaining, setDaysRemaining] = useState(null);
+  const [isHeroLoading, setIsHeroLoading] = useState(true);
+
+  // Calculate days remaining from endTime
+  useEffect(() => {
+    if (hybridState?.endTime) {
+      setIsHeroLoading(false);
+      const updateDays = () => {
+        const now = Date.now();
+        const diff = hybridState.endTime - now;
+        if (diff > 0) {
+          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          setDaysRemaining(days);
+        } else {
+          setDaysRemaining(0);
+        }
+      };
+      updateDays();
+      const interval = setInterval(updateDays, 60000); // Update every minute
+      return () => clearInterval(interval);
+    } else if (hybridState?.isLoaded !== undefined) {
+      setIsHeroLoading(!hybridState.isLoaded);
+    }
+  }, [hybridState?.endTime, hybridState?.isLoaded]);
 
   useEffect(() => {
     // 🛑 CRITICAL FIX: Removed automatic wallet detection on mount
@@ -271,7 +305,7 @@ const PresalePage = () => {
           payment_method: 'stripe',
           currency: 'EUR',
           // Note: Exact amount not available in URL params, but conversion is tracked
-        });
+        }, { walletAddress: walletAddress || null });
       } catch (_) {}
     } else if (paymentStatus === "stripe-cancel") {
       setStripeFeedback({
@@ -380,6 +414,20 @@ const PresalePage = () => {
       )}
       <div className="presale-wrapper">
         <div className="presale-grid">
+          {/* Hero Section */}
+          <div className="grid-hero">
+            <PresaleHero 
+              currentPrice={currentPrice}
+              daysRemaining={daysRemaining}
+              isLoading={isHeroLoading || cellManagerData?.loading}
+            />
+          </div>
+
+          {/* Trust Indicators */}
+          <div className="grid-trust">
+            <TrustIndicators />
+          </div>
+
           {/* Select Token/Chain */}
           <div className="grid-select">
             <SelectPaymentMethod
@@ -414,23 +462,82 @@ const PresalePage = () => {
             </div>
           </div>
 
-          {/* Referral */}
-          <div className="grid-claim card-box">
-            <Suspense fallback={<PresaleLoading />}>
-              <ReferralRewardBox walletAddress={walletAddress} />
-            </Suspense>
+          {/* Why Invest Section - For New Investors */}
+          <div className="grid-why-invest card-box">
+            <div className="why-invest-container">
+              <h2 className="why-invest-title">
+                💎 Why Invest in $BITS?
+              </h2>
+              <div className="why-invest-grid">
+                <div className="why-invest-item">
+                  <div className="why-invest-icon">🚀</div>
+                  <h3 className="why-invest-item-title">Early Entry</h3>
+                  <p className="why-invest-item-text">Get in before public launch at presale prices</p>
+                </div>
+                <div className="why-invest-item">
+                  <div className="why-invest-icon">💎</div>
+                  <h3 className="why-invest-item-title">Secure & Audited</h3>
+                  <p className="why-invest-item-text">Smart contracts audited for maximum security</p>
+                </div>
+                <div className="why-invest-item">
+                  <div className="why-invest-icon">📈</div>
+                  <h3 className="why-invest-item-title">Growth Potential</h3>
+                  <p className="why-invest-item-text">Listed on top-tier exchanges after presale</p>
+                </div>
+                <div className="why-invest-item">
+                  <div className="why-invest-icon">⚡</div>
+                  <h3 className="why-invest-item-title">Instant Access</h3>
+                  <p className="why-invest-item-text">Tokens delivered immediately after purchase</p>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* BITS Analytics */}
-          <div className="grid-summary card-box">
-            <Suspense fallback={<PresaleLoading />}>
-              <BITSAnalytics />
-            </Suspense>
-            {/* Live BTC feed under analytics */}
-            <RecentBTCFeed />
-            {/* Live STX feed under BTC feed */}
-            <RecentStacksFeed />
+          {/* Advanced Sections Toggle */}
+          <div className="grid-advanced-toggle" style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '1.5rem',
+            marginTop: '2rem'
+          }}>
+            <button
+              onClick={() => setShowAdvanced(!showAdvanced)}
+              style={{
+                background: showAdvanced ? 'linear-gradient(135deg, #00FFA3, #DC1FFF)' : 'rgba(255, 255, 255, 0.1)',
+                color: showAdvanced ? '#000' : '#fff',
+                border: `2px solid ${showAdvanced ? 'transparent' : 'rgba(0, 255, 163, 0.5)'}`,
+                padding: '0.75rem 2rem',
+                borderRadius: '50px',
+                fontSize: '1rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                backdropFilter: 'blur(10px)'
+              }}
+            >
+              {showAdvanced ? '▼ Hide Advanced Info' : '▶ Show Advanced Info (Rewards, Analytics)'}
+            </button>
           </div>
+
+          {/* Advanced Sections - Collapsible */}
+          {showAdvanced && (
+            <>
+              {/* Referral */}
+              <div className="grid-claim card-box">
+                <Suspense fallback={<PresaleLoading />}>
+                  <ReferralRewardBox walletAddress={walletAddress} />
+                </Suspense>
+              </div>
+
+              {/* BITS Analytics */}
+              <div className="grid-summary card-box">
+                <Suspense fallback={<PresaleLoading />}>
+                  <BITSAnalytics />
+                </Suspense>
+              </div>
+            </>
+          )}
 
         </div>
 

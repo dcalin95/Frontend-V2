@@ -1,18 +1,25 @@
 import React from 'react';
 import BitcoinAcademyHome from './BitcoinAcademyHome';
-import './BitcoinAcademy.css';
-import './BitcoinAcademy.mobile.css';
+// CSS imports moved to BitcoinAcademyHome to avoid chunk loading issues
 import useGoogleAnalytics from '../../hooks/useGoogleAnalytics';
 
 const BitcoinAcademy = () => {
-  const { trackEducationEvent, trackPageView } = useGoogleAnalytics();
+  const analytics = useGoogleAnalytics();
+  const { trackEducationEvent, trackPageView } = analytics || {};
 
   React.useEffect(() => {
     try {
-      trackPageView('Bitcoin Academy', { section: 'bitcoin_academy' });
-      trackEducationEvent('view', { category: 'bitcoin_academy' });
-    } catch (_) {}
+      if (trackPageView && typeof trackPageView === 'function') {
+        trackPageView('Bitcoin Academy', { section: 'bitcoin_academy' });
+      }
+      if (trackEducationEvent && typeof trackEducationEvent === 'function') {
+        trackEducationEvent('view', { category: 'bitcoin_academy' });
+      }
+    } catch (error) {
+      console.warn('Bitcoin Academy: Analytics tracking error:', error);
+    }
   }, [trackPageView, trackEducationEvent]);
+  
   return (
     <div className="bitcoin-academy-wrapper">
       <BitcoinAcademyHome />

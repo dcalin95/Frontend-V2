@@ -2,6 +2,11 @@
 import "react-toastify/dist/ReactToastify.css";
 import "./styles/GlobalStyles.css";
 import "./toastStyle.css";
+
+// 📚 Bitcoin Academy CSS - Imported here to avoid chunk loading issues
+import "./components/BitcoinAcademy/BitcoinAcademy.css";
+import "./components/BitcoinAcademy/BitcoinAcademy.mobile.css";
+import "./components/BitcoinAcademy/pages/ProofOfTransfer.css";
  
 
 // 🧠 Core React
@@ -51,6 +56,9 @@ import AIStandaloneLayout from "./components/AIStandaloneLayout";
 // 📈 Google Analytics
 import GoogleAnalyticsWrapper from "./components/GoogleAnalyticsWrapper";
 
+// 📊 TikTok Analytics
+import { trackTikTokPageView } from "./utils/tiktok";
+
 const STANDALONE_TOOL_PATHS = {
   "/ai-marketing": "marketing",
   "/ai-crypto": "crypto",
@@ -73,11 +81,16 @@ const lazyWithRetry = (importer) => lazy(() => new Promise((resolve, reject) => 
       .then(resolve)
       .catch((err) => {
         const message = String((err && err.message) || err || "");
-        const chunkFailed = /ChunkLoadError|Loading chunk [0-9]+ failed/i.test(message);
+        // Handle both JS and CSS chunk loading errors
+        const chunkFailed = /ChunkLoadError|Loading chunk [0-9]+ failed|Loading CSS chunk [0-9]+ failed/i.test(message);
         if (chunkFailed && typeof window !== "undefined") {
           const key = "__lazy_reload_once__";
           if (!sessionStorage.getItem(key)) {
             try { sessionStorage.setItem(key, "1"); } catch (_) {}
+            // Clear all caches before reload
+            if ('caches' in window) {
+              caches.keys().then(keys => keys.forEach(key => caches.delete(key)));
+            }
             window.location.reload();
             return;
           }
@@ -132,6 +145,9 @@ const InvitePage = lazyWithRetry(() => import("./components/Invite/InvitePage"))
 const BitcoinAcademy = lazyWithRetry(() => import("./components/BitcoinAcademy"));
 const ProofOfTransferPage = lazyWithRetry(() => import("./components/BitcoinAcademy/pages/ProofOfTransferPage"));
 const EducationPage = lazyWithRetry(() => import("./components/EducationPageModern"));
+const BitcoinMempoolPage = lazyWithRetry(() => import("./components/Education/BitcoinMempoolPage"));
+const StacksMempoolPage = lazyWithRetry(() => import("./components/Education/StacksMempoolPage"));
+const AISystemStatusPage = lazyWithRetry(() => import("./components/Education/AISystemStatusPage"));
 const WelcomePage = lazyWithRetry(() => import("./components/WelcomePage"));
 const OrbitPage = lazyWithRetry(() => import("./components/OrbitPage"));
 const AIPortfolioPage = lazyWithRetry(() => import("./components/AIPortfolioPage"));
@@ -219,6 +235,42 @@ const MainLayout = ({ children, isMobile, menuOpen, setMenuOpen, headerMenuOpen,
   );
 };
 
+// 📊 TikTok PageView Tracker Component (for SPA hash routing)
+const TikTokPageViewTracker = () => {
+  const location = useLocation();
+  const prevPathRef = React.useRef(null);
+  const isInitialMount = React.useRef(true);
+
+  React.useEffect(() => {
+    // Get full path including hash (e.g., '/presale' from '#/presale')
+    // For hash routing, pathname might be '/' but hash is '#/presale'
+    const hashPath = location.hash ? location.hash.replace('#', '') : '';
+    const currentPath = hashPath || location.pathname || '/';
+    
+    // Skip initial mount (ttq.page() is already called in index.html)
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      prevPathRef.current = currentPath;
+      return;
+    }
+    
+    // Only track if path changed (avoid duplicate on initial load)
+    if (prevPathRef.current !== currentPath && currentPath !== '/') {
+      prevPathRef.current = currentPath;
+      
+      // Small delay to ensure page is fully loaded
+      setTimeout(() => {
+        trackTikTokPageView(currentPath, {
+          page_url: window.location.href,
+          page_title: document.title || 'Bits AI'
+        });
+      }, 150);
+    }
+  }, [location.pathname, location.hash]);
+
+  return null; // This component doesn't render anything
+};
+
 const App = () => {
   const [amountPay, setAmountPay] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false); // Sidebar menu
@@ -296,6 +348,7 @@ const App = () => {
       {renderToastContainer()}
 
       <Router>
+        <TikTokPageViewTracker /> {/* 📊 TikTok PageView tracking for hash routing */}
         <ScrollToTop /> {/* ✅ Scroll to top on every route change */}
         <GoogleAnalyticsWrapper>
           <ErrorBoundary>
@@ -426,6 +479,9 @@ const App = () => {
                       <Route path="/bitcoin-academy" element={<BitcoinAcademy />} />
                       <Route path="/proof-of-transfer" element={<ProofOfTransferPage />} />
                       <Route path="/education" element={<EducationPage />} />
+                      <Route path="/education/bitcoin-mempool" element={<BitcoinMempoolPage />} />
+                      <Route path="/education/stacks-mempool" element={<StacksMempoolPage />} />
+                      <Route path="/education/ai-system-status" element={<AISystemStatusPage />} />
                       <Route path="/orbit" element={<OrbitPage />} />
                       <Route path="/welcome" element={<WelcomePage />} />
                       <Route path="/admin-test" element={<AdminPanel />} />

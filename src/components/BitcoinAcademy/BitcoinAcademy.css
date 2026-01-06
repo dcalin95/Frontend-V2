@@ -6333,8 +6333,9 @@ html {
 
 /* REMOVED .blockchain-container - now using direct blockchain-ai layout */
 
-/* Animated Network Grid Background */
-.network-grid {
+/* Animated Network Grid Background - Scoped to Bitcoin Academy only */
+.bitcoin-academy-wrapper .network-grid,
+.bitcoin-academy .network-grid {
   position: absolute;
   top: 0;
   left: 0;

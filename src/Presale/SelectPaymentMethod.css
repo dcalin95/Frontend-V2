@@ -22,9 +22,10 @@
 .token-selector h2 {
   font-family: 'Orbitron', 'Space Grotesk', sans-serif;
   font-weight: 900;
-  margin-bottom: 28px;
-  font-size: 1.8rem;
-  letter-spacing: 1px;
+  margin-bottom: clamp(0.53rem, 0.704vw, 0.88rem); /* Reduced by 12% */
+  margin-top: clamp(0.35rem, 0.528vw, 0.66rem); /* Reduced by 12% */
+  font-size: clamp(0.97rem, 1.584vw, 1.32rem); /* Reduced by 12% */
+  letter-spacing: 0.5px;
   text-transform: uppercase;
   
   /* AI SOLANA GRADIENT */
@@ -32,15 +33,17 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 15px rgba(0, 255, 163, 0.4));
+  filter: drop-shadow(0 0 12px rgba(0, 255, 163, 0.35));
+  position: relative;
+  z-index: 1;
 }
 
 /* === Tab-uri Chain (EVM/Solana/Fiat) === AI SONNET STYLE */
 .chain-toggle {
   display: flex;
-  gap: 14px;
+  gap: clamp(0.44rem, 0.704vw, 0.75rem); /* Reduced by 12% */
   justify-content: center;
-  margin-bottom: 32px;
+  margin-bottom: clamp(0.66rem, 0.88vw, 1.1rem); /* Reduced by 12% */
   flex-wrap: wrap;
   
   /* 🚨 CLEANUP */
@@ -48,15 +51,17 @@
   box-shadow: none !important;
   border: none !important;
   backdrop-filter: none !important;
+  position: relative;
+  z-index: 1;
 }
 
 .chain-tab {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 24px; /* Slightly reduced padding */
-  font-size: 0.95rem;
+  gap: clamp(0.35rem, 0.528vw, 0.53rem); /* Reduced by 12% */
+  padding: clamp(0.44rem, 0.616vw, 0.62rem) clamp(0.79rem, 1.232vw, 1.32rem); /* Reduced by 12% */
+  font-size: clamp(0.70rem, 0.88vw, 0.79rem); /* Reduced by 12% */
   font-weight: 600;
   font-family: 'Space Grotesk', sans-serif; /* Solana Style Font */
   
@@ -66,7 +71,7 @@
   -webkit-backdrop-filter: none !important;
   
   border: 1px solid rgba(255, 255, 255, 0.1); /* Thinner border */
-  border-radius: 12px; /* Slightly sharper corners */
+  border-radius: 7px; /* Reduced by 12% */
   color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
   transition: all 0.2s ease; /* Faster transition */
@@ -100,15 +105,18 @@
 .token-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: clamp(0.44rem, 0.704vw, 0.75rem); /* Reduced by 12% */
   justify-content: center;
-  margin-top: 20px;
+  margin-top: clamp(0.53rem, 0.792vw, 0.88rem); /* Reduced by 12% */
+  margin-bottom: clamp(0.44rem, 0.704vw, 0.88rem); /* Reduced by 12% */
   perspective: 1000px;
   
   /* 🚨 CLEANUP */
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
+  position: relative;
+  z-index: 1;
 }
 
 /* === Buton Token === AI SONNET GLASSMORPHISM STYLE */
@@ -117,9 +125,9 @@
   display: flex !important;
   align-items: center !important;
   justify-content: flex-start !important; /* Align content to start */
-  padding: 10px 16px !important; /* Compact padding */
-  min-width: 130px !important;
-  height: 56px !important; /* Fixed height to prevent deformation */
+  padding: clamp(0.44rem, 0.616vw, 0.57rem) clamp(0.62rem, 0.88vw, 0.88rem) !important; /* Reduced by 12% */
+  min-width: clamp(97px, 10.56vw, 106px) !important; /* Reduced by 12% */
+  height: clamp(39px, 4.4vw, 42px) !important; /* Reduced by 12% */
   
   /* 🧹 CRYSTAL CLEAR STYLE */
   background: rgba(15, 20, 35, 0.85) !important; /* Solid dark background */
@@ -127,7 +135,7 @@
   -webkit-backdrop-filter: none !important;
   
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 12px !important;
+  border-radius: 7px !important; /* Reduced by 12% */
   cursor: pointer !important;
   transition: all 0.2s ease !important;
   box-shadow: none !important; /* Removed default shadow */
@@ -153,14 +161,14 @@
 .token-name {
   font-family: 'Space Grotesk', sans-serif !important;
   font-weight: 700 !important;
-  font-size: 0.95rem !important;
+  font-size: 0.84rem !important; /* Reduced by 12% */
   color: #fff;
   letter-spacing: 0.5px;
 }
 
 .token-live-price {
   font-family: 'Inter', sans-serif !important; /* Clean number font */
-  font-size: 0.8rem !important; /* ⬆️ INCREASED SIZE */
+  font-size: 0.70rem !important; /* Reduced by 12% */
   font-weight: 700 !important; /* ⬆️ BOLDER */
   opacity: 1 !important; /* ⬆️ FULL VISIBILITY */
   margin-top: 2px;

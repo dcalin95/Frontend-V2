@@ -123,7 +123,7 @@ const handleGenericPayment = async ({
         payment_method: tokenName,
         value: Math.round(Number(usdInvested) || 0),
         currency: 'USD',
-      }, { retry: true });
+      }, { retry: true, walletAddress: walletAddress });
       
       // 📢 TELEGRAM NOTIFICATION
       const bitsFormatted = ethers.utils.formatUnits(bitsInWei, 18);

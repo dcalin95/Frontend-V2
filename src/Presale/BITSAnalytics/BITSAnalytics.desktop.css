@@ -272,7 +272,7 @@ body {
 
 .portfolio-header-title {
   font-family: 'Orbitron', sans-serif;
-  font-size: 2rem;
+  font-size: clamp(1.5rem, 2.5vw, 1.9rem);
   font-weight: 900;
   background: linear-gradient(135deg, #fff 0%, #00FFA3 100%);
   -webkit-background-clip: text;
@@ -285,8 +285,17 @@ body {
 .portfolio-header-subtitle {
   font-family: 'Inter', sans-serif;
   color: rgba(255, 255, 255, 0.7);
-  font-size: 1rem;
+  font-size: clamp(0.85rem, 1.2vw, 0.95rem);
   margin: 0 0 20px 0;
+  line-height: 1.4;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  /* Force text to wrap on two lines */
+  display: block;
+  text-align: center;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 .portfolio-header-status {
@@ -314,14 +323,16 @@ body {
   50% { transform: translateY(-10px); }
 }
 
-/* GLOBAL WIDGET GRID (Desktop Base) */
+/* GLOBAL WIDGET GRID (Desktop Base) - FORCED 2 ROWS */
 .widget-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 25px;
-  padding: 25px;
+  grid-template-columns: repeat(2, 1fr); /* Force exactly 2 columns for 2 rows */
+  gap: clamp(20px, 2.5vw, 25px);
+  padding: clamp(20px, 2.5vw, 25px);
   padding-bottom: 120px; /* Space for AI Command button */
   font-family: 'Inter', sans-serif;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* GLOBAL WIDGET STYLE (Desktop Base) */

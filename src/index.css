@@ -41,23 +41,37 @@ body::-webkit-scrollbar {
   text-rendering: geometricPrecision;
 }
 
-/* === GLOBAL VARIABLES & RESPONSIVE SCALE SYSTEM === */
+/* === GLOBAL VARIABLES & RESPONSIVE SCALE SYSTEM - OPTIMIZED FOR 85% ZOOM === */
 :root {
-  --base-font-size: 100%;
+  --base-font-size: 68%; /* Optimized for 85% zoom (10.88px base) */
   
-  /* Systematic Spacing & Typography - Auto-Scaling */
-  --spacing-unit: clamp(0.5rem, 2vw, 1rem);
-  --font-size-xs: clamp(0.7rem, 1.5vw, 0.8rem);
-  --font-size-sm: clamp(0.8rem, 2vw, 1rem);
-  --font-size-md: clamp(1rem, 2.5vw, 1.2rem);
-  --font-size-lg: clamp(1.2rem, 3vw, 1.5rem);
-  --font-size-xl: clamp(1.5rem, 4vw, 2rem);
-  --font-size-xxl: clamp(2rem, 5vw, 3rem);
-  --font-size-hero: clamp(2.5rem, 8vw, 4.5rem);
+  /* Systematic Spacing & Typography - Auto-Scaling - Optimized for 85% zoom */
+  --spacing-unit: clamp(0.3rem, 1.1vw, 0.68rem);
+  --font-size-xs: clamp(0.49rem, 0.98vw, 0.57rem);
+  --font-size-sm: clamp(0.57rem, 1.36vw, 0.68rem);
+  --font-size-md: clamp(0.68rem, 1.67vw, 0.84rem);
+  --font-size-lg: clamp(0.84rem, 2.13vw, 1.06rem);
+  --font-size-xl: clamp(1.06rem, 2.66vw, 1.44rem);
+  --font-size-xxl: clamp(1.36rem, 3.42vw, 2.13rem);
+  --font-size-hero: clamp(1.67rem, 5.32vw, 3.04rem);
   
-  --container-padding: clamp(1rem, 5vw, 2rem);
+  --container-padding: clamp(0.68rem, 3.04vw, 1.36rem);
   
   /* Wallet modals are handled by our own UI; no Web3Modal/AppKit variables here. */
+}
+
+/* Better font rendering for zoom levels */
+html {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-size: var(--base-font-size);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* === Token inline (logo + text) — GLOBAL === */
