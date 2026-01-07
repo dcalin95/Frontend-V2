@@ -3795,7 +3795,6 @@ const AdminPanel = () => {
           {/* TikTok Ads Section */}
           {activeTab === "tiktok-ads" && (
             <div className={styles["section"]} style={{ padding: '25px' }}>
-              {console.log('[TikTok Ads] Tab rendered! activeTab:', activeTab, 'csvFileInputRef:', csvFileInputRef.current)}
               <h3 style={{ marginBottom: '20px', textAlign: 'center' }}>🎵 TikTok Ads Analytics</h3>
               
               {/* CSV Import Section - MOVED TO TOP FOR VISIBILITY */}
