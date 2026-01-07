@@ -3824,18 +3824,34 @@ const AdminPanel = () => {
                 </p>
                 
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '15px', flexWrap: 'wrap' }}>
-                  <label 
-                    onClick={(e) => {
-                      console.log('[CSV Import] Label clicked!');
-                      e.preventDefault();
-                      e.stopPropagation();
-                      if (!tiktokCsvImporting && csvFileInputRef.current) {
-                        console.log('[CSV Import] Triggering file input click');
-                        csvFileInputRef.current.click();
+                  <input
+                    id="tiktok-csv-file-input"
+                    ref={csvFileInputRef}
+                    type="file"
+                    accept=".csv,.xlsx,.xls"
+                    onChange={(e) => {
+                      console.log('[CSV Import] Input onChange triggered!', e.target.files);
+                      if (e.target.files && e.target.files.length > 0) {
+                        handleCsvImport(e);
                       } else {
-                        console.log('[CSV Import] Cannot click - importing:', tiktokCsvImporting, 'ref exists:', !!csvFileInputRef.current);
+                        console.log('[CSV Import] No files in event!');
                       }
                     }}
+                    disabled={tiktokCsvImporting}
+                    style={{ 
+                      position: 'absolute',
+                      width: '1px',
+                      height: '1px',
+                      padding: 0,
+                      margin: '-1px',
+                      overflow: 'hidden',
+                      clip: 'rect(0,0,0,0)',
+                      whiteSpace: 'nowrap',
+                      border: 0
+                    }}
+                  />
+                  <label 
+                    htmlFor="tiktok-csv-file-input"
                     style={{ 
                       flex: 1,
                       minWidth: '250px',
@@ -3848,31 +3864,10 @@ const AdminPanel = () => {
                       border: `2px dashed ${tiktokCsvImporting ? 'rgba(255,255,255,0.3)' : 'rgba(255, 193, 7, 0.6)'}`,
                       cursor: tiktokCsvImporting ? 'not-allowed' : 'pointer',
                       transition: 'all 0.3s ease',
-                      opacity: tiktokCsvImporting ? 0.6 : 1
+                      opacity: tiktokCsvImporting ? 0.6 : 1,
+                      userSelect: 'none'
                     }}
                   >
-                    <input
-                      ref={csvFileInputRef}
-                      type="file"
-                      accept=".csv,.xlsx,.xls"
-                      onChange={(e) => {
-                        console.log('[CSV Import] Input onChange triggered!', e.target.files);
-                        e.stopPropagation();
-                        if (e.target.files && e.target.files.length > 0) {
-                          handleCsvImport(e);
-                        } else {
-                          console.log('[CSV Import] No files in event!');
-                        }
-                      }}
-                      onClick={(e) => {
-                        console.log('[CSV Import] Input onClick triggered!');
-                        e.stopPropagation();
-                      }}
-                      disabled={tiktokCsvImporting}
-                      style={{ 
-                        display: 'none'
-                      }}
-                    />
                     <span style={{ 
                       fontSize: '18px',
                       color: tiktokCsvImporting ? 'rgba(255,255,255,0.5)' : '#FFC107',
