@@ -435,12 +435,26 @@ const AdminPanel = () => {
         });
         
         if (newAds.length > 0) {
-          console.log('[CSV Import] Setting new ads data:', newAds.length, 'ads');
+          console.log('[CSV Import] ========== SETTING NEW DATA ==========');
+          console.log('[CSV Import] New ads to add:', newAds.length);
+          console.log('[CSV Import] Current tiktokAdsData length:', tiktokAdsData.length);
+          console.log('[CSV Import] Sample new ad:', newAds[0]);
+          
           setTiktokAdsData((prevData) => {
             const updated = [...prevData, ...newAds];
-            console.log('[CSV Import] Updated tiktokAdsData length:', updated.length);
+            console.log('[CSV Import] ========== STATE UPDATED ==========');
+            console.log('[CSV Import] Previous length:', prevData.length);
+            console.log('[CSV Import] Updated length:', updated.length);
+            console.log('[CSV Import] First item in updated:', updated[0]);
             return updated;
           });
+          
+          // Force a re-render check
+          setTimeout(() => {
+            console.log('[CSV Import] ========== AFTER STATE UPDATE ==========');
+            console.log('[CSV Import] Checking if state was updated...');
+          }, 100);
+          
           const skippedCount = transformedAds.length - newAds.length;
           if (skippedCount > 0) {
             toast.success(`✅ Imported ${newAds.length} new ad group(s), ${skippedCount} duplicate(s) skipped`);
@@ -453,6 +467,7 @@ const AdminPanel = () => {
             console.log(`[CSV Import] Summary: ${response.data.processed_rows} rows processed, ${response.data.imported_count} imported, ${response.data.skipped_rows || 0} skipped`);
           }
         } else {
+          console.warn('[CSV Import] ⚠️ No new ads to add - all are duplicates');
           toast.warning(`⚠️ All ${transformedAds.length} ad group(s) from CSV already exist in the list`);
         }
 
@@ -3895,6 +3910,15 @@ const AdminPanel = () => {
               </div>
 
               {/* Display Ad Groups Table */}
+              {(() => {
+                console.log('[TikTok Ads Table] ========== RENDERING CHECK ==========');
+                console.log('[TikTok Ads Table] tiktokAdsData.length:', tiktokAdsData.length);
+                console.log('[TikTok Ads Table] Should render table?', tiktokAdsData.length > 0);
+                if (tiktokAdsData.length > 0) {
+                  console.log('[TikTok Ads Table] First item:', tiktokAdsData[0]);
+                }
+                return null;
+              })()}
               {tiktokAdsData.length > 0 && (
                 <div style={{ marginTop: '30px' }}>
                   <h4 style={{ marginBottom: '15px', color: '#00FFA3' }}>📊 Ad Groups Summary</h4>
