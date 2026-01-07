@@ -4069,17 +4069,23 @@ const AdminPanel = () => {
                 <div style={{ marginTop: '30px' }}>
                   <h4 style={{ marginBottom: '15px', color: '#00FFA3' }}>📊 Ad Groups Summary</h4>
                   <div style={{ overflowX: 'auto' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', overflow: 'hidden' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(0, 255, 163, 0.2)' }}>
                       <thead>
-                        <tr style={{ background: 'rgba(0, 255, 163, 0.1)' }}>
-                          <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#00FFA3' }}>Ad Group</th>
-                          <th style={{ padding: '12px', textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#00FFA3' }}>Status</th>
-                          <th style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#00FFA3' }}>Cost (EUR)</th>
-                          <th style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#00FFA3' }}>Impressions</th>
-                          <th style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#00FFA3' }}>CPM</th>
-                          <th style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#00FFA3' }}>Clicks</th>
-                          <th style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#00FFA3' }}>CTR</th>
-                          <th style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#00FFA3' }}>Actions</th>
+                        <tr style={{ background: 'rgba(0, 255, 163, 0.15)' }}>
+                          <th style={{ padding: '14px 10px', textAlign: 'left', borderBottom: '2px solid rgba(0, 255, 163, 0.3)', color: '#00FFA3', fontSize: '13px', fontWeight: '700', whiteSpace: 'nowrap' }}>Ad Group</th>
+                          <th style={{ padding: '14px 10px', textAlign: 'center', borderBottom: '2px solid rgba(0, 255, 163, 0.3)', color: '#00FFA3', fontSize: '13px', fontWeight: '700', whiteSpace: 'nowrap' }}>Status</th>
+                          <th style={{ padding: '14px 10px', textAlign: 'right', borderBottom: '2px solid rgba(0, 255, 163, 0.3)', color: '#00FFA3', fontSize: '13px', fontWeight: '700', whiteSpace: 'nowrap' }}>Cost (EUR)</th>
+                          <th style={{ padding: '14px 10px', textAlign: 'right', borderBottom: '2px solid rgba(0, 255, 163, 0.3)', color: '#00FFA3', fontSize: '13px', fontWeight: '700', whiteSpace: 'nowrap' }}>Impressions</th>
+                          <th style={{ padding: '14px 10px', textAlign: 'right', borderBottom: '2px solid rgba(0, 255, 163, 0.3)', color: '#00FFA3', fontSize: '13px', fontWeight: '700', whiteSpace: 'nowrap' }}>CPM</th>
+                          <th style={{ padding: '14px 10px', textAlign: 'right', borderBottom: '2px solid rgba(0, 255, 163, 0.3)', color: '#00FFA3', fontSize: '13px', fontWeight: '700', whiteSpace: 'nowrap' }}>6s Views</th>
+                          <th style={{ padding: '14px 10px', textAlign: 'right', borderBottom: '2px solid rgba(0, 255, 163, 0.3)', color: '#00FFA3', fontSize: '13px', fontWeight: '700', whiteSpace: 'nowrap' }}>View Rate</th>
+                          <th style={{ padding: '14px 10px', textAlign: 'right', borderBottom: '2px solid rgba(0, 255, 163, 0.3)', color: '#00FFA3', fontSize: '13px', fontWeight: '700', whiteSpace: 'nowrap' }}>Clicks</th>
+                          <th style={{ padding: '14px 10px', textAlign: 'right', borderBottom: '2px solid rgba(0, 255, 163, 0.3)', color: '#00FFA3', fontSize: '13px', fontWeight: '700', whiteSpace: 'nowrap' }}>CTR</th>
+                          <th style={{ padding: '14px 10px', textAlign: 'right', borderBottom: '2px solid rgba(0, 255, 163, 0.3)', color: '#00FFA3', fontSize: '13px', fontWeight: '700', whiteSpace: 'nowrap' }}>Likes</th>
+                          <th style={{ padding: '14px 10px', textAlign: 'right', borderBottom: '2px solid rgba(0, 255, 163, 0.3)', color: '#00FFA3', fontSize: '13px', fontWeight: '700', whiteSpace: 'nowrap' }}>Shares</th>
+                          <th style={{ padding: '14px 10px', textAlign: 'right', borderBottom: '2px solid rgba(0, 255, 163, 0.3)', color: '#00FFA3', fontSize: '13px', fontWeight: '700', whiteSpace: 'nowrap' }}>Comments</th>
+                          <th style={{ padding: '14px 10px', textAlign: 'right', borderBottom: '2px solid rgba(0, 255, 163, 0.3)', color: '#00FFA3', fontSize: '13px', fontWeight: '700', whiteSpace: 'nowrap' }}>Follows</th>
+                          <th style={{ padding: '14px 10px', textAlign: 'center', borderBottom: '2px solid rgba(0, 255, 163, 0.3)', color: '#00FFA3', fontSize: '13px', fontWeight: '700', whiteSpace: 'nowrap' }}>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -4087,56 +4093,63 @@ const AdminPanel = () => {
                           const ctr = ad.impressions > 0 ? ((ad.clicks / ad.impressions) * 100).toFixed(2) : '0.00';
                           return (
                             <React.Fragment key={ad.id}>
-                            <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                              <td style={{ padding: '12px', color: 'rgba(255,255,255,0.9)' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                  {ad.adGroupName}
+                            <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', background: index % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.01)' }}>
+                              <td style={{ padding: '14px 10px', color: '#FFFFFF', fontSize: '13px', fontWeight: '500' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                                  <span style={{ color: '#FFFFFF', fontWeight: '600' }}>{ad.adGroupName}</span>
                                   {ad.source === 'api' && (
                                     <span style={{
-                                      padding: '2px 6px',
+                                      padding: '3px 7px',
                                       borderRadius: '4px',
-                                      background: 'rgba(220, 31, 255, 0.2)',
+                                      background: 'rgba(220, 31, 255, 0.25)',
                                       color: '#DC1FFF',
                                       fontSize: '10px',
-                                      fontWeight: '600',
-                                      border: '1px solid rgba(220, 31, 255, 0.3)'
+                                      fontWeight: '700',
+                                      border: '1px solid rgba(220, 31, 255, 0.4)'
                                     }}>
                                       API
                                     </span>
                                   )}
                                   {ad.source === 'manual' && (
                                     <span style={{
-                                      padding: '2px 6px',
+                                      padding: '3px 7px',
                                       borderRadius: '4px',
-                                      background: 'rgba(0, 255, 163, 0.2)',
+                                      background: 'rgba(0, 255, 163, 0.25)',
                                       color: '#00FFA3',
                                       fontSize: '10px',
-                                      fontWeight: '600',
-                                      border: '1px solid rgba(0, 255, 163, 0.3)'
+                                      fontWeight: '700',
+                                      border: '1px solid rgba(0, 255, 163, 0.4)'
                                     }}>
                                       Manual
                                     </span>
                                   )}
                                 </div>
                               </td>
-                              <td style={{ padding: '12px', textAlign: 'center' }}>
+                              <td style={{ padding: '14px 10px', textAlign: 'center' }}>
                                 <span style={{
-                                  padding: '4px 8px',
-                                  borderRadius: '4px',
-                                  background: ad.status === 'Active' ? 'rgba(0, 255, 163, 0.2)' : 'rgba(255,255,255,0.1)',
-                                  color: ad.status === 'Active' ? '#00FFA3' : 'rgba(255,255,255,0.7)',
+                                  padding: '5px 10px',
+                                  borderRadius: '5px',
+                                  background: ad.status === 'Active' ? 'rgba(0, 255, 163, 0.25)' : 'rgba(255,255,255,0.15)',
+                                  color: ad.status === 'Active' ? '#00FFA3' : 'rgba(255,255,255,0.8)',
                                   fontSize: '12px',
-                                  fontWeight: '600'
+                                  fontWeight: '700',
+                                  border: `1px solid ${ad.status === 'Active' ? 'rgba(0, 255, 163, 0.4)' : 'rgba(255,255,255,0.2)'}`
                                 }}>
                                   {ad.status}
                                 </span>
                               </td>
-                              <td style={{ padding: '12px', textAlign: 'right', color: 'rgba(255,255,255,0.9)' }}>{fmt(ad.cost, 2)}</td>
-                              <td style={{ padding: '12px', textAlign: 'right', color: 'rgba(255,255,255,0.9)' }}>{fmt(ad.impressions, 0)}</td>
-                              <td style={{ padding: '12px', textAlign: 'right', color: 'rgba(255,255,255,0.9)' }}>{fmt(ad.cpm, 2)}</td>
-                              <td style={{ padding: '12px', textAlign: 'right', color: 'rgba(255,255,255,0.9)' }}>{fmt(ad.clicks, 0)}</td>
-                              <td style={{ padding: '12px', textAlign: 'right', color: 'rgba(255,255,255,0.9)' }}>{ctr}%</td>
-                              <td style={{ padding: '12px', textAlign: 'center' }}>
+                              <td style={{ padding: '14px 10px', textAlign: 'right', color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>{fmt(ad.cost, 2)}</td>
+                              <td style={{ padding: '14px 10px', textAlign: 'right', color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>{fmt(ad.impressions, 0)}</td>
+                              <td style={{ padding: '14px 10px', textAlign: 'right', color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>{fmt(ad.cpm, 2)}</td>
+                              <td style={{ padding: '14px 10px', textAlign: 'right', color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>{fmt(ad.focusedViews || 0, 0)}</td>
+                              <td style={{ padding: '14px 10px', textAlign: 'right', color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>{fmt(ad.focusedViewRate || 0, 2)}%</td>
+                              <td style={{ padding: '14px 10px', textAlign: 'right', color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>{fmt(ad.clicks, 0)}</td>
+                              <td style={{ padding: '14px 10px', textAlign: 'right', color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>{ctr}%</td>
+                              <td style={{ padding: '14px 10px', textAlign: 'right', color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>{fmt(ad.paidLikes || 0, 0)}</td>
+                              <td style={{ padding: '14px 10px', textAlign: 'right', color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>{fmt(ad.paidShares || 0, 0)}</td>
+                              <td style={{ padding: '14px 10px', textAlign: 'right', color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>{fmt(ad.paidComments || 0, 0)}</td>
+                              <td style={{ padding: '14px 10px', textAlign: 'right', color: '#FFFFFF', fontSize: '14px', fontWeight: '600' }}>{fmt(ad.paidFollows || 0, 0)}</td>
+                              <td style={{ padding: '14px 10px', textAlign: 'center' }}>
                                 <div style={{ display: 'flex', gap: '5px', justifyContent: 'center' }}>
                                   <button
                                     onClick={() => {
@@ -4182,7 +4195,7 @@ const AdminPanel = () => {
                             </tr>
                             {tiktokExpandedDetails[ad.id] && (
                               <tr key={`${ad.id}-details`} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                <td colSpan="8" style={{ padding: '20px', background: 'rgba(0, 0, 0, 0.3)' }}>
+                                <td colSpan="14" style={{ padding: '20px', background: 'rgba(0, 0, 0, 0.3)' }}>
                                   <div style={{ 
                                     background: 'rgba(0, 0, 0, 0.5)', 
                                     borderRadius: '8px', 
