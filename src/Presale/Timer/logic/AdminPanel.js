@@ -225,6 +225,16 @@ const AdminPanel = () => {
   
   // TikTok API auto-refresh removed - using CSV import only
 
+  // Debug: Log when TikTok Ads tab is active
+  useEffect(() => {
+    if (activeTab === "tiktok-ads") {
+      console.log('[TikTok Ads] ========== TAB IS ACTIVE ==========');
+      console.log('[TikTok Ads] csvFileInputRef.current:', csvFileInputRef.current);
+      console.log('[TikTok Ads] tiktokCsvImporting:', tiktokCsvImporting);
+      console.log('[TikTok Ads] tiktokAdsData length:', tiktokAdsData.length);
+    }
+  }, [activeTab, tiktokCsvImporting, tiktokAdsData.length]);
+
   // Auto-pick an EVM wallet from SOL rows for on-chain AdditionalReward debug
   useEffect(() => {
     if (solanaSelectedEvmWallet) return;
@@ -3793,7 +3803,9 @@ const AdminPanel = () => {
           )}
 
           {/* TikTok Ads Section */}
-          {activeTab === "tiktok-ads" && (
+          {activeTab === "tiktok-ads" && (() => {
+            console.log('[TikTok Ads] JSX RENDERING - Tab is active!');
+            return (
             <div className={styles["section"]} style={{ padding: '25px' }}>
               <h3 style={{ marginBottom: '20px', textAlign: 'center' }}>🎵 TikTok Ads Analytics</h3>
               
@@ -4240,7 +4252,8 @@ const AdminPanel = () => {
                 </div>
               )}
             </div>
-          )}
+            );
+          })()}
 
           {/* Round End Statistics Display */}
           {showRoundEndStats && roundEndData && (
