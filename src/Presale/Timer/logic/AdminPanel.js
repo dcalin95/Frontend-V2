@@ -127,65 +127,7 @@ const AdminPanel = () => {
   const [showEmailPreview, setShowEmailPreview] = useState(false);
   
   // ===== TikTok Ads Integration =====
-  // Sample data for testing - will show table immediately on page load
-  // NOTE: These are hardcoded test data. Remove this array and use [] to start with empty data.
-  const [tiktokAdsData, setTiktokAdsData] = useState(() => {
-    const now = Date.now();
-    const isoNow = new Date().toISOString();
-    return [
-      {
-        id: now - 1000,
-        adGroupName: 'Copy 1 of Ad group 20251230090357',
-        status: 'Active',
-        cost: 24.00,
-        impressions: 45219,
-        cpm: 0.53,
-        focusedViews: 338,
-        focusedViewRate: 0.75,
-        clicks: 76,
-        paidLikes: 18,
-        paidShares: 0,
-        paidComments: 0,
-        paidFollows: 3,
-        createdAt: isoNow,
-        source: 'manual'
-      },
-      {
-        id: now - 2000,
-        adGroupName: 'Ad Group Test Campaign 2',
-        status: 'Active',
-        cost: 45.50,
-        impressions: 89234,
-        cpm: 0.51,
-        focusedViews: 567,
-        focusedViewRate: 0.64,
-        clicks: 142,
-        paidLikes: 35,
-        paidShares: 5,
-        paidComments: 2,
-        paidFollows: 12,
-        createdAt: isoNow,
-        source: 'csv'
-      },
-      {
-        id: now - 3000,
-        adGroupName: 'Winter Campaign 2026',
-        status: 'Paused',
-        cost: 12.25,
-        impressions: 23456,
-        cpm: 0.52,
-        focusedViews: 189,
-        focusedViewRate: 0.81,
-        clicks: 45,
-        paidLikes: 8,
-        paidShares: 1,
-        paidComments: 0,
-        paidFollows: 4,
-        createdAt: isoNow,
-        source: 'manual'
-      }
-    ];
-  });
+  const [tiktokAdsData, setTiktokAdsData] = useState([]);
   const [tiktokAdGroupName, setTiktokAdGroupName] = useState('');
   const [tiktokCost, setTiktokCost] = useState('');
   const [tiktokImpressions, setTiktokImpressions] = useState('');
