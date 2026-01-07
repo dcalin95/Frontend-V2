@@ -3830,24 +3830,21 @@ const AdminPanel = () => {
                     type="file"
                     accept=".csv,.xlsx,.xls"
                     onChange={(e) => {
-                      console.log('[CSV Import] Input onChange triggered!', e.target.files);
+                      console.log('[CSV Import] ========== onChange FIRED ==========');
+                      console.log('[CSV Import] Event:', e);
+                      console.log('[CSV Import] Target:', e.target);
+                      console.log('[CSV Import] Files:', e.target.files);
+                      console.log('[CSV Import] Files length:', e.target.files?.length);
                       if (e.target.files && e.target.files.length > 0) {
+                        console.log('[CSV Import] Calling handleCsvImport...');
                         handleCsvImport(e);
                       } else {
-                        console.log('[CSV Import] No files in event!');
+                        console.error('[CSV Import] ❌ No files in event!');
                       }
                     }}
                     disabled={tiktokCsvImporting}
                     style={{ 
-                      position: 'absolute',
-                      width: '1px',
-                      height: '1px',
-                      padding: 0,
-                      margin: '-1px',
-                      overflow: 'hidden',
-                      clip: 'rect(0,0,0,0)',
-                      whiteSpace: 'nowrap',
-                      border: 0
+                      display: 'none'
                     }}
                   />
                   <label 
