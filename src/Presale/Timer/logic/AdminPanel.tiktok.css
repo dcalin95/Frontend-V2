@@ -1,38 +1,39 @@
-/* TikTok Ads Table - Force white and large text */
-.admin-panel-tiktok-table th,
-.admin-panel-tiktok-table thead th,
-.admin-panel-tiktok-table thead tr th {
+/* TikTok Ads Table - Force white and large text - ULTRA STRONG SELECTORS */
+table.admin-panel-tiktok-table th,
+table.admin-panel-tiktok-table thead th,
+table.admin-panel-tiktok-table thead tr th,
+table.admin-panel-tiktok-table thead tr th * {
   color: #FFFFFF !important;
-  font-size: 18px !important;
+  font-size: 20px !important;
   font-weight: 900 !important;
-  padding: 16px 12px !important;
+  padding: 18px 14px !important;
 }
 
-.admin-panel-tiktok-table td,
-.admin-panel-tiktok-table tbody td,
-.admin-panel-tiktok-table tbody tr td {
+table.admin-panel-tiktok-table td,
+table.admin-panel-tiktok-table tbody td,
+table.admin-panel-tiktok-table tbody tr td,
+table.admin-panel-tiktok-table tbody tr td * {
   color: #FFFFFF !important;
-  font-size: 18px !important;
+  font-size: 20px !important;
   font-weight: 800 !important;
-  padding: 14px 12px !important;
+  padding: 16px 14px !important;
 }
 
-.admin-panel-tiktok-table td span,
-.admin-panel-tiktok-table tbody td span,
-.admin-panel-tiktok-table tbody tr td span {
+/* Force ALL text content in cells */
+table.admin-panel-tiktok-table td span,
+table.admin-panel-tiktok-table tbody td span,
+table.admin-panel-tiktok-table tbody tr td span,
+table.admin-panel-tiktok-table tbody tr td div,
+table.admin-panel-tiktok-table tbody tr td div span {
   color: #FFFFFF !important;
-  font-size: 18px !important;
+  font-size: 20px !important;
   font-weight: 800 !important;
 }
 
-/* Force all text in table cells to be white and large */
-.admin-panel-tiktok-table * {
+/* Force direct text nodes (no wrapper) */
+table.admin-panel-tiktok-table td {
   color: #FFFFFF !important;
-}
-
-.admin-panel-tiktok-table th *,
-.admin-panel-tiktok-table td * {
-  color: #FFFFFF !important;
-  font-size: 18px !important;
+  font-size: 20px !important;
+  font-weight: 800 !important;
 }
 
