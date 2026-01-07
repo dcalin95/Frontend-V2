@@ -254,20 +254,27 @@ const AdminPanel = () => {
 
   // TikTok API function removed - application was rejected by TikTok
 
-  // Import TikTok Ads data from CSV file
+  // Import TikTok Ads data from CSV or Excel file
   const handleCsvImport = async (event) => {
     const file = event.target.files?.[0];
     if (!file) {
       return;
     }
 
-    // Validate file type
-    const validExtensions = ['.csv'];
-    const validMimeTypes = ['text/csv', 'application/vnd.ms-excel', 'application/csv', 'text/plain'];
+    // Validate file type (CSV or Excel)
+    const validExtensions = ['.csv', '.xlsx', '.xls'];
+    const validMimeTypes = [
+      'text/csv', 
+      'application/vnd.ms-excel', 
+      'application/csv', 
+      'text/plain',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    ];
     const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
+    const isExcel = fileExtension === '.xlsx' || fileExtension === '.xls';
     
     if (!validExtensions.includes(fileExtension) && !validMimeTypes.includes(file.type)) {
-      toast.error('❌ Please upload a CSV file (.csv extension required)');
+      toast.error('❌ Please upload a CSV or Excel file (.csv, .xlsx, .xls)');
       if (csvFileInputRef.current) {
         csvFileInputRef.current.value = '';
       }
@@ -310,7 +317,7 @@ const AdminPanel = () => {
       }
       formData.append('password', adminPassword);
 
-      console.log('[CSV Import] Uploading file:', file.name, 'Size:', file.size, 'bytes');
+      console.log('[File Import] Uploading file:', file.name, 'Size:', file.size, 'bytes', 'Type:', isExcel ? 'Excel' : 'CSV');
 
       const response = await axios.post(
         `${API_URL}/api/tiktok-ads/import-csv`,
@@ -3769,9 +3776,9 @@ const AdminPanel = () => {
                 marginBottom: '25px',
                 boxShadow: '0 4px 12px rgba(255, 193, 7, 0.2)'
               }}>
-                <h4 style={{ marginTop: 0, marginBottom: '15px', color: '#FFC107', fontSize: '18px', fontWeight: '700' }}>📊 Automatic CSV Import (Recommended)</h4>
+                <h4 style={{ marginTop: 0, marginBottom: '15px', color: '#FFC107', fontSize: '18px', fontWeight: '700' }}>📊 Automatic File Import (Recommended)</h4>
                 <p style={{ marginBottom: '15px', fontSize: '14px', color: 'rgba(255,255,255,0.9)', lineHeight: '1.6' }}>
-                  Export your ad group data from TikTok Ads Manager as CSV and upload it here. The system will automatically parse and import all data.
+                  Export your ad group data from TikTok Ads Manager as Excel (.xlsx) or CSV and upload it here. The system will automatically parse and import all data.
                 </p>
                 
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '15px', flexWrap: 'wrap' }}>
@@ -3795,7 +3802,7 @@ const AdminPanel = () => {
                     <input
                       ref={csvFileInputRef}
                       type="file"
-                      accept=".csv"
+                      accept=".csv,.xlsx,.xls"
                       onChange={handleCsvImport}
                       disabled={tiktokCsvImporting}
                       style={{ 
@@ -3807,7 +3814,7 @@ const AdminPanel = () => {
                       color: tiktokCsvImporting ? 'rgba(255,255,255,0.5)' : '#FFC107',
                       fontWeight: '700'
                     }}>
-                      {tiktokCsvImporting ? '⏳ Processing...' : '📁 Choose CSV File'}
+                      {tiktokCsvImporting ? '⏳ Processing...' : '📁 Choose File (CSV/Excel)'}
                     </span>
                     {!tiktokCsvImporting && (
                       <span style={{ 
@@ -3826,8 +3833,8 @@ const AdminPanel = () => {
                   💡 <strong>How to export from TikTok Ads Manager:</strong><br/>
                   1. Go to TikTok Ads Manager → Campaigns → Ad Groups<br/>
                   2. Select the date range and columns you want<br/>
-                  3. Click "Export" → "CSV"<br/>
-                  4. Upload the downloaded CSV file here
+                  3. Click "Export" → "Excel" (or "CSV" if available)<br/>
+                  4. Upload the downloaded Excel (.xlsx) or CSV file here
                 </div>
               </div>
               
