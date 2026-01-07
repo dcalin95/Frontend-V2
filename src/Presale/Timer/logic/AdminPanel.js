@@ -340,14 +340,24 @@ const AdminPanel = () => {
       formData.append('password', adminPassword);
       
       // Verify password was added to FormData
+      console.log('[CSV Import] ========== FORMDATA CHECK ==========');
       console.log('[CSV Import] FormData entries:');
+      let passwordFound = false;
+      let fileFound = false;
       for (let pair of formData.entries()) {
         if (pair[0] === 'password') {
-          console.log('[CSV Import] Password in FormData:', pair[1] ? `YES (length: ${pair[1].length})` : 'NO');
+          passwordFound = true;
+          console.log('[CSV Import] ✅ Password in FormData:', pair[1] ? `YES (length: ${pair[1].length})` : 'NO');
+          console.log('[CSV Import] Password value (first 3 chars):', pair[1] ? pair[1].substring(0, 3) + '...' : 'N/A');
+        } else if (pair[0] === 'file') {
+          fileFound = true;
+          console.log('[CSV Import] ✅ File in FormData:', pair[1] instanceof File ? `YES (${pair[1].name}, ${pair[1].size} bytes)` : 'NO');
         } else {
-          console.log('[CSV Import]', pair[0], ':', pair[1] instanceof File ? `File: ${pair[1].name}` : pair[1]);
+          console.log('[CSV Import] Other field:', pair[0], ':', pair[1] instanceof File ? `File: ${pair[1].name}` : pair[1]);
         }
       }
+      console.log('[CSV Import] Password found:', passwordFound);
+      console.log('[CSV Import] File found:', fileFound);
 
       console.log('[File Import] Uploading file:', file.name, 'Size:', file.size, 'bytes', 'Type:', isExcel ? 'Excel' : 'CSV');
 
