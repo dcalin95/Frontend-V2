@@ -361,8 +361,9 @@ const AdminPanel = () => {
 
       console.log('[File Import] Uploading file:', file.name, 'Size:', file.size, 'bytes', 'Type:', isExcel ? 'Excel' : 'CSV');
 
+      // Send password as query parameter as fallback if FormData doesn't work
       const response = await axios.post(
-        `${API_URL}/api/tiktok-ads/import-csv`,
+        `${API_URL}/api/tiktok-ads/import-csv?password=${encodeURIComponent(adminPassword)}`,
         formData,
         {
           headers: {
