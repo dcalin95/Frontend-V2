@@ -128,7 +128,6 @@ const AdminPanel = () => {
   
   // ===== TikTok Ads Integration =====
   const [tiktokAdsData, setTiktokAdsData] = useState([]);
-  const [tiktokAdsLoading, setTiktokAdsLoading] = useState(false);
   const [tiktokAdGroupName, setTiktokAdGroupName] = useState('');
   const [tiktokCost, setTiktokCost] = useState('');
   const [tiktokImpressions, setTiktokImpressions] = useState('');
@@ -142,40 +141,11 @@ const AdminPanel = () => {
   const [tiktokPaidFollows, setTiktokPaidFollows] = useState('');
   const [tiktokAdStatus, setTiktokAdStatus] = useState('Active');
   
-  // TikTok API Configuration
-  const [tiktokAccessToken, setTiktokAccessToken] = useState(() => {
-    try {
-      return localStorage.getItem('tiktok_access_token') || '';
-    } catch {
-      return '';
-    }
-  });
-  const [tiktokAdvertiserId, setTiktokAdvertiserId] = useState(() => {
-    try {
-      return localStorage.getItem('tiktok_advertiser_id') || '';
-    } catch {
-      return '';
-    }
-  });
-  const [tiktokApiEnabled, setTiktokApiEnabled] = useState(() => {
-    try {
-      return localStorage.getItem('tiktok_api_enabled') === 'true';
-    } catch {
-      return false;
-    }
-  });
-  const [tiktokAutoRefresh, setTiktokAutoRefresh] = useState(() => {
-    try {
-      return localStorage.getItem('tiktok_auto_refresh') === 'true';
-    } catch {
-      return false;
-    }
-  });
-  const [tiktokLastFetch, setTiktokLastFetch] = useState(null);
-  const [tiktokApiError, setTiktokApiError] = useState(null);
-  const tiktokRefreshIntervalRef = useRef(null);
+  // TikTok API removed - application was rejected by TikTok
   const [tiktokExpandedDetails, setTiktokExpandedDetails] = useState({}); // Track which ad groups have expanded details
   const [tiktokRawData, setTiktokRawData] = useState([]); // Store raw API response for each ad group
+  const [tiktokCsvImporting, setTiktokCsvImporting] = useState(false); // CSV import loading state
+  const csvFileInputRef = useRef(null); // Reference to CSV file input
   
   // Get data directly from CellManager contract
   const cellManagerData = useCellManagerData();
@@ -248,32 +218,11 @@ const AdminPanel = () => {
       fetchSolanaPayments();
     }
     
-    if (activeTab === "tiktok-ads" && tiktokApiEnabled && tiktokAccessToken && tiktokAdvertiserId) {
-      fetchTiktokAdsFromAPI();
-    }
+    // TikTok API removed - using CSV import only
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, isAuthorized]);
   
-  // Auto-refresh TikTok Ads data
-  useEffect(() => {
-    if (tiktokAutoRefresh && tiktokApiEnabled && tiktokAccessToken && tiktokAdvertiserId && activeTab === "tiktok-ads") {
-      // Refresh every 5 minutes
-      tiktokRefreshIntervalRef.current = setInterval(() => {
-        fetchTiktokAdsFromAPI();
-      }, 5 * 60 * 1000);
-      
-      return () => {
-        if (tiktokRefreshIntervalRef.current) {
-          clearInterval(tiktokRefreshIntervalRef.current);
-        }
-      };
-    } else {
-      if (tiktokRefreshIntervalRef.current) {
-        clearInterval(tiktokRefreshIntervalRef.current);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tiktokAutoRefresh, tiktokApiEnabled, tiktokAccessToken, tiktokAdvertiserId, activeTab]);
+  // TikTok API auto-refresh removed - using CSV import only
 
   // Auto-pick an EVM wallet from SOL rows for on-chain AdditionalReward debug
   useEffect(() => {
@@ -303,150 +252,206 @@ const AdminPanel = () => {
     }
   };
 
-  // Fetch TikTok Ads data from API
-  const fetchTiktokAdsFromAPI = async () => {
-    // Validation
-    if (!tiktokAccessToken || !tiktokAccessToken.trim()) {
-      setTiktokApiError('Access Token is required');
-      toast.error('❌ Please enter TikTok Access Token');
+  // TikTok API function removed - application was rejected by TikTok
+
+  // Import TikTok Ads data from CSV file
+  const handleCsvImport = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) {
       return;
     }
+
+    // Validate file type
+    const validExtensions = ['.csv'];
+    const validMimeTypes = ['text/csv', 'application/vnd.ms-excel', 'application/csv', 'text/plain'];
+    const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
     
-    if (!tiktokAdvertiserId || !tiktokAdvertiserId.trim()) {
-      setTiktokApiError('Advertiser ID is required');
-      toast.error('❌ Please enter Advertiser ID');
+    if (!validExtensions.includes(fileExtension) && !validMimeTypes.includes(file.type)) {
+      toast.error('❌ Please upload a CSV file (.csv extension required)');
+      if (csvFileInputRef.current) {
+        csvFileInputRef.current.value = '';
+      }
       return;
     }
 
-    // Validate Advertiser ID format (should be numeric)
-    if (!/^\d+$/.test(tiktokAdvertiserId.trim())) {
-      setTiktokApiError('Advertiser ID must be numeric');
-      toast.error('❌ Advertiser ID must be numeric');
+    // Validate file size (max 10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      toast.error('❌ File size exceeds 10MB limit');
+      if (csvFileInputRef.current) {
+        csvFileInputRef.current.value = '';
+      }
       return;
     }
 
-    setTiktokAdsLoading(true);
-    setTiktokApiError(null);
+    if (file.size === 0) {
+      toast.error('❌ File is empty');
+      if (csvFileInputRef.current) {
+        csvFileInputRef.current.value = '';
+      }
+      return;
+    }
+
+    setTiktokCsvImporting(true);
 
     try {
-      // Calculate date range (last 7 days by default, matching the URL parameters)
-      const endDate = new Date();
-      const startDate = new Date();
-      startDate.setDate(endDate.getDate() - 7);
+      const formData = new FormData();
+      formData.append('file', file);
       
-      // Ensure dates are valid
-      if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-        throw new Error('Invalid date range');
+      // Get admin password from session
+      const adminPassword = ADMIN_PASS;
+      if (!adminPassword) {
+        toast.error('❌ Admin password not configured');
+        setTiktokCsvImporting(false);
+        if (csvFileInputRef.current) {
+          csvFileInputRef.current.value = '';
+        }
+        return;
       }
-      
-      const startDateStr = startDate.toISOString().split('T')[0]; // YYYY-MM-DD
-      const endDateStr = endDate.toISOString().split('T')[0]; // YYYY-MM-DD
+      formData.append('password', adminPassword);
 
-      // TikTok Ads API endpoint for ad groups with metrics
-      // Using backend proxy to avoid CORS issues
+      console.log('[CSV Import] Uploading file:', file.name, 'Size:', file.size, 'bytes');
+
       const response = await axios.post(
-        `${API_URL}/api/tiktok-ads/fetch`,
+        `${API_URL}/api/tiktok-ads/import-csv`,
+        formData,
         {
-          access_token: tiktokAccessToken.trim(),
-          advertiser_id: tiktokAdvertiserId.trim(),
-          start_date: startDateStr,
-          end_date: endDateStr,
-          // Columns matching the URL: stat_cost, show_cnt, cpm, engaged_view, engaged_view_6s_rate, click_cnt, ad_net_like, ad_share, ad_comment, ad_net_follow
-          metrics: [
-            'stat_cost',      // Cost
-            'show_cnt',       // Impressions
-            'cpm',            // CPM
-            'engaged_view',   // 6-second focused views
-            'engaged_view_6s_rate', // Focused view rate
-            'click_cnt',      // Clicks
-            'ad_net_like',    // Paid likes
-            'ad_share',       // Paid shares
-            'ad_comment',     // Paid comments
-            'ad_net_follow'   // Paid follows
-          ],
-          password: ADMIN_PASS
-        },
-        {
-          timeout: 30000 // 30 seconds timeout
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          timeout: 60000, // 60 seconds for large files
+          onUploadProgress: (progressEvent) => {
+            if (progressEvent.total) {
+              const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+              console.log('[CSV Import] Upload progress:', percentCompleted + '%');
+            }
+          }
         }
       );
 
-      if (response.data?.ok && response.data?.data) {
-        const adsData = Array.isArray(response.data.data) ? response.data.data : [];
-        
-        if (adsData.length === 0) {
-          toast.info('ℹ️ No ad groups found for the selected date range');
-          setTiktokAdsData([]);
-          setTiktokLastFetch(new Date());
+      if (response.data.ok && response.data.data && Array.isArray(response.data.data)) {
+        if (response.data.data.length === 0) {
+          const hint = response.data.hint || 'Please check the CSV format';
+          const detectedHeaders = response.data.detected_headers || [];
+          toast.warning(`⚠️ No valid data found in CSV. ${hint}${detectedHeaders.length > 0 ? `\nDetected headers: ${detectedHeaders.slice(0, 5).join(', ')}` : ''}`);
+          if (csvFileInputRef.current) {
+            csvFileInputRef.current.value = '';
+          }
+          setTiktokCsvImporting(false);
           return;
         }
-        
-        // Transform TikTok API response to our format
-        // TikTok API returns data in format: { dimensions: {...}, metrics: {...} }
-        const transformedAds = adsData.map((ad, index) => {
-          const metrics = ad.metrics || ad;
-          const dimensions = ad.dimensions || {};
-          
-          // Safe parsing with fallbacks
-          const cost = parseFloat(metrics.stat_cost || metrics.cost || 0) || 0;
-          const impressions = parseInt(metrics.show_cnt || metrics.impressions || 0) || 0;
-          const cpm = impressions > 0 ? (cost / impressions) * 1000 : parseFloat(metrics.cpm || 0) || 0;
-          
-          return {
-            id: dimensions.adgroup_id || dimensions.ad_id || `api-${Date.now()}-${index}`,
-            adGroupName: (dimensions.adgroup_name || dimensions.ad_name || `Ad Group ${index + 1}`).trim(),
-            status: dimensions.status === 'ENABLE' ? 'Active' : dimensions.status === 'DISABLE' ? 'Paused' : 'Deleted',
-            cost: cost,
-            impressions: impressions,
-            cpm: cpm,
-            focusedViews: parseInt(metrics.engaged_view || metrics.video_views_6s || 0) || 0,
-            focusedViewRate: parseFloat(metrics.engaged_view_6s_rate || metrics.video_views_6s_rate || 0) || 0,
-            clicks: parseInt(metrics.click_cnt || metrics.clicks || 0) || 0,
-            paidLikes: parseInt(metrics.ad_net_like || metrics.likes || 0) || 0,
-            paidShares: parseInt(metrics.ad_share || metrics.shares || 0) || 0,
-            paidComments: parseInt(metrics.ad_comment || metrics.comments || 0) || 0,
-            paidFollows: parseInt(metrics.ad_net_follow || metrics.follows || 0) || 0,
-            createdAt: dimensions.create_time || new Date().toISOString(),
-            source: 'api',
-            rawData: ad // Store complete raw data for detailed view
-          };
-        }).filter(ad => ad.adGroupName); // Filter out invalid entries
+
+        // Transform backend format to frontend format with validation
+        const transformedAds = response.data.data
+          .filter((item) => {
+            // Filter out invalid items
+            const dimensions = item.dimensions || {};
+            const metrics = item.metrics || {};
+            return dimensions.adgroup_name && 
+                   metrics.stat_cost > 0 && 
+                   dimensions.adgroup_name !== 'Unknown Ad Group';
+          })
+          .map((item, index) => {
+            const dimensions = item.dimensions || {};
+            const metrics = item.metrics || {};
+            
+            return {
+              id: Date.now() + index,
+              adGroupName: String(dimensions.adgroup_name || 'Unknown Ad Group').trim(),
+              status: dimensions.status || 'Active',
+              cost: parseFloat(metrics.stat_cost || 0) || 0,
+              impressions: parseInt(metrics.show_cnt || 0, 10) || 0,
+              cpm: parseFloat(metrics.cpm || 0) || 0,
+              focusedViews: parseInt(metrics.engaged_view || 0, 10) || 0,
+              focusedViewRate: parseFloat(metrics.engaged_view_6s_rate || 0) || 0,
+              clicks: parseInt(metrics.click_cnt || 0, 10) || 0,
+              paidLikes: parseInt(metrics.ad_net_like || 0, 10) || 0,
+              paidShares: parseInt(metrics.ad_share || 0, 10) || 0,
+              paidComments: parseInt(metrics.ad_comment || 0, 10) || 0,
+              paidFollows: parseInt(metrics.ad_net_follow || 0, 10) || 0,
+              createdAt: new Date().toISOString(),
+              source: 'csv'
+            };
+          });
 
         if (transformedAds.length === 0) {
-          toast.warning('⚠️ No valid ad groups found in response');
-          setTiktokAdsData([]);
-        } else {
-          setTiktokAdsData(transformedAds);
-          toast.success(`✅ Fetched ${transformedAds.length} ad group(s) from TikTok API`);
+          toast.warning('⚠️ No valid ad groups found in CSV after validation');
+          if (csvFileInputRef.current) {
+            csvFileInputRef.current.value = '';
+          }
+          setTiktokCsvImporting(false);
+          return;
         }
-        setTiktokLastFetch(new Date());
+
+        // Merge with existing data (avoid duplicates by ad group name - case insensitive)
+        const existingNames = new Set(
+          tiktokAdsData.map(ad => String(ad.adGroupName || '').toLowerCase().trim())
+        );
+        const newAds = transformedAds.filter(ad => {
+          const nameLower = String(ad.adGroupName || '').toLowerCase().trim();
+          return !existingNames.has(nameLower);
+        });
+        
+        if (newAds.length > 0) {
+          setTiktokAdsData((prevData) => [...prevData, ...newAds]);
+          const skippedCount = transformedAds.length - newAds.length;
+          if (skippedCount > 0) {
+            toast.success(`✅ Imported ${newAds.length} new ad group(s), ${skippedCount} duplicate(s) skipped`);
+          } else {
+            toast.success(`✅ Successfully imported ${newAds.length} ad group(s) from CSV!`);
+          }
+          
+          // Show summary if available
+          if (response.data.processed_rows) {
+            console.log(`[CSV Import] Summary: ${response.data.processed_rows} rows processed, ${response.data.imported_count} imported, ${response.data.skipped_rows || 0} skipped`);
+          }
+        } else {
+          toast.warning(`⚠️ All ${transformedAds.length} ad group(s) from CSV already exist in the list`);
+        }
+
+        // Reset file input
+        if (csvFileInputRef.current) {
+          csvFileInputRef.current.value = '';
+        }
       } else {
-        const errorMsg = response.data?.error || response.data?.message || 'Failed to fetch TikTok Ads data';
-        throw new Error(errorMsg);
+        const errorMsg = response.data?.error || 'No data found in CSV file';
+        const hint = response.data?.hint || '';
+        throw new Error(errorMsg + (hint ? ` - ${hint}` : ''));
       }
     } catch (error) {
-      console.error('❌ TikTok Ads API fetch failed:', error);
+      console.error('❌ CSV Import Error:', error);
       
-      let errorMessage = 'Failed to fetch TikTok Ads data';
+      let errorMsg = 'Failed to import CSV file';
+      let errorDetails = '';
       
       if (error.response) {
-        // Server responded with error status
-        errorMessage = error.response.data?.error || 
-                      error.response.data?.message || 
-                      `Server error: ${error.response.status}`;
+        // Server responded with error
+        errorMsg = error.response.data?.error || error.message || errorMsg;
+        errorDetails = error.response.data?.hint || '';
+        
+        // Show detected headers if available for debugging
+        if (error.response.data?.detected_headers && error.response.data.detected_headers.length > 0) {
+          const headers = error.response.data.detected_headers.slice(0, 10).join(', ');
+          errorDetails += `\nDetected headers: ${headers}`;
+        }
       } else if (error.request) {
         // Request made but no response
-        errorMessage = 'No response from server. Please check your connection.';
-      } else if (error.code === 'ECONNABORTED') {
-        errorMessage = 'Request timeout. Please try again.';
+        errorMsg = 'No response from server. Please check if backend is running.';
       } else {
-        errorMessage = error.message || 'Unknown error occurred';
+        // Error in request setup
+        errorMsg = error.message || errorMsg;
       }
       
-      setTiktokApiError(errorMessage);
-      toast.error(`❌ TikTok API Error: ${errorMessage}`);
+      toast.error(`❌ CSV Import Error: ${errorMsg}${errorDetails ? `\n${errorDetails}` : ''}`, {
+        autoClose: 10000 // Show for 10 seconds
+      });
+      
+      // Reset file input on error
+      if (csvFileInputRef.current) {
+        csvFileInputRef.current.value = '';
+      }
     } finally {
-      setTiktokAdsLoading(false);
+      setTiktokCsvImporting(false);
     }
   };
 
@@ -3755,133 +3760,74 @@ const AdminPanel = () => {
             <div className={styles["section"]} style={{ padding: '25px' }}>
               <h3 style={{ marginBottom: '20px', textAlign: 'center' }}>🎵 TikTok Ads Analytics</h3>
               
-              {/* API Configuration */}
+              {/* CSV Import Section - MOVED TO TOP FOR VISIBILITY */}
               <div style={{ 
-                background: 'rgba(220, 31, 255, 0.05)', 
-                border: '1px solid rgba(220, 31, 255, 0.2)', 
+                background: 'rgba(255, 193, 7, 0.1)', 
+                border: '2px solid rgba(255, 193, 7, 0.4)', 
                 borderRadius: '12px', 
                 padding: '20px', 
-                marginBottom: '25px' 
+                marginBottom: '25px',
+                boxShadow: '0 4px 12px rgba(255, 193, 7, 0.2)'
               }}>
-                <h4 style={{ marginTop: 0, marginBottom: '15px', color: '#DC1FFF' }}>🔌 TikTok Ads API Configuration</h4>
+                <h4 style={{ marginTop: 0, marginBottom: '15px', color: '#FFC107', fontSize: '18px', fontWeight: '700' }}>📊 Automatic CSV Import (Recommended)</h4>
+                <p style={{ marginBottom: '15px', fontSize: '14px', color: 'rgba(255,255,255,0.9)', lineHeight: '1.6' }}>
+                  Export your ad group data from TikTok Ads Manager as CSV and upload it here. The system will automatically parse and import all data.
+                </p>
                 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
-                  <div>
-                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', color: 'rgba(255,255,255,0.9)' }}>
-                      Access Token:
-                    </label>
-                    <input
-                      type="password"
-                      value={tiktokAccessToken}
-                      onChange={(e) => {
-                        setTiktokAccessToken(e.target.value);
-                        localStorage.setItem('tiktok_access_token', e.target.value);
-                      }}
-                      placeholder="Enter TikTok Access Token"
-                      style={{ width: '100%', padding: '8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', color: 'rgba(255,255,255,0.9)' }}>
-                      Advertiser ID:
-                    </label>
-                    <input
-                      type="text"
-                      value={tiktokAdvertiserId}
-                      onChange={(e) => {
-                        setTiktokAdvertiserId(e.target.value);
-                        localStorage.setItem('tiktok_advertiser_id', e.target.value);
-                      }}
-                      placeholder="e.g., 7541096795200585744"
-                      style={{ width: '100%', padding: '8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }}
-                    />
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', gap: '10px', marginBottom: '15px', alignItems: 'center' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px', color: 'rgba(255,255,255,0.9)' }}>
-                    <input
-                      type="checkbox"
-                      checked={tiktokApiEnabled}
-                      onChange={(e) => {
-                        setTiktokApiEnabled(e.target.checked);
-                        localStorage.setItem('tiktok_api_enabled', e.target.checked.toString());
-                        if (e.target.checked && tiktokAccessToken && tiktokAdvertiserId) {
-                          fetchTiktokAdsFromAPI();
-                        }
-                      }}
-                      style={{ cursor: 'pointer' }}
-                    />
-                    Enable API Integration
-                  </label>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px', color: 'rgba(255,255,255,0.9)' }}>
-                    <input
-                      type="checkbox"
-                      checked={tiktokAutoRefresh}
-                      onChange={(e) => {
-                        setTiktokAutoRefresh(e.target.checked);
-                        localStorage.setItem('tiktok_auto_refresh', e.target.checked.toString());
-                      }}
-                      disabled={!tiktokApiEnabled}
-                      style={{ cursor: 'pointer' }}
-                    />
-                    Auto-refresh (every 5 min)
-                  </label>
-                </div>
-
-                <div style={{ display: 'flex', gap: '10px' }}>
-                  <button
-                    onClick={fetchTiktokAdsFromAPI}
-                    disabled={!tiktokApiEnabled || !tiktokAccessToken || !tiktokAdvertiserId || tiktokAdsLoading}
-                    style={{
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '15px', flexWrap: 'wrap' }}>
+                  <label 
+                    onClick={() => !tiktokCsvImporting && csvFileInputRef.current?.click()}
+                    style={{ 
                       flex: 1,
-                      padding: '10px',
-                      background: tiktokApiEnabled && tiktokAccessToken && tiktokAdvertiserId ? '#DC1FFF' : '#666',
-                      color: '#fff',
-                      border: 'none',
+                      minWidth: '250px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      padding: '15px',
                       borderRadius: '8px',
-                      cursor: (tiktokApiEnabled && tiktokAccessToken && tiktokAdvertiserId && !tiktokAdsLoading) ? 'pointer' : 'not-allowed',
-                      fontWeight: '600',
-                      fontSize: '15.6px',
-                      opacity: (tiktokApiEnabled && tiktokAccessToken && tiktokAdvertiserId && !tiktokAdsLoading) ? 1 : 0.6
+                      background: tiktokCsvImporting ? 'rgba(255,255,255,0.05)' : 'rgba(255, 193, 7, 0.15)',
+                      border: `2px dashed ${tiktokCsvImporting ? 'rgba(255,255,255,0.3)' : 'rgba(255, 193, 7, 0.6)'}`,
+                      cursor: tiktokCsvImporting ? 'not-allowed' : 'pointer',
+                      transition: 'all 0.3s ease',
+                      opacity: tiktokCsvImporting ? 0.6 : 1
                     }}
                   >
-                    {tiktokAdsLoading ? '⏳ Fetching...' : '🔄 Refresh from API'}
-                  </button>
-                  {tiktokLastFetch && (
-                    <div style={{ 
-                      padding: '10px', 
-                      background: 'rgba(255,255,255,0.05)', 
-                      borderRadius: '8px', 
-                      fontSize: '12px', 
-                      color: 'rgba(255,255,255,0.7)',
-                      display: 'flex',
-                      alignItems: 'center'
+                    <input
+                      ref={csvFileInputRef}
+                      type="file"
+                      accept=".csv"
+                      onChange={handleCsvImport}
+                      disabled={tiktokCsvImporting}
+                      style={{ 
+                        display: 'none'
+                      }}
+                    />
+                    <span style={{ 
+                      fontSize: '18px',
+                      color: tiktokCsvImporting ? 'rgba(255,255,255,0.5)' : '#FFC107',
+                      fontWeight: '700'
                     }}>
-                      Last: {new Date(tiktokLastFetch).toLocaleTimeString()}
-                    </div>
-                  )}
+                      {tiktokCsvImporting ? '⏳ Processing...' : '📁 Choose CSV File'}
+                    </span>
+                    {!tiktokCsvImporting && (
+                      <span style={{ 
+                        fontSize: '12px',
+                        color: 'rgba(255,255,255,0.7)',
+                        marginLeft: 'auto',
+                        fontWeight: '600'
+                      }}>
+                        Max 10MB
+                      </span>
+                    )}
+                  </label>
                 </div>
-
-                {tiktokApiError && (
-                  <div style={{ 
-                    marginTop: '15px', 
-                    padding: '10px', 
-                    background: 'rgba(255, 0, 51, 0.1)', 
-                    border: '1px solid rgba(255, 0, 51, 0.3)', 
-                    borderRadius: '6px', 
-                    color: '#ff4444',
-                    fontSize: '13px'
-                  }}>
-                    ⚠️ {tiktokApiError}
-                  </div>
-                )}
-
-                <div style={{ marginTop: '15px', padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', fontSize: '12px', color: 'rgba(255,255,255,0.6)' }}>
-                  💡 <strong>How to get credentials:</strong><br/>
-                  1. Go to TikTok Ads Manager → Tools → API<br/>
-                  2. Create an app and get Access Token<br/>
-                  3. Find your Advertiser ID in Account Settings
+                
+                <div style={{ marginTop: '15px', padding: '12px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', fontSize: '12px', color: 'rgba(255,255,255,0.8)', lineHeight: '1.8' }}>
+                  💡 <strong>How to export from TikTok Ads Manager:</strong><br/>
+                  1. Go to TikTok Ads Manager → Campaigns → Ad Groups<br/>
+                  2. Select the date range and columns you want<br/>
+                  3. Click "Export" → "CSV"<br/>
+                  4. Upload the downloaded CSV file here
                 </div>
               </div>
               
@@ -3893,7 +3839,7 @@ const AdminPanel = () => {
                 padding: '20px', 
                 marginBottom: '25px' 
               }}>
-                <h4 style={{ marginTop: 0, marginBottom: '15px', color: '#00FFA3' }}>📥 Import Ad Group Data</h4>
+                <h4 style={{ marginTop: 0, marginBottom: '15px', color: '#00FFA3' }}>📥 Manual Entry (Alternative)</h4>
                 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
                   <div>
