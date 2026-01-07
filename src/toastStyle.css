@@ -1,25 +1,35 @@
 /* SOLANA/AI STYLE */
 .bits-toast-container {
-    z-index: 10002 !important; /* Must be above AdminPanel (z-index: 10001) */
+    z-index: 1000000 !important; /* Must be above AdminPanel (z-index: 999999) */
   }
   
   /* Ensure ALL toast elements have high z-index to appear above AdminPanel */
   .Toastify__toast-container {
-    z-index: 10002 !important;
+    z-index: 1000000 !important;
+    position: fixed !important;
   }
   
   .Toastify__toast {
-    z-index: 10002 !important;
+    z-index: 1000000 !important;
     position: relative !important;
   }
   
   .Toastify__toast-body {
-    z-index: 10002 !important;
+    z-index: 1000000 !important;
   }
   
-  /* Ensure toast portal is above everything */
-  #root > div:has(.Toastify__toast-container) {
-    z-index: 10002 !important;
+  /* Ensure toast portal is above everything - even AdminPanel */
+  #root > div:has(.Toastify__toast-container),
+  body > div:has(.Toastify__toast-container),
+  .Toastify__toast-container {
+    z-index: 1000000 !important;
+    position: fixed !important;
+  }
+  
+  /* Force toast to appear above AdminPanel overlay */
+  div[class*="admin-page"] ~ div:has(.Toastify__toast-container),
+  div:has(.admin-panel) ~ div:has(.Toastify__toast-container) {
+    z-index: 1000000 !important;
   }
   
   .bits-toast {
