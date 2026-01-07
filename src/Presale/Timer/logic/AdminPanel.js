@@ -362,8 +362,17 @@ const AdminPanel = () => {
       console.log('[File Import] Uploading file:', file.name, 'Size:', file.size, 'bytes', 'Type:', isExcel ? 'Excel' : 'CSV');
 
       // Send password as query parameter as fallback if FormData doesn't work
+      // IMPORTANT: Use the same password that works for other AdminPanel requests
+      const urlWithPassword = `${API_URL}/api/tiktok-ads/import-csv?password=${encodeURIComponent(adminPassword)}`;
+      console.log('[CSV Import] ========== PASSWORD CHECK ==========');
+      console.log('[CSV Import] ADMIN_PASS configured:', adminPassword ? 'YES' : 'NO');
+      console.log('[CSV Import] ADMIN_PASS length:', adminPassword?.length || 0);
+      console.log('[CSV Import] ADMIN_PASS first 3 chars:', adminPassword ? adminPassword.substring(0, 3) + '...' : 'N/A');
+      console.log('[CSV Import] Request URL (without password value):', `${API_URL}/api/tiktok-ads/import-csv?password=***`);
+      console.log('[CSV Import] Password encoded in URL length:', encodeURIComponent(adminPassword).length);
+      
       const response = await axios.post(
-        `${API_URL}/api/tiktok-ads/import-csv?password=${encodeURIComponent(adminPassword)}`,
+        urlWithPassword,
         formData,
         {
           headers: {
