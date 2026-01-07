@@ -3957,8 +3957,8 @@ const AdminPanel = () => {
               {tiktokAdsData.length > 0 && (
                 <div style={{ marginTop: '30px' }}>
                   <h4 style={{ marginBottom: '15px', color: '#00FFA3' }}>📊 Ad Groups Summary</h4>
-                  <div style={{ overflowX: 'auto', maxHeight: '70vh', overflowY: 'auto', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px' }}>
-                    <table className="admin-panel-tiktok-table" style={{ width: '100%', borderCollapse: 'collapse', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(0, 255, 163, 0.2)', minWidth: '1200px' }}>
+                  <div style={{ overflowX: 'auto', maxHeight: '75vh', overflowY: 'auto', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px' }}>
+                    <table className="admin-panel-tiktok-table" style={{ width: '100%', borderCollapse: 'collapse', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(0, 255, 163, 0.2)', minWidth: '1000px', fontSize: '12px' }}>
                       <thead>
                         <tr style={{ background: 'rgba(0, 0, 0, 0.4)' }}>
                           <th style={{ textAlign: 'left', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>Ad Group</th>
