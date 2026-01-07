@@ -1,21 +1,38 @@
 /* TikTok Ads Table - Force white and large text */
-.admin-panel-tiktok-table th {
+.admin-panel-tiktok-table th,
+.admin-panel-tiktok-table thead th,
+.admin-panel-tiktok-table thead tr th {
   color: #FFFFFF !important;
   font-size: 18px !important;
   font-weight: 900 !important;
   padding: 16px 12px !important;
 }
 
-.admin-panel-tiktok-table td {
+.admin-panel-tiktok-table td,
+.admin-panel-tiktok-table tbody td,
+.admin-panel-tiktok-table tbody tr td {
   color: #FFFFFF !important;
   font-size: 18px !important;
   font-weight: 800 !important;
   padding: 14px 12px !important;
 }
 
-.admin-panel-tiktok-table td span {
+.admin-panel-tiktok-table td span,
+.admin-panel-tiktok-table tbody td span,
+.admin-panel-tiktok-table tbody tr td span {
   color: #FFFFFF !important;
   font-size: 18px !important;
   font-weight: 800 !important;
+}
+
+/* Force all text in table cells to be white and large */
+.admin-panel-tiktok-table * {
+  color: #FFFFFF !important;
+}
+
+.admin-panel-tiktok-table th *,
+.admin-panel-tiktok-table td * {
+  color: #FFFFFF !important;
+  font-size: 18px !important;
 }
 
