@@ -4175,12 +4175,17 @@ const AdminPanel = () => {
                 <div style={{ 
                   textAlign: 'center', 
                   padding: '40px', 
-                  color: 'rgba(255,255,255,0.5)',
+                  color: 'rgba(255,255,255,0.7)',
                   background: 'rgba(255,255,255,0.02)',
                   borderRadius: '12px',
-                  border: '1px dashed rgba(255,255,255,0.1)'
+                  border: '1px dashed rgba(255,255,255,0.1)',
+                  fontSize: '16px',
+                  fontWeight: '500'
                 }}>
-                  📊 No ad groups imported yet. Fill in the form above to add your first ad group.
+                  📊 No ad groups imported yet.<br/>
+                  <span style={{ fontSize: '14px', color: 'rgba(255,255,255,0.6)', marginTop: '10px', display: 'block' }}>
+                    Upload an Excel (.xlsx) or CSV file from TikTok Ads Manager above to see your campaign data here.
+                  </span>
                 </div>
               )}
             </div>
