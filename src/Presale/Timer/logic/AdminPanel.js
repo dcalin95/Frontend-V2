@@ -340,6 +340,12 @@ const AdminPanel = () => {
         }
       );
 
+      console.log('[CSV Import] Backend response:', response.data);
+      console.log('[CSV Import] Response ok?', response.data?.ok);
+      console.log('[CSV Import] Response data?', response.data?.data);
+      console.log('[CSV Import] Is array?', Array.isArray(response.data?.data));
+      console.log('[CSV Import] Data length:', response.data?.data?.length);
+
       if (response.data.ok && response.data.data && Array.isArray(response.data.data)) {
         if (response.data.data.length === 0) {
           const hint = response.data.hint || 'Please check the CSV format';
@@ -353,14 +359,21 @@ const AdminPanel = () => {
         }
 
         // Transform backend format to frontend format with validation
+        console.log('[CSV Import] Raw data from backend:', response.data.data);
+        console.log('[CSV Import] First item sample:', response.data.data[0]);
+        
         const transformedAds = response.data.data
           .filter((item) => {
             // Filter out invalid items
             const dimensions = item.dimensions || {};
             const metrics = item.metrics || {};
-            return dimensions.adgroup_name && 
+            const isValid = dimensions.adgroup_name && 
                    metrics.stat_cost > 0 && 
                    dimensions.adgroup_name !== 'Unknown Ad Group';
+            if (!isValid) {
+              console.log('[CSV Import] Filtered out invalid item:', item);
+            }
+            return isValid;
           })
           .map((item, index) => {
             const dimensions = item.dimensions || {};
@@ -385,8 +398,13 @@ const AdminPanel = () => {
             };
           });
 
+        console.log('[CSV Import] Transformed ads count:', transformedAds.length);
+        console.log('[CSV Import] Transformed ads sample:', transformedAds[0]);
+        
         if (transformedAds.length === 0) {
-          toast.warning('⚠️ No valid ad groups found in CSV after validation');
+          console.error('[CSV Import] No valid ads after transformation!');
+          console.error('[CSV Import] Original data count:', response.data.data.length);
+          toast.warning('⚠️ No valid ad groups found in CSV after validation. Check console for details.');
           if (csvFileInputRef.current) {
             csvFileInputRef.current.value = '';
           }
