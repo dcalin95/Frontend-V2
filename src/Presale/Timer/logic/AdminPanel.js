@@ -332,7 +332,22 @@ const AdminPanel = () => {
         }
         return;
       }
+      
+      // Log password info (without showing actual password)
+      console.log('[CSV Import] Admin password configured:', adminPassword ? 'YES' : 'NO');
+      console.log('[CSV Import] Admin password length:', adminPassword?.length || 0);
+      
       formData.append('password', adminPassword);
+      
+      // Verify password was added to FormData
+      console.log('[CSV Import] FormData entries:');
+      for (let pair of formData.entries()) {
+        if (pair[0] === 'password') {
+          console.log('[CSV Import] Password in FormData:', pair[1] ? `YES (length: ${pair[1].length})` : 'NO');
+        } else {
+          console.log('[CSV Import]', pair[0], ':', pair[1] instanceof File ? `File: ${pair[1].name}` : pair[1]);
+        }
+      }
 
       console.log('[File Import] Uploading file:', file.name, 'Size:', file.size, 'bytes', 'Type:', isExcel ? 'Excel' : 'CSV');
 
