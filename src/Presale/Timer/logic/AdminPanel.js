@@ -3811,10 +3811,14 @@ const AdminPanel = () => {
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '15px', flexWrap: 'wrap' }}>
                   <label 
                     onClick={(e) => {
+                      console.log('[CSV Import] Label clicked!');
                       e.preventDefault();
                       e.stopPropagation();
                       if (!tiktokCsvImporting && csvFileInputRef.current) {
+                        console.log('[CSV Import] Triggering file input click');
                         csvFileInputRef.current.click();
+                      } else {
+                        console.log('[CSV Import] Cannot click - importing:', tiktokCsvImporting, 'ref exists:', !!csvFileInputRef.current);
                       }
                     }}
                     style={{ 
@@ -3837,10 +3841,18 @@ const AdminPanel = () => {
                       type="file"
                       accept=".csv,.xlsx,.xls"
                       onChange={(e) => {
+                        console.log('[CSV Import] Input onChange triggered!', e.target.files);
                         e.stopPropagation();
-                        handleCsvImport(e);
+                        if (e.target.files && e.target.files.length > 0) {
+                          handleCsvImport(e);
+                        } else {
+                          console.log('[CSV Import] No files in event!');
+                        }
                       }}
-                      onClick={(e) => e.stopPropagation()}
+                      onClick={(e) => {
+                        console.log('[CSV Import] Input onClick triggered!');
+                        e.stopPropagation();
+                      }}
                       disabled={tiktokCsvImporting}
                       style={{ 
                         display: 'none'
