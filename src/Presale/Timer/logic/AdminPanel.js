@@ -257,10 +257,13 @@ const AdminPanel = () => {
 
   // Import TikTok Ads data from CSV or Excel file
   const handleCsvImport = async (event) => {
+    console.log('[CSV Import] handleCsvImport called');
     const file = event.target.files?.[0];
     if (!file) {
+      console.log('[CSV Import] No file selected');
       return;
     }
+    console.log('[CSV Import] File selected:', file.name, file.size, 'bytes');
 
     // Validate file type (CSV or Excel)
     const validExtensions = ['.csv', '.xlsx', '.xls'];
@@ -401,7 +404,12 @@ const AdminPanel = () => {
         });
         
         if (newAds.length > 0) {
-          setTiktokAdsData((prevData) => [...prevData, ...newAds]);
+          console.log('[CSV Import] Setting new ads data:', newAds.length, 'ads');
+          setTiktokAdsData((prevData) => {
+            const updated = [...prevData, ...newAds];
+            console.log('[CSV Import] Updated tiktokAdsData length:', updated.length);
+            return updated;
+          });
           const skippedCount = transformedAds.length - newAds.length;
           if (skippedCount > 0) {
             toast.success(`✅ Imported ${newAds.length} new ad group(s), ${skippedCount} duplicate(s) skipped`);
@@ -3784,7 +3792,13 @@ const AdminPanel = () => {
                 
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '15px', flexWrap: 'wrap' }}>
                   <label 
-                    onClick={() => !tiktokCsvImporting && csvFileInputRef.current?.click()}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (!tiktokCsvImporting && csvFileInputRef.current) {
+                        csvFileInputRef.current.click();
+                      }
+                    }}
                     style={{ 
                       flex: 1,
                       minWidth: '250px',
@@ -3804,7 +3818,11 @@ const AdminPanel = () => {
                       ref={csvFileInputRef}
                       type="file"
                       accept=".csv,.xlsx,.xls"
-                      onChange={handleCsvImport}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        handleCsvImport(e);
+                      }}
+                      onClick={(e) => e.stopPropagation()}
                       disabled={tiktokCsvImporting}
                       style={{ 
                         display: 'none'
