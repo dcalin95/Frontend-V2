@@ -1,6 +1,25 @@
 /* SOLANA/AI STYLE */
 .bits-toast-container {
-    z-index: 9999;
+    z-index: 10002 !important; /* Must be above AdminPanel (z-index: 10001) */
+  }
+  
+  /* Ensure ALL toast elements have high z-index to appear above AdminPanel */
+  .Toastify__toast-container {
+    z-index: 10002 !important;
+  }
+  
+  .Toastify__toast {
+    z-index: 10002 !important;
+    position: relative !important;
+  }
+  
+  .Toastify__toast-body {
+    z-index: 10002 !important;
+  }
+  
+  /* Ensure toast portal is above everything */
+  #root > div:has(.Toastify__toast-container) {
+    z-index: 10002 !important;
   }
   
   .bits-toast {
