@@ -257,13 +257,16 @@ const AdminPanel = () => {
 
   // Import TikTok Ads data from CSV or Excel file
   const handleCsvImport = async (event) => {
-    console.log('[CSV Import] handleCsvImport called');
+    console.log('[CSV Import] ========== handleCsvImport CALLED ==========');
+    console.log('[CSV Import] Event:', event);
+    console.log('[CSV Import] Event target:', event.target);
+    console.log('[CSV Import] Event target files:', event.target.files);
     const file = event.target.files?.[0];
     if (!file) {
-      console.log('[CSV Import] No file selected');
+      console.error('[CSV Import] ❌ No file selected!');
       return;
     }
-    console.log('[CSV Import] File selected:', file.name, file.size, 'bytes');
+    console.log('[CSV Import] ✅ File selected:', file.name, file.size, 'bytes', 'Type:', file.type);
 
     // Validate file type (CSV or Excel)
     const validExtensions = ['.csv', '.xlsx', '.xls'];
@@ -3792,6 +3795,7 @@ const AdminPanel = () => {
           {/* TikTok Ads Section */}
           {activeTab === "tiktok-ads" && (
             <div className={styles["section"]} style={{ padding: '25px' }}>
+              {console.log('[TikTok Ads] Tab rendered! activeTab:', activeTab, 'csvFileInputRef:', csvFileInputRef.current)}
               <h3 style={{ marginBottom: '20px', textAlign: 'center' }}>🎵 TikTok Ads Analytics</h3>
               
               {/* CSV Import Section - MOVED TO TOP FOR VISIBILITY */}
