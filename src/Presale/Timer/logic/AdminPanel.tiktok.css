@@ -1,0 +1,21 @@
+/* TikTok Ads Table - Force white and large text */
+.admin-panel-tiktok-table th {
+  color: #FFFFFF !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  padding: 16px 12px !important;
+}
+
+.admin-panel-tiktok-table td {
+  color: #FFFFFF !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  padding: 14px 12px !important;
+}
+
+.admin-panel-tiktok-table td span {
+  color: #FFFFFF !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+}
+

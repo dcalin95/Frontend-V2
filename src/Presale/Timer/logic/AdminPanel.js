@@ -4,6 +4,7 @@ import { default as axios } from "axios";
 import { ethers } from "ethers";
 import { copyWalletAddress } from "../../../utils/copyUtils";
 import styles from "./AdminPanel.module.css";
+import "./AdminPanel.tiktok.css";
 import { toast } from "react-toastify";
 import PresaleHistory from "../PresaleHistory";
 import RoundEndDisplay from "../RoundEndDisplay";
@@ -4069,23 +4070,23 @@ const AdminPanel = () => {
                 <div style={{ marginTop: '30px' }}>
                   <h4 style={{ marginBottom: '15px', color: '#00FFA3' }}>📊 Ad Groups Summary</h4>
                   <div style={{ overflowX: 'auto', maxHeight: '70vh', overflowY: 'auto', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '8px' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(0, 255, 163, 0.2)', minWidth: '1200px' }}>
+                    <table className="admin-panel-tiktok-table" style={{ width: '100%', borderCollapse: 'collapse', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(0, 255, 163, 0.2)', minWidth: '1200px' }}>
                       <thead>
                         <tr style={{ background: 'rgba(0, 0, 0, 0.4)' }}>
-                          <th style={{ padding: '16px 12px', textAlign: 'left', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', color: '#FFFFFF', fontSize: '18px', fontWeight: '900', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>Ad Group</th>
-                          <th style={{ padding: '16px 12px', textAlign: 'center', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', color: '#FFFFFF', fontSize: '18px', fontWeight: '900', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>Status</th>
-                          <th style={{ padding: '16px 12px', textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', color: '#FFFFFF', fontSize: '18px', fontWeight: '900', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>Cost (EUR)</th>
-                          <th style={{ padding: '16px 12px', textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', color: '#FFFFFF', fontSize: '18px', fontWeight: '900', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>Impressions</th>
-                          <th style={{ padding: '16px 12px', textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', color: '#FFFFFF', fontSize: '18px', fontWeight: '900', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>CPM</th>
-                          <th style={{ padding: '16px 12px', textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', color: '#FFFFFF', fontSize: '18px', fontWeight: '900', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>6s Views</th>
-                          <th style={{ padding: '16px 12px', textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', color: '#FFFFFF', fontSize: '18px', fontWeight: '900', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>View Rate</th>
-                          <th style={{ padding: '16px 12px', textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', color: '#FFFFFF', fontSize: '18px', fontWeight: '900', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>Clicks</th>
-                          <th style={{ padding: '16px 12px', textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', color: '#FFFFFF', fontSize: '18px', fontWeight: '900', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>CTR</th>
-                          <th style={{ padding: '16px 12px', textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', color: '#FFFFFF', fontSize: '18px', fontWeight: '900', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>Likes</th>
-                          <th style={{ padding: '16px 12px', textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', color: '#FFFFFF', fontSize: '18px', fontWeight: '900', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>Shares</th>
-                          <th style={{ padding: '16px 12px', textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', color: '#FFFFFF', fontSize: '18px', fontWeight: '900', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>Comments</th>
-                          <th style={{ padding: '16px 12px', textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', color: '#FFFFFF', fontSize: '18px', fontWeight: '900', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>Follows</th>
-                          <th style={{ padding: '16px 12px', textAlign: 'center', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', color: '#FFFFFF', fontSize: '18px', fontWeight: '900', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>Actions</th>
+                          <th style={{ textAlign: 'left', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>Ad Group</th>
+                          <th style={{ textAlign: 'center', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>Status</th>
+                          <th style={{ textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>Cost (EUR)</th>
+                          <th style={{ textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>Impressions</th>
+                          <th style={{ textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>CPM</th>
+                          <th style={{ textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>6s Views</th>
+                          <th style={{ textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>View Rate</th>
+                          <th style={{ textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>Clicks</th>
+                          <th style={{ textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>CTR</th>
+                          <th style={{ textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>Likes</th>
+                          <th style={{ textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>Shares</th>
+                          <th style={{ textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>Comments</th>
+                          <th style={{ textAlign: 'right', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>Follows</th>
+                          <th style={{ textAlign: 'center', borderBottom: '2px solid rgba(255, 255, 255, 0.4)', whiteSpace: 'nowrap', textShadow: '0 0 6px rgba(255,255,255,0.8)' }}>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -4094,9 +4095,9 @@ const AdminPanel = () => {
                           return (
                             <React.Fragment key={ad.id}>
                             <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', background: index % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.01)' }}>
-                              <td style={{ padding: '14px 12px', color: '#FFFFFF', fontSize: '18px', fontWeight: '800' }}>
+                              <td>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                                  <span style={{ color: '#FFFFFF', fontWeight: '800', fontSize: '18px' }}>{ad.adGroupName}</span>
+                                  <span>{ad.adGroupName}</span>
                                   {ad.source === 'api' && (
                                     <span style={{
                                       padding: '3px 7px',
@@ -4138,17 +4139,17 @@ const AdminPanel = () => {
                                   {ad.status}
                                 </span>
                               </td>
-                              <td style={{ padding: '14px 12px', textAlign: 'right', color: '#FFFFFF', fontSize: '18px', fontWeight: '800' }}>{fmt(ad.cost, 2)}</td>
-                              <td style={{ padding: '14px 12px', textAlign: 'right', color: '#FFFFFF', fontSize: '18px', fontWeight: '800' }}>{fmt(ad.impressions, 0)}</td>
-                              <td style={{ padding: '14px 12px', textAlign: 'right', color: '#FFFFFF', fontSize: '18px', fontWeight: '800' }}>{fmt(ad.cpm, 2)}</td>
-                              <td style={{ padding: '14px 12px', textAlign: 'right', color: '#FFFFFF', fontSize: '18px', fontWeight: '800' }}>{fmt(ad.focusedViews || 0, 0)}</td>
-                              <td style={{ padding: '14px 12px', textAlign: 'right', color: '#FFFFFF', fontSize: '18px', fontWeight: '800' }}>{fmt(ad.focusedViewRate || 0, 2)}%</td>
-                              <td style={{ padding: '14px 12px', textAlign: 'right', color: '#FFFFFF', fontSize: '18px', fontWeight: '800' }}>{fmt(ad.clicks, 0)}</td>
-                              <td style={{ padding: '14px 12px', textAlign: 'right', color: '#FFFFFF', fontSize: '18px', fontWeight: '800' }}>{ctr}%</td>
-                              <td style={{ padding: '14px 12px', textAlign: 'right', color: '#FFFFFF', fontSize: '18px', fontWeight: '800' }}>{fmt(ad.paidLikes || 0, 0)}</td>
-                              <td style={{ padding: '14px 12px', textAlign: 'right', color: '#FFFFFF', fontSize: '18px', fontWeight: '800' }}>{fmt(ad.paidShares || 0, 0)}</td>
-                              <td style={{ padding: '14px 12px', textAlign: 'right', color: '#FFFFFF', fontSize: '18px', fontWeight: '800' }}>{fmt(ad.paidComments || 0, 0)}</td>
-                              <td style={{ padding: '14px 12px', textAlign: 'right', color: '#FFFFFF', fontSize: '18px', fontWeight: '800' }}>{fmt(ad.paidFollows || 0, 0)}</td>
+                              <td style={{ textAlign: 'right' }}>{fmt(ad.cost, 2)}</td>
+                              <td style={{ textAlign: 'right' }}>{fmt(ad.impressions, 0)}</td>
+                              <td style={{ textAlign: 'right' }}>{fmt(ad.cpm, 2)}</td>
+                              <td style={{ textAlign: 'right' }}>{fmt(ad.focusedViews || 0, 0)}</td>
+                              <td style={{ textAlign: 'right' }}>{fmt(ad.focusedViewRate || 0, 2)}%</td>
+                              <td style={{ textAlign: 'right' }}>{fmt(ad.clicks, 0)}</td>
+                              <td style={{ textAlign: 'right' }}>{ctr}%</td>
+                              <td style={{ textAlign: 'right' }}>{fmt(ad.paidLikes || 0, 0)}</td>
+                              <td style={{ textAlign: 'right' }}>{fmt(ad.paidShares || 0, 0)}</td>
+                              <td style={{ textAlign: 'right' }}>{fmt(ad.paidComments || 0, 0)}</td>
+                              <td style={{ textAlign: 'right' }}>{fmt(ad.paidFollows || 0, 0)}</td>
                               <td style={{ padding: '10px 8px', textAlign: 'center' }}>
                                 <div style={{ display: 'flex', gap: '5px', justifyContent: 'center' }}>
                                   <button
