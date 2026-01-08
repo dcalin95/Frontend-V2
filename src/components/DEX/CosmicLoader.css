@@ -84,17 +84,37 @@
   margin-top: 20px;
   height: 30px;
   display: flex;
-  gap: 2px;
+  gap: 0px; /* Redus de la 2px pentru a preveni afișarea cu puncte */
+  justify-content: center;
+  align-items: center;
 }
 
 .gravity-char {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Exo 2', 'Inter', 'Helvetica Neue', Arial, sans-serif; /* Fallback-uri multiple */
   font-weight: 700;
   font-size: 18px;
   color: #fff;
-  letter-spacing: 4px;
+  letter-spacing: 1px; /* Redus de la 4px pentru a preveni afișarea cu puncte */
   animation: fade-in-up 0.5s ease-out forwards;
   opacity: 0;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Previne probleme de rendering pe Chrome mobile */
+  transform: translateZ(0);
+  will-change: opacity, transform;
+  /* Previne afișarea cu puncte între litere */
+  white-space: nowrap;
+  display: inline-block;
+}
+
+/* Stiluri pentru font loading */
+.gravity-char.font-loading {
+  font-family: 'Helvetica Neue', Arial, sans-serif !important; /* Fallback imediat */
+}
+
+.gravity-char.font-loaded {
+  font-family: 'Exo 2', 'Inter', 'Helvetica Neue', Arial, sans-serif;
 }
 
 /* ☢️ REACTOR CONTAINER */
@@ -205,7 +225,10 @@
   font-size: 32px;
   font-weight: 700;
   color: #fff;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Exo 2', 'Inter', 'Helvetica Neue', Arial, sans-serif; /* Fallback-uri multiple */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .dex-loader-text {

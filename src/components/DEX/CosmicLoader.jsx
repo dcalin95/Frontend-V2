@@ -16,7 +16,39 @@ const LOADING_TEXTS = [
 const CosmicLoader = () => {
   const [progress, setProgress] = useState(0);
   const [textIndex, setTextIndex] = useState(0);
+  const [fontLoaded, setFontLoaded] = useState(false);
   const titleText = "BITSWAPDEX AI";
+
+  // Verificare încărcare font pentru a preveni probleme de rendering
+  useEffect(() => {
+    if (document.fonts && document.fonts.check) {
+      // Verifică dacă fontul Exo 2 este încărcat
+      const checkFont = () => {
+        const isLoaded = document.fonts.check('700 18px "Exo 2"') || 
+                        document.fonts.check('700 18px "Inter"') ||
+                        document.fonts.check('700 18px "Helvetica Neue"');
+        setFontLoaded(isLoaded);
+      };
+      
+      // Verifică imediat
+      checkFont();
+      
+      // Verifică după un delay pentru fonturile care se încarcă
+      const timer = setTimeout(checkFont, 100);
+      
+      // Ascultă evenimentul de încărcare font
+      if (document.fonts.ready) {
+        document.fonts.ready.then(() => {
+          setFontLoaded(true);
+        });
+      }
+      
+      return () => clearTimeout(timer);
+    } else {
+      // Fallback pentru browsere vechi
+      setFontLoaded(true);
+    }
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -60,7 +92,11 @@ const CosmicLoader = () => {
       {/* 🌌 CENTER: GRAVITY TITLE */}
       <div className="dex-loader-title-container">
           {titleText.split('').map((char, i) => (
-              <span key={i} className="gravity-char" style={{animationDelay: `${i * 0.05}s`}}>
+              <span 
+                key={i} 
+                className={`gravity-char ${fontLoaded ? 'font-loaded' : 'font-loading'}`}
+                style={{animationDelay: `${i * 0.05}s`}}
+              >
                   {char === ' ' ? '\u00A0' : char}
               </span>
           ))}
