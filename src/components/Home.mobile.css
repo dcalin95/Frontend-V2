@@ -13,6 +13,7 @@
     overflow-x: hidden;
     width: 100%;
     padding: 0;
+    padding-top: 120px; /* 🎯 PADDING TOP pentru a evita suprapunerea cu header-ul pe mobile */
     
     /* 🎯 SCROLL SNAP pe Tablet/Mobile */
     scroll-snap-type: y proximity;

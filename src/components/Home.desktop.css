@@ -33,6 +33,9 @@
   overflow-y: scroll;
   height: 100vh;
   scroll-behavior: smooth;
+  
+  /* 🎯 PADDING TOP pentru a evita suprapunerea cu header-ul */
+  padding-top: 100px; /* Spațiu pentru header */
 }
 
 .home-section {
