@@ -112,19 +112,47 @@ body:has(.zoom-recommendation-banner:not(.closing)) .header-spacer {
   transform: scale(0.95);
 }
 
-/* 📱 MOBILE: Ascunde complet banner-ul pe mobile */
+/* 📱 MOBILE: Ascunde complet banner-ul pe mobile - MULTIPLE SELECTORS pentru siguranță */
 @media (max-width: 768px) {
   .zoom-recommendation-banner {
     display: none !important; /* Ascunde complet pe mobile */
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
   }
 }
 
 /* 📱 MOBILE: Ascunde complet banner-ul când body are clasa mode-mobile */
-body.mode-mobile .zoom-recommendation-banner {
+body.mode-mobile .zoom-recommendation-banner,
+body.mode-mobile .zoom-recommendation-banner * {
   display: none !important; /* Ascunde complet pe mobile */
   visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
+  position: absolute !important;
+  left: -9999px !important;
+}
+
+/* 📱 MOBILE: Verificare suplimentară pentru touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .zoom-recommendation-banner {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
+
+/* 📱 MOBILE: Verificare pentru ecrane mici (înălțime sau lățime) */
+@media (max-width: 768px), (max-height: 600px) {
+  .zoom-recommendation-banner {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
 }
 
 /* Ajustare pentru a nu se suprapune cu Sidebar */

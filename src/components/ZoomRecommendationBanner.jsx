@@ -1,15 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import './ZoomRecommendationBanner.css';
 
+/**
+ * Funcție robustă pentru detectarea dispozitivelor mobile
+ * Verifică multiple condiții pentru a preveni afișarea banner-ului pe mobile
+ */
+const isMobileDevice = () => {
+  if (typeof window === 'undefined') return false;
+  
+  // 1. Verificare dimensiuni ecran
+  const isSmallScreen = window.innerWidth <= 768 || window.screen.width <= 768;
+  
+  // 2. Verificare clasa body
+  const hasMobileClass = document.body.classList.contains('mode-mobile');
+  
+  // 3. Verificare user agent pentru mobile (inclusiv Chrome mobile)
+  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  const uaLower = userAgent.toLowerCase();
+  const isMobileUA = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(uaLower);
+  
+  // 3b. Verificare specifică pentru Chrome mobile (Chrome pe Android)
+  const isChromeMobile = /chrome/i.test(uaLower) && /android/i.test(uaLower) && !/edg/i.test(uaLower);
+  
+  // 4. Verificare touch support
+  const hasTouchSupport = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  
+  // 5. Verificare orientare (mobile are de obicei aspect ratio diferit)
+  const isMobileAspectRatio = window.innerHeight > window.innerWidth && window.innerWidth < 500;
+  
+  // 6. Verificare suplimentară: dacă este Chrome mobile, consideră-l mobile indiferent de alte condiții
+  if (isChromeMobile) {
+    return true;
+  }
+  
+  // Returnează true dacă ORICE condiție indică mobile
+  return isSmallScreen || hasMobileClass || (isMobileUA && hasTouchSupport) || isMobileAspectRatio;
+};
+
 const ZoomRecommendationBanner = () => {
   const [showBanner, setShowBanner] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
-    // 📱 MOBILE: Nu afișa banner-ul pe mobile
-    const isMobile = window.matchMedia('(max-width: 768px)').matches || 
-                     document.body.classList.contains('mode-mobile');
-    if (isMobile) {
+    // 📱 MOBILE: Verificare robustă - NU afișa banner-ul pe mobile
+    if (isMobileDevice()) {
+      console.log('🚫 [ZoomBanner] Mobile device detected - banner hidden');
       return; // Nu afișa banner-ul pe mobile
     }
 
@@ -67,7 +102,8 @@ const ZoomRecommendationBanner = () => {
     }, 300);
   };
 
-  if (!showBanner) {
+  // 📱 MOBILE: Verificare finală înainte de render - dacă este mobile, nu renderiza deloc
+  if (isMobileDevice() || !showBanner) {
     return null;
   }
 
