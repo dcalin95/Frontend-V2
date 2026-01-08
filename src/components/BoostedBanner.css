@@ -394,6 +394,15 @@
     to { opacity: 1; }
   }
 
+  /* 📱 Auto-hide pe mobile - ascunde banner-ul după câteva secunde */
+  .total-boosted-banner.mobile-hidden {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: translateX(-50%) translateY(-10px) !important;
+    transition: opacity 0.5s ease-out, visibility 0.5s ease-out, transform 0.5s ease-out !important;
+  }
+
   /* Când meniul mobil este deschis, împinge bannerul în fluxul paginii */
   body.mobile-menu-open .total-boosted-banner {
     position: sticky; /* rămâne sus, sub header, când meniul e deschis */

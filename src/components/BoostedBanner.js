@@ -12,8 +12,10 @@ const BoostedBanner = () => {
   const [notificationKey, setNotificationKey] = useState(0);
   const [showVoiceButton, setShowVoiceButton] = useState(false);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
+  const [isVisible, setIsVisible] = useState(true); // 📱 Control vizibilitate pe mobile
   const prevBoosted = useRef(null);
   const hasSpokenRef = useRef(false);
+  const hideTimeoutRef = useRef(null); // Ref pentru timeout-ul de ascundere
 
   // Funcție pentru detectarea dispozitivelor mobile
   const isMobileDevice = () => {
@@ -351,9 +353,55 @@ const BoostedBanner = () => {
     // Resetăm flag-ul doar la primul load
     hasSpokenRef.current = false;
     
+    // 📱 Pe mobile, reafișează banner-ul la refresh
+    if (isMobileDevice()) {
+      setIsVisible(true);
+      console.log("📱 Refresh detectat - reafișez banner-ul 'Launch Power Raised'");
+    }
+    
     // Forțează încărcarea vocilor
     forceLoadVoices();
   }, []);
+
+  // 📱 Auto-hide pe mobile după câteva secunde
+  useEffect(() => {
+    if (!isMobileDevice()) {
+      return; // Nu aplică auto-hide pe desktop
+    }
+
+    // Dacă banner-ul este vizibil și avem date, setează timeout pentru ascundere
+    if (isVisible && boosted !== null) {
+      // Anulează timeout-ul anterior dacă există
+      if (hideTimeoutRef.current) {
+        clearTimeout(hideTimeoutRef.current);
+      }
+
+      // Ascunde banner-ul după 5 secunde
+      hideTimeoutRef.current = setTimeout(() => {
+        console.log("📱 Banner 'Launch Power Raised' ascuns automat pe mobile după 5 secunde");
+        setIsVisible(false);
+      }, 5000); // 5 secunde
+    }
+
+    return () => {
+      if (hideTimeoutRef.current) {
+        clearTimeout(hideTimeoutRef.current);
+      }
+    };
+  }, [isVisible, boosted]);
+
+  // 📱 Reafișează banner-ul când suma se actualizează (când urcă)
+  useEffect(() => {
+    if (!isMobileDevice()) {
+      return; // Nu aplică pe desktop
+    }
+
+    if (boosted !== null && prevBoosted.current !== null && boosted > prevBoosted.current) {
+      // Suma a crescut - reafișează banner-ul
+      console.log("📱 Suma a crescut - reafișez banner-ul 'Launch Power Raised'");
+      setIsVisible(true);
+    }
+  }, [boosted]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -419,7 +467,7 @@ const BoostedBanner = () => {
   }, []);
 
   return (
-    <div className="total-boosted-banner">
+    <div className={`total-boosted-banner ${isMobileDevice() && !isVisible ? 'mobile-hidden' : ''}`}>
       <img src="/logo.png" alt="BITS Logo" className="bits-logo-floating" />
       <span className="boosted-label">Launch Power Raised:</span>
       {boosted === null ? (
