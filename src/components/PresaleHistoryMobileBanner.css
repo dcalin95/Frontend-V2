@@ -11,22 +11,23 @@
   animation: slideDownFadeIn 0.4s ease-out;
 }
 
-/* 📱 MOBILE ONLY - Ajustare pentru body.mode-mobile */
+/* 📱 MOBILE ONLY - Ajustare pentru body.mode-mobile - Poziționat sub BitcoinPriceTicker */
 body.mode-mobile .presale-history-mobile-banner {
-  top: 280px; /* Sub BitcoinPriceTicker (padding-top 100px + header ~80px + BitcoinPriceTicker ~100px = ~280px) */
+  /* Calcul: header (85px) + padding-top Home (120px) + BitcoinPriceTicker (~200px) = ~405px */
+  top: 405px !important; /* Sub BitcoinPriceTicker, nu sub butonul hamburger */
   z-index: 1000;
 }
 
 /* Ajustare pentru ecrane mici */
 @media (max-width: 480px) {
   body.mode-mobile .presale-history-mobile-banner {
-    top: 260px; /* Ajustat pentru ecrane mai mici */
+    top: 380px !important; /* Ajustat pentru ecrane mai mici - sub BitcoinPriceTicker */
   }
 }
 
 @media (max-width: 360px) {
   body.mode-mobile .presale-history-mobile-banner {
-    top: 240px; /* Ajustat pentru ecrane foarte mici */
+    top: 360px !important; /* Ajustat pentru ecrane foarte mici - sub BitcoinPriceTicker */
   }
 }
 

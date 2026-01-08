@@ -9,11 +9,12 @@
     display: none !important;
   }
 
-  /* Mobile Hamburger Container */
+  /* Mobile Hamburger Container - Mutat mai jos pentru a face loc banner-ului */
   .mobile-hamburger-container {
     display: block !important;
     position: relative;
     z-index: 200;
+    margin-top: 10px; /* Mutat mai jos pentru a face loc banner-ului */
   }
 
   /* Mobile Hamburger Button - GEMINI 3 KING STYLE */

@@ -42,6 +42,16 @@
     margin: 0 auto;
 }
 
+/* 📱 MOBILE: Forțează 1 coloană pe mobile pentru a preveni afișarea greșită cu 3 coloane */
+@media (max-width: 768px) {
+    .how-it-works-grid {
+        grid-template-columns: 1fr !important; /* Forțează 1 coloană pe mobile */
+        gap: 20px !important;
+        max-width: 100% !important;
+        padding: 0 0.5rem !important;
+    }
+}
+
 /* Casetă - SOLANA/AI STYLE */
 .how-it-works-card {
     background: transparent /* 🔙 REVERTED FROM SEMI-TRANSPARENT */;
