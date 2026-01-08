@@ -16,6 +16,22 @@
   flex-direction: column;
 }
 
+/* 📱 MOBILE: Ensure PresaleCopilot is visible above other elements */
+body.mode-mobile .presale-copilot {
+  z-index: 13000 !important; /* Highest: Above AI Launcher (12501), Wallet (12000), Telegram (99989), Social (99988) */
+  display: flex !important; /* Force display on mobile */
+  visibility: visible !important; /* Force visibility on mobile */
+  opacity: 1 !important; /* Force opacity on mobile */
+}
+
+/* 📱 MOBILE: Ensure mini button is always visible */
+body.mode-mobile .presale-copilot__mini {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: inherit; /* Inherit from parent (13000) */
+}
+
 .presale-copilot.is-closed {
   width: auto;
   max-height: none;
@@ -74,7 +90,7 @@
 body.mode-mobile .presale-copilot {
   left: auto;
   right: 14px;
-  bottom: 95px; /* Same as closed state for consistency */
+  bottom: 95px; /* Positioned above AI Launcher (20px bottom + 56px height + 19px gap = 95px) */
   width: auto;
   max-height: 70vh;
   /* Override global mobile kill-switch */
@@ -83,7 +99,7 @@ body.mode-mobile .presale-copilot {
 }
 
 body.mode-mobile .presale-copilot.is-closed {
-  bottom: 95px; /* Positioned above AI Launcher (20px + 56px + 19px gap) */
+  bottom: 95px; /* Same position when closed - above AI Launcher */
   width: auto;
   left: auto;
   right: 14px;

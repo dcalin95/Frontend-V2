@@ -514,9 +514,9 @@
     
     /* POSITIONED ABOVE PRESALE COPILOT */
     position: fixed !important;
-    bottom: 190px !important; /* Above Copilot (which is at 120px) */
+    bottom: 245px !important; /* Above Telegram button (170px) + 56px (height) + 19px (gap) = 245px */
     right: 14px !important; /* Aligned with Copilot */
-    z-index: 99989 !important; /* Just below Copilot (99990) */
+    z-index: 99988 !important; /* Below Copilot (13000) and Telegram (99989) */
     
     margin: 0 !important;
     width: auto !important;

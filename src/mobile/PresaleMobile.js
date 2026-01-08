@@ -27,7 +27,7 @@ const MobileLoading = () => (
 const PresaleMobile = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { walletAddress } = useWallet();
+  const { walletAddress, setShowWalletModal } = useWallet();
   const {
     selectedToken,
     selectedChain,
@@ -161,7 +161,7 @@ const PresaleMobile = () => {
 
           {/* Live Progress Bar */}
           {totalRoundSupply > 0 && (
-            <div style={{width: '100%', padding: '0 5px'}}>
+            <div style={{width: '100%', padding: '0 5px', marginBottom: '25px'}}>
                <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px'}}>
                   <span>Sold: {(soldBits/1000000).toFixed(2)}M</span>
                   <span style={{color: '#14f195'}}>Target: {(totalRoundSupply/1000000).toFixed(2)}M</span>
@@ -184,6 +184,94 @@ const PresaleMobile = () => {
                  }} />
                </div>
             </div>
+          )}
+
+          {/* 🚀 QUICK BUY BUTTON - One-Click Buy for Connected Wallets */}
+          {walletAddress ? (
+            <button
+              onClick={() => {
+                // One-Click Buy: Skip payment method selection, go directly to crypto with BNB default
+                setSelectedToken("BNB");
+                setSelectedChain("bsc");
+                setPaymentMethod("crypto");
+                // Set a default amount (minimum $10 USD)
+                const bnbPrice = tokenPrices?.BNB?.price || tokenPrices?.BNB || 300;
+                const minBNB = (10 / bnbPrice).toFixed(6);
+                setAmountPay(minBNB);
+              }}
+              style={{
+                width: '100%',
+                padding: '20px',
+                background: 'linear-gradient(135deg, #14f195 0%, #00C2FF 100%)',
+                border: 'none',
+                borderRadius: '20px',
+                color: '#000',
+                fontWeight: 'bold',
+                fontSize: '22px',
+                cursor: 'pointer',
+                boxShadow: '0 8px 30px rgba(20, 241, 149, 0.5)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '12px',
+                transition: 'all 0.3s ease',
+                marginTop: '10px'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.02)';
+                e.currentTarget.style.boxShadow = '0 12px 40px rgba(20, 241, 149, 0.7)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.boxShadow = '0 8px 30px rgba(20, 241, 149, 0.5)';
+              }}
+            >
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+              </svg>
+              <span>QUICK BUY $BITS</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          ) : (
+            <button
+              onClick={() => setShowWalletModal(true)}
+              style={{
+                width: '100%',
+                padding: '20px',
+                background: 'linear-gradient(135deg, #14f195 0%, #00C2FF 100%)',
+                border: 'none',
+                borderRadius: '20px',
+                color: '#000',
+                fontWeight: 'bold',
+                fontSize: '22px',
+                cursor: 'pointer',
+                boxShadow: '0 8px 30px rgba(20, 241, 149, 0.5)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '12px',
+                transition: 'all 0.3s ease',
+                marginTop: '10px'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.02)';
+                e.currentTarget.style.boxShadow = '0 12px 40px rgba(20, 241, 149, 0.7)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.boxShadow = '0 8px 30px rgba(20, 241, 149, 0.5)';
+              }}
+            >
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7M21 3l-9 9M15 3h6v6"></path>
+              </svg>
+              <span>CONNECT WALLET TO BUY</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"></path>
+              </svg>
+            </button>
           )}
 
         </div>
