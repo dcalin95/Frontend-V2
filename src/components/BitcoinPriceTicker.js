@@ -10,8 +10,9 @@ import './BitcoinPriceTicker.mobile.css';
  * - Vertical layout: Logo Top -> Price -> Stats
  * - Gemini Color Palette (Deep Blue, Cyan, Sparkles)
  * - Real-time data
+ * - Fullscreen button to open Whale Transactions
  */
-const BitcoinPriceTicker = () => {
+const BitcoinPriceTicker = ({ onFullscreenClick }) => {
   const [price, setPrice] = useState(null);
   const [prevPrice, setPrevPrice] = useState(null);
   const [change24h, setChange24h] = useState(0);
@@ -161,7 +162,19 @@ const BitcoinPriceTicker = () => {
              {isPositive ? "Market Sentiment: Bullish" : "Market Sentiment: Bearish"}
         </div>
           <div className="gemini-source">CoinGecko API</div>
-      </div>
+        </div>
+
+        {/* Fullscreen Button - Open Whale Transactions */}
+        {onFullscreenClick && (
+          <button
+            className="btc-fullscreen-btn"
+            onClick={onFullscreenClick}
+            aria-label="Open Bitcoin Whale Transactions in fullscreen"
+            title="🐋 Open Bitcoin & Crypto Whale Tracker - Real-time large transactions"
+          >
+            <i className="fas fa-expand"></i>
+          </button>
+        )}
       
       </div>
     </div>

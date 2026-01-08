@@ -110,6 +110,20 @@
   }
 }
 
+/* 📱 DUAL MOBILE DETECTION - body.mode-mobile + html.screen-mobile */
+/* ✅ SUPLIMENTAR față de media queries - nu înlocuiește, ci completează */
+/* Suport pentru ambele sisteme pentru compatibilitate maximă */
+body.mode-mobile .home-container,
+html.screen-mobile .home-container {
+  padding-right: 0 !important; /* Eliminăm padding-right pe mobile */
+}
+
+body.mode-mobile .home-section,
+html.screen-mobile .home-section {
+  max-width: 100vw !important;
+  overflow: hidden !important;
+}
+
 /* Small Mobile */
 @media (max-width: 480px) {
   .hero {
@@ -179,27 +193,97 @@ body.in-app-browser p {
   -webkit-text-fill-color: #ffffff !important;
 }
 
-/* === FAB WHALE TRACKER - MOBILE SIMETRIC === */
+/* === FAB WHALE TRACKER - MOBILE PREMIUM BINANCE STYLE === */
 
 /* Tablets & Small Laptops */
 @media (max-width: 1024px) and (min-width: 769px) {
   .fab-whale-tracker {
     bottom: calc(12rem + env(safe-area-inset-bottom, 0px)) !important;
     right: calc(3rem + env(safe-area-inset-right, 0px)) !important;
-    width: 70px !important;
-    height: 70px !important;
+    width: 72px !important; /* Slightly larger for better touch */
+    height: 72px !important;
     gap: 0.25rem !important;
     padding: 0 !important;
+    z-index: 99990 !important;
+    /* 🎨 AI Sonnet Premium mobile glassmorphism */
+    backdrop-filter: blur(18px) saturate(170%) brightness(1.03) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(170%) brightness(1.03) !important;
+  }
+  
+  /* 🎯 Retina Mobile - Enhanced */
+  .screen-retina .fab-whale-tracker,
+  .screen-high-dpi .fab-whale-tracker {
+    backdrop-filter: blur(20px) saturate(180%) brightness(1.05) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(1.05) !important;
   }
 
-  .fab-whale-tracker i {
+  .fab-whale-tracker.loading i.fa-spinner {
     font-size: 1.8rem !important;
+  }
+
+  .fab-whale-tracker:focus-visible {
+    outline: 2px solid rgba(240, 185, 11, 0.8) !important;
+    outline-offset: 3px !important;
+  }
+
+  /* 🎨 AI Sonnet - Mobile Icon Wrapper */
+  .fab-icon-wrapper {
+    display: flex !important;
+    margin-bottom: 0.12rem !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .fab-whale-tracker i,
+  .fab-icon-wrapper i {
+    font-size: 1.9rem !important;
     line-height: 1 !important;
+    color: #f0b90b !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8)) 
+            drop-shadow(0 0 10px rgba(240, 185, 11, 0.7))
+            drop-shadow(0 0 20px rgba(247, 147, 26, 0.4)) !important;
+  }
+  
+  /* 🎯 Retina Mobile - Sharper Icon */
+  .screen-retina .fab-whale-tracker i,
+  .screen-retina .fab-icon-wrapper i,
+  .screen-high-dpi .fab-whale-tracker i,
+  .screen-high-dpi .fab-icon-wrapper i {
+    font-size: 2rem !important;
+    color: #f0b90b !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
+    filter: drop-shadow(0 0.5px 1px rgba(0, 0, 0, 0.9)) 
+            drop-shadow(0 0 12px rgba(240, 185, 11, 0.8))
+            drop-shadow(0 0 24px rgba(247, 147, 26, 0.5)) !important;
+  }
+
+  /* 🎨 AI Sonnet - Mobile Label Container */
+  .fab-label-container {
+    padding: 0 0.12rem !important;
   }
 
   .fab-label {
-    gap: 0.05rem !important;
-    line-height: 1.1 !important;
+    gap: 0.06rem 0.1rem !important;
+    line-height: 1.15 !important;
+    font-size: 0.64rem !important;
+    letter-spacing: 0.09em !important;
+    padding: 0.14rem 0.22rem !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+  }
+  
+  /* 🎯 Retina Mobile - Sharper Label */
+  .screen-retina .fab-label,
+  .screen-high-dpi .fab-label {
+    font-size: 0.66rem !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
   }
 
   .fab-btc {
@@ -222,36 +306,188 @@ body.in-app-browser p {
   .fab-whale-tracker {
     bottom: calc(17rem + env(safe-area-inset-bottom, 0px)) !important;
     right: calc(1.5rem + env(safe-area-inset-right, 0px)) !important;
-    width: 60px !important;
-    height: 60px !important;
+    width: 68px !important; /* Better touch target */
+    height: 68px !important;
     border-width: 2.5px !important;
-    gap: 0.2rem !important;
+    gap: 0.22rem !important;
     padding: 0 !important;
+    z-index: 99990 !important;
+    /* 🎨 AI Sonnet Premium mobile glassmorphism */
+    backdrop-filter: blur(16px) saturate(165%) brightness(1.02) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(165%) brightness(1.02) !important;
   }
-
-  .fab-whale-tracker i {
-    font-size: 1.5rem !important;
-    line-height: 1 !important;
+  
+  /* 🎯 Retina Mobile - Enhanced */
+  .screen-retina .fab-whale-tracker,
+  .screen-high-dpi .fab-whale-tracker {
+    backdrop-filter: blur(18px) saturate(175%) brightness(1.04) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(175%) brightness(1.04) !important;
   }
-
+  
+  /* 🎨 AI Sonnet - Label Container Mobile */
+  .fab-label-container {
+    padding: 0 0.12rem !important;
+  }
+  
   .fab-label {
-    gap: 0.05rem !important;
-    line-height: 1.1 !important;
+    font-size: 0.62rem !important;
+    letter-spacing: 0.08em !important;
+    padding: 0.12rem 0.2rem !important;
+    gap: 0.06rem 0.1rem !important;
+  }
+  
+  /* 🎨 AI Sonnet - Mobile Icon Wrapper */
+  .fab-icon-wrapper {
+    margin-bottom: 0.1rem !important;
+  }
+  
+  .fab-whale-tracker i {
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+  }
+  
+  /* 🎯 Retina Mobile - Sharper Icon */
+  .screen-retina .fab-whale-tracker i,
+  .screen-high-dpi .fab-whale-tracker i {
+    -webkit-font-smoothing: subpixel-antialiased !important;
   }
 
   .fab-btc {
-    font-size: 0.6rem !important;
+    font-size: 0.7rem !important;
+    letter-spacing: 0.04em !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+  }
+  
+  /* 🎯 Retina Mobile - Sharper BTC */
+  .screen-retina .fab-btc,
+  .screen-high-dpi .fab-btc {
+    font-size: 0.72rem !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
+  }
+  
+  .fab-divider {
+    font-size: 0.48rem !important;
+    margin: 0 0.04rem !important;
+    -webkit-font-smoothing: antialiased !important;
+  }
+  
+  /* 🎯 Retina Mobile - Sharper Divider */
+  .screen-retina .fab-divider,
+  .screen-high-dpi .fab-divider {
+    font-size: 0.5rem !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
+  }
+  
+  .fab-crypto {
+    font-size: 0.54rem !important;
+    letter-spacing: 0.05em !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+  }
+  
+  /* 🎯 Retina Mobile - Sharper Crypto */
+  .screen-retina .fab-crypto,
+  .screen-high-dpi .fab-crypto {
+    font-size: 0.56rem !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
+  }
+
+  .fab-whale-tracker.loading i.fa-spinner {
+    font-size: 1.6rem !important;
+  }
+
+  .fab-whale-tracker:focus-visible {
+    outline: 2px solid rgba(240, 185, 11, 0.8) !important;
+    outline-offset: 2px !important;
+  }
+
+  /* 🎨 AI Sonnet - Mobile Icon Wrapper */
+  .fab-icon-wrapper {
+    margin-bottom: 0.08rem !important;
+  }
+  
+  .fab-whale-tracker i {
+    font-size: 1.6rem !important;
     line-height: 1 !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+  }
+  
+  /* 🎯 Retina Mobile - Sharper Icon */
+  .screen-retina .fab-whale-tracker i,
+  .screen-high-dpi .fab-whale-tracker i {
+    font-size: 1.7rem !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
+  }
+
+  /* 🎨 AI Sonnet - Mobile Label Container */
+  .fab-label-container {
+    padding: 0 0.1rem !important;
+  }
+
+  .fab-label {
+    gap: 0.05rem 0.08rem !important;
+    line-height: 1.12 !important;
+    font-size: 0.58rem !important;
+    letter-spacing: 0.07em !important;
+    padding: 0.1rem 0.18rem !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+  }
+  
+  /* 🎯 Retina Mobile - Sharper Label */
+  .screen-retina .fab-label,
+  .screen-high-dpi .fab-label {
+    font-size: 0.6rem !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
+  }
+
+  .fab-btc {
+    font-size: 0.66rem !important;
+    line-height: 1.1 !important;
+    letter-spacing: 0.03em !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+  }
+  
+  /* 🎯 Retina Mobile - Sharper BTC */
+  .screen-retina .fab-btc,
+  .screen-high-dpi .fab-btc {
+    font-size: 0.68rem !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
   }
 
   .fab-divider {
-    font-size: 0.4rem !important;
-    line-height: 0.8 !important;
+    font-size: 0.44rem !important;
+    line-height: 1 !important;
+    margin: 0 0.03rem !important;
+    -webkit-font-smoothing: antialiased !important;
+  }
+  
+  /* 🎯 Retina Mobile - Sharper Divider */
+  .screen-retina .fab-divider,
+  .screen-high-dpi .fab-divider {
+    font-size: 0.46rem !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
   }
 
   .fab-crypto {
-    font-size: 0.48rem !important;
-    line-height: 1 !important;
+    font-size: 0.5rem !important;
+    line-height: 1.1 !important;
+    letter-spacing: 0.04em !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+  }
+  
+  /* 🎯 Retina Mobile - Sharper Crypto */
+  .screen-retina .fab-crypto,
+  .screen-high-dpi .fab-crypto {
+    font-size: 0.52rem !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
   }
 }
 
@@ -260,36 +496,146 @@ body.in-app-browser p {
   .fab-whale-tracker {
     bottom: calc(17rem + env(safe-area-inset-bottom, 0px)) !important;
     right: calc(1rem + env(safe-area-inset-right, 0px)) !important;
-    width: 55px !important;
-    height: 55px !important;
+    width: 64px !important; /* Better touch target */
+    height: 64px !important;
     border-width: 2px !important;
-    gap: 0.18rem !important;
+    gap: 0.2rem !important;
     padding: 0 !important;
+    z-index: 99990 !important;
+    /* 🎨 AI Sonnet Premium mobile glassmorphism */
+    backdrop-filter: blur(14px) saturate(155%) brightness(1.01) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(155%) brightness(1.01) !important;
+  }
+  
+  /* 🎯 Retina Mobile - Enhanced */
+  .screen-retina .fab-whale-tracker,
+  .screen-high-dpi .fab-whale-tracker {
+    backdrop-filter: blur(16px) saturate(165%) brightness(1.03) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(165%) brightness(1.03) !important;
+  }
+  
+  /* 🎨 AI Sonnet - Label Container Mobile */
+  .fab-label-container {
+    padding: 0 0.1rem !important;
+  }
+  
+  .fab-label {
+    font-size: 0.58rem !important;
+    letter-spacing: 0.07em !important;
+    padding: 0.1rem 0.18rem !important;
+    gap: 0.05rem 0.08rem !important;
+  }
+  
+  .fab-btc {
+    font-size: 0.66rem !important;
+    letter-spacing: 0.03em !important;
+  }
+  
+  .fab-divider {
+    font-size: 0.44rem !important;
+    margin: 0 0.03rem !important;
+  }
+  
+  .fab-crypto {
+    font-size: 0.5rem !important;
+    letter-spacing: 0.04em !important;
   }
 
+  .fab-whale-tracker.loading i.fa-spinner {
+    font-size: 1.4rem !important;
+  }
+
+  .fab-whale-tracker:focus-visible {
+    outline: 2px solid rgba(240, 185, 11, 0.8) !important;
+    outline-offset: 2px !important;
+  }
+
+  /* 🎨 AI Sonnet - Mobile Icon Wrapper */
+  .fab-icon-wrapper {
+    margin-bottom: 0.06rem !important;
+  }
+  
   .fab-whale-tracker i {
-    font-size: 1.3rem !important;
+    font-size: 1.4rem !important;
     line-height: 1 !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+  }
+  
+  /* 🎯 Retina Mobile - Sharper Icon */
+  .screen-retina .fab-whale-tracker i,
+  .screen-high-dpi .fab-whale-tracker i {
+    font-size: 1.5rem !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
+  }
+
+  /* 🎨 AI Sonnet - Mobile Label Container */
+  .fab-label-container {
+    padding: 0 0.08rem !important;
   }
 
   .fab-label {
-    gap: 0.03rem !important;
-    line-height: 1.05 !important;
+    gap: 0.04rem 0.06rem !important;
+    line-height: 1.1 !important;
+    font-size: 0.54rem !important;
+    letter-spacing: 0.06em !important;
+    padding: 0.08rem 0.15rem !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+  }
+  
+  /* 🎯 Retina Mobile - Sharper Label */
+  .screen-retina .fab-label,
+  .screen-high-dpi .fab-label {
+    font-size: 0.56rem !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
   }
 
   .fab-btc {
-    font-size: 0.55rem !important;
-    line-height: 1 !important;
+    font-size: 0.62rem !important;
+    line-height: 1.1 !important;
+    letter-spacing: 0.02em !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+  }
+  
+  /* 🎯 Retina Mobile - Sharper BTC */
+  .screen-retina .fab-btc,
+  .screen-high-dpi .fab-btc {
+    font-size: 0.64rem !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
   }
 
   .fab-divider {
-    font-size: 0.35rem !important;
-    line-height: 0.8 !important;
+    font-size: 0.4rem !important;
+    line-height: 1 !important;
+    margin: 0 0.02rem !important;
+    display: inline-block !important; /* Keep visible */
+    -webkit-font-smoothing: antialiased !important;
+  }
+  
+  /* 🎯 Retina Mobile - Sharper Divider */
+  .screen-retina .fab-divider,
+  .screen-high-dpi .fab-divider {
+    font-size: 0.42rem !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
   }
 
   .fab-crypto {
-    font-size: 0.45rem !important;
-    line-height: 1 !important;
+    font-size: 0.46rem !important;
+    line-height: 1.1 !important;
+    letter-spacing: 0.03em !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+  }
+  
+  /* 🎯 Retina Mobile - Sharper Crypto */
+  .screen-retina .fab-crypto,
+  .screen-high-dpi .fab-crypto {
+    font-size: 0.48rem !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
   }
 }
 
@@ -298,11 +644,113 @@ body.in-app-browser p {
   .fab-whale-tracker {
     bottom: calc(16rem + env(safe-area-inset-bottom, 0px)) !important;
     right: calc(0.75rem + env(safe-area-inset-right, 0px)) !important;
-    width: 50px !important;
-    height: 50px !important;
+    width: 60px !important; /* Better touch target */
+    height: 60px !important;
     border-width: 2px !important;
-    gap: 0.15rem !important;
+    gap: 0.18rem !important;
     padding: 0 !important;
+    z-index: 99990 !important;
+    /* 🎨 AI Sonnet Premium mobile glassmorphism */
+    backdrop-filter: blur(12px) saturate(145%) brightness(1) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(145%) brightness(1) !important;
+  }
+  
+  /* 🎯 Retina Mobile - Enhanced */
+  .screen-retina .fab-whale-tracker,
+  .screen-high-dpi .fab-whale-tracker {
+    backdrop-filter: blur(14px) saturate(155%) brightness(1.02) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(155%) brightness(1.02) !important;
+  }
+  
+  /* 🎨 AI Sonnet - Label Container Mobile */
+  .fab-label-container {
+    padding: 0 0.08rem !important;
+  }
+  
+  /* 🎨 AI Sonnet - Mobile Icon Wrapper */
+  .fab-icon-wrapper {
+    margin-bottom: 0.05rem !important;
+  }
+  
+  .fab-whale-tracker i {
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+  }
+  
+  /* 🎯 Retina Mobile - Sharper Icon */
+  .screen-retina .fab-whale-tracker i,
+  .screen-high-dpi .fab-whale-tracker i {
+    -webkit-font-smoothing: subpixel-antialiased !important;
+  }
+
+  .fab-label {
+    font-size: 0.5rem !important;
+    letter-spacing: 0.05em !important;
+    padding: 0.06rem 0.12rem !important;
+    gap: 0.03rem 0.05rem !important;
+    line-height: 1.08 !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+  }
+  
+  /* 🎯 Retina Mobile - Sharper Label */
+  .screen-retina .fab-label,
+  .screen-high-dpi .fab-label {
+    font-size: 0.52rem !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
+  }
+  
+  .fab-btc {
+    font-size: 0.58rem !important;
+    letter-spacing: 0.01em !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+  }
+  
+  /* 🎯 Retina Mobile - Sharper BTC */
+  .screen-retina .fab-btc,
+  .screen-high-dpi .fab-btc {
+    font-size: 0.6rem !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
+  }
+  
+  .fab-divider {
+    font-size: 0.36rem !important;
+    margin: 0 0.01rem !important;
+    display: inline-block !important; /* Keep visible */
+    -webkit-font-smoothing: antialiased !important;
+  }
+  
+  /* 🎯 Retina Mobile - Sharper Divider */
+  .screen-retina .fab-divider,
+  .screen-high-dpi .fab-divider {
+    font-size: 0.38rem !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
+  }
+  
+  .fab-crypto {
+    font-size: 0.42rem !important;
+    letter-spacing: 0.02em !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+  }
+  
+  /* 🎯 Retina Mobile - Sharper Crypto */
+  .screen-retina .fab-crypto,
+  .screen-high-dpi .fab-crypto {
+    font-size: 0.44rem !important;
+    -webkit-font-smoothing: subpixel-antialiased !important;
+  }
+
+  .fab-whale-tracker.loading i.fa-spinner {
+    font-size: 1.3rem !important;
+  }
+
+  .fab-whale-tracker:focus-visible {
+    outline: 2px solid rgba(240, 185, 11, 0.8) !important;
+    outline-offset: 2px !important;
   }
 
   .fab-whale-tracker i {

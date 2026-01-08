@@ -93,11 +93,58 @@
   border-radius: 0 !important;
   border: none !important;
   border-top: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
 }
 
-.whale-transactions.fullscreen .whale-list {
-  max-height: calc(100vh - 220px) !important;
+/* 🎯 FULLSCREEN HEADER - Fixed height */
+.whale-transactions.fullscreen .whale-header {
+  flex-shrink: 0 !important;
+  min-height: auto !important;
+}
+
+/* 🎯 CHART CONTAINER - Fullscreen Mode */
+.whale-fullscreen-chart-container {
+  width: 100% !important;
+  height: 45vh !important; /* 45% din înălțimea ecranului pentru chart */
+  min-height: 400px !important;
+  max-height: 45vh !important;
+  flex-shrink: 0 !important;
+  background: var(--bg-panel, #1a1f2e) !important;
+  border-bottom: 2px solid var(--border-primary, #2a2f3e) !important;
+  padding: 1rem !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+.whale-fullscreen-chart-container .candlestick-chart-wrapper {
+  width: 100% !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  position: relative !important;
+}
+
+.whale-fullscreen-chart-container .candlestick-chart-wrapper .chart-container {
+  height: 100% !important;
+  max-height: 100% !important;
+}
+
+.whale-fullscreen-chart-container .candlestick-chart-wrapper.fullscreen {
+  height: 100% !important;
+  max-height: 100% !important;
+}
+
+.whale-transactions.fullscreen .whale-list,
+.whale-transactions.fullscreen .whale-list-fullscreen {
+  flex: 1 !important;
+  min-height: 0 !important; /* Permite flexbox să funcționeze corect */
+  max-height: none !important;
+  height: auto !important;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+  overflow-y: auto !important;
+  padding: var(--spacing-lg, 2rem) !important;
+  background: var(--bg-panel, #1a1f2e) !important;
 }
 
 /* === WHALE HEADER === */

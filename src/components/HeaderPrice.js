@@ -14,9 +14,14 @@ const HeaderPrice = () => {
   return (
     <div className="header-price-display">
       <span className="price-label">
+        <span style={{ 
+          fontSize: '0.9em', 
+          marginRight: '4px',
+          filter: 'drop-shadow(0 0 5px rgba(153, 69, 255, 0.6))'
+        }}>💎</span>
         1 BITS =
       </span>
-      <span className="price-value">${displayPrice}</span>
+      <span className="price-value">${displayPrice.toFixed(3)}</span>
     </div>
   );
 };

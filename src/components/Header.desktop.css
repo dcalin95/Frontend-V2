@@ -103,8 +103,8 @@
   display: inline-flex;
   align-items: center;
   gap: clamp(2px, 0.3vw, 3px);
-  padding: clamp(0.35rem, 0.6vw, 0.45rem) clamp(0.7rem, 1.1vw, 0.9rem);
-  font-size: clamp(0.8rem, 1.15vw, 0.95rem); /* Increased for better visibility */
+  padding: clamp(0.44rem, 0.75vw, 0.56rem) clamp(0.88rem, 1.38vw, 1.13rem); /* +25% pentru zoom 80% */
+  font-size: clamp(1rem, 1.44vw, 1.19rem); /* +25% pentru zoom 80% - mărit pentru vizibilitate */
   font-weight: 600;
   font-family: 'Inter', sans-serif;
   border-radius: clamp(20px, 3vw, 28px);

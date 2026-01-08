@@ -96,7 +96,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.75rem;
+  font-size: 0.86rem; /* +15% mărit pentru vizibilitate (0.75rem * 1.15 = 0.8625rem) */
   font-weight: 600;
   color: #4E75F6; /* Gemini Blue */
   background: rgba(78, 117, 246, 0.1);
@@ -115,7 +115,7 @@
 }
 
 .gemini-timer {
-  font-size: 0.7rem;
+  font-size: 0.81rem; /* +15% mărit pentru vizibilitate (0.7rem * 1.15 = 0.805rem) */
   color: rgba(255, 255, 255, 0.4);
   font-family: monospace;
 }
@@ -173,7 +173,7 @@
   }
 
 .gemini-label {
-    font-size: 0.85rem;
+    font-size: 0.98rem; /* +15% mărit pentru vizibilitate (0.85rem * 1.15 = 0.9775rem) */
   color: rgba(255, 255, 255, 0.5);
   letter-spacing: 0.1em;
   margin-bottom: 4px;
@@ -181,7 +181,7 @@
   }
 
 .gemini-price-display {
-  font-size: 3.2rem;
+  font-size: 3.68rem; /* +15% mărit pentru vizibilitate (3.2rem * 1.15 = 3.68rem) */
   font-weight: 700;
   background: linear-gradient(135deg, #FFFFFF 0%, #A5B4FC 100%);
   -webkit-background-clip: text;
@@ -196,7 +196,7 @@
   align-items: center;
   padding: 6px 16px;
   border-radius: 12px;
-  font-size: 1rem;
+  font-size: 1.15rem; /* +15% mărit pentru vizibilitate (1rem * 1.15 = 1.15rem) */
   font-weight: 600;
   backdrop-filter: blur(4px);
   }
@@ -226,7 +226,7 @@
   }
 
 .gemini-ai-insight {
-  font-size: 0.8rem;
+  font-size: 0.92rem; /* +15% mărit pentru vizibilitate (0.8rem * 1.15 = 0.92rem) */
   color: #E0E7FF;
   display: flex;
     align-items: center;
@@ -234,8 +234,51 @@
   }
 
 .gemini-source {
-  font-size: 0.7rem;
+  font-size: 0.81rem; /* +15% mărit pentru vizibilitate (0.7rem * 1.15 = 0.805rem) */
   color: rgba(255, 255, 255, 0.3);
+}
+
+/* 🚀 Fullscreen Button - Open Whale Transactions */
+.btc-fullscreen-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(78, 117, 246, 0.2), rgba(153, 69, 255, 0.2));
+  border: 1.5px solid rgba(78, 117, 246, 0.4);
+  color: #4E75F6;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(78, 117, 246, 0.2), inset 0 0 20px rgba(78, 117, 246, 0.1);
+}
+
+.btc-fullscreen-btn:hover {
+  background: linear-gradient(135deg, rgba(78, 117, 246, 0.35), rgba(153, 69, 255, 0.35));
+  border-color: rgba(78, 117, 246, 0.6);
+  color: #FFFFFF;
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 6px 25px rgba(78, 117, 246, 0.4), 0 0 30px rgba(153, 69, 255, 0.3), inset 0 0 30px rgba(78, 117, 246, 0.2);
+}
+
+.btc-fullscreen-btn:active {
+  transform: scale(0.95) rotate(90deg);
+}
+
+.btc-fullscreen-btn i {
+  transition: transform 0.3s ease;
+}
+
+.btc-fullscreen-btn:hover i {
+  transform: scale(1.2);
 }
 
 /* 💥 Effects */

@@ -41,6 +41,7 @@ import PWAInstallPrompt from "./components/PWAInstallPrompt";
 
 // 📱 Mobile
 import MobileUI from "./components/MobileUI";
+import { useScreenDetection } from "./hooks/useScreenDetection"; // 🎯 Advanced Screen Detection
 import useDeviceDetect from "./hooks/useDeviceDetect";
 
 // 📊 Analytics - Componente separate pentru ferestre popup
@@ -274,6 +275,9 @@ const TikTokPageViewTracker = () => {
 };
 
 const App = () => {
+  // 🎯 Advanced Screen Detection - Initialize globally
+  useScreenDetection();
+  
   const [amountPay, setAmountPay] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false); // Sidebar menu
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false); // Header mobile menu

@@ -36,6 +36,9 @@
   
   /* 🎯 PADDING TOP pentru a evita suprapunerea cu header-ul */
   padding-top: 100px; /* Spațiu pentru header */
+  
+  /* 🎯 PADDING RIGHT - 13% pentru a evita suprapunerea cu butoanele floating */
+  padding-right: 13% !important;
 }
 
 .home-section {
@@ -72,6 +75,9 @@
   overflow-x: hidden; /* prevent horizontal scroll */
   position: relative; /* Ensure stacking context */
   z-index: 10; /* Place above StarfieldBackground (-1) */
+  
+  /* 🎯 PADDING RIGHT - 13% pentru a evita suprapunerea cu butoanele floating */
+  padding-right: 13% !important;
 }
 
 .home-section {
@@ -96,7 +102,7 @@
   gap: clamp(0.6rem, 0.9vw, 0.75rem);
   text-align: center;
   cursor: help; /* Indicate interactivity for tooltip */
-  font-size: clamp(1.8rem, 3vw, 2.3rem) !important; /* Optimized for 85% zoom */
+  font-size: clamp(2.59rem, 4.31vw, 3.31rem) !important; /* +15% mărit pentru vizibilitate (2.25*1.15=2.59, 3.75*1.15=4.31, 2.88*1.15=3.31) */
 }
 
 .home-brand {
@@ -342,137 +348,720 @@ p, a, button, input, label, span {
 
 /* ============================================
    FLOATING ACTION BUTTON - WHALE TRACKER
+   🎨 BINANCE-STYLE PREMIUM DESIGN
    ============================================ */
 .fab-whale-tracker {
-  position: fixed;
-  bottom: clamp(18rem, 25vh, 22rem); /* Moved much higher to be above Copilot */
-  right: clamp(4rem, 6vw, 6rem);
-  width: clamp(60px, 7vw, 75px);
-  height: clamp(60px, 7vw, 75px);
+  position: fixed !important;
+  bottom: clamp(18rem, 25vh, 22rem) !important; /* Moved much higher to be above Copilot */
+  right: clamp(4rem, 6vw, 6rem) !important;
+  width: clamp(72px, 8vw, 88px) !important; /* Reverted la dimensiunea normală */
+  height: clamp(72px, 8vw, 88px) !important;
   aspect-ratio: 1 / 1;
-  background: linear-gradient(135deg, #1a1f2e 0%, #0F1419 50%, #1a1f2e 100%);
-  border: clamp(2px, 0.3vw, 3px) solid var(--accent-gold, #f0b90b);
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  
+  /* 🎨 AI SONNET - PREMIUM GLASSMORPHISM BACKGROUND */
+  background: linear-gradient(
+    135deg,
+    rgba(26, 31, 46, 0.96) 0%,
+    rgba(15, 20, 25, 0.98) 25%,
+    rgba(18, 23, 32, 0.97) 50%,
+    rgba(20, 25, 35, 0.97) 75%,
+    rgba(26, 31, 46, 0.96) 100%
+  );
+  backdrop-filter: blur(24px) saturate(190%) brightness(1.05);
+  -webkit-backdrop-filter: blur(24px) saturate(190%) brightness(1.05);
+  
+  /* 🎨 PREMIUM BORDER - Multi-layer with gradient */
+  border: 2px solid rgba(240, 185, 11, 0.7);
   border-radius: 999px;
+  position: relative;
+  
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.18rem;
+  gap: 0.2rem; /* Reverted la dimensiunea normală */
   padding: 0;
   cursor: pointer;
-  z-index: 9998; /* Reduced to prevent overlap with other floating elements */
+  z-index: 99990 !important;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: visible !important;
+  
+  /* 🎨 PREMIUM MULTI-LAYER SHADOWS - Binance Style */
   box-shadow: 
-    0 8px 30px rgba(240, 185, 11, 0.6),
-    0 0 50px rgba(240, 185, 11, 0.4),
-    inset 0 0 30px rgba(240, 185, 11, 0.15);
-  transition: all 0.3s ease;
+    /* Outer glow */
+    0 0 0 1px rgba(240, 185, 11, 0.1),
+    /* Main shadow */
+    0 10px 40px rgba(0, 0, 0, 0.4),
+    0 20px 60px rgba(0, 0, 0, 0.3),
+    /* Colored glow */
+    0 0 30px rgba(240, 185, 11, 0.3),
+    0 0 60px rgba(247, 147, 26, 0.2),
+    /* Inner highlight */
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+  
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   outline: none;
-  animation: fabPulse 3s ease-in-out infinite;
+  animation: fabPulsePremium 4s ease-in-out infinite;
+  
+  /* Accessibility improvements */
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  
+  /* 🎨 AI SONNET - ULTRA SHARP RENDERING */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+  font-kerning: normal;
+  transform: translateZ(0);
+  will-change: transform, box-shadow;
+  
+  /* 🎯 GPU ACCELERATION */
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 
-.fab-whale-tracker:hover {
-  transform: scale(1.2) rotate(8deg);
+/* 🎯 RETINA SCREEN OPTIMIZATION */
+.screen-retina .fab-whale-tracker,
+.screen-high-dpi .fab-whale-tracker {
+  -webkit-font-smoothing: subpixel-antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* 🎯 ULTRA HD SCREEN OPTIMIZATION */
+.screen-ultra-hd .fab-whale-tracker {
+  -webkit-font-smoothing: subpixel-antialiased;
+  text-rendering: geometricPrecision;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* 🎨 GRADIENT BORDER EFFECT - Pseudo-element */
+.fab-whale-tracker::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 999px;
+  padding: 2px;
+  background: linear-gradient(
+    135deg,
+    rgba(240, 185, 11, 0.8) 0%,
+    rgba(247, 147, 26, 0.9) 25%,
+    rgba(240, 185, 11, 0.95) 50%,
+    rgba(255, 215, 0, 0.8) 75%,
+    rgba(240, 185, 11, 0.8) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: -1;
+  animation: borderGlow 3s ease-in-out infinite;
+}
+
+/* 🎨 INNER SHINE EFFECT */
+.fab-whale-tracker::after {
+  content: '';
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  width: 60%;
+  height: 60%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.15) 0%,
+    rgba(255, 255, 255, 0.05) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 🎨 PREMIUM LOADING STATE - Binance Style */
+.fab-whale-tracker.loading {
+  cursor: wait;
+  animation: fabPulsePremium 1.5s ease-in-out infinite, fabSpinPremium 1s linear infinite;
+  opacity: 0.85;
+  backdrop-filter: blur(15px) saturate(150%);
+  -webkit-backdrop-filter: blur(15px) saturate(150%);
+}
+
+.fab-whale-tracker.loading i.fa-spinner {
+  font-size: clamp(1.8rem, 2.4vw, 2.2rem);
+  background: linear-gradient(135deg, #f0b90b 0%, #f7931a 50%, #ffcc00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: spinPremium 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+  filter: drop-shadow(0 0 15px rgba(240, 185, 11, 0.7));
+}
+
+/* 🎨 PREMIUM SPIN ANIMATIONS */
+@keyframes spinPremium {
+  from { 
+    transform: rotate(0deg) translateZ(0);
+  }
+  to { 
+    transform: rotate(360deg) translateZ(0);
+  }
+}
+
+@keyframes fabSpinPremium {
+  0%, 100% { 
+    transform: scale(1) rotate(0deg) translateZ(0);
+  }
+  25% { 
+    transform: scale(1.02) rotate(2deg) translateZ(0);
+  }
+  50% { 
+    transform: scale(1.01) rotate(0deg) translateZ(0);
+  }
+  75% { 
+    transform: scale(1.02) rotate(-2deg) translateZ(0);
+  }
+}
+
+/* 🎨 PREMIUM FOCUS STATE - Binance Style */
+.fab-whale-tracker:focus-visible {
+  outline: 3px solid rgba(240, 185, 11, 0.8);
+  outline-offset: 5px;
   box-shadow: 
-    0 12px 50px rgba(240, 185, 11, 0.8),
-    0 0 70px rgba(240, 185, 11, 0.6),
-    inset 0 0 40px rgba(240, 185, 11, 0.25);
-  border-width: 4px;
+    0 0 0 1px rgba(240, 185, 11, 0.2),
+    0 15px 50px rgba(0, 0, 0, 0.5),
+    0 25px 70px rgba(0, 0, 0, 0.4),
+    0 0 50px rgba(240, 185, 11, 0.5),
+    0 0 90px rgba(247, 147, 26, 0.4),
+    0 0 0 5px rgba(240, 185, 11, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+  transform: scale(1.05) translateZ(0);
 }
 
-.fab-whale-tracker:active {
-  transform: scale(1.1);
+/* Disabled state */
+.fab-whale-tracker:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  pointer-events: none;
 }
 
-.fab-whale-tracker i {
-  display: block;
-  font-size: clamp(1.6rem, 2.2vw, 2rem);
-  color: var(--accent-gold, #f0b90b);
+/* 🎨 PREMIUM HOVER EFFECT - Binance Style */
+.fab-whale-tracker:hover:not(.loading):not(:disabled) {
+  transform: scale(1.12) translateY(-2px) translateZ(0);
+  box-shadow: 
+    0 0 0 1px rgba(240, 185, 11, 0.3),
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 30px 80px rgba(0, 0, 0, 0.4),
+    0 0 60px rgba(240, 185, 11, 0.6),
+    0 0 100px rgba(247, 147, 26, 0.4),
+    0 0 140px rgba(255, 215, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+  animation: fabPulsePremium 2s ease-in-out infinite, fabHoverPremium 0.4s ease forwards;
+}
+
+/* 🎨 PREMIUM ACTIVE EFFECT */
+.fab-whale-tracker:active:not(.loading):not(:disabled) {
+  transform: scale(1.06) translateY(0px) translateZ(0);
+  transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 
+    0 0 0 1px rgba(240, 185, 11, 0.2),
+    0 8px 30px rgba(0, 0, 0, 0.4),
+    0 15px 50px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(240, 185, 11, 0.4),
+    0 0 70px rgba(247, 147, 26, 0.3),
+    inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* 🎨 SMOOTH HOVER ANIMATION */
+@keyframes fabHoverPremium {
+  0% { 
+    transform: scale(1) translateY(0) translateZ(0);
+  }
+  50% { 
+    transform: scale(1.08) translateY(-1px) translateZ(0);
+  }
+  100% { 
+    transform: scale(1.12) translateY(-2px) translateZ(0);
+  }
+}
+
+/* 🎨 AI SONNET STYLE - PREMIUM ICON WRAPPER */
+.fab-icon-wrapper {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 0.15rem;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* 🎨 PREMIUM ICON STYLING - AI Sonnet Sharp Text */
+/* 🎯 MĂRIT CU 20% pentru a compensa discrepanța de zoom (60% -> 80%) */
+.fab-whale-tracker i,
+.fab-icon-wrapper i {
+  display: block !important;
+  font-size: clamp(1.9rem, 2.5vw, 2.3rem) !important; /* Reverted la dimensiunea normală */
+  color: #f0b90b !important; /* Fallback color for Font Awesome icons */
   line-height: 1;
   text-align: center;
-  transform: translateY(-1px);
-  text-shadow: 
-    0 0 10px rgba(0, 0, 0, 1),
-    0 0 20px rgba(240, 185, 11, 0.8),
-    0 2px 4px rgba(0, 0, 0, 0.8);
-  filter: drop-shadow(0 0 8px rgba(240, 185, 11, 0.6));
+  transform: translateY(-1px) translateZ(0);
+  position: relative;
+  z-index: 2;
+  visibility: visible !important;
+  opacity: 1 !important;
+  
+  /* 🎨 GRADIENT EFFECT pentru Font Awesome - folosim filter în loc de background-clip */
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8)) 
+          drop-shadow(0 0 10px rgba(240, 185, 11, 0.7))
+          drop-shadow(0 0 20px rgba(247, 147, 26, 0.4))
+          hue-rotate(0deg) saturate(1.2) brightness(1.1);
+  
+  /* 🎯 SHARP TEXT RENDERING - AI Sonnet Style */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: iconShine 3s ease-in-out infinite;
+  
+  /* 🎯 RETINA OPTIMIZATION */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
+/* 🎯 RETINA SCREEN - Sharper Icon */
+.screen-retina .fab-whale-tracker i,
+.screen-retina .fab-icon-wrapper i,
+.screen-high-dpi .fab-whale-tracker i,
+.screen-high-dpi .fab-icon-wrapper i {
+  font-size: clamp(2rem, 2.6vw, 2.4rem) !important; /* Reverted la dimensiunea normală */
+  color: #f0b90b !important;
+  filter: drop-shadow(0 0.5px 1px rgba(0, 0, 0, 0.9)) 
+          drop-shadow(0 0 12px rgba(240, 185, 11, 0.8))
+          drop-shadow(0 0 24px rgba(247, 147, 26, 0.5))
+          hue-rotate(0deg) saturate(1.3) brightness(1.15) !important;
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+/* 🎯 ULTRA HD SCREEN - Ultra Sharp */
+.screen-ultra-hd .fab-whale-tracker i,
+.screen-ultra-hd .fab-icon-wrapper i {
+  font-size: clamp(2.1rem, 2.7vw, 2.5rem) !important; /* Reverted la dimensiunea normală */
+  color: #f0b90b !important;
+  filter: drop-shadow(0 0.3px 0.6px rgba(0, 0, 0, 1)) 
+          drop-shadow(0 0 14px rgba(240, 185, 11, 0.9))
+          drop-shadow(0 0 28px rgba(247, 147, 26, 0.6))
+          hue-rotate(0deg) saturate(1.4) brightness(1.2) !important;
+  -webkit-font-smoothing: subpixel-antialiased;
+  text-rendering: geometricPrecision;
+}
+
+.fab-whale-tracker:hover:not(.loading) i,
+.fab-whale-tracker:hover:not(.loading) .fab-icon-wrapper i {
+  transform: translateY(-2px) scale(1.08) translateZ(0);
+  color: #f7931a !important; /* Slightly more orange on hover */
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9)) 
+          drop-shadow(0 0 16px rgba(240, 185, 11, 0.9))
+          drop-shadow(0 0 32px rgba(247, 147, 26, 0.6))
+          hue-rotate(-5deg) saturate(1.3) brightness(1.2) !important;
+}
+
+/* 🎨 ICON SHINE ANIMATION */
+@keyframes iconShine {
+  0%, 100% {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8)) 
+            drop-shadow(0 0 10px rgba(240, 185, 11, 0.7))
+            drop-shadow(0 0 20px rgba(247, 147, 26, 0.4))
+            hue-rotate(0deg) saturate(1.2) brightness(1.1);
+  }
+  50% {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9)) 
+            drop-shadow(0 0 18px rgba(240, 185, 11, 0.9)) 
+            drop-shadow(0 0 25px rgba(247, 147, 26, 0.5))
+            hue-rotate(-5deg) saturate(1.4) brightness(1.25);
+  }
+}
+
+/* 🎨 AI SONNET STYLE - LABEL CONTAINER */
+.fab-label-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+  position: relative;
+  z-index: 2;
+  padding: 0 0.15rem; /* Reverted la dimensiunea normală */
+  box-sizing: border-box;
+}
+
+/* 🎨 PREMIUM LABEL STYLING - AI Sonnet Sharp Text in Box */
 .fab-label {
   display: grid;
+  grid-template-columns: auto auto auto;
   grid-auto-flow: row;
   align-items: center;
   justify-content: center;
-  gap: 0.05rem;
+  gap: 0.08rem 0.12rem; /* Reverted la dimensiunea normală */
   width: 100%;
+  max-width: 100%;
   text-align: center;
-  font-size: 0.65rem;
-  font-weight: 900;
-  color: var(--accent-gold, #f0b90b);
+  font-size: clamp(0.65rem, 0.85vw, 0.72rem); /* Reverted la dimensiunea normală */
+  font-weight: 800;
+  font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
-  line-height: 1;
-  transform: translateY(-1px);
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  transform: translateY(-1px) translateZ(0);
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  
+  /* 🎯 SHARP TEXT RENDERING */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+  font-kerning: normal;
+  
+  /* 🎨 TEXT IN BOX - AI Sonnet Style */
+  padding: 0.15rem 0.25rem; /* Reverted la dimensiunea normală */
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.1),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.3),
+    0 0 8px rgba(240, 185, 11, 0.2);
 }
 
+/* 🎯 RETINA SCREEN - Sharper Label */
+.screen-retina .fab-label,
+.screen-high-dpi .fab-label {
+  font-size: clamp(0.68rem, 0.9vw, 0.75rem); /* Reverted la dimensiunea normală */
+  letter-spacing: 0.11em;
+  -webkit-font-smoothing: subpixel-antialiased;
+  padding: 0.18rem 0.28rem; /* Reverted la dimensiunea normală */
+}
+
+/* 🎯 ULTRA HD SCREEN - Ultra Sharp Label */
+.screen-ultra-hd .fab-label {
+  font-size: clamp(0.7rem, 0.95vw, 0.78rem); /* Reverted la dimensiunea normală */
+  letter-spacing: 0.12em;
+  -webkit-font-smoothing: subpixel-antialiased;
+  text-rendering: geometricPrecision;
+  padding: 0.2rem 0.3rem; /* Reverted la dimensiunea normală */
+}
+
+.fab-whale-tracker:hover:not(.loading) .fab-label {
+  transform: translateY(-2px) scale(1.03) translateZ(0);
+  background: rgba(0, 0, 0, 0.35);
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.15),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.4),
+    0 0 12px rgba(240, 185, 11, 0.3);
+}
+
+/* 🎨 PREMIUM BTC TEXT - AI Sonnet Sharp */
 .fab-btc {
-  display: block;
-  font-size: 0.75rem;
+  display: inline-block;
+  font-size: clamp(0.75rem, 0.9vw, 0.82rem); /* Reverted la dimensiunea normală */
   font-weight: 900;
-  color: #f7931a;
-  line-height: 1;
+  background: linear-gradient(135deg, #f7931a 0%, #ff9500 50%, #ffaa00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
   text-align: center;
-  text-shadow: 
-    0 0 10px rgba(0, 0, 0, 1),
-    0 0 20px rgba(247, 147, 26, 0.8),
-    0 2px 4px rgba(0, 0, 0, 0.9),
-    -1px -1px 0 rgba(0, 0, 0, 0.9),
-    1px -1px 0 rgba(0, 0, 0, 0.9),
-    -1px 1px 0 rgba(0, 0, 0, 0.9),
-    1px 1px 0 rgba(0, 0, 0, 0.9);
-  filter: drop-shadow(0 0 8px rgba(247, 147, 26, 0.8));
+  position: relative;
+  
+  /* 🎯 SHARP TEXT RENDERING */
+  font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'kern' 1, 'liga' 1;
+  font-kerning: normal;
+  letter-spacing: 0.05em;
+  
+  filter: drop-shadow(0 0.5px 1px rgba(0, 0, 0, 0.9)) 
+          drop-shadow(0 0 8px rgba(247, 147, 26, 0.8));
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-shadow: 0 0 0 transparent;
 }
 
+/* 🎯 RETINA SCREEN - Sharper BTC */
+.screen-retina .fab-btc,
+.screen-high-dpi .fab-btc {
+  font-size: clamp(0.78rem, 0.95vw, 0.85rem); /* Reverted la dimensiunea normală */
+  filter: drop-shadow(0 0.3px 0.6px rgba(0, 0, 0, 1)) 
+          drop-shadow(0 0 10px rgba(247, 147, 26, 0.9));
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+/* 🎯 ULTRA HD SCREEN - Ultra Sharp BTC */
+.screen-ultra-hd .fab-btc {
+  font-size: clamp(0.8rem, 1vw, 0.88rem); /* Reverted la dimensiunea normală */
+  filter: drop-shadow(0 0.2px 0.4px rgba(0, 0, 0, 1)) 
+          drop-shadow(0 0 12px rgba(247, 147, 26, 1));
+  -webkit-font-smoothing: subpixel-antialiased;
+  text-rendering: geometricPrecision;
+}
+
+.fab-whale-tracker:hover:not(.loading) .fab-btc {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 1)) 
+          drop-shadow(0 0 12px rgba(247, 147, 26, 1));
+}
+
+/* 🎨 PREMIUM DIVIDER - AI Sonnet Sharp */
 .fab-divider {
-  display: block;
-  font-size: 0.5rem;
-  color: var(--accent-gold, #f0b90b);
-  opacity: 0.8;
-  line-height: 1;
+  display: inline-block;
+  font-size: clamp(0.5rem, 0.65vw, 0.56rem); /* Reverted la dimensiunea normală */
+  background: linear-gradient(135deg, #f0b90b 0%, #ffcc00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  opacity: 0.85;
+  line-height: 1.1;
   text-align: center;
+  font-weight: 700;
+  font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  
+  /* 🎯 SHARP TEXT RENDERING */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'kern' 1;
+  font-kerning: normal;
+  
+  filter: drop-shadow(0 0 4px rgba(240, 185, 11, 0.6));
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  margin: 0 0.05rem;
 }
 
+/* 🎯 RETINA SCREEN - Sharper Divider */
+.screen-retina .fab-divider,
+.screen-high-dpi .fab-divider {
+  font-size: clamp(0.52rem, 0.7vw, 0.58rem); /* Reverted la dimensiunea normală */
+  filter: drop-shadow(0 0 6px rgba(240, 185, 11, 0.7));
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+.fab-whale-tracker:hover:not(.loading) .fab-divider {
+  opacity: 1;
+  filter: drop-shadow(0 0 8px rgba(240, 185, 11, 0.8));
+}
+
+/* 🎨 PREMIUM CRYPTO TEXT - AI Sonnet Sharp */
 .fab-crypto {
-  display: block;
-  font-size: 0.55rem;
-  color: var(--accent-gold, #f0b90b);
-  line-height: 1;
+  display: inline-block;
+  font-size: clamp(0.56rem, 0.75vw, 0.64rem); /* Reverted la dimensiunea normală */
+  background: linear-gradient(135deg, #f0b90b 0%, #ffcc00 50%, #f0b90b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
   text-align: center;
-  text-shadow: 
-    0 0 8px rgba(0, 0, 0, 1),
-    0 0 15px rgba(240, 185, 11, 0.8),
-    0 2px 4px rgba(0, 0, 0, 0.9),
-    -1px -1px 0 rgba(0, 0, 0, 0.8),
-    1px -1px 0 rgba(0, 0, 0, 0.8),
-    -1px 1px 0 rgba(0, 0, 0, 0.8),
-    1px 1px 0 rgba(0, 0, 0, 0.8);
-  filter: drop-shadow(0 0 6px rgba(240, 185, 11, 0.6));
+  font-weight: 800;
+  font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  
+  /* 🎯 SHARP TEXT RENDERING */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'kern' 1, 'liga' 1;
+  font-kerning: normal;
+  letter-spacing: 0.06em;
+  
+  filter: drop-shadow(0 0.5px 1px rgba(0, 0, 0, 0.9)) 
+          drop-shadow(0 0 8px rgba(240, 185, 11, 0.7));
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@keyframes fabPulse {
+/* 🎯 RETINA SCREEN - Sharper Crypto */
+.screen-retina .fab-crypto,
+.screen-high-dpi .fab-crypto {
+  font-size: clamp(0.58rem, 0.8vw, 0.66rem); /* Reverted la dimensiunea normală */
+  filter: drop-shadow(0 0.3px 0.6px rgba(0, 0, 0, 1)) 
+          drop-shadow(0 0 10px rgba(240, 185, 11, 0.8));
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+/* 🎯 ULTRA HD SCREEN - Ultra Sharp Crypto */
+.screen-ultra-hd .fab-crypto {
+  font-size: clamp(0.6rem, 0.85vw, 0.68rem); /* Reverted la dimensiunea normală */
+  filter: drop-shadow(0 0.2px 0.4px rgba(0, 0, 0, 1)) 
+          drop-shadow(0 0 12px rgba(240, 185, 11, 0.9));
+  -webkit-font-smoothing: subpixel-antialiased;
+  text-rendering: geometricPrecision;
+}
+
+.fab-whale-tracker:hover:not(.loading) .fab-crypto {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 1)) 
+          drop-shadow(0 0 12px rgba(240, 185, 11, 0.9));
+}
+
+/* 🎨 PREMIUM PULSE ANIMATION - Binance Style */
+@keyframes fabPulsePremium {
   0%, 100% {
     box-shadow: 
-      0 8px 30px rgba(240, 185, 11, 0.6),
-      0 0 50px rgba(240, 185, 11, 0.4),
-      inset 0 0 30px rgba(240, 185, 11, 0.15);
-    border-color: var(--accent-gold, #f0b90b);
+      0 0 0 1px rgba(240, 185, 11, 0.1),
+      0 10px 40px rgba(0, 0, 0, 0.4),
+      0 20px 60px rgba(0, 0, 0, 0.3),
+      0 0 30px rgba(240, 185, 11, 0.3),
+      0 0 60px rgba(247, 147, 26, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+    transform: scale(1) translateZ(0);
   }
   50% {
     box-shadow: 
-      0 12px 50px rgba(240, 185, 11, 0.8),
-      0 0 80px rgba(240, 185, 11, 0.6),
-      inset 0 0 40px rgba(240, 185, 11, 0.25);
-    border-color: #fff;
+      0 0 0 1px rgba(240, 185, 11, 0.2),
+      0 15px 50px rgba(0, 0, 0, 0.5),
+      0 25px 70px rgba(0, 0, 0, 0.4),
+      0 0 50px rgba(240, 185, 11, 0.5),
+      0 0 90px rgba(247, 147, 26, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+    transform: scale(1.02) translateZ(0);
   }
+}
+
+/* 🎨 BORDER GLOW ANIMATION */
+@keyframes borderGlow {
+  0%, 100% {
+    opacity: 0.8;
+    filter: brightness(1);
+  }
+  50% {
+    opacity: 1;
+    filter: brightness(1.2);
+  }
+}
+
+/* 🎯 RETINA SCREEN - Enhanced Glassmorphism */
+.screen-retina .fab-whale-tracker,
+.screen-high-dpi .fab-whale-tracker {
+  backdrop-filter: blur(28px) saturate(200%) brightness(1.08);
+  -webkit-backdrop-filter: blur(28px) saturate(200%) brightness(1.08);
+}
+
+/* 🎯 ULTRA HD SCREEN - Ultra Premium */
+.screen-ultra-hd .fab-whale-tracker {
+  backdrop-filter: blur(32px) saturate(210%) brightness(1.1);
+  -webkit-backdrop-filter: blur(32px) saturate(210%) brightness(1.1);
+}
+
+/* 🎓 EDUCATION TEXT ENHANCED - Premium Styling */
+.education-text-enhanced {
+  position: relative;
+  transition: all 0.3s ease;
+  animation: educationGlow 3s ease-in-out infinite;
+  text-shadow: 0 2px 8px rgba(0, 255, 163, 0.2);
+}
+
+.education-text-enhanced::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, rgba(0, 255, 163, 0.3), rgba(220, 31, 255, 0.3));
+  border-radius: 18px;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  filter: blur(8px);
+}
+
+.education-text-enhanced:hover::before {
+  opacity: 1;
+}
+
+.education-text-enhanced:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 255, 163, 0.25), 0 0 50px rgba(220, 31, 255, 0.2) !important;
+  border-color: rgba(0, 255, 163, 0.5) !important;
+}
+
+@keyframes educationGlow {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(0, 255, 163, 0.15), 0 0 40px rgba(220, 31, 255, 0.1);
+  }
+  50% {
+    box-shadow: 0 6px 30px rgba(0, 255, 163, 0.25), 0 0 60px rgba(220, 31, 255, 0.2);
+  }
+}
+
+/* 🧠 Smart Swap Intelligence - AI Sharp Icon Animation */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+    filter: drop-shadow(0 0 8px rgba(153, 69, 255, 0.8)) drop-shadow(0 0 15px rgba(20, 241, 149, 0.6));
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.9;
+    filter: drop-shadow(0 0 12px rgba(153, 69, 255, 1)) drop-shadow(0 0 20px rgba(20, 241, 149, 0.8));
+  }
+}
+
+/* 🎓 ENTER EDUCATION PORTAL BUTTON - Premium Styling */
+.explore-button {
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.explore-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.explore-button:hover::before {
+  left: 100%;
+}
+
+.explore-button:hover {
+  transform: translateY(-3px) scale(1.02) !important;
+  box-shadow: 0 8px 30px rgba(0, 255, 163, 0.6), 0 0 60px rgba(220, 31, 255, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.explore-button:active {
+  transform: translateY(-1px) scale(1) !important;
+}
+
+/* 🚀 INVEST NOW BUTTON - Enhanced Visibility */
+.presale-hero-cta-primary:hover {
+  transform: translateY(-3px) scale(1.02) !important;
+  box-shadow: 0 8px 30px rgba(0, 255, 163, 0.6), 0 0 60px rgba(220, 31, 255, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.presale-hero-cta-primary:active {
+  transform: translateY(-1px) scale(1) !important;
+}
+
+/* 📱 MOBILE DETECTION - Elimină padding-right pe mobile */
+body.mode-mobile .home-container,
+html.screen-mobile .home-container {
+  padding-right: 0 !important; /* Eliminăm padding-right pe mobile */
 }

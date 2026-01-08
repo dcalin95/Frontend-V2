@@ -27,11 +27,11 @@
   align-items: center;
   justify-content: flex-start;
   text-decoration: none;
-  font-size: clamp(0.70rem, 0.792vw, 0.84rem); /* Reduced by 12% */
+  font-size: clamp(0.88rem, 0.99vw, 1.05rem); /* +25% pentru zoom 80% */
   font-weight: 700;
   font-family: 'Inter', sans-serif;
   border-radius: 8.8px;
-  padding: clamp(0.44rem, 0.704vw, 0.57rem) clamp(0.57rem, 0.88vw, 0.84rem); /* Reduced by 12% */
+  padding: clamp(0.55rem, 0.88vw, 0.71rem) clamp(0.71rem, 1.1vw, 1.05rem); /* +25% pentru zoom 80% */
   margin: clamp(1.76px, 0.264vw, 2.64px) 0;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -68,7 +68,7 @@
 .sidebar button i,
 .sidebar a i {
   margin-right: clamp(0.53rem, 0.88vw, 0.84rem); /* Reduced by 12% */
-  font-size: clamp(0.97rem, 1.144vw, 1.19rem); /* Reduced by 12% */
+  font-size: clamp(1.21rem, 1.43vw, 1.49rem); /* +25% pentru zoom 80% */
   color: inherit; /* Preia culoarea textului */
   transition: transform 0.3s ease, color 0.3s ease; /* Animație la hover */
 }

@@ -18,6 +18,7 @@ import GeoNoticeBanner from "./GeoNoticeBanner"; // 🌍 Import Geo-Notice Banne
 import PresaleHero from "../Presale/components/PresaleHero"; // Import PresaleHero
 import { useHybridPresaleState } from "../Presale/Timer/useHybridPresaleState"; // Import hook for presale state
 import useCellManagerData from "../Presale/hooks/useCellManagerData"; // Import hook for cell manager data
+import useScreenDetection from "../hooks/useScreenDetection"; // 🎯 Advanced Screen Detection
 import "../Presale/components/PresaleHero.css"; // Import PresaleHero CSS
 
 import "./Home.desktop.css";
@@ -28,6 +29,15 @@ import { motion } from "framer-motion";
 const Home = () => {
   const navigate = useNavigate();
   const whaleRef = useRef(null);
+
+  // 🎯 Advanced Screen Detection
+  const screenInfo = useScreenDetection() || {
+    pixelRatio: 1,
+    dpi: 96,
+    screenCategory: 'desktop',
+    isRetina: false,
+    isHighDPI: false,
+  };
 
   // Get presale data for Hero Section
   const hybridState = useHybridPresaleState();
@@ -64,21 +74,96 @@ const Home = () => {
     navigate("/about");
   };
 
-  const openWhaleTracker = () => {
-    if (whaleRef.current) {
-      // Scroll to WhaleTransactions
-      whaleRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      
-      // Trigger 3/4 screen mode after scroll
-      setTimeout(() => {
-        if (whaleRef.current) {
-          const expandBtn = whaleRef.current.querySelector('.fullscreen-btn-whale');
-          if (expandBtn) {
-            expandBtn.click(); // Open in 3/4 mode
-          }
-        }
-      }, 800);
+  const [isWhaleLoading, setIsWhaleLoading] = useState(false);
+  const [openWhaleFullscreen, setOpenWhaleFullscreen] = useState(false);
+
+  // 🐋 Open Whale Tracker in Fullscreen - Called from BitcoinPriceTicker button
+  const openWhaleTrackerFromPrice = () => {
+    if (!whaleRef.current) {
+      console.warn('⚠️ WhaleTransactions ref not found');
+      return;
     }
+
+    setIsWhaleLoading(true);
+
+    // Scroll to WhaleTransactions with better positioning
+    whaleRef.current.scrollIntoView({ 
+      behavior: 'smooth', 
+      block: 'center',
+      inline: 'nearest'
+    });
+    
+    // Set openFullscreen prop to true after scroll completes
+    setTimeout(() => {
+      setOpenWhaleFullscreen(true);
+      console.log('🚀 [Home] Opening WhaleTransactions in fullscreen mode');
+      
+      // Wait for fullscreen to activate
+      setTimeout(() => {
+        setIsWhaleLoading(false);
+      }, 500);
+    }, 600); // Wait for scroll to complete
+  };
+
+  // 🐋 Open Whale Tracker - Called from Floating Button
+  const openWhaleTracker = () => {
+    if (!whaleRef.current) {
+      console.warn('⚠️ WhaleTransactions ref not found');
+      return;
+    }
+
+    setIsWhaleLoading(true);
+
+    // Scroll to WhaleTransactions with better positioning
+    whaleRef.current.scrollIntoView({ 
+      behavior: 'smooth', 
+      block: 'center',
+      inline: 'nearest'
+    });
+    
+    // Wait for scroll to complete using IntersectionObserver or timeout with retry
+    let retryCount = 0;
+    const maxRetries = 10;
+    const retryInterval = 150; // Check every 150ms
+
+    const tryClickExpand = () => {
+      if (whaleRef.current) {
+        const expandBtn = whaleRef.current.querySelector('.fullscreen-btn-whale');
+        if (expandBtn) {
+          // Add visual feedback before click
+          expandBtn.style.transform = 'scale(0.95)';
+          setTimeout(() => {
+            expandBtn.style.transform = '';
+            expandBtn.click(); // Open in 3/4 mode
+            setIsWhaleLoading(false);
+          }, 100);
+          return true;
+        }
+      }
+      return false;
+    };
+
+    const checkAndClick = () => {
+      if (tryClickExpand()) {
+        return; // Success
+      }
+
+      retryCount++;
+      if (retryCount < maxRetries) {
+        setTimeout(checkAndClick, retryInterval);
+      } else {
+        // Fallback: try one more time after longer delay
+        setTimeout(() => {
+          if (!tryClickExpand()) {
+            console.warn('⚠️ Could not find fullscreen button after retries');
+          }
+          setIsWhaleLoading(false);
+        }, 500);
+      }
+    };
+
+    // Start checking after initial delay
+    setTimeout(checkAndClick, 600);
   };
 
   return (
@@ -99,7 +184,7 @@ const Home = () => {
         <div className="welcome-section">
           <SmartTooltip content={`BitSwapDEX AI Core\nThe world's first Decentralized Exchange powered by Neural Networks.\nStatus: Online & Learning.`}>
           <h1 className="laser-sharp home-hero-title" style={{
-            fontSize: '2.5rem',
+            fontSize: 'clamp(3.6rem, 4.6vw, 4.025rem)', /* +15% mărit pentru vizibilitate */
             marginBottom: '1rem',
             background: 'linear-gradient(90deg, #9945FF 0%, #14F195 50%, #00D4FF 100%)',
             WebkitBackgroundClip: 'text',
@@ -111,7 +196,7 @@ const Home = () => {
           </SmartTooltip>
           
           <SmartTooltip content={`Mission Statement\nIntegrating $BITS token utility with AI-driven liquidity management.\nTarget: Zero Slippage & Max APY.`}>
-          <p style={{fontSize: '1rem', lineHeight: '1.6', maxWidth: '900px', margin: '0 auto'}}>
+          <p style={{fontSize: 'clamp(1.4375rem, 1.725vw, 1.725rem)', lineHeight: '1.6', maxWidth: '900px', margin: '0 auto'}}> {/* +15% mărit pentru vizibilitate */}
             From Bits to Bitcoin – Powering the Future of Decentralized Exchange!
             <br />
             Revolutionizing DeFi with Bits, Bitcoin, and Beyond.
@@ -119,13 +204,41 @@ const Home = () => {
           </SmartTooltip>
           
           <SmartTooltip content={`AI-Powered Smart Routing\nAutomatic route optimization across 12,405 liquidity pools.\nReal-time slippage prevention & MEV protection.`}>
-          <p style={{fontSize: '0.95rem', lineHeight: '1.7', maxWidth: '900px', margin: '1.5rem auto 0', color: 'rgba(255,255,255,0.85)'}}>
+          <p style={{
+            fontSize: 'clamp(1.38rem, 1.8vw, 1.65rem)', /* +25% mărit pentru vizibilitate (1.1*1.25=1.375) */
+            lineHeight: '1.8', 
+            maxWidth: '950px', 
+            margin: '1.5rem auto 0', 
+            color: 'rgba(255,255,255,0.9)',
+            textAlign: 'left',
+            padding: '1.5rem 2rem',
+            background: 'linear-gradient(135deg, rgba(153, 69, 255, 0.08) 0%, rgba(20, 241, 149, 0.08) 100%)',
+            borderRadius: '14px',
+            border: '1px solid rgba(153, 69, 255, 0.25)',
+            boxShadow: '0 4px 20px rgba(153, 69, 255, 0.15), 0 0 40px rgba(20, 241, 149, 0.1)',
+          }}>
             <span style={{
-              background: 'linear-gradient(90deg, #9945FF, #14F195)',
+              background: 'linear-gradient(135deg, #9945FF, #14F195, #00D4FF)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              fontWeight: 'bold'
-            }}>⚡ Smart Swap Intelligence:</span> Our AI-powered DEX monitors real-time market conditions across multiple blockchains, 
+              backgroundClip: 'text',
+              fontWeight: '700',
+              fontSize: '1.15em',
+              letterSpacing: '0.5px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              textShadow: '0 0 20px rgba(153, 69, 255, 0.5)',
+            }}>
+              <span style={{
+                fontSize: '1.3em',
+                filter: 'drop-shadow(0 0 8px rgba(153, 69, 255, 0.8)) drop-shadow(0 0 15px rgba(20, 241, 149, 0.6))',
+                display: 'inline-block',
+                animation: 'pulse 2s ease-in-out infinite',
+              }}>🧠</span>
+              Smart Swap Intelligence:
+            </span>
+            {' '}Our AI-powered DEX monitors real-time market conditions across multiple blockchains, 
             automatically routing your trades through optimal liquidity pools to minimize slippage and maximize returns. 
             With predictive analytics achieving 84% accuracy, rug-pull detection, and whale movement alerts, 
             every swap is protected by advanced neural networks that learn and adapt to market dynamics.
@@ -142,7 +255,7 @@ const Home = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           style={{ width: '100%', maxWidth: '420px', position: 'relative', zIndex: 20 }}
         >
-          <BitcoinPriceTicker />
+          <BitcoinPriceTicker onFullscreenClick={openWhaleTrackerFromPrice} />
         </motion.div>
       </section>
 
@@ -199,9 +312,87 @@ const Home = () => {
                 <i className="fas fa-graduation-cap" style={{ color: '#00FFA3', marginRight: '15px' }}></i>
                 BitSwapDEX Academy
               </h2>
-              <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem', marginBottom: '25px', maxWidth: '600px', margin: '0 auto 25px' }}>
-                Master DeFi, AI Trading, and Blockchain Development. Join our elite community of learners and get certified.
-              </p>
+              <div className="education-text-enhanced" style={{ 
+                color: 'rgba(255,255,255,0.9)', 
+                fontSize: 'clamp(1.32rem, 1.6vw, 1.5rem)', /* +20% mărit pentru vizibilitate (1.1*1.2=1.32) */
+                marginBottom: '25px', 
+                maxWidth: '700px', 
+                margin: '0 auto 25px',
+                lineHeight: '1.7',
+                padding: '1.5rem 2rem',
+                background: 'linear-gradient(135deg, rgba(0, 255, 163, 0.08) 0%, rgba(220, 31, 255, 0.08) 100%)',
+                borderRadius: '16px',
+                border: '1px solid rgba(0, 255, 163, 0.2)',
+                position: 'relative',
+                backdropFilter: 'blur(8px)',
+                boxShadow: '0 4px 20px rgba(0, 255, 163, 0.15), 0 0 40px rgba(220, 31, 255, 0.1)',
+              }}>
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'flex-start', 
+                  gap: '12px',
+                  marginBottom: '12px',
+                  flexWrap: 'wrap',
+                  justifyContent: 'center'
+                }}>
+                  <span style={{
+                    background: 'linear-gradient(135deg, #9945FF, #14F195)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    fontWeight: '700',
+                    fontSize: '1.1em'
+                  }}>
+                    🎓 Master DeFi
+                  </span>
+                  <span style={{ color: 'rgba(255,255,255,0.6)' }}>•</span>
+                  <span style={{
+                    background: 'linear-gradient(135deg, #00FFA3, #DC1FFF)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    fontWeight: '700',
+                    fontSize: '1.1em'
+                  }}>
+                    🤖 AI Trading
+                  </span>
+                  <span style={{ color: 'rgba(255,255,255,0.6)' }}>•</span>
+                  <span style={{
+                    background: 'linear-gradient(135deg, #14F195, #00D4FF)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    fontWeight: '700',
+                    fontSize: '1.1em'
+                  }}>
+                    ⛓️ Blockchain Development
+                  </span>
+                </div>
+                <p style={{ 
+                  margin: '0',
+                  color: 'rgba(255,255,255,0.85)',
+                  fontSize: '0.95em',
+                  lineHeight: '1.6'
+                }}>
+                  Join our elite community of learners and{' '}
+                  <span style={{
+                    color: '#00FFA3', /* Color solid pentru vizibilitate */
+                    fontWeight: '700',
+                    padding: '0.3rem 0.8rem',
+                    borderRadius: '10px',
+                    background: 'linear-gradient(135deg, rgba(0, 255, 163, 0.25), rgba(220, 31, 255, 0.25))',
+                    border: '2px solid rgba(0, 255, 163, 0.6)',
+                    display: 'inline-block',
+                    position: 'relative',
+                    boxShadow: '0 0 20px rgba(0, 255, 163, 0.5), inset 0 0 15px rgba(0, 255, 163, 0.2)',
+                    textShadow: '0 0 10px rgba(0, 255, 163, 0.8), 0 0 20px rgba(220, 31, 255, 0.4)',
+                    fontSize: '1.05em',
+                    letterSpacing: '0.5px',
+                  }}>
+                    ✨ get certified
+                  </span>
+                </p>
+              </div>
               <a 
                 href="https://edu.bits-ai.io/" 
                 target="_blank" 
@@ -210,14 +401,25 @@ const Home = () => {
                 style={{ 
                   display: 'inline-flex', 
                   alignItems: 'center', 
-                  gap: '10px',
-                  background: 'linear-gradient(90deg, #00FFA3 0%, #DC1FFF 100%)',
-                  color: '#000',
-                  textDecoration: 'none'
+                  gap: '12px',
+                  background: 'linear-gradient(135deg, #00FFA3 0%, #DC1FFF 100%)',
+                  color: '#000000',
+                  textDecoration: 'none',
+                  padding: '1rem 2rem',
+                  borderRadius: '12px',
+                  fontSize: 'clamp(1.2rem, 1.5vw, 1.4rem)', /* +20% mărit pentru vizibilitate */
+                  fontWeight: '700',
+                  letterSpacing: '0.5px',
+                  border: '2px solid rgba(255, 255, 255, 0.3)',
+                  boxShadow: '0 4px 20px rgba(0, 255, 163, 0.4), 0 0 40px rgba(220, 31, 255, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.1)',
+                  textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
+                  transition: 'all 0.3s ease',
+                  position: 'relative',
+                  overflow: 'hidden'
                 }}
               >
-                <span>Enter Education Portal</span>
-                <i className="fas fa-external-link-alt"></i>
+                <span style={{ position: 'relative', zIndex: 1 }}>Enter Education Portal</span>
+                <i className="fas fa-external-link-alt" style={{ fontSize: '1.1em', position: 'relative', zIndex: 1 }}></i>
               </a>
             </div>
             
@@ -283,7 +485,7 @@ const Home = () => {
           
           {/* Whale Transactions Tracker (>10K USD) - Real Large Trades */}
           <div ref={whaleRef}>
-            <WhaleTransactions minAmount={10000} />
+            <WhaleTransactions minAmount={10000} openFullscreen={openWhaleFullscreen} />
           </div>
         </div>
       </motion.section>
@@ -362,16 +564,38 @@ const Home = () => {
 
       {/* Floating Action Button - Bitcoin & Crypto Whale Tracker */}
       <button 
-        className="fab-whale-tracker" 
+        className={`fab-whale-tracker ${isWhaleLoading ? 'loading' : ''} ${screenInfo?.screenCategory ? `screen-category-${screenInfo.screenCategory}` : ''} ${screenInfo?.isRetina ? 'screen-retina' : ''} ${screenInfo?.isHighDPI ? 'screen-high-dpi' : ''}`}
         onClick={openWhaleTracker}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openWhaleTracker();
+          }
+        }}
+        aria-label="Open Bitcoin and Crypto Whale Tracker - Real-time large transactions across 7 blockchains"
         title="🐋 Bitcoin & Crypto Whale Tracker - Real-time large transactions across 7 blockchains"
+        disabled={isWhaleLoading}
+        style={{
+          '--pixel-ratio': screenInfo?.pixelRatio || 1,
+          '--screen-dpi': `${screenInfo?.dpi || 96}px`,
+        }}
       >
-        <i className="fab fa-bitcoin"></i>
-        <span className="fab-label">
-          <span className="fab-btc">BTC</span>
-          <span className="fab-divider">+</span>
-          <span className="fab-crypto">Whales</span>
-        </span>
+        {isWhaleLoading ? (
+          <i className="fas fa-spinner fa-spin"></i>
+        ) : (
+          <>
+            <div className="fab-icon-wrapper">
+              <i className="fab fa-bitcoin"></i>
+            </div>
+            <div className="fab-label-container">
+              <span className="fab-label">
+                <span className="fab-btc">BTC</span>
+                <span className="fab-divider">+</span>
+                <span className="fab-crypto">Whales</span>
+              </span>
+            </div>
+          </>
+        )}
       </button>
     </div>
   );
