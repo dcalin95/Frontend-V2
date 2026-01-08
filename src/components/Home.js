@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 // import ThreeBackground from "./StarfieldBackground";
 import LaserOrbit from "./Education/LaserOrbit";
@@ -14,6 +14,10 @@ import BitcoinPriceTicker from "./BitcoinPriceTicker"; // Import Bitcoin Live Pr
 import CandlestickChart from "../papertrade/CandlestickChart"; // Import Professional Chart
 import WhaleTransactions from "../papertrade/WhaleTransactions"; // Import Whale Tracker
 import GeoNoticeBanner from "./GeoNoticeBanner"; // 🌍 Import Geo-Notice Banner
+import PresaleHero from "../Presale/components/PresaleHero"; // Import PresaleHero
+import { useHybridPresaleState } from "../Presale/Timer/useHybridPresaleState"; // Import hook for presale state
+import useCellManagerData from "../Presale/hooks/useCellManagerData"; // Import hook for cell manager data
+import "../Presale/components/PresaleHero.css"; // Import PresaleHero CSS
 
 import "./Home.desktop.css";
 import "./Home.mobile.css";
@@ -23,6 +27,37 @@ import { motion } from "framer-motion";
 const Home = () => {
   const navigate = useNavigate();
   const whaleRef = useRef(null);
+
+  // Get presale data for Hero Section
+  const hybridState = useHybridPresaleState();
+  const cellManagerData = useCellManagerData();
+  const currentPrice = cellManagerData?.currentPrice && cellManagerData.currentPrice > 0 
+    ? cellManagerData.currentPrice 
+    : null;
+  const [daysRemaining, setDaysRemaining] = useState(null);
+  const [isHeroLoading, setIsHeroLoading] = useState(true);
+
+  // Calculate days remaining from endTime
+  useEffect(() => {
+    if (hybridState?.endTime) {
+      setIsHeroLoading(false);
+      const updateDays = () => {
+        const now = Date.now();
+        const diff = hybridState.endTime - now;
+        if (diff > 0) {
+          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          setDaysRemaining(days);
+        } else {
+          setDaysRemaining(0);
+        }
+      };
+      updateDays();
+      const interval = setInterval(updateDays, 60000); // Update every minute
+      return () => clearInterval(interval);
+    } else if (hybridState?.isLoaded !== undefined) {
+      setIsHeroLoading(!hybridState.isLoaded);
+    }
+  }, [hybridState?.endTime, hybridState?.isLoaded]);
 
   const handleExplorePlatform = () => {
     navigate("/about");
@@ -107,6 +142,25 @@ const Home = () => {
           style={{ width: '100%', maxWidth: '420px', position: 'relative', zIndex: 20 }}
         >
           <BitcoinPriceTicker />
+        </motion.div>
+      </section>
+
+      {/* Presale Hero Banner - Copied from Presale Page */}
+      <section className="home-section" style={{ display:'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', padding:'1.5rem 1rem', margin: '0', position: 'relative', zIndex: 15, minHeight: 'auto' }}>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          style={{ width: '100%', maxWidth: '800px', position: 'relative', zIndex: 20 }}
+        >
+          <PresaleHero 
+            currentPrice={currentPrice}
+            daysRemaining={daysRemaining}
+            isLoading={isHeroLoading || cellManagerData?.loading}
+            onStartInvesting={() => {
+              navigate('/presale');
+            }}
+          />
         </motion.div>
       </section>
 
