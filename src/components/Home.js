@@ -11,6 +11,7 @@ import BrandLogo from "./BrandLogo";
 import AddTokenButton from "./AddTokenButton"; // Import AddTokenButton
 import SmartTooltip from "../Presale/components/SmartTooltip"; // Import SmartTooltip
 import BitcoinPriceTicker from "./BitcoinPriceTicker"; // Import Bitcoin Live Price Ticker
+import PresaleHistoryMobileBanner from "./PresaleHistoryMobileBanner"; // 📱 Mobile Transactions Banner
 import CandlestickChart from "../papertrade/CandlestickChart"; // Import Professional Chart
 import WhaleTransactions from "../papertrade/WhaleTransactions"; // Import Whale Tracker
 import GeoNoticeBanner from "./GeoNoticeBanner"; // 🌍 Import Geo-Notice Banner
@@ -144,6 +145,9 @@ const Home = () => {
           <BitcoinPriceTicker />
         </motion.div>
       </section>
+
+      {/* 📱 Mobile Transactions Banner - Afișat sub BitcoinPriceTicker, dispare după 5 secunde */}
+      <PresaleHistoryMobileBanner />
 
       {/* Presale Hero Banner - Copied from Presale Page */}
       <section className="home-section" style={{ display:'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', padding:'1.5rem 1rem', margin: '0', position: 'relative', zIndex: 15, minHeight: 'auto' }}>

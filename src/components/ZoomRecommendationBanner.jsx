@@ -6,6 +6,13 @@ const ZoomRecommendationBanner = () => {
   const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
+    // 📱 MOBILE: Nu afișa banner-ul pe mobile
+    const isMobile = window.matchMedia('(max-width: 768px)').matches || 
+                     document.body.classList.contains('mode-mobile');
+    if (isMobile) {
+      return; // Nu afișa banner-ul pe mobile
+    }
+
     // Verifică dacă banner-ul a fost deja afișat
     const bannerShown = localStorage.getItem('zoom-recommendation-shown');
     if (bannerShown === 'true') {

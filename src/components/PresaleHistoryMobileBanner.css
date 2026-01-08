@@ -1,0 +1,178 @@
+/* 📱 PresaleHistory Mobile Banner - Afișat sub BitcoinPriceTicker, dispare după 5 secunde */
+
+.presale-history-mobile-banner {
+  position: fixed;
+  top: 280px; /* Sub BitcoinPriceTicker (care are ~240px înălțime pe mobile) */
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100vw - 28px);
+  max-width: 420px;
+  z-index: 1000; /* Sub header dar peste conținut */
+  animation: slideDownFadeIn 0.4s ease-out;
+}
+
+/* 📱 MOBILE ONLY - Ajustare pentru body.mode-mobile */
+body.mode-mobile .presale-history-mobile-banner {
+  top: 280px; /* Sub BitcoinPriceTicker (padding-top 100px + header ~80px + BitcoinPriceTicker ~100px = ~280px) */
+  z-index: 1000;
+}
+
+/* Ajustare pentru ecrane mici */
+@media (max-width: 480px) {
+  body.mode-mobile .presale-history-mobile-banner {
+    top: 260px; /* Ajustat pentru ecrane mai mici */
+  }
+}
+
+@media (max-width: 360px) {
+  body.mode-mobile .presale-history-mobile-banner {
+    top: 240px; /* Ajustat pentru ecrane foarte mici */
+  }
+}
+
+@keyframes slideDownFadeIn {
+  from {
+    transform: translateX(-50%) translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+.presale-history-mobile-banner.fade-out {
+  animation: fadeOut 0.3s ease-in forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+}
+
+.presale-history-mobile-content {
+  background: linear-gradient(135deg, rgba(255, 170, 0, 0.15) 0%, rgba(255, 170, 0, 0.05) 100%);
+  border: 1px solid rgba(255, 170, 0, 0.3);
+  border-radius: 12px;
+  padding: 12px 16px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.presale-history-mobile-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.presale-history-mobile-icon {
+  font-size: 18px;
+}
+
+.presale-history-mobile-title {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffaa00;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.presale-history-mobile-close {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.presale-history-mobile-close:hover,
+.presale-history-mobile-close:active {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.presale-history-mobile-stats {
+  display: flex;
+  justify-content: space-around;
+  gap: 12px;
+}
+
+.presale-history-mobile-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.stat-label {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffaa00;
+  text-shadow: 0 0 10px rgba(255, 170, 0, 0.5);
+}
+
+.presale-history-mobile-loading,
+.presale-history-mobile-empty {
+  text-align: center;
+  padding: 8px 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* 📱 MOBILE ONLY - Ascunde pe desktop */
+@media (min-width: 769px) {
+  .presale-history-mobile-banner {
+    display: none !important;
+  }
+}
+
+body.mode-desktop .presale-history-mobile-banner {
+  display: none !important;
+}
+
+/* Ajustări pentru ecrane foarte mici */
+@media (max-width: 380px) {
+  .presale-history-mobile-banner {
+    top: 180px;
+    width: calc(100vw - 20px);
+    max-width: 100%;
+  }
+
+  .presale-history-mobile-content {
+    padding: 10px 12px;
+  }
+
+  .presale-history-mobile-title {
+    font-size: 11px;
+  }
+
+  .stat-value {
+    font-size: 14px;
+  }
+}
+

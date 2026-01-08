@@ -112,32 +112,19 @@ body:has(.zoom-recommendation-banner:not(.closing)) .header-spacer {
   transform: scale(0.95);
 }
 
-/* Mobile responsive */
+/* 📱 MOBILE: Ascunde complet banner-ul pe mobile */
 @media (max-width: 768px) {
   .zoom-recommendation-banner {
-    top: 15px !important;
-    right: 15px !important;
-    left: 15px !important; /* Pe mobile ocupă mai mult spațiu dar totuși nu toată lățimea */
-    max-width: calc(100vw - 30px) !important;
-    padding: clamp(0.6rem, 2vw, 0.9rem) clamp(1rem, 3vw, 1.5rem) !important;
+    display: none !important; /* Ascunde complet pe mobile */
   }
+}
 
-  .zoom-banner-content {
-    flex-wrap: wrap;
-    gap: clamp(0.5rem, 1.5vw, 0.75rem);
-  }
-
-  .zoom-banner-text {
-    font-size: clamp(0.8rem, 2.5vw, 1rem) !important; /* Font mai mare pe mobile */
-    flex-basis: calc(100% - 50px);
-    text-align: center !important; /* Centrat pe mobile */
-  }
-
-  .zoom-banner-close {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-  }
+/* 📱 MOBILE: Ascunde complet banner-ul când body are clasa mode-mobile */
+body.mode-mobile .zoom-recommendation-banner {
+  display: none !important; /* Ascunde complet pe mobile */
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 /* Ajustare pentru a nu se suprapune cu Sidebar */
