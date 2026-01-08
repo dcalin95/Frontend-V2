@@ -40,6 +40,30 @@ const HowItWorks = () => {
         "Participate in the governance of the platform using AI-driven voting mechanisms. This ensures the community has a fair say in decision-making processes.",
       icon: "fas fa-robot",
     },
+    {
+      title: "AI Portfolio Allocator",
+      description:
+        "Automated portfolio management with intelligent rebalancing engine. Monitors actual vs target allocation and performs incremental adjustments to optimize long-term performance.",
+      icon: "fas fa-chart-pie",
+    },
+    {
+      title: "Market Regime Classifier",
+      description:
+        "AI detects market environments (bullish, bearish, sideways, high-volatility, post-crash recovery) and automatically adjusts portfolio allocations according to regime conditions.",
+      icon: "fas fa-wave-square",
+    },
+    {
+      title: "Research Mode Intelligence",
+      description:
+        "Real-time monitoring of order books, trades, and liquidity. Detects liquidity gaps, spread anomalies, and volume spikes with quantitative scores and alerts.",
+      icon: "fas fa-search",
+    },
+    {
+      title: "Co-Pilot Trading Mode",
+      description:
+        "AI proposes concrete trades with rationale, risk levels, and portfolio impact. You confirm each execution, maintaining full control while benefiting from AI insights.",
+      icon: "fas fa-user-astronaut",
+    },
   ];
 
   return (
