@@ -17,6 +17,7 @@ const CandlestickChart = ({
   const chartRef = useRef(null);
   const candlestickSeriesRef = useRef(null);
   const volumeSeriesRef = useRef(null);
+  const isDisposedRef = useRef(false);
   
   const [timeframe, setTimeframe] = useState(defaultTimeframe);
   const [loading, setLoading] = useState(true);
@@ -135,6 +136,9 @@ const CandlestickChart = ({
   useEffect(() => {
     if (!chartContainerRef.current) return;
 
+    // Reset disposed flag
+    isDisposedRef.current = false;
+
     // Create chart
     const chart = createChart(chartContainerRef.current, {
       layout: {
@@ -203,10 +207,14 @@ const CandlestickChart = ({
 
     // Handle resize
     const handleResize = () => {
-      if (chartContainerRef.current && chartRef.current) {
-        chartRef.current.applyOptions({
-          width: chartContainerRef.current.clientWidth,
-        });
+      if (!isDisposedRef.current && chartContainerRef.current && chartRef.current) {
+        try {
+          chartRef.current.applyOptions({
+            width: chartContainerRef.current.clientWidth,
+          });
+        } catch (error) {
+          console.warn('⚠️ [CandlestickChart] Resize error (chart may be disposed):', error);
+        }
       }
     };
 
@@ -215,36 +223,58 @@ const CandlestickChart = ({
     // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
+      isDisposedRef.current = true;
+      
       if (chartRef.current) {
-        chartRef.current.remove();
+        try {
+          chartRef.current.remove();
+        } catch (error) {
+          console.warn('⚠️ [CandlestickChart] Cleanup error (chart may already be disposed):', error);
+        }
+        chartRef.current = null;
       }
+      
+      candlestickSeriesRef.current = null;
+      volumeSeriesRef.current = null;
     };
   }, [height]);
 
   // Update chart height when chartHeight changes
   useEffect(() => {
-    if (chartRef.current) {
-      chartRef.current.applyOptions({ height: chartHeight });
-      // Reposition candles beautifully
-      chartRef.current.timeScale().fitContent();
+    if (!isDisposedRef.current && chartRef.current) {
+      try {
+        chartRef.current.applyOptions({ height: chartHeight });
+        // Reposition candles beautifully
+        chartRef.current.timeScale().fitContent();
+      } catch (error) {
+        console.warn('⚠️ [CandlestickChart] Height update error (chart may be disposed):', error);
+      }
     }
   }, [chartHeight]);
 
   // Fetch and update data when symbol or timeframe changes
   useEffect(() => {
     const updateChartData = async () => {
-      if (!candlestickSeriesRef.current || !volumeSeriesRef.current) return;
+      if (isDisposedRef.current || !candlestickSeriesRef.current || !volumeSeriesRef.current) {
+        return;
+      }
 
-      const config = timeframes[timeframe];
-      const data = await fetchCandlestickData(symbol, config.interval, config.limit);
-      
-      if (data) {
-        candlestickSeriesRef.current.setData(data.candlestickData);
-        volumeSeriesRef.current.setData(data.volumeData);
+      try {
+        const config = timeframes[timeframe];
+        const data = await fetchCandlestickData(symbol, config.interval, config.limit);
         
-        // Fit content to show all data
-        if (chartRef.current) {
-          chartRef.current.timeScale().fitContent();
+        if (data && !isDisposedRef.current && candlestickSeriesRef.current && volumeSeriesRef.current) {
+          candlestickSeriesRef.current.setData(data.candlestickData);
+          volumeSeriesRef.current.setData(data.volumeData);
+          
+          // Fit content to show all data
+          if (!isDisposedRef.current && chartRef.current) {
+            chartRef.current.timeScale().fitContent();
+          }
+        }
+      } catch (error) {
+        if (!isDisposedRef.current) {
+          console.warn('⚠️ [CandlestickChart] Data update error (chart may be disposed):', error);
         }
       }
     };
@@ -253,7 +283,11 @@ const CandlestickChart = ({
 
     // Auto-refresh based on prop
     if (autoUpdate) {
-      const interval = setInterval(updateChartData, updateInterval);
+      const interval = setInterval(() => {
+        if (!isDisposedRef.current) {
+          updateChartData();
+        }
+      }, updateInterval);
       return () => clearInterval(interval);
     }
   }, [symbol, timeframe, autoUpdate, updateInterval, timeframes]);

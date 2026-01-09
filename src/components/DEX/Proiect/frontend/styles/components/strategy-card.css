@@ -1,0 +1,153 @@
+/**
+ * 🎴 Strategy Card Styles
+ */
+
+.strategy-card {
+  padding: var(--spacing-lg);
+  background-color: var(--bg-primary);
+  border-radius: var(--border-radius-lg);
+  border: 2px solid var(--border-color);
+  transition: all var(--transition-base);
+  cursor: pointer;
+}
+
+.strategy-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary);
+}
+
+.strategy-card.enabled {
+  border-color: var(--color-success);
+}
+
+.strategy-card.disabled {
+  border-color: var(--border-color-dark);
+  opacity: 0.8;
+}
+
+.strategy-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.strategy-card-icon {
+  color: var(--color-primary);
+}
+
+.strategy-card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.strategy-card-name {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.strategy-card-type {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  text-transform: capitalize;
+}
+
+.strategy-card-status {
+  display: flex;
+  align-items: center;
+}
+
+.strategy-card-status.enabled .status-enabled {
+  color: var(--color-success);
+}
+
+.strategy-card-status.disabled .status-disabled {
+  color: var(--text-secondary);
+}
+
+.strategy-card-config {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--border-color);
+}
+
+.strategy-card-risk-limits {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm) 0;
+}
+
+.strategy-card-risk-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.strategy-card-risk-value {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.strategy-card-date {
+  font-size: var(--font-size-xs);
+  color: var(--text-light);
+  margin-top: var(--spacing-sm);
+}
+
+.strategy-card-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--border-color);
+}
+
+.strategy-card-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.strategy-card-btn-edit {
+  color: var(--color-primary);
+}
+
+.strategy-card-btn-edit:hover {
+  background-color: rgba(99, 102, 241, 0.1);
+}
+
+.strategy-card-btn-enable {
+  color: var(--color-success);
+}
+
+.strategy-card-btn-enable:hover {
+  background-color: rgba(16, 185, 129, 0.1);
+}
+
+.strategy-card-btn-disable {
+  color: var(--color-warning);
+}
+
+.strategy-card-btn-disable:hover {
+  background-color: rgba(245, 158, 11, 0.1);
+}
+
+.strategy-card-btn-delete {
+  color: var(--color-error);
+}
+
+.strategy-card-btn-delete:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+

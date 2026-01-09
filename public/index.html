@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" translate="no" class="notranslate">
   <head>
     <meta charset="utf-8" />
+    <!-- 🚫 PREVENT CHROME AUTO-TRANSLATION - Fix pentru crash pe Mobile Chrome -->
+    <meta name="google" content="notranslate" />
+    <meta name="googlebot" content="notranslate" />
 
     <!-- Favicon & App Icons -->
     <link rel="icon" type="image/svg+xml" href="%PUBLIC_URL%/favicon.svg" />
@@ -227,8 +230,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.tiktok.com https://fonts.googleapis.com https://s3.tradingview.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https: wss:; frame-src 'self' https: https://s3.tradingview.com; object-src 'none'; base-uri 'self'; form-action 'self';" />
-    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.tiktok.com https://fonts.googleapis.com https://s3.tradingview.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: https: blob:; connect-src 'self' https: wss:; frame-src 'self' https: https://s3.tradingview.com; object-src 'none'; base-uri 'self'; form-action 'self';" />
+    <!-- X-Frame-Options removed - must be set via HTTP headers, not meta tag -->
     <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()" />
 
     <!-- 🚀 PERFORMANCE OPTIMIZATION -->
@@ -306,6 +309,8 @@
     </script>
     <!-- TikTok Pixel Code End -->
 
+    <!-- TEMPORARILY DISABLED - Error handling script (may cause page freeze) -->
+    <!--
     <script>
       // Guard împotriva erorilor de tip ChunkLoadError (mismatch bundle după deploy)
       (function () {
@@ -336,6 +341,7 @@
         });
       })();
     </script>
+    -->
   </head>
   <body>
     <!-- 📊 GOOGLE TAG MANAGER (noscript) -->
@@ -343,6 +349,6 @@
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="root" translate="no" class="notranslate"></div>
   </body>
 </html>

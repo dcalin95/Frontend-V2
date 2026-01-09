@@ -1,0 +1,115 @@
+/**
+ * 📊 Bot Status Styles
+ */
+
+.bot-status {
+  padding: var(--spacing-lg);
+  background-color: var(--bg-primary);
+  border-radius: var(--border-radius-lg);
+  border: 2px solid var(--border-color);
+  transition: border-color var(--transition-base);
+}
+
+.bot-status.running {
+  border-color: var(--color-success);
+}
+
+.bot-status.stopped {
+  border-color: var(--border-color-dark);
+}
+
+.bot-status.paused {
+  border-color: var(--color-warning);
+}
+
+.bot-status.error {
+  border-color: var(--color-error);
+}
+
+.bot-status-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-md);
+}
+
+.bot-status-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.bot-status-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.bot-status-icon.running {
+  color: var(--color-success);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.bot-status-icon.stopped {
+  color: var(--text-secondary);
+}
+
+.bot-status-icon.paused {
+  color: var(--color-warning);
+}
+
+.bot-status-icon.error {
+  color: var(--color-error);
+}
+
+.bot-status-label {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-lg);
+}
+
+.bot-status-uptime {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.bot-status-last-update {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-md);
+}
+
+.bot-status-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.bot-status-stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.bot-status-stat-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.bot-status-stat-value {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+

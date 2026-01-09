@@ -1,0 +1,69 @@
+/**
+ * 📊 Performance Chart Styles
+ */
+
+.performance-chart {
+  padding: var(--spacing-lg);
+  background-color: var(--bg-primary);
+  border-radius: var(--border-radius-lg);
+}
+
+.performance-chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-lg);
+}
+
+.performance-chart-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.performance-chart-type-selector {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.performance-chart-type-btn {
+  padding: var(--spacing-sm);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.performance-chart-type-btn:hover {
+  background-color: var(--color-light-dark);
+}
+
+.performance-chart-type-btn.active {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--text-white);
+}
+
+.performance-chart-content {
+  width: 100%;
+  min-height: 400px;
+}
+
+.performance-chart-empty {
+  padding: var(--spacing-2xl);
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+  .performance-chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+}
+

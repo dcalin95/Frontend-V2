@@ -1,0 +1,30 @@
+/**
+ * 📐 Layout Styles - Layout Component Styles
+ */
+
+.ai-trading-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg-secondary);
+}
+
+.ai-trading-content-wrapper {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.ai-trading-main-content {
+  flex: 1;
+  padding: var(--spacing-lg);
+  overflow-y: auto;
+  background-color: var(--bg-secondary);
+}
+
+@media (max-width: 768px) {
+  .ai-trading-main-content {
+    padding: var(--spacing-md);
+  }
+}
+

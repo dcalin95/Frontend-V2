@@ -198,16 +198,20 @@ body.in-app-browser p {
 /* Tablets & Small Laptops */
 @media (max-width: 1024px) and (min-width: 769px) {
   .fab-whale-tracker {
-    bottom: calc(12rem + env(safe-area-inset-bottom, 0px)) !important;
+    bottom: calc(14rem + env(safe-area-inset-bottom, 0px)) !important; /* Ridicat mai sus (12rem -> 14rem) */
     right: calc(3rem + env(safe-area-inset-right, 0px)) !important;
-    width: 72px !important; /* Slightly larger for better touch */
-    height: 72px !important;
-    gap: 0.25rem !important;
+    width: 58px !important; /* -10% redus (64px -> 58px) */
+    height: 58px !important; /* -10% redus */
+    gap: 0 !important; /* Eliminat gap pentru centrare perfectă */
     padding: 0 !important;
     z-index: 99990 !important;
     /* 🎨 AI Sonnet Premium mobile glassmorphism */
     backdrop-filter: blur(18px) saturate(170%) brightness(1.03) !important;
     -webkit-backdrop-filter: blur(18px) saturate(170%) brightness(1.03) !important;
+    /* Centrare perfectă pentru icon */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
   
   /* 🎯 Retina Mobile - Enhanced */
@@ -218,7 +222,7 @@ body.in-app-browser p {
   }
 
   .fab-whale-tracker.loading i.fa-spinner {
-    font-size: 1.8rem !important;
+    font-size: 2rem !important;
   }
 
   .fab-whale-tracker:focus-visible {
@@ -226,77 +230,31 @@ body.in-app-browser p {
     outline-offset: 3px !important;
   }
 
-  /* 🎨 AI Sonnet - Mobile Icon Wrapper */
-  .fab-icon-wrapper {
-    display: flex !important;
-    margin-bottom: 0.12rem !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-
-  .fab-whale-tracker i,
-  .fab-icon-wrapper i {
-    font-size: 1.9rem !important;
+  /* 🎨 SIMPLE ICON - Mobile: Just the emoji, nothing else */
+  .fab-whale-tracker > span {
+    display: block !important;
+    font-size: 2rem !important; /* Dimensiune originală */
     line-height: 1 !important;
     color: #f0b90b !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-    text-rendering: optimizeLegibility !important;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8)) 
-            drop-shadow(0 0 10px rgba(240, 185, 11, 0.7))
-            drop-shadow(0 0 20px rgba(247, 147, 26, 0.4)) !important;
-  }
-  
-  /* 🎯 Retina Mobile - Sharper Icon */
-  .screen-retina .fab-whale-tracker i,
-  .screen-retina .fab-icon-wrapper i,
-  .screen-high-dpi .fab-whale-tracker i,
-  .screen-high-dpi .fab-icon-wrapper i {
-    font-size: 2rem !important;
-    color: #f0b90b !important;
-    -webkit-font-smoothing: subpixel-antialiased !important;
-    filter: drop-shadow(0 0.5px 1px rgba(0, 0, 0, 0.9)) 
-            drop-shadow(0 0 12px rgba(240, 185, 11, 0.8))
-            drop-shadow(0 0 24px rgba(247, 147, 26, 0.5)) !important;
+    text-align: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    user-select: none !important;
   }
 
-  /* 🎨 AI Sonnet - Mobile Label Container */
+  /* 🎨 AI Sonnet - Mobile Label Container - ASCUNS */
   .fab-label-container {
-    padding: 0 0.12rem !important;
+    display: none !important;
   }
 
   .fab-label {
-    gap: 0.06rem 0.1rem !important;
-    line-height: 1.15 !important;
-    font-size: 0.64rem !important;
-    letter-spacing: 0.09em !important;
-    padding: 0.14rem 0.22rem !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-    text-rendering: optimizeLegibility !important;
+    display: none !important;
   }
   
-  /* 🎯 Retina Mobile - Sharper Label */
-  .screen-retina .fab-label,
-  .screen-high-dpi .fab-label {
-    font-size: 0.66rem !important;
-    -webkit-font-smoothing: subpixel-antialiased !important;
-  }
-
-  .fab-btc {
-    font-size: 0.7rem !important;
-    line-height: 1 !important;
-  }
-
-  .fab-divider {
-    line-height: 0.8 !important;
-  }
-
+  .fab-btc,
+  .fab-divider,
   .fab-crypto {
-    font-size: 0.52rem !important;
+    display: none !important;
     line-height: 1 !important;
   }
 }
@@ -304,17 +262,21 @@ body.in-app-browser p {
 /* Mobile - Medium Screens */
 @media (max-width: 768px) and (min-width: 481px) {
   .fab-whale-tracker {
-    bottom: calc(17rem + env(safe-area-inset-bottom, 0px)) !important;
+    bottom: calc(19rem + env(safe-area-inset-bottom, 0px)) !important; /* Ridicat mai sus (17rem -> 19rem) */
     right: calc(1.5rem + env(safe-area-inset-right, 0px)) !important;
-    width: 68px !important; /* Better touch target */
-    height: 68px !important;
+    width: 58px !important; /* -10% redus (64px -> 58px) */
+    height: 58px !important; /* -10% redus */
     border-width: 2.5px !important;
-    gap: 0.22rem !important;
+    gap: 0 !important; /* Eliminat gap pentru centrare perfectă */
     padding: 0 !important;
     z-index: 99990 !important;
     /* 🎨 AI Sonnet Premium mobile glassmorphism */
     backdrop-filter: blur(16px) saturate(165%) brightness(1.02) !important;
     -webkit-backdrop-filter: blur(16px) saturate(165%) brightness(1.02) !important;
+    /* Centrare perfectă pentru icon */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
   
   /* 🎯 Retina Mobile - Enhanced */
@@ -323,188 +285,57 @@ body.in-app-browser p {
     backdrop-filter: blur(18px) saturate(175%) brightness(1.04) !important;
     -webkit-backdrop-filter: blur(18px) saturate(175%) brightness(1.04) !important;
   }
-  
-  /* 🎨 AI Sonnet - Label Container Mobile */
+
+  /* 🎨 MOBILE - ASCUNDE TEXTUL, DOAR ICON */
   .fab-label-container {
-    padding: 0 0.12rem !important;
-  }
-  
-  .fab-label {
-    font-size: 0.62rem !important;
-    letter-spacing: 0.08em !important;
-    padding: 0.12rem 0.2rem !important;
-    gap: 0.06rem 0.1rem !important;
-  }
-  
-  /* 🎨 AI Sonnet - Mobile Icon Wrapper */
-  .fab-icon-wrapper {
-    margin-bottom: 0.1rem !important;
-  }
-  
-  .fab-whale-tracker i {
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-    text-rendering: optimizeLegibility !important;
-  }
-  
-  /* 🎯 Retina Mobile - Sharper Icon */
-  .screen-retina .fab-whale-tracker i,
-  .screen-high-dpi .fab-whale-tracker i {
-    -webkit-font-smoothing: subpixel-antialiased !important;
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
   }
 
-  .fab-btc {
-    font-size: 0.7rem !important;
-    letter-spacing: 0.04em !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-  }
-  
-  /* 🎯 Retina Mobile - Sharper BTC */
-  .screen-retina .fab-btc,
-  .screen-high-dpi .fab-btc {
-    font-size: 0.72rem !important;
-    -webkit-font-smoothing: subpixel-antialiased !important;
-  }
-  
-  .fab-divider {
-    font-size: 0.48rem !important;
-    margin: 0 0.04rem !important;
-    -webkit-font-smoothing: antialiased !important;
-  }
-  
-  /* 🎯 Retina Mobile - Sharper Divider */
-  .screen-retina .fab-divider,
-  .screen-high-dpi .fab-divider {
-    font-size: 0.5rem !important;
-    -webkit-font-smoothing: subpixel-antialiased !important;
-  }
-  
+  .fab-label,
+  .fab-btc,
+  .fab-divider,
   .fab-crypto {
-    font-size: 0.54rem !important;
-    letter-spacing: 0.05em !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
+    display: none !important;
   }
   
-  /* 🎯 Retina Mobile - Sharper Crypto */
-  .screen-retina .fab-crypto,
-  .screen-high-dpi .fab-crypto {
-    font-size: 0.56rem !important;
-    -webkit-font-smoothing: subpixel-antialiased !important;
-  }
-
-  .fab-whale-tracker.loading i.fa-spinner {
-    font-size: 1.6rem !important;
+  /* 🎨 SIMPLE ICON - Medium Mobile: Just the emoji */
+  .fab-whale-tracker > span {
+    display: block !important;
+    font-size: 2rem !important;
+    line-height: 1 !important;
+    color: #f0b90b !important;
+    text-align: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    user-select: none !important;
   }
 
   .fab-whale-tracker:focus-visible {
     outline: 2px solid rgba(240, 185, 11, 0.8) !important;
     outline-offset: 2px !important;
   }
-
-  /* 🎨 AI Sonnet - Mobile Icon Wrapper */
-  .fab-icon-wrapper {
-    margin-bottom: 0.08rem !important;
-  }
-  
-  .fab-whale-tracker i {
-    font-size: 1.6rem !important;
-    line-height: 1 !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-    text-rendering: optimizeLegibility !important;
-  }
-  
-  /* 🎯 Retina Mobile - Sharper Icon */
-  .screen-retina .fab-whale-tracker i,
-  .screen-high-dpi .fab-whale-tracker i {
-    font-size: 1.7rem !important;
-    -webkit-font-smoothing: subpixel-antialiased !important;
-  }
-
-  /* 🎨 AI Sonnet - Mobile Label Container */
-  .fab-label-container {
-    padding: 0 0.1rem !important;
-  }
-
-  .fab-label {
-    gap: 0.05rem 0.08rem !important;
-    line-height: 1.12 !important;
-    font-size: 0.58rem !important;
-    letter-spacing: 0.07em !important;
-    padding: 0.1rem 0.18rem !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-    text-rendering: optimizeLegibility !important;
-  }
-  
-  /* 🎯 Retina Mobile - Sharper Label */
-  .screen-retina .fab-label,
-  .screen-high-dpi .fab-label {
-    font-size: 0.6rem !important;
-    -webkit-font-smoothing: subpixel-antialiased !important;
-  }
-
-  .fab-btc {
-    font-size: 0.66rem !important;
-    line-height: 1.1 !important;
-    letter-spacing: 0.03em !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-  }
-  
-  /* 🎯 Retina Mobile - Sharper BTC */
-  .screen-retina .fab-btc,
-  .screen-high-dpi .fab-btc {
-    font-size: 0.68rem !important;
-    -webkit-font-smoothing: subpixel-antialiased !important;
-  }
-
-  .fab-divider {
-    font-size: 0.44rem !important;
-    line-height: 1 !important;
-    margin: 0 0.03rem !important;
-    -webkit-font-smoothing: antialiased !important;
-  }
-  
-  /* 🎯 Retina Mobile - Sharper Divider */
-  .screen-retina .fab-divider,
-  .screen-high-dpi .fab-divider {
-    font-size: 0.46rem !important;
-    -webkit-font-smoothing: subpixel-antialiased !important;
-  }
-
-  .fab-crypto {
-    font-size: 0.5rem !important;
-    line-height: 1.1 !important;
-    letter-spacing: 0.04em !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-  }
-  
-  /* 🎯 Retina Mobile - Sharper Crypto */
-  .screen-retina .fab-crypto,
-  .screen-high-dpi .fab-crypto {
-    font-size: 0.52rem !important;
-    -webkit-font-smoothing: subpixel-antialiased !important;
-  }
 }
 
 /* Mobile - Small Screens */
 @media (max-width: 480px) {
   .fab-whale-tracker {
-    bottom: calc(17rem + env(safe-area-inset-bottom, 0px)) !important;
+    bottom: calc(19rem + env(safe-area-inset-bottom, 0px)) !important; /* Ridicat mai sus (17rem -> 19rem) */
     right: calc(1rem + env(safe-area-inset-right, 0px)) !important;
-    width: 64px !important; /* Better touch target */
-    height: 64px !important;
+    width: 58px !important; /* -10% redus (64px -> 58px) */
+    height: 58px !important; /* -10% redus */
     border-width: 2px !important;
-    gap: 0.2rem !important;
+    gap: 0 !important; /* Eliminat gap pentru centrare perfectă */
     padding: 0 !important;
     z-index: 99990 !important;
     /* 🎨 AI Sonnet Premium mobile glassmorphism */
     backdrop-filter: blur(14px) saturate(155%) brightness(1.01) !important;
     -webkit-backdrop-filter: blur(14px) saturate(155%) brightness(1.01) !important;
+    /* Centrare perfectă pentru icon */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
   
   /* 🎯 Retina Mobile - Enhanced */
@@ -550,102 +381,26 @@ body.in-app-browser p {
     outline-offset: 2px !important;
   }
 
-  /* 🎨 AI Sonnet - Mobile Icon Wrapper */
-  .fab-icon-wrapper {
-    margin-bottom: 0.06rem !important;
-  }
-  
-  .fab-whale-tracker i {
-    font-size: 1.4rem !important;
+  /* 🎨 SIMPLE ICON - Small Mobile: Just the emoji */
+  .fab-whale-tracker > span {
+    display: block !important;
+    font-size: 2rem !important; /* Dimensiune originală */
     line-height: 1 !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-    text-rendering: optimizeLegibility !important;
-  }
-  
-  /* 🎯 Retina Mobile - Sharper Icon */
-  .screen-retina .fab-whale-tracker i,
-  .screen-high-dpi .fab-whale-tracker i {
-    font-size: 1.5rem !important;
-    -webkit-font-smoothing: subpixel-antialiased !important;
-  }
-
-  /* 🎨 AI Sonnet - Mobile Label Container */
-  .fab-label-container {
-    padding: 0 0.08rem !important;
-  }
-
-  .fab-label {
-    gap: 0.04rem 0.06rem !important;
-    line-height: 1.1 !important;
-    font-size: 0.54rem !important;
-    letter-spacing: 0.06em !important;
-    padding: 0.08rem 0.15rem !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-    text-rendering: optimizeLegibility !important;
-  }
-  
-  /* 🎯 Retina Mobile - Sharper Label */
-  .screen-retina .fab-label,
-  .screen-high-dpi .fab-label {
-    font-size: 0.56rem !important;
-    -webkit-font-smoothing: subpixel-antialiased !important;
-  }
-
-  .fab-btc {
-    font-size: 0.62rem !important;
-    line-height: 1.1 !important;
-    letter-spacing: 0.02em !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-  }
-  
-  /* 🎯 Retina Mobile - Sharper BTC */
-  .screen-retina .fab-btc,
-  .screen-high-dpi .fab-btc {
-    font-size: 0.64rem !important;
-    -webkit-font-smoothing: subpixel-antialiased !important;
-  }
-
-  .fab-divider {
-    font-size: 0.4rem !important;
-    line-height: 1 !important;
-    margin: 0 0.02rem !important;
-    display: inline-block !important; /* Keep visible */
-    -webkit-font-smoothing: antialiased !important;
-  }
-  
-  /* 🎯 Retina Mobile - Sharper Divider */
-  .screen-retina .fab-divider,
-  .screen-high-dpi .fab-divider {
-    font-size: 0.42rem !important;
-    -webkit-font-smoothing: subpixel-antialiased !important;
-  }
-
-  .fab-crypto {
-    font-size: 0.46rem !important;
-    line-height: 1.1 !important;
-    letter-spacing: 0.03em !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-  }
-  
-  /* 🎯 Retina Mobile - Sharper Crypto */
-  .screen-retina .fab-crypto,
-  .screen-high-dpi .fab-crypto {
-    font-size: 0.48rem !important;
-    -webkit-font-smoothing: subpixel-antialiased !important;
+    color: #f0b90b !important;
+    text-align: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    user-select: none !important;
   }
 }
 
 /* Mobile - Extra Small Screens */
 @media (max-width: 360px) {
   .fab-whale-tracker {
-    bottom: calc(16rem + env(safe-area-inset-bottom, 0px)) !important;
+    bottom: calc(18rem + env(safe-area-inset-bottom, 0px)) !important; /* Ridicat mai sus (16rem -> 18rem) */
     right: calc(0.75rem + env(safe-area-inset-right, 0px)) !important;
-    width: 60px !important; /* Better touch target */
-    height: 60px !important;
+    width: 54px !important; /* -10% redus (60px -> 54px) */
+    height: 54px !important; /* -10% redus */
     border-width: 2px !important;
     gap: 0.18rem !important;
     padding: 0 !important;
@@ -667,21 +422,16 @@ body.in-app-browser p {
     padding: 0 0.08rem !important;
   }
   
-  /* 🎨 AI Sonnet - Mobile Icon Wrapper */
-  .fab-icon-wrapper {
-    margin-bottom: 0.05rem !important;
-  }
-  
-  .fab-whale-tracker i {
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-    text-rendering: optimizeLegibility !important;
-  }
-  
-  /* 🎯 Retina Mobile - Sharper Icon */
-  .screen-retina .fab-whale-tracker i,
-  .screen-high-dpi .fab-whale-tracker i {
-    -webkit-font-smoothing: subpixel-antialiased !important;
+  /* 🎨 SIMPLE ICON - Extra Small Mobile: Just the emoji */
+  .fab-whale-tracker > span {
+    display: block !important;
+    font-size: 1.8rem !important;
+    line-height: 1 !important;
+    color: #f0b90b !important;
+    text-align: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    user-select: none !important;
   }
 
   .fab-label {
@@ -753,29 +503,38 @@ body.in-app-browser p {
     outline-offset: 2px !important;
   }
 
-  .fab-whale-tracker i {
-    font-size: 1.2rem !important;
+  /* 🎨 SIMPLE ICON - Extra Small Mobile: Just the emoji */
+  .fab-whale-tracker > span {
+    display: block !important;
+    font-size: 1.8rem !important; /* Dimensiune originală pentru extra small */
     line-height: 1 !important;
+    color: #f0b90b !important;
+    text-align: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    user-select: none !important;
   }
+}
 
-  .fab-label {
-    gap: 0.02rem !important;
-    line-height: 1 !important;
+/* ===== HOME HERO TEXT - Mobile: -15% font size (10% + 5%) ===== */
+@media (max-width: 768px) {
+  /* Subtitle: "From Bits to Bitcoin..." */
+  .home-hero-subtitle {
+    font-size: clamp(1.168rem, 1.401vw, 1.401rem) !important; /* -15% redus (1.365625 * 0.85) */
   }
-
-  .fab-btc {
-    font-size: 0.5rem !important;
-    line-height: 1 !important;
+  
+  /* Description: "Smart Swap Intelligence..." */
+  .home-hero-description {
+    font-size: clamp(1.121rem, 1.462vw, 1.340rem) !important; /* -15% redus (1.311 * 0.85, 1.5675 * 0.85) */
   }
-
-  .fab-divider {
-    font-size: 0.3rem !important;
-    line-height: 0.8 !important;
-    display: none !important;
+  
+  /* Description title: "Smart Swap Intelligence:" */
+  .home-hero-description-title {
+    font-size: 0.934em !important; /* -15% redus (1.0925 * 0.85) */
   }
-
-  .fab-crypto {
-    font-size: 0.4rem !important;
-    line-height: 1 !important;
+  
+  /* Emoji 🧠 */
+  .home-hero-description-title > span {
+    font-size: 1.056em !important; /* -15% redus (1.235 * 0.85) */
   }
 }

@@ -58,9 +58,12 @@ const SmartTooltip = ({ children, content, className = '' }) => {
   const closeTimeoutRef = useRef(null);
   const openTimerRef = useRef(null);
 
-  // Detect mobile
+  // Detect mobile - dezactivează complet pe mobil (mai ales pe ecrane mici)
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    const checkMobile = () => {
+      const isMobileDevice = window.innerWidth <= 768;
+      setIsMobile(isMobileDevice);
+    };
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
@@ -265,6 +268,13 @@ const SmartTooltip = ({ children, content, className = '' }) => {
   };
 
   const child = React.Children.only(children);
+  
+  // 🚫 MOBILE: Dezactivează complet SmartTooltip pe mobil (mai ales pe ecrane mici)
+  // Pe mobil, returnează doar copilul fără tooltip functionality
+  if (isMobile) {
+    return child;
+  }
+  
   const trigger = React.cloneElement(child, {
     ref: (node) => {
       targetRef.current = node;

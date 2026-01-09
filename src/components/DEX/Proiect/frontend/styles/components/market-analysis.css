@@ -1,0 +1,161 @@
+/**
+ * 📈 Market Analysis Styles
+ */
+
+.market-analysis {
+  padding: var(--spacing-lg);
+  background-color: var(--bg-primary);
+  border-radius: var(--border-radius-lg);
+}
+
+.market-analysis-header {
+  margin-bottom: var(--spacing-lg);
+}
+
+.market-analysis-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.market-analysis-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.market-analysis-token-selector {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.market-analysis-label {
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.market-analysis-select {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--bg-primary);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+}
+
+.market-analysis-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.market-analysis-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-xl);
+  background-color: var(--color-primary);
+  color: var(--text-white);
+  border-radius: var(--border-radius);
+  font-weight: var(--font-weight-medium);
+  transition: background-color var(--transition-fast);
+  border: none;
+  cursor: pointer;
+}
+
+.market-analysis-btn:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+}
+
+.market-analysis-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.market-analysis-result {
+  padding: var(--spacing-lg);
+  background-color: var(--bg-secondary);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.market-analysis-result-header {
+  margin-bottom: var(--spacing-md);
+}
+
+.market-analysis-result-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.market-analysis-signal {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius);
+  font-weight: var(--font-weight-semibold);
+}
+
+.market-analysis-signal-buy {
+  background-color: #d1fae5;
+  color: var(--color-success-dark);
+}
+
+.market-analysis-signal-sell {
+  background-color: #fee2e2;
+  color: var(--color-error-dark);
+}
+
+.market-analysis-signal-hold {
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+
+.market-analysis-confidence,
+.market-analysis-entry-price,
+.market-analysis-stop-loss,
+.market-analysis-take-profit {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.market-analysis-confidence-label,
+.market-analysis-entry-price-label,
+.market-analysis-stop-loss-label,
+.market-analysis-take-profit-label {
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+}
+
+.market-analysis-confidence-value,
+.market-analysis-entry-price-value,
+.market-analysis-stop-loss-value,
+.market-analysis-take-profit-value {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.market-analysis-reasoning {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-md);
+  background-color: var(--bg-primary);
+  border-radius: var(--border-radius);
+}
+
+.market-analysis-reasoning-label {
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.market-analysis-reasoning-text {
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+

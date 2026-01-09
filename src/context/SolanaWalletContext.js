@@ -2,7 +2,7 @@ import React, { createContext, useContext, useMemo, useEffect } from 'react';
 import { ConnectionProvider, WalletProvider as SolanaWalletProvider, useWallet } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import {
-  PhantomWalletAdapter,
+  // PhantomWalletAdapter, // ❌ REMOVED: Phantom is auto-detected as Standard Wallet by browser extension
   SolflareWalletAdapter,
   TorusWalletAdapter,
   NightlyWalletAdapter,
@@ -54,10 +54,12 @@ export const SolanaProvider = ({ children }) => {
   // User MUST explicitly click "Connect Wallet" button
   const shouldAutoConnect = false;
 
-  // Configure supported Solana wallets (Phantom first for priority)
+  // Configure supported Solana wallets
+  // ⚠️ NOTE: Phantom is NOT included here because it's auto-detected as Standard Wallet by browser extension
+  // Phantom will be automatically available through window.solana or window.phantom.solana
   const wallets = useMemo(
     () => [
-      new PhantomWalletAdapter(),      // 🟣 Primary wallet
+      // new PhantomWalletAdapter(),  // ❌ REMOVED: Auto-detected as Standard Wallet (see warning in console)
       new SolflareWalletAdapter(),     // 🟠 Alternative
       new TorusWalletAdapter(),        // 🔵 Web-based
       new NightlyWalletAdapter(),      // 🌙 Mobile-friendly

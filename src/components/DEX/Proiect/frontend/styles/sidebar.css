@@ -1,0 +1,63 @@
+/**
+ * 📊 Sidebar Styles - Sidebar Component Styles
+ */
+
+.ai-trading-sidebar {
+  width: 250px;
+  background-color: var(--bg-primary);
+  border-right: 1px solid var(--border-color);
+  padding: var(--spacing-lg);
+  overflow-y: auto;
+  box-shadow: var(--shadow-sm);
+}
+
+.ai-trading-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.ai-trading-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  background: none;
+  border: none;
+  text-align: left;
+}
+
+.ai-trading-nav-item:hover {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.ai-trading-nav-item.active {
+  background-color: var(--color-primary);
+  color: var(--text-white);
+}
+
+.ai-trading-nav-item.active svg {
+  color: var(--text-white);
+}
+
+.ai-trading-nav-label {
+  font-size: var(--font-size-base);
+}
+
+@media (max-width: 768px) {
+  .ai-trading-sidebar {
+    width: 200px;
+    padding: var(--spacing-md);
+  }
+  
+  .ai-trading-nav-label {
+    font-size: var(--font-size-sm);
+  }
+}
+

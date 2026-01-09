@@ -1,0 +1,45 @@
+/**
+ * 📋 Strategy List Styles
+ */
+
+.strategy-list {
+  width: 100%;
+}
+
+.strategy-list-refreshing {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.strategy-list-error {
+  padding: var(--spacing-lg);
+  background-color: #fee;
+  border: 1px solid var(--color-error);
+  border-radius: var(--border-radius);
+  color: var(--color-error);
+  text-align: center;
+}
+
+.strategy-list-empty {
+  padding: var(--spacing-2xl);
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.strategy-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+@media (max-width: 768px) {
+  .strategy-list-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

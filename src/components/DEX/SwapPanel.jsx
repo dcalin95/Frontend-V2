@@ -4,7 +4,7 @@ import SwapRoute from './SwapRoute';
 import SmartTooltip from '../../Presale/components/SmartTooltip';
 import { ethers } from 'ethers';
 import { executeSwap } from './services/swapExecutionService';
-import { useLiveCryptoPrices } from './hooks/useLiveCryptoPrices';
+import { useLiveCryptoPrices } from './useLiveCryptoPrices';
 import { getContractInstance } from '../../contract/getContract';
 import WalletContext from '../../context/WalletContext';
 import { toast } from 'react-toastify';

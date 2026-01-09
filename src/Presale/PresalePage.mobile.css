@@ -57,6 +57,19 @@
     max-height: none;
     overflow: visible;
   }
+
+  /* 📱 WHY INVEST GRID - Forțează 1 coloană pe tablet/mobil */
+  .why-invest-grid {
+    grid-template-columns: 1fr !important; /* Forțează 1 coloană pe tablet/mobil */
+    gap: 1.1rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .why-invest-item {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
 }
 
 @media (max-width: 768px) {
@@ -137,6 +150,19 @@
     font-size: 1.3rem;
     text-shadow: 0 0 8px rgba(0, 255, 163, 0.6), 0 0 16px rgba(220, 31, 255, 0.4);
   }
+
+  /* 📱 WHY INVEST GRID - Forțează 1 coloană pe mobil */
+  .why-invest-grid {
+    grid-template-columns: 1fr !important; /* Forțează 1 coloană pe mobil */
+    gap: 1rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .why-invest-item {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
 }
 
 @media (max-width: 480px) {
@@ -182,6 +208,17 @@
 
   .presale-grid h3 {
     font-size: 1.2rem;
+  }
+
+  /* 📱 WHY INVEST GRID - Forțează 1 coloană pe mobil mic */
+  .why-invest-grid {
+    grid-template-columns: 1fr !important; /* Forțează 1 coloană pe mobil mic */
+    gap: 0.9rem !important;
+  }
+
+  .why-invest-item {
+    width: 100% !important;
+    max-width: 100% !important;
   }
 
   .stripe-feedback {

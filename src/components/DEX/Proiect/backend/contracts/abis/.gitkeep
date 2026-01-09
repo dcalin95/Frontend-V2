@@ -1,0 +1,11 @@
+# Contract ABIs will be placed here after contract compilation
+
+# After deploying BitSwapDEXWrapper.sol, copy the ABI from:
+# - artifacts/contracts/BitSwapDEXWrapper.sol/BitSwapDEXWrapper.json (Hardhat)
+# - build/contracts/BitSwapDEXWrapper.json (Truffle)
+
+# Files needed:
+# - BitSwapDEXWrapper.json
+# - IPancakeRouter.json (from PancakeSwap contracts)
+# - ERC20.json (standard ERC20 ABI)
+

@@ -93,16 +93,17 @@ const Home = () => {
       inline: 'nearest'
     });
     
-    // Set openFullscreen prop to true after scroll completes
+    // Wait for scroll, then set openFullscreen to true
     setTimeout(() => {
+      console.log('🚀 [Home] Setting openWhaleFullscreen to true - opening WhaleTransactions in fullscreen mode');
       setOpenWhaleFullscreen(true);
-      console.log('🚀 [Home] Opening WhaleTransactions in fullscreen mode');
       
       // Wait for fullscreen to activate
       setTimeout(() => {
         setIsWhaleLoading(false);
-      }, 500);
-    }, 600); // Wait for scroll to complete
+        console.log('✅ [Home] Fullscreen activation completed');
+      }, 1500); // Increased timeout to allow fullscreen to activate
+    }, 800); // Wait for scroll to complete
   };
 
   // 🐋 Open Whale Tracker - Called from Floating Button
@@ -196,7 +197,7 @@ const Home = () => {
           </SmartTooltip>
           
           <SmartTooltip content={`Mission Statement\nIntegrating $BITS token utility with AI-driven liquidity management.\nTarget: Zero Slippage & Max APY.`}>
-          <p style={{fontSize: 'clamp(1.4375rem, 1.725vw, 1.725rem)', lineHeight: '1.6', maxWidth: '900px', margin: '0 auto'}}> {/* +15% mărit pentru vizibilitate */}
+          <p className="home-hero-subtitle" style={{fontSize: 'clamp(1.365625rem, 1.63875vw, 1.63875rem)', lineHeight: '1.6', maxWidth: '900px', margin: '0 auto'}}> {/* -5% redus */}
             From Bits to Bitcoin – Powering the Future of Decentralized Exchange!
             <br />
             Revolutionizing DeFi with Bits, Bitcoin, and Beyond.
@@ -204,8 +205,8 @@ const Home = () => {
           </SmartTooltip>
           
           <SmartTooltip content={`AI-Powered Smart Routing\nAutomatic route optimization across 12,405 liquidity pools.\nReal-time slippage prevention & MEV protection.`}>
-          <p style={{
-            fontSize: 'clamp(1.38rem, 1.8vw, 1.65rem)', /* +25% mărit pentru vizibilitate (1.1*1.25=1.375) */
+          <p className="home-hero-description" style={{
+            fontSize: 'clamp(1.311rem, 1.71vw, 1.5675rem)', /* -5% redus */
             lineHeight: '1.8', 
             maxWidth: '950px', 
             margin: '1.5rem auto 0', 
@@ -217,13 +218,13 @@ const Home = () => {
             border: '1px solid rgba(153, 69, 255, 0.25)',
             boxShadow: '0 4px 20px rgba(153, 69, 255, 0.15), 0 0 40px rgba(20, 241, 149, 0.1)',
           }}>
-            <span style={{
+            <span className="home-hero-description-title" style={{
               background: 'linear-gradient(135deg, #9945FF, #14F195, #00D4FF)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
               fontWeight: '700',
-              fontSize: '1.15em',
+              fontSize: '1.0925em', /* -5% redus */
               letterSpacing: '0.5px',
               display: 'inline-flex',
               alignItems: 'center',
@@ -231,7 +232,7 @@ const Home = () => {
               textShadow: '0 0 20px rgba(153, 69, 255, 0.5)',
             }}>
               <span style={{
-                fontSize: '1.3em',
+                fontSize: '1.235em', /* -5% redus (1.3 * 0.95) */
                 filter: 'drop-shadow(0 0 8px rgba(153, 69, 255, 0.8)) drop-shadow(0 0 15px rgba(20, 241, 149, 0.6))',
                 display: 'inline-block',
                 animation: 'pulse 2s ease-in-out infinite',
@@ -485,7 +486,16 @@ const Home = () => {
           
           {/* Whale Transactions Tracker (>10K USD) - Real Large Trades */}
           <div ref={whaleRef}>
-            <WhaleTransactions minAmount={10000} openFullscreen={openWhaleFullscreen} />
+            <WhaleTransactions 
+              minAmount={10000} 
+              openFullscreen={openWhaleFullscreen}
+              onFullscreenOpen={(isOpen) => {
+                if (!isOpen) {
+                  // Reset openWhaleFullscreen when fullscreen is closed
+                  setOpenWhaleFullscreen(false);
+                }
+              }}
+            />
           </div>
         </div>
       </motion.section>
@@ -581,20 +591,9 @@ const Home = () => {
         }}
       >
         {isWhaleLoading ? (
-          <i className="fas fa-spinner fa-spin"></i>
+          <span style={{ fontSize: '1.5rem' }}>⏳</span>
         ) : (
-          <>
-            <div className="fab-icon-wrapper">
-              <i className="fab fa-bitcoin"></i>
-            </div>
-            <div className="fab-label-container">
-              <span className="fab-label">
-                <span className="fab-btc">BTC</span>
-                <span className="fab-divider">+</span>
-                <span className="fab-crypto">Whales</span>
-              </span>
-            </div>
-          </>
+          <span style={{ fontSize: '2rem', lineHeight: '1' }}>₿</span>
         )}
       </button>
     </div>

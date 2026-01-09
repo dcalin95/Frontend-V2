@@ -17,12 +17,30 @@ body.mode-mobile .how-it-works-title {
   line-height: 1.2;
 }
 
-/* 📋 GRID - 1 coloană pe mobil */
-body.mode-mobile .how-it-works-grid {
-  grid-template-columns: 1fr;
-  gap: 1.25rem;
-  max-width: 100%;
-  padding: 0 0.5rem;
+/* 📋 GRID - 1 coloană pe mobil - FORȚAT - REGULĂ FOARTE PUTERNICĂ */
+body.mode-mobile .how-it-works-grid,
+.presale-page .how-it-works-grid,
+.presale-wrapper .how-it-works-grid,
+.content-container .how-it-works-grid,
+.how-it-works-page .how-it-works-grid {
+  grid-template-columns: 1fr !important; /* Forțează 1 coloană pe mobil */
+  gap: 1.25rem !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  padding: 0 0.5rem !important;
+  display: grid !important;
+  box-sizing: border-box !important;
+}
+
+body.mode-mobile .how-it-works-card,
+.presale-page .how-it-works-card,
+.presale-wrapper .how-it-works-card,
+.content-container .how-it-works-card,
+.how-it-works-page .how-it-works-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
 }
 
 /* 🎴 CARDS - Touch optimized */
@@ -80,7 +98,10 @@ body.mode-mobile .how-it-works-card p {
   }
 
   body.mode-mobile .how-it-works-grid {
-    gap: 1rem;
+    grid-template-columns: 1fr !important; /* Forțează 1 coloană pe mobil mic */
+    gap: 1rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
 
   body.mode-mobile .how-it-works-card {
@@ -114,8 +135,11 @@ body.mode-mobile .how-it-works-card p {
   }
 
   body.mode-mobile .how-it-works-grid {
-    gap: 0.9rem;
-    padding: 0 0.3rem;
+    grid-template-columns: 1fr !important; /* Forțează 1 coloană pe mobil extra mic */
+    gap: 0.9rem !important;
+    padding: 0 0.3rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
 
   body.mode-mobile .how-it-works-card {
@@ -152,9 +176,10 @@ body.mode-mobile.orientation-landscape .how-it-works-title {
 }
 
 body.mode-mobile.orientation-landscape .how-it-works-grid {
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr !important; /* Forțează 1 coloană și pe landscape */
   gap: 1rem;
   max-width: 100%;
+  width: 100% !important;
 }
 
 body.mode-mobile.orientation-landscape .how-it-works-card {
@@ -199,5 +224,45 @@ body.mode-mobile.slow-connection .how-it-works-card {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   background: rgba(10, 15, 25, 0.85);
+}
+
+/* ========================================
+   🚨 REGULĂ FINALĂ - FORȚEAZĂ 1 COLOANĂ PE MOBIL
+   Această regulă este aplicată pentru TOATE variantele posibile
+   ======================================== */
+@media (max-width: 1024px) {
+  /* Forțează 1 coloană pentru toate variantele de selectori */
+  .how-it-works-grid,
+  body.mode-mobile .how-it-works-grid,
+  .presale-page .how-it-works-grid,
+  .presale-wrapper .how-it-works-grid,
+  .content-container .how-it-works-grid,
+  .how-it-works-page .how-it-works-grid,
+  div.how-it-works-grid,
+  [class*="how-it-works-grid"] {
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 0.5rem !important;
+    display: grid !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Forțează lățimea completă pentru carduri */
+  .how-it-works-card,
+  body.mode-mobile .how-it-works-card,
+  .presale-page .how-it-works-card,
+  .presale-wrapper .how-it-works-card,
+  .content-container .how-it-works-card,
+  .how-it-works-page .how-it-works-card,
+  div.how-it-works-card,
+  [class*="how-it-works-card"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+    flex: 1 1 100% !important;
+  }
 }
 

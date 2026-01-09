@@ -1,0 +1,13 @@
+# Tests directory
+
+# Structure:
+# tests/
+#   ├── routes/
+#   │   └── ai-trading.test.js
+#   ├── services/
+#   │   └── ai-trading.test.js
+#   ├── models/
+#   │   └── trade.test.js
+#   └── integration/
+#       └── ai-trading.integration.test.js
+

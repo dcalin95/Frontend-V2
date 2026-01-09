@@ -339,7 +339,7 @@ const InnerWalletProvider = ({ children }) => {
 
       try {
         const addrStr = currentPk.toBase58 ? currentPk.toBase58() : currentPk.toString();
-        console.log("🟣 [SolanaBalance] Fetching balance for:", addrStr);
+        // console.log("🟣 [SolanaBalance] Fetching balance for:", addrStr); // Debug dezactivat
         
         // 🚀 MAINNET RPCs with Helius API key (premium, reliable)
         const rpcs = [
@@ -354,7 +354,7 @@ const InnerWalletProvider = ({ children }) => {
         for (let i = 0; i < rpcs.length && !cancelled; i++) {
           const rpc = rpcs[i];
           try {
-            console.log(`🟣 [SolanaBalance] Trying RPC ${i + 1}/${rpcs.length}: ${rpc}`);
+            // console.log(`🟣 [SolanaBalance] Trying RPC ${i + 1}/${rpcs.length}: ${rpc}`); // Debug dezactivat
             
             const connection = new Connection(rpc, "confirmed");
             const solBalancePromise = connection.getBalance(pubKey);
@@ -365,7 +365,7 @@ const InnerWalletProvider = ({ children }) => {
             const solVal = await Promise.race([solBalancePromise, timeoutPromise]);
             const solBalance = solVal / 1e9;
             
-            console.log(`✅ [SolanaBalance] SUCCESS: SOL=${solBalance.toFixed(4)}`);
+            // console.log(`✅ [SolanaBalance] SUCCESS: SOL=${solBalance.toFixed(4)}`); // Debug dezactivat
             
             if (!cancelled) {
               updateInternalBalances(solBalance, 0);

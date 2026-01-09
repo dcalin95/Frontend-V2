@@ -1,0 +1,57 @@
+/**
+ * 🏷️ Status Badge Styles
+ */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+
+.status-badge-icon {
+  flex-shrink: 0;
+}
+
+.status-badge-label {
+  text-transform: uppercase;
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.5px;
+}
+
+/* Status variants */
+.status-badge-executed,
+.status-badge-buy,
+.status-badge-running {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge-failed,
+.status-badge-sell,
+.status-badge-error {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.status-badge-pending,
+.status-badge-paused {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge-closed {
+  background-color: #e0e7ff;
+  color: #3730a3;
+}
+
+.status-badge-hold,
+.status-badge-stopped {
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+

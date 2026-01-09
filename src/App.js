@@ -278,6 +278,7 @@ const App = () => {
   // 🎯 Advanced Screen Detection - Initialize globally
   useScreenDetection();
   
+  
   const [amountPay, setAmountPay] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false); // Sidebar menu
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false); // Header mobile menu
@@ -353,7 +354,7 @@ const App = () => {
     <>
       {renderToastContainer()}
 
-      <Router>
+      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <TikTokPageViewTracker /> {/* 📊 TikTok PageView tracking for hash routing */}
         <ScrollToTop /> {/* ✅ Scroll to top on every route change */}
         <GoogleAnalyticsWrapper>

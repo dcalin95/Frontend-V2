@@ -5,7 +5,7 @@ import CandlestickChart from './CandlestickChart'; // Import chart pentru fullsc
 import './WhaleTransactions.css';
 import './WhaleTransactions.mobile.css';
 
-const WhaleTransactions = ({ minAmount = 10000000, openFullscreen = false }) => {
+const WhaleTransactions = ({ minAmount = 10000000, openFullscreen = false, onFullscreenOpen }) => {
   // Load cached transactions from localStorage
   const [transactions, setTransactions] = useState(() => {
     const cached = localStorage.getItem('whale_transactions_cache');
@@ -13,7 +13,7 @@ const WhaleTransactions = ({ minAmount = 10000000, openFullscreen = false }) => 
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [viewMode, setViewMode] = useState(openFullscreen ? 'fullscreen' : 'normal'); // 'normal', 'threequarter', 'fullscreen'
+  const [viewMode, setViewMode] = useState('normal'); // 'normal', 'threequarter', 'fullscreen'
   const [selectedTx, setSelectedTx] = useState(null);
   const [currentSloganIndex, setCurrentSloganIndex] = useState(0);
   const [selectedNetworks, setSelectedNetworks] = useState([]); // Network filter: [] = all, ['binance', 'bitcoin', ...] = specific
@@ -580,17 +580,49 @@ const WhaleTransactions = ({ minAmount = 10000000, openFullscreen = false }) => 
 
   // Listen for fullscreen prop changes (from parent component)
   useEffect(() => {
-    if (openFullscreen && viewMode !== 'fullscreen') {
-      // If openFullscreen prop is true and we're not already in fullscreen, set it directly
-      setViewMode('fullscreen');
-      // Request browser fullscreen for true fullscreen mode
-      if (wrapperRef.current && !document.fullscreenElement) {
-        wrapperRef.current.requestFullscreen().catch(err => {
-          console.error('Fullscreen error:', err);
-        });
+    console.log(`🔍 [WhaleTransactions] openFullscreen prop: ${openFullscreen}, viewMode: ${viewMode}`);
+    
+    if (openFullscreen) {
+      if (viewMode !== 'fullscreen') {
+        console.log('🚀 [WhaleTransactions] openFullscreen prop is true, setting viewMode to fullscreen...');
+        setViewMode('fullscreen');
+        console.log('✅ [WhaleTransactions] viewMode set to fullscreen');
       }
+      
+      // Wait for React state to update, then request browser fullscreen
+      const timeoutId = setTimeout(() => {
+        if (!wrapperRef.current) {
+          console.warn('⚠️ [WhaleTransactions] wrapperRef.current is null, cannot enter fullscreen');
+          return;
+        }
+        
+        if (!document.fullscreenElement) {
+          wrapperRef.current.requestFullscreen()
+            .then(() => {
+              console.log('✅ [WhaleTransactions] Browser fullscreen activated');
+              // Notify parent that fullscreen is open
+              if (onFullscreenOpen) {
+                onFullscreenOpen(true);
+              }
+            })
+            .catch(err => {
+              console.error('❌ [WhaleTransactions] Fullscreen error:', err);
+            });
+        } else {
+          console.log('✅ [WhaleTransactions] Fullscreen mode set (browser fullscreen already active)');
+          // Notify parent that fullscreen is open
+          if (onFullscreenOpen) {
+            onFullscreenOpen(true);
+          }
+        }
+      }, 300); // Increased delay to ensure React state is updated
+      
+      return () => clearTimeout(timeoutId);
+    } else if (!openFullscreen && viewMode === 'fullscreen') {
+      console.log('🔄 [WhaleTransactions] openFullscreen prop changed to false, closing fullscreen...');
+      setViewMode('normal');
     }
-  }, [openFullscreen, viewMode]);
+  }, [openFullscreen, viewMode, onFullscreenOpen]);
 
   // Listen for fullscreen changes (when user presses ESC)
   useEffect(() => {
@@ -680,6 +712,22 @@ const WhaleTransactions = ({ minAmount = 10000000, openFullscreen = false }) => 
       )}
       
       <div ref={wrapperRef} className={`whale-transactions ${viewMode === 'fullscreen' ? 'fullscreen' : ''} ${viewMode === 'threequarter' ? 'threequarter' : ''}`}>
+        {/* 🎯 CHART + TRANSACTIONS - Fullscreen Mode: Chart sus, Transactions jos */}
+        {viewMode === 'fullscreen' && (
+          <div key="whale-fullscreen-chart" className="whale-fullscreen-chart-container">
+            <CandlestickChart
+              key={`chart-${viewMode}`}
+              symbol="BTCUSDT"
+              defaultTimeframe="1h"
+              height={window.innerHeight * 0.45} // 45% din înălțimea ecranului
+              showFullscreen={false} // Nu mai afișăm butonul fullscreen în chart când suntem deja în fullscreen
+              showHeader={true}
+              autoUpdate={true}
+              updateInterval={30000}
+            />
+          </div>
+        )}
+        
         <div className="whale-header">
         {/* Logo BITS + Slogan */}
         <div className="whale-branding">
@@ -827,21 +875,6 @@ const WhaleTransactions = ({ minAmount = 10000000, openFullscreen = false }) => 
           </div>
         </div>
       </div>
-
-      {/* 🎯 CHART + TRANSACTIONS - Fullscreen Mode: Chart sus, Transactions jos */}
-      {viewMode === 'fullscreen' && (
-        <div className="whale-fullscreen-chart-container">
-          <CandlestickChart
-            symbol="BTCUSDT"
-            defaultTimeframe="1h"
-            height={window.innerHeight * 0.45} // 45% din înălțimea ecranului
-            showFullscreen={false} // Nu mai afișăm butonul fullscreen în chart când suntem deja în fullscreen
-            showHeader={true}
-            autoUpdate={true}
-            updateInterval={30000}
-          />
-        </div>
-      )}
 
       <div className={`whale-list ${viewMode === 'fullscreen' ? 'whale-list-fullscreen' : ''}`}>
         {(() => {

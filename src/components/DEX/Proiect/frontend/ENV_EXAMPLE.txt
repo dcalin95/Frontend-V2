@@ -1,0 +1,27 @@
+# 🔒 BitSwapDEX AI Trading Frontend - Environment Variables Example
+# Copy this file to .env and fill in your values
+
+# ===== API Configuration =====
+REACT_APP_API_BASE_URL=http://localhost:4000/api
+REACT_APP_ENVIRONMENT=development
+
+# ===== Backend Configuration =====
+# Backend URL pentru API requests
+REACT_APP_BACKEND_URL=http://localhost:4000
+
+# ===== Feature Flags =====
+REACT_APP_ENABLE_AI_TRADING=true
+REACT_APP_ENABLE_STRATEGIES=true
+REACT_APP_ENABLE_SIGNALS=true
+REACT_APP_ENABLE_PERFORMANCE=true
+REACT_APP_ENABLE_EXECUTION=true
+
+# ===== Mock User ID (Development Only) =====
+REACT_APP_MOCK_USER_ID=user-123
+
+# ===== Analytics (Optional) =====
+# REACT_APP_GA_TRACKING_ID=G-XXXXXXXXXX
+
+# ===== Error Tracking (Optional) =====
+# REACT_APP_SENTRY_DSN=https://xxx@sentry.io/xxx
+

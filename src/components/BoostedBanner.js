@@ -239,7 +239,7 @@ const BoostedBanner = () => {
       setTimeout(() => {
         if (!hasUserInteracted) {
           setShowVoiceButton(false);
-          console.log("⏰ Butonul de voce ascuns automat după 10 secunde");
+          // console.log("⏰ Butonul de voce ascuns automat după 10 secunde"); // Debug dezactivat
         }
       }, 10000);
     }

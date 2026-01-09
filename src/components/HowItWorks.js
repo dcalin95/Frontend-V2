@@ -73,7 +73,15 @@ const HowItWorks = () => {
       {/* Secțiunea de funcționalități */}
       <div className="how-it-works-grid">
         {features.map((feature, index) => (
-          <div key={index} className="how-it-works-card">
+          <div 
+            key={index} 
+            className="how-it-works-card"
+            style={{
+              width: '100%',
+              maxWidth: '100%',
+              boxSizing: 'border-box'
+            }}
+          >
             <div className="icon">
               <i className={feature.icon}></i>
             </div>
@@ -82,6 +90,29 @@ const HowItWorks = () => {
           </div>
         ))}
       </div>
+      {/* CSS inline pentru a forța 1 coloană pe mobil */}
+      <style>{`
+        @media (max-width: 1024px) {
+          .how-it-works-grid {
+            grid-template-columns: 1fr !important;
+            gap: 1.25rem !important;
+            max-width: 100% !important;
+            width: 100% !important;
+            padding: 0 0.5rem !important;
+            display: grid !important;
+            box-sizing: border-box !important;
+          }
+          
+          .how-it-works-card {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 auto !important;
+            box-sizing: border-box !important;
+            flex: 1 1 100% !important;
+            min-width: 0 !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };

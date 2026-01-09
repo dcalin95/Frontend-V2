@@ -1,0 +1,29 @@
+/**
+ * 📑 Form Section Styles
+ */
+
+.form-section {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 2px solid var(--border-color);
+}
+
+.form-section:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.form-section-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-section-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
