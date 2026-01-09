@@ -42,6 +42,27 @@
     margin: 0 auto;
 }
 
+/* 🚫 ASCUNDE COMPLET COMPONENTA "HOW IT WORKS" PE MOBIL ÎN PRESALEPAGE */
+@media (max-width: 768px) {
+  .presale-page .how-it-works-page,
+  .presale-wrapper .how-it-works-page,
+  .content-container .how-it-works-page,
+  .presale-page .how-it-works-title,
+  .presale-wrapper .how-it-works-title,
+  .content-container .how-it-works-title,
+  .presale-page .how-it-works-grid,
+  .presale-wrapper .how-it-works-grid,
+  .content-container .how-it-works-grid {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+
 /* 🚨 FORȚEAZĂ 1 COLOANĂ PE MOBIL - REGULĂ GLOBALĂ */
 @media (max-width: 1024px) {
     .how-it-works-grid {

@@ -122,7 +122,40 @@
   }
   
   .info-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
+    display: grid !important;
+    gap: 1.25rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+  
+  .info-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 2px solid rgba(0, 255, 163, 0.3) !important;
+    border-radius: 12px !important;
+    padding: 1.25rem !important;
+    box-shadow: 0 4px 20px rgba(0, 255, 163, 0.15), 0 0 30px rgba(0, 255, 163, 0.08) !important;
+    transition: all 0.3s ease !important;
+  }
+  
+  .info-card h4 {
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    color: #00ffc3 !important;
+    margin-bottom: 0.75rem !important;
+    text-shadow: 0 0 10px rgba(0, 255, 195, 0.4) !important;
+  }
+  
+  .info-card p {
+    font-size: 0.9rem !important;
+    line-height: 1.6 !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    opacity: 1 !important;
   }
 
   /* History → match leaderboard mobile style */
@@ -197,5 +230,22 @@
   
   .bonus-stats {
     grid-template-columns: 1fr;
+  }
+  
+  .info-grid {
+    gap: 1rem !important;
+  }
+  
+  .info-card {
+    padding: 1rem !important;
+    border-width: 2px !important;
+  }
+  
+  .info-card h4 {
+    font-size: 1rem !important;
+  }
+  
+  .info-card p {
+    font-size: 0.85rem !important;
   }
 }

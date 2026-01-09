@@ -214,6 +214,11 @@
     max-width: 100%;
   }
 
+  /* 🚫 Ascunde butonul "How It Works" pe mobil */
+  .presale-hero-how-it-works-btn {
+    display: none !important;
+  }
+
   .presale-hero-buttons {
     flex-direction: column;
     align-items: stretch;
@@ -260,6 +265,11 @@
     letter-spacing: 0.3px;
     width: 100%;
     max-width: 280px;
+  }
+
+  /* 🚫 Ascunde butonul "How It Works" pe mobil mic */
+  .presale-hero-how-it-works-btn {
+    display: none !important;
   }
 }
 

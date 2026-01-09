@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import { Link } from "react-router-dom";
 import WalletContext from "../context/WalletContext";
 import unifiedRewardsService from "../services/unifiedRewardsService";
 import { ethers } from "ethers";
@@ -1246,7 +1247,7 @@ const RewardsHub = () => {
           <div className="info-grid">
             <div className="info-card">
               <h4>💳 Claim to Wallet</h4>
-              <p>Receive your $BITS directly in your connected wallet. Available immediately for trading, transfers, or <strong>you can stake them later</strong> from the <a href="/staking" style={{ color: "#00ffc3" }}>Staking page</a>.</p>
+              <p>Receive your $BITS directly in your connected wallet. Available immediately for trading, transfers, or <strong>you can stake them later</strong> from the <Link to="/staking" style={{ color: "#00ffc3" }}>Staking page</Link>.</p>
             </div>
             <div className="info-card">
               <h4>🏦 Claim & Stake</h4>
@@ -1254,7 +1255,7 @@ const RewardsHub = () => {
             </div>
             <div className="info-card">
               <h4>🔄 Flexibility</h4>
-              <p><strong>Important:</strong> $BITS can always be staked! You can claim now and stake later, or stake other $BITS you already own. <a href="/staking" style={{ color: "#00aaff" }}>Visit Staking →</a></p>
+              <p><strong>Important:</strong> $BITS can always be staked! You can claim now and stake later, or stake other $BITS you already own. <Link to="/staking" style={{ color: "#00aaff" }}>Visit Staking →</Link></p>
             </div>
           </div>
         </div>

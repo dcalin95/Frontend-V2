@@ -55,7 +55,7 @@ const PresaleHero = ({ onStartInvesting, currentPrice, daysRemaining, isLoading 
             🚀 INVEST NOW
           </button>
           <button 
-            className="presale-hero-cta presale-hero-cta-secondary"
+            className="presale-hero-cta presale-hero-cta-secondary presale-hero-how-it-works-btn"
             onClick={() => {
               navigate('/how-it-works');
             }}

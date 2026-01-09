@@ -17,6 +17,27 @@ body.mode-mobile .how-it-works-title {
   line-height: 1.2;
 }
 
+/* 🚫 ASCUNDE COMPLET COMPONENTA "HOW IT WORKS" PE MOBIL ÎN PRESALEPAGE */
+@media (max-width: 768px) {
+  .presale-page .how-it-works-page,
+  .presale-wrapper .how-it-works-page,
+  .content-container .how-it-works-page,
+  .presale-page .how-it-works-title,
+  .presale-wrapper .how-it-works-title,
+  .content-container .how-it-works-title,
+  .presale-page .how-it-works-grid,
+  .presale-wrapper .how-it-works-grid,
+  .content-container .how-it-works-grid {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+
 /* 📋 GRID - 1 coloană pe mobil - FORȚAT - REGULĂ FOARTE PUTERNICĂ */
 body.mode-mobile .how-it-works-grid,
 .presale-page .how-it-works-grid,
