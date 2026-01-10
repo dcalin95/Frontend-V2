@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./WelcomePage.css";
-import { trackTikTokEvent } from "../utils/tiktok";
+import { trackStandardEvent } from "../lib/tiktok";
+import { getVisitorIdentity, getSessionId } from "../lib/engagement";
 import orbitIllustration from "../assets/orbit-background.webp";
 
 const Typewriter = ({ text, speed = 20, startDelay = 0 }) => {
@@ -145,7 +146,19 @@ const WelcomePage = () => {
             rel="noopener noreferrer"
             aria-label="Open BitSwapDEX AI Telegram channel"
             style={{ marginRight: 10 }}
-            onClick={() => { trackTikTokEvent('CompleteRegistration', { content_name: 'Telegram Join', method: 'welcome_page' }, { retry: true }); }}
+            onClick={() => {
+              const identity = getVisitorIdentity();
+              const sessionId = getSessionId();
+              trackStandardEvent('Subscribe', {
+                description: 'telegram_click',
+                page_path: '/welcome',
+                method: 'welcome_page',
+                session_id: sessionId,
+                is_returning: identity.is_returning,
+                days_since_first_seen: identity.days_since_first_seen,
+                visit_count: identity.visit_count,
+              });
+            }}
           >
             Join Telegram Channel
           </a>

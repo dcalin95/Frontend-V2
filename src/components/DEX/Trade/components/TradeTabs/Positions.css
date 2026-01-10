@@ -1,0 +1,76 @@
+/**
+ * 📊 Positions Styles
+ */
+
+.positions {
+  width: 100%;
+}
+
+.positions-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.positions-table thead {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.positions-table th {
+  padding: 0.75rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(139, 155, 180, 0.1);
+}
+
+.positions-table tbody tr {
+  border-bottom: 1px solid rgba(139, 155, 180, 0.05);
+  transition: background 0.15s;
+}
+
+.positions-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.positions-table td {
+  padding: 0.75rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: 'Roboto Mono', monospace;
+}
+
+.positions-table td.profit {
+  color: #00ffa3;
+}
+
+.positions-table td.loss {
+  color: #ff4757;
+}
+
+.close-btn {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 71, 87, 0.1);
+  border: 1px solid rgba(255, 71, 87, 0.3);
+  border-radius: 6px;
+  color: #ff4757;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.close-btn:hover {
+  background: rgba(255, 71, 87, 0.2);
+  border-color: #ff4757;
+}
+
+.empty-positions {
+  text-align: center;
+  padding: 3rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.9rem;
+}
+

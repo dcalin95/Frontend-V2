@@ -1,0 +1,132 @@
+/**
+ * 📊 LimitPanel Styles
+ */
+
+.limit-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.order-type-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.order-type-btn {
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.order-type-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.order-type-btn.active.buy {
+  background: rgba(0, 255, 163, 0.2);
+  border-color: #00ffa3;
+  color: #00ffa3;
+}
+
+.order-type-btn.active.sell {
+  background: rgba(255, 71, 87, 0.2);
+  border-color: #ff4757;
+  color: #ff4757;
+}
+
+.limit-input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.limit-input-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.limit-input-container:focus-within {
+  border-color: rgba(0, 255, 163, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.limit-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.limit-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.input-suffix {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.expiry-select {
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+}
+
+.expiry-select:focus {
+  border-color: rgba(0, 255, 163, 0.5);
+}
+
+.limit-button {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #00ffa3 0%, #00d4ff 100%);
+  border: none;
+  border-radius: 8px;
+  color: #0a0a0e;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 0.5rem;
+}
+
+.limit-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 255, 163, 0.4);
+}
+
+.limit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.limit-button.connect {
+  background: linear-gradient(135deg, #00ffa3 0%, #00d4ff 100%);
+}
+

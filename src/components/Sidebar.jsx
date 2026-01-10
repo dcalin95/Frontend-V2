@@ -4,7 +4,8 @@ import './Sidebar.css';
 import './Sidebar.mobile.css';
 import { useAuth } from '../contexts/AuthContext';
 import { useWallet } from '../context/WalletContext';
-import { trackTikTokEvent } from '../utils/tiktok';
+import { trackStandardEvent } from '../lib/tiktok';
+import { getVisitorIdentity, getSessionId } from '../lib/engagement';
 import cardIcon from '../assets/icons/card-logo.jpg';
 import logo from '../assets/logo.png';
 import SwapModal from './SwapModal';
@@ -81,7 +82,19 @@ export default function Sidebar() {
             rel="noopener noreferrer" 
             className="sidebar-btn sidebar-telegram-btn" 
             title="Join our Telegram community"
-            onClick={() => { trackTikTokEvent('CompleteRegistration', { content_name: 'Telegram Join', method: 'sidebar' }, { retry: true }); }}
+            onClick={() => {
+              const identity = getVisitorIdentity();
+              const sessionId = getSessionId();
+              trackStandardEvent('Subscribe', {
+                description: 'telegram_click',
+                page_path: window.location.pathname || window.location.hash?.replace('#', '') || '/',
+                method: 'sidebar',
+                session_id: sessionId,
+                is_returning: identity.is_returning,
+                days_since_first_seen: identity.days_since_first_seen,
+                visit_count: identity.visit_count,
+              });
+            }}
           >
             <i className="fa-brands fa-telegram"></i>
             <span>Telegram</span>

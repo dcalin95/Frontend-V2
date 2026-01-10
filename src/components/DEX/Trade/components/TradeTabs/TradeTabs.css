@@ -1,0 +1,74 @@
+/**
+ * 📊 TradeTabs Styles
+ */
+
+.trade-tabs {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: rgba(10, 10, 14, 0.95);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.trade-tabs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(139, 155, 180, 0.1);
+}
+
+.trade-tabs-nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.trade-tab {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.trade-tab:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.trade-tab.active {
+  color: #00ffa3;
+  border-bottom-color: #00ffa3;
+}
+
+.trade-tabs-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.show-all-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+}
+
+.show-all-toggle input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.trade-tabs-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.5rem;
+}
+

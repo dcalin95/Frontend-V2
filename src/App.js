@@ -58,8 +58,9 @@ import AIStandaloneLayout from "./components/AIStandaloneLayout";
 // 📈 Google Analytics
 import GoogleAnalyticsWrapper from "./components/GoogleAnalyticsWrapper";
 
-// 📊 TikTok Analytics
-import { trackTikTokPageView } from "./utils/tiktok";
+// 📊 TikTok Analytics - New engagement-focused implementation
+import { initTikTokPixel, trackPageView, trackStandardEvent } from "./lib/tiktok";
+import { startEngagementTimer, resetOnRouteChange, checkSiteThresholds, checkPresaleThresholds, getVisitorIdentity, getSessionId, shouldFireReturnVisit } from "./lib/engagement";
 
 const STANDALONE_TOOL_PATHS = {
   "/ai-marketing": "marketing",
@@ -238,15 +239,68 @@ const MainLayout = ({ children, isMobile, menuOpen, setMenuOpen, headerMenuOpen,
   );
 };
 
-// 📊 TikTok PageView Tracker Component (for SPA hash routing)
-const TikTokPageViewTracker = () => {
+// 📊 TikTok Engagement Tracker Component (for SPA hash routing + engagement)
+const TikTokEngagementTracker = () => {
   const location = useLocation();
   const prevPathRef = React.useRef(null);
   const isInitialMount = React.useRef(true);
+  const thresholdCheckInterval = React.useRef(null);
 
+  // Initialize pixel and engagement tracking on mount
+  React.useEffect(() => {
+    // Initialize TikTok Pixel (after consent check)
+    initTikTokPixel().then(() => {
+      // Start engagement timer
+      startEngagementTimer();
+      
+      // Check site-wide thresholds every 5 seconds (optimized - only if pixel ready)
+      thresholdCheckInterval.current = setInterval(() => {
+        // Only check if pixel is ready to avoid unnecessary work
+        if (window.ttq && (typeof window.ttq.track === 'function' || Array.isArray(window.ttq))) {
+          checkSiteThresholds((threshold, type) => {
+            const identity = getVisitorIdentity();
+            const sessionId = getSessionId();
+            
+            trackStandardEvent('ViewContent', {
+              content_type: 'site',
+              content_name: `site_engaged_${threshold}s`,
+              value: threshold,
+              currency: 'USD',
+              page_path: location.pathname || location.hash?.replace('#', '') || '/',
+              session_id: sessionId,
+              is_returning: identity.is_returning,
+              days_since_first_seen: identity.days_since_first_seen,
+              visit_count: identity.visit_count,
+            });
+          });
+        }
+      }, 5000);
+      
+      // Check return visit (once per day)
+      if (shouldFireReturnVisit()) {
+        const identity = getVisitorIdentity();
+        trackStandardEvent('ViewContent', {
+          content_type: 'return',
+          content_name: `return_visit_day_${identity.distinct_day_count}`,
+          value: identity.distinct_day_count,
+          page_path: location.pathname || location.hash?.replace('#', '') || '/',
+          is_returning: true,
+          distinct_day_count: identity.distinct_day_count,
+          days_since_first_seen: identity.days_since_first_seen,
+        });
+      }
+    });
+
+    return () => {
+      if (thresholdCheckInterval.current) {
+        clearInterval(thresholdCheckInterval.current);
+      }
+    };
+  }, []);
+
+  // Track page views on route change
   React.useEffect(() => {
     // Get full path including hash (e.g., '/presale' from '#/presale')
-    // For hash routing, pathname might be '/' but hash is '#/presale'
     const hashPath = location.hash ? location.hash.replace('#', '') : '';
     const currentPath = hashPath || location.pathname || '/';
     
@@ -254,20 +308,42 @@ const TikTokPageViewTracker = () => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
       prevPathRef.current = currentPath;
+      
+      // Track initial pageview with visitor data
+      const identity = getVisitorIdentity();
+      const sessionId = getSessionId();
+      
+      trackPageView(currentPath, {
+        page_url: window.location.href,
+        page_title: document.title || 'Bits AI',
+        session_id: sessionId,
+        is_returning: identity.is_returning,
+        days_since_first_seen: identity.days_since_first_seen,
+        visit_count: identity.visit_count,
+      });
+      
       return;
     }
     
-    // Only track if path changed (avoid duplicate on initial load)
-    if (prevPathRef.current !== currentPath && currentPath !== '/') {
+    // Only track if path changed (avoid duplicate)
+    if (prevPathRef.current !== currentPath) {
       prevPathRef.current = currentPath;
       
-      // Small delay to ensure page is fully loaded
-      setTimeout(() => {
-        trackTikTokPageView(currentPath, {
-          page_url: window.location.href,
-          page_title: document.title || 'Bits AI'
-        });
-      }, 150);
+      // Reset page engagement timer on route change
+      resetOnRouteChange();
+      
+      // Track pageview with visitor data
+      const identity = getVisitorIdentity();
+      const sessionId = getSessionId();
+      
+      trackPageView(currentPath, {
+        page_url: window.location.href,
+        page_title: document.title || 'Bits AI',
+        session_id: sessionId,
+        is_returning: identity.is_returning,
+        days_since_first_seen: identity.days_since_first_seen,
+        visit_count: identity.visit_count,
+      });
     }
   }, [location.pathname, location.hash]);
 
@@ -355,7 +431,7 @@ const App = () => {
       {renderToastContainer()}
 
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <TikTokPageViewTracker /> {/* 📊 TikTok PageView tracking for hash routing */}
+        <TikTokEngagementTracker /> {/* 📊 TikTok Engagement tracking (PageView + Active Time + Return Visits) */}
         <ScrollToTop /> {/* ✅ Scroll to top on every route change */}
         <GoogleAnalyticsWrapper>
           <ErrorBoundary>

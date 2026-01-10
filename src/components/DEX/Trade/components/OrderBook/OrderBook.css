@@ -1,0 +1,199 @@
+/**
+ * 📊 OrderBook Styles
+ */
+
+.orderbook {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: rgba(10, 10, 14, 0.95);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.orderbook-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(139, 155, 180, 0.1);
+}
+
+.orderbook-tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.orderbook-tab {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.orderbook-tab:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.orderbook-tab.active {
+  color: #00ffa3;
+  border-bottom-color: #00ffa3;
+}
+
+.decimal-precision-selector {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.precision-btn {
+  padding: 0.25rem 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.precision-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.precision-btn.active {
+  background: rgba(0, 255, 163, 0.2);
+  border-color: #00ffa3;
+  color: #00ffa3;
+}
+
+.orderbook-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+}
+
+.orderbook-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  padding: 0.5rem 1.5rem;
+  font-size: 0.8rem;
+  font-family: 'Roboto Mono', monospace;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+}
+
+.orderbook-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.orderbook-row.header {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+  cursor: default;
+  border-bottom: 1px solid rgba(139, 155, 180, 0.1);
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.orderbook-row.header:hover {
+  background: transparent;
+}
+
+.orderbook-row.ask {
+  color: #ff4757;
+}
+
+.orderbook-row.ask::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--depth);
+  background: rgba(255, 71, 87, 0.1);
+  z-index: 0;
+}
+
+.orderbook-row.bid {
+  color: #00ffa3;
+}
+
+.orderbook-row.bid::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--depth);
+  background: rgba(0, 255, 163, 0.1);
+  z-index: 0;
+}
+
+.orderbook-col {
+  position: relative;
+  z-index: 1;
+}
+
+.orderbook-asks {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.orderbook-mid {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid rgba(139, 155, 180, 0.1);
+  border-bottom: 1px solid rgba(139, 155, 180, 0.1);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.mid-price {
+  color: #ffffff;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.spread {
+  color: rgba(255, 255, 255, 0.6);
+  font-family: 'Roboto Mono', monospace;
+}
+
+.orderbook-bids {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .orderbook-header {
+    padding: 0.75rem 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .orderbook-row {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+  }
+
+  .orderbook-mid {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+  }
+}
+

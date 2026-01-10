@@ -1,0 +1,82 @@
+/**
+ * 📊 OrderHistory Styles
+ */
+
+.order-history {
+  width: 100%;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-table thead {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.history-table th {
+  padding: 0.75rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(139, 155, 180, 0.1);
+}
+
+.history-table tbody tr {
+  border-bottom: 1px solid rgba(139, 155, 180, 0.05);
+  transition: background 0.15s;
+}
+
+.history-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.history-table td {
+  padding: 0.75rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: 'Roboto Mono', monospace;
+}
+
+.history-table td.buy {
+  color: #00ffa3;
+}
+
+.history-table td.sell {
+  color: #ff4757;
+}
+
+.status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-badge.filled {
+  background: rgba(0, 255, 163, 0.2);
+  color: #00ffa3;
+}
+
+.status-badge.partial {
+  background: rgba(255, 215, 0, 0.2);
+  color: #ffd700;
+}
+
+.status-badge.cancelled {
+  background: rgba(255, 71, 87, 0.2);
+  color: #ff4757;
+}
+
+.empty-history {
+  text-align: center;
+  padding: 3rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.9rem;
+}
+

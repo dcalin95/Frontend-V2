@@ -11,7 +11,9 @@ import React, { useState, useEffect, Suspense, lazy, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import useGoogleAnalytics from "../hooks/useGoogleAnalytics";
-import { trackTikTokEvent } from "../utils/tiktok";
+// 📊 TikTok Engagement Tracking (new implementation)
+import { trackStandardEvent } from "../lib/tiktok";
+import { checkPresaleThresholds, getVisitorIdentity, getSessionId, getPageActiveSeconds } from "../lib/engagement";
 import SelectPaymentMethod from "./SelectPaymentMethod";
 import { useSelectedToken } from "./hooks/useSelectedToken";
 import useTokenPrices from "./prices/useTokenPrices";
@@ -104,83 +106,36 @@ const PresalePage = () => {
     console.log("ℹ️ [PresalePage] Auto-detection disabled. Waiting for manual connection.");
   }, []);
 
-  // 🔎 TikTok ViewContent (non-sensibil): doar semnal că utilizatorul a vizitat Presale
+  // 📊 TikTok Presale Engagement Tracking (Active Time - 15s, 45s, 120s)
+  // Note: Old tracking code removed - now using engagement.js with active time tracking
   useEffect(() => {
-    try {
-      trackTikTokEvent('ViewContent', { content_type: 'product', content_name: 'BITS Token Presale' });
-    } catch (_) {}
-  }, []);
-
-  // ⏱️ TikTok Time-Based Engagement Tracking - 3 Nivele (45s, 90s, 150s)
-  useEffect(() => {
-    const startTime = Date.now();
-    let tracked45 = false;
-    let tracked90 = false;
-    let tracked150 = false;
-
-    const timer45 = setTimeout(() => {
-      if (!tracked45) {
-        try {
-          trackTikTokEvent('Quick_Visitor', { 
-            page: 'presale',
-            time_spent_seconds: 45,
-            content_type: 'product',
-            content_name: 'BITS Token Presale'
+    // Check presale engagement thresholds every 5 seconds (optimized - only if pixel ready)
+    const thresholdInterval = setInterval(() => {
+      // Only check if pixel is ready to avoid unnecessary work
+      if (window.ttq && (typeof window.ttq.track === 'function' || Array.isArray(window.ttq))) {
+        checkPresaleThresholds((threshold, type) => {
+          const identity = getVisitorIdentity();
+          const sessionId = getSessionId();
+          const activeSeconds = getPageActiveSeconds();
+          
+          trackStandardEvent('ViewContent', {
+            content_type: 'presale',
+            content_name: `presale_engaged_${threshold}s`,
+            value: threshold,
+            currency: 'USD',
+            page_path: '/presale',
+            session_id: sessionId,
+            is_returning: identity.is_returning,
+            days_since_first_seen: identity.days_since_first_seen,
+            visit_count: identity.visit_count,
+            active_seconds: activeSeconds,
           });
-          tracked45 = true;
-          console.log('✅ [TikTok] Quick_Visitor (45s) tracked');
-        } catch (_) {}
+        });
       }
-    }, 45000); // 45 secunde
+    }, 5000);
 
-    const timer90 = setTimeout(() => {
-      if (!tracked90) {
-        try {
-          trackTikTokEvent('Engaged_User', { 
-            page: 'presale',
-            time_spent_seconds: 90,
-            content_type: 'product',
-            content_name: 'BITS Token Presale',
-            value: 1 // Valoare symbolică pentru optimizare CPA
-          });
-          tracked90 = true;
-          console.log('🎯 [TikTok] Engaged_User (90s) tracked - CPA CONVERSION!');
-        } catch (_) {}
-      }
-    }, 90000); // 90 secunde
-
-    const timer150 = setTimeout(() => {
-      if (!tracked150) {
-        try {
-          trackTikTokEvent('Hot_Lead', { 
-            page: 'presale',
-            time_spent_seconds: 150,
-            content_type: 'product',
-            content_name: 'BITS Token Presale',
-            value: 3 // Valoare mai mare pentru lead-uri hot
-          });
-          tracked150 = true;
-          console.log('💎 [TikTok] Hot_Lead (150s) tracked - HIGH INTENT!');
-        } catch (_) {}
-      }
-    }, 150000); // 150 secunde (2:30)
-
-    // Cleanup: anulează timer-ele dacă utilizatorul părăsește pagina
     return () => {
-      clearTimeout(timer45);
-      clearTimeout(timer90);
-      clearTimeout(timer150);
-      
-      // Track timpul total petrecut la exit (pentru analytics)
-      const totalTime = Math.floor((Date.now() - startTime) / 1000);
-      if (totalTime >= 10) {
-        try {
-          trackTikTokEvent('Page_Exit', {
-            page: 'presale',
-            total_time_seconds: totalTime
-          });
-        } catch (_) {}
-      }
+      clearInterval(thresholdInterval);
     };
   }, []);
 
@@ -299,7 +254,7 @@ const PresalePage = () => {
       
       // 🎯 TikTok CompletePayment event - Stripe payment successful
       try {
-        trackTikTokEvent('CompletePayment', {
+        trackStandardEvent('CompletePayment', {
           content_type: 'product',
           content_name: 'BITS Token Purchase',
           payment_method: 'stripe',

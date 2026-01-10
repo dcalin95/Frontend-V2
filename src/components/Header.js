@@ -12,7 +12,8 @@ import logo from "../assets/logo.png";
 import telegramLogo from "../assets/TLogo.png";
 import xLogo from "../assets/XLogo.png";
 import youtubeLogo from "../assets/YLogo.png";
-import { trackTikTokEvent } from "../utils/tiktok";
+import { trackStandardEvent } from "../lib/tiktok";
+import { getVisitorIdentity, getSessionId } from "../lib/engagement";
 import "./Header.desktop.css";
 import "./Header.mobile.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -113,7 +114,19 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
               target="_blank" 
               rel="noopener noreferrer" 
               className="social-link"
-              onClick={() => { trackTikTokEvent('CompleteRegistration', { content_name: 'Telegram Join', method: 'header' }, { retry: true }); }}
+              onClick={() => {
+                const identity = getVisitorIdentity();
+                const sessionId = getSessionId();
+                trackStandardEvent('Subscribe', {
+                  description: 'telegram_click',
+                  page_path: window.location.pathname || window.location.hash?.replace('#', '') || '/',
+                  method: 'header',
+                  session_id: sessionId,
+                  is_returning: identity.is_returning,
+                  days_since_first_seen: identity.days_since_first_seen,
+                  visit_count: identity.visit_count,
+                });
+              }}
             >
               <img src={telegramLogo} alt="Telegram" width={24} height={24} />
             </a>
@@ -301,7 +314,19 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="social-link"
-                onClick={() => { trackTikTokEvent('CompleteRegistration', { content_name: 'Telegram Join', method: 'header' }, { retry: true }); }}
+                onClick={() => {
+                  const identity = getVisitorIdentity();
+                  const sessionId = getSessionId();
+                  trackStandardEvent('Subscribe', {
+                    description: 'telegram_click',
+                    page_path: window.location.pathname || window.location.hash?.replace('#', '') || '/',
+                    method: 'header_mobile',
+                    session_id: sessionId,
+                    is_returning: identity.is_returning,
+                    days_since_first_seen: identity.days_since_first_seen,
+                    visit_count: identity.visit_count,
+                  });
+                }}
               >
                 <img src={telegramLogo} alt="Telegram" width={24} height={24} />
               </a>
