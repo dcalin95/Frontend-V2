@@ -1,24 +1,30 @@
 /**
- * 📊 Engagement Tracking
+ * 📊 Engagement Tracking - Production Hardened
  * 
  * Active time tracking with Page Visibility API, focus/blur, and activity gating
- * Threshold management for ViewContent events
+ * CRITICAL: Time accumulation is millisecond-based for accuracy, converted to seconds only for thresholds
+ * 
+ * This module provides accurate "ACTIVE TIME" tracking (not elapsed time):
+ * - Only counts when document is visible, window has focus, and user is not idle
+ * - Idle threshold: 30 seconds (increased from 15s to avoid false positives for reading)
+ * - Update interval: 5 seconds (optimal balance between accuracy and performance)
  */
 
-// 🕐 Active time tracking state
+// 🕐 Active time tracking state - MILLISECOND-BASED for accuracy
 let activeTimeState = {
-  sessionStartTime: null,
-  pageStartTime: null,
-  lastActivityTime: null,
-  totalActiveSeconds: 0,
-  pageActiveSeconds: 0,
-  isVisible: true,
-  hasFocus: true,
-  isIdle: false,
-  idleThreshold: 15000, // 15 seconds of no activity = idle
+  sessionStartTime: null,           // Timestamp when session started
+  pageStartTime: null,               // Timestamp when current page started
+  lastActivityTime: null,            // Last timestamp of user activity
+  lastUpdateTime: null,              // Last timestamp when we updated counters
+  totalActiveMs: 0,                  // Total active milliseconds in session (accumulated)
+  pageActiveMs: 0,                   // Active milliseconds on current page (accumulated)
+  isVisible: true,                   // Document visibility state (Page Visibility API)
+  hasFocus: true,                    // Window focus state
+  isIdle: false,                     // User idle state (no activity in last N ms)
+  idleThreshold: 30000,              // 30 seconds of no activity = idle (increased from 15s)
 };
 
-// 🎯 Thresholds configuration
+// 🎯 Thresholds configuration (in seconds - converted from ms when checking)
 const PRESALE_THRESHOLDS = [15, 45, 120]; // seconds
 const SITE_THRESHOLDS = [30, 90]; // seconds
 
@@ -33,7 +39,9 @@ let idleCheckInterval = null;
  * Get visitor identity data (lightweight, no PII)
  * @returns {object}
  */
-export function getVisitorIdentity() {
+let visitorIdentityCache = null;
+
+function initializeVisitorIdentity() {
   if (typeof window === 'undefined') {
     return {
       is_returning: false,
@@ -47,6 +55,15 @@ export function getVisitorIdentity() {
     const now = Date.now();
     const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
     
+    // Check if already initialized this session
+    const sessionInitKey = `visitor_init_${today}`;
+    if (sessionStorage.getItem(sessionInitKey)) {
+      // Return cached identity (already initialized this session)
+      if (visitorIdentityCache) {
+        return visitorIdentityCache;
+      }
+    }
+    
     // Get or initialize visitor data
     let firstSeen = localStorage.getItem('visitor_first_seen');
     let lastSeenDate = localStorage.getItem('visitor_last_seen_date');
@@ -54,40 +71,53 @@ export function getVisitorIdentity() {
     let distinctDays = parseInt(localStorage.getItem('visitor_distinct_days') || '0', 10);
     
     if (!firstSeen) {
+      // First visit ever
       firstSeen = now.toString();
       localStorage.setItem('visitor_first_seen', firstSeen);
       lastSeenDate = today;
       distinctDays = 1;
-    }
-    
-    // Check if returning (different calendar day)
-    const isReturning = lastSeenDate !== today;
-    
-    if (isReturning) {
-      // New day - increment distinct days
-      distinctDays += 1;
-      localStorage.setItem('visitor_distinct_days', distinctDays.toString());
+      visitCount = 1;
       localStorage.setItem('visitor_last_seen_date', today);
-    } else if (!lastSeenDate) {
-      // First visit today
-      localStorage.setItem('visitor_last_seen_date', today);
+      localStorage.setItem('visitor_distinct_days', '1');
+      localStorage.setItem('visitor_visit_count', '1');
+    } else {
+      // Check if returning (different calendar day)
+      const isReturning = lastSeenDate !== today;
+      
+      if (isReturning) {
+        // New day - increment distinct days only once per day
+        distinctDays += 1;
+        localStorage.setItem('visitor_distinct_days', distinctDays.toString());
+        localStorage.setItem('visitor_last_seen_date', today);
+      }
+      
+      // Increment visit count (only once per session)
+      visitCount += 1;
+      localStorage.setItem('visitor_visit_count', visitCount.toString());
+      
+      // Update last seen date if not set
+      if (!lastSeenDate) {
+        localStorage.setItem('visitor_last_seen_date', today);
+      }
     }
-    
-    // Increment visit count
-    visitCount += 1;
-    localStorage.setItem('visitor_visit_count', visitCount.toString());
     
     // Calculate days since first seen
     const daysSinceFirstSeen = Math.floor((now - parseInt(firstSeen, 10)) / (1000 * 60 * 60 * 24));
     
-    return {
-      is_returning: isReturning,
+    const identity = {
+      is_returning: lastSeenDate !== today && distinctDays > 1,
       distinct_day_count: distinctDays,
       days_since_first_seen: daysSinceFirstSeen,
       visit_count: visitCount,
     };
+    
+    // Cache identity for this session
+    visitorIdentityCache = identity;
+    sessionStorage.setItem(sessionInitKey, '1');
+    
+    return identity;
   } catch (e) {
-    console.warn('[Engagement] Failed to get visitor identity:', e);
+    console.warn('[Engagement] Failed to initialize visitor identity:', e);
     return {
       is_returning: false,
       distinct_day_count: 1,
@@ -95,6 +125,17 @@ export function getVisitorIdentity() {
       visit_count: 1,
     };
   }
+}
+
+/**
+ * Get visitor identity (cached, initialized once per session)
+ */
+export function getVisitorIdentity() {
+  // Initialize if not cached
+  if (!visitorIdentityCache) {
+    return initializeVisitorIdentity();
+  }
+  return visitorIdentityCache;
 }
 
 /**
@@ -151,6 +192,7 @@ export function markThresholdFired(key, useLocalStorage = false) {
 
 /**
  * Record user activity (mouse, scroll, keyboard, touch)
+ * CRITICAL: This resets idle state and updates lastActivityTime
  */
 function recordActivity() {
   const now = Date.now();
@@ -163,11 +205,13 @@ function recordActivity() {
 }
 
 /**
- * Check if user is idle (no activity in last N seconds)
+ * Check if user is idle (no activity in last N milliseconds)
+ * CRITICAL: Idle threshold is 30 seconds (30000ms) - increased from 15s
+ * Reason: 15s was too aggressive, causing false positives when users read content
  */
 function checkIdle() {
   if (!activeTimeState.isVisible || !activeTimeState.hasFocus) {
-    return; // Already paused
+    return; // Already paused - don't check idle if not visible/focused
   }
   
   const now = Date.now();
@@ -185,31 +229,52 @@ function checkIdle() {
 }
 
 /**
- * Update active time counters
+ * Update active time counters - MILLISECOND-BASED accumulation
+ * 
+ * CRITICAL: This function accumulates time in milliseconds for accuracy
+ * Only accumulates when ALL conditions are met:
+ * - document is visible (Page Visibility API)
+ * - window has focus
+ * - user is not idle (activity within last 30s)
+ * 
+ * Time is accumulated incrementally based on elapsedMs since last update
+ * This prevents undercounting due to missed intervals or system delays
  */
 function updateActiveTime() {
-  if (!activeTimeState.isVisible || !activeTimeState.hasFocus || activeTimeState.isIdle) {
-    return; // Not active
-  }
-  
   const now = Date.now();
   
-  // Update session active time
-  if (activeTimeState.sessionStartTime) {
-    const sessionElapsed = Math.floor((now - activeTimeState.sessionStartTime) / 1000);
-    activeTimeState.totalActiveSeconds = sessionElapsed;
+  // Initialize lastUpdateTime if not set
+  if (!activeTimeState.lastUpdateTime) {
+    activeTimeState.lastUpdateTime = now;
+    return;
   }
   
-  // Update page active time
-  if (activeTimeState.pageStartTime) {
-    const pageElapsed = Math.floor((now - activeTimeState.pageStartTime) / 1000);
-    activeTimeState.pageActiveSeconds = pageElapsed;
+  // Calculate elapsed milliseconds since last update
+  const elapsedMs = now - activeTimeState.lastUpdateTime;
+  
+  // Only accumulate time if ALL conditions are met
+  if (activeTimeState.isVisible && activeTimeState.hasFocus && !activeTimeState.isIdle) {
+    // Accumulate session active time (in milliseconds)
+    if (activeTimeState.sessionStartTime) {
+      activeTimeState.totalActiveMs += elapsedMs;
+    }
+    
+    // Accumulate page active time (in milliseconds)
+    if (activeTimeState.pageStartTime) {
+      activeTimeState.pageActiveMs += elapsedMs;
+    }
   }
+  
+  // Update last update time for next iteration
+  activeTimeState.lastUpdateTime = now;
 }
 
 /**
  * Start engagement timer
  * Call this when page loads or route changes
+ * 
+ * CRITICAL: Sets up all event listeners and starts interval-based updates
+ * Update interval: 5 seconds (optimal balance between accuracy and performance)
  */
 export function startEngagementTimer() {
   if (typeof window === 'undefined') return;
@@ -224,16 +289,21 @@ export function startEngagementTimer() {
   
   // Reset page start time (new route)
   activeTimeState.pageStartTime = now;
-  activeTimeState.pageActiveSeconds = 0;
+  activeTimeState.pageActiveMs = 0; // Reset page time (milliseconds)
   activeTimeState.lastActivityTime = now;
+  activeTimeState.lastUpdateTime = now; // Reset update time
   activeTimeState.isIdle = false;
   
-  // Page Visibility API
+  // Page Visibility API - CRITICAL: track when tab is hidden/visible
   if (!visibilityListener) {
     const handleVisibilityChange = () => {
+      // Update active time BEFORE changing visibility state (accumulate final ms)
+      updateActiveTime();
+      
       activeTimeState.isVisible = !document.hidden;
       if (activeTimeState.isVisible) {
         activeTimeState.lastActivityTime = Date.now();
+        activeTimeState.lastUpdateTime = Date.now(); // Reset update time when becoming visible
       }
     };
     
@@ -242,14 +312,21 @@ export function startEngagementTimer() {
     activeTimeState.isVisible = !document.hidden;
   }
   
-  // Window focus/blur
+  // Window focus/blur - CRITICAL: track when window loses/gains focus
   if (!focusListener) {
     focusListener = () => {
+      // Update active time BEFORE changing focus state (accumulate final ms)
+      updateActiveTime();
+      
       activeTimeState.hasFocus = true;
       activeTimeState.lastActivityTime = Date.now();
+      activeTimeState.lastUpdateTime = Date.now(); // Reset update time when gaining focus
     };
     
     blurListener = () => {
+      // Update active time BEFORE losing focus (accumulate final ms)
+      updateActiveTime();
+      
       activeTimeState.hasFocus = false;
     };
     
@@ -259,6 +336,7 @@ export function startEngagementTimer() {
   }
   
   // Activity listeners (mouse, scroll, keyboard, touch) - Throttled for performance
+  // CRITICAL: Throttle to max 1/sec to avoid performance issues
   let lastActivityRecord = 0;
   const ACTIVITY_THROTTLE = 1000; // Record activity max once per second
   
@@ -277,11 +355,13 @@ export function startEngagementTimer() {
     activityListeners.push({ eventType, handler });
   });
   
-  // Idle check interval (every 5 seconds) - Optimized
+  // Idle check + Active time update interval
+  // CRITICAL: 5 second interval is optimal - balances accuracy with performance
+  // Do NOT reduce to 1s as it increases CPU usage without significant accuracy gain
   if (!idleCheckInterval) {
     idleCheckInterval = setInterval(() => {
       checkIdle();
-      updateActiveTime();
+      updateActiveTime(); // Accumulate active time incrementally (millisecond-based)
     }, 5000);
     
     // Initial check
@@ -289,41 +369,50 @@ export function startEngagementTimer() {
     updateActiveTime();
   }
   
-  // Initial update
-  updateActiveTime();
+  // Initialize last update time
+  activeTimeState.lastUpdateTime = now;
 }
 
 /**
  * Reset engagement timer (for route changes)
  * Keeps session time, resets page time
+ * 
+ * CRITICAL: Update active time BEFORE resetting to accumulate final milliseconds
  */
 export function resetOnRouteChange() {
-  activeTimeState.pageStartTime = Date.now();
-  activeTimeState.pageActiveSeconds = 0;
-  activeTimeState.lastActivityTime = Date.now();
+  // Update active time before resetting (accumulate final milliseconds)
+  updateActiveTime();
+  
+  const now = Date.now();
+  activeTimeState.pageStartTime = now;
+  activeTimeState.pageActiveMs = 0; // Reset page time (milliseconds)
+  activeTimeState.lastActivityTime = now;
+  activeTimeState.lastUpdateTime = now; // Reset update time for new page
   activeTimeState.isIdle = false;
 }
 
 /**
  * Get active seconds for current page
- * @returns {number}
+ * CRITICAL: Convert from milliseconds to seconds only when checking thresholds
+ * @returns {number} Active seconds (rounded down)
  */
 export function getPageActiveSeconds() {
-  updateActiveTime();
-  return activeTimeState.pageActiveSeconds;
+  updateActiveTime(); // Ensure time is up-to-date
+  return Math.floor(activeTimeState.pageActiveMs / 1000); // Convert ms to seconds
 }
 
 /**
  * Get active seconds for current session
- * @returns {number}
+ * CRITICAL: Convert from milliseconds to seconds only when checking thresholds
+ * @returns {number} Active seconds (rounded down)
  */
 export function getSessionActiveSeconds() {
-  updateActiveTime();
-  return activeTimeState.totalActiveSeconds;
+  updateActiveTime(); // Ensure time is up-to-date
+  return Math.floor(activeTimeState.totalActiveMs / 1000); // Convert ms to seconds
 }
 
 /**
- * Cleanup engagement timer
+ * Cleanup engagement timer (remove all listeners)
  */
 export function cleanupEngagementTimer() {
   // Remove activity listeners
@@ -357,15 +446,23 @@ export function cleanupEngagementTimer() {
 
 /**
  * Check and fire presale engagement thresholds
+ * 
+ * CRITICAL: Thresholds fire exactly once per session per threshold
+ * Fires immediately when threshold is crossed (within 5s check interval)
+ * Uses CUSTOM EVENTS (Engaged15s, Engaged45s, Engaged120s) for TikTok Custom Conversions
+ * 
  * @param {function} onThreshold - Callback when threshold is reached
  */
 export function checkPresaleThresholds(onThreshold) {
+  // CRITICAL: Convert milliseconds to seconds for threshold comparison
   const pageActiveSeconds = getPageActiveSeconds();
   
+  // Check all thresholds that have been reached but not yet fired
+  // CRITICAL: Fire immediately when crossed (no delay beyond check interval)
   PRESALE_THRESHOLDS.forEach(threshold => {
     if (pageActiveSeconds >= threshold) {
       const key = `presale_engaged_${threshold}s`;
-      if (!isThresholdFired(key, false)) { // sessionStorage
+      if (!isThresholdFired(key, false)) { // sessionStorage dedupe
         markThresholdFired(key, false);
         onThreshold(threshold, 'presale');
       }
@@ -375,15 +472,23 @@ export function checkPresaleThresholds(onThreshold) {
 
 /**
  * Check and fire site-wide engagement thresholds
+ * 
+ * CRITICAL: Thresholds fire exactly once per session per threshold
+ * Fires immediately when threshold is crossed (within 5s check interval)
+ * Uses CUSTOM EVENTS (SiteEngaged30s, SiteEngaged90s) for TikTok Custom Conversions
+ * 
  * @param {function} onThreshold - Callback when threshold is reached
  */
 export function checkSiteThresholds(onThreshold) {
+  // CRITICAL: Convert milliseconds to seconds for threshold comparison
   const sessionActiveSeconds = getSessionActiveSeconds();
   
+  // Check all thresholds that have been reached but not yet fired
+  // CRITICAL: Fire immediately when crossed (no delay beyond check interval)
   SITE_THRESHOLDS.forEach(threshold => {
     if (sessionActiveSeconds >= threshold) {
       const key = `site_engaged_${threshold}s`;
-      if (!isThresholdFired(key, false)) { // sessionStorage
+      if (!isThresholdFired(key, false)) { // sessionStorage dedupe
         markThresholdFired(key, false);
         onThreshold(threshold, 'site');
       }
@@ -417,4 +522,3 @@ export function shouldFireReturnVisit() {
     return false;
   }
 }
-

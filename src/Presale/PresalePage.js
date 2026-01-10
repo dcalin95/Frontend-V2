@@ -11,9 +11,16 @@ import React, { useState, useEffect, Suspense, lazy, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import useGoogleAnalytics from "../hooks/useGoogleAnalytics";
-// 📊 TikTok Engagement Tracking (new implementation)
-import { trackStandardEvent } from "../lib/tiktok";
-import { checkPresaleThresholds, getVisitorIdentity, getSessionId, getPageActiveSeconds } from "../lib/engagement";
+// 📊 TikTok Engagement Tracking - Production hardened
+import { trackStandardEvent, trackCustomEvent } from "../lib/tiktok";
+import { 
+  checkPresaleThresholds, 
+  getVisitorIdentity, 
+  getSessionId, 
+  getPageActiveSeconds,
+  startEngagementTimer,
+  resetOnRouteChange
+} from "../lib/engagement";
 import SelectPaymentMethod from "./SelectPaymentMethod";
 import { useSelectedToken } from "./hooks/useSelectedToken";
 import useTokenPrices from "./prices/useTokenPrices";
@@ -106,10 +113,50 @@ const PresalePage = () => {
     console.log("ℹ️ [PresalePage] Auto-detection disabled. Waiting for manual connection.");
   }, []);
 
-  // 📊 TikTok Presale Engagement Tracking (Active Time - 15s, 45s, 120s)
-  // Note: Old tracking code removed - now using engagement.js with active time tracking
+  // 📊 TikTok Presale Engagement Tracking - Production Hardened
+  // CRITICAL: Use ViewContent ONLY for presale page entry (real content exposure)
+  // Use CUSTOM EVENTS (Engaged15s, Engaged45s, Engaged120s) for time-based thresholds
   useEffect(() => {
+    // Track presale page entry (real content exposure) - ViewContent is semantically correct
+    // CRITICAL: Dedupe per session to avoid duplicate ViewContent on component remount
+    const viewContentKey = 'presale_viewcontent_entry';
+    try {
+      if (!sessionStorage.getItem(viewContentKey)) {
+        const identity = getVisitorIdentity();
+        const sessionId = getSessionId();
+        trackStandardEvent('ViewContent', {
+          content_type: 'presale',
+          content_name: 'presale_page_entry',
+          page_path: '/presale',
+          session_id: sessionId,
+          is_returning: identity.is_returning,
+          distinct_day_count: identity.distinct_day_count,
+          days_since_first_seen: identity.days_since_first_seen,
+          visit_count: identity.visit_count,
+        });
+        sessionStorage.setItem(viewContentKey, '1');
+      }
+    } catch (e) {
+      // Ignore storage errors, still track
+      const identity = getVisitorIdentity();
+      const sessionId = getSessionId();
+      trackStandardEvent('ViewContent', {
+        content_type: 'presale',
+        content_name: 'presale_page_entry',
+        page_path: '/presale',
+        session_id: sessionId,
+        is_returning: identity.is_returning,
+        distinct_day_count: identity.distinct_day_count,
+        days_since_first_seen: identity.days_since_first_seen,
+        visit_count: identity.visit_count,
+      });
+    }
+    
+    // Start page-specific engagement timer for presale page
+    startEngagementTimer();
+    
     // Check presale engagement thresholds every 5 seconds (optimized - only if pixel ready)
+    // CRITICAL: Use CUSTOM EVENTS for time-based engagement (compatible with TikTok Custom Conversions)
     const thresholdInterval = setInterval(() => {
       // Only check if pixel is ready to avoid unnecessary work
       if (window.ttq && (typeof window.ttq.track === 'function' || Array.isArray(window.ttq))) {
@@ -118,17 +165,15 @@ const PresalePage = () => {
           const sessionId = getSessionId();
           const activeSeconds = getPageActiveSeconds();
           
-          trackStandardEvent('ViewContent', {
-            content_type: 'presale',
-            content_name: `presale_engaged_${threshold}s`,
-            value: threshold,
-            currency: 'USD',
+          // Use CUSTOM EVENT for time-based engagement thresholds
+          trackCustomEvent(`Engaged${threshold}s`, {
+            active_seconds: activeSeconds,
             page_path: '/presale',
             session_id: sessionId,
             is_returning: identity.is_returning,
+            distinct_day_count: identity.distinct_day_count,
             days_since_first_seen: identity.days_since_first_seen,
             visit_count: identity.visit_count,
-            active_seconds: activeSeconds,
           });
         });
       }

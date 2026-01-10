@@ -91,6 +91,7 @@ export default function Sidebar() {
                 method: 'sidebar',
                 session_id: sessionId,
                 is_returning: identity.is_returning,
+                distinct_day_count: identity.distinct_day_count,
                 days_since_first_seen: identity.days_since_first_seen,
                 visit_count: identity.visit_count,
               });

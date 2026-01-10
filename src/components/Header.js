@@ -117,12 +117,15 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
               onClick={() => {
                 const identity = getVisitorIdentity();
                 const sessionId = getSessionId();
-                trackStandardEvent('Subscribe', {
-                  description: 'telegram_click',
-                  page_path: window.location.pathname || window.location.hash?.replace('#', '') || '/',
-                  method: 'header',
-                  session_id: sessionId,
-                  is_returning: identity.is_returning,
+              trackStandardEvent('Subscribe', {
+                description: 'telegram_click',
+                page_path: window.location.pathname || window.location.hash?.replace('#', '') || '/',
+                method: 'header',
+                session_id: sessionId,
+                is_returning: identity.is_returning,
+                distinct_day_count: identity.distinct_day_count,
+                days_since_first_seen: identity.days_since_first_seen,
+                visit_count: identity.visit_count,
                   days_since_first_seen: identity.days_since_first_seen,
                   visit_count: identity.visit_count,
                 });
@@ -317,12 +320,15 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
                 onClick={() => {
                   const identity = getVisitorIdentity();
                   const sessionId = getSessionId();
-                  trackStandardEvent('Subscribe', {
-                    description: 'telegram_click',
-                    page_path: window.location.pathname || window.location.hash?.replace('#', '') || '/',
-                    method: 'header_mobile',
-                    session_id: sessionId,
-                    is_returning: identity.is_returning,
+                trackStandardEvent('Subscribe', {
+                  description: 'telegram_click',
+                  page_path: window.location.pathname || window.location.hash?.replace('#', '') || '/',
+                  method: 'header_mobile',
+                  session_id: sessionId,
+                  is_returning: identity.is_returning,
+                  distinct_day_count: identity.distinct_day_count,
+                  days_since_first_seen: identity.days_since_first_seen,
+                  visit_count: identity.visit_count,
                     days_since_first_seen: identity.days_since_first_seen,
                     visit_count: identity.visit_count,
                   });

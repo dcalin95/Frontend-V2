@@ -58,9 +58,9 @@ import AIStandaloneLayout from "./components/AIStandaloneLayout";
 // 📈 Google Analytics
 import GoogleAnalyticsWrapper from "./components/GoogleAnalyticsWrapper";
 
-// 📊 TikTok Analytics - New engagement-focused implementation
-import { initTikTokPixel, trackPageView, trackStandardEvent } from "./lib/tiktok";
-import { startEngagementTimer, resetOnRouteChange, checkSiteThresholds, checkPresaleThresholds, getVisitorIdentity, getSessionId, shouldFireReturnVisit } from "./lib/engagement";
+// 📊 TikTok Analytics - Production hardened engagement-focused implementation
+import { initTikTokPixel, trackPageView, trackStandardEvent, trackCustomEvent } from "./lib/tiktok";
+import { startEngagementTimer, resetOnRouteChange, checkSiteThresholds, checkPresaleThresholds, getVisitorIdentity, getSessionId, shouldFireReturnVisit, getSessionActiveSeconds } from "./lib/engagement";
 
 const STANDALONE_TOOL_PATHS = {
   "/ai-marketing": "marketing",
@@ -248,47 +248,53 @@ const TikTokEngagementTracker = () => {
 
   // Initialize pixel and engagement tracking on mount
   React.useEffect(() => {
+    // Initialize visitor identity once at session start (before pixel init)
+    getVisitorIdentity(); // This will initialize and cache identity
+    
     // Initialize TikTok Pixel (after consent check)
     initTikTokPixel().then(() => {
       // Start engagement timer
       startEngagementTimer();
       
+      // Check return visit (once per day) - delayed to ensure pixel is ready
+      // CRITICAL: ViewContent is appropriate here (real content exposure - return visit)
+      setTimeout(() => {
+        if (shouldFireReturnVisit()) {
+          const identity = getVisitorIdentity();
+          trackStandardEvent('ViewContent', {
+            content_type: 'return',
+            content_name: `return_visit_day_${identity.distinct_day_count}`,
+            page_path: location.pathname || location.hash?.replace('#', '') || '/',
+            is_returning: true,
+            distinct_day_count: identity.distinct_day_count,
+            days_since_first_seen: identity.days_since_first_seen,
+          });
+        }
+      }, 500);
+      
       // Check site-wide thresholds every 5 seconds (optimized - only if pixel ready)
+      // CRITICAL: Use CUSTOM EVENTS (SiteEngaged30s, SiteEngaged90s) for TikTok Custom Conversions
       thresholdCheckInterval.current = setInterval(() => {
         // Only check if pixel is ready to avoid unnecessary work
         if (window.ttq && (typeof window.ttq.track === 'function' || Array.isArray(window.ttq))) {
           checkSiteThresholds((threshold, type) => {
             const identity = getVisitorIdentity();
             const sessionId = getSessionId();
+            const activeSeconds = getSessionActiveSeconds();
             
-            trackStandardEvent('ViewContent', {
-              content_type: 'site',
-              content_name: `site_engaged_${threshold}s`,
-              value: threshold,
-              currency: 'USD',
+            // Use CUSTOM EVENT for time-based engagement (compatible with TikTok Custom Conversions)
+            trackCustomEvent(`SiteEngaged${threshold}s`, {
+              active_seconds: activeSeconds,
               page_path: location.pathname || location.hash?.replace('#', '') || '/',
               session_id: sessionId,
               is_returning: identity.is_returning,
+              distinct_day_count: identity.distinct_day_count,
               days_since_first_seen: identity.days_since_first_seen,
               visit_count: identity.visit_count,
             });
           });
         }
       }, 5000);
-      
-      // Check return visit (once per day)
-      if (shouldFireReturnVisit()) {
-        const identity = getVisitorIdentity();
-        trackStandardEvent('ViewContent', {
-          content_type: 'return',
-          content_name: `return_visit_day_${identity.distinct_day_count}`,
-          value: identity.distinct_day_count,
-          page_path: location.pathname || location.hash?.replace('#', '') || '/',
-          is_returning: true,
-          distinct_day_count: identity.distinct_day_count,
-          days_since_first_seen: identity.days_since_first_seen,
-        });
-      }
     });
 
     return () => {
@@ -304,23 +310,26 @@ const TikTokEngagementTracker = () => {
     const hashPath = location.hash ? location.hash.replace('#', '') : '';
     const currentPath = hashPath || location.pathname || '/';
     
-    // Skip initial mount (ttq.page() is already called in index.html)
+    // Track initial pageview on mount
     if (isInitialMount.current) {
       isInitialMount.current = false;
       prevPathRef.current = currentPath;
       
-      // Track initial pageview with visitor data
-      const identity = getVisitorIdentity();
-      const sessionId = getSessionId();
-      
-      trackPageView(currentPath, {
-        page_url: window.location.href,
-        page_title: document.title || 'Bits AI',
-        session_id: sessionId,
-        is_returning: identity.is_returning,
-        days_since_first_seen: identity.days_since_first_seen,
-        visit_count: identity.visit_count,
-      });
+      // Small delay to ensure pixel is ready
+      setTimeout(() => {
+        const identity = getVisitorIdentity();
+        const sessionId = getSessionId();
+        
+        trackPageView(currentPath, {
+          page_url: window.location.href,
+          page_title: document.title || 'Bits AI',
+          session_id: sessionId,
+          is_returning: identity.is_returning,
+          distinct_day_count: identity.distinct_day_count,
+          days_since_first_seen: identity.days_since_first_seen,
+          visit_count: identity.visit_count,
+        });
+      }, 100);
       
       return;
     }
@@ -341,6 +350,7 @@ const TikTokEngagementTracker = () => {
         page_title: document.title || 'Bits AI',
         session_id: sessionId,
         is_returning: identity.is_returning,
+        distinct_day_count: identity.distinct_day_count,
         days_since_first_seen: identity.days_since_first_seen,
         visit_count: identity.visit_count,
       });
