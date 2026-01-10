@@ -6,6 +6,11 @@ param(
     [string]$CloudFrontId = $env:CLOUDFRONT_DISTRIBUTION_ID
 )
 
+# Default CloudFront Distribution ID pentru bits-ai.io (daca nu e setat in env)
+if ([string]::IsNullOrEmpty($CloudFrontId) -and $BucketName -eq "bits-ai.io") {
+    $CloudFrontId = "E2TIH6RJTHIT1M"
+}
+
 # Verifica AWS CLI
 if (-not (Get-Command aws -ErrorAction SilentlyContinue)) {
     Write-Host "AWS CLI nu este instalat!" -ForegroundColor Red

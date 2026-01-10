@@ -1,0 +1,83 @@
+name: Deploy to S3 and CloudFront
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Permite deploy manual din GitHub UI
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run build
+        run: npm run build
+        env:
+          REACT_APP_TIKTOK_PIXEL_ID: ${{ secrets.REACT_APP_TIKTOK_PIXEL_ID }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Deploy to S3
+        run: |
+          # Upload static assets with long cache (1 year)
+          aws s3 sync build/static s3://bits-ai.io/static \
+            --delete \
+            --cache-control "public,max-age=31536000,immutable" \
+            --metadata-directive REPLACE
+          
+          # Upload index.html WITHOUT cache
+          aws s3 cp build/index.html s3://bits-ai.io/ \
+            --cache-control "no-cache,no-store,must-revalidate" \
+            --metadata-directive REPLACE
+          
+          # Upload error pages WITHOUT cache (if they exist)
+          if [ -f build/404.html ]; then
+            aws s3 cp build/404.html s3://bits-ai.io/ \
+              --cache-control "no-cache,no-store,must-revalidate" \
+              --metadata-directive REPLACE
+          fi
+          
+          if [ -f build/_error.html ]; then
+            aws s3 cp build/_error.html s3://bits-ai.io/ \
+              --cache-control "no-cache,no-store,must-revalidate" \
+              --metadata-directive REPLACE
+          fi
+          
+          # Upload all other files
+          aws s3 sync build/ s3://bits-ai.io/ \
+            --delete \
+            --exclude "index.html" \
+            --exclude "404.html" \
+            --exclude "_error.html" \
+            --exclude "static/*" \
+            --cache-control "public,max-age=3600"
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id E2TIH6RJTHIT1M \
+            --paths "/*"
+
+      - name: Deployment summary
+        run: |
+          echo "✅ Deployment completed successfully!"
+          echo "🌐 Site live at: https://bits-ai.io"
+          echo "🔄 CloudFront cache invalidation initiated"
