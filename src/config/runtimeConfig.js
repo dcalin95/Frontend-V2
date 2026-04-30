@@ -246,8 +246,34 @@ export function getOtaShortOpsSecret() {
   return (process.env.REACT_APP_OTA_SHORT_OPS_SECRET || '').trim();
 }
 
+function getOtaLongOpsSecretFromUrl() {
+  if (typeof window === 'undefined') return '';
+
+  const readParams = (rawParams) => {
+    if (!rawParams) return '';
+    const params = new URLSearchParams(rawParams.startsWith('?') ? rawParams.slice(1) : rawParams);
+    return (
+      params.get('otaLongOpsSecret') ||
+      params.get('longOpsSecret') ||
+      params.get('secret') ||
+      ''
+    ).trim();
+  };
+
+  const fromSearch = readParams(window.location.search);
+  if (fromSearch) return fromSearch;
+
+  const hashQueryIndex = String(window.location.hash || '').indexOf('?');
+  if (hashQueryIndex >= 0) {
+    return readParams(window.location.hash.slice(hashQueryIndex + 1));
+  }
+
+  return '';
+}
+
 /**
- * Secret pentru header X-Ota-Long-Ops-Secret: runtime-config.json (OTA_LONG_OPS_SECRET) apoi REACT_APP_* la build.
+ * Secret pentru header X-Ota-Long-Ops-Secret: runtime-config.json (OTA_LONG_OPS_SECRET),
+ * URL-ul paginii (?otaLongOpsSecret=, ?longOpsSecret= sau ?secret=), apoi REACT_APP_* la build.
  * Dacă lipsește explicit, folosește același secret ca SHORT (deploy-uri cu un singur secret în RC / același string pe Render).
  */
 export function getOtaLongOpsSecret() {
@@ -256,6 +282,8 @@ export function getOtaLongOpsSecret() {
       ? String(cachedConfig.OTA_LONG_OPS_SECRET).trim()
       : '';
   if (fromRc) return fromRc;
+  const fromUrl = getOtaLongOpsSecretFromUrl();
+  if (fromUrl) return fromUrl;
   const fromEnv = (process.env.REACT_APP_OTA_LONG_OPS_SECRET || '').trim();
   if (fromEnv) return fromEnv;
   return getOtaShortOpsSecret();
