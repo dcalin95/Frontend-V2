@@ -27,7 +27,7 @@ export default function DashboardAttentionBar({ aggregate }) {
           </p>
         ) : null}
       </header>
-      <ul className="dash-attention__list" role="list">
+      <ul className="dash-attention__list">
         {items.map((it) => (
           <li key={it.id} className={`dash-attention__item dash-attention__item--${it.severity}`}>
             {it.severity === 'warn' ? (

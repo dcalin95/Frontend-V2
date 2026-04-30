@@ -59,7 +59,6 @@ const OTAActivityPanel = ({ className = '', defaultExpanded = false }) => {
   return (
     <section
       className={`ota-activity-panel ${className}`}
-      role="region"
       aria-label="OTA Activity and metrics"
     >
       <button

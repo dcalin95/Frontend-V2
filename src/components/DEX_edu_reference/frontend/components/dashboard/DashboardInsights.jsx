@@ -100,7 +100,7 @@ export default function DashboardInsights({ aggregate }) {
             {recent.length === 0 ? (
               <p className="dash-insights__muted">No signals in list yet. Open OTA to generate new AI context.</p>
             ) : (
-              <ul className="dash-insights__signals" role="list">
+        <ul className="dash-insights__signals">
                 {recent.map((s, i) => {
                   const sk = String(s.signal || 'hold').toLowerCase();
                   const skClass = sk === 'buy' ? 'buy' : sk === 'sell' ? 'sell' : 'hold';

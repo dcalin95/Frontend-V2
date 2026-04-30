@@ -726,7 +726,7 @@ export default function OTAChatPage() {
         ) : vaultEntries.length === 0 ? (
           <p className="ota-vault-empty">No entries in Vault. OTA can save wallet addresses, contracts or other sensitive info here (never shown in chat).</p>
         ) : (
-          <ul className="ota-vault-list" role="list">
+          <ul className="ota-vault-list">
             {vaultEntries.map(({ key: k, value: v }) => (
               <li key={k} className="ota-vault-item">
                 <span className="ota-vault-key">{k}</span>

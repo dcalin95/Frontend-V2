@@ -51,7 +51,7 @@ export default function LeverageRecentActivity({ entries = [] }) {
         </p>
       </details>
 
-      <ul className="leverage-activity-list" role="list">
+      <ul className="leverage-activity-list">
         {entries.map((row) => (
           <li key={row.id} className={`leverage-activity-row leverage-activity--${row.scope || 'live'}`}>
             <time className="leverage-activity-time" dateTime={row.at} title={row.at}>

@@ -20,7 +20,6 @@ export default function DexNewsletterSection({ walletAddress = null }) {
   return (
     <section
       className="personal-account-section personal-account-section--communications"
-      role="region"
       aria-label="Education newsletter"
     >
       <h2 className="personal-account-section-title">

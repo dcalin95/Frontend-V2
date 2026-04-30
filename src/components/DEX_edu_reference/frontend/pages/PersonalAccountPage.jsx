@@ -373,7 +373,7 @@ export default function PersonalAccountPage() {
 
       {/* OTA Trading: realized profit; money is already in Vault, shown here for accounting. */}
       {isConnected && walletAddress && (
-        <section className="personal-account-section" role="region" aria-label="OTA Trading profit">
+        <section className="personal-account-section" aria-label="OTA Trading profit">
           <h2 className="personal-account-section-title">
             <TrendingUp size={20} aria-hidden />
             OTA Trading - realized profit
@@ -409,7 +409,7 @@ export default function PersonalAccountPage() {
 
       {/* Crypto balances – requires vault + wallet */}
       {vaultReady && (
-      <section className="personal-account-section" role="region" aria-label="Vault balances">
+      <section className="personal-account-section" aria-label="Vault balances">
         <h2 className="personal-account-section-title">
           <Wallet size={20} aria-hidden />
           Vault (contract - not your wallet)
@@ -536,7 +536,7 @@ export default function PersonalAccountPage() {
       )}
 
       {/* Fiat (Stripe) balances: uses session, no wallet needed; visually grouped with Convert below in the same FIAT area. */}
-      <section className="personal-account-section personal-account-fiat-card" role="region" aria-label="Fiat balances">
+      <section className="personal-account-section personal-account-fiat-card" aria-label="Fiat balances">
         <h2 className="personal-account-section-title">
           <CreditCard size={20} aria-hidden />
           Fiat (card – EUR / USD)
@@ -679,7 +679,7 @@ export default function PersonalAccountPage() {
 
       {/* History (crypto): UserVault BSC FundsDeposited / FundsWithdrawn, list from backend analytics. */}
       {walletAddress && (
-        <section className="personal-account-section personal-account-section--history-secondary" role="region" aria-label="Crypto deposit and withdrawal history">
+        <section className="personal-account-section personal-account-section--history-secondary" aria-label="Crypto deposit and withdrawal history">
           <div className="personal-account-history-header-row">
             <div>
               <h2 className="personal-account-section-title personal-account-section-title--secondary">History (crypto)</h2>
@@ -808,7 +808,7 @@ export default function PersonalAccountPage() {
 
       {/* History (card) – Stripe deposits/withdrawals */}
       {(stripeDeposits.length > 0 || stripeWithdrawals.length > 0) && (
-        <section className="personal-account-section" role="region" aria-label="Card deposit and withdrawal history">
+        <section className="personal-account-section" aria-label="Card deposit and withdrawal history">
           <h2 className="personal-account-section-title">History (card)</h2>
           <p className="personal-account-page-muted" style={{ marginBottom: 8, fontSize: 12 }}>
             Stripe provides customer_email and metadata.wallet_address – the backend returns them for clear attribution.

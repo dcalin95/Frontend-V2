@@ -80,7 +80,7 @@ export default function OTAVaultBalanceCard() {
           <button type="button" onClick={refetch} className="ota-vault-balance-card-retry">Refresh</button>
         </p>
       ) : (
-        <ul className="ota-vault-balance-card-list" role="list">
+        <ul className="ota-vault-balance-card-list">
           {visibleTokens.map((t) => {
             const raw = balances[t.address] || '0';
             const formatted = ethers.utils.formatUnits(raw, t.decimals ?? 18);

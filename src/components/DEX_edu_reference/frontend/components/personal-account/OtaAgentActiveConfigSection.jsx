@@ -207,7 +207,7 @@ export default function OtaAgentActiveConfigSection({ walletAddress = null }) {
   })();
 
   return (
-    <section className="personal-account-section ota-agent-config" role="region" aria-label="OTA Agent configuration">
+    <section className="personal-account-section ota-agent-config" aria-label="OTA Agent configuration">
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
         <h2 className="personal-account-section-title" style={{ marginBottom: 0 }}>
           OTA Agent - Active configuration
