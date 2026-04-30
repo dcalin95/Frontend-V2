@@ -25,11 +25,21 @@ export function useUnifiedWalletModalHandlers(setShowWalletModal, setError, setC
     const byRdns = (rdns) => list.find((c) => String(c?.id || '') === rdns) || null;
     const genericInjected = list.find((c) => String(c?.id || '') === 'injected') || null;
 
-    if (pref === 'metamask') return byRdns('io.metamask') || genericInjected || fallbackConnector;
-    if (pref === 'trust') return byRdns('com.trustwallet.app') || genericInjected || fallbackConnector;
+    if (pref === 'metamask') {
+      const eip = byRdns('io.metamask');
+      if (eip) return eip;
+      return genericInjected || fallbackConnector;
+    }
+    if (pref === 'trust') {
+      const eip = byRdns('com.trustwallet.app');
+      if (eip) return eip;
+      return genericInjected || fallbackConnector;
+    }
     if (pref === 'coinbase') {
+      const eip = byRdns('com.coinbase.wallet');
+      if (eip) return eip;
       const byCb = list.find((c) => String(c?.name || '').toLowerCase().includes('coinbase'));
-      return byRdns('com.coinbase.wallet') || byCb || genericInjected || fallbackConnector;
+      return byCb || genericInjected || fallbackConnector;
     }
     if (pref === 'binance') return byRdns('binance-web3') || fallbackConnector;
     return fallbackConnector;
@@ -56,6 +66,16 @@ export function useUnifiedWalletModalHandlers(setShowWalletModal, setError, setC
       }
 
       const connectorToUse = pickPreferredConnector(preferredProvider, connector);
+
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[WalletModal] CONNECT:', {
+          requested: preferredProvider,
+          buttonConnector: `${connector?.name} (${connector?.id})`,
+          chosen: `${connectorToUse?.name} (${connectorToUse?.id})`,
+          allConnectors: (Array.isArray(connectors) ? connectors : []).map(c => `${c?.name}(${c?.id})`),
+        });
+      }
+
       const nameForStorage =
         preferredProvider === 'metamask'
           ? 'MetaMask'

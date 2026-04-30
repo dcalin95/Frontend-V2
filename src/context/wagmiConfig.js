@@ -1,6 +1,6 @@
 import { createConfig, http } from "wagmi";
 import { mainnet, bsc, polygon, arbitrum, optimism, base, avalanche } from "wagmi/chains";
-import { injected, walletConnect, coinbaseWallet } from "wagmi/connectors";
+import { walletConnect, coinbaseWallet, injected } from "wagmi/connectors";
 
 const REMEMBER_WALLET_KEY = "bits_remember_wallet"; // "true" | "false" (default false)
 
@@ -17,10 +17,10 @@ const shouldRememberWallet = () => {
 
 // ⚙️ WALLET CONNECT CONFIGURATION (Modern Setup)
 // NOTE: Get a free projectId from https://cloud.walletconnect.com
-export const projectId = process.env.REACT_APP_WALLETCONNECT_PROJECT_ID || "";
+export const projectId = process.env.REACT_APP_WALLETCONNECT_PROJECT_ID || "138a200f790cd554ae995d688546a71a";
 
 // Dev fallback (keeps local dev + emergency prod hotfix working if env var is not set)
-const DEV_FALLBACK_PROJECT_ID = "3a8170812b534d0ff9d794f19a901d64";
+const DEV_FALLBACK_PROJECT_ID = "138a200f790cd554ae995d688546a71a";
 const effectiveProjectId = projectId || DEV_FALLBACK_PROJECT_ID;
 
 // Production safety: do NOT crash the whole app if env is missing (avoid white-screen).
@@ -32,10 +32,15 @@ if (process.env.NODE_ENV === "production" && !projectId) {
   );
 }
 
+const getMetadataUrl = () =>
+  (typeof window !== "undefined" && (window.location?.hostname === "localhost" || window.location?.hostname === "127.0.0.1"))
+    ? window.location.origin
+    : "https://bits-ai.io";
+
 const metadata = {
   name: "BitSwapDEX AI",
   description: "AI-Powered Decentralized Exchange - Multi-Chain Support",
-  url: "https://bits-ai.io",
+  url: getMetadataUrl(),
   icons: ["https://bits-ai.io/logo.png"]
 };
 
@@ -61,20 +66,32 @@ export const chains = [
 export const config = createConfig({
   chains,
   ssr: false,
+  multiInjectedProviderDiscovery: true,
   connectors: [
-    injected({ shimDisconnect: true }),
     coinbaseWallet({
       appName: metadata.name,
       appLogoUrl: metadata.icons?.[0],
     }),
     walletConnect({
       projectId: effectiveProjectId,
-  metadata,
+      metadata,
       showQrModal: true,
+    }),
+    injected({ shimDisconnect: true }),
+    injected({
+      shimDisconnect: true,
+      target() {
+        if (typeof window === "undefined" || !window.binancew3w?.ethereum?.request) return undefined;
+        return {
+          id: "binance-web3",
+          name: "Binance Web3 Wallet",
+          provider: window.binancew3w.ethereum,
+        };
+      },
     }),
   ],
   transports: {
-    [bsc.id]: http(),
+    [bsc.id]: http('https://bsc-dataseed1.binance.org'),
     [mainnet.id]: http(),
     [polygon.id]: http(),
     [arbitrum.id]: http(),
@@ -108,4 +125,3 @@ export const config = createConfig({
     },
   },
 });
-

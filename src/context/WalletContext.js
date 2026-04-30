@@ -728,21 +728,11 @@ const InnerWalletProvider = ({ children }) => {
       // 🛑 STEP 1: FIX PHANTOM HIJACK (if present)
       forceFixPhantomHijack();
       
-      // 🛑 STEP 2: CLEAR ALL PENDING REQUESTS
+      // Clear local pending state only. Do not call wallet_requestPermissions here:
+      // that browser-level request opens the extension chooser before our own wallet modal.
       try {
         sessionStorage.removeItem('wallet_pending_request');
         sessionStorage.removeItem('wagmi.connector');
-        
-        if (window.ethereum) {
-          try {
-            await window.ethereum.request({ 
-              method: 'wallet_requestPermissions',
-              params: [{ eth_accounts: {} }]
-            }).catch(() => {});
-          } catch (e) {
-            // Ignore - just clearing
-          }
-        }
       } catch (clearErr) {
         console.warn('⚠️ [WalletContext] Error clearing pending requests:', clearErr);
       }
@@ -910,7 +900,7 @@ const InnerWalletProvider = ({ children }) => {
 
 export const WalletProvider = ({ children }) => {
   return (
-    <WagmiProvider config={config} reconnectOnMount={true}>
+    <WagmiProvider config={config} reconnectOnMount={false}>
       <QueryClientProvider client={queryClient}>
         <InnerWalletProvider>
           {children}
@@ -921,4 +911,3 @@ export const WalletProvider = ({ children }) => {
 };
 
 export default WalletContext;
-

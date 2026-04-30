@@ -272,24 +272,54 @@ export const forcePickEvmInjectedProvider = (preferred = 'metamask') => {
   if (typeof window === 'undefined' || !window.ethereum) return false;
 
   const pref = String(preferred || '').toLowerCase();
-  const providers = Array.isArray(window.ethereum.providers)
-    ? window.ethereum.providers
-    : [window.ethereum];
+  const eth = window.ethereum;
+  const list = Array.isArray(eth.providers) ? eth.providers : null;
 
-  const isEvmProvider = (provider) => provider && !provider.isPhantom;
-  const findProvider = (predicate) => providers.find((provider) => isEvmProvider(provider) && predicate(provider));
+  const binanceStandalone = window.binancew3w?.ethereum && typeof window.binancew3w.ethereum.request === 'function';
+  if (pref.includes('binance') && binanceStandalone) {
+    try {
+      window.ethereum = window.binancew3w.ethereum;
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  if (!list || list.length === 0) return false;
+
+  const safeList = list.filter((provider) => provider && !provider.isPhantom && typeof provider.request === 'function');
+  const binanceProvider = window.binancew3w?.ethereum;
+  const pickBinance =
+    pref.includes('binance') &&
+    binanceProvider &&
+    typeof binanceProvider.request === 'function'
+      ? binanceProvider
+      : pref.includes('binance')
+        ? safeList.find((provider) => provider?.provider?.isBinanceWeb3Wallet || String(provider?.constructor?.name || '').toLowerCase().includes('binance'))
+        : null;
+
+  const pickMetaMask = safeList.find((provider) => provider.isMetaMask && !provider.isTrust && !provider.isPhantom);
+  const pickTrust = safeList.find((provider) => provider.isTrust && !provider.isPhantom);
+  const pickCoinbase = safeList.find((provider) => provider.isCoinbaseWallet && !provider.isPhantom);
 
   const selected =
-    (pref.includes('trust') && findProvider((provider) => provider.isTrust)) ||
-    (pref.includes('coinbase') && findProvider((provider) => provider.isCoinbaseWallet)) ||
-    findProvider((provider) => provider.isMetaMask) ||
-    findProvider((provider) => provider.isTrust) ||
-    findProvider((provider) => provider.isCoinbaseWallet) ||
-    providers.find(isEvmProvider);
+    pref.includes('meta')
+      ? pickMetaMask
+      : pref.includes('trust')
+        ? pickTrust
+        : pref.includes('coinbase')
+          ? pickCoinbase
+          : pref.includes('binance')
+            ? pickBinance
+            : null;
 
-  if (!selected || selected === window.ethereum) return false;
+  if (!selected) return false;
 
-  window.ethereum = selected;
-  return true;
+  try {
+    window.ethereum = selected;
+    return true;
+  } catch (_) {
+    return false;
+  }
 };
 
