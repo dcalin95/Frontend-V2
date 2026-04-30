@@ -1,0 +1,4008 @@
+/**
+ * Auto Trade Panel – /dex/ota?mode=auto
+ * AI Sonnet style | proportional 8px grid | AI Model 2026
+ * Finetuning: semantic vars, focus-visible, scrollbar, spacing, typography
+ */
+
+/* ---------- Design tokens ---------- */
+.auto-trade-panel {
+  --atp-space-xs: 4px;
+  --atp-space-sm: 8px;
+  --atp-space-md: 12px;
+  --atp-space-lg: 16px;
+  --atp-space-xl: 20px;
+  --atp-space-2xl: 24px;
+  --atp-radius-sm: 6px;
+  --atp-radius-md: 8px;
+  --atp-radius-lg: 10px;
+  /* Folosește accent din temă (DEX_THEMES.md) – NU culori hardcodate */
+  --atp-ai-accent: var(--ds-accent, #3b82f6);
+  --atp-ai-glow: rgba(var(--ds-accent-rgb, 59, 130, 246), 0.25);
+  --atp-success: #10b981;
+  --atp-success-bg: rgba(16, 185, 129, 0.12);
+  --atp-error: #ef4444;
+  --atp-error-bg: rgba(239, 68, 68, 0.08);
+  --atp-warning: #f59e0b;
+  --atp-accent-link: var(--ds-accent, #4facfe);
+  --atp-text-secondary: #e5e7eb;
+  --atp-text-primary: var(--ds-text-primary, #f9fafb);
+  --atp-transition: 0.2s ease;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.15); }
+}
+
+@keyframes atp-sparkle {
+  0%, 100% { opacity: 1; filter: drop-shadow(0 0 4px var(--atp-ai-glow)); }
+  50% { opacity: 0.9; filter: drop-shadow(0 0 8px var(--atp-ai-glow)); }
+}
+
+/* O singură fereastră – un chenar, fără ferestre interioare */
+.auto-trade-panel {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: var(--atp-space-md);
+  border: 1px solid var(--ds-border-color, rgba(255, 255, 255, 0.1));
+  border-radius: var(--atp-radius-md);
+  background: var(--ds-bg-surface, #000000);
+  overflow: visible;
+}
+
+.auto-trade-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--atp-space-sm);
+  margin-bottom: var(--atp-space-sm);
+}
+
+.auto-trade-panel-header-content {
+  display: flex;
+  align-items: center;
+  gap: var(--atp-space-sm);
+}
+
+.auto-trade-panel-icon-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--atp-space-xs);
+}
+
+.auto-trade-panel-icon {
+  flex-shrink: 0;
+  color: var(--ds-text-primary);
+}
+
+.auto-trade-panel-icon-ai {
+  color: var(--atp-ai-accent);
+  animation: atp-sparkle 2.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auto-trade-panel-icon-ai { animation: none; }
+}
+
+.auto-trade-panel-badge-2026 {
+  display: inline-block;
+  margin-left: var(--atp-space-sm);
+  padding: 2px 8px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  background: var(--ds-accent);
+  border-radius: 999px;
+  color: #fff;
+  vertical-align: middle;
+}
+
+.auto-trade-panel-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--ds-text-primary);
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  gap: var(--atp-space-sm);
+}
+
+.auto-trade-panel-subtitle {
+  margin: var(--atp-space-xs) 0 0 0;
+  font-size: 0.8125rem;
+  color: var(--ds-text-secondary);
+  line-height: 1.45;
+}
+
+.auto-trade-panel-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--atp-space-sm);
+  padding: var(--atp-space-sm) var(--atp-space-md);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.auto-trade-panel-status-badge.active {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #10b981;
+}
+
+.auto-trade-panel-status-badge.inactive {
+  background: rgba(107, 114, 128, 0.1);
+  border: 1px solid rgba(107, 114, 128, 0.3);
+  color: #6b7280;
+}
+
+/* Checklist vizual – verificare setări */
+.auto-trade-panel-checklist {
+  margin: var(--atp-space-md) 0;
+  padding: var(--atp-space-sm) var(--atp-space-md);
+  background: #000000;
+  border-radius: var(--atp-radius-sm);
+}
+
+.auto-trade-panel-checklist-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--atp-space-md);
+  align-items: center;
+}
+
+.auto-trade-panel-checklist-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--atp-space-xs);
+  font-size: 0.8125rem;
+  color: var(--ds-text-secondary);
+}
+
+.auto-trade-panel-checklist-item.done {
+  color: #10b981;
+}
+
+.auto-trade-panel-checklist-item.expired {
+  color: #ef4444;
+}
+.auto-trade-panel-checklist-item.expired svg {
+  color: #ef4444;
+}
+
+.auto-trade-panel-checklist-item:not(.done) svg {
+  color: #6b7280;
+}
+
+/* Banner: bot rulează pe server – Stop doar când user apasă */
+.auto-trade-panel-server-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--atp-space-sm);
+  padding: var(--atp-space-sm) var(--atp-space-md);
+  margin: var(--atp-space-md) 0;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: var(--atp-radius-sm);
+  font-size: 0.8125rem;
+  color: var(--ds-text-secondary);
+}
+
+.auto-trade-panel-server-banner svg {
+  flex-shrink: 0;
+  color: #10b981;
+}
+
+.auto-trade-panel-server-banner strong {
+  color: var(--ds-text-primary);
+}
+
+/* Buton compact SUB Header, stânga: OTA AI Auto – OPEN (un singur rând, nu bară lată) */
+.auto-trade-panel-open-strip {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 10px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 0 var(--atp-space-md) 0;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #064e3b 0%, #047857 45%, #059669 100%);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border-radius: 10px;
+  border: 1.5px solid rgba(52, 211, 153, 0.55);
+  box-shadow: 0 2px 20px rgba(16, 185, 129, 0.45), inset 0 1px 0 rgba(255,255,255,0.08);
+  align-self: flex-start;
+  flex-shrink: 0;
+  gap: 7px;
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.auto-trade-panel-open-strip-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+  animation: atp-live-dot-pulse 1.8s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes atp-live-dot-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.8); }
+  60%  { box-shadow: 0 0 0 7px rgba(74, 222, 128, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auto-trade-panel-open-strip-dot { animation: none; }
+}
+
+.auto-trade-panel-open-strip-text {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #d1fae5;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+/* Explicația „Running on server” – doar în tooltip (title pe strip); vizual un singur rând */
+.auto-trade-panel-open-strip-sub {
+  display: none;
+}
+
+/* Sursă semnal (live din API) – afișată în strip Running */
+.auto-trade-panel-open-strip-signal-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  opacity: 0.95;
+  color: #a7f3d0;
+  border-left: 1px solid rgba(255,255,255,0.2);
+  padding-left: 10px;
+}
+.auto-trade-panel-open-strip-signal-source strong {
+  font-weight: 700;
+  text-transform: none;
+  color: #fff;
+  background: rgba(0,0,0,0.28);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.auto-trade-panel-open-strip-verify-source {
+  padding: 3px 9px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(74, 222, 128, 0.5);
+  border-radius: 6px;
+  color: #4ade80;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.auto-trade-panel-open-strip-verify-source:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.55);
+  border-color: rgba(74, 222, 128, 0.85);
+}
+.auto-trade-panel-open-strip-verify-source:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Context BTC din ultima analiză (când token !== BTC) */
+.auto-trade-panel-open-strip-btc-context {
+  display: inline-block;
+  font-size: 0.68rem;
+  opacity: 0.9;
+  margin-left: 2px;
+  padding: 2px 7px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 5px;
+  color: #a7f3d0;
+}
+
+/* Chip generic în strip (semnal, BTC, 6h, bias) */
+.atp-strip-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  background: rgba(0,0,0,0.32);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.atp-strip-chip-label {
+  font-size: 0.58rem;
+  font-weight: 600;
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.atp-strip-chip-val {
+  font-size: 0.71rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.01em;
+}
+
+/* Chip „semnal”: icon info + tooltip lung pe tot chip-ul */
+.atp-strip-chip--signal {
+  gap: 5px;
+  padding-right: 5px;
+}
+.atp-strip-chip-info {
+  display: inline-flex;
+  opacity: 0.75;
+  color: #a7f3d0;
+  flex-shrink: 0;
+}
+
+/* Explicație RO sub strip LIVE (nu lărgește bara verde) */
+.auto-trade-panel-strip-signal-explain {
+  margin: 0 0 var(--atp-space-sm) 0;
+  max-width: 52rem;
+  padding: 6px 10px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.88);
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.atp-strip-chip--pos { border-color: rgba(74,222,128,0.35); }
+.atp-strip-chip--pos .atp-strip-chip-val { color: #4ade80; }
+.atp-strip-chip--neg { border-color: rgba(248,113,113,0.35); }
+.atp-strip-chip--neg .atp-strip-chip-val { color: #f87171; }
+
+.atp-strip-chip--bias {
+  font-size: 0.64rem;
+  font-weight: 700;
+  color: #fbbf24;
+  border-color: rgba(251,191,36,0.3);
+  background: rgba(251,191,36,0.08);
+  text-transform: capitalize;
+  padding: 2px 7px;
+}
+
+/* Context BTC lângă Direct Entry – logica de preț BTC folosită de OTA */
+.auto-trade-panel-direct-entry-btc-context {
+  margin: 6px 0 0;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.95);
+}
+.auto-trade-panel-direct-entry-btc-context strong {
+  margin-right: 4px;
+}
+
+.auto-trade-panel-open-strip-stop {
+  flex-shrink: 0;
+}
+
+.auto-trade-panel-open-strip-stop {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: var(--atp-radius-sm);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.auto-trade-panel-open-strip-stop:hover:not(:disabled) {
+  background: #000000;
+}
+
+.auto-trade-panel-open-strip-stop:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.auto-trade-panel-open-strip-spacer {
+  display: none;
+}
+
+/* Bară vizibilă când Auto e ON – cronometru mare, ce face botul, nu se închide singur */
+.auto-trade-panel-bot-active-bar {
+  margin: var(--atp-space-md) 0 var(--atp-space-lg);
+  padding: var(--atp-space-lg);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.1) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.45);
+  border-radius: var(--atp-radius-lg);
+  box-shadow: 0 0 24px rgba(16, 185, 129, 0.12);
+}
+
+.auto-trade-panel-bot-active-bar-inner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--atp-space-md) var(--atp-space-xl);
+}
+
+.auto-trade-panel-bot-active-bar-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--atp-success);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.7);
+  animation: atp-profit-pulse 1.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auto-trade-panel-bot-active-bar-dot { animation: none; }
+}
+
+.auto-trade-panel-bot-active-bar-label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--atp-text-primary);
+}
+
+.auto-trade-panel-bot-active-bar-countdown {
+  font-size: 1rem;
+  color: var(--atp-text-secondary);
+}
+
+.auto-trade-panel-bot-active-bar-countdown strong {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--atp-success);
+  letter-spacing: 0.02em;
+  margin-left: 2px;
+}
+
+.auto-trade-panel-bot-active-bar-worker {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--atp-success);
+}
+
+.auto-trade-panel-bot-active-bar-desc {
+  margin: var(--atp-space-sm) 0 0 0;
+  font-size: 0.8125rem;
+  color: var(--atp-text-secondary);
+  line-height: 1.5;
+}
+
+/* How OTA AI Trading works – fără chenar */
+.auto-trade-panel-how-it-works {
+  margin: var(--atp-space-lg) 0;
+  padding: var(--atp-space-md) 0;
+  background: transparent;
+  border: none;
+}
+
+.auto-trade-panel-how-it-works-title {
+  display: flex;
+  align-items: center;
+  gap: var(--atp-space-sm);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--atp-ai-accent);
+  margin: 0 0 var(--atp-space-sm) 0;
+}
+
+.auto-trade-panel-how-it-works-content {
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--ds-text-secondary);
+}
+
+.auto-trade-panel-how-it-works-steps {
+  margin: 0 0 var(--atp-space-sm) 0;
+  padding-left: 1.25rem;
+}
+
+.auto-trade-panel-how-it-works-steps li {
+  margin-bottom: var(--atp-space-xs);
+}
+
+.auto-trade-panel-how-it-works-steps strong {
+  color: var(--ds-text-primary);
+}
+
+.auto-trade-panel-how-it-works-note {
+  margin: 0;
+  font-size: 0.75rem;
+  opacity: 0.9;
+}
+
+/* Start / Stop – loading state */
+.auto-trade-panel-start-stop--loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--atp-space-sm);
+  padding: var(--atp-space-lg);
+  font-size: 0.875rem;
+  color: var(--ds-text-secondary);
+}
+
+/* Start / Stop Bot – fără chenar (evită ferestră în fereastră) */
+.auto-trade-panel-start-stop {
+  display: flex;
+  flex-direction: column;
+  gap: var(--atp-space-sm);
+  margin: var(--atp-space-lg) 0;
+  padding: var(--atp-space-md) 0;
+}
+
+/* Stop/Start + controale LLM pe același rând (wrap pe ecran îngust) */
+.auto-trade-panel-start-stop-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--atp-space-sm);
+}
+
+.auto-trade-panel-start-stop-actions > .auto-trade-panel-btn-start-stop {
+  width: auto;
+  min-width: min(100%, 11.5rem);
+  max-width: 320px;
+  margin: 0;
+  flex: 0 0 auto;
+}
+
+/* Iconițe SVG animate (Auto Trade / LLM) */
+.atp-action-ico {
+  flex-shrink: 0;
+  display: block;
+}
+
+.atp-action-ico--stop .atp-action-ico__stop-ring {
+  animation: atp-ico-stop-ring 2.2s ease-in-out infinite;
+}
+
+.atp-action-ico--stop .atp-action-ico__stop-core {
+  animation: atp-ico-stop-core 1.35s ease-in-out infinite;
+  transform-origin: 12px 12px;
+}
+
+.atp-action-ico--start .atp-action-ico__start-halo {
+  animation: atp-ico-start-halo 1.85s ease-in-out infinite;
+  transform-origin: 12px 12px;
+}
+
+.atp-action-ico--start .atp-action-ico__start-play {
+  animation: atp-ico-start-play 1.85s ease-in-out infinite;
+  transform-origin: 12px 12px;
+}
+
+.atp-action-ico--llm-pause .atp-action-ico__pause-bar--l {
+  animation: atp-ico-pause-bar 1.05s ease-in-out infinite;
+  transform-origin: 8.75px 12px;
+}
+
+.atp-action-ico--llm-pause .atp-action-ico__pause-bar--r {
+  animation: atp-ico-pause-bar 1.05s ease-in-out infinite 0.14s;
+  transform-origin: 15.25px 12px;
+}
+
+.atp-action-ico--llm-resume .atp-action-ico__resume-ring {
+  animation: atp-ico-resume-ring 1.9s ease-in-out infinite;
+  transform-origin: 12px 12px;
+}
+
+.atp-action-ico--llm-resume .atp-action-ico__resume-play {
+  animation: atp-ico-resume-play 1.55s ease-in-out infinite;
+  transform-origin: 12px 12px;
+}
+
+@keyframes atp-ico-stop-ring {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes atp-ico-stop-core {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.88);
+    opacity: 0.88;
+  }
+}
+
+@keyframes atp-ico-start-halo {
+  0%,
+  100% {
+    opacity: 0.28;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(1.07);
+  }
+}
+
+@keyframes atp-ico-start-play {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(1.5px);
+  }
+}
+
+@keyframes atp-ico-pause-bar {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.68);
+  }
+}
+
+@keyframes atp-ico-resume-ring {
+  0%,
+  100% {
+    opacity: 0.22;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes atp-ico-resume-play {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.07);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .atp-action-ico--stop .atp-action-ico__stop-ring,
+  .atp-action-ico--stop .atp-action-ico__stop-core,
+  .atp-action-ico--start .atp-action-ico__start-halo,
+  .atp-action-ico--start .atp-action-ico__start-play,
+  .atp-action-ico--llm-pause .atp-action-ico__pause-bar--l,
+  .atp-action-ico--llm-pause .atp-action-ico__pause-bar--r,
+  .atp-action-ico--llm-resume .atp-action-ico__resume-ring,
+  .atp-action-ico--llm-resume .atp-action-ico__resume-play {
+    animation: none;
+  }
+}
+
+/* LLM inline — pill-uri aliniate vizual cu Stop/Start */
+.auto-trade-panel-llm-inline {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--atp-space-xs);
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.auto-trade-panel-llm-inline__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--atp-space-xs);
+}
+
+.auto-trade-panel-llm-inline__btn,
+.auto-trade-panel-llm-inline__refresh {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--atp-space-xs);
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--atp-text-primary);
+  cursor: pointer;
+  transition: background var(--atp-transition), border-color var(--atp-transition);
+  box-sizing: border-box;
+}
+
+.auto-trade-panel-llm-inline__btn:hover:not(:disabled),
+.auto-trade-panel-llm-inline__refresh:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.auto-trade-panel-llm-inline__btn:disabled,
+.auto-trade-panel-llm-inline__refresh:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* OpenAI: suspend = cyan, resume = verde */
+.auto-trade-panel-llm-inline__btn--suspend-openai {
+  border-color: rgba(6, 182, 212, 0.55);
+  background: rgba(6, 182, 212, 0.14);
+  color: #a5f3fc;
+}
+
+.auto-trade-panel-llm-inline__btn--suspend-openai:hover:not(:disabled) {
+  background: rgba(6, 182, 212, 0.22);
+  border-color: rgba(6, 182, 212, 0.7);
+}
+
+.auto-trade-panel-llm-inline__btn--resume-openai {
+  border-color: rgba(16, 185, 129, 0.5);
+  background: rgba(16, 185, 129, 0.14);
+  color: #a7f3d0;
+}
+
+.auto-trade-panel-llm-inline__btn--resume-openai:hover:not(:disabled) {
+  background: rgba(16, 185, 129, 0.22);
+  border-color: rgba(16, 185, 129, 0.65);
+}
+
+/* Claude: suspend = amber, resume = verde */
+.auto-trade-panel-llm-inline__btn--suspend-claude {
+  border-color: rgba(245, 158, 11, 0.55);
+  background: rgba(245, 158, 11, 0.12);
+  color: #fde68a;
+}
+
+.auto-trade-panel-llm-inline__btn--suspend-claude:hover:not(:disabled) {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: rgba(245, 158, 11, 0.72);
+}
+
+.auto-trade-panel-llm-inline__btn--resume-claude {
+  border-color: rgba(16, 185, 129, 0.5);
+  background: rgba(16, 185, 129, 0.14);
+  color: #a7f3d0;
+}
+
+.auto-trade-panel-llm-inline__btn--resume-claude:hover:not(:disabled) {
+  background: rgba(16, 185, 129, 0.22);
+  border-color: rgba(16, 185, 129, 0.65);
+}
+
+.auto-trade-panel-llm-inline__refresh {
+  width: 44px;
+  min-width: 44px;
+  padding: 0;
+  flex-shrink: 0;
+  color: var(--ds-text-secondary);
+}
+
+.auto-trade-panel-llm-inline__meta {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--atp-space-xs);
+  justify-content: center;
+  text-align: center;
+}
+
+.auto-trade-panel-llm-inline__err {
+  font-size: 0.75rem;
+  color: var(--atp-error);
+  line-height: 1.35;
+}
+
+.auto-trade-panel-llm-inline__warn {
+  font-size: 0.75rem;
+  color: var(--atp-warning);
+  line-height: 1.35;
+}
+
+@media (min-width: 720px) {
+  .auto-trade-panel-start-stop-actions {
+    justify-content: center;
+    gap: var(--atp-space-md);
+  }
+
+  .auto-trade-panel-llm-inline__row {
+    justify-content: flex-start;
+  }
+
+  .auto-trade-panel-llm-inline__meta {
+    justify-content: flex-start;
+    text-align: left;
+  }
+}
+
+/* Stil comun: Start Auto Trading + Direct Entry – pill ca Access Granted */
+.auto-trade-panel-btn-start-stop,
+.auto-trade-panel-btn-direct-entry {
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.auto-trade-panel-btn-start-stop {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--atp-space-sm);
+}
+
+.auto-trade-panel-btn-start-stop:disabled,
+.auto-trade-panel-btn-direct-entry:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.auto-trade-panel-btn-start,
+.auto-trade-panel-btn-direct-entry {
+  background: linear-gradient(145deg, #34d399 0%, #10b981 45%, #047857 100%);
+  color: #fff;
+  border-color: #065f46;
+  box-shadow: 0 0 0 1px rgba(167, 243, 208, 0.25), 0 4px 14px rgba(16, 185, 129, 0.28);
+}
+
+.auto-trade-panel-btn-direct-entry {
+  color: #ffffff;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+}
+
+.auto-trade-panel-btn-start:hover:not(:disabled),
+.auto-trade-panel-btn-direct-entry:hover:not(:disabled) {
+  background: linear-gradient(145deg, #6ee7b7 0%, #059669 40%, #064e3b 100%);
+  border-color: #022c22;
+  box-shadow: 0 0 0 1px rgba(167, 243, 208, 0.35), 0 6px 18px rgba(16, 185, 129, 0.35);
+}
+
+.auto-trade-panel-btn-stop {
+  background: linear-gradient(145deg, #f87171 0%, #dc2626 45%, #b91c1c 100%);
+  color: #fff;
+  border-color: #7f1d1d;
+  box-shadow: 0 0 0 1px rgba(254, 202, 202, 0.35), 0 4px 14px rgba(220, 38, 38, 0.35);
+}
+
+.auto-trade-panel-btn-stop:hover:not(:disabled) {
+  background: linear-gradient(145deg, #fca5a5 0%, #ef4444 40%, #991b1b 100%);
+  border-color: #450a0a;
+  box-shadow: 0 0 0 1px rgba(254, 202, 202, 0.45), 0 6px 18px rgba(220, 38, 38, 0.42);
+}
+
+.auto-trade-panel-start-stop-hint {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ds-text-secondary);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.auto-trade-panel-start-stop-status {
+  display: flex;
+  flex-direction: column;
+  gap: var(--atp-space-xs);
+  margin-top: var(--atp-space-xs);
+}
+
+.auto-trade-panel-authorized-limit {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ds-accent, #3b82f6);
+  text-align: center;
+}
+
+.auto-trade-panel-authorized-limit strong {
+  font-size: 1.35rem;
+}
+
+.auto-trade-panel-auth-expiry {
+  margin: 0.35rem 0 0 0;
+  font-size: 0.875rem;
+  color: var(--ds-text-secondary);
+}
+.auto-trade-panel-auth-expiry:empty {
+  display: none;
+}
+
+.auto-trade-panel-executions-24h {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ds-text-secondary);
+  text-align: center;
+}
+
+/* Close Position Bar – apare deasupra card-ului Direct Entry când există poziție deschisă */
+.auto-trade-panel-close-position-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: 8px;
+}
+
+.auto-trade-panel-close-position-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--dex-text-secondary, #ccc);
+}
+
+.auto-trade-panel-close-position-icon {
+  color: #ef4444;
+  flex-shrink: 0;
+}
+
+.auto-trade-panel-btn-close-position {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border-radius: 6px;
+  border: 1px solid rgba(239, 68, 68, 0.7);
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.auto-trade-panel-btn-close-position:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.28);
+  border-color: #ef4444;
+}
+
+.auto-trade-panel-btn-close-position:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.auto-trade-panel-close-position-spinner {
+  font-size: 13px;
+  color: #ef4444;
+}
+
+/* Direct Entry – Binance-style: proporțional în fereastră, CTA clar */
+.auto-trade-panel-direct-entry {
+  margin-top: var(--atp-space-lg);
+  padding-top: var(--atp-space-md);
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Fără chenar – evită fereastră în fereastră */
+.auto-trade-panel-direct-entry-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  gap: 10px;
+  box-sizing: border-box;
+}
+
+.auto-trade-panel-direct-entry-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+}
+
+.auto-trade-panel-direct-entry-amount-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #d1d5db;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+/* O singură linie: Input + Quote + 50% 75% MAX + Authorized + Vault + Direct */
+.auto-trade-panel-direct-entry-single-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 12px;
+  flex-wrap: wrap;
+  width: 100%;
+  min-width: 0;
+  padding: 6px 0;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.auto-trade-panel-direct-entry-single-line:focus-within {
+  outline: none;
+}
+
+.auto-trade-panel-direct-entry-amount {
+  flex: 0 1 auto;
+  min-width: 96px;
+  max-width: 240px;
+  height: 40px;
+  padding: 0 14px;
+  background: rgba(30, 41, 59, 0.98);
+  border: 2px solid #64748b;
+  border-radius: 10px;
+  color: var(--ds-text-primary);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: left;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.auto-trade-panel-direct-entry-amount::placeholder {
+  color: #94a3b8;
+}
+
+.auto-trade-panel-direct-entry-amount:hover {
+  border-color: #64748b;
+}
+
+.auto-trade-panel-direct-entry-amount:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+}
+
+/* BNB + 50% 75% MAX – aceeași mărime, pill, stil unitar, pregnante */
+.auto-trade-panel-direct-entry-percent-btns {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.auto-trade-panel-direct-entry-percent-btn,
+.auto-trade-panel-direct-entry-quote-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  min-width: 56px;
+  padding: 0 14px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #e5e7eb;
+  background: rgba(30, 41, 59, 0.95);
+  border: 1px solid #475569;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.auto-trade-panel-direct-entry-percent-btn:hover:not(:disabled),
+.auto-trade-panel-direct-entry-quote-btn:hover {
+  color: #ffffff;
+  background: rgba(51, 65, 85, 0.98);
+  border-color: #64748b;
+  box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.2);
+}
+
+.auto-trade-panel-direct-entry-percent-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+/* Quote token selector – same pill as percent btns */
+.auto-trade-panel-direct-entry-quote-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.auto-trade-panel-direct-entry-quote-btn {
+  font-family: inherit;
+}
+
+.auto-trade-panel-direct-entry-quote-btn svg {
+  flex-shrink: 0;
+  color: #e5e7eb;
+  transition: transform var(--atp-transition);
+}
+
+.auto-trade-panel-direct-entry-quote-btn .auto-trade-panel-direct-entry-quote-chevron-open {
+  transform: rotate(180deg);
+}
+
+.auto-trade-panel-direct-entry-quote-logo {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.auto-trade-panel-direct-entry-quote-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 100%;
+  z-index: var(--ds-z-floating-ui, 9999);
+  background: #1e293b;
+  border: 1px solid #4b5563;
+  border-radius: var(--atp-radius-sm);
+  box-shadow: 0 4px 12px #0f172a;
+  overflow: hidden;
+}
+
+.auto-trade-panel-direct-entry-quote-option {
+  display: flex;
+  align-items: center;
+  gap: var(--atp-space-xs);
+  width: 100%;
+  padding: var(--atp-space-xs) var(--atp-space-sm);
+  background: transparent;
+  border: none;
+  color: var(--ds-text-primary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--atp-transition);
+}
+
+.auto-trade-panel-direct-entry-quote-option-logo {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+}
+
+.auto-trade-panel-direct-entry-quote-option:hover {
+  background: #334155;
+}
+
+.auto-trade-panel-direct-entry-quote-option-selected {
+  background: #1e40af;
+  color: #93c5fd;
+}
+
+/* CTA Direct Entry – două rânduri, stil comun cu Start */
+.auto-trade-panel-btn-direct-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.auto-trade-panel-btn-direct-entry-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.auto-trade-panel-btn-direct-entry-row1 {
+  display: flex;
+  align-items: center;
+  gap: var(--atp-space-sm);
+  color: #fff;
+  font-size: 1rem;
+}
+
+.auto-trade-panel-btn-direct-entry-row2 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.auto-trade-panel-btn-direct-entry-icon {
+  flex-shrink: 0;
+  color: #fff;
+}
+
+.auto-trade-panel-btn-direct-entry-logo {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.auto-trade-panel-btn-direct-entry-pair-sep {
+  margin: 0 2px;
+  color: inherit;
+  font-weight: 600;
+}
+
+.auto-trade-panel-btn-direct-entry-label {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #fff;
+}
+
+.auto-trade-panel-direct-entry-token {
+  font-weight: 600;
+  color: #fff;
+}
+
+.auto-trade-panel-direct-entry-price {
+  font-weight: 600;
+  color: #fff;
+}
+
+/* BNB ≈ USD – valori calculate în buton, același stil ca prețul */
+.auto-trade-panel-direct-entry-usd-badge {
+  margin-left: 6px;
+  font-weight: 600;
+  color: #fff;
+  font-size: 0.875rem;
+}
+.auto-trade-panel-direct-entry-usd-hint {
+  font-weight: 600;
+  color: #fff;
+  font-size: 0.875rem;
+}
+
+.auto-trade-panel-direct-entry-price-loading {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+}
+
+.auto-trade-panel-direct-entry-price-loading .ai-trading-loading-spinner,
+.auto-trade-panel-direct-entry-price-loading-inline .ai-trading-loading-spinner {
+  min-height: 0;
+  padding: 0;
+  flex-direction: row;
+  gap: 4px;
+}
+
+.auto-trade-panel-direct-entry-price-loading .ai-trading-spinner,
+.auto-trade-panel-direct-entry-price-loading-inline .ai-trading-spinner {
+  width: 12px;
+  height: 12px;
+  border-width: 2px;
+}
+
+.auto-trade-panel-direct-entry-price-loading-inline .ai-trading-loading-message,
+.auto-trade-panel-direct-entry-price-loading .ai-trading-loading-message {
+  display: none;
+}
+
+.auto-trade-panel-direct-entry-price-loading-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  color: #d1d5db;
+}
+
+.auto-trade-panel-direct-entry-hint {
+  margin: 12px 0 0 0;
+  font-size: 0.75rem;
+  color: #e5e7eb;
+  text-align: left;
+  line-height: 1.5;
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.auto-trade-panel-direct-entry-vault-hint {
+  margin: var(--atp-space-sm) 0 0 0;
+  padding: 0;
+  font-size: 0.7rem;
+  color: #d1d5db;
+  background: transparent;
+  border: none;
+  line-height: 1.4;
+}
+
+.auto-trade-panel-direct-entry-link {
+  display: inline;
+  padding: 0 2px;
+  font-size: inherit;
+  font-weight: 600;
+  color: #60a5fa;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.auto-trade-panel-direct-entry-link:hover {
+  color: #93c5fd;
+}
+
+.auto-trade-panel-direct-entry-authorized-badge,
+.auto-trade-panel-direct-entry-vault-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  color: #e5e7eb;
+  padding: 4px 8px;
+  background: transparent;
+  border: none;
+}
+
+.auto-trade-panel-direct-entry-vault-badge {
+  background: transparent;
+}
+
+/* Profit hero – vizibil la top când Auto e ON, cum crește/scade */
+.auto-trade-panel-profit-hero {
+  margin: var(--atp-space-md) 0 var(--atp-space-lg);
+  padding: var(--atp-space-lg);
+  border-radius: var(--atp-radius-lg);
+  position: relative;
+}
+
+.auto-trade-panel-profit-hero.positive {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(5, 150, 105, 0.12) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+}
+
+.auto-trade-panel-profit-hero.negative {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.14) 0%, rgba(220, 38, 38, 0.08) 100%);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.1);
+}
+
+.auto-trade-panel-profit-hero.neutral {
+  background: rgba(var(--ds-accent-rgb, 59, 130, 246), 0.1);
+  border: 1px solid rgba(var(--ds-accent-rgb, 59, 130, 246), 0.3);
+}
+
+.auto-trade-panel-profit-hero-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--atp-space-sm);
+  padding-right: 60px; /* room for Live badge */
+}
+
+.auto-trade-panel-profit-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #10b981;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: absolute;
+  top: var(--atp-space-md);
+  right: var(--atp-space-md);
+}
+
+.auto-trade-panel-profit-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  animation: atp-profit-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes atp-profit-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+  50% { opacity: 0.8; transform: scale(1.1); }
+  75% { box-shadow: 0 0 0 4px rgba(16, 185, 129, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auto-trade-panel-profit-live-dot { animation: none; }
+}
+
+.auto-trade-panel-profit-hero-value-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--atp-space-md);
+}
+
+.auto-trade-panel-profit-hero-icon {
+  flex-shrink: 0;
+}
+
+.auto-trade-panel-profit-hero.positive .auto-trade-panel-profit-hero-icon { color: #10b981; }
+.auto-trade-panel-profit-hero.negative .auto-trade-panel-profit-hero-icon { color: #ef4444; }
+.auto-trade-panel-profit-hero.neutral .auto-trade-panel-profit-hero-icon { color: var(--atp-ai-accent); }
+
+.auto-trade-panel-profit-hero-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ds-text-secondary);
+  margin-bottom: 2px;
+}
+
+.auto-trade-panel-profit-hero-value {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  transition: color 0.3s ease;
+}
+
+.auto-trade-panel-profit-hero-value.positive {
+  color: #10b981;
+  animation: atp-profit-up 0.6s ease-out;
+}
+
+.auto-trade-panel-profit-hero-value.negative {
+  color: #ef4444;
+  animation: atp-profit-down 0.6s ease-out;
+}
+
+.auto-trade-panel-profit-hero-value.neutral {
+  color: var(--ds-text-secondary);
+}
+
+@keyframes atp-profit-up {
+  0% { opacity: 0.7; transform: scale(0.98); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes atp-profit-down {
+  0% { opacity: 0.7; transform: scale(0.98); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auto-trade-panel-profit-hero-value.positive,
+  .auto-trade-panel-profit-hero-value.negative { animation: none; }
+}
+
+.auto-trade-panel-profit-hero-hint {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ds-text-secondary);
+  line-height: 1.5;
+}
+
+/* Badge profit OTA – vizibil, motivant (când Auto OFF) */
+.auto-trade-panel-profit-badge {
+  display: flex;
+  flex-direction: column;
+  gap: var(--atp-space-sm);
+  margin: var(--atp-space-lg) 0;
+  padding: var(--atp-space-lg);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(5, 150, 105, 0.08) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: var(--atp-radius-lg);
+}
+
+.auto-trade-panel-profit-badge > div {
+  display: flex;
+  align-items: center;
+  gap: var(--atp-space-md);
+}
+
+.auto-trade-panel-profit-badge svg {
+  flex-shrink: 0;
+  color: #10b981;
+}
+
+.auto-trade-panel-profit-badge.negative {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.06) 100%);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.auto-trade-panel-profit-badge.negative svg {
+  color: #ef4444;
+}
+
+.auto-trade-panel-profit-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ds-text-secondary);
+}
+
+.auto-trade-panel-profit-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.auto-trade-panel-profit-value.positive {
+  color: #10b981;
+}
+
+.auto-trade-panel-profit-value.negative {
+  color: #ef4444;
+}
+
+.auto-trade-panel-profit-value.neutral {
+  color: var(--ds-text-secondary);
+}
+
+.auto-trade-panel-profit-badge.neutral {
+  background: rgba(var(--ds-accent-rgb, 59, 130, 246), 0.08);
+  border-color: rgba(var(--ds-accent-rgb, 59, 130, 246), 0.2);
+}
+
+.auto-trade-panel-profit-badge.neutral svg {
+  color: var(--atp-ai-accent);
+}
+
+.auto-trade-panel-profit-recovery-hint {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ds-text-secondary);
+  line-height: 1.5;
+}
+
+.auto-trade-panel-inline-link {
+  background: none;
+  border: none;
+  color: #4facfe;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+  font-weight: 600;
+}
+
+.auto-trade-panel-inline-link:hover {
+  opacity: 0.9;
+}
+
+/* OTA Executions – ce face OTA AI, profit per rând vizibil */
+.auto-trade-panel-ota-executions {
+  margin-top: var(--atp-space-lg);
+}
+
+.auto-trade-panel-ota-executions-card {
+  padding: var(--atp-space-md) var(--atp-space-lg);
+  background: rgba(16, 185, 129, 0.06);
+  border-radius: var(--atp-radius-md);
+  border: 1.5px solid rgba(16, 185, 129, 0.45);
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.12);
+  position: relative;
+}
+
+.auto-trade-panel-ota-executions-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #10b981, transparent);
+  border-radius: var(--atp-radius-md) var(--atp-radius-md) 0 0;
+}
+
+.auto-trade-panel-ota-executions-header {
+  display: flex;
+  align-items: center;
+  gap: var(--atp-space-sm);
+  margin-bottom: var(--atp-space-md);
+  flex-wrap: wrap;
+}
+
+.auto-trade-panel-ota-executions-icon {
+  flex-shrink: 0;
+  color: var(--atp-ai-accent);
+}
+
+.auto-trade-panel-ota-executions-title {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: #10b981;
+  flex: 1;
+  letter-spacing: 0.01em;
+}
+
+.auto-trade-panel-ota-executions-updating {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #10b981;
+}
+
+.auto-trade-panel-updating-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #10b981;
+  animation: atp-profit-pulse 1.5s ease-in-out infinite;
+}
+
+.auto-trade-panel-ota-executions-loading,
+.auto-trade-panel-ota-executions-empty {
+  font-size: 0.8125rem;
+  color: var(--ds-text-secondary);
+  margin: 0;
+}
+
+.auto-trade-panel-ota-executions-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 0.8125rem;
+  color: var(--ds-status-error, #ef4444);
+  margin: 8px 0;
+  padding: 8px 10px;
+  background: rgba(239, 68, 68, 0.08);
+  border-radius: 6px;
+}
+
+.auto-trade-panel-ota-executions-retry {
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  background: var(--ds-bg-secondary);
+  border: 1px solid var(--ds-border);
+  border-radius: 4px;
+  color: inherit;
+}
+
+.auto-trade-panel-ota-executions-retry:hover {
+  background: var(--ds-bg-tertiary);
+}
+
+.auto-trade-panel-ota-executions-list {
+  max-height: 420px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--atp-space-sm);
+}
+
+.auto-trade-panel-ota-executions-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.auto-trade-panel-ota-executions-list::-webkit-scrollbar-track {
+  background: #000000;
+  border-radius: 3px;
+}
+
+.auto-trade-panel-ota-executions-list::-webkit-scrollbar-thumb {
+  background: rgba(var(--ds-accent-rgb, 59, 130, 246), 0.35);
+  border-radius: 3px;
+}
+
+.auto-trade-panel-ota-executions-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--ds-accent-rgb, 59, 130, 246), 0.5);
+}
+
+/* Popup persistent OPEN – toate detaliile LIVE */
+.auto-trade-panel-ota-open-detail {
+  font-size: 0.875rem;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+.auto-trade-panel-ota-open-detail-summary {
+  margin: 0 0 12px;
+  font-weight: 600;
+  color: var(--ds-text);
+}
+.auto-trade-panel-ota-open-detail-meta {
+  margin-bottom: 12px;
+}
+.auto-trade-panel-ota-open-detail-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--ds-text-secondary);
+}
+.auto-trade-panel-ota-open-detail-dl {
+  display: grid;
+  grid-template-columns: minmax(140px, auto) 1fr;
+  gap: 4px 16px;
+  margin: 0;
+  font-size: 0.8125rem;
+}
+.auto-trade-panel-ota-open-detail-dl dt {
+  margin: 0;
+  color: var(--ds-text-secondary);
+  word-break: break-word;
+}
+.auto-trade-panel-ota-open-detail-dl dd {
+  margin: 0;
+  word-break: break-all;
+  color: var(--ds-text);
+}
+.auto-trade-panel-ota-open-detail-dl dd.positive {
+  color: var(--ds-success, #22c55e);
+}
+.auto-trade-panel-ota-open-detail-dl dd.negative {
+  color: var(--ds-danger, #ef4444);
+}
+.auto-trade-panel-ota-open-detail-derived,
+.auto-trade-panel-ota-open-detail-live {
+  margin-bottom: 12px;
+}
+.auto-trade-panel-ota-open-detail-tx {
+  margin: 12px 0 0;
+}
+.auto-trade-panel-ota-open-detail-tx a {
+  color: var(--ds-accent);
+}
+
+.auto-trade-panel button:focus-visible,
+.auto-trade-panel [role="button"]:focus-visible,
+.auto-trade-panel a:focus-visible {
+  outline: 2px solid var(--ds-accent);
+  outline-offset: 2px;
+}
+
+/* De ce OTA nu deschide poziții – diagnostic + impedimente */
+.auto-trade-panel-why-no-open {
+  margin-top: var(--atp-space-lg);
+}
+
+.auto-trade-panel-why-no-open-card {
+  padding: var(--atp-space-md) var(--atp-space-lg);
+  background: rgba(251, 191, 36, 0.06);
+  border-radius: var(--atp-radius-md);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+}
+
+.auto-trade-panel-why-no-open-header {
+  margin-bottom: var(--atp-space-sm);
+}
+
+.auto-trade-panel-why-no-open-title {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: #b45309;
+}
+
+.auto-trade-panel-why-no-open-body {
+  font-size: 0.8125rem;
+  color: var(--ds-text-secondary);
+}
+
+.auto-trade-panel-why-no-open-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: var(--atp-space-md);
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(251, 191, 36, 0.28);
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.auto-trade-panel-why-no-open-summary--danger {
+  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(127, 29, 29, 0.18);
+}
+
+.auto-trade-panel-why-no-open-summary--warning {
+  border-color: rgba(251, 191, 36, 0.35);
+  background: rgba(120, 53, 15, 0.18);
+}
+
+.auto-trade-panel-why-no-open-summary--success {
+  border-color: rgba(16, 185, 129, 0.35);
+  background: rgba(6, 95, 70, 0.18);
+}
+
+.auto-trade-panel-why-no-open-summary-headline {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--ds-text-primary, #f8fafc);
+}
+
+.auto-trade-panel-why-no-open-summary-copy {
+  margin: 0;
+  line-height: 1.5;
+  color: var(--ds-text-secondary);
+}
+
+.auto-trade-panel-why-no-open-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.auto-trade-panel-why-no-open-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(2, 6, 23, 0.35);
+}
+
+.auto-trade-panel-why-no-open-metric-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ds-text-tertiary, #94a3b8);
+}
+
+.auto-trade-panel-why-no-open-metric-value {
+  font-size: 0.88rem;
+  color: var(--ds-text-primary, #f8fafc);
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.auto-trade-panel-why-no-open-hints,
+.auto-trade-panel-why-no-open-circuit,
+.auto-trade-panel-why-no-open-checklist {
+  margin-top: var(--atp-space-sm);
+}
+
+.auto-trade-panel-why-no-open-hints ul,
+.auto-trade-panel-why-no-open-checklist ul {
+  margin: 4px 0 0 1em;
+  padding-left: 0.5em;
+}
+
+.auto-trade-panel-why-no-open-circuit {
+  color: #b45309;
+}
+
+.auto-trade-panel-why-no-open-none {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ds-text-secondary);
+}
+
+/* OTA Auto Matrix trace – reuses the live executor trace component, without a SHORT/LONG filter. */
+.auto-trade-panel-matrix-trace {
+  margin-top: var(--atp-space-lg);
+}
+
+.auto-trade-panel-matrix-trace-card {
+  padding: var(--atp-space-md) var(--atp-space-lg);
+  border-radius: var(--atp-radius-md);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  background:
+    radial-gradient(circle at top left, rgba(34, 197, 94, 0.12), transparent 34%),
+    rgba(2, 6, 23, 0.72);
+  box-shadow: inset 0 0 28px rgba(34, 197, 94, 0.08);
+}
+
+.auto-trade-panel-matrix-trace-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--atp-space-sm);
+  margin-bottom: var(--atp-space-sm);
+  flex-wrap: wrap;
+}
+
+.auto-trade-panel-matrix-trace-title {
+  font-family: Consolas, "Cascadia Mono", "Segoe UI Mono", ui-monospace, monospace;
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: #86efac;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.auto-trade-panel-matrix-trace-subtitle {
+  font-size: 0.72rem;
+  color: var(--ds-text-secondary, #94a3b8);
+}
+
+.auto-trade-panel-matrix-trace .short-ops-toolbar-trace-slot {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.42);
+  border: 1px solid rgba(34, 197, 94, 0.28);
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.auto-trade-panel-matrix-trace .short-ops-toolbar-trace-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  min-height: 1.35rem;
+}
+
+.auto-trade-panel-matrix-trace .short-ops-toolbar-trace-terminal {
+  min-height: 7rem;
+  max-height: min(260px, 34vh);
+  overflow: auto;
+  font-family: Consolas, "Cascadia Mono", "Segoe UI Mono", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: #bbf7d0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background:
+    linear-gradient(180deg, rgba(34, 197, 94, 0.08), rgba(2, 6, 23, 0.2)),
+    rgba(0, 0, 0, 0.46);
+  border: 1px solid rgba(34, 197, 94, 0.18);
+  border-radius: 7px;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+/* AI Monitoring Status Panel */
+.auto-trade-panel-monitoring-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--atp-space-lg);
+  flex-wrap: wrap;
+  gap: var(--atp-space-md);
+}
+
+.auto-trade-panel-monitoring-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--atp-space-md);
+}
+
+.auto-trade-panel-monitoring-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--atp-success);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
+  animation: pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auto-trade-panel-monitoring-dot { animation: none; }
+}
+
+.auto-trade-panel-monitoring-title {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--atp-success);
+  margin-bottom: 2px;
+}
+
+.auto-trade-panel-monitoring-countdown {
+  font-size: 0.75rem;
+  color: var(--atp-text-secondary);
+}
+
+.auto-trade-panel-monitoring-actions {
+  display: flex;
+  gap: var(--atp-space-sm);
+}
+
+.auto-trade-panel-btn-view-signals {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(79, 172, 254, 0.15);
+  border: 1px solid rgba(79, 172, 254, 0.3);
+  border-radius: var(--atp-radius-md);
+  color: var(--atp-accent-link);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--atp-transition), background var(--atp-transition);
+}
+
+.auto-trade-panel-btn-view-signals:hover {
+  background: rgba(79, 172, 254, 0.22);
+  opacity: 0.95;
+}
+
+.auto-trade-panel-monitoring-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--atp-space-md);
+  margin-bottom: var(--atp-space-lg);
+}
+
+.auto-trade-panel-monitoring-stat {
+  background: #000000;
+  border-radius: var(--atp-radius-md);
+  padding: var(--atp-space-md);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.auto-trade-panel-monitoring-stat-label {
+  font-size: 0.75rem;
+  color: var(--atp-text-secondary);
+  margin-bottom: var(--atp-space-xs);
+}
+
+.auto-trade-panel-monitoring-stat-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--atp-text-primary);
+}
+
+.auto-trade-panel-monitoring-stat-value.highlight {
+  font-size: 1.25rem;
+  color: var(--atp-success);
+}
+
+.auto-trade-panel-monitoring-stat-value.secondary {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--atp-text-secondary);
+}
+
+.auto-trade-panel-worker-status {
+  display: flex;
+  align-items: center;
+  gap: var(--atp-space-md);
+  padding: var(--atp-space-sm) var(--atp-space-md);
+  border-radius: var(--atp-radius-md);
+  background: #000000;
+  margin-bottom: var(--atp-space-md);
+  font-size: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.auto-trade-panel-worker-status .auto-trade-panel-worker-meta {
+  color: var(--atp-text-secondary);
+}
+
+.auto-trade-panel-worker-label {
+  color: var(--atp-text-primary);
+}
+
+.auto-trade-panel-worker-value--active {
+  color: var(--atp-success);
+  font-weight: 600;
+}
+
+.auto-trade-panel-worker-value--warn {
+  color: var(--atp-warning, #f59e0b);
+  font-weight: 600;
+}
+
+.auto-trade-panel-worker-status.active {
+  background: var(--atp-success-bg);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.auto-trade-panel-worker-status.inactive {
+  background: var(--atp-error-bg);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.auto-trade-panel-worker-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.auto-trade-panel-worker-dot.active {
+  background: var(--atp-success);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+}
+
+.auto-trade-panel-worker-dot.inactive {
+  background: var(--atp-error);
+}
+
+.auto-trade-panel-agent-badge {
+  color: var(--ds-accent);
+  font-size: 0.85em;
+  font-weight: 500;
+}
+
+.auto-trade-panel-agent-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+}
+.auto-trade-panel-agent-mode-toggle input {
+  margin: 0;
+  cursor: pointer;
+}
+.auto-trade-panel-agent-mode-label {
+  color: var(--atp-text-secondary);
+}
+
+/* 8.2: Agent alerts (error rate, cost) */
+.auto-trade-panel-agent-alerts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+.auto-trade-panel-agent-alert {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--atp-warning, #f59e0b);
+  background: rgba(245, 158, 11, 0.12);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.auto-trade-panel-agent-sessions {
+  margin-top: var(--atp-space-sm);
+}
+.auto-trade-panel-agent-sessions-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--ds-accent);
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 2px 0;
+}
+.auto-trade-panel-agent-sessions-toggle:hover {
+  text-decoration: underline;
+}
+.auto-trade-panel-agent-sessions-list {
+  margin: 6px 0 0 0;
+  padding-left: 1rem;
+  list-style: none;
+}
+.auto-trade-panel-agent-session-item {
+  font-size: 0.75rem;
+  color: var(--atp-text-secondary);
+  margin-bottom: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.auto-trade-panel-agent-decision {
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.auto-trade-panel-agent-decision--hold {
+  color: var(--atp-text-secondary);
+}
+.auto-trade-panel-agent-decision--open_buy {
+  color: var(--atp-success);
+}
+.auto-trade-panel-agent-decision--open_sell,
+.auto-trade-panel-agent-decision--close {
+  color: var(--atp-warning, #f59e0b);
+}
+.auto-trade-panel-agent-summary {
+  opacity: 0.9;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.auto-trade-panel-agent-time {
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+
+/* 7.2: Agent thought → Action → Result (turns) */
+.auto-trade-panel-agent-session-header {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  width: 100%;
+}
+.auto-trade-panel-agent-session-header:hover {
+  opacity: 0.9;
+}
+.auto-trade-panel-agent-expand-icon {
+  margin-left: auto;
+  opacity: 0.7;
+}
+.auto-trade-panel-agent-turns {
+  margin-top: 6px;
+  padding: 8px 0 0 12px;
+  border-left: 2px solid var(--ds-accent);
+  font-size: 0.7rem;
+  color: var(--atp-text-secondary);
+  line-height: 1.4;
+}
+.auto-trade-panel-agent-turn {
+  margin-bottom: 6px;
+}
+.auto-trade-panel-agent-turn-thought,
+.auto-trade-panel-agent-turn-action {
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+.auto-trade-panel-agent-turn-thought strong,
+.auto-trade-panel-agent-turn-action strong {
+  color: var(--atp-text);
+}
+
+.auto-trade-panel-pnl-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--atp-space-md);
+  margin-bottom: var(--atp-space-lg);
+}
+
+.auto-trade-panel-pnl-item {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.auto-trade-panel-pnl-item-label {
+  font-size: 0.75rem;
+  color: var(--atp-text-secondary);
+}
+
+.auto-trade-panel-pnl-item-value.positive {
+  color: var(--atp-success);
+  font-weight: 600;
+}
+
+.auto-trade-panel-pnl-item-value.negative {
+  color: var(--atp-error);
+  font-weight: 600;
+}
+
+.auto-trade-panel-pnl-item-value.neutral {
+  color: var(--atp-text-primary);
+}
+
+.auto-trade-panel-pnl-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.auto-trade-panel-pnl-header svg {
+  color: var(--atp-text-secondary);
+}
+
+.auto-trade-panel-pnl-header span {
+  font-weight: 700;
+  color: var(--atp-text-primary);
+}
+
+.auto-trade-panel-pnl-section {
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: var(--atp-radius-md);
+  margin-bottom: var(--atp-space-lg);
+  font-size: 0.75rem;
+}
+
+.auto-trade-panel-pnl-values-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--atp-space-md);
+  align-items: center;
+}
+
+.auto-trade-panel-activity-feed {
+  display: flex;
+  flex-direction: column;
+  gap: var(--atp-space-sm);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.auto-trade-panel-activity-item {
+  display: flex;
+  gap: var(--atp-space-sm);
+  padding: var(--atp-space-sm) var(--atp-space-md);
+  border-radius: var(--atp-radius-sm);
+  background: #000000;
+  border-left: 3px solid transparent;
+  font-size: 0.875rem;
+  transition: background var(--atp-transition);
+}
+
+.auto-trade-panel-activity-item:hover {
+  background: #000000;
+}
+
+.auto-trade-panel-activity-item--success {
+  border-left-color: var(--atp-success);
+}
+
+.auto-trade-panel-activity-item--error {
+  border-left-color: var(--atp-error);
+}
+
+.auto-trade-panel-activity-item--info {
+  border-left-color: var(--atp-accent-link);
+}
+
+.auto-trade-panel-activity-item--warning {
+  border-left-color: var(--atp-warning);
+}
+
+.auto-trade-panel-activity-item-time {
+  color: var(--atp-text-secondary);
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.auto-trade-panel-activity-item-msg {
+  flex: 1;
+  min-width: 0;
+  color: var(--atp-text-primary);
+}
+
+.auto-trade-panel-activity-feed::-webkit-scrollbar {
+  width: 6px;
+}
+
+.auto-trade-panel-activity-feed::-webkit-scrollbar-track {
+  background: #000000;
+  border-radius: 3px;
+}
+
+.auto-trade-panel-activity-feed::-webkit-scrollbar-thumb {
+  background: rgba(var(--ds-accent-rgb, 59, 130, 246), 0.35);
+  border-radius: 3px;
+}
+
+#ota-recent-activity {
+  scroll-margin-top: 12px;
+}
+
+.auto-trade-panel-activity-feed-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--atp-text-primary);
+  margin-bottom: var(--atp-space-sm);
+}
+
+.auto-trade-panel-ota-exec-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--atp-space-md);
+  padding: var(--atp-space-sm) var(--atp-space-md);
+  background: rgba(16, 185, 129, 0.07);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: var(--atp-radius-sm);
+  font-size: 0.8125rem;
+  transition: background 0.2s;
+}
+
+.auto-trade-panel-ota-exec-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.auto-trade-panel-ota-exec-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  font-size: 0.75rem;
+  color: var(--ds-text-secondary);
+}
+
+.auto-trade-panel-ota-exec-meta .auto-trade-panel-ota-exec-status,
+.auto-trade-panel-ota-exec-meta .auto-trade-panel-ota-exec-chain {
+  font-weight: 600;
+  color: var(--atp-ai-accent);
+}
+
+.auto-trade-panel-ota-exec-amt-in {
+  margin-left: var(--atp-space-sm);
+  color: var(--ds-text-secondary);
+  font-size: 0.75rem;
+}
+
+.auto-trade-panel-ota-exec-value { color: var(--ds-text-secondary); }
+.auto-trade-panel-ota-exec-close-reason { font-style: italic; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.auto-trade-panel-ota-exec-time-in-trade,
+.auto-trade-panel-ota-exec-fees,
+.auto-trade-panel-ota-exec-slippage { color: var(--ds-text-secondary); }
+
+.auto-trade-panel-ota-exec-row:hover {
+  background: rgba(16, 185, 129, 0.13);
+}
+
+.auto-trade-panel-ota-exec-row.new-exec {
+  animation: atp-exec-flash 1.5s ease-out;
+}
+
+@keyframes atp-exec-flash {
+  0%   { background: rgba(16, 185, 129, 0.35); border-color: rgba(16, 185, 129, 0.8); }
+  100% { background: rgba(16, 185, 129, 0.07); border-color: rgba(16, 185, 129, 0.2); }
+}
+
+.auto-trade-panel-ota-exec-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.auto-trade-panel-ota-exec-side {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-right: 6px;
+}
+.auto-trade-panel-ota-exec-side.buy { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+.auto-trade-panel-ota-exec-side.sell { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+.auto-trade-panel-ota-exec-time {
+  color: var(--ds-text-secondary);
+  margin-right: var(--atp-space-sm);
+}
+
+.auto-trade-panel-ota-exec-pair {
+  color: var(--ds-text-primary);
+  font-weight: 600;
+}
+
+.auto-trade-panel-ota-exec-amt {
+  margin-left: var(--atp-space-sm);
+  color: var(--ds-text-secondary);
+}
+
+.auto-trade-panel-ota-exec-pnl {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  flex-shrink: 0;
+}
+
+.auto-trade-panel-ota-exec-pnl.positive {
+  color: #10b981;
+}
+
+.auto-trade-panel-ota-exec-pnl.negative {
+  color: #ef4444;
+}
+
+.auto-trade-panel-ota-exec-tx {
+  color: var(--ds-accent);
+  flex-shrink: 0;
+}
+
+.auto-trade-panel-ota-exec-tx:hover {
+  opacity: 0.9;
+}
+
+/* Section: How OTA learns – fără chenar dublu */
+.auto-trade-panel-learn {
+  padding: var(--atp-space-md);
+  margin-bottom: var(--atp-space-sm);
+}
+
+.auto-trade-panel-learn-title {
+  display: flex;
+  align-items: center;
+  gap: var(--atp-space-sm);
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--atp-ai-accent);
+  margin-bottom: var(--atp-space-sm);
+}
+
+.auto-trade-panel-learn-icon {
+  flex-shrink: 0;
+  color: var(--atp-ai-accent);
+}
+
+.auto-trade-panel-learn-desc {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ds-text-secondary);
+  line-height: 1.55;
+}
+
+.auto-trade-panel-learn-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--atp-space-sm);
+  margin-top: var(--atp-space-sm);
+}
+
+.auto-trade-panel-learn-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--atp-space-xs);
+  padding: var(--atp-space-xs) var(--atp-space-sm);
+  border-radius: var(--atp-radius-sm);
+  font-size: 0.75rem;
+  color: var(--ds-accent);
+  background: rgba(var(--ds-accent-rgb, 59, 130, 246), 0.15);
+}
+
+.auto-trade-panel-learn-tip {
+  margin: var(--atp-space-sm) 0 0 0;
+  font-size: 0.75rem;
+  color: var(--ds-text-secondary);
+  line-height: 1.5;
+}
+
+.auto-trade-panel-learn-tip strong { color: var(--ds-text-primary); }
+
+.auto-trade-panel-learn-link {
+  background: none;
+  border: none;
+  color: #4facfe;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+}
+
+.auto-trade-panel-learn-link:hover { opacity: 0.9; }
+
+/* Section: LLM OTA AI – Cum lucrezi (Agent Mode) */
+.auto-trade-panel-agent-howto {
+  padding: var(--atp-space-md);
+  margin-bottom: var(--atp-space-sm);
+  border: 1px solid rgba(var(--ds-accent-rgb, 59, 130, 246), 0.2);
+  border-radius: var(--atp-radius-md);
+  background: rgba(var(--ds-accent-rgb, 59, 130, 246), 0.05);
+}
+.auto-trade-panel-agent-howto.is-open { background: rgba(var(--ds-accent-rgb, 59, 130, 246), 0.08); }
+.auto-trade-panel-agent-howto-toggle { width: 100%; text-align: left; }
+.auto-trade-panel-agent-howto-icon { color: var(--atp-ai-accent); }
+.auto-trade-panel-agent-howto-body { padding-top: var(--atp-space-sm); }
+
+/* Section: AI Monitoring – fără chenar dublu */
+.auto-trade-panel-monitoring {
+  padding: var(--atp-space-sm) var(--atp-space-md);
+  margin-bottom: var(--atp-space-sm);
+}
+
+/* Section: Info banners – fără chenar dublu */
+.auto-trade-panel-banner {
+  padding: var(--atp-space-sm) var(--atp-space-md);
+  margin-bottom: var(--atp-space-sm);
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.auto-trade-panel-banner--success {
+  background: rgba(34, 197, 94, 0.06);
+}
+
+.auto-trade-panel-banner--warning {
+  background: #000000;
+}
+
+.auto-trade-panel-banner p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ds-text-secondary);
+  line-height: 1.5;
+}
+
+.auto-trade-panel-banner .auto-trade-panel-banner-icon--success {
+  color: #22c55e;
+  flex-shrink: 0;
+}
+
+.auto-trade-panel-banner .auto-trade-panel-banner-icon--warning {
+  color: #FFC300;
+  flex-shrink: 0;
+}
+
+.auto-trade-panel-banner .auto-trade-panel-banner-strong {
+  color: #FFC300;
+}
+
+.auto-trade-panel-banner .auto-trade-panel-banner-ol {
+  margin: 6px 0 0;
+  padding-left: 20px;
+  font-size: 13px;
+}
+
+/* Tabs: Policy / Limits / Allowlist – centrate, evidente ca butoane */
+.auto-trade-panel-tabs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--atp-space-md);
+  margin: var(--atp-space-md) 0;
+  padding: var(--atp-space-sm) 0;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 2;
+  isolation: isolate;
+  min-height: 48px;
+}
+
+.auto-trade-panel-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--atp-space-sm);
+  padding: 12px 20px;
+  min-height: 44px;
+  min-width: 100px;
+  border-radius: var(--atp-radius-md);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: #000000;
+  color: var(--ds-text-primary);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.auto-trade-panel-tab:hover {
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.auto-trade-panel-tab.active {
+  border-color: rgba(34, 197, 94, 0.6);
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.3), 0 2px 8px rgba(34, 197, 94, 0.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auto-trade-panel-tab:hover { transform: none; }
+}
+
+.auto-trade-panel-content {
+  margin-top: var(--atp-space-sm);
+  width: 100%;
+}
+
+.auto-trade-panel-content--compact,
+.auto-trade-panel-section--compact {
+  width: 100%;
+}
+
+.auto-trade-panel-section {
+  margin-bottom: 0;
+}
+
+.auto-trade-panel-section-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 var(--atp-space-sm) 0;
+  font-size: var(--ds-font-size-base);
+  font-weight: 700;
+  color: var(--ds-text-primary);
+}
+
+.auto-trade-panel-form-group {
+  margin: var(--atp-space-sm) 0;
+}
+
+.auto-trade-panel-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--ds-font-size-sm);
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}
+
+.auto-trade-panel-required { color: #ef4444; }
+
+.auto-trade-panel-input {
+  width: 100%;
+  margin-top: 4px;
+  padding: 8px 10px;
+  min-height: 36px;
+  border-radius: var(--atp-radius-sm);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.auto-trade-panel-input:focus {
+  outline: none;
+  border-color: rgba(34, 197, 94, 0.5);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+}
+
+.auto-trade-panel-input::placeholder {
+  color: var(--ds-text-secondary);
+  font-weight: 400;
+}
+
+.auto-trade-panel-checkbox {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  min-height: 22px;
+  transform: translateY(1px);
+  cursor: pointer;
+  accent-color: #10b981;
+}
+
+.auto-trade-panel-hint {
+  margin: 6px 0 0 0;
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+  line-height: 1.4;
+}
+
+.auto-trade-panel-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--atp-space-sm);
+  margin-top: var(--atp-space-sm);
+  padding: var(--atp-space-sm) var(--atp-space-md);
+  border-radius: var(--atp-radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #000000;
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.auto-trade-panel-button:hover {
+  background: #000000;
+}
+
+.auto-trade-panel-button.primary {
+  border-color: rgba(34, 197, 94, 0.45);
+  background: rgba(34, 197, 94, 0.15);
+  color: #10b981;
+}
+
+.auto-trade-panel-button.primary:hover {
+  background: rgba(34, 197, 94, 0.22);
+}
+
+.auto-trade-panel-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: var(--ds-radius-md);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.08);
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-primary);
+}
+
+/* Alert vizibil: autorizare bot expirată/lipsă – userul trebuie să știe că execuția e oprită */
+.auto-trade-panel-auth-expired-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 18px;
+  margin-bottom: 12px;
+  border-radius: var(--ds-radius-md);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--ds-text-primary);
+  font-size: 14px;
+  line-height: 1.4;
+}
+.auto-trade-panel-auth-expired-alert-icon {
+  flex-shrink: 0;
+  color: #ef4444;
+  margin-top: 2px;
+}
+.auto-trade-panel-auth-expired-alert-body {
+  flex: 1;
+  min-width: 0;
+}
+.auto-trade-panel-auth-expired-alert-title {
+  margin: 0 0 6px 0;
+  font-weight: 700;
+  font-size: 15px;
+  color: #fca5a5;
+}
+.auto-trade-panel-auth-expired-alert-desc {
+  margin: 0 0 10px 0;
+  font-size: 13px;
+  color: var(--ds-text-secondary);
+}
+.auto-trade-panel-auth-expired-alert-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.auto-trade-panel-auth-expired-alert-cta:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: rgba(239, 68, 68, 0.6);
+}
+
+/* Banner: contracts not deployed / Auto unavailable */
+.auto-trade-panel-unavailable {
+  padding: var(--atp-space-md);
+  background: linear-gradient(135deg, rgba(255, 195, 0, 0.1) 0%, rgba(255, 195, 0, 0.05) 100%);
+  border: 1px solid rgba(255, 195, 0, 0.3);
+  border-radius: var(--atp-radius-md);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--atp-space-md);
+}
+
+.auto-trade-panel-unavailable-title {
+  margin: 0 0 4px 0;
+  font-weight: 600;
+  color: #FFC300;
+}
+
+.auto-trade-panel-unavailable-desc {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ds-text-secondary);
+  line-height: 1.4;
+}
+
+.auto-trade-panel-unavailable-icon {
+  color: #FFC300;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.auto-trade-panel-unavailable-content {
+  flex: 1;
+}
+
+.auto-trade-panel-unavailable-missing {
+  margin-top: var(--atp-space-sm);
+  font-size: 0.75rem;
+  opacity: 0.9;
+}
+
+/* Step / action helper – ce trebuie făcut */
+.auto-trade-panel-step {
+  font-size: 0.75rem;
+  color: var(--ds-text-secondary);
+  margin-top: 4px;
+}
+
+.auto-trade-panel-step strong { color: var(--atp-ai-accent); }
+
+/* Quick setup flow – compact, fără zone goale */
+.auto-trade-panel-quick-flow {
+  padding: var(--atp-space-sm) var(--atp-space-md);
+  margin-bottom: var(--atp-space-sm);
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: var(--atp-radius-sm);
+}
+
+.auto-trade-panel-quick-flow-title {
+  margin: 0 0 var(--atp-space-sm) 0;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--ds-text-primary);
+}
+
+.auto-trade-panel-quick-flow-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--atp-space-xs) var(--atp-space-md);
+}
+
+.auto-trade-panel-quick-flow-steps li {
+  display: flex;
+  align-items: center;
+  gap: var(--atp-space-xs);
+  font-size: 0.8125rem;
+  color: var(--ds-text-primary);
+  font-weight: 500;
+}
+
+.auto-trade-panel-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.25);
+  border: 1px solid rgba(34, 197, 94, 0.5);
+  color: #10b981;
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+.auto-trade-panel-step-num.done {
+  background: rgba(34, 197, 94, 0.35);
+  flex-shrink: 0;
+}
+
+.auto-trade-panel-quick-flow-cta {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #4facfe;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.auto-trade-panel-quick-flow-cta:hover {
+  color: #7dd3fc;
+}
+
+/* Form rows – full width, margin minim 4px */
+.auto-trade-panel-form-row {
+  margin-bottom: var(--atp-space-xs);
+  width: 100%;
+}
+
+.auto-trade-panel-form-row--inputs,
+.auto-trade-panel-form-row--checkboxes {
+  width: 100%;
+}
+
+.auto-trade-panel-form-row--toggle {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auto-trade-panel-form-row--toggle .auto-trade-panel-label--toggle {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.auto-trade-panel-hint-inline {
+  font-size: 0.8125rem;
+  color: var(--ds-text-secondary);
+  line-height: 1.4;
+}
+
+.auto-trade-panel-form-row--inputs {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: var(--atp-space-xs);
+  width: fit-content;
+  align-items: end;
+}
+
+.auto-trade-panel-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.auto-trade-panel-input-group .auto-trade-panel-input {
+  margin-top: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Max Slippage / Delay – input compact (valoarea ocupă majoritatea lățimii) */
+.auto-trade-panel-form-row--inputs .auto-trade-panel-input-group {
+  width: fit-content;
+}
+
+.auto-trade-panel-form-row--inputs .auto-trade-panel-input-group .auto-trade-panel-input {
+  width: 4em;
+  min-width: 3.5em;
+  max-width: 5em;
+}
+
+/* Policy expiration row */
+.auto-trade-panel-form-row--expires {
+  margin-bottom: var(--atp-space-md);
+}
+
+/* Risk tolerance row */
+.auto-trade-panel-form-row--risk {
+  margin-bottom: var(--atp-space-md);
+}
+
+.auto-trade-panel-form-row--risk .auto-trade-panel-select {
+  width: 100%;
+  max-width: 320px;
+}
+
+.auto-trade-panel-form-row--profit-loss {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--atp-space-sm);
+  margin-bottom: var(--atp-space-md);
+}
+
+.auto-trade-panel-form-row--profit-loss .auto-trade-panel-select {
+  width: 100%;
+  max-width: 280px;
+}
+
+.auto-trade-panel-form-row--profit-loss .auto-trade-panel-hint {
+  margin-top: 4px;
+}
+
+@media (max-width: 640px) {
+  .auto-trade-panel-form-row--profit-loss {
+    grid-template-columns: 1fr;
+  }
+}
+
+.auto-trade-panel-expires-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--atp-space-sm);
+  margin-top: var(--atp-space-xs);
+}
+
+.auto-trade-panel-label--radio {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--atp-space-xs);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.auto-trade-panel-radio {
+  cursor: pointer;
+  accent-color: var(--atp-ai-accent);
+}
+
+.auto-trade-panel-input--date {
+  width: auto;
+  min-width: 140px;
+}
+
+/* Preset buttons (Limits, Allowlist) */
+.auto-trade-panel-preset-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: var(--atp-space-sm);
+}
+
+.auto-trade-panel-preset-btn {
+  padding: 6px 12px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border-radius: var(--atp-radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #000000;
+  color: var(--ds-text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.auto-trade-panel-preset-btn:hover:not(:disabled) {
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.auto-trade-panel-preset-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Allowlist – Recommended block */
+.auto-trade-panel-allowlist-recommended {
+  margin-bottom: var(--atp-space-lg);
+  padding: var(--atp-space-md);
+  border-radius: var(--atp-radius-md);
+  background: var(--atp-success-bg, rgba(76, 175, 80, 0.08));
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.auto-trade-panel-allowlist-recommended-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 var(--atp-space-sm) 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--ds-text-primary);
+}
+
+.auto-trade-panel-allowlist-recommended-desc {
+  font-size: 0.8125rem;
+  color: var(--ds-text-secondary);
+  margin: 0 0 var(--atp-space-sm) 0;
+  line-height: 1.45;
+}
+
+.auto-trade-panel-allowlist-recommended-hint {
+  font-size: 0.75rem;
+  color: var(--ds-text-secondary);
+  margin: 0 0 var(--atp-space-md) 0;
+  line-height: 1.5;
+}
+
+.auto-trade-panel-allowlist-recommended-hint.has-approved {
+  margin-bottom: var(--atp-space-sm);
+}
+
+.auto-trade-panel-allowlist-already-approved {
+  font-size: 0.75rem;
+  color: var(--atp-ai-accent);
+  margin: 0 0 var(--atp-space-md) 0;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1.4;
+}
+
+.auto-trade-panel-allowlist-already-approved svg {
+  flex-shrink: 0;
+}
+
+.auto-trade-panel-allowlist-buttons-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--atp-space-sm);
+  align-items: center;
+}
+
+/* Verify button – accent style, distinct from primary green */
+.auto-trade-panel-btn-verify {
+  background: rgba(var(--ds-accent-rgb, 59, 130, 246), 0.2) !important;
+  border: 1px solid rgba(var(--ds-accent-rgb, 59, 130, 246), 0.5) !important;
+  color: var(--atp-ai-accent);
+  min-width: 140px;
+}
+
+.auto-trade-panel-btn-verify:hover:not(:disabled) {
+  background: rgba(var(--ds-accent-rgb, 59, 130, 246), 0.3) !important;
+  border-color: rgba(var(--ds-accent-rgb, 59, 130, 246), 0.6) !important;
+}
+
+.auto-trade-panel-btn-verify:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Clean duplicates button – neutral/secondary */
+.auto-trade-panel-btn-clean {
+  min-width: 140px;
+  background: rgba(107, 114, 128, 0.15) !important;
+  border: 1px solid rgba(107, 114, 128, 0.35) !important;
+  color: var(--ds-text-primary);
+}
+
+.auto-trade-panel-btn-clean:hover:not(:disabled) {
+  background: rgba(107, 114, 128, 0.25) !important;
+  border-color: rgba(107, 114, 128, 0.5) !important;
+}
+
+/* Primary buttons when disabled (already approved) */
+.auto-trade-panel-button.primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auto-trade-panel-button.primary.is-approved {
+  opacity: 0.7;
+  border-color: rgba(16, 185, 129, 0.3);
+  background: rgba(16, 185, 129, 0.1);
+  cursor: default;
+}
+
+/* Allowlist */
+.auto-trade-panel-allowlist-section {
+  margin-top: var(--atp-space-lg);
+  padding-top: var(--atp-space-lg);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: visible;
+}
+
+.auto-trade-panel-allowlist-section:first-of-type {
+  margin-top: var(--atp-space-md);
+  padding-top: 0;
+  border-top: none;
+}
+
+.auto-trade-panel-allowlist-subtitle {
+  margin: 0 0 var(--atp-space-sm) 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--ds-text-primary);
+}
+
+.auto-trade-panel-allowlist-add {
+  margin-bottom: var(--atp-space-md);
+}
+
+.auto-trade-panel-allowlist-input-row {
+  display: flex;
+  gap: var(--atp-space-sm);
+  align-items: center;
+}
+
+.auto-trade-panel-allowlist-input-row .auto-trade-panel-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.auto-trade-panel-allowlist-pair-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  position: relative;
+  z-index: 5;
+}
+
+.auto-trade-panel-allowlist-pair-row .auto-trade-panel-select {
+  flex: 1;
+  min-width: 100px;
+}
+
+/* Native <select> pentru Token In / Token Out – se deschide mereu */
+.auto-trade-panel-allowlist-token-select-native {
+  min-width: 100px;
+  height: 28px;
+  padding: 0 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #e5e7eb;
+  background: rgba(30, 41, 59, 0.95);
+  border: 1px solid #475569;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: inherit;
+  box-sizing: border-box;
+  pointer-events: auto;
+}
+
+.auto-trade-panel-allowlist-token-select-native:hover {
+  border-color: #64748b;
+}
+
+.auto-trade-panel-allowlist-token-select-native:focus {
+  outline: none;
+  border-color: rgba(34, 197, 94, 0.6);
+  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.25);
+}
+
+.auto-trade-panel-allowlist-arrow {
+  flex-shrink: 0;
+  color: var(--atp-text-secondary);
+}
+
+/* Factorized token select – same style as Direct Entry quote dropdown */
+.auto-trade-panel-allowlist-token-select-wrap {
+  position: relative;
+  z-index: 10;
+  flex: 0 1 auto;
+  min-width: 0;
+  pointer-events: auto;
+}
+
+.auto-trade-panel-allowlist-token-select-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: auto;
+  min-width: 0;
+  height: 28px;
+  padding: 0 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #e5e7eb;
+  background: rgba(30, 41, 59, 0.95);
+  border: 1px solid #475569;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+  font-family: inherit;
+  text-align: left;
+  pointer-events: auto;
+}
+
+.auto-trade-panel-allowlist-token-select-btn:hover {
+  color: #ffffff;
+  background: rgba(51, 65, 85, 0.98);
+  border-color: #64748b;
+  box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.2);
+}
+
+.auto-trade-panel-allowlist-token-select-btn svg {
+  flex-shrink: 0;
+  color: #e5e7eb;
+  transition: transform var(--atp-transition, 0.2s ease);
+}
+
+.auto-trade-panel-allowlist-token-select-btn .auto-trade-panel-allowlist-token-select-chevron-open {
+  transform: rotate(180deg);
+}
+
+.auto-trade-panel-allowlist-token-select-logo {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.auto-trade-panel-allowlist-token-select-placeholder {
+  color: var(--atp-text-secondary);
+  opacity: 0.9;
+}
+
+.auto-trade-panel-allowlist-token-select-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 100%;
+  z-index: var(--ds-z-floating-ui, 9999);
+  background: #1e293b;
+  border: 1px solid #4b5563;
+  border-radius: var(--atp-radius-sm);
+  box-shadow: 0 4px 12px #0f172a;
+  overflow: hidden;
+}
+
+.auto-trade-panel-allowlist-token-select-option {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 4px 8px;
+  background: transparent;
+  border: none;
+  color: var(--ds-text-primary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--atp-transition, 0.2s ease);
+}
+
+.auto-trade-panel-allowlist-token-select-option-logo {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.auto-trade-panel-allowlist-token-select-option:hover {
+  background: #334155;
+}
+
+.auto-trade-panel-allowlist-token-select-option-selected {
+  background: #1e40af;
+  color: #93c5fd;
+}
+
+/* Allowlist items with logo – compact, proportional */
+.auto-trade-panel-allowlist-item-with-logo .auto-trade-panel-allowlist-item-logo {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.auto-trade-panel-allowlist-pair-row-display {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.auto-trade-panel-allowlist-pair-display {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.auto-trade-panel-allowlist-pair-arrow {
+  flex-shrink: 0;
+  color: var(--atp-text-secondary);
+  opacity: 0.8;
+  margin: 0 1px;
+}
+
+/* Preset buttons with logo – compact */
+.auto-trade-panel-preset-btn-with-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 8px;
+}
+
+.auto-trade-panel-preset-btn-with-logo .token-logo-xs,
+.auto-trade-panel-preset-btn-with-logo .token-logo {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
+}
+
+.auto-trade-panel-select {
+  cursor: pointer;
+  background: #000000;
+  color: #e5e7eb;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.auto-trade-panel-select option {
+  background: #000000;
+  color: #e5e7eb;
+}
+
+.auto-trade-panel-form-row--risk .auto-trade-panel-select,
+.auto-trade-panel-form-row--profit-loss .auto-trade-panel-select {
+  background: #000000;
+  color: #e5e7eb;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.auto-trade-panel-policy-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 0.75rem;
+}
+
+.auto-trade-panel-policy-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.auto-trade-panel-policy-status.accepted {
+  color: #10b981;
+}
+
+.auto-trade-panel-policy-status.accepted .auto-trade-panel-policy-status-dot {
+  background: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+}
+
+.auto-trade-panel-policy-status.pending {
+  color: #f59e0b;
+}
+
+.auto-trade-panel-policy-status.pending .auto-trade-panel-policy-status-dot {
+  background: #f59e0b;
+}
+
+.auto-trade-panel-policy-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.auto-trade-panel-button--verify {
+  margin-top: 0;
+  padding: 8px 12px;
+  font-size: 0.8125rem;
+}
+
+.auto-trade-panel-global-feedback {
+  margin: 8px 0 10px 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: #000000;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.auto-trade-panel-global-feedback.success {
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.45);
+}
+
+.auto-trade-panel-global-feedback.error {
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.45);
+}
+
+.auto-trade-panel-global-feedback.warning {
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.45);
+}
+
+.auto-trade-panel-global-feedback.info {
+  color: #60a5fa;
+  border-color: rgba(96, 165, 250, 0.45);
+}
+
+.auto-trade-panel-policy-verify-result {
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: #000000;
+}
+
+.auto-trade-panel-policy-verify-result.success {
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.45);
+}
+
+.auto-trade-panel-policy-verify-result.warning {
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.45);
+}
+
+.auto-trade-panel-policy-verify-result.error {
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.45);
+}
+
+.auto-trade-panel-allowlist-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* Trei coloane pentru listă tokeni / perechi */
+.auto-trade-panel-allowlist-list--two-cols,
+.auto-trade-panel-allowlist-list--three-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+}
+
+@media (max-width: 720px) {
+  .auto-trade-panel-allowlist-list--two-cols,
+  .auto-trade-panel-allowlist-list--three-cols {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .auto-trade-panel-allowlist-list--two-cols,
+  .auto-trade-panel-allowlist-list--three-cols {
+    grid-template-columns: 1fr;
+  }
+}
+
+.auto-trade-panel-allowlist-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--atp-space-sm) var(--atp-space-md);
+  background: #000000;
+  border-radius: var(--atp-radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.875rem;
+}
+
+/* Items with logo: content (logo+name) + X grouped, centered, no dead space */
+.auto-trade-panel-allowlist-item.auto-trade-panel-allowlist-item-with-logo {
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 10px;
+  font-size: 0.8125rem;
+}
+
+.auto-trade-panel-allowlist-item-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.auto-trade-panel-allowlist-item-with-logo .auto-trade-panel-allowlist-remove {
+  margin-left: 4px;
+}
+
+.auto-trade-panel-allowlist-remove {
+  padding: 2px 8px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--atp-radius-sm);
+  color: #ef4444;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.auto-trade-panel-allowlist-remove:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.25);
+}
+
+.auto-trade-panel-allowlist-remove:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.auto-trade-panel-allowlist-empty {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--atp-text-secondary);
+  font-style: italic;
+}
+
+/* Bloc perechi lipsă pentru OTA */
+.auto-trade-panel-allowlist-missing-ota {
+  margin-top: var(--atp-space-md);
+  padding: var(--atp-space-md);
+  border-radius: var(--atp-radius-md);
+  background: rgba(var(--ds-accent-rgb, 59, 130, 246), 0.06);
+  border: 1px solid rgba(var(--ds-accent-rgb, 59, 130, 246), 0.2);
+}
+
+.auto-trade-panel-allowlist-missing-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.auto-trade-panel-allowlist-missing-btn {
+  font-size: 0.75rem !important;
+  padding: 4px 10px !important;
+  white-space: nowrap;
+}
+
+.auto-trade-panel-allowlist-missing-btn:hover {
+  border-color: rgba(var(--ds-accent-rgb, 59, 130, 246), 0.5);
+  background: rgba(var(--ds-accent-rgb, 59, 130, 246), 0.1);
+}
+
+.auto-trade-panel-form-row--checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--atp-space-xs) var(--atp-space-sm);
+}
+
+.auto-trade-panel-label--checkbox {
+  font-weight: 500;
+}
+
+.auto-trade-panel-form-row--action {
+  margin-top: var(--atp-space-sm);
+  margin-bottom: 0;
+}
+
+/* Auto Mode card – fără chenar dublu (doar padding) */
+.auto-trade-panel-auto-mode-card {
+  padding: var(--atp-space-sm) var(--atp-space-md);
+  margin-bottom: var(--atp-space-sm);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Apply zone – fără chenar dublu */
+.auto-trade-panel-apply-zone {
+  margin-top: var(--atp-space-sm);
+  padding: var(--atp-space-sm) 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.auto-trade-panel-apply-label {
+  margin: 0 0 var(--atp-space-xs) 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ds-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.auto-trade-panel-button--apply {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  min-height: 44px;
+  border-width: 1px;
+}
+
+/* How OTA learns – collapsible, buton evident când închis */
+.auto-trade-panel-learn-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--atp-space-sm);
+  width: 100%;
+  padding: var(--atp-space-sm) 0;
+  background: none;
+  border: none;
+  color: var(--atp-ai-accent);
+  font-weight: 700;
+  font-size: 0.875rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.auto-trade-panel-learn:not(.is-open) .auto-trade-panel-learn-toggle {
+  padding: var(--atp-space-sm) var(--atp-space-md);
+}
+
+.auto-trade-panel-learn:not(.is-open) .auto-trade-panel-learn-toggle:hover {
+  background: rgba(var(--ds-accent-rgb, 59, 130, 246), 0.08);
+}
+
+.auto-trade-panel-learn-toggle:hover {
+  opacity: 0.9;
+}
+
+.auto-trade-panel-learn-toggle span {
+  flex: 1;
+}
+
+.auto-trade-panel-learn-body {
+  margin-top: var(--atp-space-sm);
+  padding-top: var(--atp-space-sm);
+}
+
+.auto-trade-panel-learn:not(.is-open) .auto-trade-panel-learn-body {
+  display: none;
+}
+
+.auto-trade-panel-learn.is-open .auto-trade-panel-learn-body {
+  display: block;
+}
+
+.auto-trade-panel-learn:not(.is-open) {
+  padding: var(--atp-space-xs) 0;
+  margin-bottom: var(--atp-space-sm);
+}
+
+.auto-trade-panel-learn:not(.is-open) .auto-trade-panel-learn-toggle {
+  padding: var(--atp-space-sm) var(--atp-space-md);
+}
+
+@media (max-width: 640px) {
+  .auto-trade-panel {
+    padding: var(--atp-space-md);
+    max-width: 100%;
+  }
+  .auto-trade-panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .auto-trade-panel-tabs {
+    width: 100%;
+  }
+  .auto-trade-panel-tab {
+    flex: 1;
+    justify-content: center;
+    min-height: 48px;
+    padding: 12px 16px;
+  }
+  .auto-trade-panel-form-row--inputs {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Direct Entry error modal – popup consistent */
+.auto-trade-panel-direct-entry-error-modal {
+  max-height: 85vh;
+}
+.auto-trade-panel-direct-entry-error-content {
+  padding: var(--atp-space-sm, 8px) 0;
+}
+.auto-trade-panel-direct-entry-error-message {
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0 0 var(--atp-space-xl, 20px);
+  padding: var(--atp-space-lg, 16px);
+  background: var(--atp-error-bg, rgba(239, 68, 68, 0.08));
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--atp-radius-md, 8px);
+  color: var(--atp-text-primary, #f9fafb);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+.auto-trade-panel-direct-entry-error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--atp-space-md, 12px);
+  justify-content: flex-end;
+}
+.auto-trade-panel-btn-open-allowlist {
+  padding: 10px 18px;
+  border-radius: var(--atp-radius-sm, 6px);
+  font-weight: 600;
+  background: var(--atp-ai-accent, #3b82f6);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+.auto-trade-panel-btn-open-allowlist:hover {
+  opacity: 0.9;
+}
+.auto-trade-panel-btn-close-error {
+  padding: 10px 18px;
+  border-radius: var(--atp-radius-sm, 6px);
+  font-weight: 500;
+  background: transparent;
+  color: var(--atp-text-secondary, #e5e7eb);
+  border: 1px solid var(--ds-border-color, rgba(255,255,255,0.2));
+  cursor: pointer;
+}
+.auto-trade-panel-btn-close-error:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+/* LLM pause card (Autotrade — provider billing controls) */
+.auto-trade-panel-llm-pause-card {
+  margin: var(--atp-space-lg, 16px) 0;
+  padding: var(--atp-space-md, 12px) var(--atp-space-lg, 16px);
+  border: 1px solid var(--ds-border-color, rgba(255, 255, 255, 0.12));
+  border-radius: var(--atp-radius-md, 8px);
+  background: rgba(255, 255, 255, 0.03);
+}
+.auto-trade-panel-llm-pause-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--atp-space-sm, 8px);
+  margin-bottom: var(--atp-space-sm, 8px);
+}
+.auto-trade-panel-llm-pause-card__title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--atp-text-primary, #f9fafb);
+}
+.auto-trade-panel-llm-pause-card__refresh {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: var(--atp-radius-sm, 6px);
+  border: 1px solid var(--ds-border-color, rgba(255, 255, 255, 0.15));
+  background: transparent;
+  color: var(--atp-text-secondary, #e5e7eb);
+  cursor: pointer;
+}
+.auto-trade-panel-llm-pause-card__refresh:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+}
+.auto-trade-panel-llm-pause-card__refresh:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.auto-trade-panel-llm-pause-card__hint {
+  margin: 0 0 var(--atp-space-md, 12px);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--atp-text-secondary, #d1d5db);
+}
+.auto-trade-panel-llm-pause-card__err {
+  margin: 0 0 var(--atp-space-sm, 8px);
+  font-size: 0.8rem;
+  color: var(--atp-warning, #f59e0b);
+}
+.auto-trade-panel-llm-pause-card__warn {
+  margin: 0 0 var(--atp-space-sm, 8px);
+  font-size: 0.78rem;
+  color: var(--atp-warning, #f59e0b);
+}
+.auto-trade-panel-llm-pause-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--atp-space-sm, 8px);
+}
+.auto-trade-panel-llm-pause-card__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: var(--atp-radius-sm, 6px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--atp-text-primary, #f9fafb);
+  cursor: pointer;
+}
+.auto-trade-panel-llm-pause-card__btn:hover:not(:disabled) {
+  opacity: 0.95;
+}
+.auto-trade-panel-llm-pause-card__btn:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+.auto-trade-panel-llm-pause-card__btn--suspend-openai {
+  border-color: rgba(6, 182, 212, 0.55);
+  background: rgba(6, 182, 212, 0.14);
+  color: #a5f3fc;
+}
+.auto-trade-panel-llm-pause-card__btn--suspend-claude {
+  border-color: rgba(245, 158, 11, 0.55);
+  background: rgba(245, 158, 11, 0.12);
+  color: #fde68a;
+}
+.auto-trade-panel-llm-pause-card__btn--resume-openai,
+.auto-trade-panel-llm-pause-card__btn--resume-claude {
+  border-color: rgba(22, 101, 52, 0.7);
+  background: rgba(20, 83, 45, 0.88);
+  color: #bbf7d0;
+}
+

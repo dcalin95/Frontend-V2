@@ -1,0 +1,33 @@
+/* STX Trade / Swap – fundal clar, nu alb; clarificare preview / date eșantion */
+
+.stx-layout {
+  min-height: 100%;
+  background: var(--ds-bg-base, #0f0f12);
+  color: var(--ds-text-primary, #e2e8f0);
+}
+
+.stx-main {
+  background: var(--ds-bg-base, #0f0f12);
+  color: var(--ds-text-primary, #e2e8f0);
+}
+
+.stx-trade-page,
+.stx-swap-page {
+  box-sizing: border-box;
+  min-height: 60vh;
+}
+
+.stx-skeleton-card {
+  background: var(--ds-bg-surface, #18181b) !important;
+  border-color: var(--ds-border-color, #27272a) !important;
+}
+
+/* Oxium layout: 3 coloane – pe mobil stack vertical */
+.stx-trade-page .sei-top-three {
+  grid-template-columns: 1fr 300px minmax(300px, 440px);
+}
+@media (max-width: 900px) {
+  .stx-trade-page .sei-top-three {
+    grid-template-columns: 1fr !important;
+  }
+}

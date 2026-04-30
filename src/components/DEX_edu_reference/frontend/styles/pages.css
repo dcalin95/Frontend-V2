@@ -1,0 +1,380 @@
+/**
+ * 📄 Pages Styles - Binance-Inspired Refactored
+ * 
+ * Global page styles using design tokens
+ */
+
+/* Execution Page */
+.execution-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-6);
+}
+
+.execution-page-header {
+  padding-bottom: var(--ds-spacing-4);
+  border-bottom: var(--ds-border-width) solid var(--ds-border-color);
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.execution-page-title {
+  font-size: var(--ds-font-size-3xl);
+  font-weight: var(--ds-font-weight-bold);
+  color: var(--ds-text-primary);
+  margin: 0;
+}
+
+.execution-page-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-6);
+}
+
+.execution-page-stats {
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.execution-page-section {
+  margin-bottom: var(--ds-spacing-6);
+}
+
+/* Performance Page */
+.performance-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-6);
+}
+
+.performance-page-header {
+  padding-bottom: var(--ds-spacing-4);
+  border-bottom: var(--ds-border-width) solid var(--ds-border-color);
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.performance-page-title {
+  font-size: var(--ds-font-size-3xl);
+  font-weight: var(--ds-font-weight-bold);
+  color: var(--ds-text-primary);
+  margin: 0;
+}
+
+.performance-page-period-selector {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+}
+
+.performance-page-period-label {
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+  color: var(--ds-text-secondary);
+}
+
+.performance-page-period-select {
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  font-family: var(--ds-font-family-sans);
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-primary);
+  background-color: var(--ds-bg-elevated);
+  border: var(--ds-border-width) solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  transition: all var(--ds-transition-base);
+  outline: none;
+  cursor: pointer;
+}
+
+.performance-page-period-select:hover {
+  border-color: var(--ds-border-color-light);
+}
+
+.performance-page-period-select:focus {
+  border-color: var(--ds-border-color-focus);
+  box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+}
+
+.performance-page-error {
+  padding: var(--ds-spacing-4);
+  background-color: var(--ds-color-error-bg);
+  border: var(--ds-border-width) solid var(--ds-color-error-border);
+  border-radius: var(--ds-radius-md);
+  color: var(--ds-color-error);
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.performance-page-error p {
+  margin: 0;
+}
+
+.performance-page-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-6);
+}
+
+.performance-page-section {
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.performance-page-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: var(--ds-spacing-6);
+}
+
+/* Signals Page */
+.signals-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-6);
+}
+
+.signals-page-header {
+  padding-bottom: var(--ds-spacing-4);
+  border-bottom: var(--ds-border-width) solid var(--ds-border-color);
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.signals-page-title {
+  font-size: var(--ds-font-size-3xl);
+  font-weight: var(--ds-font-weight-bold);
+  color: var(--ds-text-primary);
+  margin: 0;
+}
+
+.signals-page-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-6);
+}
+
+/* Strategies Page */
+.strategies-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-6);
+}
+
+.strategies-page-header {
+  padding-bottom: var(--ds-spacing-4);
+  border-bottom: var(--ds-border-width) solid var(--ds-border-color);
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.strategies-page-title {
+  font-size: var(--ds-font-size-3xl);
+  font-weight: var(--ds-font-weight-bold);
+  color: var(--ds-text-primary);
+  margin: 0;
+}
+
+.strategies-page-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-6);
+}
+
+.strategies-page-stats {
+  margin-bottom: var(--ds-spacing-6);
+}
+
+/* Dashboard Page */
+.dashboard-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-6);
+}
+
+.dashboard-page-header {
+  padding-bottom: var(--ds-spacing-4);
+  border-bottom: var(--ds-border-width) solid var(--ds-border-color);
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.dashboard-page-title {
+  font-size: var(--ds-font-size-3xl);
+  font-weight: var(--ds-font-weight-bold);
+  color: var(--ds-text-primary);
+  margin: 0;
+}
+
+.dashboard-page-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-6);
+}
+
+/* Trade Page */
+.trade-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-6);
+}
+
+.trade-page-header {
+  padding-bottom: var(--ds-spacing-4);
+  border-bottom: var(--ds-border-width) solid var(--ds-border-color);
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.trade-page-title {
+  font-size: var(--ds-font-size-3xl);
+  font-weight: var(--ds-font-weight-bold);
+  color: var(--ds-text-primary);
+  margin: 0;
+}
+
+.trade-page-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-6);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .performance-page-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .execution-page-header,
+  .performance-page-header,
+  .signals-page-header,
+  .strategies-page-header,
+  .dashboard-page-header,
+  .trade-page-header {
+    padding-bottom: var(--ds-spacing-3);
+    margin-bottom: var(--ds-spacing-4);
+  }
+  
+  .execution-page-title,
+  .performance-page-title,
+  .signals-page-title,
+  .strategies-page-title,
+  .dashboard-page-title,
+  .trade-page-title {
+    font-size: var(--ds-font-size-2xl);
+  }
+  
+  .performance-page-period-selector {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--ds-spacing-2);
+  }
+}
+
+/* OTA Preview bar: lățime cât conținutul (nu întins pe tot ecranul) */
+.ota-preview-bar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: var(--ds-spacing-3);
+  padding: var(--ds-spacing-3) var(--ds-spacing-4);
+  margin-bottom: var(--ds-spacing-4);
+  background: var(--ds-bg-surface);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.ota-preview-bar-text {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+}
+
+.ota-preview-bar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-2) var(--ds-spacing-4);
+  background: var(--ds-color-info, #14f195);
+  border: none;
+  border-radius: var(--ds-radius-md);
+  color: #000;
+  font-size: var(--ds-font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ota-preview-bar-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Floating Tutorial Button - OTA Page */
+.ota-floating-tutorial-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, rgba(20, 241, 149, 0.85) 0%, rgba(20, 241, 149, 0.65) 100%);
+  border: 1.5px solid rgba(20, 241, 149, 0.3);
+  border-radius: 50%;
+  color: #000;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(20, 241, 149, 0.25);
+  transition: all 0.3s ease;
+}
+
+.ota-floating-tutorial-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 5px 16px rgba(20, 241, 149, 0.35);
+  background: linear-gradient(135deg, rgba(20, 241, 149, 0.95) 0%, rgba(20, 241, 149, 0.8) 100%);
+}
+
+.ota-floating-tutorial-btn:active {
+  transform: translateY(0) scale(1);
+}
+
+/* Pulse animation for new users */
+.ota-floating-tutorial-btn.pulse {
+  animation: pulse-tutorial 2s ease-in-out infinite;
+}
+
+@keyframes pulse-tutorial {
+  0%, 100% {
+    box-shadow: 0 3px 10px rgba(20, 241, 149, 0.25);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 3px 16px rgba(20, 241, 149, 0.5), 0 0 0 6px rgba(20, 241, 149, 0.08);
+    transform: scale(1.05);
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .ota-floating-tutorial-btn {
+    bottom: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Open Orders / Order History – pagini dedicate sub header */
+.orders-page {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-4);
+  padding: var(--ds-spacing-4);
+  box-sizing: border-box;
+  min-height: 0;
+  flex: 1;
+}

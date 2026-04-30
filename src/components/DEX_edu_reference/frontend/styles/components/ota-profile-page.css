@@ -1,0 +1,1603 @@
+/**
+ * OTA Profile Page Styles
+ * Layout: tabs top + main content below. Grid of cards for details.
+ * Background: MANDATORY #000000 peste tot. Vezi docs/DEX_THEMES.md, docs/AI_CONTEXT.md.
+ */
+
+/* When Profile is shown — background general negru pur */
+.ai-trading-main-content:has(.ota-profile-page) {
+  background: #000000;
+}
+
+.ota-profile-page {
+  min-height: 0;
+  padding: 12px 16px 16px;
+  background: #000000;
+}
+
+/* Container: tabs top, content below — nuanță aproape de negru pur */
+.ota-profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: #000000;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+/* Header: avatar + upload on left, tabs on right */
+.ota-profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 8px 12px 8px 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.ota-profile-header-avatar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ota-profile-header-avatar .ota-profile-avatar {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.ota-profile-header-avatar .ota-profile-avatar-initial {
+  font-size: 1rem;
+}
+
+.ota-profile-header-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.ota-profile-file-label {
+  font-size: 11px;
+  color: var(--ds-text-tertiary);
+  line-height: 1.2;
+}
+
+.ota-profile-header-upload .ota-profile-avatar-btn {
+  padding: 6px 12px;
+  font-size: 12px;
+  color: rgba(79, 172, 254, 0.9);
+}
+.ota-profile-header-upload .ota-profile-avatar-btn:hover:not(:disabled) {
+  color: rgba(79, 172, 254, 1);
+  border-color: rgba(79, 172, 254, 0.25);
+}
+
+/* Tabs: horizontal bar at top (inside header) */
+.ota-profile-tabs {
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+  padding: 0;
+  background: transparent;
+  border-bottom: none;
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+.ota-profile-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: var(--ds-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 120ms, border-color 120ms, color 120ms;
+  white-space: nowrap;
+}
+
+.ota-profile-tab:hover {
+  color: var(--ds-text-primary);
+  background: #000000;
+  border-color: rgba(79, 172, 254, 0.15);
+}
+
+.ota-profile-tab.active {
+  color: var(--ds-text-primary);
+  background: #000000;
+  border-color: rgba(79, 172, 254, 0.18);
+}
+
+/* Buton Cont personal – link către /dex/account */
+.ota-profile-personal-account-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(79, 172, 254, 0.12);
+  border: 1px solid rgba(79, 172, 254, 0.35);
+  border-radius: 8px;
+  color: rgba(79, 172, 254, 0.95);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 120ms, border-color 120ms, color 120ms;
+  white-space: nowrap;
+}
+.ota-profile-personal-account-btn:hover {
+  background: rgba(79, 172, 254, 0.18);
+  border-color: rgba(79, 172, 254, 0.5);
+  color: #fff;
+}
+
+.ota-profile-content {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  padding: 12px 16px 16px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.ota-profile-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.ota-profile-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--ds-spacing-2);
+  gap: var(--ds-spacing-2);
+}
+
+
+.ota-profile-section-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  flex-wrap: wrap;
+}
+.ota-profile-section-title-row .ota-profile-section-title {
+  margin: 0;
+}
+.ota-profile-section-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  margin: 0 0 10px 0;
+  letter-spacing: -0.01em;
+}
+
+/* Account details — grid of cards (each row = card) */
+.ota-profile-account-data {
+  margin-bottom: 12px;
+  container-type: inline-size;
+  container-name: account-details;
+}
+.ota-profile-details {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  overflow: visible;
+}
+.ota-profile-detail-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  padding: 8px 10px;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  transition: border-color 120ms, background 120ms;
+}
+.ota-profile-detail-row:hover {
+  background: #000000;
+  border-color: rgba(79, 172, 254, 0.12);
+}
+.ota-profile-detail-row:last-child {
+  padding-bottom: 8px;
+}
+.ota-profile-detail-row:first-child {
+  padding-top: 8px;
+}
+/* Rows that must span full width (too large) */
+.ota-profile-detail-row--full,
+.ota-profile-detail-documents-block {
+  grid-column: 1 / -1;
+}
+
+.ota-profile-detail-row--block {
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  gap: 6px;
+  padding: 8px 10px;
+}
+.ota-profile-detail-row--block .ota-profile-detail-desc {
+  width: 100%;
+}
+.ota-profile-detail-term {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--ds-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Icon in box on each row (editable fields) — subtle cyan tint */
+.ota-profile-row-icon {
+  flex-shrink: 0;
+  padding: 8px;
+  background: rgba(79, 172, 254, 0.06);
+  border-radius: 10px;
+  color: rgba(79, 172, 254, 0.8);
+}
+
+.ota-profile-detail-term .ota-profile-row-icon {
+  width: 18px;
+  height: 18px;
+  box-sizing: content-box;
+}
+
+/* Pencil icon — shows field is editable, subtle cyan */
+.ota-profile-edit-pencil {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  padding: 5px;
+  min-width: 24px;
+  min-height: 24px;
+  border-radius: 8px;
+  background: rgba(79, 172, 254, 0.06);
+  border: 1px solid rgba(79, 172, 254, 0.12);
+  color: rgba(79, 172, 254, 0.75);
+}
+
+.ota-profile-edit-pencil:hover {
+  background: rgba(79, 172, 254, 0.1);
+  border-color: rgba(79, 172, 254, 0.2);
+  color: rgba(79, 172, 254, 1);
+}
+
+button.ota-profile-edit-pencil {
+  background: rgba(79, 172, 254, 0.06);
+  border: 1px solid rgba(79, 172, 254, 0.12);
+  color: rgba(79, 172, 254, 0.85);
+  cursor: pointer;
+}
+
+.ota-profile-detail-row--editable .ota-profile-detail-term {
+  display: inline-flex;
+  align-items: center;
+}
+
+.ota-profile-inline-edit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.ota-profile-detail-desc {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  flex: 0 1 auto;
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  line-height: var(--ds-line-height-normal);
+}
+.ota-profile-detail-desc--block {
+  display: block;
+  flex: none;
+  line-height: 1.5;
+  padding-bottom: 2px; /* prevent descenders (g, y, p) from being clipped */
+}
+.ota-profile-detail-row--muted .ota-profile-detail-desc.ota-profile-placeholder {
+  color: var(--ds-text-tertiary);
+  font-style: italic;
+  font-weight: 500;
+}
+/* Sum values — evidentiate vizual (Total spent, Balance, Payment history Amount) */
+.ota-profile-amount-value {
+  font-weight: 700;
+  font-size: 1.05em;
+  color: rgba(0, 255, 163, 0.95);
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(0, 255, 163, 0.08);
+  border: 1px solid rgba(0, 255, 163, 0.2);
+}
+.ota-profile-amount-cell {
+  font-weight: 600;
+}
+.ota-profile-amount-cell .ota-profile-amount-value {
+  font-size: 0.95em;
+  padding: 1px 5px;
+}
+
+.ota-profile-detail-inline-actions {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--ds-spacing-2);
+}
+/* Edit profile view mode — same grid as Account details, icon in box */
+.ota-profile-detail-desc--telegram {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.ota-profile-telegram-badge {
+  font-family: ui-monospace, monospace;
+  font-size: 13px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(20, 241, 149, 0.1);
+  color: var(--ds-text-primary);
+}
+
+/* Legal documents (ID / bank statement) – UI in English */
+.ota-profile-detail-documents-block .ota-profile-detail-desc {
+  display: block;
+  width: 100%;
+  padding-bottom: 4px; /* avoid "ID document" / hint text cut off at bottom */
+}
+.ota-profile-detail-documents-block .ota-profile-detail-term {
+  font-weight: var(--ds-font-weight-medium, 500);
+  color: var(--ds-text-primary);
+}
+/* Extra bottom space for documents row so select + hint are never clipped */
+.ota-profile-detail-documents-block.ota-profile-detail-row--block {
+  padding-bottom: 12px;
+}
+.ota-profile-documents-upload {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: var(--ds-spacing-3);
+  margin-bottom: var(--ds-spacing-3);
+}
+/* Select "ID / Identity document" – height + padding so descenders (g, y) are not clipped */
+.ota-profile-documents-type {
+  width: auto;
+  min-width: 200px;
+  height: 50px;
+  min-height: 50px;
+  padding: 14px 36px 14px 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  box-sizing: border-box;
+  vertical-align: middle;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: var(--ds-bg-surface);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+/* Hidden file inputs: upload only via adjacent buttons (programmatic .click()).
+   Opacity-only hiding still paints native “No file chosen” / “Niciun fișier ales” in some browsers. */
+.ota-profile-documents-file-input {
+  display: none;
+}
+.ota-profile-documents-upload-btn {
+  flex-shrink: 0;
+  padding: var(--ds-spacing-2) var(--ds-spacing-4);
+  font-size: var(--ds-font-size-sm);
+  font-weight: 500;
+}
+.ota-profile-detail-documents-block .ota-profile-hint {
+  margin: 0 0 var(--ds-spacing-3);
+  padding-bottom: 6px;
+  font-size: var(--ds-font-size-sm);
+  line-height: 1.5;
+  color: var(--ds-text-secondary);
+}
+.ota-profile-documents-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-2);
+}
+.ota-profile-documents-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-1);
+  padding: var(--ds-spacing-3);
+  background: var(--ds-bg-elevated);
+  border-radius: var(--ds-radius-md);
+  border: 1px solid var(--ds-border-color);
+}
+.ota-profile-documents-name {
+  font-weight: 500;
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-primary);
+  word-break: break-word;
+}
+.ota-profile-documents-meta {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--ds-spacing-1);
+  line-height: 1.4;
+}
+.ota-profile-documents-meta svg {
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+.ota-profile-doc-verified { color: var(--ds-success, #22c55e); }
+.ota-profile-doc-rejected { color: var(--ds-danger, #ef4444); }
+.ota-profile-doc-pending { color: var(--ds-warning, #eab308); }
+
+/* Fiat KYC checklist (ID + bank statement + facial note) */
+.ota-profile-kyc-checklist {
+  list-style: none;
+  margin: 0 0 var(--ds-spacing-3);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ota-profile-kyc-step {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px 12px;
+  padding: 10px 12px;
+  border-radius: var(--ds-radius-md);
+  border: 1px solid var(--ds-border-color);
+  background: var(--ds-bg-elevated);
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-primary);
+}
+.ota-profile-kyc-step--ok {
+  border-color: rgba(34, 197, 94, 0.35);
+}
+.ota-profile-kyc-step--disabled {
+  opacity: 0.75;
+  border-style: dashed;
+}
+.ota-profile-kyc-step-icon-ok {
+  color: var(--ds-success, #22c55e);
+  flex-shrink: 0;
+}
+.ota-profile-kyc-step-icon-pending {
+  color: var(--ds-text-tertiary);
+  flex-shrink: 0;
+}
+.ota-profile-kyc-step-status {
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+  white-space: nowrap;
+}
+.ota-profile-kyc-step-status--missing {
+  color: rgba(251, 191, 36, 0.95);
+}
+.ota-profile-kyc-ready {
+  margin: 0 0 var(--ds-spacing-3);
+  padding: 10px 12px;
+  border-radius: var(--ds-radius-md);
+  font-size: var(--ds-font-size-sm);
+  line-height: 1.45;
+  color: rgba(0, 255, 163, 0.9);
+  background: rgba(0, 255, 163, 0.06);
+  border: 1px solid rgba(0, 255, 163, 0.2);
+}
+.ota-profile-documents-upload-stack {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+.ota-profile-documents-upload-row {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  position: relative;
+  width: 100%;
+}
+.ota-profile-documents-upload-stack .ota-profile-documents-upload-btn {
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+  justify-content: center;
+}
+
+@container account-details (max-width: 360px) {
+  .ota-profile-details {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Avatar section — compact */
+.ota-profile-avatar-section {
+  margin-bottom: var(--ds-spacing-3);
+}
+.ota-profile-avatar-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-3);
+  flex-wrap: wrap;
+  padding: 10px 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+  margin-bottom: 12px;
+}
+.ota-profile-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #000000;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ota-profile-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ota-profile-avatar-initial {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--ds-text-secondary);
+}
+.ota-profile-avatar-input {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+.ota-profile-avatar-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: 10px 18px;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 150ms, border-color 150ms;
+}
+.ota-profile-avatar-btn:hover:not(:disabled) {
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+.ota-profile-avatar-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.ota-profile-photo-hint {
+  margin: 0 0 8px;
+  max-width: 360px;
+  font-size: var(--ds-font-size-xs, 12px);
+  line-height: 1.45;
+  color: var(--ds-text-secondary, rgba(255, 255, 255, 0.55));
+}
+
+/* Unified Profile buttons — nuanțe de negru */
+.ota-profile-edit-btn,
+.ota-profile-add-btn,
+.ota-profile-refresh-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-2) var(--ds-spacing-4);
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+  cursor: pointer;
+  transition: background 150ms, border-color 150ms;
+}
+
+.ota-profile-edit-btn:hover,
+.ota-profile-add-btn:hover,
+.ota-profile-refresh-btn:hover:not(:disabled) {
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.ota-profile-refresh-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.ota-profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-4);
+}
+
+/* No dead space: label on top, value directly below — Sonnet card style */
+.ota-profile-info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-4);
+  background: var(--ds-bg-elevated);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-lg);
+  transition: border-color 120ms;
+}
+.ota-profile-info-item:hover {
+  border-color: var(--ds-border-color-light);
+}
+
+.ota-profile-info-label {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+}
+
+.ota-profile-info-value {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  width: 100%;
+}
+
+.ota-profile-verified-icon {
+  color: rgba(16, 185, 129, 0.95);
+}
+
+.ota-profile-unverified-icon {
+  color: #ef4444;
+}
+
+/* Hint under email when verified via payment: neutral/success, never red */
+.ota-profile-email-verified-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.875rem;
+  color: var(--ds-text-secondary, #a1a1aa);
+}
+
+
+/* Change password form — compact, same style as Profile cards */
+.ota-profile-change-password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+}
+
+.ota-profile-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.ota-profile-label {
+  font-size: var(--ds-font-size-base);
+  font-weight: 500;
+  color: var(--ds-text-primary);
+}
+
+.ota-profile-input {
+  padding: 6px 10px;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--ds-radius-sm);
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-base);
+  transition: border-color 150ms;
+}
+
+.ota-profile-input:hover:not(:disabled) {
+  border-color: rgba(79, 172, 254, 0.2);
+}
+
+.ota-profile-input:focus {
+  outline: none;
+  border-color: var(--ds-accent, var(--primary));
+  box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.15);
+}
+
+.ota-profile-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Document type select: MUST override .ota-profile-input (which comes above and was clipping text).
+   Higher specificity so padding/height are not overridden. */
+.ota-profile-documents-upload select.ota-profile-documents-type,
+select.ota-profile-input.ota-profile-documents-type {
+  height: 52px !important;
+  min-height: 52px !important;
+  padding: 16px 40px 16px 16px !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  box-sizing: border-box !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  background-color: #000000 !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 12px center !important;
+}
+
+.ota-profile-hint {
+  font-size: var(--ds-font-size-sm);
+  line-height: 1.5;
+  color: var(--ds-text-secondary);
+  margin: 0 0 6px;
+}
+/* Paragraphs in block desc (e.g. Stripe text): avoid last line cut off */
+.ota-profile-detail-desc--block p,
+.ota-profile-detail-desc--block .ota-profile-detail-desc--muted {
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+.ota-profile-detail-desc--block p:last-child,
+.ota-profile-detail-desc--block .ota-profile-detail-desc--muted:last-of-type {
+  margin-bottom: 0;
+}
+
+.ota-profile-form-actions {
+  display: flex;
+  gap: var(--ds-spacing-3);
+  justify-content: flex-end;
+}
+
+.ota-profile-cancel-btn,
+.ota-profile-save-btn {
+  padding: 6px 14px;
+  border-radius: var(--ds-radius-sm);
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+  cursor: pointer;
+  transition: background-color 150ms, border-color 150ms;
+}
+
+.ota-profile-cancel-btn {
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--ds-text-primary);
+}
+
+.ota-profile-cancel-btn:hover {
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.ota-profile-save-btn {
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--ds-text-primary);
+  border-radius: 8px;
+}
+
+.ota-profile-save-btn:hover:not(:disabled) {
+  background: #000000;
+  border-color: rgba(79, 172, 254, 0.2);
+  color: rgba(79, 172, 254, 0.95);
+}
+
+/* Sonnet-style table: rounded, subtle shadow */
+.ota-profile-wallet-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-lg);
+  background: var(--ds-bg-elevated);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.ota-profile-wallet-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--ds-font-size-sm);
+}
+
+.ota-profile-wallet-table th,
+.ota-profile-wallet-table td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--ds-border-color);
+  vertical-align: middle;
+}
+
+.ota-profile-wallet-table th {
+  font-weight: 600;
+  color: var(--ds-text-secondary);
+  background: #000000;
+}
+
+.ota-profile-wallet-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.ota-profile-wallet-table tbody tr:hover {
+  background: #000000;
+}
+
+.ota-profile-wallet-addr-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.ota-profile-wallet-addr-icon {
+  flex-shrink: 0;
+  color: rgba(79, 172, 254, 0.7);
+}
+
+.ota-profile-wallet-table-addr {
+  font-family: ui-monospace, monospace;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}
+
+.ota-profile-wallet-table-badges {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+.ota-profile-wallet-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.5rem;
+  background: color-mix(in srgb, var(--chain-color, #64748b) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--chain-color, #64748b) 45%, transparent);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--chain-color, #94a3b8);
+}
+
+.ota-profile-wallet-type-icon {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--chain-color, #64748b);
+}
+
+.ota-profile-wallet-type-logo {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.ota-profile-wallet-table .ota-profile-wallet-copy-btn:hover {
+  color: rgba(79, 172, 254, 0.95);
+  border-color: rgba(79, 172, 254, 0.25);
+}
+
+.ota-profile-wallet-table-actions {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.ota-profile-wallet-table-actions .ota-profile-wallet-action-btn,
+.ota-profile-wallet-table-actions .ota-profile-wallet-remove-btn {
+  padding: 0.35rem;
+  margin-left: 0.25rem;
+  color: var(--ds-text-secondary);
+  transition: color 0.2s;
+}
+
+.ota-profile-wallet-table-actions .ota-profile-wallet-action-btn:hover {
+  color: #fbbf24;
+}
+
+.ota-profile-wallet-table-actions .ota-profile-wallet-remove-btn:hover:not(:disabled) {
+  color: #f87171;
+}
+
+.ota-profile-wallet-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+  margin-left: 0.35rem;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  color: var(--ds-text-secondary);
+  cursor: pointer;
+  vertical-align: middle;
+  transition: color 0.2s, background 0.2s, border-color 0.2s;
+}
+.ota-profile-wallet-copy-btn:hover {
+  color: var(--ds-text-primary);
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+.ota-profile-copyable-wallet {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.ota-profile-phone-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Legacy card list (kept for any other use) */
+.ota-profile-wallet-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-2);
+}
+
+.ota-profile-wallet-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ds-spacing-3);
+  background: var(--ds-bg-elevated);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+}
+
+.ota-profile-wallet-info {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-3);
+}
+
+.ota-profile-wallet-icon {
+  color: var(--primary);
+}
+
+.ota-profile-wallet-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-1);
+}
+
+.ota-profile-wallet-address {
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  flex-wrap: wrap;
+}
+
+.ota-profile-wallet-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: var(--ds-radius-md);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ota-profile-wallet-badge.main {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
+.ota-profile-wallet-badge.connected {
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.ota-profile-wallet-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+}
+
+.ota-profile-wallet-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ds-spacing-2);
+  background: var(--bg);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  color: var(--ds-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ota-profile-wallet-action-btn:hover {
+  background: var(--ds-bg-hover);
+  color: var(--warning);
+  border-color: var(--warning);
+}
+
+.ota-profile-wallet-meta {
+  font-size: 12px;
+  color: var(--ds-text-tertiary);
+  margin-top: 4px;
+}
+
+.ota-profile-wallet-hint {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3);
+  background: var(--info-bg);
+  border: 1px solid var(--info);
+  border-radius: var(--ds-radius-md);
+  color: var(--info);
+  font-size: var(--ds-font-size-sm);
+  margin-top: var(--ds-spacing-3);
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ota-profile-wallet-full {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  font-family: monospace;
+}
+
+.ota-profile-wallet-balance {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+}
+
+.ota-profile-wallet-remove-btn {
+  padding: var(--ds-spacing-2);
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: var(--ds-text-secondary);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.ota-profile-wallet-remove-btn:hover:not(:disabled) {
+  background: #000000;
+  color: #ef4444;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.ota-profile-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ds-spacing-8);
+  text-align: center;
+}
+
+.ota-profile-empty-icon {
+  color: var(--ds-text-secondary);
+  margin-bottom: var(--ds-spacing-4);
+}
+
+.ota-profile-empty-text {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-secondary);
+  margin: 0 0 var(--ds-spacing-4) 0;
+}
+
+.ota-profile-empty-action {
+  padding: var(--ds-spacing-3) var(--ds-spacing-4);
+  background: var(--primary);
+  border: none;
+  border-radius: var(--ds-radius-md);
+  color: white;
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ota-profile-empty-action:hover {
+  background: var(--primary-hover);
+}
+
+.ota-profile-security-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(140px, 180px));
+  gap: 6px;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.ota-profile-security-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 10px 12px;
+  min-width: 0;
+  aspect-ratio: 1;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  transition: border-color 120ms, background 120ms;
+}
+
+.ota-profile-security-item:hover {
+  background: #000000;
+  border-color: rgba(79, 172, 254, 0.12);
+}
+
+.ota-profile-security-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+}
+
+.ota-profile-security-info .ota-profile-row-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+}
+
+.ota-profile-security-info .ota-profile-row-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.ota-profile-security-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}
+
+.ota-profile-security-description {
+  font-size: 0.7rem;
+  color: var(--ds-text-secondary);
+  line-height: 1.35;
+  margin-top: 1px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+.ota-profile-security-item .ota-profile-security-action-btn {
+  align-self: stretch;
+  width: 100%;
+}
+
+.ota-profile-security-item--info .ota-profile-security-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(79, 172, 254, 0.9);
+}
+
+.ota-profile-security-item--info .ota-profile-security-status::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(79, 172, 254, 0.9);
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.ota-profile-device-row {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--ds-text-secondary);
+  line-height: 1.5;
+}
+
+.ota-profile-device-row + .ota-profile-device-row {
+  margin-top: 2px;
+}
+
+.ota-profile-security-action-btn {
+  padding: 5px 10px;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 150ms, border-color 150ms;
+}
+
+.ota-profile-security-action-btn:hover:not(:disabled) {
+  background: #000000;
+  border-color: rgba(79, 172, 254, 0.2);
+  color: rgba(79, 172, 254, 0.95);
+}
+
+.ota-profile-error {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3);
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--ds-radius-md);
+  color: #ef4444;
+  font-size: var(--ds-font-size-sm);
+  margin-bottom: var(--ds-spacing-4);
+}
+
+/* OTA Settings – card grid (same style as Security) */
+.ota-profile-ota-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  width: fit-content;
+  margin: 0 auto 16px;
+}
+
+.ota-profile-ota-options .ota-profile-security-item {
+  aspect-ratio: auto;
+  min-height: 100px;
+}
+
+.ota-profile-security-value {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}
+
+.ota-profile-ota-status-ok {
+  color: rgba(34, 197, 94, 0.95) !important;
+}
+
+.ota-profile-ota-status-ok::before {
+  background: rgba(34, 197, 94, 0.95) !important;
+}
+
+.ota-profile-ota-status-expired {
+  color: #ef4444 !important;
+}
+
+.ota-profile-ota-status-expired::before {
+  background: #ef4444 !important;
+}
+
+.ota-profile-renew-bot-link {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ds-accent, #3b82f6);
+  text-decoration: none;
+}
+
+.ota-profile-renew-bot-link:hover {
+  text-decoration: underline;
+}
+
+.ota-profile-ota-panel-wrap {
+  margin-top: 16px;
+  margin-bottom: 12px;
+}
+
+.ota-profile-ota-panel-wrap .ota-settings-panel {
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.ota-profile-ota-panel-wrap .ota-settings-panel-header {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+}
+
+.ota-profile-ota-cta {
+  margin-top: 12px;
+}
+
+.ota-profile-ota-cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: rgba(79, 172, 254, 0.95);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.ota-profile-ota-cta-link:hover {
+  background: #000000;
+  border-color: rgba(79, 172, 254, 0.25);
+  color: rgba(79, 172, 254, 1);
+}
+
+.ota-profile-ota-status {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-3);
+}
+
+.ota-profile-status-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ds-spacing-1);
+  padding: var(--ds-spacing-3);
+  background: var(--ds-bg-elevated);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+}
+
+.ota-profile-status-label {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-secondary);
+}
+
+.ota-profile-status-value {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}
+
+.ota-profile-status-registered {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  color: #10b981;
+}
+
+.ota-profile-status-not-registered {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  color: var(--ds-text-secondary);
+}
+
+.ota-profile-ota-register {
+  margin-top: var(--ds-spacing-4);
+}
+
+.ota-profile-register-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3) var(--ds-spacing-4);
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-base);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.ota-profile-register-btn:hover:not(:disabled) {
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.ota-profile-register-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ota-profile-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ota-profile-page {
+    padding: 10px 12px 12px;
+  }
+
+  .ota-profile-tabs {
+    flex-wrap: wrap;
+    padding: 8px 10px;
+  }
+
+  .ota-profile-tab {
+    flex: 1 1 auto;
+    min-width: 70px;
+    justify-content: center;
+    padding: 6px 10px;
+  }
+
+  .ota-profile-content {
+    padding: 10px 12px 12px;
+  }
+
+  .ota-profile-details {
+    grid-template-columns: 1fr;
+  }
+
+  .ota-profile-security-options {
+    grid-template-columns: 1fr;
+  }
+
+  .ota-profile-security-item {
+    aspect-ratio: auto;
+    min-height: 100px;
+  }
+
+  .ota-profile-wallet-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .ota-profile-wallet-table {
+    min-width: 380px;
+  }
+}
+
+@media (max-width: 900px) {
+  .ota-profile-details {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ota-profile-security-options {
+    grid-template-columns: 1fr;
+  }
+
+  .ota-profile-ota-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .ota-profile-details {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Telegram: connect flow + data bundle */
+.ota-profile-telegram-connect {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-2);
+}
+.ota-profile-telegram-not-connected {
+  color: var(--ds-text-tertiary);
+  font-size: var(--ds-font-size-sm);
+}
+.ota-profile-telegram-link-code {
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+  line-height: 1.35;
+}
+.ota-profile-telegram-link-code code {
+  font-family: ui-monospace, monospace;
+  color: var(--primary, #14f195);
+  background: rgba(20, 241, 149, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.ota-profile-telegram-expires {
+  margin-top: 4px;
+  opacity: 0.8;
+  font-size: 11px;
+}
+.ota-profile-telegram-data-full .ota-profile-info-value {
+  max-width: 100%;
+}
+.ota-profile-telegram-bundle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-3);
+}
+.ota-profile-telegram-bundle-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  font-size: 13px;
+}
+.ota-profile-telegram-raw {
+  width: 100%;
+}
+.ota-profile-telegram-raw summary {
+  cursor: pointer;
+  opacity: 0.9;
+  font-size: var(--ds-font-size-sm);
+}
+.ota-profile-telegram-raw pre {
+  margin-top: 10px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 12px;
+  background: #000000;
+  border: 1px solid var(--ds-border-color);
+  border-radius: 10px;
+  padding: 12px;
+  max-height: 380px;
+  overflow: auto;
+}
+.ota-profile-telegram-not-available {
+  color: var(--ds-text-tertiary);
+  font-size: 13px;
+}
+

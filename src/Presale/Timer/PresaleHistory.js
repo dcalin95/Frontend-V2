@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "./PresaleHistory.module.css";
 import axios from "axios";
 import useCellManagerData from "../hooks/useCellManagerData";
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+import { resolvePresaleBackendUrl } from "../presaleApi";
 
 const PresaleHistory = () => {
   const [history, setHistory] = useState([]);
@@ -113,8 +112,9 @@ const PresaleHistory = () => {
 
         // Get backend analytics (off-chain)
         try {
-          console.log("📘 [PresaleHistory] Fetching backend analytics:", `${API_URL}/api/presale/history`);
-          const res = await axios.get(`${API_URL}/api/presale/history`);
+          const backendUrl = await resolvePresaleBackendUrl();
+          console.log("📘 [PresaleHistory] Fetching backend analytics:", `${backendUrl}/api/presale/history`);
+          const res = await axios.get(`${backendUrl}/api/presale/history`);
           console.log("📘 [PresaleHistory] Backend analytics response:", res.data);
           simulatedHistory = Array.isArray(res.data) ? res.data : [];
         } catch (backendErr) {

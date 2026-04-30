@@ -1,0 +1,116 @@
+/**
+ * ⌨️ Keyboard Shortcuts Help Styles
+ * 
+ * Styles pentru KeyboardShortcutsHelp component
+ */
+
+.keyboard-shortcuts-help-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-lg);
+  padding: var(--ds-spacing-md);
+}
+
+.keyboard-shortcuts-help-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ds-spacing-sm);
+  text-align: center;
+  padding: var(--ds-spacing-md);
+}
+
+.keyboard-shortcuts-help-icon {
+  color: var(--ds-primary);
+  opacity: 0.8;
+}
+
+.keyboard-shortcuts-help-intro p {
+  margin: 0;
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-base);
+}
+
+.keyboard-shortcuts-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-md);
+}
+
+.keyboard-shortcut-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-spacing-md);
+  padding: var(--ds-spacing-md);
+  background: var(--ds-bg-tertiary);
+  border-radius: var(--ds-border-radius);
+  border: 1px solid var(--ds-border);
+  transition: all 0.2s ease;
+}
+
+.keyboard-shortcut-item:hover {
+  background: var(--ds-bg-hover);
+  border-color: var(--ds-primary);
+}
+
+.keyboard-shortcut-keys {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-xs);
+  flex-shrink: 0;
+}
+
+.keyboard-shortcut-key {
+  padding: var(--ds-spacing-xs) var(--ds-spacing-sm);
+  background: var(--ds-bg-secondary);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-border-radius-sm);
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+  font-size: var(--ds-font-size-sm);
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  min-width: 32px;
+  text-align: center;
+}
+
+.keyboard-shortcut-separator {
+  color: var(--ds-text-tertiary);
+  font-size: var(--ds-font-size-sm);
+  font-weight: 500;
+}
+
+.keyboard-shortcut-description {
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-base);
+  text-align: right;
+  flex: 1;
+}
+
+.keyboard-shortcuts-help-note {
+  padding: var(--ds-spacing-sm);
+  background: var(--ds-bg-tertiary);
+  border-radius: var(--ds-border-radius-sm);
+  text-align: center;
+}
+
+.keyboard-shortcuts-help-note p {
+  margin: 0;
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-tertiary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .keyboard-shortcut-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--ds-spacing-sm);
+  }
+
+  .keyboard-shortcut-description {
+    text-align: left;
+    width: 100%;
+  }
+}

@@ -1,0 +1,440 @@
+/**
+ * 📈 Market Analysis Styles - Sonnet / Anthropic
+ *
+ * Componente: card (.market-analysis), header trigger (.market-analysis-header-trigger),
+ * rezultate (.market-analysis-result). Folosește tokeni Sonnet.
+ */
+
+/* ---------- AI Sonnet 2026 | proportional 8px ---------- */
+.market-analysis,
+.market-analysis-header-trigger {
+  --ma-transition: 150ms ease;
+  --ma-ai-accent: #a78bfa;
+}
+
+/* În header (Advisory): selector clickabil, dropdown deasupra header-ului */
+.market-analysis-header-trigger .header-token-selector-wrapper {
+  position: relative;
+  z-index: 21;
+}
+
+.market-analysis-title {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.market-analysis-ai-icon {
+  flex-shrink: 0;
+  color: var(--ma-ai-accent);
+  margin-right: 4px;
+}
+
+.market-analysis-badge-2026 {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, var(--ma-ai-accent) 0%, #6366f1 100%);
+  border-radius: 999px;
+  color: #fff;
+  vertical-align: middle;
+}
+
+.market-analysis {
+  padding: var(--ds-spacing-6);
+  background-color: var(--ds-bg-surface);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-lg);
+  box-sizing: border-box;
+  max-width: 520px;
+  width: 100%;
+}
+
+.market-analysis-header {
+  margin-bottom: var(--ds-spacing-6); /* 24px - Sonnet */
+}
+
+.market-analysis-title {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: var(--ds-font-size-md); /* 16px - Sonnet card titles */
+  font-weight: var(--ds-font-weight-semibold); /* 600 */
+  line-height: var(--ds-line-height-normal); /* 22px */
+  color: var(--ds-text-primary); /* Sonnet text */
+  margin: 0;
+}
+
+.market-analysis-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-6); /* 24px - Sonnet */
+}
+
+.market-analysis-token-selector {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-4); /* 16px - Sonnet */
+}
+
+.market-analysis-quota {
+  font-size: var(--ds-font-size-sm, 13px);
+  color: var(--ds-text-secondary);
+  margin: 0;
+}
+
+.market-analysis-label {
+  font-weight: var(--ds-font-weight-medium); /* 500 */
+  color: var(--ds-text-primary); /* Sonnet text */
+  font-size: var(--ds-font-size-base); /* 14px - Sonnet */
+}
+
+.market-analysis-select {
+  height: var(--ds-input-height-md); /* 40px - Sonnet input height */
+  padding: 0 var(--ds-spacing-3); /* 12px - Sonnet */
+  border: 1px solid var(--ds-border-color); /* Sonnet 1px subtle */
+  border-radius: var(--ds-radius-md); /* 10px - Sonnet */
+  background-color: var(--ds-bg-surface); /* #000000 */
+  color: var(--ds-text-primary); /* Sonnet text */
+  font-size: var(--ds-font-size-base); /* 14px - Sonnet */
+  font-weight: var(--ds-font-weight-medium); /* 500 */
+  line-height: var(--ds-line-height-normal); /* 20px */
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: border-color var(--ma-transition);
+}
+
+.market-analysis-select:focus {
+  outline: none;
+  border-color: var(--ds-accent); /* Sonnet accent */
+  box-shadow: var(--ds-focus-ring-box-shadow); /* Sonnet focus ring */
+}
+
+.market-analysis-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2); /* 8px - Sonnet */
+  height: var(--ds-button-height-md); /* 40px - Sonnet */
+  padding: 0 var(--ds-spacing-4); /* 16px - Sonnet */
+  background-color: var(--ds-accent); /* Sonnet accent (solid blue) */
+  color: var(--ds-text-primary); /* Sonnet text (white) */
+  border: 1px solid var(--ds-accent); /* Sonnet accent */
+  border-radius: var(--ds-radius-md); /* 10px - Sonnet */
+  font-size: var(--ds-font-size-base); /* 14px - Sonnet */
+  font-weight: var(--ds-font-weight-medium); /* 500 */
+  line-height: 1;
+  transition: background-color 150ms, border-color 150ms;
+  cursor: pointer;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.market-analysis-btn:hover:not(:disabled) {
+  background-color: #2563eb; /* Slightly darker blue */
+  border-color: #2563eb;
+}
+
+.market-analysis-btn:disabled {
+  opacity: 0.55; /* Sonnet disabled */
+  cursor: not-allowed;
+}
+
+/* Header variant: token selector + Analyze button în dex-header-center-slot */
+.market-analysis-header-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-3);
+  flex-wrap: wrap;
+}
+
+.market-analysis-btn-header {
+  height: var(--ds-button-height-sm, 32px);
+  padding: 0 var(--ds-spacing-3);
+  font-size: var(--ds-font-size-sm, 13px);
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .market-analysis-header-trigger {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.market-analysis-result {
+  padding: var(--ds-spacing-4);
+  background-color: var(--ds-bg-surface);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-lg);
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+.market-analysis-result-header {
+  margin-bottom: var(--ds-spacing-4); /* 16px - Sonnet */
+}
+
+/* Bloc dovezi: OpenAI a participat – tokens, model, what_data_was_used */
+.market-analysis-llm-proof {
+  margin-bottom: var(--ds-spacing-4);
+  padding: var(--ds-spacing-4);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.08) 0%, rgba(16, 185, 129, 0.06) 100%);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  border-radius: var(--ds-radius-lg);
+}
+
+.market-analysis-llm-proof-header {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  font-weight: 600;
+  font-size: var(--ds-font-size-base);
+  color: rgba(34, 197, 94, 0.95);
+  margin-bottom: var(--ds-spacing-2);
+}
+
+.market-analysis-llm-proof-header svg {
+  flex-shrink: 0;
+  color: rgba(34, 197, 94, 0.9);
+}
+
+.market-analysis-llm-proof-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-spacing-3);
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+}
+
+.market-analysis-llm-proof-item {
+  padding: 2px 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+}
+
+/* Cost și tokeni: USD, total, prompt + completion */
+.market-analysis-llm-cost {
+  margin-top: var(--ds-spacing-3);
+  padding: var(--ds-spacing-3);
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--ds-radius-md);
+  font-size: var(--ds-font-size-sm);
+}
+
+.market-analysis-llm-cost-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--ds-spacing-2);
+}
+
+.market-analysis-llm-cost-row + .market-analysis-llm-cost-row {
+  margin-top: var(--ds-spacing-2);
+}
+
+.market-analysis-llm-cost-label {
+  color: var(--ds-text-secondary);
+  flex-shrink: 0;
+}
+
+.market-analysis-llm-cost-value {
+  color: var(--ds-text-primary);
+  font-weight: 500;
+  text-align: right;
+  word-break: break-word;
+}
+
+.market-analysis-llm-proof-data {
+  margin-top: var(--ds-spacing-2);
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+}
+
+.market-analysis-fortare {
+  text-align: center;
+}
+
+.market-analysis-fortare .market-analysis-fortare-btn {
+  min-width: 200px;
+  font-size: var(--ds-font-size-base, 14px);
+  font-weight: 600;
+  padding: 12px 24px;
+  border-width: 2px;
+}
+
+.market-analysis-fortare .ui-button-secondary {
+  border-color: rgba(251, 191, 36, 0.6);
+  background: rgba(251, 191, 36, 0.08);
+  color: rgba(251, 191, 36, 1);
+}
+
+.market-analysis-fortare .ui-button-secondary:hover:not(:disabled) {
+  border-color: rgba(251, 191, 36, 0.9);
+  background: rgba(251, 191, 36, 0.15);
+}
+
+/* Banner când 0 candles – Binance geo-block / CoinGecko fallback */
+.market-analysis-data-warning {
+  margin-bottom: var(--ds-spacing-4);
+  padding: var(--ds-spacing-4);
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  border-radius: var(--ds-radius-md);
+  font-size: var(--ds-font-size-sm);
+  color: rgba(251, 191, 36, 0.95);
+}
+
+.market-analysis-data-warning strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.market-analysis-data-warning p {
+  margin: 0;
+  line-height: 1.45;
+  opacity: 0.95;
+}
+
+.market-analysis-assumptions {
+  margin-top: var(--ds-spacing-2);
+}
+
+@media (max-width: 768px) {
+  .market-analysis-llm-proof {
+    padding: var(--ds-spacing-3);
+  }
+  .market-analysis-llm-proof-details {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.market-analysis-result-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-4); /* 16px - Sonnet */
+}
+
+.market-analysis-signal {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-4); /* 16px - Sonnet */
+  padding: var(--ds-spacing-4); /* 16px - Sonnet */
+  border-radius: var(--ds-radius-lg); /* 12px - Sonnet */
+  font-weight: var(--ds-font-weight-semibold); /* 600 */
+  font-size: var(--ds-font-size-base); /* 14px - Sonnet */
+}
+
+.market-analysis-signal-buy {
+  background: rgba(16, 185, 129, 0.1); /* Sonnet success tint */
+  border: 1px solid rgba(16, 185, 129, 0.3); /* Sonnet success border */
+  color: var(--success); /* Sonnet success */
+}
+
+.market-analysis-signal-sell {
+  background: rgba(239, 68, 68, 0.1); /* Sonnet danger tint */
+  border: 1px solid rgba(239, 68, 68, 0.3); /* Sonnet danger border */
+  color: var(--ds-color-error); /* Sonnet danger */
+}
+
+.market-analysis-signal-hold {
+  background-color: var(--ds-bg-surface); /* #000000 */
+  border: 1px solid var(--ds-border-color); /* Sonnet border */
+  color: var(--ds-text-tertiary); /* Sonnet muted */
+}
+
+.market-analysis-confidence,
+.market-analysis-entry-price,
+.market-analysis-stop-loss,
+.market-analysis-take-profit {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--ds-spacing-2) 0; /* 8px vertical - Sonnet */
+  border-bottom: 1px solid var(--ds-border-color); /* Sonnet 1px subtle */
+}
+
+.market-analysis-confidence-label,
+.market-analysis-entry-price-label,
+.market-analysis-stop-loss-label,
+.market-analysis-take-profit-label {
+  font-weight: var(--ds-font-weight-medium); /* 500 */
+  color: var(--ds-text-tertiary); /* Sonnet muted */
+  font-size: var(--ds-font-size-base); /* 14px - Sonnet */
+}
+
+.market-analysis-confidence-value,
+.market-analysis-entry-price-value,
+.market-analysis-stop-loss-value,
+.market-analysis-take-profit-value {
+  font-weight: var(--ds-font-weight-semibold); /* 600 */
+  color: var(--ds-text-primary); /* Sonnet text */
+  font-size: var(--ds-font-size-base); /* 14px - Sonnet */
+}
+
+.market-analysis-reasoning {
+  margin-top: var(--ds-spacing-4); /* 16px - Sonnet */
+  padding: var(--ds-spacing-4); /* 16px - Sonnet */
+  background-color: var(--ds-bg-surface); /* #000000 */
+  border: 1px solid var(--ds-border-color); /* Sonnet 1px subtle */
+  border-radius: var(--ds-radius-lg); /* 14px - Sonnet */
+  box-sizing: border-box;
+}
+
+.market-analysis-reasoning-label {
+  font-weight: var(--ds-font-weight-medium); /* 500 */
+  color: var(--ds-text-tertiary); /* Sonnet muted */
+  margin-bottom: var(--ds-spacing-2); /* 8px - Sonnet */
+  font-size: var(--ds-font-size-base); /* 14px - Sonnet */
+}
+
+.market-analysis-reasoning-text {
+  color: var(--ds-text-primary); /* Sonnet text */
+  line-height: var(--ds-line-height-normal); /* 20px - Sonnet */
+  font-size: var(--ds-font-size-base); /* 14px - Sonnet */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .market-analysis {
+    padding: var(--ds-spacing-4); /* 16px mobile */
+  }
+
+  .market-analysis-token-selector {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--ds-spacing-2); /* 8px */
+  }
+
+  .market-analysis-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .market-analysis-result {
+    padding: var(--ds-spacing-4); /* 16px mobile */
+  }
+
+  .market-analysis-result-content {
+    gap: var(--ds-spacing-3); /* 12px mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .market-analysis {
+    padding: var(--ds-spacing-3); /* 12px small mobile */
+  }
+
+  .market-analysis-title {
+    font-size: var(--ds-font-size-md); /* 16px */
+  }
+
+  .market-analysis-signal {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--ds-spacing-2); /* 8px */
+  }
+}

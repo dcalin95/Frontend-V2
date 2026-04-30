@@ -1,0 +1,264 @@
+/**
+ * 🛠️ Chart Tools Styles
+ * 
+ * Styles pentru ChartTools component
+ */
+
+.chart-tools-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-md);
+}
+
+.chart-tools-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.chart-tools-badges {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-xs);
+}
+
+.chart-tools-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-sm);
+  padding-bottom: var(--ds-spacing-md);
+  border-bottom: 1px solid var(--ds-border);
+}
+
+.chart-tools-section:last-child {
+  border-bottom: none;
+}
+
+.chart-tools-section-label {
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--ds-spacing-xs);
+}
+
+.chart-tools-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--ds-spacing-xs);
+}
+
+/* Timeframe Grid */
+.chart-tools-timeframe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: var(--ds-spacing-xs);
+}
+
+.chart-tools-timeframe-btn {
+  padding: var(--ds-spacing-xs) var(--ds-spacing-sm);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-bg-tertiary);
+  color: var(--ds-text-secondary);
+  border-radius: var(--ds-border-radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: var(--ds-font-size-sm);
+  font-weight: 500;
+  text-align: center;
+}
+
+.chart-tools-timeframe-btn:hover {
+  background: var(--ds-bg-hover);
+  border-color: var(--ds-primary);
+  color: var(--ds-text-primary);
+}
+
+.chart-tools-timeframe-btn.active {
+  background: var(--ds-bg-secondary);
+  border-color: var(--ds-primary);
+  color: var(--ds-primary);
+  box-shadow: var(--ds-shadow);
+}
+
+/* Chart Type Grid */
+.chart-tools-chart-type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: var(--ds-spacing-xs);
+}
+
+.chart-tools-chart-type-btn {
+  padding: var(--ds-spacing-sm) var(--ds-spacing-md);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-bg-tertiary);
+  color: var(--ds-text-secondary);
+  border-radius: var(--ds-border-radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: var(--ds-font-size-sm);
+  font-weight: 500;
+  text-align: center;
+}
+
+.chart-tools-chart-type-btn:hover {
+  background: var(--ds-bg-hover);
+  border-color: var(--ds-primary);
+  color: var(--ds-text-primary);
+}
+
+.chart-tools-chart-type-btn.active {
+  background: var(--ds-bg-secondary);
+  border-color: var(--ds-primary);
+  color: var(--ds-primary);
+  box-shadow: var(--ds-shadow);
+}
+
+/* Indicators */
+.chart-tools-indicators {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-md);
+  max-height: 300px;
+  overflow-y: auto;
+  padding: var(--ds-spacing-sm);
+  background: var(--ds-bg-tertiary);
+  border-radius: var(--ds-border-radius);
+}
+
+.chart-tools-indicator-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-xs);
+}
+
+.chart-tools-indicator-category {
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: var(--ds-spacing-xs) 0;
+}
+
+.chart-tools-indicator-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-spacing-xs);
+}
+
+.chart-tools-indicator-item {
+  padding: var(--ds-spacing-xs) var(--ds-spacing-sm);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-bg-secondary);
+  color: var(--ds-text-secondary);
+  border-radius: var(--ds-border-radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: var(--ds-font-size-sm);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-xs);
+}
+
+.chart-tools-indicator-item:hover {
+  background: var(--ds-bg-hover);
+  border-color: var(--ds-primary);
+  color: var(--ds-text-primary);
+}
+
+.chart-tools-indicator-item.active {
+  background: var(--ds-bg-secondary);
+  border-color: var(--ds-success);
+  color: var(--ds-success);
+}
+
+.chart-tools-indicator-name {
+  font-weight: 500;
+}
+
+/* Drawing Tools */
+.chart-tools-drawing-tools {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--ds-spacing-xs);
+  padding: var(--ds-spacing-sm);
+  background: var(--ds-bg-tertiary);
+  border-radius: var(--ds-border-radius);
+}
+
+.chart-tools-drawing-tool-item {
+  padding: var(--ds-spacing-sm);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-bg-secondary);
+  color: var(--ds-text-secondary);
+  border-radius: var(--ds-border-radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: var(--ds-font-size-sm);
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ds-spacing-xs);
+  text-align: center;
+}
+
+.chart-tools-drawing-tool-item:hover {
+  background: var(--ds-bg-hover);
+  border-color: var(--ds-primary);
+  color: var(--ds-text-primary);
+}
+
+.chart-tools-drawing-tool-item.active {
+  background: var(--ds-bg-secondary);
+  border-color: var(--ds-success);
+  color: var(--ds-success);
+}
+
+.chart-tools-warning {
+  padding: var(--ds-spacing-sm);
+  text-align: center;
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-tertiary);
+  background: var(--ds-bg-tertiary);
+  border-radius: var(--ds-border-radius-sm);
+}
+
+/* Custom Scrollbar */
+.chart-tools-indicators::-webkit-scrollbar {
+  width: 4px;
+}
+
+.chart-tools-indicators::-webkit-scrollbar-track {
+  background: var(--ds-bg-secondary);
+  border-radius: var(--ds-border-radius);
+}
+
+.chart-tools-indicators::-webkit-scrollbar-thumb {
+  background: var(--ds-text-tertiary);
+  border-radius: var(--ds-border-radius);
+}
+
+.chart-tools-indicators::-webkit-scrollbar-thumb:hover {
+  background: var(--ds-text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .chart-tools-timeframe-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .chart-tools-chart-type-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .chart-tools-drawing-tools {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

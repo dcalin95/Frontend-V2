@@ -18,9 +18,10 @@
   animation: floating 4s ease-in-out infinite;
   position: relative;
   overflow: hidden;
+  isolation: isolate;
 }
 
-/* Efect de strălucire care trece peste cifre */
+/* Efect de strălucire — sub text (nu acoperă cifrele) */
 .totalRaised::after {
   content: "";
   position: absolute;
@@ -28,6 +29,8 @@
   left: -100%;
   width: 50%;
   height: 100%;
+  z-index: 0;
+  pointer-events: none;
   background: linear-gradient(
     90deg,
     transparent,
@@ -49,21 +52,24 @@
 }
 
 .totalRaisedLabel {
+  position: relative;
+  z-index: 1;
   font-size: 0.85rem;
-  color: #00f0ff;
+  color: #00f0ff !important;
+  -webkit-text-fill-color: #00f0ff !important;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 3px;
-  opacity: 0.8;
+  opacity: 0.95;
 }
 
 .totalRaisedAmount {
+  position: relative;
+  z-index: 1;
   font-size: 2.8rem;
   font-weight: 900;
-  color: #ffd700; /* Auriu spectaculos */
-  text-shadow: 
-    0 0 10px rgba(255, 215, 0, 0.5),
-    0 0 20px rgba(255, 215, 0, 0.2);
+  color: #ffd700 !important;
+  -webkit-text-fill-color: #ffd700 !important;
   font-family: 'Roboto Mono', monospace;
 }
 

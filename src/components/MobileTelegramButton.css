@@ -88,3 +88,19 @@ body.mode-mobile.in-app-browser .mobile-telegram-button {
   right: 14px;
 }
 
+body.mode-mobile[class*="dex-theme-"] .mobile-telegram-button {
+  background: var(--ds-bg-base) !important;
+  border-color: var(--ds-border-color-light) !important;
+  box-shadow: var(--ds-shadow-sm) !important;
+  filter: none !important;
+}
+
+body.mode-mobile[class*="dex-theme-"] .mobile-telegram-button:hover {
+  border-color: var(--ds-accent) !important;
+  box-shadow: var(--ds-focus-ring-box-shadow) !important;
+}
+
+body.mode-mobile[class*="dex-theme-"] .mobile-telegram-button img {
+  filter: none !important;
+}
+

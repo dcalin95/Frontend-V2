@@ -1,0 +1,140 @@
+/* Trading Pairs List Component Styles - Binance-Inspired Refactored */
+
+.trading-pairs-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-4);
+}
+
+.trading-pairs-list-search {
+  max-width: 300px;
+}
+
+.trading-pairs-list-table-wrapper {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+/* Sort buttons in table header */
+.trading-pairs-list-col-sortable {
+  padding: 0;
+  height: auto;
+  font-size: var(--ds-font-size-xs);
+  font-weight: var(--ds-font-weight-semibold);
+  text-transform: uppercase;
+  color: var(--ds-text-secondary);
+  letter-spacing: var(--ds-letter-spacing-wide);
+  gap: var(--ds-spacing-1);
+}
+
+.trading-pairs-list-col-sortable:hover {
+  color: var(--ds-text-primary);
+}
+
+.trading-pairs-list-col-active {
+  color: var(--ds-color-primary) !important;
+}
+
+.trading-pairs-list-sort-indicator {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-color-primary);
+}
+
+/* Pair column */
+.trading-pairs-list-col-pair {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+}
+
+.trading-pairs-list-pair-logos {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.trading-pairs-list-pair-logo-overlap {
+  margin-left: calc(var(--ds-logo-sm) * -0.4);
+  z-index: 1;
+}
+
+.trading-pairs-list-pair-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.trading-pairs-list-pair-symbol {
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+}
+
+.trading-pairs-list-pair-tokens {
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-text-secondary);
+}
+
+/* Price column */
+.trading-pairs-list-price {
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  font-family: var(--ds-font-family-mono);
+}
+
+/* Change badge */
+.trading-pairs-list-change-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-spacing-1);
+}
+
+/* Volume column */
+.trading-pairs-list-volume {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  font-family: var(--ds-font-family-mono);
+}
+
+/* Row selection */
+.trading-pairs-list-item-selected {
+  background-color: var(--ds-bg-active) !important;
+  border-left: 2px solid var(--ds-border-color);
+}
+
+.trading-pairs-list-empty {
+  padding: var(--ds-spacing-8);
+  text-align: center;
+  color: var(--ds-text-tertiary);
+  font-size: var(--ds-font-size-sm);
+}
+
+/* Scrollbar */
+.trading-pairs-list-table-wrapper::-webkit-scrollbar {
+  width: 4px;
+}
+
+.trading-pairs-list-table-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.trading-pairs-list-table-wrapper::-webkit-scrollbar-thumb {
+  background: var(--ds-border-color);
+  border-radius: var(--ds-radius-xs);
+}
+
+.trading-pairs-list-table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: var(--ds-border-color-light);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .trading-pairs-list-search {
+    max-width: 100%;
+  }
+  
+  .trading-pairs-list-table-wrapper {
+    overflow-x: auto;
+  }
+}

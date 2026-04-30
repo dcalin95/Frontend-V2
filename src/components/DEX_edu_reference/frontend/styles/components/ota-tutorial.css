@@ -1,0 +1,323 @@
+/**
+ * 🎓 OTA Tutorial Styles
+ * 
+ * Stiluri pentru tutorial interactiv OTA
+ */
+
+.ota-tutorial-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 9998;
+  animation: fade-in 0.3s ease-out;
+}
+
+.ota-tutorial-highlight {
+  position: absolute;
+  border: 3px solid #14f195;
+  border-radius: 8px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5), 0 0 20px rgba(20, 241, 149, 0.5);
+  z-index: 9999;
+  pointer-events: none;
+  animation: highlight-pulse 2s ease-in-out infinite;
+  display: none;
+}
+
+@keyframes highlight-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5), 0 0 20px rgba(20, 241, 149, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5), 0 0 30px rgba(20, 241, 149, 0.7);
+  }
+}
+
+.ota-tutorial-card {
+  position: fixed;
+  z-index: 10000;
+  background: var(--ds-bg-surface);
+  border: 2px solid rgba(20, 241, 149, 0.4);
+  border-radius: var(--ds-radius-md);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(20, 241, 149, 0.2);
+  max-width: 420px;
+  width: 90%;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  animation: slide-in 0.4s ease-out;
+  overflow: hidden;
+}
+
+.ota-tutorial-card.ota-tutorial-center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ota-tutorial-card.ota-tutorial-top {
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.ota-tutorial-card.ota-tutorial-bottom {
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.ota-tutorial-card.ota-tutorial-right {
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+}
+
+.ota-tutorial-card.ota-tutorial-left {
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -60%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.ota-tutorial-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--ds-border-color);
+  background: rgba(20, 241, 149, 0.05);
+}
+
+.ota-tutorial-progress {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ota-tutorial-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: #000000;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.ota-tutorial-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #14f195, #00ff88);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.ota-tutorial-progress-text {
+  font-size: 11px;
+  color: var(--ds-text-secondary);
+  font-weight: 500;
+}
+
+.ota-tutorial-close {
+  background: transparent;
+  border: none;
+  color: var(--ds-text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.ota-tutorial-close:hover {
+  background: #000000;
+  color: var(--ds-text-primary);
+}
+
+.ota-tutorial-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.ota-tutorial-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ds-text-primary);
+  margin: 0 0 8px 0;
+}
+
+.ota-tutorial-description {
+  font-size: 14px;
+  color: var(--ds-text-secondary);
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+}
+
+.ota-tutorial-content {
+  font-size: 14px;
+  color: var(--ds-text-primary);
+  line-height: 1.6;
+}
+
+.ota-tutorial-content h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  margin: 0 0 12px 0;
+}
+
+.ota-tutorial-content p {
+  margin: 0 0 12px 0;
+  color: var(--ds-text-secondary);
+}
+
+.ota-tutorial-content ul,
+.ota-tutorial-content ol {
+  margin: 0 0 16px 0;
+  padding-left: 20px;
+  color: var(--ds-text-secondary);
+}
+
+.ota-tutorial-content li {
+  margin-bottom: 6px;
+}
+
+.ota-tutorial-content li:last-child {
+  margin-bottom: 0;
+}
+
+.ota-tutorial-tip {
+  padding: 12px;
+  background: rgba(20, 241, 149, 0.1);
+  border: 1px solid var(--ds-border-color, rgba(255,255,255,0.12));
+  border-radius: 4px;
+  margin-top: 16px !important;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.ota-tutorial-tip strong {
+  color: #14f195;
+}
+
+.ota-tutorial-icon-large {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+  color: #14f195;
+}
+
+.ota-tutorial-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-top: 1px solid var(--ds-border-color);
+  background: rgba(0, 0, 0, 0.2);
+  gap: 12px;
+}
+
+.ota-tutorial-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.ota-tutorial-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ota-tutorial-btn-skip {
+  background: transparent;
+  color: var(--ds-text-secondary);
+  border: 1px solid var(--ds-border-color);
+}
+
+.ota-tutorial-btn-skip:hover {
+  background: #000000;
+  color: var(--ds-text-primary);
+}
+
+.ota-tutorial-btn-secondary {
+  background: #000000;
+  color: var(--ds-text-primary);
+  border: 1px solid var(--ds-border-color);
+}
+
+.ota-tutorial-btn-secondary:hover:not(:disabled) {
+  background: #000000;
+}
+
+.ota-tutorial-btn-secondary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ota-tutorial-btn-primary {
+  background: linear-gradient(135deg, #14f195, #00ff88);
+  color: #000000;
+  font-weight: 700;
+}
+
+.ota-tutorial-btn-primary:hover {
+  background: linear-gradient(135deg, #16ff9f, #02ff92);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(20, 241, 149, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ota-tutorial-card {
+    max-width: 95%;
+    max-height: 90vh;
+  }
+
+  .ota-tutorial-card.ota-tutorial-right,
+  .ota-tutorial-card.ota-tutorial-left {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    top: 20px;
+    max-width: 95%;
+  }
+
+  .ota-tutorial-footer {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ota-tutorial-btn-skip {
+    width: 100%;
+  }
+
+  .ota-tutorial-nav {
+    width: 100%;
+  }
+
+  .ota-tutorial-nav .ota-tutorial-btn {
+    flex: 1;
+  }
+}

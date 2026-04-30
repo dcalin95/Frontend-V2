@@ -5,7 +5,7 @@
  * https://app.oxium.xyz/trade
  */
 
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import WalletContext from '../../../context/WalletContext';
 import TradeHeader from './components/TradeHeader';
 import TradingViewChart from './components/TradingViewChart';
@@ -16,33 +16,35 @@ import WalletModal from './components/WalletModal';
 import useOrderBook from './hooks/useOrderBook';
 import useMarketData from './hooks/useMarketData';
 import useTradingPair from './hooks/useTradingPair';
+import useRecentTrades from './hooks/useRecentTrades';
+import devTokenListService from '../services/devTokenListService';
 import './styles/TradePage.css';
 
-// Mock tokens - replace with real data
-const MOCK_TOKENS = [
+// DEV MODE – Fallback tokens (will be replaced by fetched tokens)
+const FALLBACK_TOKENS = [
   {
     symbol: 'BTC',
     name: 'Bitcoin',
     icon: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png',
-    price: 45000
+    price: 0
   },
   {
     symbol: 'USDT',
     name: 'Tether USD',
     icon: 'https://cryptologos.cc/logos/tether-usdt-logo.png',
-    price: 1
+    price: 0
   },
   {
     symbol: 'ETH',
     name: 'Ethereum',
     icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png',
-    price: 3000
+    price: 0
   },
   {
     symbol: 'BNB',
     name: 'Binance Coin',
     icon: 'https://cryptologos.cc/logos/bnb-bnb-logo.png',
-    price: 400
+    price: 0
   }
 ];
 
@@ -53,14 +55,17 @@ const TradePage = () => {
     disconnectWallet
   } = useContext(WalletContext);
 
+  const [tokens, setTokens] = useState(FALLBACK_TOKENS);
+
   const { tokenIn, tokenOut, handlePairChange } = useTradingPair(
-    MOCK_TOKENS[0],
-    MOCK_TOKENS[1],
-    MOCK_TOKENS
+    tokens[0] || FALLBACK_TOKENS[0],
+    tokens[1] || FALLBACK_TOKENS[1],
+    tokens
   );
 
   const { bids, asks, loading: orderBookLoading } = useOrderBook(tokenIn, tokenOut);
   const { marketData, loading: marketDataLoading } = useMarketData(tokenIn, tokenOut);
+  const { recentTrades, loading: recentTradesLoading } = useRecentTrades(tokenIn, tokenOut);
 
   const [openOrders, setOpenOrders] = useState([]);
   const [positions, setPositions] = useState([]);
@@ -72,6 +77,24 @@ const TradePage = () => {
     const saved = localStorage.getItem('trade_recent_wallets');
     return saved ? JSON.parse(saved) : [];
   });
+
+  // DEV MODE – Fetch popular tokens from CoinGecko
+  // Will be replaced by backend API when deployed
+  useEffect(() => {
+    const fetchTokens = async () => {
+      try {
+        const fetchedTokens = await devTokenListService.getPopularTokens();
+        if (fetchedTokens && fetchedTokens.length > 0) {
+          setTokens(fetchedTokens);
+        }
+      } catch (error) {
+        console.error('DEV MODE – Token list fetch error:', error);
+        // Keep fallback tokens on error
+      }
+    };
+    
+    fetchTokens();
+  }, []);
 
   const handleSwap = async (swapData) => {
     try {
@@ -106,7 +129,7 @@ const TradePage = () => {
       <TradeHeader
         tokenIn={tokenIn}
         tokenOut={tokenOut}
-        tokens={MOCK_TOKENS}
+        tokens={tokens}
         onPairChange={handlePairChange}
         onConnectWallet={() => setShowWalletModal(true)}
         walletAddress={walletAddress}
@@ -141,7 +164,7 @@ const TradePage = () => {
               <OrderBook
                 bids={bids}
                 asks={asks}
-                recentTrades={[]}
+                recentTrades={recentTrades}
                 onPriceClick={(price) => {
                   // TODO: Fill price in swap panel
                   console.log('Price clicked:', price);
@@ -153,8 +176,9 @@ const TradePage = () => {
               <SwapLimitPanel
                 tokenIn={tokenIn}
                 tokenOut={tokenOut}
-                tokens={MOCK_TOKENS}
+                tokens={tokens}
                 balances={balances}
+                marketData={marketData}
                 onTokenChange={handlePairChange}
                 onSwap={handleSwap}
                 onLimitOrder={handleLimitOrder}

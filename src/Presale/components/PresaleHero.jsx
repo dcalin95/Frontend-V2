@@ -2,7 +2,18 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./PresaleHero.css";
 
-const PresaleHero = ({ onStartInvesting, currentPrice, daysRemaining, isLoading }) => {
+function formatLaunchPowerUsd(n) {
+  const v = Number(n);
+  if (!Number.isFinite(v)) return "—";
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(v);
+}
+
+const PresaleHero = ({ onStartInvesting, currentPrice, daysRemaining, isLoading, launchPowerUsd }) => {
   const navigate = useNavigate();
   const [displayPrice, setDisplayPrice] = useState(null);
   const [displayDays, setDisplayDays] = useState(null);
@@ -44,8 +55,17 @@ const PresaleHero = ({ onStartInvesting, currentPrice, daysRemaining, isLoading 
         <p className="presale-hero-subtitle">
           Early Bird Price: <strong>{displayPrice || (isLoading ? "Loading..." : "N/A")} per BITS</strong>
         </p>
+        <p className="presale-hero-round-status">
+          Round 2 has ended. Waiting for the next round to open.
+        </p>
         <p className="presale-hero-timer">
           Limited Time: <span className="presale-hero-timer-value">{displayDays !== null ? `${displayDays} Days Remaining` : (isLoading ? "Calculating..." : "N/A")}</span>
+        </p>
+        <p className="presale-hero-launch-power" translate="no">
+          <span className="presale-hero-launch-label">Launch Power Raised:</span>{" "}
+          <span className="presale-hero-launch-value">
+            {isLoading ? "…" : formatLaunchPowerUsd(launchPowerUsd)}
+          </span>
         </p>
         <div className="presale-hero-buttons">
           <button 

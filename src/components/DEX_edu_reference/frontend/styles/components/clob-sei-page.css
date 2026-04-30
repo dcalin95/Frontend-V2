@@ -1,0 +1,1651 @@
+/**
+ * CLOB SEI – Trade Page (Oxium-style, Mangrove).
+ *
+ * Sistem de spațiu: baza 4px → 4 / 8 / 12 / 16 / 20 / 24px
+ * Scală tipografică: 10 / 11 / 12 / 13 / 14 / 15px
+ * Culori via --ds-* tokens (tokens.css)
+ *
+ * MANDATORY: background #000000 (docs/DEX_THEMES.md)
+ * UI: English only (docs/DEX_UI_LANGUAGE.md)
+ */
+
+/* ─────────────────────────────────────────────
+   Layout tokens
+───────────────────────────────────────────── */
+.clob-sei-trade-page {
+  --c-gap:         16px;
+  --c-pad:         20px;
+  --c-radius:      10px;
+  --c-book-w:      264px;
+  --c-form-w:      344px;
+  --c-border:      var(--ds-border-color,  #27272a);
+  --c-border-sub:  var(--ds-border-subtle, #1c1c1e);
+  --c-bg-card:     #111113;
+  --c-bg-deep:     #0a0a0c;
+  --c-bg-input:    #090909;
+  --c-text-pri:    var(--ds-text-primary,   #e4e4e7);
+  --c-text-sec:    var(--ds-text-secondary, #71717a);
+  --c-text-ter:    #52525b;
+  --c-accent:      var(--ds-accent,         #6366f1);
+  --c-buy:         var(--ds-success,        #22c55e);
+  --c-sell:        var(--ds-danger,         #ef4444);
+
+  background: #000000;
+  min-height: 100vh;
+  padding: var(--c-pad);
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+/* ─────────────────────────────────────────────
+   Page header
+───────────────────────────────────────────── */
+.clob-sei-page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: var(--c-gap);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--c-border);
+  flex-wrap: wrap;
+}
+
+.clob-sei-page-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--c-text-pri);
+  letter-spacing: -0.02em;
+}
+
+.clob-sei-header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: 20px;
+  font-size: 11px;
+  color: var(--c-accent);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.clob-sei-mid-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--c-text-sec);
+}
+
+.clob-sei-mid-price__value {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--c-text-pri);
+  font-variant-numeric: tabular-nums;
+}
+
+.clob-sei-mid-price__quote {
+  font-size: 11px;
+  color: var(--c-text-ter);
+  text-transform: uppercase;
+}
+
+.clob-sei-spread-info {
+  font-size: 11px;
+  color: var(--c-text-sec);
+  font-variant-numeric: tabular-nums;
+}
+
+.clob-sei-spread-info__val {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+/* ─────────────────────────────────────────────
+   Main grid – 3 coloane proporționale
+   Chart | OrderBook | Form
+───────────────────────────────────────────── */
+.clob-sei-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--c-book-w) var(--c-form-w);
+  grid-template-rows: 1fr;
+  gap: var(--c-gap);
+  height: calc(100vh - 140px);
+  min-height: 560px;
+  max-height: 920px;
+}
+
+/* ─────────────────────────────────────────────
+   Cards – base
+───────────────────────────────────────────── */
+.clob-sei-card {
+  border: 1px solid var(--c-border);
+  border-radius: var(--c-radius);
+  background: var(--c-bg-card);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ─────────────────────────────────────────────
+   Card header strip
+───────────────────────────────────────────── */
+.clob-sei-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--c-border);
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.clob-sei-card-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--c-text-sec);
+}
+
+/* ─────────────────────────────────────────────
+   Chart card
+───────────────────────────────────────────── */
+.clob-sei-chart-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─────────────────────────────────────────────
+   Order Book card
+───────────────────────────────────────────── */
+.clob-sei-book-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ─────────────────────────────────────────────
+   Order Book component (ClobSeiOrderBook)
+───────────────────────────────────────────── */
+.clob-sei-orderbook {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.clob-sei-orderbook--error {
+  padding: 16px;
+  color: var(--c-text-sec);
+}
+
+.clob-sei-ob-col-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--c-border-sub);
+  flex-shrink: 0;
+}
+
+.clob-sei-ob-col-th {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c-text-ter);
+}
+
+.clob-sei-ob-col-th--right {
+  text-align: right;
+}
+
+/* Asks section – flex: 1, overflow-y auto, items bottom-aligned (best ask closest to spread) */
+.clob-sei-ob-asks {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/* Spread row */
+.clob-sei-ob-spread {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 5px 12px;
+  background: var(--c-bg-deep);
+  border-top: 1px solid var(--c-border-sub);
+  border-bottom: 1px solid var(--c-border-sub);
+  flex-shrink: 0;
+}
+
+.clob-sei-ob-spread__label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c-text-ter);
+}
+
+.clob-sei-ob-spread__val {
+  font-size: 11px;
+  font-weight: 600;
+  color: #f59e0b;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Bids section */
+.clob-sei-ob-bids {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* Offer rows */
+.clob-sei-ob-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  padding: 3px 12px;
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.1s;
+  cursor: default;
+}
+
+.clob-sei-ob-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.clob-sei-ob-row--ask .clob-sei-ob-price { color: var(--c-sell); }
+.clob-sei-ob-row--bid .clob-sei-ob-price { color: var(--c-buy); }
+
+/* Bar fill behind row (depth visualization) */
+.clob-sei-ob-row {
+  position: relative;
+}
+
+.clob-sei-ob-row--ask::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: var(--depth-pct, 0%);
+  background: rgba(239, 68, 68, 0.07);
+  pointer-events: none;
+}
+
+.clob-sei-ob-row--bid::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: var(--depth-pct, 0%);
+  background: rgba(34, 197, 94, 0.07);
+  pointer-events: none;
+}
+
+.clob-sei-ob-price {
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.clob-sei-ob-size {
+  font-size: 12px;
+  color: var(--c-text-sec);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.clob-sei-ob-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 6px;
+  padding: 24px;
+  color: var(--c-text-ter);
+  font-size: 12px;
+  font-style: italic;
+  text-align: center;
+}
+
+.clob-sei-ob-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  color: var(--c-text-sec);
+  font-size: 12px;
+}
+
+/* ─────────────────────────────────────────────
+   Form card
+───────────────────────────────────────────── */
+.clob-sei-card--form {
+  overflow: hidden;
+}
+
+/* Wallet bar */
+.clob-sei-wallet-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--c-border);
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.clob-sei-wallet-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  color: var(--c-buy);
+}
+
+.clob-sei-wallet-status--wrong {
+  color: var(--c-sell);
+}
+
+.clob-sei-wallet-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+/* Connect wallet button */
+.clob-sei-connect-btn {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid var(--c-border);
+  background: transparent;
+  color: var(--c-text-pri);
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.clob-sei-connect-btn:hover {
+  border-color: var(--c-accent);
+  background: rgba(99, 102, 241, 0.08);
+  color: var(--c-accent);
+}
+
+.clob-sei-connect-btn:disabled {
+  opacity: 0.45;
+  cursor: wait;
+}
+
+.clob-sei-connect-btn:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+.clob-sei-switch-btn {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 1px solid #f59e0b;
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s;
+  animation: pulse-warning 2s ease-in-out infinite;
+}
+
+.clob-sei-switch-btn:hover {
+  background: rgba(245, 158, 11, 0.22);
+  border-color: #fbbf24;
+  color: #fbbf24;
+}
+
+.clob-sei-switch-btn:disabled {
+  opacity: 0.5;
+  cursor: wait;
+  animation: none;
+}
+
+@keyframes pulse-warning {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+  50%       { box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2); }
+}
+
+/* Balances strip */
+.clob-sei-balances {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--c-border-sub);
+  flex-shrink: 0;
+}
+
+.clob-sei-balance-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 14px;
+}
+
+.clob-sei-balance-item + .clob-sei-balance-item {
+  border-left: 1px solid var(--c-border-sub);
+}
+
+.clob-sei-balance-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--c-text-ter);
+}
+
+.clob-sei-balance-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-text-pri);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* Form scrollable body */
+.clob-sei-form-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Form sections */
+.clob-sei-form-section {
+  padding: 14px;
+  border-bottom: 1px solid var(--c-border-sub);
+  flex-shrink: 0;
+}
+
+.clob-sei-form-section:last-child {
+  border-bottom: none;
+}
+
+/* Order type toggle (segmented control) */
+.clob-sei-type-toggle {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  background: #050505;
+  border: 1px solid var(--c-border-sub);
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.clob-sei-tab-btn {
+  flex: 1;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--c-text-sec);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, box-shadow 0.15s;
+  letter-spacing: 0.01em;
+}
+
+.clob-sei-tab-btn.active {
+  background: var(--c-bg-card);
+  color: var(--c-text-pri);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.clob-sei-tab-btn:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+/* Side (Buy/Sell) */
+.clob-sei-side-group {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.clob-sei-side-btn {
+  flex: 1;
+  padding: 10px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--c-border);
+  background: transparent;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.clob-sei-side-btn.buy {
+  color: var(--c-buy);
+}
+
+.clob-sei-side-btn.buy.active {
+  background: rgba(34, 197, 94, 0.14);
+  border-color: rgba(34, 197, 94, 0.35);
+  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.1);
+}
+
+.clob-sei-side-btn.sell {
+  color: var(--c-sell);
+}
+
+.clob-sei-side-btn.sell.active {
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.35);
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.1);
+}
+
+.clob-sei-side-btn:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+/* Form fields */
+.clob-sei-field {
+  margin-bottom: 12px;
+}
+
+.clob-sei-field:last-child {
+  margin-bottom: 0;
+}
+
+.clob-sei-field-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.clob-sei-field-label__main {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c-text-sec);
+}
+
+.clob-sei-field-label__hint {
+  font-size: 11px;
+  color: var(--c-text-ter);
+  font-variant-numeric: tabular-nums;
+}
+
+.clob-sei-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--c-border);
+  background: var(--c-bg-input);
+  color: var(--c-text-pri);
+  font-size: 15px;
+  font-weight: 500;
+  box-sizing: border-box;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  transition: border-color 0.15s;
+  font-family: inherit;
+}
+
+.clob-sei-input::placeholder {
+  color: var(--c-text-ter);
+  font-weight: 400;
+}
+
+.clob-sei-input:focus {
+  outline: none;
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+}
+
+.clob-sei-input[aria-invalid="true"] {
+  border-color: var(--c-sell);
+}
+
+/* Market info bar */
+.clob-sei-market-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--c-border-sub);
+  border-radius: 8px;
+  margin-bottom: 14px;
+  font-size: 11px;
+  color: var(--c-text-sec);
+  gap: 6px;
+}
+
+.clob-sei-market-info__price {
+  font-weight: 600;
+  color: var(--c-text-pri);
+  font-variant-numeric: tabular-nums;
+}
+
+.clob-sei-market-info__note {
+  color: var(--c-text-ter);
+}
+
+/* Submit button */
+.clob-sei-submit-btn {
+  width: 100%;
+  padding: 13px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  margin-bottom: 0;
+}
+
+.clob-sei-submit-btn--buy  { background: var(--c-buy);  color: #000; }
+.clob-sei-submit-btn--sell { background: var(--c-sell); color: #fff; }
+
+.clob-sei-submit-btn:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.clob-sei-submit-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.clob-sei-submit-btn:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
+}
+
+/* TX confirmation row */
+.clob-sei-tx-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 6px 10px;
+  background: rgba(99, 102, 241, 0.07);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 8px;
+  font-size: 11px;
+  color: var(--c-text-sec);
+}
+
+.clob-sei-tx-row__icon { color: var(--c-buy); }
+
+.clob-sei-tx-link {
+  color: var(--c-accent);
+  text-decoration: none;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 11px;
+}
+
+.clob-sei-tx-link:hover { text-decoration: underline; }
+
+/* Limit order note */
+.clob-sei-limit-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 8px 10px;
+  background: rgba(245, 158, 11, 0.06);
+  border: 1px solid rgba(245, 158, 11, 0.18);
+  border-radius: 8px;
+  margin-bottom: 14px;
+  font-size: 11px;
+  color: #a16207;
+  line-height: 1.5;
+}
+
+/* Form footer */
+.clob-sei-form-footer {
+  padding: 10px 14px;
+  border-top: 1px solid var(--c-border-sub);
+  font-size: 11px;
+  color: var(--c-text-ter);
+  line-height: 1.5;
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+.clob-sei-form-footer a {
+  color: var(--c-accent);
+  text-decoration: none;
+}
+
+.clob-sei-form-footer a:hover { text-decoration: underline; }
+
+/* Refresh button */
+.clob-sei-refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 6px;
+  border: 1px solid var(--c-border);
+  background: transparent;
+  cursor: pointer;
+  color: var(--c-text-sec);
+  letter-spacing: 0.01em;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.clob-sei-refresh-btn:hover {
+  color: var(--c-text-pri);
+  border-color: #3f3f46;
+}
+
+.clob-sei-refresh-btn:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+/* Pair logo inline */
+.clob-sei-pair-logos {
+  display: inline-flex;
+  align-items: center;
+  gap: -4px;
+}
+
+/* ─────────────────────────────────────────────
+   Market Selector (dropdown)
+───────────────────────────────────────────── */
+.clob-sei-market-select { position: relative; }
+
+.clob-sei-market-select--compact .clob-sei-market-select-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--c-border);
+  background: var(--c-bg-card);
+  color: var(--c-text-pri);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: border-color 0.15s;
+}
+
+.clob-sei-market-select--compact .clob-sei-market-select-trigger:hover {
+  border-color: #3f3f46;
+}
+
+.clob-sei-market-select--compact .clob-sei-market-select-trigger:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+.clob-sei-market-select-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  padding: 6px;
+  min-width: 200px;
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  list-style: none;
+  z-index: 200;
+}
+
+.clob-sei-market-select-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 7px;
+  text-align: left;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--c-text-pri);
+  font-weight: 500;
+  transition: background-color 0.1s;
+}
+
+.clob-sei-market-select-item:hover,
+.clob-sei-market-select-item.highlighted {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.clob-sei-market-select-item.selected {
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--c-accent);
+}
+
+.clob-sei-market-select-item:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: -2px;
+}
+
+/* ─────────────────────────────────────────────
+   Responsive – 1280px: chart + book stack, form aside
+───────────────────────────────────────────── */
+@media (max-width: 1280px) {
+  .clob-sei-grid {
+    grid-template-columns: minmax(0, 1fr) var(--c-form-w);
+    grid-template-rows: auto auto;
+    height: auto;
+    max-height: none;
+  }
+
+  .clob-sei-card--chart {
+    grid-column: 1;
+    grid-row: 1;
+    min-height: 340px;
+  }
+
+  .clob-sei-card--book {
+    grid-column: 1;
+    grid-row: 2;
+    height: 360px;
+  }
+
+  .clob-sei-card--form {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    height: auto;
+    min-height: 560px;
+  }
+}
+
+/* 960px: full single column */
+@media (max-width: 960px) {
+  .clob-sei-trade-page {
+    padding: 12px;
+  }
+
+  .clob-sei-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .clob-sei-card--chart { grid-column: 1; grid-row: 1; min-height: 300px; }
+  .clob-sei-card--book  { grid-column: 1; grid-row: 2; height: 380px; }
+  .clob-sei-card--form  { grid-column: 1; grid-row: 3; min-height: auto; }
+}
+
+@media (max-width: 600px) {
+  .clob-sei-trade-page { padding: 8px; --c-gap: 10px; }
+  .clob-sei-grid { gap: 10px; }
+  .clob-sei-card--book { height: 320px; }
+}
+
+/* ─────────────────────────────────────────────
+   Mode toggle (Beginner / Expert)
+───────────────────────────────────────────── */
+.clob-sei-mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--c-border);
+  background: transparent;
+  color: var(--c-text-sec);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.clob-sei-mode-toggle--beginner {
+  border-color: #6366f1;
+  background: rgba(99, 102, 241, 0.1);
+  color: #818cf8;
+}
+
+.clob-sei-mode-toggle:hover {
+  border-color: var(--c-accent);
+  color: var(--c-accent);
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.clob-sei-mode-toggle__icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* ─────────────────────────────────────────────
+   Beginner: Getting Started banner
+───────────────────────────────────────────── */
+.clob-sei-guide-banner {
+  margin-bottom: var(--c-gap);
+  padding: 16px 20px;
+  border-radius: var(--c-radius);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  background: rgba(99, 102, 241, 0.06);
+}
+
+.clob-sei-guide-banner__title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #818cf8;
+  margin-bottom: 12px;
+  letter-spacing: 0.01em;
+}
+
+.clob-sei-guide-banner__steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.clob-sei-guide-banner__note {
+  font-size: 11.5px;
+  color: var(--c-text-sec);
+  line-height: 1.55;
+  padding-top: 10px;
+  border-top: 1px solid rgba(99, 102, 241, 0.15);
+}
+
+.clob-sei-guide-banner__note a {
+  color: #818cf8;
+  text-decoration: underline;
+}
+
+/* Step */
+.clob-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.clob-step__num {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.18);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  color: #818cf8;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clob-step__text {
+  font-size: 12px;
+  color: var(--c-text-pri);
+  line-height: 1.5;
+  padding-top: 3px;
+}
+
+/* ─────────────────────────────────────────────
+   Hint box (inline contextual help)
+───────────────────────────────────────────── */
+.clob-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 6px 0 4px;
+  padding: 8px 10px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.clob-hint__icon {
+  flex-shrink: 0;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.clob-hint__text {
+  font-size: 11.5px;
+  color: var(--c-text-sec);
+  line-height: 1.55;
+}
+
+.clob-hint__text strong {
+  color: var(--c-text-pri);
+  font-weight: 600;
+}
+
+.clob-hint__text em {
+  color: #a5b4fc;
+  font-style: normal;
+}
+
+/* Chart vs book source clarity */
+.clob-sei-source-note {
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--c-text-sec);
+  margin: 0 0 10px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  border: 1px solid var(--c-border-sub);
+}
+
+.clob-sei-source-note--warn {
+  border-color: rgba(234, 179, 8, 0.35);
+  color: #eab308;
+}
+
+.clob-sei-source-pill {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--c-accent);
+  opacity: 0.95;
+}
+
+.clob-sei-activity-wrap {
+  max-width: 1600px;
+  margin: 16px auto 0;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.clob-sei-activity {
+  padding: 14px 16px;
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--c-radius);
+}
+
+.clob-sei-activity__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-text-pri);
+  margin-bottom: 8px;
+}
+
+.clob-sei-activity__empty,
+.clob-sei-activity__note {
+  font-size: 11px;
+  color: var(--c-text-sec);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.clob-sei-activity__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.clob-sei-activity__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--c-border-sub);
+  font-size: 12px;
+}
+
+.clob-sei-activity__meta {
+  color: var(--c-text-pri);
+}
+
+.clob-sei-activity__link {
+  color: var(--c-accent);
+  text-decoration: none;
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+}
+
+.clob-sei-activity__link:hover {
+  text-decoration: underline;
+}
+
+/* ── Orders & lifecycle (on-chain open orders + logs) ── */
+.clob-sei-lifecycle {
+  position: relative;
+  padding: 18px 20px 20px;
+  background: linear-gradient(165deg, #131316 0%, #0e0e11 48%, #0a0a0d 100%);
+  border: 1px solid var(--c-border);
+  border-radius: var(--c-radius);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+}
+
+.clob-sei-lifecycle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    rgba(99, 102, 241, 0.95) 0%,
+    rgba(34, 197, 94, 0.75) 42%,
+    rgba(99, 102, 241, 0.95) 100%
+  );
+  opacity: 0.92;
+  pointer-events: none;
+}
+
+.clob-sei-lifecycle__hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.clob-sei-lifecycle__hero-text {
+  min-width: 0;
+}
+
+.clob-sei-lifecycle__title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--c-text-pri);
+  margin: 0 0 6px;
+}
+
+.clob-sei-lifecycle__tagline {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--c-text-sec);
+  margin: 0;
+  max-width: 52ch;
+}
+
+.clob-sei-lifecycle__market-pill {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #a5b4fc;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+}
+
+.clob-sei-lifecycle__details {
+  margin: 0 0 16px;
+  border-radius: 10px;
+  border: 1px solid var(--c-border-sub);
+  background: rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+}
+
+.clob-sei-lifecycle__details-sum {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-text-pri);
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.clob-sei-lifecycle__details-sum::-webkit-details-marker {
+  display: none;
+}
+
+.clob-sei-lifecycle__details-sum::after {
+  content: '';
+  margin-left: auto;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--c-text-ter);
+  transition: transform 0.2s ease;
+}
+
+.clob-sei-lifecycle__details[open] .clob-sei-lifecycle__details-sum::after {
+  transform: rotate(180deg);
+}
+
+.clob-sei-lifecycle__details-ico {
+  flex-shrink: 0;
+  color: var(--c-accent);
+  opacity: 0.95;
+}
+
+.clob-sei-lifecycle__details-body {
+  padding: 0 14px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.clob-sei-lifecycle__sub {
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--c-text-sec);
+  margin: 0;
+}
+
+.clob-sei-lifecycle__sub code {
+  font-size: 10px;
+  color: #a5b4fc;
+  background: rgba(99, 102, 241, 0.1);
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.clob-sei-lifecycle__err {
+  font-size: 12px;
+  color: #f87171;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.clob-sei-lifecycle__sync {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #a5b4fc;
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.22);
+}
+
+.clob-sei-lifecycle__sync-ico {
+  animation: clob-sei-spin 0.9s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes clob-sei-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.clob-sei-lifecycle__panel {
+  padding: 14px 16px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--c-border-sub);
+  background: rgba(0, 0, 0, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.clob-sei-lifecycle__section-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.clob-sei-lifecycle__section-head--compact {
+  margin-bottom: 8px;
+}
+
+.clob-sei-lifecycle__section-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.clob-sei-lifecycle__section-ico--orders {
+  color: #a5b4fc;
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.28);
+}
+
+.clob-sei-lifecycle__section-ico--fills {
+  color: #4ade80;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.28);
+}
+
+.clob-sei-lifecycle__section-ico--cancel {
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+}
+
+.clob-sei-lifecycle__section-ico--fail {
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.28);
+}
+
+.clob-sei-lifecycle__section-ico--session {
+  color: #c4b5fd;
+  background: rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.28);
+}
+
+.clob-sei-lifecycle__empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  padding: 28px 20px;
+  border-radius: 10px;
+  border: 1px dashed rgba(113, 113, 122, 0.45);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.clob-sei-lifecycle__empty-state--compact {
+  padding: 22px 16px;
+}
+
+.clob-sei-lifecycle__empty-art {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  margin-bottom: 4px;
+  background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.25), transparent 55%),
+    radial-gradient(circle at 70% 70%, rgba(34, 197, 94, 0.12), transparent 50%),
+    rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.clob-sei-lifecycle__empty-art--pulse {
+  animation: clob-sei-empty-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes clob-sei-empty-pulse {
+  0%,
+  100% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+}
+
+.clob-sei-lifecycle__empty-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-text-pri);
+  margin: 0;
+}
+
+.clob-sei-lifecycle__empty-sub {
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--c-text-ter);
+  margin: 0;
+  max-width: 36ch;
+}
+
+.clob-sei-lifecycle__empty--inline {
+  margin: 0;
+  padding: 12px 10px;
+  text-align: center;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.clob-sei-lifecycle__block {
+  margin-bottom: 18px;
+}
+
+.clob-sei-lifecycle__block:last-child {
+  margin-bottom: 0;
+}
+
+/* Fills + (Cancelled | Failed) — fills full width, celelalte două alăturate pe ecran lat */
+.clob-sei-lifecycle__activity-cluster {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.clob-sei-lifecycle__block--fills {
+  margin-bottom: 0;
+}
+
+.clob-sei-lifecycle__cluster-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+  align-items: start;
+}
+
+@media (max-width: 720px) {
+  .clob-sei-lifecycle__cluster-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.clob-sei-lifecycle__section-head .clob-sei-lifecycle__h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--c-text-pri);
+}
+
+.clob-sei-lifecycle__section-head--compact .clob-sei-lifecycle__h3 {
+  font-size: 12px;
+}
+
+.clob-sei-lifecycle__block--compact {
+  margin-bottom: 0;
+  padding: 12px 14px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--c-border-sub);
+}
+
+.clob-sei-lifecycle__block--cancel {
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.06) 0%, rgba(0, 0, 0, 0.12) 100%);
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+.clob-sei-lifecycle__block--fail {
+  background: linear-gradient(180deg, rgba(239, 68, 68, 0.06) 0%, rgba(0, 0, 0, 0.12) 100%);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.clob-sei-lifecycle__h3 {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-text-pri);
+  margin: 0 0 8px;
+}
+
+.clob-sei-lifecycle__empty {
+  font-size: 11px;
+  color: var(--c-text-sec);
+  margin: 0;
+}
+
+.clob-sei-table-wrap {
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.clob-sei-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.clob-sei-table th,
+.clob-sei-table td {
+  padding: 9px 11px;
+  text-align: left;
+  border-bottom: 1px solid var(--c-border-sub);
+  color: var(--c-text-pri);
+}
+
+.clob-sei-table th {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--c-text-ter);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.clob-sei-table--striped tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.clob-sei-table--striped tbody tr:hover {
+  background: rgba(99, 102, 241, 0.06);
+}
+
+.clob-sei-mono {
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+}
+
+.clob-sei-btn-cancel {
+  padding: 4px 10px;
+  font-size: 11px;
+  border-radius: 6px;
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  background: rgba(239, 68, 68, 0.12);
+  color: #fca5a5;
+  cursor: pointer;
+}
+
+.clob-sei-btn-cancel:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.clob-sei-btn-cancel:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.clob-sei-lifecycle__evlist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.clob-sei-lifecycle__ev {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--c-border-sub);
+  font-size: 11px;
+  color: var(--c-text-pri);
+}
+
+.clob-sei-lifecycle__hint {
+  font-size: 10px;
+  color: var(--c-text-ter);
+  margin: 0 0 8px;
+}
+
+.clob-sei-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.clob-sei-pill--open {
+  background: rgba(34, 197, 94, 0.15);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+}
+
+.clob-sei-pill--partial_fill {
+  background: rgba(234, 179, 8, 0.15);
+  color: #fde047;
+  border: 1px solid rgba(234, 179, 8, 0.35);
+}
+
+.clob-sei-pill--filled {
+  background: rgba(113, 113, 122, 0.2);
+  color: #a1a1aa;
+  border: 1px solid var(--c-border-sub);
+}
+
+.clob-sei-pill--reconciled {
+  background: rgba(99, 102, 241, 0.15);
+  color: #a5b4fc;
+  border: 1px solid rgba(99, 102, 241, 0.35);
+}
+
+.clob-sei-pill--pending {
+  background: rgba(234, 179, 8, 0.12);
+  color: #facc15;
+  border: 1px solid rgba(234, 179, 8, 0.3);
+}
+
+.clob-sei-ev-kind {
+  color: var(--c-accent);
+  font-size: 11px;
+}
+
+.clob-sei-ev-role {
+  font-size: 10px;
+  color: var(--c-text-sec);
+  text-transform: uppercase;
+}

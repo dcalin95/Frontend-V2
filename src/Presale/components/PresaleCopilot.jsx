@@ -8,6 +8,7 @@ import { CONTRACT_MAP } from "../../contract/contractMap";
 import bitsLogo from "../../assets/logo.png";
 import { ethers } from "ethers";
 import { trackTikTokEvent } from "../../utils/tiktok";
+import { resolvePresaleBackendUrl } from "../presaleApi";
 import "./PresaleCopilot.css";
 import "./SolHistoryPanel.css";
 
@@ -94,6 +95,7 @@ const PresaleCopilot = ({
   const [txHistoryOpen, setTxHistoryOpen] = useState(false); // 🆕 Pentru istoricul SOL
   const [solTxHistory, setSolTxHistory] = useState([]); // 🆕 Lista TX-urilor SOL
   const [tgInfo, setTgInfo] = useState({ loading: false, eligible: false, reward: 0, timeSpent: 0, messages: 0, error: null });
+  const [backendUrl, setBackendUrl] = useState("");
 
   // 🎯 Detect if we are actually connected to Solana
   const isActuallySolana = walletType?.toUpperCase() === "SOLANA";
@@ -217,8 +219,18 @@ const PresaleCopilot = ({
     return t || c || "—";
   }, [selectedToken, selectedChain, variant, walletAddress, isActuallySolana]);
 
-  const BACKEND_URL = useMemo(() => {
-    return (process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com").toString().replace(/\/+$/, "");
+  useEffect(() => {
+    let cancelled = false;
+    resolvePresaleBackendUrl()
+      .then((url) => {
+        if (!cancelled) setBackendUrl(url);
+      })
+      .catch(() => {
+        if (!cancelled) setBackendUrl("https://backend-server-eu.onrender.com");
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const loadTelegramInfo = useCallback(async () => {
@@ -228,7 +240,8 @@ const PresaleCopilot = ({
     }
     try {
       setTgInfo((p) => ({ ...p, loading: true, error: null }));
-      const res = await fetch(`${BACKEND_URL}/api/telegram-rewards/reward/${walletAddress}`);
+      if (!backendUrl) return;
+      const res = await fetch(`${backendUrl}/api/telegram-rewards/reward/${walletAddress}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       setTgInfo({
@@ -242,7 +255,7 @@ const PresaleCopilot = ({
     } catch (e) {
       setTgInfo((p) => ({ ...p, loading: false, error: e?.message || "Failed to load" }));
     }
-  }, [walletAddress, BACKEND_URL]);
+  }, [walletAddress, backendUrl]);
 
   // Load last TX from localStorage (set by PaymentBox flow)
   useEffect(() => {
@@ -259,7 +272,8 @@ const PresaleCopilot = ({
       // 🆕 Load SOL transaction history from BACKEND (not localStorage)
       if (walletAddress) {
         try {
-          const response = await fetch(`${BACKEND_URL}/api/solana/payments/user/${walletAddress}`, {
+          if (!backendUrl) return;
+          const response = await fetch(`${backendUrl}/api/solana/payments/user/${walletAddress}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
           });
@@ -293,7 +307,7 @@ const PresaleCopilot = ({
     return () => {
       window.removeEventListener('sol-payment-success', handleSolPaymentSuccess);
     };
-  }, [walletAddress, BACKEND_URL]);
+  }, [walletAddress, backendUrl]);
 
   // Load Telegram time/reward for connected wallet (best-effort, backend read)
   useEffect(() => {
@@ -729,7 +743,8 @@ const PresaleCopilot = ({
                     className="pc-btn ghost" 
                     onClick={async () => {
                       try {
-                        const response = await fetch(`${BACKEND_URL}/api/solana/payments/user/${walletAddress}`, {
+                        if (!backendUrl) return;
+                        const response = await fetch(`${backendUrl}/api/solana/payments/user/${walletAddress}`, {
                           method: 'GET',
                           headers: { 'Content-Type': 'application/json' }
                         });
@@ -1056,5 +1071,3 @@ const PresaleCopilot = ({
 };
 
 export default PresaleCopilot;
-
-

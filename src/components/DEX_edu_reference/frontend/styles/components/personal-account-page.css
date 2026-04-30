@@ -1,0 +1,1023 @@
+/**
+ * Personal Account Page – toate datele financiare într-o singură pagină
+ * Layout: pe ecrane late, Vault și Fiat side-by-side; fără bandă goală îngustă.
+ */
+.personal-account-page {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: var(--ds-spacing-6, 24px);
+  box-sizing: border-box;
+}
+
+@media (min-width: 880px) {
+  .personal-account-page {
+    max-width: 1000px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--ds-spacing-4);
+    align-items: start;
+  }
+
+  .personal-account-page-header {
+    grid-column: 1 / -1;
+  }
+
+  /* Vault și Fiat pe două coloane – folosesc lățimea */
+  .personal-account-page > section:nth-of-type(1),
+  .personal-account-page > section:nth-of-type(2) {
+    min-width: 0;
+  }
+
+  /* History, restul secțiunilor și footer pe toată lățimea */
+  .personal-account-page > section:nth-of-type(n + 3),
+  .personal-account-page > .personal-account-footer {
+    grid-column: 1 / -1;
+  }
+
+  .personal-account-page > .personal-account-footer {
+    margin-top: var(--ds-spacing-6);
+  }
+}
+
+.personal-account-page-header {
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.personal-account-page-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ds-spacing-3);
+}
+
+.personal-account-page-header-row .personal-account-page-title {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Link către /dex/site-admin — vizibil la repaus; hover mai accentuat. */
+.personal-account-site-admin-link {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  margin-top: 2px;
+  border-radius: 8px;
+  color: var(--ds-text-secondary);
+  opacity: 0.72;
+  transition:
+    opacity 0.15s ease,
+    color 0.15s ease,
+    background 0.15s ease;
+}
+
+.personal-account-site-admin-link:hover {
+  opacity: 1;
+  color: var(--ds-text-primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.personal-account-site-admin-link:focus-visible {
+  outline: 2px solid rgba(79, 172, 254, 0.5);
+  outline-offset: 2px;
+  opacity: 1;
+}
+
+.personal-account-page-title {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-3);
+  font-size: var(--ds-font-size-xl);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  margin: 0 0 var(--ds-spacing-2);
+}
+
+.personal-account-page-title svg {
+  color: var(--ds-accent, #4facfe);
+  flex-shrink: 0;
+}
+
+.personal-account-page-desc {
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-base);
+  line-height: 1.5;
+  margin: 0 0 var(--ds-spacing-4);
+}
+
+.personal-account-page-muted {
+  color: var(--ds-text-tertiary);
+  font-size: 14px;
+  margin: 0;
+}
+
+.personal-account-page-actions {
+  display: flex;
+  gap: var(--ds-spacing-2);
+}
+
+.personal-account-profile-link {
+  text-decoration: none;
+  color: inherit;
+}
+.personal-account-profile-link:hover {
+  color: inherit;
+}
+
+.personal-account-page-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: 10px 16px;
+  border-radius: var(--ds-radius-md);
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-medium);
+  cursor: pointer;
+  transition: background 150ms, border-color 150ms;
+  border: 1px solid transparent;
+}
+
+.personal-account-page-btn-primary {
+  background: var(--ds-accent, #4facfe);
+  color: var(--ds-text-primary);
+  border-color: var(--ds-accent);
+}
+
+.personal-account-page-btn-primary:hover {
+  opacity: 0.95;
+}
+
+.personal-account-page-btn-ghost {
+  background: transparent;
+  color: var(--ds-text-secondary);
+  border-color: var(--ds-border-color);
+}
+
+.personal-account-page-btn-ghost:hover:not(:disabled) {
+  background: var(--ds-bg-hover);
+}
+
+.personal-account-page-btn-ghost .spinning {
+  animation: personalAccountSpin 1s linear infinite;
+}
+
+.personal-account-page-btn-outline {
+  background: transparent;
+  color: var(--ds-accent);
+  border-color: rgba(79, 172, 254, 0.4);
+}
+
+.personal-account-page-btn-outline:hover {
+  background: rgba(79, 172, 254, 0.1);
+}
+
+@keyframes personalAccountSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.personal-account-section {
+  background: var(--ds-bg-surface);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-lg);
+  padding: var(--ds-spacing-4);
+  margin-bottom: var(--ds-spacing-4);
+}
+
+/* Newsletter: întotdeauna lățime completă în grid-ul Personal Account */
+.personal-account-section.personal-account-section--communications {
+  grid-column: 1 / -1;
+}
+
+/* Convert fiat: între blocul Fiat (card) și History — ocupă ambele coloane pe layout 2-col */
+.personal-account-fiat-convert-anchor {
+  grid-column: 1 / -1;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Intro scurt — ierarhie L2 sub titlul secțiunii FIAT */
+.personal-account-fiat-lead {
+  margin: 0 0 var(--ds-spacing-3);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ds-text-secondary);
+  max-width: 65ch;
+}
+
+.personal-account-fiat-lead--tight {
+  margin-bottom: var(--ds-spacing-2);
+  font-size: 13px;
+  line-height: 1.45;
+  max-width: 62ch;
+}
+
+.personal-account-fiat-hub-note {
+  margin: 0 0 var(--ds-spacing-2);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* Panou „source” FIAT: EUR/USD ca stat cards, nu tabel — compact, premium */
+.personal-account-fiat-source {
+  margin-bottom: var(--ds-spacing-3);
+  padding: 10px 12px 12px;
+  border-radius: var(--ds-radius-md);
+  border: 1px solid rgba(79, 172, 254, 0.18);
+  background: linear-gradient(165deg, rgba(79, 172, 254, 0.06) 0%, rgba(0, 0, 0, 0.2) 55%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+}
+
+.personal-account-fiat-source__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.personal-account-fiat-source__head-ico {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: rgba(79, 172, 254, 0.55);
+}
+
+.personal-account-fiat-source__head-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.personal-account-fiat-source__eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ds-text-tertiary);
+}
+
+.personal-account-fiat-source__title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  line-height: 1.25;
+}
+
+.personal-account-fiat-source__hint {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--ds-text-tertiary);
+  margin-top: 2px;
+}
+
+.personal-account-fiat-source__stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+@media (max-width: 420px) {
+  .personal-account-fiat-source__stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+.personal-account-fiat-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--ds-border-color, rgba(255, 255, 255, 0.1));
+  background: rgba(0, 0, 0, 0.22);
+  min-height: 0;
+}
+
+.personal-account-fiat-stat__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ds-text-secondary);
+}
+
+.personal-account-fiat-stat__label-ico {
+  opacity: 0.65;
+  color: rgba(0, 255, 163, 0.55);
+}
+
+.personal-account-fiat-stat--usd .personal-account-fiat-stat__label-ico {
+  color: rgba(79, 172, 254, 0.55);
+}
+
+.personal-account-fiat-stat__value {
+  font-size: 1.125rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: var(--ds-text-primary);
+}
+
+.personal-account-fiat-status--loading {
+  margin-top: var(--ds-spacing-2);
+  padding: 4px 0;
+}
+
+/*
+ * Flux unitar FIAT: card sold + acțiuni lipite vizual de Convert (fără a schimba nth-of-type grid).
+ * :has() — dacă nu există panoul convert (loading/claim), cardul păstrează colțuri complete.
+ */
+.personal-account-fiat-card:has(+ .personal-account-fiat-convert-anchor section.fiat-convert-panel) {
+  margin-bottom: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom: none;
+}
+
+.personal-account-fiat-card:has(+ .personal-account-fiat-convert-anchor section.fiat-convert-panel) + .personal-account-fiat-convert-anchor {
+  margin-top: 0;
+}
+
+.personal-account-fiat-card:has(+ .personal-account-fiat-convert-anchor section.fiat-convert-panel) + .personal-account-fiat-convert-anchor .fiat-convert-panel.personal-account-section {
+  margin-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.personal-account-fiat-card:has(+ .personal-account-fiat-convert-anchor section.fiat-convert-panel) + .personal-account-fiat-convert-anchor .fiat-convert-panel--layout::before {
+  display: none;
+}
+
+/* History on-chain: vizual secundar față de blocul FIAT + convert */
+.personal-account-fiat-convert-anchor + .personal-account-section--history-secondary {
+  margin-top: var(--ds-spacing-2);
+}
+
+.personal-account-section--history-secondary {
+  opacity: 0.97;
+  border-color: rgba(255, 255, 255, 0.06);
+  background: var(--ds-bg-surface, rgba(18, 18, 22, 0.85));
+}
+
+.personal-account-section-title--secondary {
+  font-size: var(--ds-font-size-sm, 14px);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-secondary);
+}
+
+.personal-account-section--history-secondary .personal-account-section-title--secondary {
+  margin-bottom: 2px;
+}
+
+.personal-account-history-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--ds-spacing-3);
+  margin-bottom: var(--ds-spacing-2);
+}
+
+.personal-account-history-bsc-tag {
+  margin: 0 0 4px;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--ds-text-tertiary);
+}
+
+.personal-account-history-lead {
+  margin-bottom: var(--ds-spacing-2);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.personal-account-history-refresh-btn {
+  padding: 4px 12px;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.personal-account-bscscan-hint--compact {
+  margin-bottom: var(--ds-spacing-3);
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  line-height: 1.4;
+  background: rgba(99, 102, 241, 0.06);
+  border: 1px solid rgba(99, 102, 241, 0.18);
+  color: var(--ds-text-secondary);
+}
+
+.personal-account-bscscan-hint-label {
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}
+
+.personal-account-bscscan-hint-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.personal-account-page-link--compact {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.personal-account-bscscan-icon {
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+.personal-account-history-banner {
+  margin-bottom: var(--ds-spacing-3);
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+}
+
+.personal-account-history-banner--warn {
+  background: rgba(234, 179, 8, 0.1);
+}
+
+.personal-account-history-banner--error {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.personal-account-history-retry {
+  margin-left: 8px;
+  padding: 4px 10px;
+}
+
+.personal-account-history-loading,
+.personal-account-history-empty-ok,
+.personal-account-history-empty-error {
+  padding: 24px;
+  text-align: center;
+  color: var(--ds-text-tertiary);
+  font-size: 13px;
+}
+
+.personal-account-history-empty-error {
+  padding: 16px;
+}
+
+.personal-account-history-body-wrap {
+  position: relative;
+}
+
+.personal-account-history-body-wrap--refreshing {
+  opacity: 0.92;
+  pointer-events: none;
+}
+
+.personal-account-history-refresh-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--ds-text-primary);
+  pointer-events: none;
+}
+
+.personal-account-history-subtitle {
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.personal-account-history-subtitle--dep {
+  color: var(--ds-positive, #4ade80);
+}
+
+.personal-account-history-subtitle--wit {
+  color: var(--ds-negative, #f87171);
+}
+
+.personal-account-newsletter-wrap {
+  max-width: 560px;
+}
+
+.personal-account-newsletter-wrap .newsletter.compact {
+  background: var(--ds-bg-elevated, rgba(0, 0, 0, 0.22));
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  padding: var(--ds-spacing-3);
+}
+
+.personal-account-newsletter-wrap .newsletter.compact .email-input {
+  background: var(--ds-bg-subtle, #1a1a24);
+  color: var(--ds-text-primary);
+  border-color: var(--ds-border-color);
+}
+
+.personal-account-newsletter-wrap .newsletter.compact .email-input:read-only {
+  opacity: 0.95;
+  cursor: default;
+}
+
+.personal-account-section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  font-size: var(--ds-font-size-md);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  margin: 0 0 var(--ds-spacing-3);
+}
+
+.personal-account-vault-hint {
+  margin: -0.25rem 0 var(--ds-spacing-3);
+  font-size: var(--ds-font-size-sm);
+}
+
+/* Lista tokeni Vault: grid 2 coloane, compact */
+.personal-account-balance-list {
+  list-style: none;
+  margin: 0 0 var(--ds-spacing-3);
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+  border: 1px solid var(--ds-border-color);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+@media (max-width: 520px) {
+  .personal-account-balance-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Nume + sumă pe fiecare rând, compact */
+.personal-account-balance-item,
+.personal-account-fiat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-1) var(--ds-spacing-3);
+  border-bottom: 1px solid var(--ds-border-color);
+  min-height: 2.5rem;
+}
+
+.personal-account-balance-list > .personal-account-balance-item:nth-child(2n) {
+  border-left: 1px solid var(--ds-border-color);
+}
+
+.personal-account-balance-item:last-child,
+.personal-account-fiat-row:last-of-type {
+  border-bottom: none;
+}
+
+@media (max-width: 520px) {
+  .personal-account-balance-list > .personal-account-balance-item:nth-child(2n) {
+    border-left: none;
+  }
+}
+
+/* Mesaj gol / Total – întind pe ambele coloane */
+.personal-account-balance-empty,
+.personal-account-balance-total {
+  grid-column: 1 / -1;
+}
+
+.personal-account-balance-total {
+  border-top: 2px solid var(--ds-border-color);
+  margin-top: 0;
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  font-weight: 700;
+}
+.personal-account-balance-total .personal-account-balance-token {
+  font-weight: 700;
+}
+.personal-account-balance-total .personal-account-amount-value {
+  font-size: 1.1em;
+}
+
+.personal-account-balance-token {
+  font-weight: var(--ds-font-weight-medium);
+  color: var(--ds-text-primary);
+}
+
+.personal-account-balance-amount {
+  font-family: ui-monospace, monospace;
+  color: var(--ds-text-secondary);
+}
+
+/* Valoare în USD sub fiecare sold – lizibilă, evidentă */
+.personal-account-balance-usd {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ds-text-secondary);
+  font-family: ui-monospace, monospace;
+}
+
+/* BITS: Presale price – not listed, excluded from Total (USD) */
+.personal-account-presale-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ds-text-tertiary);
+  display: block;
+  margin-top: 2px;
+}
+
+/* Sum values — evidentiate vizual (Crypto, Fiat, History amounts) — same style as Profile */
+.personal-account-amount-value {
+  font-weight: 700;
+  font-size: 1.05em;
+  color: rgba(0, 255, 163, 0.95);
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(0, 255, 163, 0.08);
+  border: 1px solid rgba(0, 255, 163, 0.2);
+}
+
+.personal-account-amount-cell {
+  font-weight: 600;
+}
+
+.personal-account-amount-cell .personal-account-amount-value {
+  font-size: 0.95em;
+  padding: 1px 5px;
+}
+
+.personal-account-link-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-spacing-2);
+  margin-top: var(--ds-spacing-3);
+  padding-top: var(--ds-spacing-3);
+  border-top: 1px solid var(--ds-border-color);
+}
+
+.personal-account-page-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  color: var(--ds-text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 150ms, border-color 150ms;
+  text-decoration: none;
+}
+
+.personal-account-page-link:hover {
+  background: var(--ds-bg-hover);
+  border-color: var(--ds-accent);
+  color: var(--ds-accent);
+}
+
+.personal-account-history-wrap {
+  overflow-x: auto;
+}
+
+.personal-account-history-caption {
+  font-size: 12px;
+  color: var(--ds-text-tertiary);
+  text-align: left;
+  padding-bottom: var(--ds-spacing-2);
+  caption-side: top;
+}
+
+.personal-account-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.personal-account-history-table th,
+.personal-account-history-table td {
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  text-align: left;
+  border-bottom: 1px solid var(--ds-border-color);
+}
+
+.personal-account-attribution-cell {
+  font-size: 12px;
+  color: var(--ds-text-tertiary);
+}
+
+.personal-account-deposit-email {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+.personal-account-deposit-wallet {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+}
+
+.personal-account-history-table th {
+  font-weight: var(--ds-font-weight-medium);
+  color: var(--ds-text-tertiary);
+}
+
+.personal-account-tx-link {
+  color: var(--ds-accent, #4facfe);
+  text-decoration: none;
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+}
+.personal-account-tx-link:hover {
+  text-decoration: underline;
+}
+
+.personal-account-info {
+  background: rgba(79, 172, 254, 0.06);
+  border: 1px solid rgba(79, 172, 254, 0.2);
+  border-radius: var(--ds-radius-lg);
+  padding: var(--ds-spacing-4);
+  margin-bottom: var(--ds-spacing-4);
+}
+
+.personal-account-info-title {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  font-size: var(--ds-font-size-md);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  margin: 0 0 var(--ds-spacing-2);
+}
+
+.personal-account-info-title svg {
+  color: var(--ds-accent);
+  flex-shrink: 0;
+}
+
+.personal-account-info-desc {
+  color: var(--ds-text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 var(--ds-spacing-3);
+}
+
+.personal-account-connect-prompt {
+  padding: var(--ds-spacing-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-2);
+}
+
+.personal-account-claim-box {
+  padding: var(--ds-spacing-3);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.personal-account-input {
+  max-width: 280px;
+  padding: 10px 14px;
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  font-size: 14px;
+  color: var(--ds-text-primary);
+  background: var(--ds-bg-base);
+}
+
+.personal-account-input:focus {
+  outline: none;
+  border-color: var(--ds-accent);
+}
+
+.personal-account-footer {
+  margin-top: var(--ds-spacing-6);
+  padding-top: var(--ds-spacing-4);
+  border-top: 1px solid var(--ds-border-color);
+}
+
+/* FIAT — hub clar (card / convert / bank), fără redesign de pagină */
+.personal-account-fiat-hub {
+  margin-bottom: var(--ds-spacing-3, 12px);
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--ds-border-color, rgba(255, 255, 255, 0.08));
+  background: var(--ds-surface-secondary, rgba(0, 0, 0, 0.12));
+}
+
+.personal-account-fiat-hub-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.personal-account-fiat-hub-actions .personal-account-page-btn {
+  min-height: 40px;
+}
+
+/* OTA Agent – Configurație activă: carduri compacte, culori foarte discrete pe zonă (infra / OpenAI / Anthropic / cost) */
+.ota-agent-config {
+  --ota-card-pad: 8px 10px 8px 11px;
+  --ota-card-radius: 8px;
+  /* Neutre + accenți la opacitate mică — fără culori țipătoare */
+  --ota-motor-border: rgba(148, 163, 184, 0.42);
+  --ota-motor-tint: rgba(148, 163, 184, 0.08);
+  /* OpenAI — nuanță verde brand (#10A37F) foarte diluată */
+  --ota-openai-border: rgba(16, 163, 127, 0.34);
+  --ota-openai-tint: rgba(16, 163, 127, 0.07);
+  /* Anthropic — cald foarte discret (nisip / teracotă spre gri) */
+  --ota-anthropic-border: rgba(180, 130, 108, 0.38);
+  --ota-anthropic-tint: rgba(180, 130, 108, 0.078);
+  /* Costuri agregate — rece „ledger”, distinct de coloana OpenAI */
+  --ota-cost-border: rgba(100, 116, 145, 0.38);
+  --ota-cost-tint: rgba(100, 116, 145, 0.078);
+}
+
+.ota-agent-config__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.ota-agent-config__sub {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--ds-text-secondary, rgba(255, 255, 255, 0.72));
+}
+
+.ota-agent-config__sub-bar {
+  width: 3px;
+  height: 14px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.ota-agent-config__sub-bar--motor {
+  background: linear-gradient(180deg, rgba(148, 163, 184, 0.65), rgba(100, 116, 139, 0.45));
+}
+.ota-agent-config__sub-bar--openai {
+  background: linear-gradient(180deg, rgba(16, 163, 127, 0.45), rgba(16, 163, 127, 0.22));
+}
+.ota-agent-config__sub-bar--anthropic {
+  background: linear-gradient(180deg, rgba(188, 138, 115, 0.42), rgba(160, 110, 92, 0.28));
+}
+.ota-agent-config__sub-bar--cost {
+  background: linear-gradient(180deg, rgba(110, 128, 155, 0.45), rgba(85, 100, 125, 0.3));
+}
+
+.ota-agent-config-card {
+  position: relative;
+  padding: var(--ota-card-pad);
+  border-radius: var(--ota-card-radius);
+  border: 1px solid var(--ds-border, rgba(255, 255, 255, 0.08));
+  background: var(--ds-surface-secondary, rgba(26, 26, 46, 0.85));
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  min-height: 0;
+}
+
+/* Motor & timpi — infrastructură (slate neutru) */
+.ota-agent-config-card--motor {
+  border-left: 2px solid var(--ota-motor-border);
+  background: linear-gradient(165deg, var(--ota-motor-tint) 0%, rgba(20, 20, 30, 0.97) 48%);
+}
+
+/* OpenAI — același family verde ca identitatea publică, foarte diluat */
+.ota-agent-config-card--openai {
+  border-left: 2px solid var(--ota-openai-border);
+  background: linear-gradient(165deg, var(--ota-openai-tint) 0%, rgba(20, 20, 30, 0.97) 48%);
+}
+
+/* Anthropic / Claude — cald discret (nu logo; zonă separată de OpenAI) */
+.ota-agent-config-card--anthropic {
+  border-left: 2px solid var(--ota-anthropic-border);
+  background: linear-gradient(165deg, var(--ota-anthropic-tint) 0%, rgba(20, 20, 30, 0.97) 48%);
+}
+
+/* Costuri platformă — rece, „raport / agregat”, lângă dar nu confundat cu OpenAI */
+.ota-agent-config-card--cost {
+  border-left: 2px solid var(--ota-cost-border);
+  background: linear-gradient(165deg, var(--ota-cost-tint) 0%, rgba(20, 20, 30, 0.97) 48%);
+}
+
+.ota-agent-config-card__label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ds-text-tertiary, rgba(255, 255, 255, 0.5));
+  margin-bottom: 4px;
+  line-height: 1.25;
+}
+
+.ota-agent-config-card__value {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ds-text-primary, #fff);
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.ota-agent-config-card__value--lg {
+  font-size: 15px;
+}
+
+.ota-agent-config-card__value--on {
+  color: rgba(130, 185, 155, 0.95);
+}
+.ota-agent-config-card__value--off {
+  color: rgba(185, 145, 120, 0.92);
+}
+
+.ota-agent-config-card__meta {
+  margin-top: 5px;
+  font-size: 9px;
+  line-height: 1.35;
+  color: var(--ds-text-tertiary, rgba(255, 255, 255, 0.42));
+  font-family: ui-monospace, monospace;
+}
+
+.ota-agent-config-card__meta--extra {
+  margin-top: 3px;
+}
+
+.ota-agent-config__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+  margin-bottom: 8px;
+}
+
+.ota-agent-config__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: opacity 0.15s ease;
+}
+
+.ota-agent-config__link:hover {
+  opacity: 0.92;
+}
+
+.ota-agent-config__link--openai {
+  background: rgba(16, 163, 127, 0.07);
+  border-color: rgba(16, 163, 127, 0.22);
+  color: rgba(130, 195, 175, 0.92);
+}
+.ota-agent-config__link--ft {
+  background: rgba(180, 130, 100, 0.06);
+  border-color: rgba(180, 130, 100, 0.2);
+  color: rgba(195, 160, 140, 0.9);
+}
+.ota-agent-config__link--bill-oai {
+  background: rgba(16, 163, 127, 0.05);
+  border-color: rgba(16, 163, 127, 0.18);
+  color: rgba(125, 185, 165, 0.9);
+}
+.ota-agent-config__link--anthropic {
+  background: rgba(180, 130, 108, 0.07);
+  border-color: rgba(180, 130, 108, 0.22);
+  color: rgba(200, 165, 145, 0.9);
+}
+.ota-agent-config__link--anthropic-soft {
+  background: rgba(180, 130, 108, 0.04);
+  border-color: rgba(180, 130, 108, 0.16);
+  color: rgba(190, 170, 155, 0.88);
+}
+
+.ota-agent-config__footer {
+  font-size: 10px;
+  line-height: 1.45;
+  color: var(--ds-text-tertiary, rgba(255, 255, 255, 0.45));
+  margin: 0;
+}
+
+.ota-agent-config__footer code {
+  font-size: 9px;
+}

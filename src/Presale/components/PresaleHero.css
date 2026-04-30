@@ -55,6 +55,22 @@
   font-weight: 600;
 }
 
+.presale-hero-round-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: min(100%, 520px);
+  margin: clamp(0.16rem, 0.35vw, 0.24rem) auto clamp(0.28rem, 0.5vw, 0.38rem);
+  padding: clamp(0.28rem, 0.44vw, 0.38rem) clamp(0.5rem, 0.75vw, 0.72rem);
+  border: 1px solid rgba(255, 214, 102, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 214, 102, 0.08);
+  color: rgba(255, 236, 179, 0.95);
+  font-size: clamp(0.68rem, 0.95vw, 0.82rem);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
 .presale-hero-timer {
   font-size: clamp(0.84rem, 1.2672vw, 1.008rem); /* +20% mărit pentru vizibilitate (0.70*1.2=0.84, 1.056*1.2=1.2672, 0.84*1.2=1.008) */
   color: rgba(255, 255, 255, 0.8);
@@ -64,6 +80,28 @@
 .presale-hero-timer-value {
   color: #DC1FFF;
   font-weight: 600;
+}
+
+.presale-hero-launch-power {
+  margin: clamp(0.35rem, 0.6vw, 0.5rem) 0 clamp(0.5rem, 0.8vw, 0.65rem) 0;
+  font-size: clamp(0.95rem, 1.5vw, 1.15rem);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.presale-hero-launch-label {
+  color: #00f0ff !important;
+  -webkit-text-fill-color: #00f0ff !important;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.78em;
+}
+
+.presale-hero-launch-value {
+  color: #ffd700 !important;
+  -webkit-text-fill-color: #ffd700 !important;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
 }
 
 .presale-hero-cta {

@@ -1,0 +1,82 @@
+/**
+ * 🎨 Panel / Card Styles - Design System v1 + Sonnet
+ * 
+ * Dimensions/spacing/radius: --ds-* (design-system-v1.css)
+ * Colors: Sonnet tokens (--surface, --border, etc.)
+ */
+
+.ui-card {
+  background-color: var(--ds-bg-surface);
+  border: var(--ds-card-border-width, 1px) solid var(--ds-border-color);
+  border-radius: var(--ds-card-border-radius, var(--ds-radius-md, 8px));
+  padding: var(--ds-card-padding-md, var(--ds-spacing-4, var(--ds-spacing-4)));
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  transition: border-color var(--ds-transition-fast, 150ms);
+}
+
+.ui-card:hover {
+  border-color: var(--ds-bg-hover); /* Subtle hover */
+}
+
+/* Header (Title + Actions) */
+.ui-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-spacing-3, var(--ds-spacing-3));
+  margin-bottom: var(--ds-spacing-4, var(--ds-spacing-4));
+  padding-bottom: var(--ds-spacing-4, var(--ds-spacing-4));
+  border-bottom: var(--ds-border-width, 1px) solid var(--ds-border-color);
+  min-height: var(--ds-table-header-height, var(--ds-table-header-height));
+  box-sizing: border-box;
+}
+
+.ui-card-title {
+  font-size: var(--ds-font-size-md, var(--ds-font-size-md));
+  font-weight: var(--ds-font-weight-semibold, var(--ds-font-weight-semibold));
+  line-height: var(--ds-line-height-tight, var(--ds-line-height-tight));
+  color: var(--ds-text-primary);
+  margin: 0;
+}
+
+/* Body */
+.ui-card-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  color: var(--ds-text-tertiary);
+  line-height: var(--ds-line-height-normal);
+}
+
+/* Footer */
+.ui-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--ds-spacing-3, var(--ds-spacing-3));
+  margin-top: var(--ds-spacing-4, var(--ds-spacing-4));
+  padding-top: var(--ds-spacing-4, var(--ds-spacing-4));
+  border-top: var(--ds-border-width, 1px) solid var(--ds-border-color);
+  min-height: var(--ds-table-header-height, var(--ds-table-header-height));
+  box-sizing: border-box;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ui-card {
+    padding: var(--ds-card-padding-md, var(--ds-spacing-4, var(--ds-spacing-4)));
+  }
+
+  .ui-card-header,
+  .ui-card-footer {
+    margin-bottom: var(--ds-spacing-3, var(--ds-spacing-3));
+    margin-top: var(--ds-spacing-3, var(--ds-spacing-3));
+    padding-bottom: var(--ds-spacing-3, var(--ds-spacing-3));
+    padding-top: var(--ds-spacing-3, var(--ds-spacing-3));
+  }
+}

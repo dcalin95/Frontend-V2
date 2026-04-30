@@ -1,0 +1,247 @@
+/**
+ * 🎨 Design Tokens - Compatibility layer (--token-* → --ds-*)
+ *
+ * Single source of truth: design-system-v1.css (--ds-*).
+ * This file maps --token-* to var(--ds-*) for backward compatibility.
+ * Load design-system-v1.css before this file (e.g. via DEXApp.jsx).
+ *
+ * @module DesignTokens
+ * @deprecated Prefer --ds-* from design-system-v1.css in new code.
+ */
+
+:root {
+  /* Colors - semantic */
+  --token-color-primary: var(--ds-color-primary);
+  --token-color-primary-dark: #e5e7eb;
+  --token-color-primary-light: #f9fafb;
+  --token-color-primary-hover: #f3f4f6;
+  --token-color-primary-active: #d1d5db;
+  --token-color-primary-disabled: rgba(255, 255, 255, 0.3);
+  --token-color-secondary: var(--ds-text-tertiary);
+  --token-color-success: var(--ds-color-success);
+  --token-color-success-bg: var(--ds-color-success-bg);
+  --token-color-success-border: var(--ds-color-success-border);
+  --token-color-error: var(--ds-color-error);
+  --token-color-error-bg: var(--ds-color-error-bg);
+  --token-color-error-border: var(--ds-color-error-border);
+  --token-color-warning: var(--ds-color-warning);
+  --token-color-warning-bg: var(--ds-color-warning-bg);
+  --token-color-info: var(--ds-color-info);
+  --token-color-info-bg: var(--ds-color-info-bg);
+
+  /* Backgrounds */
+  --token-bg-base: var(--ds-bg-base);
+  --token-bg-surface: var(--ds-bg-surface);
+  --token-bg-elevated: var(--ds-bg-elevated);
+  --token-bg-overlay: var(--ds-bg-overlay);
+  --token-bg-active: var(--ds-bg-active);
+  --token-bg-subtle: var(--ds-bg-subtle);
+  --token-bg-hover: var(--ds-bg-hover);
+  --token-bg-input: var(--ds-bg-input);
+  --token-bg-modal-backdrop: var(--ds-bg-modal-backdrop);
+  --token-bg-overlay-dark: var(--ds-bg-overlay-dark);
+
+  /* Text */
+  --token-text-primary: var(--ds-text-primary);
+  --token-text-secondary: var(--ds-text-secondary);
+  --token-text-tertiary: var(--ds-text-tertiary);
+  --token-text-disabled: var(--ds-text-disabled);
+  --token-text-inverse: var(--ds-text-inverse);
+  --token-text-buy: var(--ds-text-buy);
+  --token-text-sell: var(--ds-text-sell);
+  --token-text-neutral: var(--ds-text-neutral);
+
+  /* Borders */
+  --token-border-color: var(--ds-border-color);
+  --token-border-color-light: var(--ds-border-color-light);
+  --token-border-color-dark: var(--ds-border-color-dark);
+  --token-border-color-focus: var(--ds-border-color-focus);
+  --token-border-color-error: var(--ds-border-color-error);
+  --token-border-width: var(--ds-border-width);
+  --token-border-width-thick: var(--ds-border-width-thick);
+
+  /* Radius */
+  --token-radius-xs: var(--ds-radius-xs);
+  --token-radius-sm: var(--ds-radius-sm);
+  --token-radius-md: var(--ds-radius-md);
+  --token-radius-lg: var(--ds-radius-lg);
+  --token-radius-xl: var(--ds-radius-xl);
+  --token-radius-2xl: var(--ds-radius-2xl);
+  --token-radius-full: var(--ds-radius-full);
+
+  /* Shadows */
+  --token-shadow-xs: var(--ds-shadow-xs);
+  --token-shadow-sm: var(--ds-shadow-sm);
+  --token-shadow-md: var(--ds-shadow-md);
+  --token-shadow-lg: var(--ds-shadow-lg);
+  --token-shadow-xl: var(--ds-shadow-xl);
+  --token-shadow-2xl: var(--ds-shadow-2xl);
+
+  /* Spacing */
+  --token-spacing-0: var(--ds-spacing-0);
+  --token-spacing-1: var(--ds-spacing-1);
+  --token-spacing-2: var(--ds-spacing-2);
+  --token-spacing-3: var(--ds-spacing-3);
+  --token-spacing-4: var(--ds-spacing-4);
+  --token-spacing-5: var(--ds-spacing-5);
+  --token-spacing-6: var(--ds-spacing-6);
+  --token-spacing-8: var(--ds-spacing-8);
+  --token-spacing-10: var(--ds-spacing-10);
+  --token-spacing-12: var(--ds-spacing-12);
+  --token-spacing-16: var(--ds-spacing-16);
+  --token-spacing-20: var(--ds-spacing-20);
+
+  /* Typography */
+  --token-font-family-sans: var(--ds-font-family-sans);
+  --token-font-family-mono: var(--ds-font-family-mono);
+  --token-font-size-xs: var(--ds-font-size-xs);
+  --token-font-size-sm: var(--ds-font-size-sm);
+  --token-font-size-base: var(--ds-font-size-base);
+  --token-font-size-md: var(--ds-font-size-md);
+  --token-font-size-lg: var(--ds-font-size-lg);
+  --token-font-size-xl: var(--ds-font-size-xl);
+  --token-font-size-2xl: var(--ds-font-size-2xl);
+  --token-font-size-3xl: var(--ds-font-size-3xl);
+  --token-font-size-4xl: var(--ds-font-size-4xl);
+  --token-font-size-5xl: var(--ds-font-size-5xl);
+  --token-font-size-6xl: var(--ds-font-size-6xl);
+  --token-font-weight-normal: var(--ds-font-weight-normal);
+  --token-font-weight-medium: var(--ds-font-weight-medium);
+  --token-font-weight-semibold: var(--ds-font-weight-semibold);
+  --token-font-weight-bold: var(--ds-font-weight-bold);
+  --token-line-height-tight: var(--ds-line-height-tight);
+  --token-line-height-normal: var(--ds-line-height-normal);
+  --token-line-height-relaxed: var(--ds-line-height-relaxed);
+  --token-letter-spacing-tight: var(--ds-letter-spacing-tight);
+  --token-letter-spacing-normal: var(--ds-letter-spacing-normal);
+  --token-letter-spacing-wide: var(--ds-letter-spacing-wide);
+
+  /* Transitions & Z-index */
+  --token-transition-fast: var(--ds-transition-fast);
+  --token-transition-base: var(--ds-transition-base);
+  --token-transition-slow: var(--ds-transition-slow);
+  --token-z-base: var(--ds-z-base);
+  --token-z-dropdown: var(--ds-z-dropdown);
+  --token-z-sticky: var(--ds-z-sticky);
+  --token-z-fixed: var(--ds-z-fixed);
+  --token-z-modal-backdrop: var(--ds-z-modal-backdrop);
+  --token-z-modal: var(--ds-z-modal);
+  --token-z-popover: var(--ds-z-popover);
+  --token-z-tooltip: var(--ds-z-tooltip);
+  --token-z-toast: var(--ds-z-toast);
+
+  /* Component tokens */
+  --token-button-height-sm: var(--ds-button-height-sm);
+  --token-button-height-md: var(--ds-button-height-md);
+  --token-button-height-lg: var(--ds-button-height-lg);
+  --token-button-padding-x-sm: var(--ds-button-padding-x-sm);
+  --token-button-padding-x-md: var(--ds-button-padding-x-md);
+  --token-button-padding-x-lg: var(--ds-button-padding-x-lg);
+  --token-button-font-size-sm: var(--ds-button-font-size-sm);
+  --token-button-font-size-md: var(--ds-button-font-size-md);
+  --token-button-font-size-lg: var(--ds-button-font-size-lg);
+  --token-input-height-sm: var(--ds-input-height-sm);
+  --token-input-height-md: var(--ds-input-height-md);
+  --token-input-height-lg: var(--ds-input-height-lg);
+  --token-input-padding-x: var(--ds-input-padding-x);
+  --token-input-font-size: var(--ds-input-font-size);
+  --token-card-padding-sm: var(--ds-card-padding-sm);
+  --token-card-padding-md: var(--ds-card-padding-md);
+  --token-card-padding-lg: var(--ds-card-padding-lg);
+  --token-card-border-radius: var(--ds-card-border-radius);
+  --token-table-row-height: var(--ds-table-row-height);
+  --token-table-header-height: var(--ds-table-header-height);
+  --token-table-cell-padding-x: var(--ds-table-cell-padding-x);
+  --token-table-cell-padding-y: var(--ds-table-cell-padding-y);
+  --token-table-font-size: var(--ds-table-font-size);
+  --token-icon-xs: var(--ds-icon-xs);
+  --token-icon-sm: var(--ds-icon-sm);
+  --token-icon-md: var(--ds-icon-md);
+  --token-icon-lg: var(--ds-icon-lg);
+  --token-icon-xl: var(--ds-icon-xl);
+  --token-logo-xs: var(--ds-token-logo-xs);
+  --token-logo-sm: var(--ds-token-logo-sm);
+  --token-logo-md: var(--ds-token-logo-md);
+  --token-logo-lg: var(--ds-token-logo-lg);
+  --token-logo-xl: var(--ds-token-logo-xl);
+  --token-logo-2xl: var(--ds-token-logo-2xl);
+}
+
+/* Light theme overrides (literal values; design-system-v1 is dark-first) */
+[data-theme="light"] {
+  --token-bg-base: #ffffff;
+  --token-bg-surface: #f9fafb;
+  --token-bg-elevated: #f3f4f6;
+  --token-bg-overlay: #e5e7eb;
+  --token-bg-active: #d1d5db;
+  --token-bg-subtle: #f3f4f6;
+  --token-bg-hover: #f9fafb;
+  --token-text-primary: #111827;
+  --token-text-secondary: #6b7280;
+  --token-text-tertiary: #9ca3af;
+  --token-text-disabled: #d1d5db;
+  --token-text-inverse: #ffffff;
+  --token-text-buy: #059669;
+  --token-text-sell: #dc2626;
+  --token-text-neutral: #6b7280;
+  --token-border-color: #e5e7eb;
+  --token-border-color-light: #d1d5db;
+  --token-border-color-dark: #9ca3af;
+  --token-border-color-focus: #6366f1;
+  --token-border-color-error: #fca5a5;
+  --token-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --token-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+  --token-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --token-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.12);
+  --token-shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.15);
+  --token-shadow-2xl: 0 16px 32px rgba(0, 0, 0, 0.18);
+  --token-color-success: #059669;
+  --token-color-success-bg: rgba(16, 185, 129, 0.1);
+  --token-color-success-border: rgba(16, 185, 129, 0.2);
+  --token-color-error: #dc2626;
+  --token-color-error-bg: rgba(239, 68, 68, 0.1);
+  --token-color-error-border: rgba(239, 68, 68, 0.2);
+  --token-color-warning: #d97706;
+  --token-color-warning-bg: rgba(245, 158, 11, 0.1);
+  --token-color-info: #2563eb;
+  --token-color-info-bg: rgba(59, 130, 246, 0.1);
+  --token-color-primary: #6366f1;
+  --token-color-primary-hover: #4f46e5;
+  --token-color-primary-active: #4338ca;
+  --token-bg-modal-backdrop: rgba(0, 0, 0, 0.5);
+  --token-bg-overlay-dark: rgba(0, 0, 0, 0.6);
+}
+
+/* Utility classes (use --token-* so they resolve via aliases above) */
+.token-bg-base { background-color: var(--token-bg-base); }
+.token-bg-surface { background-color: var(--token-bg-surface); }
+.token-bg-elevated { background-color: var(--token-bg-elevated); }
+.token-text-primary { color: var(--token-text-primary); }
+.token-text-secondary { color: var(--token-text-secondary); }
+.token-text-tertiary { color: var(--token-text-tertiary); }
+.token-text-buy { color: var(--token-text-buy); }
+.token-text-sell { color: var(--token-text-sell); }
+.token-border { border: var(--token-border-width) solid var(--token-border-color); }
+.token-border-light { border-color: var(--token-border-color-light); }
+.token-border-focus { border-color: var(--token-border-color-focus); }
+.token-p-1 { padding: var(--token-spacing-1); }
+.token-p-2 { padding: var(--token-spacing-2); }
+.token-p-3 { padding: var(--token-spacing-3); }
+.token-p-4 { padding: var(--token-spacing-4); }
+.token-p-6 { padding: var(--token-spacing-6); }
+.token-m-1 { margin: var(--token-spacing-1); }
+.token-m-2 { margin: var(--token-spacing-2); }
+.token-m-3 { margin: var(--token-spacing-3); }
+.token-m-4 { margin: var(--token-spacing-4); }
+.token-m-6 { margin: var(--token-spacing-6); }
+.token-font-sans { font-family: var(--token-font-family-sans); }
+.token-font-mono { font-family: var(--token-font-family-mono); }
+.token-text-xs { font-size: var(--token-font-size-xs); }
+.token-text-sm { font-size: var(--token-font-size-sm); }
+.token-text-base { font-size: var(--token-font-size-base); }
+.token-text-md { font-size: var(--token-font-size-md); }
+.token-text-lg { font-size: var(--token-font-size-lg); }
+.token-font-normal { font-weight: var(--token-font-weight-normal); }
+.token-font-medium { font-weight: var(--token-font-weight-medium); }
+.token-font-semibold { font-weight: var(--token-font-weight-semibold); }
+.token-font-bold { font-weight: var(--token-font-weight-bold); }

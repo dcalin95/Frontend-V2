@@ -5,6 +5,11 @@ import AdditionalRewardABI from '../abi/AdditionalRewardABI.js';
 import CellManagerABI from '../abi/CellManagerABI.js';
 import TelegramRewardContractABI from '../abi/TelegramRewardContractABI.js';
 import erc20ABI from '../abi/erc20ABI.js';
+import { ethers } from 'ethers';
+import UserVaultABI from '../abi/UserVaultABI.js';
+import AITradingAccessControlABI from '../abi/AITradingAccessControlABI.js';
+import LeverageTradingABI from '../abi/LeverageTradingABI.js';
+import { getLeverageTradingAddress } from '../config/runtimeConfig.js';
 
 /**
  * Configurare pentru network și contracte
@@ -23,10 +28,32 @@ const NETWORK_CONFIG = {
   }
 };
 
-// Prefer env config; fallback to MAINNET
-const ACTIVE_NETWORK = String(process.env.REACT_APP_NETWORK || "bsc-mainnet").toLowerCase().includes("test")
-  ? "TESTNET"
-  : "MAINNET";
+// Keep host-level env overrides for the existing frontend contracts while adding DEX OTA contracts below.
+const getEnvString = (key, fallback) => {
+  const value = process.env[key];
+  return value ? String(value) : fallback;
+};
+
+const getBitsTokenAddress = () => {
+  const env1 = process.env.REACT_APP_BITS_TOKEN;
+  const env2 = process.env.REACT_APP_TOKEN_CONTRACT_ADDRESS;
+  const fallback = "0xCE056ee6ED7Ae0944f10BAfc5E7f5d160c8641fe";
+  return (env1 || env2 || fallback).toLowerCase();
+};
+
+const getNodeAddress = () => {
+  const env1 = process.env.REACT_APP_NODE;
+  const env2 = process.env.REACT_APP_NODE_ADDRESS;
+  const fallback = "0xE6536756d73F0771d9a317F49453de96541C352F";
+  return (env1 || env2 || fallback).toLowerCase();
+};
+
+const getActiveNetworkValue = () => {
+  const network = getEnvString("REACT_APP_NETWORK", "bsc-mainnet");
+  return network.toLowerCase().includes("test") ? "TESTNET" : "MAINNET";
+};
+
+const ACTIVE_NETWORK = getActiveNetworkValue();
 
 /**
  * Maparea centralizată a contractelor active pe BSC
@@ -36,51 +63,123 @@ const ACTIVE_NETWORK = String(process.env.REACT_APP_NETWORK || "bsc-mainnet").to
 export const CONTRACT_MAP = {
   BITS_TOKEN: {
     name: "BitsToken",
-    address: String(process.env.REACT_APP_BITS_TOKEN || process.env.REACT_APP_TOKEN_CONTRACT_ADDRESS || "0xCE056ee6ED7Ae0944f10BAfc5E7f5d160c8641fe").toLowerCase(),
+    address: getBitsTokenAddress(),
     abi: BitsABI,
   },
   // Alias for backward compatibility
   BITS: {
     name: "BitsToken",
-    address: String(process.env.REACT_APP_BITS_TOKEN || process.env.REACT_APP_TOKEN_CONTRACT_ADDRESS || "0xCE056ee6ED7Ae0944f10BAfc5E7f5d160c8641fe").toLowerCase(),
+    address: getBitsTokenAddress(),
     abi: BitsABI,
   },
   STAKING: {
     name: "TokenStaking", 
-    address: String(process.env.REACT_APP_STAKING || "0xF1fd04dB28545C5d5d2f2a7709135839B22984de").toLowerCase(),
+    address: getEnvString("REACT_APP_STAKING", "0xF1fd04dB28545C5d5d2f2a7709135839B22984de").toLowerCase(),
     abi: stakingABI,
   },
   NODE: {
     name: "NodeContract",
-    address: String(process.env.REACT_APP_NODE || process.env.REACT_APP_NODE_ADDRESS || "0xE6536756d73F0771d9a317F49453de96541C352F").toLowerCase(),
+    address: getNodeAddress(),
     abi: nodeABI,
   },
   ADDITIONAL_REWARD: {
     name: "AdditionalReward",
-    address: String(process.env.REACT_APP_ADDITIONAL_REWARD || "0x15473d61a9c8F866eb1a3a5b24e2B520acdb0Fc6").toLowerCase(),
+    address: getEnvString("REACT_APP_ADDITIONAL_REWARD", "0x15473d61a9c8F866eb1a3a5b24e2B520acdb0Fc6").toLowerCase(),
     abi: AdditionalRewardABI,
   },
   CELL_MANAGER: {
     name: "CellManager", 
-    address: String(process.env.REACT_APP_CELL_MANAGER || "0x957B858cc0684c8a91ec3C7f8A9E3DA2Df9F3bC6").toLowerCase(),
+    address: getEnvString("REACT_APP_CELL_MANAGER", "0x957B858cc0684c8a91ec3C7f8A9E3DA2Df9F3bC6").toLowerCase(),
     abi: CellManagerABI,
   },
   TELEGRAM_REWARD: {
     name: "TelegramRewardContract",
-    address: String(process.env.REACT_APP_TELEGRAM_REWARD || "0x5b861fbB5b40a04eb943428d2bD395B4c87D837e").toLowerCase(),
+    address: getEnvString("REACT_APP_TELEGRAM_REWARD", "0x5b861fbB5b40a04eb943428d2bD395B4c87D837e").toLowerCase(),
     abi: TelegramRewardContractABI,
+  },
+  
+  // === OTA (OpenAI Trading Agent) Contracts (BSC MAINNET) ===
+  // C3: Env override for staging/testnet – set REACT_APP_OTA_*_ADDRESS to use different deployed addresses.
+  // Sync process (C1): When you redeploy from remix/OTA, update defaults below and backend env on Render.
+  AI_TRADING_ACCESS_CONTROL: {
+    name: "AITradingAccessControl",
+    address: process.env.REACT_APP_AI_TRADING_ACCESS_CONTROL_ADDRESS || "0x8B32ce487A502a0f8c428A36163967058F89D1C0",
+    abi: AITradingAccessControlABI,
+  },
+  // UserVault (BSC Mainnet) – TREBUIE folosită adresa PROXY. Citire/scriere (register, authorizeBot, getBotAuthorization) DOAR la proxy.
+  // Proxy: 0x279852b048eCB3390D87Ce14398C3A884928fCB9 | Implementation (post-upgrade): 0x1ea23e21eb33204fd0df3437107573939dca5cfa
+  // Backend (Render) USER_VAULT_ADDRESS trebuie să fie PROXY, nu implementation – altfel citește stare veche/greșită.
+  USER_VAULT: {
+    name: "UserVault",
+    address: process.env.REACT_APP_USER_VAULT_ADDRESS || "0x279852b048eCB3390D87Ce14398C3A884928fCB9",
+    abi: UserVaultABI,
+  },
+
+  // === OTA Auto Mode (Mode 3) Contracts (BSC MAINNET) ===
+  // După redeploy OTAPolicyManager: set REACT_APP_OTA_POLICY_MANAGER_ADDRESS (frontend) + OTA_POLICY_MANAGER_ADDRESS (backend).
+  OTA_POLICY_MANAGER: {
+    name: "OTAPolicyManager",
+    address: process.env.REACT_APP_OTA_POLICY_MANAGER_ADDRESS || "0x37CfEA29005638e4703D35F0D318d22db0f22649",
+    abi: [],
+  },
+  OTA_AUTO_EXECUTOR: {
+    name: "OTAAutoExecutor",
+    address: process.env.REACT_APP_OTA_AUTO_EXECUTOR_ADDRESS || "0x5590574050b937cFa920f8F093D26c60592D1739",
+    abi: [],
+  },
+  AI_TASK_MANAGER: {
+    name: "AITaskManager",
+    address: process.env.REACT_APP_AI_TASK_MANAGER_ADDRESS || "0x038fE2095AA747f6c1c87a2a2198Ab4a22e6D460",
+    abi: [],
+  },
+  AI_TRADING_EXECUTOR: {
+    name: "AITradingExecutor",
+    address: process.env.REACT_APP_AI_TRADING_EXECUTOR_ADDRESS || "0x42E3E5ED00AE153347e4D883507598b0d83b215b",
+    abi: [],
+  },
+  PANCAKE_ROUTER: {
+    name: "PancakeSwapRouter",
+    address: process.env.REACT_APP_PANCAKE_ROUTER_ADDRESS || "0x10ED43C718714eb63d5aA57B78B54704E256024E",
+    abi: [],
+  },
+  BITSWAP_WRAPPER: {
+    name: "BitSwapDEXWrapper",
+    address: process.env.REACT_APP_BITSWAP_WRAPPER_ADDRESS || "0x5dC470e76AB02190491a2d1a110c6e067623a761",
+    abi: [],
+  },
+
+  // === Leverage Trading (BSC) - runtime-config.json | env | fallback deployed BSC Mainnet ===
+  LEVERAGE_TRADING: {
+    name: "LeverageTrading",
+    get address() {
+      return getLeverageTradingAddress() || process.env.REACT_APP_LEVERAGE_TRADING_ADDRESS || "0x14e89879f5e7715Ea59ae54A5A161E28A9d58452";
+    },
+    abi: LeverageTradingABI,
   },
   
   // === ERC20 Token Payment Contracts (BSC MAINNET addresses) ===
   USDT: {
     name: "Tether USD",
-    address: "0x55d398326f99059fF775485246999027B3197955", // Binance-Peg USDT (BSC Mainnet)
+    address: process.env.REACT_APP_BSC_USDT_ADDRESS || "0x55d398326f99059fF775485246999027B3197955", // Binance-Peg USDT (BSC Mainnet)
     abi: erc20ABI,
     decimals: 18,
   },
   USDC: {
     name: "USD Coin",
-    address: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d", // Binance-Peg USDC (BSC Mainnet)
+    address: process.env.REACT_APP_BSC_USDC_ADDRESS || "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d", // Binance-Peg USDC (BSC Mainnet)
+    abi: erc20ABI,
+    decimals: 18,
+  },
+  // EUR stablecoins – set REACT_APP_EURS_ADDRESS / REACT_APP_EURC_ADDRESS (ex: bridged pe BSC)
+  EURS: {
+    name: "EURS (Stasis Euro)",
+    address: process.env.REACT_APP_EURS_ADDRESS || "",
+    abi: erc20ABI,
+    decimals: 18,
+  },
+  EURC: {
+    name: "EURC (Circle Euro)",
+    address: process.env.REACT_APP_EURC_ADDRESS || "",
     abi: erc20ABI,
     decimals: 18,
   },
@@ -97,6 +196,12 @@ export const CONTRACT_MAP = {
   MATIC: {
     name: "Polygon MATIC",
     address: "0xCC42724C6683B7E57334c4E856f4c9965ED682bD", // Binance-Peg MATIC (BSC Mainnet)
+    abi: erc20ABI,
+    decimals: 18,
+  },
+  SHIB: {
+    name: "SHIBA INU (Binance-Peg BSC)",
+    address: process.env.REACT_APP_BSC_SHIB_ADDRESS || "0x2859e4544c4bb03966803b044a93563bd2d0dd4d",
     abi: erc20ABI,
     decimals: 18,
   },
@@ -165,3 +270,32 @@ export const getContractAddresses = () => {
 // Debug logging (can be removed in production)
 // console.log("🌐 Active Network:", ACTIVE_NETWORK, NETWORK_CONFIG[ACTIVE_NETWORK]);
 // console.log("📝 Contract Addresses:", getContractAddresses());
+
+/** Implementare deploy-ată (logică); evenimente reale user apar pe **proxy**, nu aici. */
+export const USER_VAULT_IMPLEMENTATION_BSC = '0x1ea23e21eb33204fd0df3437107573939dca5cfa';
+
+/** Proxy canonic BSC mainnet (operațional) dacă `REACT_APP_USER_VAULT_ADDRESS` e setat greșit la implementation. */
+export const USER_VAULT_PROXY_DEFAULT_BSC = '0x279852b048eCB3390D87Ce14398C3A884928fCB9';
+
+/**
+ * Adresa **proxy** UserVault pentru getLogs / istoric (inclusiv fallback browser în Personal Account).
+ * Dacă env indică implementation-ul, revine la proxy canonic.
+ */
+export function getUserVaultProxyAddressForHistory() {
+  const raw = CONTRACT_MAP?.USER_VAULT?.address;
+  if (!raw) return null;
+  let a;
+  try {
+    a = ethers.utils.getAddress(String(raw).trim());
+  } catch {
+    return null;
+  }
+  if (a.toLowerCase() === ethers.utils.getAddress(USER_VAULT_IMPLEMENTATION_BSC).toLowerCase()) {
+    console.error(
+      '[contractMap] USER_VAULT address este implementation — pentru evenimente folosesc proxy canonic:',
+      USER_VAULT_PROXY_DEFAULT_BSC
+    );
+    return ethers.utils.getAddress(USER_VAULT_PROXY_DEFAULT_BSC);
+  }
+  return a;
+}

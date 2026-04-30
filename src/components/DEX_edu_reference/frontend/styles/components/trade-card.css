@@ -1,0 +1,231 @@
+/**
+ * 🎴 Trade Card Styles
+ */
+
+.trade-card {
+  padding: var(--ds-spacing-6);
+  background-color: var(--ds-bg-surface);
+  border-radius: var(--ds-radius-lg);
+  border: 2px solid var(--ds-border-color);
+  transition: all var(--ds-transition-base);
+  cursor: pointer;
+}
+
+.trade-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--ds-shadow-md);
+}
+
+.trade-card-executed {
+  border-left: 4px solid var(--ds-color-success);
+}
+
+.trade-card-failed {
+  border-left: 4px solid var(--ds-color-error);
+}
+
+.trade-card-closed {
+  border-left: 4px solid var(--ds-accent);
+}
+
+.trade-card-pending {
+  border-left: 4px solid var(--ds-color-warning);
+}
+
+.trade-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--ds-spacing-3);
+}
+
+.trade-card-pair {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+}
+
+.trade-card-pair-tokens {
+  font-size: var(--ds-font-size-lg);
+}
+
+.trade-card-status {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-1);
+  padding: var(--ds-spacing-1) var(--ds-spacing-2);
+  border-radius: var(--ds-radius-sm);
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+}
+
+.trade-card-status.executed {
+  background-color: #d1fae5;
+  color: var(--ds-text-buy);
+}
+
+.trade-card-status.failed {
+  background-color: #fee2e2;
+  color: var(--ds-text-sell);
+}
+
+.trade-card-status.closed {
+  background-color: #e0e7ff;
+  color: var(--ds-border-color-focus);
+}
+
+.trade-card-status.pending {
+  background-color: #fef3c7;
+  color: var(--ds-color-warning);
+}
+
+.trade-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-3);
+}
+
+.trade-card-amounts,
+.trade-card-prices,
+.trade-card-limits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-spacing-6);
+}
+
+.trade-card-amount,
+.trade-card-price,
+.trade-card-limit {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-1);
+}
+
+.trade-card-amount-label,
+.trade-card-price-label,
+.trade-card-limit-label {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+}
+
+.trade-card-amount-value,
+.trade-card-price-value,
+.trade-card-limit-value {
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+}
+
+.trade-card-pnl {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3);
+  border-radius: var(--ds-radius-md);
+  font-weight: var(--ds-font-weight-semibold);
+}
+
+.trade-card-pnl.profit {
+  background-color: #d1fae5;
+  color: var(--ds-text-buy);
+}
+
+.trade-card-pnl.loss {
+  background-color: #fee2e2;
+  color: var(--ds-text-sell);
+}
+
+.trade-card-pnl-label {
+  font-size: var(--ds-font-size-base);
+}
+
+.trade-card-pnl-value {
+  font-size: var(--ds-font-size-lg);
+}
+
+.trade-card-tx {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  background-color: var(--ds-bg-surface);
+  border-radius: var(--ds-radius-sm);
+  font-family: var(--ds-font-family-mono);
+  font-size: var(--ds-font-size-sm);
+}
+
+.trade-card-tx-label {
+  color: var(--ds-text-secondary);
+}
+
+.trade-card-tx-value {
+  color: var(--ds-text-primary);
+  cursor: pointer;
+}
+
+.trade-card-tx-value:hover {
+  color: var(--ds-accent);
+  text-decoration: underline;
+}
+
+.trade-card-date {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+}
+
+.trade-card-actions {
+  display: flex;
+  gap: var(--ds-spacing-2);
+  margin-top: var(--ds-spacing-3);
+  padding-top: var(--ds-spacing-3);
+  border-top: 1px solid var(--ds-border-color);
+}
+
+.trade-card-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-spacing-1);
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  border-radius: var(--ds-radius-md);
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+  transition: all var(--ds-transition-fast);
+  cursor: pointer;
+  border: none;
+}
+
+.trade-card-btn-cancel {
+  background-color: var(--ds-color-error);
+  color: var(--ds-text-primary);
+}
+
+.trade-card-btn-cancel:hover:not(:disabled) {
+  background-color: var(--ds-text-sell);
+}
+
+.trade-card-btn-view {
+  background-color: var(--ds-bg-surface);
+  color: var(--ds-text-primary);
+  border: 1px solid var(--ds-border-color);
+}
+
+.trade-card-btn-view:hover {
+  background-color: var(--ds-bg-hover);
+}
+
+.trade-card-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .trade-card-amounts,
+  .trade-card-prices,
+  .trade-card-limits {
+    flex-direction: column;
+    gap: var(--ds-spacing-3);
+  }
+}
+

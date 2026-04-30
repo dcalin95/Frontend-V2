@@ -1,0 +1,64 @@
+/**
+ * 📝 Form Field Styles
+ */
+
+.form-field {
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-field-label {
+  display: block;
+  margin-bottom: var(--spacing-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+}
+
+.form-field-required {
+  color: var(--color-error);
+  margin-left: var(--spacing-xs);
+}
+
+.form-field-error-text {
+  color: var(--color-error);
+  font-size: var(--font-size-xs);
+  margin-left: var(--spacing-sm);
+  font-weight: var(--font-weight-normal);
+}
+
+.form-field-input,
+.form-field-select {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-base);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: border-color var(--transition-fast);
+  font-family: inherit;
+}
+
+.form-field-input:focus,
+.form-field-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.form-field-input:disabled,
+.form-field-select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: var(--bg-secondary);
+}
+
+.form-field-error .form-field-input,
+.form-field-error .form-field-select {
+  border-color: var(--color-error);
+}
+
+.form-field-select {
+  cursor: pointer;
+}
+

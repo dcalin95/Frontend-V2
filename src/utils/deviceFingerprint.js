@@ -239,6 +239,33 @@ export async function getDeviceInfo() {
 }
 
 /**
+ * Parses a user agent into display labels used by the copied DEX auth UI.
+ */
+export function parseDeviceDisplayInfo(userAgent) {
+  const ua = userAgent || (typeof navigator !== 'undefined' ? navigator.userAgent : '') || '';
+  if (!ua) return { os: 'Unknown', browser: 'Unknown' };
+
+  let os = 'Unknown';
+  if (ua.includes('Windows NT 10') || ua.includes('Windows NT 11')) os = 'Windows 10/11';
+  else if (ua.includes('Windows NT 6.3')) os = 'Windows 8.1';
+  else if (ua.includes('Windows NT 6.2')) os = 'Windows 8';
+  else if (ua.includes('Windows NT 6.1')) os = 'Windows 7';
+  else if (/Mac OS X/i.test(ua)) os = 'macOS';
+  else if (/Android/i.test(ua)) os = 'Android';
+  else if (/iPhone|iPad|iPod/i.test(ua)) os = 'iOS';
+  else if (/Linux/i.test(ua)) os = 'Linux';
+
+  let browser = 'Unknown';
+  if (/Edg\//i.test(ua)) browser = 'Edge';
+  else if (/OPR\//i.test(ua)) browser = 'Opera';
+  else if (/Chrome\//i.test(ua) && !/Chromium/i.test(ua)) browser = 'Chrome';
+  else if (/Firefox\//i.test(ua)) browser = 'Firefox';
+  else if (/Safari\//i.test(ua) && !/Chrome\//i.test(ua)) browser = 'Safari';
+
+  return { os, browser };
+}
+
+/**
  * Gets device information synchronously (without IP/location)
  * Use this when you don't need IP/location or when async is not possible
  */
@@ -376,4 +403,3 @@ export function hasLocationChanged(currentLocation, lastLocation) {
 
   return false;
 }
-

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="twitterGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00FFA3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9945FF;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="24" stroke="url(#twitterGradient)" stroke-width="2.5" fill="none"/>
+  <path d="M 48 20 C 46 22 44 23 42 23 C 42 19 39 16 35 16 C 30 16 27 19 27 24 L 27 26 C 22 26 18 23 14 18 C 13 22 14 26 18 28 C 16 28 15 27 14 26 C 14 30 17 33 21 34 C 20 34 18 34 17 33 C 18 36 21 38 25 38 C 22 40 18 41 14 40 C 18 43 23 44 28 44 C 38 44 44 36 44 26 L 44 25 C 46 24 47 22 48 20 Z" stroke="url(#twitterGradient)" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+</svg>
+

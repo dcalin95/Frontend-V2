@@ -1,0 +1,92 @@
+/**
+ * Add Custom Token Modal – form styling
+ */
+
+.add-custom-token-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.add-custom-token-hint {
+  margin: 0 0 var(--ds-spacing-4, 16px);
+  font-size: var(--ds-font-size-sm, 14px);
+  color: var(--ds-text-secondary, #8b9bb4);
+  line-height: 1.45;
+}
+
+.add-custom-token-error {
+  margin-bottom: var(--ds-spacing-4, 16px);
+  padding: var(--ds-spacing-2, 8px) var(--ds-spacing-3, 12px);
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: var(--ds-radius-md, 8px);
+  font-size: var(--ds-font-size-sm, 14px);
+  color: #fca5a5;
+}
+
+.add-custom-token-form .form-field {
+  margin-bottom: var(--ds-spacing-4, 16px);
+}
+
+.add-custom-token-form .form-field-label {
+  color: var(--ds-text-primary, #fff);
+}
+
+.add-custom-token-form .form-field-input,
+.add-custom-token-form .form-field-select {
+  background: var(--ds-bg-surface, #1a1d2e);
+  border: var(--ds-border-width, 1px) solid var(--ds-border-color, #2a2d47);
+  color: var(--ds-text-primary, #fff);
+  border-radius: var(--ds-radius-md, 8px);
+}
+
+.add-custom-token-form .form-field-input:focus,
+.add-custom-token-form .form-field-select:focus {
+  border-color: var(--ds-border-color-light);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(var(--ds-accent-rgb, 59, 130, 246), 0.2);
+}
+
+.add-custom-token-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--ds-spacing-3, 12px);
+  margin-top: var(--ds-spacing-4, 16px);
+  padding-top: var(--ds-spacing-4, 16px);
+  border-top: 1px solid var(--ds-border-color, #2a2d47);
+}
+
+.add-custom-token-btn {
+  padding: var(--ds-spacing-2, 8px) var(--ds-spacing-4, 16px);
+  font-size: var(--ds-font-size-base, 14px);
+  font-weight: 600;
+  border-radius: var(--ds-radius-md, 8px);
+  cursor: pointer;
+  transition: background var(--ds-transition-base, 0.2s ease);
+  font-family: inherit;
+  border: none;
+}
+
+.add-custom-token-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.add-custom-token-btn-secondary {
+  background: var(--ds-bg-hover, #252840);
+  color: var(--ds-text-primary, #fff);
+}
+
+.add-custom-token-btn-secondary:hover:not(:disabled) {
+  background: #2d3142;
+}
+
+.add-custom-token-btn-primary {
+  background: rgb(var(--ds-accent-rgb, 59, 130, 246));
+  color: #fff;
+}
+
+.add-custom-token-btn-primary:hover:not(:disabled) {
+  filter: brightness(1.1);
+}

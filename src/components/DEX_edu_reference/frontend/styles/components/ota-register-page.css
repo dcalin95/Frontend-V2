@@ -1,0 +1,209 @@
+/**
+ * OTA Register Page Styles
+ */
+
+.ota-register-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ds-spacing-6);
+  background: var(--bg);
+}
+
+.ota-register-container {
+  width: 100%;
+  max-width: 440px;
+  padding: var(--ds-spacing-6);
+  background: var(--ds-bg-surface);
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid var(--ds-border-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ota-register-header {
+  text-align: center;
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.ota-register-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-3);
+  font-size: var(--ds-font-size-xl);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  margin: 0 0 var(--ds-spacing-2) 0;
+}
+
+.ota-register-title-logo {
+  flex-shrink: 0;
+}
+
+.ota-register-subtitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2);
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-secondary);
+  margin: 0;
+}
+
+.ota-register-subtitle-logo {
+  flex-shrink: 0;
+}
+
+.ota-register-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-4);
+}
+
+.ota-register-error {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3);
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--ds-radius-md);
+  color: #ef4444;
+  font-size: var(--ds-font-size-sm);
+}
+
+.ota-register-success {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3);
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: var(--ds-radius-md);
+  color: #10b981;
+  font-size: var(--ds-font-size-sm);
+}
+
+.ota-register-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-2);
+}
+
+.ota-register-label {
+  font-size: var(--ds-font-size-base);
+  font-weight: 500;
+  color: var(--ds-text-primary);
+}
+
+.ota-register-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ota-register-input-icon {
+  position: absolute;
+  left: var(--ds-spacing-3);
+  color: var(--ds-text-secondary);
+  pointer-events: none;
+}
+
+.ota-register-input {
+  width: 100%;
+  padding: var(--ds-spacing-3) var(--ds-spacing-3) var(--ds-spacing-3) calc(var(--ds-spacing-3) * 2 + 20px);
+  background: var(--ds-bg-elevated);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-base);
+  transition: all 0.2s ease;
+}
+
+.ota-register-input:focus,
+.ota-register-input:focus-visible {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--ds-border-focus, rgba(59, 130, 246, 0.25));
+}
+
+.ota-register-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ota-register-hint {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  margin: 0;
+}
+
+.ota-register-submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3) var(--ds-spacing-4);
+  background: var(--primary);
+  border: none;
+  border-radius: var(--ds-radius-md);
+  color: white;
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: var(--ds-spacing-2);
+}
+
+.ota-register-submit-btn:hover:not(:disabled) {
+  background: var(--primary-hover, #2563eb);
+}
+
+.ota-register-submit-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--ds-border-focus, rgba(59, 130, 246, 0.4));
+}
+
+.ota-register-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ota-register-footer {
+  margin-top: var(--ds-spacing-6);
+  text-align: center;
+}
+
+.ota-register-footer-text {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-secondary);
+  margin: 0;
+}
+
+.ota-register-login-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.ota-register-login-link:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ota-register-page {
+    padding: var(--ds-spacing-4);
+  }
+
+  .ota-register-container {
+    padding: var(--ds-spacing-6);
+  }
+
+  .ota-register-title {
+    font-size: var(--ds-font-size-md);
+  }
+}

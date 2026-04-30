@@ -1,0 +1,107 @@
+/**
+ * Open Position PnL Strip – sub Header, sub butonul Personal Account
+ * Profit (verde) sau Loss (roșu), dinamic.
+ * Specificitate mare ca să nu fie suprascris de .ota-page-main > * sau alte reguli.
+ */
+
+/* Strip-ul NU trebuie să apară în header – dacă e randat acolo din greșeală, ascunde-l */
+.ai-trading-header .open-position-pnl-strip-wrap,
+.ai-trading-header .open-position-pnl-strip {
+  display: none !important;
+}
+
+/* Override accessibility.css: [role="status"] nu să ne facă strip-ul „pătrat verde”; păstrăm stilul nostru */
+.open-position-pnl-strip-wrap .open-position-pnl-strip[role="status"] {
+  background: rgba(0, 0, 0, 0.35) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: inherit !important;
+}
+
+.ota-page-main > .open-position-pnl-strip-wrap {
+  align-self: flex-start;
+  width: auto;
+  max-width: 100%;
+}
+
+.open-position-pnl-strip-wrap .open-position-pnl-strip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  width: auto;
+  min-width: 160px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-sizing: border-box;
+}
+
+.open-position-pnl-strip-wrap .open-position-pnl-strip-label {
+  color: #9ca3af;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
+.open-position-pnl-strip-wrap .open-position-pnl-strip-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
+.open-position-pnl-strip-wrap .open-position-pnl-strip-value.positive {
+  color: #10b981;
+}
+
+.open-position-pnl-strip-wrap .open-position-pnl-strip-value.negative {
+  color: #ef4444;
+}
+
+.open-position-pnl-strip-wrap .open-position-pnl-strip-number {
+  color: inherit;
+}
+
+.open-position-pnl-strip-wrap .open-position-pnl-strip-meta {
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+/* Icon: moștenește culoarea valorii, nu patrat verde */
+.open-position-pnl-strip-wrap .open-position-pnl-strip-icon {
+  flex-shrink: 0;
+  color: inherit;
+  background: none !important;
+}
+
+/* Fallback fără wrapper (dacă se renderează în alt context) */
+.open-position-pnl-strip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+}
+
+.open-position-pnl-strip .open-position-pnl-strip-label {
+  color: #9ca3af;
+}
+
+.open-position-pnl-strip .open-position-pnl-strip-value.positive {
+  color: #10b981;
+}
+
+.open-position-pnl-strip .open-position-pnl-strip-value.negative {
+  color: #ef4444;
+}

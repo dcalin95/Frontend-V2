@@ -28,13 +28,13 @@ body::-webkit-scrollbar {
 }
 
 /* 🔥 LASER-SHARP FONT RENDERING - GLOBAL */
-* {
+body:not(.dex-edu-active):not([class*="dex-theme-"]) * {
   -webkit-font-smoothing: never !important;
   -moz-osx-font-smoothing: unset !important;
   text-rendering: geometricPrecision !important;
 }
 
-.laser-sharp {
+body:not([class*="dex-theme-"]) .laser-sharp {
   text-shadow: 0.5px 0.5px 0px rgba(0, 0, 0, 0.1);
   filter: contrast(2.2) brightness(1.3);
   -webkit-font-smoothing: never;
@@ -119,14 +119,14 @@ body.mode-mobile {
 }
 
 /* Kill switch for horizontal overflow on mobile */
-body.mode-mobile * {
+body.mode-mobile:not(.dex-edu-active):not([class*="dex-theme-"]) * {
   max-width: 100vw !important;
   box-sizing: border-box !important;
 }
 
 /* Disable heavy effects on mobile for performance */
 /* EXCEPȚIE: Componentele fixe (header, sidebar, ai-launcher, wallet) au stiluri separate în MobileFixedComponents.css */
-body.mode-mobile *:not(.header):not(.header *):not(.mobile-hamburger):not(.mobile-hamburger *):not(.mobile-nav-menu):not(.mobile-nav-menu *):not(.sidebar):not(.sidebar *):not(.sidebar-toggle-button):not(.sidebar-toggle-button *):not(.ai-animated-hamburger):not(.ai-animated-hamburger *):not(.ai-launcher):not(.ai-launcher *):not(.wallet-toggle-wrapper):not(.wallet-toggle-wrapper *):not(.wallet-toggle-btn):not(.wallet-toggle-btn *):not(.wallet-toggle-btn-minimal):not(.wallet-toggle-btn-minimal *):not(.device-info-content):not(.device-info-content *):not(.footer-container):not(.footer-container *):not(.laser-orbit):not(.laser-orbit *):not(.rewards-hub):not(.rewards-hub *):not(.invite-page-container):not(.invite-page-container *):not(.cosmic-burst-overlay):not(.cosmic-burst-overlay *) {
+body.mode-mobile:not(.dex-edu-active):not([class*="dex-theme-"]) *:not(.header):not(.header *):not(.mobile-hamburger):not(.mobile-hamburger *):not(.mobile-nav-menu):not(.mobile-nav-menu *):not(.sidebar):not(.sidebar *):not(.sidebar-toggle-button):not(.sidebar-toggle-button *):not(.ai-animated-hamburger):not(.ai-animated-hamburger *):not(.ai-launcher):not(.ai-launcher *):not(.wallet-toggle-wrapper):not(.wallet-toggle-wrapper *):not(.wallet-toggle-btn):not(.wallet-toggle-btn *):not(.wallet-toggle-btn-minimal):not(.wallet-toggle-btn-minimal *):not(.device-info-content):not(.device-info-content *):not(.footer-container):not(.footer-container *):not(.laser-orbit):not(.laser-orbit *):not(.rewards-hub):not(.rewards-hub *):not(.invite-page-container):not(.invite-page-container *):not(.cosmic-burst-overlay):not(.cosmic-burst-overlay *) {
   box-shadow: none !important; /* Reduce rendering cost */
   text-shadow: none !important; /* Reduce rendering cost */
   backdrop-filter: none !important; /* Heavy on GPU */
@@ -137,29 +137,29 @@ body.mode-mobile *:not(.header):not(.header *):not(.mobile-hamburger):not(.mobil
 
 /* Re-enable essential visual cues but lighter */
 /* EXCEPȚIE: Butoanele din sidebar NU primesc acest box-shadow */
-body.mode-mobile .btn-primary:not(.sidebar .btn-primary), 
-body.mode-mobile .button:not(.sidebar .button), 
-body.mode-mobile button:not(.sidebar button):not(.btn-swap):not(.btn-pool):not(.btn-buy):not(.btn-how-to-buy):not(.btn-tokenomics):not(.btn-audit):not(.btn-invite):not(.btn-how-it-works):not(.btn-roadmap):not(.btn-leaderboard):not(.btn-about):not(.btn-mindmirror):not(.btn-go-main) {
+body.mode-mobile:not([class*="dex-theme-"]) .btn-primary:not(.sidebar .btn-primary), 
+body.mode-mobile:not([class*="dex-theme-"]) .button:not(.sidebar .button), 
+body.mode-mobile:not([class*="dex-theme-"]) button:not(.sidebar button):not(.btn-swap):not(.btn-pool):not(.btn-buy):not(.btn-how-to-buy):not(.btn-tokenomics):not(.btn-audit):not(.btn-invite):not(.btn-how-it-works):not(.btn-roadmap):not(.btn-leaderboard):not(.btn-about):not(.btn-mindmirror):not(.btn-go-main) {
   box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
   transition: transform 0.1s ease !important;
 }
 
 /* SIDEBAR BUTTONS - FUNDAL NEGRU COMPLET */
-body.mode-mobile .sidebar button,
-body.mode-mobile .sidebar a,
-body.mode-mobile .btn-swap,
-body.mode-mobile .btn-pool,
-body.mode-mobile .btn-buy,
-body.mode-mobile .btn-how-to-buy,
-body.mode-mobile .btn-tokenomics,
-body.mode-mobile .btn-audit,
-body.mode-mobile .btn-invite,
-body.mode-mobile .btn-how-it-works,
-body.mode-mobile .btn-roadmap,
-body.mode-mobile .btn-leaderboard,
-body.mode-mobile .btn-about,
-body.mode-mobile .btn-mindmirror,
-body.mode-mobile .btn-go-main {
+body.mode-mobile:not([class*="dex-theme-"]) .sidebar button,
+body.mode-mobile:not([class*="dex-theme-"]) .sidebar a,
+body.mode-mobile:not([class*="dex-theme-"]) .btn-swap,
+body.mode-mobile:not([class*="dex-theme-"]) .btn-pool,
+body.mode-mobile:not([class*="dex-theme-"]) .btn-buy,
+body.mode-mobile:not([class*="dex-theme-"]) .btn-how-to-buy,
+body.mode-mobile:not([class*="dex-theme-"]) .btn-tokenomics,
+body.mode-mobile:not([class*="dex-theme-"]) .btn-audit,
+body.mode-mobile:not([class*="dex-theme-"]) .btn-invite,
+body.mode-mobile:not([class*="dex-theme-"]) .btn-how-it-works,
+body.mode-mobile:not([class*="dex-theme-"]) .btn-roadmap,
+body.mode-mobile:not([class*="dex-theme-"]) .btn-leaderboard,
+body.mode-mobile:not([class*="dex-theme-"]) .btn-about,
+body.mode-mobile:not([class*="dex-theme-"]) .btn-mindmirror,
+body.mode-mobile:not([class*="dex-theme-"]) .btn-go-main {
   background: #000000 !important;
   background-color: #000000 !important;
   backdrop-filter: none !important;
@@ -182,7 +182,7 @@ body.mode-mobile video.presale-copilot__avatar {
 }
 
 /* Fallback background for mobile */
-body.mode-mobile .home-container {
+body.mode-mobile:not([class*="dex-theme-"]) .home-container {
   background: radial-gradient(circle at center, #0F1419 0%, #000000 100%);
 }
 
@@ -266,12 +266,17 @@ body {
 /* === GLOBAL RESET Box sizing === */
 *, *::before, *::after {
   box-sizing: border-box;
+}
+
+body:not([class*="dex-theme-"]) *,
+body:not([class*="dex-theme-"]) *::before,
+body:not([class*="dex-theme-"]) *::after {
   -webkit-font-smoothing: never !important;
   -moz-osx-font-smoothing: unset !important;
   text-rendering: geometricPrecision !important;
 }
 
-.laser-sharp {
+body:not([class*="dex-theme-"]) .laser-sharp {
   text-shadow: 0.5px 0.5px 0px rgba(0, 0, 0, 0.1);
   filter: contrast(2.2) brightness(1.3);
   -webkit-font-smoothing: never;

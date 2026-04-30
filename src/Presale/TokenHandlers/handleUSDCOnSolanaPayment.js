@@ -7,6 +7,7 @@ import {
   createTransferInstruction,
 } from "@solana/spl-token";
 import { SOLANA_CONFIG } from "../../contract/solanaConfig";
+import { resolvePresaleBackendUrl } from "../presaleApi";
 
 // 📍 Config - MAINNET
 // ✅ Remove ProjectSerum completely (timeouts / reliability issues)
@@ -76,7 +77,7 @@ const handleUSDCOnSolanaPayment = async ({ amount, bitsToReceive, walletAddress 
       const mockTxHash = `sim_usdc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       
       // Still send to backend for testing
-      const base = process.env.REACT_APP_BACKEND_URL || '';
+      const base = await resolvePresaleBackendUrl();
       await fetch(`${base}/api/payments/record-solana`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -130,7 +131,7 @@ const handleUSDCOnSolanaPayment = async ({ amount, bitsToReceive, walletAddress 
     console.log("✅ USDC transfer TX:", signature);
 
     // ⛳ Trimite detaliile în backend (INCLUDE USD FOR LOYALTY BONUS)
-    const base = process.env.REACT_APP_BACKEND_URL || '';
+    const base = await resolvePresaleBackendUrl();
     
     // 🎁 USDC is stablecoin, so amount IS the USD value
     const usdInvested = amount; // USDC = 1:1 USD
@@ -162,4 +163,3 @@ const handleUSDCOnSolanaPayment = async ({ amount, bitsToReceive, walletAddress 
 };
 
 export default handleUSDCOnSolanaPayment;
-

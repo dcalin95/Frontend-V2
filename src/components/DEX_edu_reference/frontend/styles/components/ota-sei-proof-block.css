@@ -1,0 +1,234 @@
+/**
+ * OtaSeiProofBlock – bloc dovadă OpenAI + execuție SEI
+ */
+
+.ota-sei-proof-block {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 0 20px 0;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(16, 185, 129, 0.06) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+.ota-sei-proof-block__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ds-text-primary, #fff);
+}
+
+.ota-sei-proof-block__title svg {
+  flex-shrink: 0;
+  color: var(--ota-sei-accent, #6366f1);
+}
+
+.ota-sei-proof-block__desc {
+  margin: 0 0 16px 0;
+  font-size: 13px;
+  color: var(--ds-text-secondary, rgba(255, 255, 255, 0.75));
+  line-height: 1.45;
+}
+
+/* OpenAI vizual prezent – afișat când API-ul e activ */
+.ota-sei-proof-block__presence {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px 0;
+  padding: 10px 14px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: 8px;
+}
+
+.ota-sei-proof-block__presence-logo {
+  flex-shrink: 0;
+}
+
+.ota-sei-proof-block__presence-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #10b981;
+  flex-shrink: 0;
+  animation: ota-sei-proof-presence-pulse 2s ease-in-out infinite;
+}
+
+.ota-sei-proof-block__presence-icon {
+  flex-shrink: 0;
+  color: #10b981;
+}
+
+.ota-sei-proof-block__presence-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ds-text-primary, #fff);
+}
+
+@keyframes ota-sei-proof-presence-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); }
+  50% { opacity: 0.9; box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+}
+
+.ota-sei-proof-block__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+@media (max-width: 640px) {
+  .ota-sei-proof-block__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ota-sei-proof-block__card {
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.ota-sei-proof-block__card--ok {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: rgba(16, 185, 129, 0.06);
+}
+
+.ota-sei-proof-block__card--fail {
+  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.06);
+}
+
+.ota-sei-proof-block__card--loading {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.ota-sei-proof-block__card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.ota-sei-proof-block__card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ds-text-primary, #fff);
+}
+
+.ota-sei-proof-block__icon-ok {
+  flex-shrink: 0;
+  color: #10b981;
+}
+
+.ota-sei-proof-block__icon-fail {
+  flex-shrink: 0;
+  color: #ef4444;
+}
+
+.ota-sei-proof-block__spinner {
+  width: 22px;
+  height: 22px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: var(--ota-sei-accent, #6366f1);
+  border-radius: 50%;
+  animation: ota-sei-proof-spin 0.7s linear infinite;
+}
+
+@keyframes ota-sei-proof-spin {
+  to { transform: rotate(360deg); }
+}
+
+.ota-sei-proof-block__card-body {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ds-text-secondary, rgba(255, 255, 255, 0.8));
+}
+
+.ota-sei-proof-block__card-body strong {
+  color: var(--ds-text-primary, #fff);
+}
+
+.ota-sei-proof-block__why {
+  margin-top: 10px;
+  padding: 8px 10px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--ds-text-secondary, rgba(255, 255, 255, 0.8));
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 6px;
+}
+
+.ota-sei-proof-block__why strong {
+  display: block;
+  margin-top: 6px;
+  color: var(--ds-text-primary, #fff);
+}
+
+.ota-sei-proof-block__why strong:first-child {
+  margin-top: 0;
+}
+
+.ota-sei-proof-block__why code {
+  font-size: 10px;
+  padding: 1px 3px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+
+.ota-sei-proof-block__link {
+  color: var(--ota-sei-accent, #6366f1);
+  text-decoration: underline;
+}
+
+.ota-sei-proof-block__link:hover {
+  opacity: 0.9;
+}
+
+.ota-sei-proof-block__footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ota-sei-proof-block__time {
+  font-size: 12px;
+  color: var(--ds-text-secondary, rgba(255, 255, 255, 0.6));
+}
+
+.ota-sei-proof-block__refresh {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  color: var(--ds-text-primary, #fff);
+  cursor: pointer;
+}
+
+.ota-sei-proof-block__refresh:hover:not(:disabled) {
+  background: #000000;
+}
+
+.ota-sei-proof-block__refresh:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.ota-sei-proof-block__refresh .spinning {
+  animation: ota-sei-proof-spin 0.7s linear infinite;
+}

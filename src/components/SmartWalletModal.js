@@ -1,5 +1,5 @@
 import React from 'react';
-import UnifiedWalletModal from './UnifiedWalletModal';
+import UnifiedWalletModal from './UnifiedWalletModal/UnifiedWalletModal';
 
 /**
  * 🎯 Single Wallet Modal

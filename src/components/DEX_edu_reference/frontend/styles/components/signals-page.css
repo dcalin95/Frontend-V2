@@ -1,0 +1,51 @@
+/**
+ * Trading Signals — same shell rhythm as dashboard-page--cmd (L1 page title → controls → list).
+ */
+
+.signals-page.dashboard-page {
+  min-height: auto;
+}
+
+.signals-page.dashboard-page--cmd {
+  gap: 0;
+  padding: 12px var(--dash-s-3, 16px) var(--dash-s-4, 24px);
+}
+
+.signals-page-head {
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 2px var(--dash-s-3, 16px) 16px;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.signals-page-title {
+  margin: 0;
+  font-size: clamp(1.25rem, 2.2vw, 1.7rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.18;
+  color: var(--dash-text-strong, rgba(252, 252, 252, 0.98));
+}
+
+.signals-page-body {
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 16px var(--dash-s-3, 16px) 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.signal-list--premium .signal-list-refreshing {
+  padding: 6px 10px;
+  margin-bottom: 6px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  font-size: 0.8125rem;
+  color: rgba(160, 175, 198, 0.82);
+}

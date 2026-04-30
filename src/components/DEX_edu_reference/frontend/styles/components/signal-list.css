@@ -1,0 +1,114 @@
+/* Signal list — dense grid, dashboard-adjacent surfaces */
+
+.signal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.signal-list--premium {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.signal-list--premium .signal-list-inner {
+  padding: 0;
+}
+
+.signal-list-refreshing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.signal-list-error {
+  text-align: center;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 10, 14, 0.88);
+}
+
+.signal-list-error p {
+  color: rgba(220, 140, 120, 0.95);
+  margin-bottom: 12px;
+  font-size: 0.9375rem;
+}
+
+.signal-list-empty {
+  padding: 28px 20px;
+  text-align: center;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(8, 10, 14, 0.88);
+}
+
+.signal-list-empty-hint {
+  margin-top: 16px;
+  padding: 12px 14px;
+  text-align: left;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.signal-list-empty-hint-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 0.8125rem;
+  color: rgba(203, 213, 225, 0.88);
+}
+
+.signal-list-empty-hint ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: rgba(163, 176, 198, 0.85);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.signal-list-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  align-items: stretch;
+}
+
+@media (max-width: 1400px) {
+  .signal-list-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1024px) {
+  .signal-list-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .signal-list-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.signal-list-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 2px 2px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  margin-top: 2px;
+}
+
+.signal-list-pagination-info {
+  font-size: 0.8125rem;
+  color: rgba(155, 170, 192, 0.78);
+  font-variant-numeric: tabular-nums;
+}

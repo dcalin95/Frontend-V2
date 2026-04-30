@@ -1,0 +1,165 @@
+/**
+ * 📚 Educational Tooltip Styles
+ * 
+ * Stiluri pentru tooltips educaționale OTA
+ */
+
+.educational-tooltip-content {
+  max-width: 320px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ds-text-primary);
+}
+
+.educational-tooltip-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.educational-tooltip-description {
+  color: var(--ds-text-secondary);
+  margin-bottom: 8px;
+}
+
+.educational-tooltip-expanded {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.educational-tooltip-section {
+  margin-bottom: 12px;
+}
+
+.educational-tooltip-section:last-child {
+  margin-bottom: 0;
+}
+
+.educational-tooltip-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.educational-tooltip-section-content {
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.educational-tooltip-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+}
+
+.educational-tooltip-list li {
+  padding-left: 16px;
+  position: relative;
+  margin-bottom: 4px;
+  line-height: 1.5;
+}
+
+.educational-tooltip-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #14f195;
+  font-weight: bold;
+}
+
+.educational-tooltip-link {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.educational-tooltip-link a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #14f195;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.educational-tooltip-link a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.educational-tooltip-toggle {
+  margin-top: 8px;
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: var(--ds-text-secondary);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  text-align: center;
+}
+
+.educational-tooltip-toggle:hover {
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.3);
+  color: var(--ds-text-primary);
+}
+
+.educational-tooltip-icon {
+  color: rgba(255, 255, 255, 0.5);
+  cursor: help;
+  transition: color 0.2s;
+}
+
+.educational-tooltip-icon:hover {
+  color: #14f195;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .educational-tooltip-content {
+    max-width: 280px;
+    font-size: 12px;
+  }
+
+  .educational-tooltip-title {
+    font-size: 13px;
+  }
+
+  .educational-tooltip-section-title {
+    font-size: 11px;
+  }
+
+  .educational-tooltip-section-content,
+  .educational-tooltip-list {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .educational-tooltip-content {
+    max-width: 260px;
+    font-size: 11px;
+  }
+
+  .educational-tooltip-toggle {
+    font-size: 10px;
+    padding: 3px 6px;
+  }
+}

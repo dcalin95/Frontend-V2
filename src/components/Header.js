@@ -1,8 +1,10 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Palette } from "lucide-react";
 import WalletContext from "../context/WalletContext";
 import SmartTooltip from "../Presale/components/SmartTooltip"; // Import SmartTooltip
 import { useAuth } from "../context/AuthContext"; // Auth Context
+import { useDEXTheme } from "./DEX_edu_reference/frontend/context/DEXThemeContext";
 
 import { usePresaleState } from "../Presale/Timer/usePresaleState";
 import PresaleCountdownMini from "../Presale/Timer/PresaleCountdownMini";
@@ -18,9 +20,18 @@ import "./Header.desktop.css";
 import "./Header.mobile.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
+const GLOBAL_THEME_OPTIONS = [
+  { value: "sonnet", label: "Sonnet (UI theme)", color: "#3b82f6" },
+  { value: "claude", label: "Claude (UI theme)", color: "#f59e0b" },
+  { value: "gemini", label: "Gemini", color: "#8b5cf6" },
+];
+
 const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu }) => {
   const { user, isAuthenticated, signOut: contextSignOut } = useAuth(); // Auth state
   const navigate = useNavigate();
+  const { theme, setTheme } = useDEXTheme();
+  const [themePopoverOpen, setThemePopoverOpen] = useState(false);
+  const themePopoverRef = useRef(null);
   
   // Enhanced sign out function with reload
   const handleSignOut = async () => {
@@ -30,6 +41,8 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
   };
   const [internalIsMenuOpen, setInternalIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isDexDropdownOpen, setIsDexDropdownOpen] = useState(false);
+  const activeThemeLabel = GLOBAL_THEME_OPTIONS.find((item) => item.value === theme)?.label || "Sonnet (UI theme)";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -59,6 +72,17 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
      else setHeaderHeight('140px');
   }, [isScrolled]);
 
+  useEffect(() => {
+    if (!themePopoverOpen) return undefined;
+    const close = (event) => {
+      if (themePopoverRef.current && !themePopoverRef.current.contains(event.target)) {
+        setThemePopoverOpen(false);
+      }
+    };
+    document.addEventListener("click", close);
+    return () => document.removeEventListener("click", close);
+  }, [themePopoverOpen]);
+
   const { endTime, isLoaded } = usePresaleState();
 
   // Close menu on escape key + Add body class
@@ -86,9 +110,55 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
   }, [isMenuOpen, externalToggleMenu]);
 
   const closeMenu = () => {
+    setIsDexDropdownOpen(false);
+    setThemePopoverOpen(false);
     if (externalToggleMenu && isMenuOpen) externalToggleMenu();
     else setInternalIsMenuOpen(false);
   };
+
+  const themeSwitcher = (
+    <div className="ai-trading-theme-switcher global-site-theme-switcher" ref={themePopoverRef}>
+      <button
+        type="button"
+        className="ai-trading-theme-trigger"
+        onPointerDown={(event) => {
+          event.stopPropagation();
+        }}
+        onClick={(event) => {
+          event.stopPropagation();
+          setThemePopoverOpen((open) => !open);
+        }}
+        aria-label="Choose display theme"
+        aria-expanded={themePopoverOpen}
+        aria-haspopup="listbox"
+        title="UI color themes (Sonnet, Claude, Gemini)"
+      >
+        <Palette size={16} aria-hidden="true" />
+        <span className="ai-trading-theme-trigger-label">{activeThemeLabel}</span>
+      </button>
+      {themePopoverOpen && (
+        <div className="ai-trading-theme-popover" role="listbox" aria-label="Available themes">
+          {GLOBAL_THEME_OPTIONS.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              role="option"
+              aria-selected={theme === option.value}
+              className={`ai-trading-theme-option ${theme === option.value ? "selected" : ""}`}
+              onClick={(event) => {
+                event.stopPropagation();
+                setTheme(option.value);
+                setThemePopoverOpen(false);
+              }}
+            >
+              <span className="ai-trading-theme-swatch" style={{ backgroundColor: option.color }} aria-hidden="true" />
+              <span className="ai-trading-theme-option-label">{option.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <>
@@ -120,14 +190,12 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
               trackStandardEvent('Subscribe', {
                 description: 'telegram_click',
                 page_path: window.location.pathname || window.location.hash?.replace('#', '') || '/',
-                method: 'header',
+                method: 'header_mobile',
                 session_id: sessionId,
                 is_returning: identity.is_returning,
                 distinct_day_count: identity.distinct_day_count,
                 days_since_first_seen: identity.days_since_first_seen,
                 visit_count: identity.visit_count,
-                  days_since_first_seen: identity.days_since_first_seen,
-                  visit_count: identity.visit_count,
                 });
               }}
             >
@@ -182,6 +250,8 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
 
         {/* ✅ Desktop Navigation - DOAR PE DESKTOP */}
         <nav className="navigation desktop-only">
+          {themeSwitcher}
+
           <SmartTooltip content={`Project Orbit\nVisual representation of the BitSwapDEX ecosystem.`}>
             <Link to="/orbit" className="btn-orbit laser-sharp">
               <i className="fas fa-bullseye"></i> Orbit
@@ -272,11 +342,34 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
             </Link>
           </SmartTooltip>
           
-          <SmartTooltip content={`DEX Swap\nSwap tokens on the BitSwapDEX exchange.\nThis is the path to recurring fee revenue.`}>
-            <button className="btn-go-main" onClick={() => navigate("/dex")}>
-              <i className="fas fa-exchange-alt"></i> DEX Swap
+          <div className="dex-swap-dropdown">
+            <SmartTooltip content={`DEX Swap\nSwap tokens on the BitSwapDEX exchange.\nThis is the path to recurring fee revenue.`}>
+              <button className="btn-go-main" onClick={() => { setIsDexDropdownOpen(false); navigate("/dex"); }}>
+                <i className="fas fa-exchange-alt"></i> DEX Swap
+              </button>
+            </SmartTooltip>
+            <button
+              className="dex-dropdown-toggle"
+              type="button"
+              aria-label="Open DEX versions"
+              aria-expanded={isDexDropdownOpen}
+              onClick={() => setIsDexDropdownOpen((open) => !open)}
+            >
+              <i className="fas fa-chevron-down"></i>
             </button>
-          </SmartTooltip>
+            {isDexDropdownOpen && (
+              <div className="dex-swap-menu">
+                <Link to="/dex" onClick={() => setIsDexDropdownOpen(false)}>
+                  <i className="fas fa-exchange-alt"></i>
+                  Current DEX
+                </Link>
+                <Link to="/dex-edu" onClick={() => setIsDexDropdownOpen(false)}>
+                  <i className="fas fa-layer-group"></i>
+                  DEX Edu Copy
+                </Link>
+              </div>
+            )}
+          </div>
           
           <SmartTooltip content={`AI Utility Hub\nAccess AI-powered tools: Market Oracle, Stress Test, Lie Detector & more.`}>
             <Link to="/ai-hub" className="btn-ai-hub laser-sharp" style={{background: 'linear-gradient(135deg, #00FFA3 0%, #DC1FFF 100%)', color: '#000'}}>
@@ -323,14 +416,12 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
                 trackStandardEvent('Subscribe', {
                   description: 'telegram_click',
                   page_path: window.location.pathname || window.location.hash?.replace('#', '') || '/',
-                  method: 'header_mobile',
+                  method: 'header',
                   session_id: sessionId,
                   is_returning: identity.is_returning,
                   distinct_day_count: identity.distinct_day_count,
                   days_since_first_seen: identity.days_since_first_seen,
                   visit_count: identity.visit_count,
-                    days_since_first_seen: identity.days_since_first_seen,
-                    visit_count: identity.visit_count,
                   });
                 }}
               >
@@ -415,6 +506,9 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
             <button className="mobile-btn-ai" onClick={() => { closeMenu(); navigate("/dex"); }}>
               <i className="fas fa-exchange-alt"></i> <span className="mobile-text">DEX Swap</span>
             </button>
+            <Link to="/dex-edu" className="mobile-btn-ai" onClick={closeMenu}>
+              <i className="fas fa-layer-group"></i> <span className="mobile-text">DEX Edu Copy</span>
+            </Link>
             <Link to="/ai-hub" className="mobile-btn-ai-hub laser-sharp" onClick={closeMenu} style={{background: 'linear-gradient(135deg, #00FFA3 0%, #DC1FFF 100%)', color: '#000'}}>
               <i className="fas fa-brain"></i> <span className="mobile-text">AI Hub</span>
             </Link>

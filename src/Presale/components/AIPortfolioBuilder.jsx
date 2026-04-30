@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from "react";
 import axios from "axios";
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { resolvePresaleBackendUrl } from "../presaleApi";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:4000";
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#845EC2"]; 
 
 export default function AIPortfolioBuilder() {
@@ -28,7 +28,8 @@ export default function AIPortfolioBuilder() {
     setResult(null);
     try {
       const payload = { budget: Number(budget), horizon, risk, objectives, tokenPreferences, useBITS };
-      const { data } = await axios.post(`${BACKEND_URL}/api/generate-portfolio`, payload, { timeout: 20000 });
+      const backendUrl = await resolvePresaleBackendUrl();
+      const { data } = await axios.post(`${backendUrl}/api/generate-portfolio`, payload, { timeout: 20000 });
       setResult(data);
     } catch (err) {
       setError(err?.response?.data?.error || err.message || "Request failed");
@@ -137,5 +138,4 @@ export default function AIPortfolioBuilder() {
     </div>
   );
 }
-
 

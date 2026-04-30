@@ -1,0 +1,91 @@
+/**
+ * 🎯 DEX Layout Fixes - Visual Consistency
+ * 
+ * Fix-uri VIZUALE pentru consistență:
+ * - Toate cardurile au același padding (16px)
+ * - Toate gap-urile sunt identice (16px)
+ * - Coloanele sunt aliniate perfect
+ * - Input-urile au aceeași înălțime
+ */
+
+/* FORCE consistent card padding - OVERRIDE all variations */
+.ui-card,
+.ui-card-padding-sm,
+.ui-card-padding-md,
+.ui-card-padding-lg,
+[class*="card"][class*="padding"],
+.card,
+.Card {
+  padding: var(--ds-card-padding-md) !important; /* FORCE 16px */
+}
+
+/* FORCE consistent gap in all flex/grid containers */
+.trade-page-content,
+.dashboard-page-content,
+.trade-page-left-sidebar,
+.trade-page-sidebar,
+.dashboard-page-left,
+.dashboard-page-right,
+.trade-page-chart-section {
+  gap: var(--ds-spacing-4) !important; /* FORCE 16px */
+}
+
+/* FORCE consistent input heights */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+select,
+textarea,
+.trade-page-select,
+.ui-input {
+  height: var(--ds-input-height-md) !important; /* FORCE 40px */
+  min-height: var(--ds-input-height-md) !important;
+  line-height: var(--ds-line-height-normal) !important;
+  box-sizing: border-box !important;
+}
+
+/* FORCE column alignment - all columns start at same top position */
+.trade-page-content > *,
+.dashboard-page-content > * {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* FORCE consistent border radius on all cards */
+.ui-card,
+.card,
+[class*="card"] {
+  border-radius: var(--ds-card-border-radius) !important; /* FORCE 8px */
+}
+
+/* FORCE no horizontal overflow */
+.trade-page,
+.dashboard-page,
+.trade-page-content,
+.dashboard-page-content,
+.trade-page-left-sidebar,
+.trade-page-sidebar {
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+}
+
+/* FORCE consistent spacing between sections */
+.trade-page-pairs-section,
+.trade-page-overview-section,
+.trade-page-stats-section,
+.trade-page-orderbook-section {
+  margin-bottom: 0 !important; /* Remove any extra margins */
+}
+
+/* Ensure all cards in grid align properly */
+.trade-page-content > .trade-page-left-sidebar,
+.trade-page-content > .trade-page-chart-section,
+.trade-page-content > .trade-page-sidebar {
+  align-self: start !important;
+}
+
+.dashboard-page-content > .dashboard-page-left,
+.dashboard-page-content > .dashboard-page-right {
+  align-self: start !important;
+}

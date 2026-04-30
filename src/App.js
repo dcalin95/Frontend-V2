@@ -7,6 +7,12 @@ import "./toastStyle.css";
 import "./components/BitcoinAcademy/BitcoinAcademy.css";
 import "./components/BitcoinAcademy/BitcoinAcademy.mobile.css";
 import "./components/BitcoinAcademy/pages/ProofOfTransfer.css";
+import "./components/DEX_edu_reference/frontend/styles/design-system-v1.css";
+import "./components/DEX_edu_reference/frontend/styles/dex-themes.css";
+import "./components/DEX_edu_reference/frontend/styles/global.css";
+import "./components/DEX_edu_reference/frontend/styles/components.css";
+import "./components/DEX_edu_reference/frontend/styles/pages.css";
+import "./styles/DEX/header.css";
  
 
 // 🧠 Core React
@@ -74,6 +80,22 @@ const STANDALONE_TOOL_COMPONENTS = {
   crypto: CryptoAnalyticsDashboard,
   portfolio: PortfolioManager,
   accessibility: AccessibilityPanel,
+};
+
+const GlobalRouteOverlays = () => {
+  const location = useLocation();
+
+  if (location.pathname.startsWith('/dex-edu')) {
+    return <SmartWalletModal />;
+  }
+
+  return (
+    <>
+      <AIToolLauncher />
+      <GlobalPresaleCopilot />
+      <SmartWalletModal />
+    </>
+  );
 };
 
 // 📄 Lazy Loaded Pages
@@ -172,15 +194,20 @@ const ThankYouPage = lazyWithRetry(() => import("./components/ThankYouPage"));
 const RegisteredUsers = lazyWithRetry(() => import("./components/Admin/RegisteredUsers")); // Import nou
 const SwapPage = lazyWithRetry(() => import("./components/DEX/SwapPage")); // 🔄 Import DEX Demo
 const SwapPageMobile = lazyWithRetry(() => import("./components/DEX/SwapPageMobile")); // 📱 Import DEX Mobile
+const TradePage = lazyWithRetry(() => import("./components/DEX/Trade")); // 📊 Import TradePage (Oxium-like)
+const DexEduReferencePage = lazyWithRetry(() => import("./components/DEX_edu_reference/DEXApp")); // DEX copied from frontend-edu
 
 
 // 🧠 Main Layout Component
 const MainLayout = ({ children, isMobile, menuOpen, setMenuOpen, headerMenuOpen, setHeaderMenuOpen, currentSection, handleSidebarSelect, toggleSidebarMenu, toggleHeaderMenu }) => {
   const location = useLocation();
   const isDexDemo = location.pathname === '/dex';
+  const isTradePage = location.pathname === '/dex/trade';
+  const isDexEduReference = location.pathname.startsWith('/dex-edu');
+  const isPresalePage = location.pathname === '/presale';
 
-  // If it's the DEX Demo page, render ONLY the children (SwapPage) without the wrapper
-  if (isDexDemo) {
+  // If it's the DEX Demo page or TradePage, render ONLY the children without the wrapper
+  if (isDexDemo || isTradePage || isDexEduReference) {
     return (
       <div
         className="content-container-standalone"
@@ -211,7 +238,7 @@ const MainLayout = ({ children, isMobile, menuOpen, setMenuOpen, headerMenuOpen,
         isMenuOpen={headerMenuOpen} 
         toggleMenu={toggleHeaderMenu} 
       />
-      <BoostedBanner />
+      {!isPresalePage && <BoostedBanner />}
       <div className="header-spacer"></div>
       <HeaderWalletInfo />
       <ThemeChecker />
@@ -366,7 +393,7 @@ const App = () => {
   
   
   const [amountPay, setAmountPay] = useState(0);
-  const [menuOpen, setMenuOpen] = useState(false); // Sidebar menu
+  const [menuOpen, setMenuOpen] = useState(true); // Sidebar menu
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false); // Header mobile menu
   const [currentSection, setCurrentSection] = useState("home");
   const isMobile = useDeviceDetect();
@@ -610,6 +637,8 @@ const App = () => {
                       <Route path="/ai-hub/gem-hunter" element={<GemHunter />} />
                       <Route path="/ai-hub/admin-neural" element={<AdminNeuralLink />} />
                       <Route path="/dex" element={isMobile ? <SwapPageMobile /> : <SwapPage />} /> {/* 🔄 Rută DEX */}
+                      <Route path="/dex/trade" element={<TradePage />} /> {/* 📊 Rută TradePage (Oxium-like) */}
+                      <Route path="/dex-edu/*" element={<DexEduReferencePage />} /> {/* DEX copy from frontend-edu */}
                       <Route
                         path="/test-payment"
                         element={
@@ -626,10 +655,7 @@ const App = () => {
                           </Routes>
                       </MainLayout>
                       
-                      {/* Launcher AI Tools */}
-                      <AIToolLauncher />
-                      {/* Global Presale Copilot (minimized across the whole UI) */}
-                      <GlobalPresaleCopilot />
+                      <GlobalRouteOverlays />
                     </MobileUI>
                     </USBlocker>
                   }
@@ -639,9 +665,6 @@ const App = () => {
           </ErrorBoundary>
         </GoogleAnalyticsWrapper>
       </Router>
-      
-      {/* 🎯 Smart Wallet Modal - Auto-switches Desktop/Mobile */}
-      <SmartWalletModal />
     </>
   );
 };

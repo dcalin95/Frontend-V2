@@ -13,7 +13,7 @@ import claimRewardsIcon from "../../assets/icons/claim-rewards.svg";
 import { FaDollarSign, FaCoins, FaGift, FaStar, FaGem, FaHourglassHalf, FaCheckCircle, FaChartLine } from "react-icons/fa"; // Icons for Investigation
 import SmartTooltip from "../components/SmartTooltip";
 
-const backendURL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+const backendURL = "https://backend-server-eu.onrender.com";
 
 const ReferralRewardBox = ({ walletAddress }) => {
   // 🎁 UNIFIED REWARDS STATE

@@ -1,0 +1,189 @@
+/**
+ * OtaSeiLiveWindow – fereastra OTA AI Live pe /dex/ota/sei
+ */
+
+.ota-sei-live-window {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 0 24px 0;
+  padding: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(99, 102, 241, 0.12) 0%, rgba(16, 185, 129, 0.08) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.ota-sei-live-window__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.ota-sei-live-window__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--ds-success, #22c55e);
+  text-transform: uppercase;
+}
+
+.ota-sei-live-window__badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: ota-sei-live-window-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes ota-sei-live-window-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.95); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ota-sei-live-window__badge-dot {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+.ota-sei-live-window__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ds-text-primary, #e4e4e7);
+}
+
+.ota-sei-live-window__body {
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ota-sei-live-window__main-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.ota-sei-live-window__pair-block {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ota-sei-live-window__activity-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  text-align: right;
+}
+
+.ota-sei-live-window__label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ds-text-secondary, #a1a1aa);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ota-sei-live-window__price {
+  font-variant-numeric: tabular-nums;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ds-success, #22c55e);
+}
+
+.ota-sei-live-window__loading {
+  color: var(--ds-text-tertiary);
+  font-size: 14px;
+}
+
+.ota-sei-live-window__error {
+  font-size: 13px;
+  color: var(--ds-danger, #ef4444);
+}
+
+.ota-sei-live-window__status {
+  font-size: 13px;
+  color: var(--ds-text-secondary, #a1a1aa);
+}
+
+.ota-sei-live-window__meta {
+  font-size: 11px;
+  color: var(--ds-text-tertiary);
+}
+
+/* Under-chart variant: compact, same width as chart */
+.ota-sei-live-window--under-chart {
+  max-width: none;
+  margin: 0;
+  border-radius: 10px;
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  background: linear-gradient(145deg, rgba(99, 102, 241, 0.14) 0%, rgba(16, 185, 129, 0.08) 100%);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+.ota-sei-live-window--under-chart .ota-sei-live-window__header {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ota-sei-live-window--under-chart .ota-sei-live-window__title {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.ota-sei-live-window--under-chart .ota-sei-live-window__body {
+  padding: 12px 14px;
+}
+
+.ota-sei-live-window--under-chart .ota-sei-live-window__price {
+  font-size: 1.35rem;
+}
+
+.ota-sei-live-window--under-chart .ota-sei-live-window__main-row {
+  gap: 12px;
+}
+
+.ota-sei-live-window--under-chart .ota-sei-live-window__activity-block {
+  align-items: flex-end;
+}
+
+.ota-sei-live-window--under-chart .ota-sei-live-window__status {
+  font-size: 12px;
+}
+
+.ota-sei-live-window--under-chart .ota-sei-live-window__meta {
+  font-size: 10px;
+}
+
+/* Legacy row/activity (if used elsewhere) */
+.ota-sei-live-window__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ota-sei-live-window__row .ota-sei-live-window__label {
+  min-width: 72px;
+}
+
+/* OTA SEI / STX page: live window fills column under chart (același schelet) */
+.ota-sei-page .ota-sei-live-window,
+.ota-stx-page .ota-sei-live-window {
+  align-self: stretch;
+}

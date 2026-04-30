@@ -1,0 +1,1521 @@
+/**
+ * OTA Page – un singur container principal (.ota-page-main), casete compacte, text corect în cutii
+ * /dex/ota (inclusiv ?mode=advisory)
+ *
+ * REGULĂ BARE: Toate barele (containerele pe care stau textele) au mărimea textului/conținutului –
+ * nu mai mari. width: fit-content; max-width: 100%; (bară cât conținutul, nu întinsă pe ecran).
+ */
+
+/* ---------- OTA Header tools – portal în dex-header-ota-tools-slot (header-right, lângă Social) ---------- */
+.dex-header-ota-tools-slot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 4px;
+  position: relative;
+  z-index: 100;
+  pointer-events: auto;
+}
+.dex-header-ota-tools-slot .ota-header-tools,
+.dex-header-ota-tools-slot .ota-header-market-slot,
+.dex-header-ota-tools-slot .market-analysis-header-trigger {
+  pointer-events: auto;
+  position: relative;
+  z-index: 100;
+}
+.ota-header-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.ota-header-market-slot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+/* Token selector în header (Advisory + Auto): click funcțional – evită blocarea dropdown */
+.ota-header-market-slot .header-token-selector-wrapper,
+.ota-header-market-slot .header-token-selector-button,
+.ota-header-token-slot .header-token-selector-wrapper,
+.ota-header-token-slot .header-token-selector-button {
+  pointer-events: auto !important;
+  cursor: pointer;
+}
+
+/* Token selector în header pentru Auto – Direct Entry: ce cumperi. Totul centrat. */
+.ota-header-token-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  width: fit-content;
+  position: relative;
+  z-index: 20;
+  pointer-events: auto;
+}
+
+.ota-header-market-slot > * {
+  min-width: 0;
+}
+
+.ota-header-token-label {
+  font-size: 0.8125rem;
+  color: var(--ds-text-secondary, #94a3b8);
+  white-space: nowrap;
+}
+
+.ota-header-token-logo {
+  flex-shrink: 0;
+}
+
+/* OTA Advisory – buton simplu în header, deschide modal */
+.ota-header-advisory-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 8px;
+  color: #60a5fa;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.ota-header-advisory-trigger:hover {
+  background: rgba(59, 130, 246, 0.22);
+  border-color: rgba(59, 130, 246, 0.45);
+}
+
+.ota-header-governance-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 8px;
+  color: #4ade80;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.ota-header-governance-trigger:hover:not(:disabled) {
+  background: rgba(34, 197, 94, 0.22);
+  border-color: rgba(34, 197, 94, 0.45);
+}
+
+.ota-header-governance-trigger:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.ota-header-governance-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ota-header-live-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+button.ota-header-live-badge {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+button.ota-header-live-badge:hover {
+  filter: brightness(1.08);
+}
+
+/* LIVE GO badge – pill clar, text vizibil; evită colapsarea la „pătrat verde” din cauza unor override-uri */
+.ota-header-tools .ota-header-live-badge,
+button.ota-header-live-badge {
+  min-width: 4.5em;
+  border-radius: 999px !important;
+  padding: 6px 12px !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+}
+
+.ota-header-live-badge.go {
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.14);
+  border-color: rgba(34, 197, 94, 0.35);
+}
+
+.ota-header-live-badge.nogo {
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.ota-header-live-badge.checking {
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.14);
+  border-color: rgba(59, 130, 246, 0.32);
+}
+
+.ota-header-governance-result {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.ota-header-governance-result.ok {
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.ota-header-governance-result.error {
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+/* Modal OTA Advisory – conținut complet */
+.ota-advisory-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ota-advisory-modal-desc {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--ds-text-secondary);
+  line-height: 1.5;
+}
+
+.ota-advisory-modal-steps {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ota-advisory-modal-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: var(--ds-text-primary);
+}
+
+.ota-advisory-modal-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--ota-page-accent, #3b82f6);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.ota-advisory-modal-step-arrow {
+  color: var(--ds-text-tertiary);
+  flex-shrink: 0;
+}
+
+.ota-advisory-modal-nav {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ota-advisory-modal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: filter 0.15s ease;
+}
+
+.ota-advisory-modal-btn:hover {
+  text-decoration: none;
+  filter: brightness(1.1);
+}
+
+.ota-advisory-modal-btn-swap {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #fff;
+}
+
+.ota-advisory-modal-btn-trade {
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+  color: #fff;
+}
+
+/* ---------- Variabile AI Sonnet | PROPORTIONAL 4px scale ---------- */
+.dashboard-page.ota-page {
+  --ota-page-bg: var(--ds-bg-base, #000000);
+  --ota-page-surface: var(--ds-bg-elevated, #000000);
+  --ota-page-border: var(--ds-border-color, rgba(255, 255, 255, 0.08));
+  --ota-page-border-strong: rgba(255, 255, 255, 0.12);
+  --ota-page-accent: var(--ota-accent, #3b82f6);
+  --ota-page-accent-rgb: var(--ota-accent-rgb, 59, 130, 246);
+  --ota-page-ai-accent: #a78bfa;
+  --ota-page-radius: 6px;
+  --ota-page-radius-lg: 10px;
+  --ota-page-gap: 8px;
+  --ota-page-padding: 12px;
+}
+
+/* ========== MODE AUTO: UMLE FRUMOS – fără spații goale imense ========== */
+/* Pagina auto: NU min-height 100vh – doar cât conținutul (fără gol vertical) */
+.dashboard-page.ota-page:has(.ota-page-auto-layout) {
+  min-height: 0;
+  height: auto;
+  width: 100%;
+}
+
+/* Main: layout ușor redus – max-width 1400px */
+.dashboard-page.ota-page .ota-page-main:has(.ota-page-auto-layout) {
+  gap: 4px;
+  padding: 6px;
+  max-width: min(1400px, 100%) !important;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.dashboard-page.ota-page .ota-page-main:has(.ota-page-auto-layout) > .ota-page-header-block {
+  margin: 0;
+  padding: 4px 0;
+}
+
+.dashboard-page.ota-page .ota-page-main:has(.ota-page-auto-layout) > .ota-page-auto-layout {
+  margin: 0;
+}
+
+.dashboard-page.ota-page .ota-page-main:has(.ota-page-auto-layout) > .ota-page-help {
+  margin-top: 4px;
+  padding: 4px 0;
+}
+
+/* AutoTradePanel: padding 4px, gap 4px – ZERO spații goale */
+.ota-page-auto-main .auto-trade-panel {
+  padding: 4px !important;
+}
+
+.ota-page-auto-main .auto-trade-panel-header {
+  margin-bottom: 4px;
+  gap: 4px;
+}
+
+.ota-page-auto-main .auto-trade-panel-quick-flow {
+  padding: 4px;
+  margin-bottom: 4px;
+}
+
+.ota-page-auto-main .auto-trade-panel-quick-flow-title {
+  margin: 0 0 4px 0;
+}
+
+.ota-page-auto-main .auto-trade-panel-tabs {
+  margin: 4px 0;
+  gap: 2px;
+}
+
+.ota-page-auto-main .auto-trade-panel-tab {
+  padding: 6px 10px;
+  min-height: 36px;
+}
+
+.ota-page-auto-main .auto-trade-panel-content {
+  margin-top: 4px;
+}
+
+.ota-page-auto-main .auto-trade-panel-form-row {
+  margin-bottom: 4px;
+}
+
+.ota-page-auto-main .auto-trade-panel-form-row--inputs {
+  gap: 4px;
+}
+
+.ota-page-auto-main .auto-trade-panel-form-row--checkboxes {
+  gap: 4px;
+}
+
+.ota-page-auto-main .auto-trade-panel-auto-mode-card {
+  padding: 4px;
+  margin-bottom: 4px;
+}
+
+.ota-page-auto-main .auto-trade-panel-apply-zone {
+  margin-top: 4px;
+  padding: 4px 0;
+}
+
+.ota-page-auto-main .auto-trade-panel-learn:not(.is-open) {
+  margin-bottom: 4px;
+  padding: 2px 0;
+}
+
+.ota-page-auto-main .auto-trade-panel-banner {
+  margin-bottom: 4px;
+  padding: 4px;
+}
+
+/* ---------- Banner backend indisponibil: lățime cât conținutul (nu întins pe tot ecranul) ---------- */
+.ota-backend-unavailable-banner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  margin-bottom: var(--ota-page-gap);
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: var(--ota-page-radius);
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-sm);
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.ota-backend-unavailable-retry {
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  background: rgba(239, 68, 68, 0.25);
+  border: var(--ds-border-width) solid rgba(239, 68, 68, 0.5);
+  border-radius: var(--ds-radius-xs);
+  color: var(--ds-text-primary);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ota-backend-unavailable-retry:hover {
+  background: rgba(239, 68, 68, 0.35);
+}
+
+/* ---------- Container principal: PROPORTIONAL, gap minim ---------- */
+.ota-page-main {
+  max-width: 1800px !important;
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--ota-page-padding);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ota-page-gap);
+  box-sizing: border-box;
+}
+
+.ota-page-main > * {
+  min-width: 0;
+  align-self: center;
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Mode auto: layout UMLE ȘI FRUMOS – coloane egale care umplu lățimea (MDN grid 1fr 1fr) */
+.ota-page-main > .ota-page-auto-layout {
+  width: 100% !important;
+  align-self: stretch;
+}
+
+/* Când conținutul e pagina OTA SEI sau STX: fără padding sus pe zona principală (layout) */
+.ai-trading-main-content:has(.ota-sei-page),
+.ai-trading-main-content:has(.ota-stx-page) {
+  padding-top: 0 !important;
+}
+
+/* OTA SEI / STX page: același schelet – conținut centrat; gap 0 forțat */
+.ota-sei-page .ota-page-main,
+.ota-stx-page .ota-page-main {
+  align-items: center;
+  max-width: 1800px !important; /* același layout lat ca peste tot */
+  padding-top: 0 !important;
+  gap: 0 !important;
+}
+.ota-sei-page .ota-page-main > *,
+.ota-stx-page .ota-page-main > * {
+  align-self: center;
+}
+
+/* OTA SEI / STX: blocul Chart+Live+MicroProfit ocupă 100% din main (override fit-content) */
+.ota-sei-page .ota-page-main > .ota-sei-content,
+.ota-stx-page .ota-page-main > .ota-sei-content {
+  width: 100%;
+  max-width: 100%;
+  align-self: stretch;
+}
+
+.ota-sei-page .ota-sei-three-windows-wrap,
+.ota-stx-page .ota-sei-three-windows-wrap {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin-top: 0 !important;
+  margin-bottom: 16px;
+}
+
+/* Row 1: [Chart + Live] | Settings | Display */
+.ota-sei-three-cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.3fr);
+  gap: var(--ds-spacing-4);
+  width: 100%;
+  min-height: 0;
+  align-items: start;
+  margin-bottom: 16px;
+}
+
+.ota-sei-side-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ds-spacing-4);
+  min-width: 0;
+  align-items: start;
+}
+
+/* First column: Chart then Live window stacked */
+.ota-sei-chart-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.ota-sei-chart-column > .ota-sei-window.ota-sei-chart {
+  flex: 0 0 auto;
+}
+
+.ota-sei-chart-column > .ota-sei-live-window {
+  flex: 0 0 auto;
+}
+
+/* All three panels: no margin-top, same top alignment */
+.ota-sei-three-cards > .ota-sei-window {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+/* Carduri Setare / Afișare din OtaSeiMicroProfitPanel (splitLayout) */
+.ota-sei-micro-profit-settings,
+.ota-sei-micro-profit-display {
+  overflow: auto;
+  min-width: 0;
+}
+.ota-sei-micro-profit__card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--ds-border-color);
+}
+
+
+.ota-sei-window {
+  min-height: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--ds-border-color);
+  background: var(--ds-bg-surface);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ota-sei-window.ota-sei-chart {
+  min-height: 380px;
+}
+
+/* În rândul de 3 ferestre, toate au același top; height: 100% doar când e stretch */
+.ota-sei-three-cards .ota-sei-window {
+  height: auto;
+}
+
+.ota-sei-window.ota-sei-chart .ota-sei-window-title {
+  font-size: 13px;
+  color: var(--ds-text-secondary);
+  margin: 8px 12px 0;
+  flex-shrink: 0;
+}
+
+.ota-sei-window.ota-sei-chart .ota-sei-window-body {
+  flex: 1;
+  min-height: 300px;
+}
+
+/* Chart: same top offset (12px) as right panels */
+.ota-sei-three-cards .ota-sei-window.ota-sei-chart .ota-sei-window-body {
+  padding-top: 12px;
+  margin-top: 0;
+}
+
+/* Fereastra Afișare: primul bloc (live-price) la același 12px ca Setare */
+.ota-sei-three-cards .ota-sei-micro-profit-display .ota-sei-micro-profit__live-price {
+  padding-top: 12px;
+}
+
+/* Chart: cadrul vizibil e doar pe .tradingview-chart-container (păstrăm border/radius din theme) */
+
+.ota-sei-window.ota-sei-live,
+.ota-sei-window.ota-sei-microprofit {
+  overflow: auto;
+}
+
+.ota-sei-chart-fallback {
+  padding: 24px;
+  background: var(--ds-bg-subtle);
+  border-radius: 8px;
+  color: var(--ds-text-secondary);
+}
+
+@media (max-width: 960px) {
+  .ota-sei-three-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .ota-sei-side-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ota-page-loading {
+  justify-content: center;
+  align-items: center;
+  min-height: 280px;
+}
+
+/* ---------- Preview bandă: lățime doar cât conținutul (nu întinsă pe tot ecranul) ---------- */
+.ota-preview-bar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--ota-page-surface);
+  border: 1px solid var(--ota-page-border-strong);
+  border-radius: var(--ota-page-radius);
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.ota-preview-bar-text {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--ds-text-secondary);
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.ota-preview-bar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--ota-page-accent);
+  border: 1px solid rgba(var(--ota-page-accent-rgb), 0.4);
+  border-radius: var(--ota-page-radius);
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ota-preview-bar-btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.ota-preview-bar-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ---------- Mode selector: fără container/bară în jurul modurilor ---------- */
+.dashboard-page.ota-page .ota-trading-mode-selector {
+  margin-bottom: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  align-self: flex-start;
+  width: fit-content;
+  max-width: 100%;
+}
+
+/* ---------- Header: bară cât conținutul (nu mai mare), fără acoladă albastră ---------- */
+.ota-page-header-block {
+  width: fit-content;
+  max-width: 100%;
+  padding: var(--ota-page-padding);
+  background: var(--ota-page-surface);
+  border: 1px solid var(--ota-page-border-strong);
+  border-radius: var(--ota-page-radius-lg);
+  box-sizing: border-box;
+}
+
+.ota-page-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--ds-text-primary);
+  margin: 0 0 6px 0;
+  line-height: 1.3;
+}
+
+.ota-page-title .ota-page-badge {
+  margin-left: auto;
+}
+
+.ota-page-title-logo {
+  /* Dimensiune și aliniere din ota-logo.css */
+}
+
+.ota-page-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  background: rgba(var(--ota-page-accent-rgb), 0.2);
+  border: 1px solid rgba(var(--ota-page-accent-rgb), 0.4);
+  color: var(--ota-page-accent);
+  text-transform: capitalize;
+}
+
+.ota-page-desc,
+.ota-page-hint {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ds-text-secondary);
+  line-height: 1.5;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
+}
+
+.ota-page-hint {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--ota-page-border);
+  font-size: 0.75rem;
+}
+
+.ota-page-hint a,
+.ota-page-link {
+  color: var(--ota-page-accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.ota-page-hint a:hover,
+.ota-page-link:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Swap · Trade view: butoane nav colorate + SVG ---------- */
+.ota-page-nav-buttons {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.ota-page-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: var(--ota-page-radius-lg);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: filter 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
+}
+
+.ota-page-nav-btn svg {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+
+.ota-page-nav-btn:hover {
+  text-decoration: none;
+  filter: brightness(1.1);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+}
+
+.ota-page-nav-btn:active {
+  transform: scale(0.98);
+}
+
+/* Swap: verde */
+.ota-page-nav-btn-swap {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.ota-page-nav-btn-swap svg {
+  stroke: currentColor;
+}
+
+.ota-page-nav-btn-swap:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* Trade view: albastru */
+.ota-page-nav-btn-trade {
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.ota-page-nav-btn-trade svg {
+  stroke: currentColor;
+}
+
+.ota-page-nav-btn-trade:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* ---------- Pași: bară cât conținutul (nu mai mare) ---------- */
+.ota-page-steps {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 12px;
+  background: var(--ota-page-surface);
+  border: 1px solid var(--ota-page-border-strong);
+  border-radius: var(--ota-page-radius);
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.ota-page-step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--ds-text-primary);
+}
+
+.ota-page-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--ota-page-accent);
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.ota-page-step-arrow {
+  color: var(--ds-text-tertiary);
+  flex-shrink: 0;
+}
+
+/* ---------- Market Analysis / Auto panel: compact în OTA page ---------- */
+/* Card Market Analysis: lățime fixă, nu se întinde pe ecran mare */
+.ota-page-main .market-analysis {
+  width: 100%;
+  max-width: 520px;
+  border-radius: var(--ota-page-radius-lg);
+  border: 1px solid var(--ota-page-border-strong);
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.ota-page-main .market-analysis {
+  padding: var(--ota-page-padding);
+}
+
+.ota-page-main .market-analysis-header {
+  margin-bottom: 8px;
+}
+
+.ota-page-main .market-analysis-content {
+  gap: 10px;
+}
+
+.ota-page-main .market-analysis-result {
+  padding: 10px 12px;
+}
+
+.ota-page-main .market-analysis-result-content {
+  gap: 8px;
+}
+
+.ota-page-main .market-analysis-reasoning-text {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+/* ---------- Auto mode: GRID – coloane egale, ușor mai compact ---------- */
+.ota-page-auto-header-row {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+  min-width: 0;
+}
+
+.ota-page-auto-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(260px, 1fr);
+  gap: 10px;
+  width: 100%;
+  align-items: start;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.ota-page-auto-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Panouri = umplu coloana (width 100%), fără spațiu mort orizontal */
+.dashboard-page.ota-page .ota-page-auto-main .auto-trade-panel,
+.ota-page-auto-layout .ota-page-auto-main .auto-trade-panel {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0;
+}
+
+.ota-page-auto-config .ota-access-control,
+.ota-page-auto-config .ota-settings-panel {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.ota-page-auto-config {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ota-page-auto-config > * {
+  min-width: 0;
+}
+
+/* Coloana dreaptă: compact, fără ferestre duble */
+.ota-page-auto-config .ota-access-control,
+.ota-page-auto-config .ota-settings-panel {
+  padding: 6px;
+  gap: 6px;
+}
+
+/* OTA Access Control: fără chenare interioare (un singur chenar) */
+.ota-page-auto-config .ota-access-control-check-item {
+  background: transparent !important;
+  border: none !important;
+  padding: 4px 6px !important;
+}
+
+.ota-page-auto-config .ota-access-control-balance {
+  background: transparent !important;
+  border: none !important;
+  padding: 4px 6px !important;
+}
+
+.ota-page-auto-config .ota-access-control-register-enhanced {
+  background: transparent !important;
+  border: none !important;
+  padding: 4px !important;
+}
+
+.ota-page-auto-config .ota-access-control-status-pill.granted,
+.ota-page-auto-config .ota-access-control-status-pill.denied {
+  border: none;
+}
+
+.ota-page-auto-config .ota-access-control-warning {
+  border: none !important;
+  background: #000000 !important;
+  padding: 6px 8px !important;
+}
+
+/* OTA Settings Panel (Authorize Bot): fără ferestre duble, compact */
+.ota-page-auto-config .ota-settings-panel-header {
+  margin-bottom: 6px !important;
+  padding-bottom: 6px !important;
+}
+
+.ota-page-auto-config .ota-settings-panel-setting {
+  background: transparent !important;
+  border: none !important;
+}
+
+.ota-page-auto-config .ota-settings-panel-bot-authorization {
+  background: transparent !important;
+  border: none !important;
+  padding: 4px 0 !important;
+}
+
+.ota-page-auto-config .ota-settings-panel-error {
+  border: none !important;
+  background: rgba(239, 68, 68, 0.08) !important;
+}
+
+.ota-page-auto-config .ota-settings-panel-bot-item {
+  border: none !important;
+  background: transparent !important;
+}
+
+.ota-page-auto-config .ota-settings-panel-warning {
+  border: none !important;
+  background: rgba(245, 158, 11, 0.08) !important;
+}
+
+.ota-page-auto-config .ota-access-control-header {
+  padding-bottom: 4px;
+  gap: 4px;
+  border-bottom: none !important;
+}
+
+.ota-page-auto-config .ota-access-control-content {
+  gap: 4px;
+}
+
+.ota-page-auto-config .ota-access-control-checks {
+  gap: 4px;
+}
+
+.ota-page-auto-config .ota-access-control-checks-title {
+  margin: 0 0 2px 0;
+}
+
+.ota-page-auto-config .ota-access-control-checks-grid {
+  gap: 4px;
+}
+
+.ota-page-auto-config .ota-access-control-check-item {
+  padding: 4px 6px;
+}
+
+.ota-page-auto-config .ota-access-control-balance {
+  padding: 4px 6px;
+}
+
+.ota-page-auto-config .ota-access-control-balance-label {
+  margin-bottom: 2px;
+}
+
+.ota-page-auto-config .ota-access-control-status-row {
+  gap: 4px;
+}
+
+.ota-page-auto-config .ota-access-control-privileges {
+  margin-top: 4px;
+  padding: 4px 0;
+  gap: 4px;
+}
+
+.ota-page-auto-config .ota-access-control-privileges-title {
+  margin: 0 0 2px 0;
+}
+
+.ota-page-auto-config .ota-access-control-register-enhanced {
+  margin-top: 4px;
+  padding: 4px;
+  gap: 4px;
+}
+
+/* Coloana dreaptă: elemente FULL WIDTH – zero spațiu mort orizontal */
+.ota-page-auto-config .ota-settings-panel-authorize-btn {
+  width: 100%;
+  min-height: 40px;
+}
+
+.ota-page-auto-config .ota-settings-panel-bot-form {
+  width: 100%;
+  padding: 4px !important;
+  gap: 4px;
+}
+
+.ota-page-auto-config .ota-settings-panel-bot-field {
+  gap: 2px;
+}
+
+.ota-page-auto-config .ota-settings-panel-bot-input {
+  width: 6em;
+  min-width: 5em;
+  max-width: 8em;
+  box-sizing: border-box;
+}
+
+/* Chart sub Authorize Bot – un singur chenar, fără dublu */
+.ota-page-auto-config .ota-price-chart {
+  width: 100%;
+  padding: var(--ds-spacing-3);
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid var(--ds-border-color);
+  background: var(--ds-bg-surface);
+}
+.ota-page-auto-config .ota-price-chart .ota-price-chart-body,
+.ota-page-auto-config .ota-price-chart .tradingview-chart-container {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.ota-page-auto-config .ota-access-control-checks-grid,
+.ota-page-auto-config .ota-access-control-balance {
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .ota-page-auto-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Config: bară cât conținutul (nu mai mare) ---------- */
+.ota-page-config {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: fit-content;
+  max-width: 100%;
+  padding: var(--ota-page-padding);
+  background: var(--ota-page-surface);
+  border: 1px solid var(--ota-page-border-strong);
+  border-radius: var(--ota-page-radius-lg);
+  box-sizing: border-box;
+}
+
+.ota-page-config-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  margin: 0;
+}
+
+.ota-page-config-title-logo {
+  flex-shrink: 0;
+}
+
+.ota-page-config-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 10px;
+  width: fit-content;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.ota-page-config-grid > * {
+  min-width: 0;
+}
+
+/* ---------- Help: fără chenar, compact (ca Auto / OTA Access) ---------- */
+.ota-page-help {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 6px 0;
+  box-sizing: border-box;
+}
+
+.ota-page-main:has(.ota-page-auto-layout) > .ota-page-help {
+  width: 100%;
+  align-self: stretch;
+}
+
+.ota-page-help-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  margin: 0;
+}
+
+.ota-page-help-icon {
+  color: var(--ota-page-accent);
+  flex-shrink: 0;
+}
+
+.ota-page-help-desc {
+  font-size: 0.8125rem;
+  color: var(--ds-text-secondary);
+  margin: 0;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.ota-page-help-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.ota-page-help-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  background: transparent;
+  border: none;
+  color: var(--ds-text-primary);
+  text-decoration: none;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ota-page-help-link span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ota-page-help-link:hover {
+  background: rgba(var(--ota-page-accent-rgb), 0.06);
+  color: var(--ota-page-accent);
+}
+
+.ota-page-help-link svg:last-child {
+  margin-left: auto;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+/* ---------- Floating tutorial button ---------- */
+.ota-floating-tutorial-btn {
+  position: fixed;
+  bottom: 16px;
+  right: var(--ds-spacing-4);
+  z-index: var(--ds-z-dropdown);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--ota-page-accent);
+  border: 1px solid rgba(var(--ota-page-accent-rgb), 0.4);
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.ota-floating-tutorial-btn:hover {
+  filter: brightness(1.1);
+  transform: scale(1.05);
+}
+
+/* ---------- Padding pagină OTA ---------- */
+.dashboard-page.ota-page {
+  padding: var(--ds-spacing-3);
+  gap: var(--ds-spacing-3);
+}
+
+/* ---------- Text în casete: nu depășește containerul ---------- */
+.ota-page-main .market-analysis-result-content,
+.ota-page-main .market-analysis-reasoning-text,
+.ota-page-config *,
+.ota-page-help * {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* ---------- Policy Locked State ---------- */
+.policy-lock-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 6px;
+  padding: 2px 8px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.policy-locked-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(16, 185, 129, 0.06);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.policy-locked-banner svg {
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+.policy-locked-banner span {
+  flex: 1;
+}
+
+.policy-locked-banner__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: 6px;
+  color: #10b981;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.policy-locked-banner__btn:hover {
+  background: rgba(16, 185, 129, 0.25);
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
+.auto-trade-panel-auto-mode-card--locked {
+  opacity: 0.55;
+  pointer-events: none;
+  user-select: none;
+  filter: grayscale(0.3);
+  transition: opacity 0.2s, filter 0.2s;
+}
+
+.auto-trade-panel-button--change-settings {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.12) !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  color: #10b981 !important;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  width: 100%;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.auto-trade-panel-button--change-settings:hover {
+  background: rgba(16, 185, 129, 0.22) !important;
+  border-color: rgba(16, 185, 129, 0.5) !important;
+}
+
+/* ---------- Policy Saved Summary Card ---------- */
+.policy-saved-summary {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.02) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  animation: policySummarySlideIn 0.3s ease-out;
+}
+
+@keyframes policySummarySlideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.policy-saved-summary__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.policy-saved-summary__icon {
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+.policy-saved-summary__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #10b981;
+  flex: 1;
+}
+
+.policy-saved-summary__close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, background 0.15s;
+}
+
+.policy-saved-summary__close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.policy-saved-summary__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 16px;
+  margin-bottom: 10px;
+}
+
+.policy-saved-summary__item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.policy-saved-summary__label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+.policy-saved-summary__value {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.policy-saved-summary__value--active {
+  color: #10b981;
+}
+
+.policy-saved-summary__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 8px;
+}
+
+.policy-saved-summary__time {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.policy-saved-summary__link {
+  font-size: 11px;
+  color: #10b981;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: opacity 0.15s;
+}
+
+.policy-saved-summary__link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+/* ---------- Advisory: comutator LLM (OpenAI | Claude | motor OTA) ---------- */
+.ota-page-advisory-section .ota-advisory-llm-wrap.short-ops-panel {
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: rgba(15, 23, 42, 0.35);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 640px) {
+  .ota-page-main {
+    padding: 10px;
+  }
+
+  .ota-page-header-block {
+    padding: 10px 12px;
+  }
+
+  .ota-page-steps {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ota-page-step-arrow {
+    transform: rotate(90deg);
+    margin-left: 26px;
+  }
+
+  .ota-page-config-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ota-page-help-links {
+    grid-template-columns: 1fr;
+  }
+}

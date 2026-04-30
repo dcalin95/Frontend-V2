@@ -1,0 +1,60 @@
+/**
+ * 🎯 Badge Styles - Binance-Inspired
+ */
+
+.ui-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--ds-font-family-sans);
+  font-weight: var(--ds-font-weight-medium);
+  border-radius: var(--ds-badge-border-radius, var(--ds-radius-sm, 6px));
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* Sizes */
+.ui-badge-sm {
+  padding: var(--ds-badge-padding-x-sm, var(--ds-spacing-1)) var(--ds-spacing-2);
+  font-size: var(--ds-badge-font-size-sm, var(--ds-font-size-xs));
+  line-height: var(--ds-line-height-tight);
+  height: var(--ds-badge-height-sm, 20px);
+}
+
+.ui-badge-md {
+  padding: var(--ds-badge-padding-x-md, var(--ds-spacing-1)) var(--ds-spacing-2);
+  font-size: var(--ds-badge-font-size-md, var(--ds-font-size-sm));
+  line-height: var(--ds-line-height-tight);
+  height: var(--ds-badge-height-md, 24px);
+}
+
+/* Variants */
+.ui-badge-default {
+  background-color: var(--ds-bg-overlay);
+  color: var(--ds-text-secondary);
+  border: var(--ds-border-width) solid var(--ds-border-color);
+}
+
+.ui-badge-success {
+  background-color: var(--ds-color-success-bg);
+  color: var(--ds-color-success);
+  border: var(--ds-border-width) solid var(--ds-color-success-border);
+}
+
+.ui-badge-error {
+  background-color: var(--ds-color-error-bg);
+  color: var(--ds-color-error);
+  border: var(--ds-border-width) solid var(--ds-color-error-border);
+}
+
+.ui-badge-warning {
+  background-color: var(--ds-color-warning-bg);
+  color: var(--ds-color-warning);
+  border: var(--ds-border-width) solid rgba(245, 158, 11, 0.3);
+}
+
+.ui-badge-info {
+  background-color: var(--ds-color-info-bg);
+  color: var(--ds-color-info);
+  border: var(--ds-border-width) solid rgba(59, 130, 246, 0.3);
+}

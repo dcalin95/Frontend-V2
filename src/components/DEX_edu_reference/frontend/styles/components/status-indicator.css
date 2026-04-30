@@ -1,0 +1,44 @@
+/* Status Indicator Component Styles */
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-indicator-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.status-indicator-pulse {
+  animation: status-pulse 2s ease-in-out infinite;
+}
+
+@keyframes status-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+.status-indicator-label {
+  font-size: var(--ds-table-font-size);
+  color: var(--ds-text-secondary);
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.status-indicator-small .status-indicator-label {
+  font-size: var(--ds-font-size-xs);
+}
+
+.status-indicator-large .status-indicator-label {
+  font-size: var(--ds-font-size-base);
+}

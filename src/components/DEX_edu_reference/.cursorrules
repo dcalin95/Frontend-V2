@@ -1,0 +1,117 @@
+# Cursor AI Rules - DEX Project Context Enforcement
+
+## CRITICAL: MANDATORY CONTEXT READING
+
+**ALL AI SESSIONS MUST READ PROJECT CONTEXT BEFORE ANY ACTION**
+
+This DEX project is located at: `src/components/DEX/`
+
+### Step 1: Read Context Manifest FIRST
+Before making any changes, you MUST read:
+- `__PROJECT_CONTEXT__/00A_CONTEXT_MANIFEST.md`
+
+This manifest defines:
+- Mandatory read order for all documentation files
+- Project status and boundaries
+- Protected areas that must NOT be modified
+- Rules for documentation updates (append-only)
+
+### Step 2: Read All Files in Mandatory Order
+You MUST read ALL files listed in the manifest IN ORDER:
+
+1. `__PROJECT_CONTEXT__/00_READ_THIS_FIRST.md`
+2. `__PROJECT_CONTEXT__/00A_CONTEXT_MANIFEST.md`
+3. `__PROJECT_CONTEXT__/01_PROJECT_LOGIC.md`
+4. `__PROJECT_CONTEXT__/02_MVP_BOUNDARIES.md`
+5. `__PROJECT_CONTEXT__/03_ARCHITECTURE_SKELETON.md`
+6. `__PROJECT_CONTEXT__/04_DO_NOT_MODIFY.md`
+7. `__PROJECT_CONTEXT__/05_AI_OPERATING_RULES.md`
+8. `__PROJECT_CONTEXT__/__CONTEXT_GATE__.md`
+
+Then read status documents as specified in the manifest.
+
+---
+
+## ABSOLUTE RULES
+
+### Documentation Rules:
+- ❌ **NEVER** delete any `.md` file in `__PROJECT_CONTEXT__/`
+- ❌ **NEVER** rename any documentation file
+- ❌ **NEVER** overwrite existing content in documentation files
+- ✅ **ONLY** append new content with clear date markers: `## Added for context – YYYY-MM-DD`
+- ✅ **ONLY** update documentation after reading full context
+
+### Code Modification Rules:
+- ❌ **NEVER** modify code without reading documentation first
+- ❌ **NEVER** refactor without explicit permission
+- ❌ **NEVER** assume missing logic (ask instead)
+- ❌ **NEVER** make "improvements" without understanding context
+- ✅ **ALWAYS** read context documentation before code changes
+- ✅ **ALWAYS** confirm understanding before proceeding
+
+### Status Rules:
+- ❌ **NEVER** claim project is "production ready" (it's NOT - it's DEVELOPMENT MODE)
+- ❌ **NEVER** claim backend is deployed (it's NOT - uses Binance API for development)
+- ✅ **ALWAYS** state current status accurately (DEVELOPMENT MODE)
+- ✅ **ALWAYS** clarify what is NOT implemented
+
+---
+
+## PROJECT STATUS
+
+**Current Status:** ⚠️ DEVELOPMENT MODE - NOT PRODUCTION READY
+
+**Key Points:**
+- DEX integration în frontend-edu: ✅ Complete
+- Location: `src/components/DEX/` (this directory)
+- Backend API: ❌ NOT deployed (uses Binance API for development)
+- Charts: ✅ Works with Binance API (development mode)
+- Production requirements: ❌ NOT met
+
+**For complete status:** See `__PROJECT_CONTEXT__/05_CURRENT_STATUS.md` (authoritative). Archived documents are historical only.
+
+---
+
+## IF UNCLEAR: STOP AND ASK
+
+If context is incomplete or unclear:
+1. **STOP** - Do NOT proceed
+2. **ASK** - Ask for clarification
+3. **WAIT** - Wait for user input
+4. **DO NOT** - Do NOT infer or assume
+
+---
+
+## ENFORCEMENT
+
+This `.cursorrules` file enforces that:
+1. All AI sessions must read project context before acting
+2. Documentation files must NOT be deleted or modified (append-only)
+3. Code changes require context understanding first
+4. Status claims must be accurate (DEVELOPMENT MODE, not production)
+
+**This file is part of the context enforcement system. Do NOT delete or modify this file.**
+
+---
+
+## ARCHIVE IS NOT AUTHORITATIVE
+
+Documentation located in:
+- `docs/_archive/`
+- monorepo `docs/_archive_root/`
+
+is historical reference ONLY.
+It MUST NOT be used as source of truth for decisions or code changes.
+If relevant information is found there, it must be restated in `__PROJECT_CONTEXT__/05_CURRENT_STATUS.md` (append-only).
+
+---
+
+## AI HANDSHAKE REQUIREMENT
+
+Before making any code change, the AI MUST explicitly confirm:
+"I have read and understood the DEX project context and rules."
+If this confirmation is missing, the AI must STOP and ask.
+
+---
+
+## DEX Project Context Enforcement – 2024-01-10

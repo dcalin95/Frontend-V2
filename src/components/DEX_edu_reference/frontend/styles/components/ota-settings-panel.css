@@ -1,0 +1,1273 @@
+/**
+ * 🎨 OTA Settings Panel Styles - Sonnet / Anthropic
+ * 
+ * All components use Sonnet tokens for correct proportions
+ * Background: Apple black (#000000)
+ */
+
+/* Main Container - Panel (Sonnet) */
+.ota-settings-panel {
+  background-color: var(--ds-bg-surface); /* #000000 - Apple black */
+  border: 1px solid var(--ds-border-color); /* 1px subtle border */
+  border-radius: var(--ds-radius-lg); /* 14px - Sonnet standard */
+  padding: var(--ds-spacing-6); /* 24px - Sonnet standard */
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-4); /* 16px - Sonnet standard */
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Header - Standard Panel Header (Sonnet) */
+.ota-settings-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--ds-spacing-3); /* 12px */
+  margin-bottom: var(--ds-spacing-4); /* 16px */
+  padding-bottom: var(--ds-spacing-4); /* 16px */
+  border-bottom: 1px solid var(--ds-border-color); /* Subtle divider */
+  min-height: var(--ds-table-header-height); /* 44px - consistent header height */
+}
+
+.ota-settings-panel-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2); /* 8px */
+}
+
+/* Aliniere logo + titlu "Authorize Bot" pe aceeași linie */
+.ota-settings-panel-header-left.ota-title-row {
+  align-items: center;
+}
+.ota-settings-panel-header-left.ota-title-row .ota-logo {
+  margin: 0;
+  align-self: center;
+}
+.ota-settings-panel-header-left.ota-title-row .ota-settings-panel-title {
+  line-height: 1 !important;
+  margin: 0;
+  padding: 0;
+  align-self: center;
+}
+
+.ota-settings-panel-logo {
+  margin-right: var(--ds-spacing-1); /* 4px */
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.ota-settings-panel-icon {
+  color: var(--ds-accent); /* Sonnet accent */
+}
+
+.ota-settings-panel-title {
+  font-size: var(--ds-font-size-md); /* 16px - card titles */
+  font-weight: var(--ds-font-weight-semibold); /* 600 */
+  line-height: var(--ds-line-height-normal); /* 22px */
+  color: var(--ds-text-primary); /* Sonnet text */
+  margin: 0;
+}
+
+/* Save Button - Sonnet Button Primary */
+.ota-settings-panel-save-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2); /* 8px */
+  height: var(--ds-button-height-md); /* 40px - Sonnet */
+  padding: 0 var(--ds-spacing-4); /* 16px - Sonnet */
+  background-color: var(--ds-accent); /* Sonnet accent (solid blue) */
+  color: var(--ds-text-primary); /* Sonnet text (white) */
+  border: 1px solid var(--ds-accent); /* Sonnet accent */
+  border-radius: var(--ds-radius-md); /* 10px - Sonnet */
+  font-size: var(--ds-font-size-base); /* 14px - Sonnet */
+  font-weight: var(--ds-font-weight-medium); /* 500 */
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 150ms, border-color 150ms;
+  min-width: 120px;
+  white-space: nowrap;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+.ota-settings-panel-save-btn:hover:not(:disabled) {
+  background-color: #2563eb; /* Slightly darker blue */
+  border-color: #2563eb;
+}
+
+.ota-settings-panel-save-btn:active:not(:disabled) {
+  transform: translateY(1px); /* Subtle active */
+}
+
+.ota-settings-panel-save-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring-box-shadow); /* Sonnet focus ring */
+}
+
+.ota-settings-panel-save-btn:disabled {
+  opacity: 0.55; /* Sonnet disabled */
+  cursor: not-allowed;
+}
+
+/* Description - Body Text (Sonnet) */
+.ota-settings-panel-description {
+  color: var(--ds-text-tertiary); /* Sonnet muted text */
+  font-size: var(--ds-font-size-base); /* 14px */
+  line-height: var(--ds-line-height-normal); /* 20px */
+  margin: 0;
+}
+
+.ota-settings-panel-section-description {
+  margin: 0;
+  color: var(--ds-text-tertiary);
+  font-size: 13px;
+  line-height: var(--ds-line-height-normal);
+}
+
+.ota-settings-panel-field-hint {
+  margin: var(--ds-spacing-1) 0 0;
+  color: var(--ds-text-tertiary);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+/* Content - Body (Sonnet) */
+.ota-settings-panel-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-4); /* 16px - consistent vertical spacing */
+}
+
+.ota-settings-panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-3); /* 12px */
+}
+
+.ota-settings-panel-section-title {
+  font-size: var(--ds-font-size-md); /* 16px */
+  font-weight: var(--ds-font-weight-semibold); /* 600 */
+  line-height: var(--ds-line-height-normal); /* 22px */
+  color: var(--ds-text-primary); /* Sonnet text */
+  margin: 0;
+}
+
+/* Setting Item - List Row (Sonnet) */
+.ota-settings-panel-setting {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-3); /* 12px */
+  height: var(--ds-table-header-height); /* 44px - consistent row height */
+  padding: 0 var(--ds-spacing-4); /* 16px */
+  background-color: var(--ds-bg-surface); /* #000000 */
+  border: 1px solid var(--ds-border-color); /* Subtle border */
+  border-radius: var(--ds-radius-lg); /* 12px */
+  transition: background-color 150ms;
+  box-sizing: border-box;
+}
+
+.ota-settings-panel-setting:hover {
+  background-color: var(--ds-bg-hover); /* Subtle hover */
+}
+
+.ota-settings-panel-setting-label {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-3); /* 12px */
+  cursor: pointer;
+  flex: 1;
+  min-width: 0;
+}
+
+.ota-settings-panel-setting-icon {
+  color: var(--ds-accent); /* Sonnet accent */
+  flex-shrink: 0;
+}
+
+.ota-settings-panel-setting-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-1); /* 4px */
+  min-width: 0;
+}
+
+.ota-settings-panel-setting-name {
+  font-size: var(--ds-font-size-base); /* 14px */
+  font-weight: var(--ds-font-weight-medium); /* 500 */
+  color: var(--ds-text-primary); /* Sonnet text */
+  line-height: var(--ds-line-height-normal); /* 20px */
+}
+
+.ota-settings-panel-setting-description {
+  font-size: 13px; /* Slightly smaller */
+  color: var(--ds-text-tertiary); /* Sonnet muted */
+  line-height: var(--ds-line-height-normal); /* 20px */
+}
+
+/* Toggle - Standard Height */
+.ota-settings-panel-toggle {
+  width: 44px;
+  height: 24px;
+  cursor: pointer;
+  accent-color: var(--ds-accent); /* Sonnet accent */
+  transition: opacity 150ms;
+  flex-shrink: 0;
+}
+
+.ota-settings-panel-toggle:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring-box-shadow); /* Sonnet focus ring */
+}
+
+.ota-settings-panel-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.55; /* Sonnet disabled */
+}
+
+/* Chain Selector - Grid (Sonnet) */
+.ota-settings-panel-chain-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--ds-spacing-3); /* 12px - consistent gap */
+}
+
+/* Chain Option - Button Ghost (Sonnet) */
+.ota-settings-panel-chain-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2); /* 8px */
+  height: var(--ds-button-height-sm); /* 34px - small button */
+  padding: 0 var(--ds-spacing-3); /* 12px */
+  background-color: transparent; /* Sonnet ghost */
+  border: 1px solid var(--ds-border-color); /* Sonnet border */
+  border-radius: var(--ds-radius-md); /* 10px */
+  color: var(--ds-text-primary); /* Sonnet text */
+  font-size: 13px; /* Small button font */
+  font-weight: var(--ds-font-weight-medium); /* 500 */
+  cursor: pointer;
+  transition: background-color 150ms, border-color 150ms;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.ota-settings-panel-chain-option:hover {
+  background-color: var(--ds-bg-hover); /* Sonnet hover */
+  border-color: var(--ds-bg-hover);
+}
+
+.ota-settings-panel-chain-option:focus-within {
+  outline: none;
+  box-shadow: var(--ds-focus-ring-box-shadow); /* Sonnet focus ring */
+}
+
+.ota-settings-panel-chain-option.active {
+  background-color: var(--ds-accent); /* Sonnet accent */
+  color: var(--ds-text-primary); /* Sonnet text */
+  border-color: var(--ds-accent);
+  cursor: default;
+}
+
+.ota-settings-panel-chain-option input[type="radio"] {
+  cursor: pointer;
+  accent-color: var(--ds-accent);
+  flex-shrink: 0;
+}
+
+.ota-settings-panel-chain-option input[type="radio"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.55; /* Sonnet disabled */
+}
+
+/* Strategy Selector - Grid (Sonnet) */
+.ota-settings-panel-strategy-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--ds-spacing-3); /* 12px - consistent gap */
+}
+
+/* Strategy Option - Button Ghost (Sonnet) */
+.ota-settings-panel-strategy-option {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2); /* 8px */
+  height: var(--ds-button-height-sm); /* 34px - small button */
+  padding: 0 var(--ds-spacing-3); /* 12px */
+  background-color: transparent; /* Sonnet ghost */
+  border: 1px solid var(--ds-border-color); /* Sonnet border */
+  border-radius: var(--ds-radius-md); /* 10px */
+  color: var(--ds-text-primary); /* Sonnet text */
+  font-size: 13px; /* Small button font */
+  font-weight: var(--ds-font-weight-medium); /* 500 */
+  cursor: pointer;
+  transition: background-color 150ms, border-color 150ms;
+  box-sizing: border-box;
+}
+
+.ota-settings-panel-strategy-option:hover {
+  background-color: var(--ds-bg-hover); /* Sonnet hover */
+  border-color: var(--ds-bg-hover);
+}
+
+.ota-settings-panel-strategy-option:focus-within {
+  outline: none;
+  box-shadow: var(--ds-focus-ring-box-shadow); /* Sonnet focus ring */
+}
+
+.ota-settings-panel-strategy-option.active {
+  background-color: var(--ds-accent); /* Sonnet accent */
+  color: var(--ds-text-primary); /* Sonnet text */
+  border-color: var(--ds-accent);
+  cursor: default;
+}
+
+.ota-settings-panel-strategy-option input[type="radio"] {
+  cursor: pointer;
+  accent-color: var(--ds-accent);
+  flex-shrink: 0;
+}
+
+.ota-settings-panel-strategy-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-1); /* 4px */
+  min-width: 0;
+}
+
+.ota-settings-panel-strategy-name {
+  font-size: 13px; /* Small button font */
+  font-weight: var(--ds-font-weight-medium); /* 500 */
+  color: var(--ds-text-primary); /* Sonnet text */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.ota-settings-panel-strategy-description {
+  font-size: 11px; /* Extra small for description */
+  color: var(--ds-text-tertiary); /* Sonnet muted */
+  line-height: var(--ds-line-height-tight);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+/* Bot Authorization */
+.ota-settings-panel-bot-authorization {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-3);
+}
+
+.ota-settings-panel-step-label {
+  font-size: 11px;
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ota-settings-panel-deposit-step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3);
+  background: rgba(79, 172, 254, 0.06);
+  border: 1px solid rgba(79, 172, 254, 0.2);
+  border-radius: var(--ds-radius-md);
+}
+
+.ota-settings-panel-deposit-desc {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ds-text-secondary);
+  line-height: 1.4;
+}
+
+.ota-settings-panel-deposit-desc .ota-settings-panel-personal-account-icon {
+  display: inline;
+  vertical-align: -4px;
+  margin-right: 6px;
+  color: var(--ds-accent, #4facfe);
+}
+
+.ota-settings-panel-deposit-withdraw-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-spacing-2);
+  margin-top: var(--ds-spacing-1);
+}
+
+.ota-settings-panel-withdraw-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2);
+  height: var(--ds-button-height-md);
+  padding: 0 var(--ds-spacing-4);
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  border-radius: var(--ds-radius-md);
+  color: var(--success, #22c55e);
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-medium);
+  cursor: pointer;
+  transition: background 150ms, border-color 150ms;
+}
+
+.ota-settings-panel-withdraw-btn:hover {
+  background: rgba(34, 197, 94, 0.18);
+  border-color: rgba(34, 197, 94, 0.5);
+}
+
+.ota-settings-panel-deposit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2);
+  width: 100%;
+  max-width: 220px;
+  height: var(--ds-button-height-md);
+  padding: 0 var(--ds-spacing-4);
+  background: rgba(79, 172, 254, 0.15);
+  border: 1px solid rgba(79, 172, 254, 0.35);
+  border-radius: var(--ds-radius-md);
+  color: var(--ds-accent, #4facfe);
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-medium);
+  cursor: pointer;
+  transition: background 150ms, border-color 150ms;
+}
+
+.ota-settings-panel-deposit-btn:hover {
+  background: rgba(79, 172, 254, 0.22);
+  border-color: rgba(79, 172, 254, 0.5);
+}
+
+.ota-settings-panel-refresh-chain-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2);
+  padding: 0.4rem 0.75rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--ds-radius-md);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.8125rem;
+  font-weight: var(--ds-font-weight-medium);
+  cursor: pointer;
+  transition: background 150ms, border-color 150ms;
+}
+.ota-settings-panel-refresh-chain-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+.ota-settings-panel-refresh-chain-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Rezultat interogare contract – date reale din getBotAuthorization */
+.ota-settings-panel-contract-result {
+  padding: var(--ds-spacing-3);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  font-size: var(--ds-font-size-sm);
+}
+.ota-settings-panel-contract-result-title {
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  margin-bottom: 0.35rem;
+}
+.ota-settings-panel-contract-result-desc {
+  color: var(--ds-text-secondary);
+  margin-bottom: 0.5rem;
+}
+.ota-settings-panel-contract-result-desc code {
+  font-size: 0.85em;
+  word-break: break-all;
+}
+.ota-settings-panel-contract-result-dl {
+  margin: 0;
+  display: grid;
+  gap: 0.25rem 1rem;
+  grid-template-columns: auto 1fr;
+}
+.ota-settings-panel-contract-result-dl dt {
+  margin: 0;
+  color: var(--ds-text-secondary);
+  font-weight: 500;
+}
+.ota-settings-panel-contract-result-dl dd {
+  margin: 0;
+  color: var(--ds-text-primary);
+  word-break: break-word;
+}
+.ota-settings-panel-contract-wei-note {
+  font-size: 0.78em;
+  opacity: 0.68;
+  font-weight: 400;
+}
+.ota-settings-panel-contract-hint {
+  display: block;
+  font-size: 0.85em;
+  opacity: 0.88;
+  color: var(--ds-text-secondary);
+  font-weight: 400;
+}
+.ota-settings-panel-contract-summary {
+  margin: 0.5rem 0 0.75rem;
+  padding: 0.65rem 0.85rem;
+  background: rgba(59, 130, 246, 0.08);
+  border-radius: var(--ds-radius-md);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+.ota-settings-panel-contract-summary-main {
+  margin: 0 0 0.4rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--ds-text-primary);
+}
+.ota-settings-panel-contract-summary-sub {
+  font-weight: 400;
+  opacity: 0.88;
+  font-size: 0.88em;
+}
+.ota-settings-panel-contract-summary-line {
+  margin: 0.25rem 0 0;
+  font-size: 0.88rem;
+  color: var(--ds-text-secondary);
+}
+.ota-contract-ok {
+  color: #4ade80;
+}
+.ota-contract-bad {
+  color: #f87171;
+}
+.ota-contract-hint-block {
+  margin-top: 0.5rem !important;
+}
+.ota-settings-panel-contract-technical {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+}
+.ota-settings-panel-contract-technical summary {
+  cursor: pointer;
+  color: var(--ds-text-secondary);
+  user-select: none;
+  padding: 0.35rem 0;
+}
+.ota-settings-panel-contract-technical summary:hover {
+  color: var(--ds-text-primary);
+}
+.ota-settings-panel-contract-technical[open] summary {
+  margin-bottom: 0.35rem;
+}
+.ota-settings-panel-contract-result-empty {
+  margin: 0;
+  color: var(--ds-text-secondary);
+  font-style: italic;
+}
+.ota-settings-panel-contract-result-extra {
+  margin: 0;
+  color: var(--ds-text-secondary);
+}
+
+.ota-settings-panel-step-divider {
+  height: 1px;
+  background: var(--ds-border-color);
+  margin: var(--ds-spacing-2) 0;
+}
+
+.ota-settings-panel-bot-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-3);
+  padding: var(--ds-spacing-4);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-lg);
+  background: var(--ds-bg-surface);
+  box-sizing: border-box;
+}
+
+.ota-settings-panel-bot-intro {
+  margin-bottom: var(--ds-spacing-4);
+}
+
+.ota-settings-panel-bot-required {
+  color: var(--ds-text-secondary, rgba(255,255,255,0.85));
+  margin-bottom: var(--ds-spacing-2);
+}
+
+.ota-settings-panel-bot-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-2);
+  min-width: 0;
+}
+
+.ota-settings-panel-bot-label {
+  font-size: 13px;
+  font-weight: var(--ds-font-weight-medium);
+  color: var(--ds-text-primary);
+  line-height: 1.3;
+}
+
+.ota-settings-panel-bot-readonly {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  background: var(--ds-bg-subtle, #000000);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  font-size: var(--ds-font-size-base);
+  line-height: 1.35;
+}
+
+.ota-settings-panel-bot-address-icon {
+  flex-shrink: 0;
+  color: var(--ds-accent, #4facfe);
+  opacity: 0.9;
+}
+
+.ota-settings-panel-bot-name {
+  font-weight: var(--ds-font-weight-medium);
+  color: var(--ds-text-primary);
+}
+
+.ota-settings-panel-bot-address {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: var(--ds-text-secondary);
+  font-size: 13px;
+}
+
+.ota-settings-panel-bot-missing {
+  color: var(--ds-text-tertiary);
+  font-style: italic;
+}
+
+.ota-settings-panel-bot-input-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  min-width: 0;
+}
+
+.ota-settings-panel-bot-input-row .ota-settings-panel-bot-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.ota-settings-panel-bot-unit-toggle {
+  display: flex;
+  gap: 0;
+  flex-shrink: 0;
+}
+
+.ota-settings-panel-bot-unit-toggle button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 var(--ds-spacing-2);
+  height: var(--ds-input-height-md);
+  font-size: 12px;
+  font-weight: var(--ds-font-weight-medium);
+  border: 1px solid var(--ds-border-color);
+  background: var(--ds-bg-surface);
+  color: var(--ds-text-tertiary);
+  cursor: pointer;
+  transition: background-color 150ms, color 150ms, border-color 150ms;
+  border-radius: 0;
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+.ota-settings-panel-bot-unit-logo {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+}
+
+.ota-settings-panel-bot-unit-toggle button:first-child {
+  border-radius: var(--ds-radius-md) 0 0 var(--ds-radius-md);
+  border-right: none;
+}
+
+.ota-settings-panel-bot-unit-toggle button:last-child {
+  border-radius: 0 var(--ds-radius-md) var(--ds-radius-md) 0;
+}
+
+.ota-settings-panel-bot-unit-toggle button:hover {
+  background: var(--ds-bg-hover);
+  color: var(--ds-text-primary);
+}
+
+.ota-settings-panel-bot-unit-toggle button.active {
+  background: var(--ds-accent);
+  color: var(--ds-text-primary);
+  border-color: var(--ds-accent);
+}
+
+.ota-settings-panel-bot-input {
+  width: 100%;
+  height: var(--ds-input-height-md); /* 40px */
+  padding: 0 var(--ds-spacing-3); /* 12px */
+  background-color: var(--ds-bg-surface);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-base);
+  line-height: var(--ds-line-height-normal);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  box-sizing: border-box;
+  transition: border-color 150ms;
+}
+
+.ota-settings-panel-bot-input::placeholder {
+  color: var(--ds-text-tertiary);
+}
+
+.ota-settings-panel-bot-input:focus {
+  outline: none;
+  border-color: var(--ds-accent);
+  box-shadow: var(--ds-focus-ring-box-shadow);
+}
+
+.ota-settings-panel-bot-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ota-settings-panel-duration-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-spacing-2);
+  margin-top: 2px;
+}
+
+.ota-settings-panel-duration-btn {
+  padding: 8px 14px;
+  border-radius: var(--ds-radius-md);
+  border: 1px solid var(--ds-border-color);
+  background: var(--ds-bg-surface);
+  color: var(--ds-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 150ms, border-color 150ms, color 150ms;
+}
+
+.ota-settings-panel-duration-btn:hover {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: var(--ds-text-primary);
+}
+
+.ota-settings-panel-duration-btn.active {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: var(--ds-accent);
+  color: var(--ds-accent);
+}
+
+.ota-settings-panel-duration-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+/* Bloc: ce contract și ce funcție apelează butonul Authorize */
+.ota-settings-panel-authorize-call-info {
+  margin: 0.75rem 0 1rem 0;
+  padding: 0.75rem 1rem;
+  background: rgba(248, 250, 252, 0.06);
+  border: 1px solid rgba(248, 250, 252, 0.12);
+  border-radius: var(--ds-radius-md);
+  font-size: 0.8125rem;
+  color: var(--ds-text-secondary);
+}
+.ota-settings-panel-authorize-call-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.5rem;
+  margin-bottom: 0.35rem;
+}
+.ota-settings-panel-authorize-call-row:last-of-type {
+  margin-bottom: 0;
+}
+.ota-settings-panel-authorize-call-label {
+  font-weight: 600;
+  color: var(--ds-text-tertiary);
+  min-width: 6rem;
+}
+.ota-settings-panel-authorize-call-value {
+  color: var(--ds-text-primary);
+}
+.ota-settings-panel-authorize-call-fn {
+  font-family: ui-monospace, monospace;
+  font-size: 0.75rem;
+  padding: 0.15rem 0.4rem;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  color: var(--ds-text-primary);
+}
+.ota-settings-panel-authorize-call-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--ds-accent);
+  text-decoration: none;
+}
+.ota-settings-panel-authorize-call-link:hover {
+  text-decoration: underline;
+}
+.ota-settings-panel-authorize-call-desc {
+  margin: 0.5rem 0 0 0;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(248, 250, 252, 0.08);
+  font-size: 0.75rem;
+  color: var(--ds-text-tertiary);
+  line-height: 1.4;
+}
+
+.ota-settings-panel-authorize-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2);
+  height: var(--ds-button-height-md);
+  padding: 0 var(--ds-spacing-4);
+  border-radius: var(--ds-radius-md);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-medium);
+  cursor: pointer;
+  transition: background-color 150ms, border-color 150ms, transform 150ms;
+  box-sizing: border-box;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.ota-settings-panel-authorize-btn:hover:not(:disabled) {
+  background: rgba(34, 197, 94, 0.18);
+  border-color: rgba(34, 197, 94, 0.5);
+}
+
+.ota-settings-panel-authorize-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.ota-settings-panel-authorize-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.ota-settings-panel-authorize-btn .spinning {
+  animation: otaSettingsSpin 1s linear infinite;
+}
+
+@keyframes otaSettingsSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.ota-settings-panel-error {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3);
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.08);
+  color: var(--ds-color-error);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* Alert vizibil: autorizare expirată – userul trebuie să știe că trebuie să reînnoiască */
+.ota-settings-panel-auth-expired-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--ds-text-primary);
+  font-size: 14px;
+  line-height: 1.4;
+}
+.ota-settings-panel-auth-expired-alert-icon {
+  flex-shrink: 0;
+  color: #ef4444;
+  margin-top: 2px;
+}
+.ota-settings-panel-auth-expired-alert-body {
+  flex: 1;
+  min-width: 0;
+}
+.ota-settings-panel-auth-expired-alert-title {
+  margin: 0 0 6px 0;
+  font-weight: 700;
+  font-size: 15px;
+  color: #fca5a5;
+}
+.ota-settings-panel-auth-expired-alert-desc {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ds-text-secondary);
+}
+
+/* Reauth flow state messages */
+.ota-settings-panel-reauth-msg {
+  margin: var(--ds-spacing-2) 0 0;
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  border-radius: var(--ds-radius-md);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.ota-settings-panel-reauth-preference {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: var(--ds-text-primary);
+}
+.ota-settings-panel-reauth-waiting,
+.ota-settings-panel-reauth-submitted,
+.ota-settings-panel-reauth-refreshing {
+  background: rgba(234, 179, 8, 0.1);
+  border: 1px solid rgba(234, 179, 8, 0.3);
+  color: var(--ds-text-secondary);
+}
+.ota-settings-panel-reauth-active {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: var(--ds-text-primary);
+}
+.ota-settings-panel-reauth-failed {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: var(--ds-color-error);
+}
+
+.ota-settings-panel-bot-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ds-spacing-2);
+}
+
+.ota-settings-panel-bot-list-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  opacity: 0.9;
+}
+
+.ota-settings-panel-bot-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ds-spacing-3);
+  padding: var(--ds-spacing-3);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-lg);
+  background: var(--ds-bg-surface);
+  box-sizing: border-box;
+}
+
+.ota-settings-panel-bot-item .check-passed {
+  color: var(--success);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.ota-settings-panel-bot-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-1);
+  min-width: 0;
+}
+
+.ota-settings-panel-bot-item-address-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ota-settings-panel-bot-item-address-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ota-settings-panel-bot-item-address {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 13px;
+  color: var(--ds-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.ota-settings-panel-bot-item-label {
+  font-size: 11px;
+  color: var(--ds-text-tertiary);
+  font-style: italic;
+}
+
+.ota-settings-panel-bot-item-bscscan {
+  display: inline-flex;
+  align-items: center;
+  color: var(--ds-text-tertiary);
+  transition: color 0.15s ease;
+}
+
+.ota-settings-panel-bot-item-bscscan:hover {
+  color: var(--ds-accent, #4facfe);
+}
+
+.ota-settings-panel-bot-item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+}
+
+.ota-settings-panel-bot-item-amount {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ds-accent, #3b82f6);
+  margin: 0.25rem 0 0.15rem 0;
+  letter-spacing: 0.02em;
+}
+
+.ota-settings-panel-bot-item-used,
+.ota-settings-panel-bot-item-remaining,
+.ota-settings-panel-bot-item-since {
+  font-size: 11px;
+  color: var(--ds-text-tertiary);
+  opacity: 0.9;
+}
+
+.ota-settings-panel-bot-item-status {
+  font-size: 12px;
+  font-weight: var(--ds-font-weight-medium);
+  color: var(--ds-text-tertiary);
+}
+
+.ota-settings-panel-bot-item-status.active {
+  color: var(--success);
+}
+
+.ota-settings-panel-bot-item-status.inactive {
+  color: var(--warn);
+}
+
+/* Bot status (Active / Expired) + duration + Renew CTA */
+.ota-settings-panel-bot-status-banner {
+  padding: var(--ds-spacing-3);
+  background: rgba(30, 58, 138, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  border-radius: var(--ds-radius-md);
+  margin-bottom: var(--ds-spacing-3);
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+}
+.ota-settings-panel-bot-status-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  margin-bottom: 0.35rem;
+}
+.ota-settings-panel-bot-status-label {
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}
+.ota-settings-panel-bot-status-badge {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+.ota-settings-panel-bot-status-badge.active {
+  background: rgba(34, 197, 94, 0.25);
+  color: #22c55e;
+}
+.ota-settings-panel-bot-status-badge.expired {
+  background: rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+}
+.ota-settings-panel-bot-duration-row {
+  margin-bottom: 0.5rem;
+  opacity: 0.95;
+}
+.ota-settings-panel-bot-expired-hint {
+  margin: 0 0 0.75rem 0;
+  color: var(--ds-text-tertiary);
+  font-size: 0.875rem;
+}
+.ota-settings-panel-renew-bot-btn {
+  padding: 8px 14px;
+  background: var(--ds-accent);
+  color: #fff;
+  border: 1px solid var(--ds-accent);
+  border-radius: var(--ds-radius-md);
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 150ms, transform 100ms;
+}
+.ota-settings-panel-renew-bot-btn:hover {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+.ota-settings-panel-renew-bot-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+/* Resetează și reautorizează bot-ul – când autorizarea bot-ului e expirată sau inactivă */
+.ota-settings-panel-reset-reauth-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  margin-left: 0;
+  padding: 8px 14px;
+  background: transparent;
+  color: var(--ds-text-secondary);
+  border: 1px solid rgba(248, 250, 252, 0.25);
+  border-radius: var(--ds-radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 150ms, border-color 150ms;
+}
+.ota-settings-panel-reset-reauth-btn:hover {
+  background: rgba(248, 250, 252, 0.08);
+  border-color: rgba(248, 250, 252, 0.4);
+  color: var(--ds-text-primary);
+}
+.ota-settings-panel-reset-reauth-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(248, 250, 252, 0.3);
+}
+
+/* Existing auth banner – avertizare înainte de re-authorize */
+.ota-settings-panel-existing-auth-banner {
+  padding: var(--ds-spacing-3);
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  border-radius: var(--ds-radius-md);
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  line-height: 1.45;
+  margin-bottom: var(--ds-spacing-3);
+}
+
+.ota-settings-panel-existing-auth-banner strong {
+  color: var(--ds-accent);
+}
+
+/* Suma autorizată – mare și clară */
+.ota-settings-panel-existing-auth-intro {
+  margin: 0 0 0.5rem 0;
+}
+
+.ota-settings-panel-existing-auth-amount {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--ds-accent, #3b82f6);
+  margin: 0.35rem 0 0.5rem 0;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+}
+
+.ota-settings-panel-existing-auth-hint {
+  margin: 0;
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+}
+
+/* Warning Banner - Sonnet Banner */
+.ota-settings-panel-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ds-spacing-3); /* 12px */
+  padding: var(--ds-spacing-4); /* 16px */
+  background: rgba(245, 158, 11, 0.1); /* Warn tint (discreet) */
+  border: 1px solid rgba(245, 158, 11, 0.3); /* Warn border */
+  border-radius: var(--ds-radius-lg); /* 12px */
+  font-size: var(--ds-font-size-base); /* 14px */
+  color: var(--warn); /* Sonnet warn */
+  line-height: var(--ds-line-height-normal); /* 20px */
+}
+
+/* Focus styles for accessibility */
+.ota-settings-panel-setting-label:focus-within {
+  outline: none;
+  box-shadow: var(--ds-focus-ring-box-shadow); /* Sonnet focus ring */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ota-settings-panel {
+    padding: var(--ds-spacing-4); /* 16px mobile */
+  }
+
+  .ota-settings-panel-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--ds-spacing-3); /* 12px mobile */
+    margin-bottom: var(--ds-spacing-3);
+    padding-bottom: var(--ds-spacing-3);
+  }
+
+  .ota-settings-panel-save-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .ota-settings-panel-chain-selector,
+  .ota-settings-panel-strategy-selector {
+    grid-template-columns: 1fr;
+  }
+
+  .ota-settings-panel-content {
+    gap: var(--ds-spacing-4); /* 16px - still consistent */
+  }
+
+  .ota-settings-panel-bot-form {
+    padding: var(--ds-spacing-3);
+  }
+
+  .ota-settings-panel-bot-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .ota-settings-panel {
+    padding: var(--ds-spacing-3); /* 12px small mobile */
+    gap: var(--ds-spacing-3); /* 12px */
+  }
+
+  .ota-settings-panel-setting {
+    padding: 0 var(--ds-spacing-3); /* 12px mobile */
+  }
+}

@@ -1,46 +1,60 @@
 /* 💎 CRYSTAL CLEAR TEXT - Zero Blur, Zero Shadows, Zero Glow */
 
 /* ========== ELIMINARE COMPLETĂ TEXT-SHADOW ========== */
-* {
+body:not(.dex-edu-active):not([class*="dex-theme-"]) * {
   text-shadow: none !important;
 }
 
-h1, h2, h3, h4, h5, h6,
-p, span, div, a, button,
-.rewards-title,
-.bitsPulseLabel,
-.amount-value,
-.stat-value,
-.reward-value,
-.total-amount-display,
-.success-message,
-.error-message,
-.payment-title,
-.presale-grid h3,
-.ai-loading-text,
-.loading-text {
+body:not(.dex-edu-active):not([class*="dex-theme-"]) h1,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) h2,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) h3,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) h4,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) h5,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) h6,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) p,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) span,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) div,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) a,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) button,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) .rewards-title,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) .bitsPulseLabel,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) .amount-value,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) .stat-value,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) .reward-value,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) .total-amount-display,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) .success-message,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) .error-message,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) .payment-title,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) .presale-grid h3,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) .ai-loading-text,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) .loading-text {
   text-shadow: none !important;
   filter: none !important;
 }
 
 /* ========== ELIMINARE FILTER BLUR/DROP-SHADOW ========== */
-h1, h2, h3, h4, h5, h6 {
+body:not(.dex-edu-active):not([class*="dex-theme-"]) h1,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) h2,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) h3,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) h4,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) h5,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) h6 {
   filter: none !important;
 }
 
 /* ========== TEXT ULTRA-CRISP ========== */
-body,
-* {
+body:not(.dex-edu-active):not([class*="dex-theme-"]),
+body:not(.dex-edu-active):not([class*="dex-theme-"]) * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 
 /* ========== OVERRIDE ROG FONT GLOW ========== */
-.rog-font,
-.rewards-title,
-.title-icon,
-.crystal-glow {
+body:not(.dex-edu-active):not([class*="dex-theme-"]) .rog-font,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) .rewards-title,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) .title-icon,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) .crystal-glow {
   text-shadow: none !important;
   animation: none !important;
 }

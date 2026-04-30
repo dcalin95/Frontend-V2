@@ -1,0 +1,396 @@
+/**
+ * DEX Mobile – CSS doar pentru ecrane mici
+ * Nu modifică afișarea pe desktop. Toate regulile sunt în @media (max-width: 768px).
+ */
+
+@media (max-width: 768px) {
+  /* Elimină scroll orizontal pe tot viewport-ul DEX */
+  .dex-page-wrapper,
+  .ai-trading-layout,
+  .ai-trading-content-wrapper,
+  .ai-trading-main-content {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+  }
+
+  /* Zona principală: scroll vertical obligatoriu pe mobil (Huawei/Android fix) */
+  .ai-trading-main-content {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 8px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+  }
+
+  /* OTA Chat: același bug ca desktop — fără scroll/padding forțat pe main */
+  .ai-trading-main-content.ai-trading-main-content--ota-chat,
+  .ai-trading-main-content:has(.ota-chat-page) {
+    padding: 0 !important;
+    overflow-y: hidden !important;
+    overflow-x: hidden !important;
+    touch-action: auto;
+  }
+
+  /* Sidebar: overlay pe mobil, ascuns în stânga; se deschide cu clic pe hamburger */
+  .ai-trading-sidebar {
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    width: 260px !important;
+    max-width: 85vw !important;
+    min-width: 0 !important;
+    z-index: 1001 !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.25s ease !important;
+    box-shadow: none !important;
+  }
+
+  /* Când meniul e deschis, sidebar-ul trebuie deasupra header-ului (--z-sticky=1020) ca OTA AI să nu fie acoperit */
+  .ai-trading-sidebar.mobile-open {
+    transform: translateX(0) !important;
+    box-shadow: 8px 0 24px rgba(0, 0, 0, 0.4) !important;
+    width: 260px !important;
+    min-width: 260px !important;
+    z-index: 1025 !important;
+  }
+
+  /* Când meniul e deschis pe mobil, afișează mereu toate etichetele (inclusiv OTA AI) */
+  .ai-trading-sidebar.mobile-open .ai-trading-nav-label {
+    display: inline-block !important;
+    width: auto !important;
+    max-width: 180px !important;
+    opacity: 1 !important;
+  }
+
+  .ai-trading-sidebar.mobile-open .ai-trading-nav-item {
+    justify-content: flex-start !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Backdrop când meniul e deschis – doar pe mobil */
+  .dex-sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+  }
+
+  .ai-trading-layout[data-mobile-menu-open="true"] .dex-sidebar-backdrop {
+    display: block;
+  }
+
+  /* Buton hamburger în header – vizibil doar pe mobil */
+  .dex-header-mobile-menu {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    margin-right: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: var(--ds-text-primary, #fff);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .dex-header-mobile-menu:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .dex-header-mobile-menu svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Header mai compact pe mobil */
+  .ai-trading-header {
+    padding: 8px 12px !important;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .ai-trading-header-left {
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .ai-trading-header-center {
+    order: 3;
+    width: 100%;
+    padding: 0;
+    justify-content: flex-start;
+    min-width: 0;
+  }
+
+  .ai-trading-header-right {
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .ai-trading-logo-text {
+    font-size: 1rem !important;
+  }
+
+  /* Chain toolbar (Trade/Swap/OTA) – wrap sau scroll orizontal discret */
+  .ai-trading-header-center {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    max-width: 100%;
+  }
+
+  .ai-trading-header-center nav {
+    flex-wrap: wrap;
+  }
+
+  .ai-trading-header-center a {
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+    white-space: nowrap;
+  }
+
+  /* Wallet / Account – mai compact */
+  .ai-trading-wallet-address,
+  .ai-trading-network-info,
+  .header-account-name {
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ai-trading-wallet-balance {
+    min-width: 60px;
+  }
+
+  /* Header right: permite wrap ca pe row 2 să ajungă OTA tools + restul */
+  .ai-trading-header-right {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  /* Dashboard: o coloană pe mobil */
+  .dashboard-page-content {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  .dashboard-page-shell,
+  .dashboard-canvas,
+  .dashboard-page {
+    padding: 12px !important;
+    padding-inline: 12px !important;
+  }
+
+  .dashboard-quick-access-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Trade page: o coloană */
+  .trade-page-content {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto !important;
+  }
+
+  .trade-page-content-columns {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Carduri și panouri – lățime 100% */
+  .ui-card,
+  .card,
+  [class*="card"] {
+    max-width: 100% !important;
+  }
+
+  /* OTA / Swap panels – stack vertical */
+  .ota-page-content,
+  .swap-page-content {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Desktop: ascunde butonul hamburger și backdrop-ul */
+@media (min-width: 769px) {
+  .dex-header-mobile-menu {
+    display: none !important;
+  }
+
+  .dex-sidebar-backdrop {
+    display: none !important;
+  }
+}
+
+/* Ecrane foarte mici (ex. Samsung 360px) – header pe 2 rânduri, butoane compacte */
+@media (max-width: 480px) {
+  .ai-trading-sidebar.mobile-open {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .ai-trading-header-center {
+    display: none;
+  }
+
+  .dashboard-page-title {
+    font-size: 1.125rem !important;
+  }
+
+  /* ---------- Header: rând 1 = meniu + logo | cont + wallet compact; rând 2 = OTA + Social + Theme + EVM + Settings ---------- */
+  .ai-trading-header {
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .ai-trading-header-left {
+    order: 1;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .ai-trading-header-right {
+    order: 2;
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+
+  /* Rând 1: doar cont + wallet (după logo) */
+  .ai-trading-header-right .header-account-wrap,
+  .ai-trading-header-right .ai-trading-wallet-connected {
+    order: 1;
+  }
+
+  /* Rând 2: OTA tools, Social, Theme, Chain, Settings */
+  .ai-trading-header-right .dex-header-ota-tools-slot,
+  .ai-trading-header-right .header-social-links,
+  .ai-trading-header-right .ai-trading-theme-switcher,
+  .ai-trading-header-right .chain-toggle-header,
+  .ai-trading-header-right .ai-trading-settings-btn {
+    order: 2;
+  }
+
+  /* Separator vizual între rând 1 (cont+wallet) și rând 2 (OTA + social + theme + chain + settings) */
+  .ai-trading-header-right .dex-header-ota-tools-slot {
+    margin-top: 4px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .ai-trading-header-right .header-social-links,
+  .ai-trading-header-right .ai-trading-theme-switcher,
+  .ai-trading-header-right .chain-toggle-header,
+  .ai-trading-header-right .ai-trading-settings-btn {
+    margin-top: 4px;
+    padding-top: 6px;
+  }
+
+  /* OTA tools pe rând 2: mai compact, text scurt sau doar icon */
+  .dex-header-ota-tools-slot .ota-header-tools {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .dex-header-ota-tools-slot .ota-trading-mode-header-trigger-label,
+  .dex-header-ota-tools-slot .ota-header-advisory-trigger span {
+    display: none;
+  }
+
+  .dex-header-ota-tools-slot .ota-trading-mode-header-trigger,
+  .dex-header-ota-tools-slot .ota-header-advisory-trigger {
+    padding: 6px 8px;
+    min-width: 36px;
+    justify-content: center;
+  }
+
+  .dex-header-ota-tools-slot .ota-header-market-slot {
+    gap: 6px;
+  }
+
+  .dex-header-ota-tools-slot .ota-header-market-slot button,
+  .dex-header-ota-tools-slot .ota-header-market-slot a {
+    padding: 6px 8px !important;
+    font-size: 11px !important;
+  }
+
+  /* Theme: doar icon, fără "Sonnet" */
+  .ai-trading-header-right .ai-trading-theme-trigger-label {
+    display: none;
+  }
+
+  .ai-trading-header-right .ai-trading-theme-trigger {
+    padding: 6px 8px;
+    min-width: 36px;
+  }
+
+  /* Chain: buton mai mic */
+  .ai-trading-header-right .chain-toggle-header-button {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  /* Cont: doar avatar/inicială pe mobil, fără nume/adresă */
+  .ai-trading-header-right .header-account-link .header-account-name,
+  .ai-trading-header-right .header-account-link .header-account-address {
+    display: none;
+  }
+
+  .ai-trading-header-right .header-account-link {
+    padding: 6px 8px;
+  }
+
+  /* Wallet: ascunde rețea și adresă lungă, păstrează icon + balance */
+  .ai-trading-header-right .ai-trading-network-info {
+    display: none;
+  }
+
+  .ai-trading-header-right .ai-trading-wallet-address {
+    display: none;
+  }
+
+  .ai-trading-header-right .ai-trading-wallet-connected {
+    padding: 6px 8px;
+    gap: 6px;
+  }
+
+  .ai-trading-header-right .ai-trading-wallet-balance {
+    min-width: 0;
+    font-size: 11px;
+  }
+
+  /* Social: iconițe mai mici */
+  .ai-trading-header-right .header-social-link {
+    width: 24px;
+    height: 24px;
+  }
+
+  .ai-trading-header-right .header-social-link svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+/* 360px și sub – și mai compact */
+@media (max-width: 400px) {
+  .ai-trading-logo-text {
+    font-size: 0.9rem !important;
+  }
+
+  .dex-header-ota-tools-slot .ota-header-market-slot {
+    flex-wrap: wrap;
+  }
+}

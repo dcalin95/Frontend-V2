@@ -1,0 +1,330 @@
+/**
+ * 🔔 Price Alerts Styles
+ * 
+ * Styles pentru PriceAlerts component
+ */
+
+.price-alerts-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-md);
+}
+
+.price-alerts-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.price-alerts-title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-sm);
+}
+
+.price-alerts-icon {
+  color: var(--ds-primary);
+}
+
+.price-alerts-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ds-spacing-xl);
+  text-align: center;
+  gap: var(--ds-spacing-md);
+}
+
+.price-alerts-empty-icon {
+  color: var(--ds-text-tertiary);
+  opacity: 0.5;
+}
+
+.price-alerts-empty p {
+  margin: 0;
+  color: var(--ds-text-primary);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.price-alerts-empty-subtitle {
+  color: var(--ds-text-secondary) !important;
+  font-size: var(--ds-font-size-base) !important;
+  font-weight: 400 !important;
+}
+
+.price-alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-sm);
+}
+
+.price-alert-item {
+  padding: var(--ds-spacing-md);
+  background: var(--ds-bg-tertiary);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-border-radius);
+  transition: all 0.2s ease;
+}
+
+.price-alert-item:hover {
+  background: var(--ds-bg-hover);
+  border-color: var(--ds-primary);
+}
+
+.price-alert-item.price-alert-inactive {
+  opacity: 0.6;
+}
+
+.price-alert-item.price-alert-triggered {
+  border-color: var(--ds-text-buy);
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.price-alert-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-spacing-md);
+  margin-bottom: var(--ds-spacing-sm);
+}
+
+.price-alert-token {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-sm);
+  flex: 1;
+}
+
+.price-alert-token-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-xs);
+}
+
+.price-alert-token-symbol {
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}
+
+.price-alert-token-price {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+}
+
+.price-alert-condition {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-xs);
+  font-size: var(--ds-font-size-base);
+  font-weight: 500;
+  color: var(--ds-text-primary);
+}
+
+.price-alert-condition-icon {
+  color: var(--ds-primary);
+}
+
+.price-alert-condition-text {
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+}
+
+.price-alert-status {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-xs);
+}
+
+.price-alert-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-xs);
+  margin-top: var(--ds-spacing-sm);
+  padding-top: var(--ds-spacing-sm);
+  border-top: 1px solid var(--ds-border);
+}
+
+.price-alert-action-btn {
+  padding: var(--ds-spacing-xs) var(--ds-spacing-sm);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-bg-secondary);
+  color: var(--ds-text-secondary);
+  border-radius: var(--ds-border-radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.price-alert-action-btn:hover {
+  background: var(--ds-bg-hover);
+  border-color: var(--ds-primary);
+  color: var(--ds-text-primary);
+}
+
+.price-alert-action-delete:hover {
+  border-color: var(--ds-text-sell);
+  color: var(--ds-text-sell);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.price-alert-meta {
+  margin-top: var(--ds-spacing-xs);
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-tertiary);
+}
+
+/* Modal */
+.price-alerts-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Must sit above global modal when PriceAlerts is rendered inside a Modal */
+  z-index: calc(var(--ds-z-modal, 1050) + 1);
+  padding: var(--ds-spacing-md);
+}
+
+.price-alerts-modal {
+  background: var(--ds-bg-secondary);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-border-radius-lg);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  z-index: calc(var(--ds-z-modal, 1050) + 2);
+}
+
+.price-alerts-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ds-spacing-md) var(--ds-spacing-lg);
+  border-bottom: 1px solid var(--ds-border);
+}
+
+.price-alerts-modal-header h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}
+
+.price-alerts-modal-close {
+  padding: var(--ds-spacing-xs);
+  border: none;
+  background: transparent;
+  color: var(--ds-text-secondary);
+  cursor: pointer;
+  border-radius: var(--ds-border-radius-sm);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.price-alerts-modal-close:hover {
+  background: var(--ds-bg-hover);
+  color: var(--ds-text-primary);
+}
+
+.price-alerts-modal-body {
+  padding: var(--ds-spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-md);
+  overflow-y: auto;
+}
+
+.price-alerts-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-xs);
+}
+
+.price-alerts-form-group label {
+  font-size: var(--ds-font-size-base);
+  font-weight: 500;
+  color: var(--ds-text-secondary);
+}
+
+.price-alerts-form-select,
+.price-alerts-form-input {
+  padding: var(--ds-spacing-sm) var(--ds-spacing-md);
+  background: var(--ds-bg-tertiary);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-border-radius);
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-base);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.price-alerts-form-select:hover,
+.price-alerts-form-input:hover {
+  border-color: var(--ds-primary);
+}
+
+.price-alerts-form-select:focus,
+.price-alerts-form-input:focus {
+  border-color: var(--ds-primary);
+  box-shadow: 0 0 0 2px rgba(79, 172, 254, 0.1);
+}
+
+.price-alerts-form-hint {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-tertiary);
+  margin-top: var(--ds-spacing-xs);
+}
+
+.price-alerts-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--ds-spacing-sm);
+  padding: var(--ds-spacing-md) var(--ds-spacing-lg);
+  border-top: 1px solid var(--ds-border);
+}
+
+.price-alerts-warning {
+  padding: var(--ds-spacing-sm);
+  text-align: center;
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-tertiary);
+  background: var(--ds-bg-tertiary);
+  border-radius: var(--ds-border-radius-sm);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .price-alert-main {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--ds-spacing-sm);
+  }
+
+  .price-alert-condition,
+  .price-alert-status {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .price-alerts-modal {
+    max-width: 100%;
+    margin: var(--ds-spacing-md);
+  }
+}

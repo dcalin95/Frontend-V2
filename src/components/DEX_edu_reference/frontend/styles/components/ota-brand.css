@@ -1,0 +1,14 @@
+/* Logo + text într-un singur bloc – legat în DOM */
+.ota-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+}
+.ota-brand .ota-logo {
+  flex-shrink: 0;
+  align-self: center;
+}
+.ota-brand-text {
+  line-height: 1;
+  margin: 0;
+}

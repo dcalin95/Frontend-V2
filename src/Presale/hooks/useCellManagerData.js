@@ -27,6 +27,8 @@ export default function useCellManagerData() {
     loading: true,
     error: null,
     history: [], // Add history array
+    /** Total USD ridicat (Node.sol getTotalRaised), 18 decimale → float — folosit când API presale e offline */
+    nodeTotalRaisedUsd: null,
     // New fields for transaction data
     totalTransactions: 0,
     totalUsdValue: 0,
@@ -262,16 +264,30 @@ export default function useCellManagerData() {
         
         // 🎯 GET TRANSACTION DATA FROM NODE.SOL CONTRACT
         console.log("🔍 [DEBUG] Getting transaction data from Node.sol contract...");
-        const nodeContractAddress = CONTRACTS.NODE?.address;
-        console.log("📋 [DEBUG] Node contract address:", nodeContractAddress);
+        const nodeContractAddressRaw = CONTRACTS.NODE?.address;
+        console.log("📋 [DEBUG] Node contract address (raw):", nodeContractAddressRaw);
         
-        if (!nodeContractAddress) {
+        if (!nodeContractAddressRaw) {
           console.warn("⚠️ [DEBUG] Node contract address not found in CONTRACTS");
         } else {
+          // ✅ FIX: Convert address to checksum format (ethers.js requires checksum addresses)
+          const nodeContractAddress = ethers.utils.getAddress(nodeContractAddressRaw);
+          console.log("📋 [DEBUG] Node contract address (checksum):", nodeContractAddress);
           const nodeContract = new ethers.Contract(nodeContractAddress, NODE_ABI, provider);
+
+          try {
+            const trRaw = await nodeContract.getTotalRaised();
+            const trUsd = parseFloat(ethers.utils.formatEther(trRaw));
+            if (Number.isFinite(trUsd) && trUsd >= 0) {
+              totalUsdValue = trUsd;
+              console.log("📊 [NODE] getTotalRaised (global USD):", trUsd);
+            }
+          } catch (trErr) {
+            console.warn("⚠️ [NODE] getTotalRaised failed:", trErr.message);
+          }
           
           try {
-            // 🎯 GET SPECIFIC USER PURCHASES (your wallet from BSCScan)
+            // 🎯 GET SPECIFIC USER PURCHASES (debug / BSCScan comparison — NU înlocuiește sold global)
             console.log("🔍 [NODE] Checking purchases for wallet:", TEST_WALLET);
             const userPurchases = await nodeContract.getUserPurchases(TEST_WALLET);
             const userTransactionCount = await nodeContract.getUserTransactionCount(TEST_WALLET);
@@ -452,6 +468,7 @@ export default function useCellManagerData() {
           loading: false,
           error: null,
           history: history, // Include the complete history
+          nodeTotalRaisedUsd: Number.isFinite(totalUsdValue) && totalUsdValue >= 0 ? totalUsdValue : null,
           // Transaction data
           totalTransactions: totalTransactions,
           totalUsdValue: totalUsdValue,
@@ -484,7 +501,8 @@ export default function useCellManagerData() {
           roundNumber: null,
           availableBits: 0,
           soldBits: 0,
-          cellId: null
+          cellId: null,
+          nodeTotalRaisedUsd: null
         }));
       } finally {
         console.groupEnd();

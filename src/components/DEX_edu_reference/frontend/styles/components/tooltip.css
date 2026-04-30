@@ -1,0 +1,118 @@
+/* Tooltip Component Styles */
+
+.tooltip-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-trigger-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ds-text-secondary);
+  cursor: help;
+  transition: color 0.2s;
+}
+
+.tooltip-trigger-icon:hover {
+  color: var(--ds-accent);
+}
+
+.tooltip {
+  position: fixed;
+  z-index: var(--ds-z-tooltip);
+  pointer-events: none;
+  animation: tooltip-fade-in 0.2s ease-out;
+}
+
+@keyframes tooltip-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tooltip-content {
+  background: var(--ds-bg-tertiary);
+  color: var(--ds-text-primary);
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  border-radius: var(--ds-radius-sm);
+  font-size: var(--ds-table-font-size);
+  line-height: var(--ds-line-height-normal);
+  max-width: 250px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--ds-border-color);
+}
+
+.tooltip-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+.tooltip-arrow-top {
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px 6px 0 6px;
+  border-color: var(--ds-bg-tertiary) transparent transparent transparent;
+}
+
+.tooltip-arrow-bottom {
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 6px 6px 6px;
+  border-color: transparent transparent var(--ds-bg-tertiary) transparent;
+}
+
+.tooltip-arrow-left {
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px 0 6px 6px;
+  border-color: transparent transparent transparent var(--ds-bg-tertiary);
+}
+
+.tooltip-arrow-right {
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px 6px 6px 0;
+  border-color: transparent var(--ds-bg-tertiary) transparent transparent;
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .tooltip-content {
+  background: #1a1a2e;
+  border-color: #2a2a3e;
+}
+
+/* Light theme adjustments */
+[data-theme="light"] .tooltip-content {
+  background: #ffffff;
+  color: #1a1a2e;
+  border-color: #e5e7eb;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .tooltip-arrow-top {
+  border-color: #ffffff transparent transparent transparent;
+}
+
+[data-theme="light"] .tooltip-arrow-bottom {
+  border-color: transparent transparent #ffffff transparent;
+}
+
+[data-theme="light"] .tooltip-arrow-left {
+  border-color: transparent transparent transparent #ffffff;
+}
+
+[data-theme="light"] .tooltip-arrow-right {
+  border-color: transparent #ffffff transparent transparent;
+}

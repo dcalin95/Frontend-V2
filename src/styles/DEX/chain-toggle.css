@@ -1,0 +1,115 @@
+/**
+ * 🔄 Chain Toggle Styles - Minimalist Header Variant
+ */
+
+/* Header Compact Variant */
+.chain-toggle-header {
+  position: relative;
+  z-index: 100020;
+}
+
+.chain-toggle-header-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background-color: transparent;
+  border: 1px solid var(--border-color, #252840);
+  border-radius: var(--border-radius, 8px);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast, 0.15s);
+  min-width: 50px;
+  height: 32px;
+}
+
+.chain-toggle-header-button:hover {
+  background-color: var(--bg-secondary, rgba(255, 255, 255, 0.05));
+  border-color: var(--color-primary, #4facfe);
+}
+
+.chain-toggle-header-label {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.chain-toggle-chevron {
+  transition: transform 0.2s ease;
+  opacity: 0.7;
+}
+
+.chain-toggle-chevron.open {
+  transform: rotate(180deg);
+}
+
+.chain-toggle-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100019;
+  background: transparent;
+}
+
+.chain-toggle-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 100020;
+  background: var(--bg-primary, #1a1e26);
+  border: 1px solid var(--border-color, #252840);
+  border-radius: var(--border-radius, 8px);
+  padding: 4px;
+  min-width: 80px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.chain-toggle-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.chain-toggle-option:last-child {
+  margin-bottom: 0;
+}
+
+.chain-toggle-option:hover {
+  background-color: var(--bg-secondary, rgba(255, 255, 255, 0.1));
+}
+
+.chain-toggle-option.active {
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .chain-toggle-header-button {
+    padding: 5px 8px;
+    font-size: 11px;
+    min-width: 45px;
+    height: 30px;
+  }
+  
+  .chain-toggle-dropdown {
+    right: 0;
+    min-width: 70px;
+  }
+}

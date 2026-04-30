@@ -1,0 +1,156 @@
+/**
+ * OTA Trading Mode Header Dropdown – stil AI Sonnet | proporțional
+ */
+
+.ota-trading-mode-header-dropdown {
+  --otmh-space-xs: 4px;
+  --otmh-space-sm: 8px;
+  --otmh-space-md: 12px;
+  --otmh-ai-accent: #a78bfa;
+  position: relative;
+}
+
+.ota-trading-mode-header-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--otmh-space-sm);
+  padding: 6px 12px;
+  background: rgba(167, 139, 250, 0.12);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  border-radius: 10px;
+  color: var(--ds-text-primary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
+}
+
+.ota-trading-mode-header-trigger:hover {
+  background: rgba(167, 139, 250, 0.18);
+  border-color: rgba(167, 139, 250, 0.45);
+  box-shadow: 0 0 0 1px rgba(167, 139, 250, 0.2);
+}
+
+.ota-trading-mode-header-trigger-icon {
+  color: var(--otmh-ai-accent);
+  flex-shrink: 0;
+}
+
+.ota-trading-mode-header-trigger-label {
+  text-transform: capitalize;
+}
+
+.ota-trading-mode-header-chevron {
+  color: var(--ds-text-secondary);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.ota-trading-mode-header-chevron.open {
+  transform: rotate(180deg);
+}
+
+.ota-trading-mode-header-popover {
+  position: absolute;
+  top: calc(100% + var(--otmh-space-sm));
+  left: 0;
+  min-width: 280px;
+  padding: var(--otmh-space-md);
+  background: var(--ds-bg-elevated, #000000);
+  border: 1px solid rgba(167, 139, 250, 0.25);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: var(--otmh-space-sm);
+}
+
+.ota-trading-mode-header-popover-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ds-text-secondary);
+  margin-bottom: var(--otmh-space-xs);
+}
+
+.ota-trading-mode-header-option {
+  display: flex;
+  flex-direction: column;
+  gap: var(--otmh-space-xs);
+  padding: var(--otmh-space-md);
+  background: transparent;
+  border: 1px solid var(--ds-border-color);
+  border-radius: 10px;
+  color: var(--ds-text-primary);
+  font-size: 0.8125rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ota-trading-mode-header-option:hover:not(.disabled) {
+  border-color: var(--otmh-ai-accent);
+  background: rgba(167, 139, 250, 0.08);
+}
+
+.ota-trading-mode-header-option.active {
+  border-color: var(--otmh-ai-accent);
+  background: rgba(167, 139, 250, 0.15);
+  box-shadow: 0 0 0 1px rgba(167, 139, 250, 0.25);
+}
+
+.ota-trading-mode-header-option.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ota-trading-mode-header-option-main {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--otmh-space-md);
+}
+
+.ota-trading-mode-header-option-icon {
+  color: var(--otmh-ai-accent);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ota-trading-mode-header-option.disabled .ota-trading-mode-header-option-icon {
+  color: var(--ds-text-tertiary);
+}
+
+.ota-trading-mode-header-option-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.ota-trading-mode-header-option-name {
+  display: block;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  margin-bottom: 2px;
+}
+
+.ota-trading-mode-header-option-desc {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--ds-text-secondary);
+  line-height: 1.4;
+}
+
+.ota-trading-mode-header-option-lock {
+  color: var(--ds-text-tertiary);
+  flex-shrink: 0;
+}
+
+.ota-trading-mode-header-option-gating {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--ds-border-color);
+  font-size: 0.6875rem;
+  color: var(--ds-text-tertiary);
+}

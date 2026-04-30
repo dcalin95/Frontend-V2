@@ -1,0 +1,140 @@
+/**
+ * TradingView Chart Styles - Standardized chart container
+ * Uses --ds-chart-* and --ds-* tokens
+ *
+ * Un singur cadru: wrapper-ul chart-ului cu .chart-wrapper-single-frame nu desenează
+ * border/bg – doar .tradingview-chart-container (în interior) are cadrul vizibil.
+ */
+
+.chart-wrapper-single-frame {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+.tradingview-chart-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: var(--ds-chart-min-height);
+  background: var(--ds-bg-surface);
+  border-radius: var(--ds-chart-border-radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.tradingview-chart {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: var(--ds-chart-min-height) !important;
+  display: block !important;
+  position: relative !important;
+  flex: 1 1 auto;
+  box-sizing: border-box;
+}
+
+.tradingview-chart > div,
+.tradingview-chart > iframe,
+.tradingview-chart > #tradingview_* {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: var(--ds-chart-min-height) !important;
+  display: block !important;
+  box-sizing: border-box !important;
+}
+
+.tradingview-chart-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-base);
+  z-index: 1;
+}
+
+[data-theme="dark"] .tradingview-chart-container {
+  background: var(--ds-bg-base);
+  border: var(--ds-border-width) solid var(--ds-border-color);
+}
+
+/* Un singur chenar: pe pagina Leverage nu adăugăm border la container (evită chenar dublu cu widget-ul) */
+.leverage-chart-section .tradingview-chart-container {
+  border: none !important;
+}
+
+[data-theme="dark"] .tradingview-chart-loading {
+  color: var(--ds-text-secondary);
+}
+
+[data-theme="light"] .tradingview-chart-container {
+  background: #ffffff;
+  border: var(--ds-border-width) solid var(--ds-border-color);
+}
+
+[data-theme="light"] .tradingview-chart-loading {
+  color: var(--ds-text-tertiary);
+}
+
+/* Elimină linia de separare între toolbar și chart (TradingView widget) */
+/* TradingView widget generează elemente cu clase specifice - targetăm toate posibilitățile */
+.tradingview-chart-container [class*="tradingview-widget-container"] [class*="header"],
+.tradingview-chart-container [class*="tradingview-widget-container"] [class*="toolbar"],
+.tradingview-chart-container [class*="tradingview-widget-container"] [class*="chart-container-border"],
+.tradingview-chart-container [class*="tradingview-widget-container"] > div > div[style*="border-top"],
+.tradingview-chart-container [class*="tradingview-widget-container"] [class*="chart"],
+.tradingview-chart-container [class*="tradingview-widget-container"] [class*="header"] > *,
+.tradingview-chart-container [class*="tradingview-widget-container"] [class*="toolbar"] > * {
+  border-top: none !important;
+  border-bottom: none !important;
+}
+
+/* Elimină border-top din iframe-ul TradingView (dacă există) */
+.tradingview-chart-container iframe {
+  border-top: none !important;
+}
+
+/* Target specific pentru TradingView widget container */
+.tradingview-chart-container > div > div[class*="tradingview"] {
+  border-top: none !important;
+}
+
+/* Elimină orice border-top din interiorul chart-ului */
+.tradingview-chart-container .tradingview-chart > div {
+  border-top: none !important;
+}
+
+/* Elimină orice linie de separare din TradingView widget (target generic) */
+.trade-page-chart-container [id*="tradingview"],
+.trade-page-chart-container [class*="tradingview"],
+.trade-page-chart-container iframe[src*="tradingview"] {
+  border-top: none !important;
+}
+
+/* Elimină border-top din orice element din interiorul chart container */
+.trade-page-chart-container * {
+  border-top: none !important;
+}
+
+@media (max-width: 768px) {
+  .tradingview-chart-container {
+    min-height: var(--ds-chart-min-height-sm);
+  }
+
+  .tradingview-chart {
+    min-height: var(--ds-chart-min-height-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .tradingview-chart-container {
+    min-height: var(--ds-chart-min-height-xs);
+  }
+
+  .tradingview-chart {
+    min-height: var(--ds-chart-min-height-xs);
+  }
+}

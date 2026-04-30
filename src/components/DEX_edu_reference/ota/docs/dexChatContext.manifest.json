@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Slim RAG pentru OTA Chat + repo-uri surori pe Desktop: ../frontend (alt React) și ../telegram-bot-repo-git. Căile ../… sunt relative la frontend-edu; pe altă mașină sau fără clone, sync poate marca fișiere lipsă. După editare: node scripts/sync-dex-chat-context.js",
+  "maxTotalChars": 220000,
+  "maxFileChars": 60000,
+  "files": [
+    "docs/AI_CONTEXT.md",
+    "docs/PROJECT_REPOS_AND_DEPLOYMENT.md",
+    "docs/DATA_POLICY.md",
+    "docs/DEX_UI_LANGUAGE.md",
+    "docs/DEX_SWAP_TRADE_UI.md",
+    "docs/LEVERAGE_SSOT.md",
+    "docs/OTA_ARCHITECTURE.md",
+    "docs/OTA_FLOW_AND_CONTRACT_LOGIC.md",
+    "docs/OTA_CONTRACT_ADDRESSES.md",
+    "src/components/DEX/ota/docs/OTA_01_CE_ESTE_OTA.md",
+    "src/components/DEX/ota/docs/OTA_02_ARHITECTURA.md",
+    "src/components/DEX/ota/docs/OTA_03_MODURI_TRADING.md",
+    "src/components/DEX/ota/docs/OTA_04_OPENAI_ANALIZA.md",
+    "src/components/DEX/ota/docs/OTA_05_ENDPOINTS_API.md",
+    "src/components/DEX/ota/docs/OTA_07_RUTE_UI.md",
+    "../frontend/README.md",
+    "../frontend/BACKEND_ENV_VARIABLES.md",
+    "../telegram-bot-repo-git/README.md",
+    "../telegram-bot-repo-git/project-kb.md"
+  ]
+}

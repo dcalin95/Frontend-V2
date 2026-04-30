@@ -1,0 +1,100 @@
+/* === COSMIC LOADER MOBILE STYLES === */
+@media only screen and (max-width: 768px) {
+  
+  /* === AI INITIALIZING SPINNER (TOP) === */
+  .ai-init-spinner-container {
+    top: 15%; /* Mai jos pe mobil */
+    width: 50px;
+    height: 50px;
+  }
+
+  .ai-init-ring-1, 
+  .ai-init-ring-2, 
+  .ai-init-ring-3 {
+    border-width: 1.5px; /* Linii mai subțiri */
+  }
+
+  .ai-init-text {
+    top: 55px;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    width: 150px;
+  }
+
+  /* === GRAVITY TITLE === */
+  .cosmic-title-container {
+    margin-bottom: 30px;
+    height: 40px;
+    gap: 2px;
+  }
+
+  .cosmic-char {
+    font-size: 1.5rem; /* Titlu mai mic */
+  }
+
+  /* === REACTOR CORE === */
+  .cosmic-reactor-container {
+    width: 140px;
+    height: 140px;
+    margin-bottom: 30px;
+  }
+
+  .cosmic-reactor-ring-outer {
+    width: 140px;
+    height: 140px;
+    border-width: 1px;
+  }
+
+  .cosmic-reactor-ring-secondary {
+    width: 120px;
+    height: 120px;
+    border-width: 1.5px;
+  }
+
+  .cosmic-reactor-ring {
+    width: 100px;
+    height: 100px;
+    border-width: 1.5px;
+  }
+
+  .cosmic-reactor-core-img {
+    width: 50px;
+    height: 50px;
+  }
+
+  /* === SATELLITE === */
+  .cosmic-satellite-orbit {
+    width: 120px;
+    height: 120px;
+  }
+
+  .cosmic-satellite-icon svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .cosmic-satellite-icon {
+    top: -10px;
+  }
+
+  /* === STATUS AREA === */
+  .cosmic-status-area {
+    width: 85%; /* Full width minus padding */
+    max-width: 280px;
+  }
+
+  .cosmic-percentage {
+    font-size: 2rem;
+  }
+
+  .cosmic-text {
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+  }
+
+  .cosmic-powered {
+    margin-top: 15px;
+    font-size: 0.6rem;
+  }
+}
+

@@ -1,0 +1,292 @@
+/**
+ * Trading Pairs Dropdown - Minimalist Header Variant
+ */
+
+.trading-pairs-dropdown {
+  position: relative;
+}
+
+.trading-pairs-dropdown-button {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  background-color: var(--ds-bg-surface);
+  border: var(--ds-border-width) solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-medium);
+  cursor: pointer;
+  transition: all var(--ds-transition-base);
+  min-width: 120px;
+  height: var(--ds-select-height-md);
+}
+
+.trading-pairs-dropdown-button:hover {
+  background-color: var(--ds-bg-hover);
+  border-color: var(--ds-border-color-light);
+}
+
+.trading-pairs-dropdown-button:focus-visible {
+  outline: var(--ds-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.trading-pairs-dropdown-pair-logos {
+  display: flex;
+  align-items: center;
+  gap: -4px;
+  position: relative;
+}
+
+.trading-pairs-dropdown-logo-overlap {
+  margin-left: -4px;
+}
+
+.trading-pairs-dropdown-pair-symbol {
+  flex: 1;
+  text-align: left;
+  font-weight: 600;
+}
+
+.trading-pairs-dropdown-chevron {
+  transition: transform var(--ds-transition-base);
+  opacity: 0.7;
+}
+
+.trading-pairs-dropdown-chevron.open {
+  transform: rotate(180deg);
+}
+
+.trading-pairs-dropdown-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: calc(var(--ds-z-dropdown) - 1);
+  background: transparent;
+}
+
+.trading-pairs-dropdown-menu {
+  position: absolute;
+  top: calc(100% + var(--ds-spacing-1));
+  left: 0;
+  z-index: var(--ds-z-dropdown);
+  background: var(--ds-bg-surface);
+  border: var(--ds-border-width) solid var(--ds-border-color);
+  border-radius: var(--ds-radius-lg);
+  padding: var(--ds-spacing-2);
+  min-width: 320px;
+  max-height: 400px;
+  box-shadow: var(--ds-shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-2);
+}
+
+.trading-pairs-dropdown-search {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  background: var(--ds-bg-base);
+  border: var(--ds-border-width) solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  color: var(--ds-text-primary);
+}
+
+.trading-pairs-dropdown-search svg {
+  opacity: 0.5;
+}
+
+.trading-pairs-dropdown-search input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-sm);
+}
+
+.trading-pairs-dropdown-search input::placeholder {
+  color: var(--ds-text-tertiary);
+}
+
+.trading-pairs-dropdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-1);
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.trading-pairs-dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  background: transparent;
+  border: var(--ds-border-width) solid transparent;
+  border-radius: var(--ds-radius-md);
+  color: var(--ds-text-primary);
+  cursor: pointer;
+  transition: all var(--ds-transition-base);
+  text-align: left;
+  position: relative;
+  gap: var(--ds-spacing-2);
+}
+
+.trading-pairs-dropdown-item:hover {
+  background: var(--ds-bg-hover);
+  border-color: var(--ds-border-color);
+}
+
+.trading-pairs-dropdown-item.selected {
+  background: var(--ds-color-info-bg);
+  border-color: var(--ds-border-color-light);
+}
+
+.trading-pairs-dropdown-item.highlighted,
+.trading-pairs-dropdown-item:focus {
+  background: var(--ds-bg-hover);
+  border-color: var(--ds-border-color);
+}
+
+.trading-pairs-dropdown-item.highlighted:focus-visible {
+  outline: var(--ds-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.trading-pairs-dropdown-item-pair {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+}
+
+.trading-pairs-dropdown-item-logos {
+  display: flex;
+  align-items: center;
+  gap: -4px;
+}
+
+.trading-pairs-dropdown-item-symbol {
+  font-weight: var(--ds-font-weight-semibold);
+  font-size: var(--ds-font-size-sm);
+}
+
+.trading-pairs-dropdown-item-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--ds-spacing-1);
+}
+
+.trading-pairs-dropdown-item-price {
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+  color: var(--ds-text-primary);
+}
+
+.trading-pairs-dropdown-item-change {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-1);
+  font-size: var(--ds-font-size-xs);
+  font-weight: var(--ds-font-weight-medium);
+}
+
+.trading-pairs-dropdown-item-change.positive {
+  color: #14f195;
+}
+
+.trading-pairs-dropdown-item-change.negative {
+  color: #f76560;
+}
+
+.trading-pairs-dropdown-loading,
+.trading-pairs-dropdown-empty {
+  padding: var(--ds-spacing-4);
+  text-align: center;
+  color: var(--ds-text-tertiary);
+  font-size: var(--ds-font-size-sm);
+}
+
+.trading-pairs-dropdown-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.trading-pairs-dropdown-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.trading-pairs-dropdown-list::-webkit-scrollbar-thumb {
+  background: var(--ds-border-color);
+  border-radius: var(--ds-radius-xs);
+}
+
+.trading-pairs-dropdown-list::-webkit-scrollbar-thumb:hover {
+  background: var(--ds-border-color-light);
+}
+
+/* Favorite Button */
+.trading-pairs-dropdown-favorite-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ds-icon-lg);
+  height: var(--ds-icon-lg);
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--ds-text-tertiary);
+  cursor: pointer;
+  transition: all var(--ds-transition-base);
+  flex-shrink: 0;
+  border-radius: var(--ds-radius-xs);
+}
+
+.trading-pairs-dropdown-favorite-btn:hover {
+  background: var(--ds-bg-hover);
+  color: var(--ds-border-color-light);
+}
+
+.trading-pairs-dropdown-favorite-btn.active {
+  color: var(--ds-color-warning);
+}
+
+.trading-pairs-dropdown-favorite-btn.active:hover {
+  color: var(--ds-color-warning);
+}
+
+/* Section Title */
+.trading-pairs-dropdown-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-1);
+}
+
+.trading-pairs-dropdown-section-title {
+  padding: var(--ds-spacing-2) var(--ds-spacing-3) var(--ds-spacing-1);
+  font-size: var(--ds-font-size-xs);
+  font-weight: var(--ds-font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--ds-letter-spacing-wide);
+  color: var(--ds-text-tertiary);
+  opacity: 0.7;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .trading-pairs-dropdown-menu {
+    min-width: 280px;
+    max-height: var(--ds-dropdown-max-height);
+  }
+  
+  .trading-pairs-dropdown-button {
+    min-width: 100px;
+    padding: var(--ds-spacing-2) var(--ds-spacing-3);
+    font-size: var(--ds-font-size-sm);
+  }
+}

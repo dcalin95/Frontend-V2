@@ -1,3 +1,5 @@
+import { resolvePresaleBackendUrl } from "../presaleApi";
+
 const handleStripePayment = async ({
   amountUSD,
   amountEUR,
@@ -9,8 +11,7 @@ const handleStripePayment = async ({
 }) => {
   console.groupCollapsed("💳 [Stripe Checkout] Initiating");
   try {
-    const backendURL =
-      process.env.REACT_APP_BACKEND_URL || "http://localhost:4000";
+    const backendURL = await resolvePresaleBackendUrl();
 
     if (!amountEUR || amountEUR < 10) {
       throw new Error("Stripe checkout requires a minimum of €10.");
@@ -65,4 +66,3 @@ const handleStripePayment = async ({
 };
 
 export default handleStripePayment;
-

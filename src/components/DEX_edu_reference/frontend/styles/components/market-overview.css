@@ -1,0 +1,155 @@
+/* Market Overview Component Styles - Binance-Inspired Refactored */
+
+.market-overview-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-6);
+}
+
+.market-overview-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+}
+
+/* Stats Grid */
+.market-overview-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--ds-spacing-4);
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.market-overview-stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-2);
+  transition: transform var(--ds-transition-base);
+}
+
+.market-overview-stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.market-overview-stat-label {
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-text-secondary);
+  text-transform: uppercase;
+  font-weight: var(--ds-font-weight-medium);
+  letter-spacing: var(--ds-letter-spacing-wide);
+}
+
+.market-overview-stat-value {
+  font-size: var(--ds-font-size-2xl);
+  font-weight: var(--ds-font-weight-bold);
+  color: var(--ds-text-primary);
+  font-family: var(--ds-font-family-mono);
+}
+
+.market-overview-stat-change {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-spacing-1);
+  margin-top: var(--ds-spacing-1);
+}
+
+.market-overview-stat-indicator {
+  height: 4px;
+  background: var(--ds-bg-overlay);
+  border-radius: var(--ds-radius-xs);
+  overflow: hidden;
+  margin-top: var(--ds-spacing-2);
+}
+
+.market-overview-sentiment-bar {
+  height: 100%;
+  background: var(--ds-gradient-primary);
+  transition: width var(--ds-transition-base);
+}
+
+.market-overview-stat-subtext {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-1);
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-text-tertiary);
+  margin-top: var(--ds-spacing-2);
+}
+
+/* Trends */
+.market-overview-trends {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--ds-spacing-4);
+}
+
+.market-overview-trends-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-3);
+}
+
+.market-overview-trends-header {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  padding-bottom: var(--ds-spacing-2);
+  border-bottom: var(--ds-border-width) solid var(--ds-border-color);
+}
+
+.market-overview-trends-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-2);
+}
+
+.market-overview-trend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ds-spacing-2);
+  background: var(--ds-bg-surface);
+  border-radius: var(--ds-radius-sm);
+  transition: background-color var(--ds-transition-base);
+}
+
+.market-overview-trend-item:hover {
+  background: var(--ds-bg-overlay);
+}
+
+.market-overview-trend-token {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+}
+
+.market-overview-trend-symbol {
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+  color: var(--ds-text-primary);
+}
+
+.market-overview-loading {
+  text-align: center;
+  padding: var(--ds-spacing-12) var(--ds-spacing-5);
+  color: var(--ds-text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .market-overview-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .market-overview-trends {
+    grid-template-columns: 1fr;
+  }
+  
+  .market-overview-header-left {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

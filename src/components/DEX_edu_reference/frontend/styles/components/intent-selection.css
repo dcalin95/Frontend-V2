@@ -1,0 +1,264 @@
+/* Intent Selection Component Styles - AI Trading Only */
+
+.ai-intent-selection {
+  background: var(--ds-bg-secondary);
+  border-radius: var(--ds-border-radius);
+  padding: var(--ds-spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-lg);
+  border: 1px solid var(--ds-border);
+  box-shadow: var(--ds-shadow);
+}
+
+.ai-intent-selection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--ds-spacing-md);
+}
+
+.ai-intent-selection-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-sm);
+}
+
+.ai-intent-selection-logo {
+  margin-right: var(--ds-spacing-xs);
+}
+
+.ai-intent-selection-icon {
+  color: var(--ds-primary);
+}
+
+.ai-intent-selection-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-xs);
+}
+
+.ai-intent-selection-badge-logo {
+  flex-shrink: 0;
+}
+
+.ai-intent-selection-title {
+  font-size: var(--ds-font-size-md);
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  margin: 0 0 12px 0;
+  line-height: var(--ds-line-height-normal);
+}
+
+.ai-intent-selection-badge {
+  padding: var(--ds-spacing-xs) var(--ds-spacing-sm);
+  background: var(--ds-primary-gradient);
+  border-radius: var(--ds-border-radius-sm);
+  font-size: var(--ds-font-size-xs);
+  font-weight: var(--ds-font-weight-semibold);
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ai-intent-selection-description {
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-sm);
+  line-height: var(--ds-line-height-relaxed);
+}
+
+/* Intent Cards Grid */
+.ai-intent-selection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--ds-spacing-lg);
+}
+
+.ai-intent-card {
+  background: var(--ds-bg-tertiary);
+  border: 2px solid var(--ds-border);
+  border-radius: var(--ds-border-radius);
+  padding: var(--ds-spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-md);
+  cursor: pointer;
+  transition: all var(--ds-transition-base);
+  text-align: left;
+}
+
+.ai-intent-card:hover {
+  border-color: var(--intent-color, var(--ds-primary));
+  transform: translateY(-2px);
+  box-shadow: var(--ds-shadow-md);
+}
+
+.ai-intent-card-selected {
+  border-color: var(--intent-color, var(--ds-primary));
+  background: var(--ds-bg-active);
+  box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+}
+
+.ai-intent-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ds-spacing-md);
+}
+
+.ai-intent-card-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(79, 172, 254, 0.1);
+  border-radius: var(--ds-border-radius-sm);
+}
+
+.ai-intent-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.ai-intent-card-label {
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  margin: 0 0 6px 0;
+  line-height: var(--ds-line-height-normal);
+}
+
+.ai-intent-card-description {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  margin: 0;
+  line-height: var(--ds-line-height-normal);
+}
+
+.ai-intent-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-sm);
+}
+
+.ai-intent-card-confidence {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-sm);
+}
+
+.ai-intent-card-confidence-label {
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-text-secondary);
+  min-width: 100px;
+}
+
+.ai-intent-card-confidence-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--ds-bg-hover);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.ai-intent-card-confidence-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width var(--ds-transition-base);
+}
+
+.ai-intent-card-confidence-value {
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  min-width: 40px;
+  text-align: right;
+  font-family: var(--ds-font-family-mono);
+}
+
+.ai-intent-card-reasoning {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ds-spacing-xs);
+  padding: var(--ds-spacing-sm);
+  background: var(--ds-bg-hover);
+  border-radius: var(--ds-border-radius-sm);
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-text-secondary);
+  line-height: var(--ds-line-height-normal);
+}
+
+.ai-intent-card-tokens {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-sm);
+  padding-top: var(--ds-spacing-sm);
+  border-top: 1px solid var(--ds-border);
+}
+
+.ai-intent-card-tokens-label {
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-text-secondary);
+}
+
+.ai-intent-card-tokens-list {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-xs);
+}
+
+.ai-intent-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--ds-spacing-sm);
+  border-top: 1px solid var(--ds-border);
+}
+
+.ai-intent-card-risk-badge {
+  padding: var(--ds-spacing-xs) var(--ds-spacing-sm);
+  border-radius: var(--ds-border-radius-sm);
+  font-size: var(--ds-font-size-xs);
+  font-weight: var(--ds-font-weight-semibold);
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ai-intent-card-selected-indicator {
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-primary);
+  font-weight: var(--ds-font-weight-semibold);
+}
+
+.ai-intent-selection-footer {
+  padding-top: var(--ds-spacing-md);
+  border-top: 1px solid var(--ds-border);
+}
+
+.ai-intent-selection-warning {
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-text-tertiary);
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-xs);
+}
+
+.ai-intent-selection-loading {
+  text-align: center;
+  padding: var(--ds-spacing-2xl);
+  color: var(--ds-text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ai-intent-selection-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .ai-intent-selection-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

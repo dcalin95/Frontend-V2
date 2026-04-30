@@ -141,7 +141,7 @@ export default function useOptimizedRewardsData(walletAddress) {
     return fetchWithRetry(async () => {
       console.log("📱 Fetching fresh Telegram data for:", walletAddress);
       
-      const backendURL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+      const backendURL = "https://backend-server-eu.onrender.com";
       const response = await axios.get(`${backendURL}/api/telegram-rewards/reward/${walletAddress}`, {
         timeout: 10000,
         signal: abortControllerRef.current?.signal

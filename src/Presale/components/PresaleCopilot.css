@@ -356,6 +356,54 @@ body.mode-mobile .pc-tele__actions {
   filter: brightness(1.03);
 }
 
+body[class*="dex-theme-"] .presale-copilot,
+body[class*="dex-theme-"] .presale-copilot * {
+  font-family: var(--ds-font-family-sans) !important;
+}
+
+body[class*="dex-theme-"] .presale-copilot,
+body[class*="dex-theme-"] .presale-copilot__mini,
+body[class*="dex-theme-"] .presale-copilot__badge,
+body[class*="dex-theme-"] .presale-copilot__miniBadge,
+body[class*="dex-theme-"] .pc-check,
+body[class*="dex-theme-"] .pc-btn,
+body.mode-mobile[class*="dex-theme-"] .presale-copilot,
+body.mode-mobile[class*="dex-theme-"] .presale-copilot__mini {
+  background: var(--ds-bg-base) !important;
+  background-color: var(--ds-bg-base) !important;
+  background-image: none !important;
+  border-color: var(--ds-border-color-light) !important;
+  color: var(--ds-text-primary) !important;
+  box-shadow: var(--ds-shadow-sm) !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+body[class*="dex-theme-"] .presale-copilot__header {
+  background: var(--ds-bg-base) !important;
+  border-bottom: 1px solid var(--ds-border-color) !important;
+}
+
+body[class*="dex-theme-"] .presale-copilot__sub,
+body[class*="dex-theme-"] .pc-label,
+body[class*="dex-theme-"] .pc-label strong,
+body[class*="dex-theme-"] .presale-copilot .pc-tele__v,
+body[class*="dex-theme-"] .presale-copilot .pc-lasttx__hash,
+body[class*="dex-theme-"] .presale-copilot .pc-trust__addr,
+body[class*="dex-theme-"] .presale-copilot .pc-tx__hint .mono {
+  color: var(--ds-text-secondary) !important;
+  text-shadow: none !important;
+  background: none !important;
+}
+
+body[class*="dex-theme-"] .pc-btn:hover,
+body[class*="dex-theme-"] .presale-copilot__toggle:hover {
+  background: var(--ds-bg-hover) !important;
+  border-color: var(--ds-accent) !important;
+  box-shadow: var(--ds-focus-ring-box-shadow) !important;
+  transform: none !important;
+}
+
 .pc-btn.primary {
   border: none;
   color: #00140c;

@@ -69,7 +69,7 @@ const PresaleDashboard = () => {
     price,
     roundNumber,
     totalBoosted,
-    cellManagerData
+    cellManagerData,
   } = hybridState;
 
   if (error) {
@@ -216,7 +216,7 @@ const PresaleDashboard = () => {
     <div className={styles.dashboard}>
       {/* Componenta verticală într-o singură coloană */}
       <div className={styles.column}>
-        <TotalRaised totalBoosted={totalBoosted || 166669} />
+        <TotalRaised totalBoosted={Number.isFinite(Number(totalBoosted)) ? Number(totalBoosted) : 0} />
         <PresaleCountdownFlip endTime={endTime} />
         
         {/* 🎯 MARKETING INFO: Only blockchain data for public */}

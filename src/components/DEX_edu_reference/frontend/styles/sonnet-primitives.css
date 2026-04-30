@@ -1,0 +1,393 @@
+/**
+ * 🎨 Sonnet UI Primitives
+ * 
+ * Button, Input, Panel, ListRow/TableRow, Segmented, Badge/Banner
+ * All components use tokens from tokens.css
+ */
+
+/* === BUTTON === */
+.sonnet-btn {
+  height: var(--ds-button-height-md);
+  padding: 0 var(--ds-spacing-3);
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-medium);
+  line-height: 1;
+  border: 1px solid transparent;
+  border-radius: var(--ds-radius-sm);
+  cursor: pointer;
+  transition: background-color 150ms, border-color 150ms;
+  box-sizing: border-box;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.sonnet-btn-sm {
+  height: var(--ds-button-height-sm);
+  padding: 0 var(--ds-spacing-3);
+  font-size: 13px;
+}
+
+.sonnet-btn-lg {
+  height: var(--ds-button-height-lg);
+  padding: 0 var(--ds-spacing-6);
+  font-size: 15px;
+}
+
+/* Button Variants */
+.sonnet-btn-primary {
+  background-color: var(--ds-accent);
+  color: var(--ds-text-primary);
+  border-color: var(--ds-accent);
+}
+
+.sonnet-btn-primary:hover:not(:disabled) {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+.sonnet-btn-primary:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.sonnet-btn-secondary {
+  background-color: transparent;
+  color: var(--ds-text-primary);
+  border-color: var(--ds-border-color);
+}
+
+.sonnet-btn-secondary:hover:not(:disabled) {
+  background-color: var(--ds-bg-hover);
+  border-color: var(--ds-bg-hover);
+}
+
+.sonnet-btn-ghost {
+  background-color: transparent;
+  color: var(--ds-text-primary);
+  border-color: transparent;
+}
+
+.sonnet-btn-ghost:hover:not(:disabled) {
+  background-color: var(--ds-bg-hover);
+}
+
+.sonnet-btn-danger {
+  background-color: transparent;
+  color: var(--ds-color-error);
+  border-color: var(--ds-color-error);
+}
+
+.sonnet-btn-danger:hover:not(:disabled) {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* Button States */
+.sonnet-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.sonnet-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring-box-shadow);
+}
+
+/* === INPUT / SELECT === */
+.sonnet-input,
+.sonnet-select {
+  height: var(--ds-input-height-md);
+  padding: 0 var(--ds-spacing-3);
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-medium);
+  line-height: var(--ds-line-height-normal);
+  color: var(--ds-text-primary);
+  background-color: var(--ds-bg-surface);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-sm);
+  outline: none;
+  transition: border-color 150ms;
+  box-sizing: border-box;
+}
+
+.sonnet-input::placeholder {
+  color: var(--ds-text-tertiary);
+  opacity: 0.7;
+}
+
+.sonnet-input:hover:not(:disabled) {
+  border-color: var(--ds-bg-hover);
+}
+
+.sonnet-input:focus,
+.sonnet-select:focus {
+  border-color: var(--ds-accent);
+}
+
+.sonnet-input:focus-visible,
+.sonnet-select:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring-box-shadow);
+}
+
+.sonnet-input:disabled,
+.sonnet-select:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.sonnet-input-error {
+  border-color: var(--ds-color-error);
+}
+
+.sonnet-input-error:focus {
+  border-color: var(--ds-color-error);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+/* === PANEL / CARD === */
+.sonnet-panel {
+  background-color: var(--ds-bg-surface);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-lg); /* 14px - consistent */
+  padding: var(--ds-spacing-6); /* 24px - consistent */
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.sonnet-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-spacing-3);
+  margin-bottom: var(--ds-spacing-3);
+  padding-bottom: var(--ds-spacing-3);
+  border-bottom: 1px solid var(--ds-border-color);
+  min-height: var(--ds-table-header-height);
+  box-sizing: border-box;
+}
+
+.sonnet-panel-title {
+  font-size: var(--font-heading-sm-size); /* 16px */
+  font-weight: var(--font-heading-weight); /* 600 */
+  line-height: var(--font-heading-sm-height); /* 22px */
+  color: var(--ds-text-primary);
+  margin: 0;
+}
+
+.sonnet-panel-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  flex-shrink: 0;
+}
+
+.sonnet-panel-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  color: var(--ds-text-tertiary);
+  line-height: var(--ds-line-height-normal);
+}
+
+.sonnet-panel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--ds-spacing-3);
+  margin-top: var(--ds-spacing-3);
+  padding-top: var(--ds-spacing-3);
+  border-top: 1px solid var(--ds-border-color);
+  min-height: var(--ds-table-header-height);
+  box-sizing: border-box;
+}
+
+/* === LIST ROW / TABLE ROW === */
+.sonnet-row {
+  height: var(--ds-table-header-height);
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-3);
+  padding: 0 var(--ds-spacing-3);
+  border-bottom: 1px solid var(--ds-border-color);
+  box-sizing: border-box;
+}
+
+.sonnet-row:hover {
+  background-color: var(--ds-bg-hover);
+}
+
+.sonnet-row-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sonnet-row-text {
+  flex: 1;
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-primary);
+  min-width: 0;
+}
+
+.sonnet-row-status {
+  flex-shrink: 0;
+}
+
+.sonnet-row-numeric {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-family: ui-monospace, monospace;
+}
+
+/* === SEGMENTED CONTROL / TABS === */
+.sonnet-segmented {
+  display: inline-flex;
+  background-color: var(--ds-bg-surface);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-sm);
+  padding: var(--ds-spacing-1);
+  gap: var(--ds-spacing-1);
+}
+
+.sonnet-segmented-option {
+  height: var(--ds-button-height-sm); /* 34px - same as button small */
+  padding: 0 var(--ds-spacing-3);
+  font-size: 13px;
+  font-weight: var(--ds-font-weight-medium);
+  color: var(--ds-text-tertiary);
+  background-color: transparent;
+  border: none;
+  border-radius: calc(var(--ds-radius-sm) - 2px);
+  cursor: pointer;
+  transition: all 150ms;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.sonnet-segmented-option:hover:not(.sonnet-segmented-selected) {
+  background-color: var(--ds-bg-hover);
+}
+
+.sonnet-segmented-selected {
+  background-color: var(--ds-accent);
+  color: var(--ds-text-primary);
+}
+
+.sonnet-segmented-option:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring-box-shadow);
+}
+
+/* === BADGE / BANNER === */
+.sonnet-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-spacing-1);
+  padding: var(--ds-spacing-1) var(--ds-spacing-2);
+  font-size: 12px;
+  font-weight: var(--ds-font-weight-medium);
+  line-height: 1;
+  border-radius: var(--ds-radius-sm);
+  box-sizing: border-box;
+}
+
+.sonnet-badge-success {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: var(--success);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.sonnet-badge-danger {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: var(--ds-color-error);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.sonnet-badge-warn {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: var(--warn);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* Banner: lățime cât conținutul (nu întins pe tot ecranul) */
+.sonnet-banner {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--ds-spacing-3);
+  padding: var(--ds-spacing-3);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-lg);
+  background-color: var(--ds-bg-surface);
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.sonnet-banner-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+}
+
+.sonnet-banner-content {
+  flex: 1;
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-primary);
+  line-height: var(--ds-line-height-normal);
+}
+
+.sonnet-banner-danger {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: var(--ds-color-error);
+}
+
+.sonnet-banner-warn {
+  background-color: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: var(--warn);
+}
+
+/* === LAYOUT HELPERS === */
+.sonnet-page-shell {
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  padding-inline: var(--ds-spacing-6); /* 24px desktop */
+  box-sizing: border-box;
+}
+
+.sonnet-grid {
+  display: grid;
+  gap: var(--ds-spacing-6); /* 24px - consistent */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sonnet-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-3); /* 16px - consistent */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .sonnet-page-shell {
+    padding-inline: var(--ds-spacing-3); /* 16px tablet */
+  }
+}
+
+@media (max-width: 768px) {
+  .sonnet-page-shell {
+    padding-inline: var(--ds-spacing-3); /* 12px mobile */
+  }
+}

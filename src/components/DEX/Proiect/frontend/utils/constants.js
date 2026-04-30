@@ -11,8 +11,30 @@
  */
 
 // API Configuration
-export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:4000/api';
-export const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:4000';
+// ✅ FIX: Use function to avoid webpack DefinePlugin conflicts
+// Use REACT_APP_BACKEND_URL (exists in .env) + /api, or REACT_APP_API_BASE_URL, or localhost fallback
+const getApiBaseUrl = () => {
+  // Runtime check - webpack DefinePlugin processes these correctly
+  const apiBaseUrl = process.env.REACT_APP_API_BASE_URL;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  
+  if (apiBaseUrl) {
+    return String(apiBaseUrl);
+  }
+  if (backendUrl) {
+    return `${String(backendUrl)}/api`;
+  }
+  return 'http://localhost:4000/api';
+};
+
+const getBackendUrl = () => {
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  return backendUrl ? String(backendUrl) : 'http://localhost:4000';
+};
+
+// Export as functions that execute at runtime
+export const API_BASE_URL = getApiBaseUrl();
+export const BACKEND_URL = getBackendUrl();
 
 // Feature Flags
 export const ENABLE_AI_TRADING = process.env.REACT_APP_ENABLE_AI_TRADING !== 'false';

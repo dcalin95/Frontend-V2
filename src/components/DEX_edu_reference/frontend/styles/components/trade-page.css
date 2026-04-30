@@ -1,0 +1,1512 @@
+/* Trade Page Styles - Sonnet / Anthropic
+ *
+ * Reguli de layout (documentație):
+ * - Pagina /dex/trade NU folosește scroll pe panoul principal.
+ * - Componentele (chart, panou Limit, Open Orders) sunt fixe și echilibrate între ele.
+ * - Doar lista de ordine din panoul Limit poate avea scroll intern dacă sunt multe ordine.
+ */
+
+/* Când pagina Trade e în main: fără scroll pe pagină */
+.ai-trading-main-content:has(.trade-page.trade-page-oxium) {
+  overflow: hidden;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.trade-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-4);
+  padding: var(--ds-spacing-1);
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  background-color: var(--ds-bg-base);
+}
+
+.trade-page.trade-page-oxium {
+  /* Umple main-ul, fără scroll la pagină */
+  flex: 1 1 0;
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  /* Margin orizontal pe main (.dex-page-wrapper … :has(.trade-page-oxium)) — aici 0 ca să nu dublezi */
+  padding: 0;
+  gap: 0;
+}
+.trade-page.trade-page-oxium .trade-workspace,
+.trade-page.trade-page-oxium .trade-workspace-grid,
+.trade-page.trade-page-oxium .trade-workspace-main,
+.trade-page.trade-page-oxium .trade-grid,
+.trade-page.trade-page-oxium .trade-pane {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.trade-workspace {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  /* Apply spacing here so it counts inside fixed height */
+  padding: var(--ds-spacing-1);
+  box-sizing: border-box;
+}
+
+.trade-workspace-grid {
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--ds-spacing-4, 16px);
+  align-items: stretch;
+  overflow-x: hidden;
+}
+
+.trade-workspace-main {
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.trade-workspace-main > .trade-grid {
+  flex: 1;
+  min-height: 0;
+}
+
+.trade-grid {
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  gap: var(--ds-spacing-4, 16px);
+  align-items: stretch;
+  align-content: stretch;
+  overflow-x: hidden;
+}
+
+/* Chart și Buy/Sell: aceeași înălțime de celulă (fără „treaptă” jos) */
+.trade-grid-tight > .trade-pane-chart,
+.trade-grid-tight > .trade-pane-orders {
+  align-self: stretch;
+  height: 100%;
+  max-height: 100%;
+}
+
+.trade-pane {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border: var(--ds-border-width) solid var(--ds-border-color);
+  border-radius: var(--ds-radius-lg);
+  background: var(--ds-bg-surface);
+  position: relative;
+}
+
+/* Chart și Buy/Sell: aceeași înălțime (sus-jos egale), stretch în același rând */
+.trade-pane-chart,
+.trade-pane-orders {
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+}
+
+/* Chart ridicat sus: zona chart (flex 1) + sub el previzualizare Open Orders (înălțime fixă) */
+.trade-pane-chart {
+  height: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  position: relative;
+}
+.trade-pane-chart-area {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Wrapper TradingView: umple zona flex (înălțime măsurată de widget din .trade-pane-chart-area) */
+.trade-pane-chart-area > .tradingview-chart-container {
+  flex: 1 1 0;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+/* Chart întreg, netăiat: containerul și widget-ul se redimensionează după zonă, fără min-height care să taie */
+.trade-pane-chart-area .tradingview-chart-container,
+.trade-pane-chart-area .tradingview-chart,
+.trade-pane-chart-area .tradingview-chart > div {
+  min-height: 0 !important;
+}
+.trade-chart-open-orders-preview {
+  flex: 0 0 auto;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ds-spacing-2);
+  border-top: var(--ds-border-width) solid var(--ds-border-color);
+  background: var(--ds-color-success-bg);
+}
+.trade-chart-preview-btn {
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  border-radius: var(--ds-radius-md);
+  border: var(--ds-border-width) solid rgba(var(--ds-accent-rgb), 0.35);
+  background: rgba(var(--ds-accent-rgb), 0.08);
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.trade-chart-preview-btn:hover {
+  background: rgba(var(--ds-accent-rgb), 0.18);
+  border-color: rgba(var(--ds-accent-rgb), 0.5);
+}
+
+.trade-pane-orders .trade-pane-body {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.trade-pane-orders {
+  min-width: 320px;
+  pointer-events: auto;
+}
+.trade-pane-orders .trade-pane-body,
+.trade-pane-orders .limit-order-panel-container,
+.trade-pane-orders .limit-order-panel-container .ui-card-body,
+.trade-pane-orders .limit-order-panel-body-no-scroll {
+  pointer-events: auto;
+}
+
+.trade-pane-body {
+  height: 100%;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* Order pane: FĂRĂ scroll, conținutul se adaptează dinamic la înălțimea disponibilă */
+.trade-pane-orders .trade-pane-body {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+.trade-pane-orders .limit-order-panel-container {
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Skeleton încarcă aceeași înălțime ca rândul chart (evită „treaptă” la load) */
+.trade-pane-orders .limit-order-panel-skeleton-wrap {
+  flex: 1 1 0 !important;
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+}
+
+.trade-pane-orders .limit-order-panel-skeleton-chart {
+  flex: 1 1 0;
+  min-height: 160px;
+  margin-top: 16px;
+  width: 100% !important;
+  height: auto !important;
+}
+/* Body umple înălțimea rândului: formular sus, footer (Place order) jos — fără „gol” negru sub card */
+.trade-pane-orders .limit-order-panel-container .ui-card-body,
+.trade-pane-orders .limit-order-panel-body-no-scroll {
+  flex: 1 1 0 !important;
+  min-height: 0;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-1);
+}
+.trade-pane-orders .limit-order-panel-container .ui-card-footer {
+  flex: 0 0 auto;
+  min-height: 0;
+}
+/* Compact: tab-uri și secțiuni mai mici ca tot formularul să încapă fără scroll */
+.trade-pane-orders .limit-order-panel-side-tabs {
+  flex: 0 0 auto;
+  margin-bottom: var(--ds-spacing-1);
+}
+.trade-pane-orders .limit-order-panel-side-tabs .limit-order-panel-side-tab {
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  font-size: 0.8125rem;
+  pointer-events: auto;
+  position: relative;
+  z-index: 1;
+}
+.trade-pane-orders .limit-order-panel-input-group {
+  flex: 0 0 auto;
+  margin-bottom: 2px;
+  padding: 6px 8px;
+  gap: 4px;
+}
+.trade-pane-orders .limit-order-panel-section-label {
+  font-size: 0.6875rem;
+}
+.trade-pane-orders .limit-order-panel-input-row {
+  min-height: var(--ds-input-height-sm);
+  padding: var(--ds-spacing-1) var(--ds-spacing-2);
+}
+.trade-pane-orders .limit-order-panel-amount-input,
+.trade-pane-orders .limit-order-panel-price-input {
+  font-size: 1.125rem;
+}
+.trade-pane-orders .limit-order-panel-percentage-buttons {
+  flex: 0 0 auto;
+  margin-bottom: 2px;
+  gap: 4px;
+}
+.trade-pane-orders .limit-order-panel-percentage-btn {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+}
+
+/* Specificitate peste .trade-pane-orders .limit-order-panel-percentage-btn + hover: procentul ales rămâne vizibil */
+.trade-pane-orders .limit-order-panel-percentage-btn.active {
+  background: rgba(var(--ds-accent-rgb), 0.55);
+  border-color: var(--ds-accent);
+  color: #fff;
+  font-weight: 800;
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.2),
+    0 0 0 2px var(--ds-accent),
+    0 0 16px rgba(var(--ds-accent-rgb), 0.45);
+}
+
+.trade-pane-orders .limit-order-panel-percentage-btn.active:hover {
+  background: rgba(var(--ds-accent-rgb), 0.62);
+  border-color: var(--ds-accent);
+  color: #fff;
+}
+.trade-pane-orders .limit-order-panel-reverse-container {
+  flex: 0 0 auto;
+  margin: var(--ds-spacing-1) 0;
+}
+.trade-pane-orders .limit-order-panel-reverse-btn {
+  width: var(--ds-icon-md);
+  height: var(--ds-icon-md);
+}
+.trade-pane-orders .limit-order-panel-price-quick-actions {
+  flex: 0 0 auto;
+  margin-bottom: var(--ds-spacing-1);
+  gap: var(--ds-spacing-2);
+}
+.trade-pane-orders .limit-order-panel-quick-btn {
+  padding: var(--ds-spacing-1) var(--ds-spacing-2);
+  font-size: 0.75rem;
+}
+/* Doar lista de ordine poate face scroll (dacă sunt multe); restul formularului rămâne fix vizibil */
+/* Nu mai crește – footer (Place Order) rămâne imediat sub Risk Management */
+.trade-pane-orders .limit-order-panel-orders-list {
+  flex: 0 1 auto;
+  min-height: 48px;
+  max-height: 180px;
+  margin-top: var(--ds-spacing-1);
+  padding-top: var(--ds-spacing-1);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.trade-pane-orders .limit-order-panel-orders-items {
+  min-height: 0;
+  overflow: visible;
+}
+/* Butoane compacte în footer — NU și Place Order (ui-button-lg) */
+.trade-pane-orders .limit-order-panel-container .ui-card-footer .ui-button:not(.ui-button-lg) {
+  min-height: 32px !important;
+  height: 32px !important;
+  padding: 0 12px !important;
+  font-size: var(--ds-font-size-sm) !important;
+  font-weight: var(--ds-font-weight-medium) !important;
+  line-height: var(--ds-line-height-tight) !important;
+  border-radius: var(--ds-radius-md) !important;
+  border: 1px solid transparent !important;
+  transition: all var(--ds-transition-fast) ease !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  color: #ffffff !important;
+}
+/* Place Buy/Sell Order — înălțime/padding corecte (înainte tot footer-ul era forțat la 32px) */
+.trade-pane-orders .limit-order-panel-container .ui-card-footer .ui-button.ui-button-lg {
+  min-height: var(--ds-button-height-lg, 48px) !important;
+  height: auto !important;
+  padding: 0 var(--ds-spacing-4, 16px) !important;
+  font-size: var(--ds-font-size-base, 1rem) !important;
+  line-height: 1.25 !important;
+  width: 100% !important;
+}
+/* Place Order: culoare în funcție de Buy (primary) sau Sell (danger) */
+.trade-pane-orders .limit-order-panel-container .ui-card-footer .ui-button.ui-button-primary {
+  background: #1e40af !important;
+  border-color: #1e40af !important;
+}
+.trade-pane-orders .limit-order-panel-container .ui-card-footer .ui-button.ui-button-primary:hover:not(:disabled) {
+  background: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.4) !important;
+}
+.trade-pane-orders .limit-order-panel-container .ui-card-footer .ui-button.ui-button-danger {
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+}
+.trade-pane-orders .limit-order-panel-container .ui-card-footer .ui-button.ui-button-danger:hover:not(:disabled) {
+  background: #b91c1c !important;
+  border-color: #b91c1c !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4) !important;
+}
+.trade-pane-orders .limit-order-panel-container .ui-card-footer .ui-button:active {
+  transform: translateY(0) !important;
+}
+/* Unite cele două părți Buy/Sell: fără spațiu mort între Body (form) și Footer (wallet + Place Order) */
+/* Footer cu același chenar ca Risk Management (border, border-radius, background) */
+.trade-pane-orders .limit-order-panel-container .ui-card-footer {
+  margin-top: auto !important;
+  flex-shrink: 0;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  padding: var(--ds-spacing-2, 8px) var(--ds-spacing-3, 12px) !important;
+  padding-top: var(--ds-spacing-2, 8px) !important;
+  padding-bottom: var(--ds-spacing-2, 8px) !important;
+  border-top: none !important;
+  border: 1px solid var(--ds-border-color, #2a2d47) !important;
+  border-radius: 10px !important;
+  background: var(--ds-bg-elevated) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  gap: var(--ds-spacing-2);
+}
+.trade-pane-orders .limit-order-panel-footer-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--ds-spacing-2, 8px);
+  width: 100%;
+}
+/* Fee sus, Place Order jos — lățime completă (fără buton mic în dreapta) */
+.trade-pane-orders .limit-order-panel-footer-actions > div {
+  flex: none !important;
+  width: 100% !important;
+  min-width: 0;
+}
+/* Risk: target touch mai clar în panoul Trade */
+.trade-pane-orders .limit-order-panel-risk-section--footer button {
+  min-height: 44px;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+.trade-pane-orders .limit-order-panel-container .ui-card-body {
+  padding-bottom: 0 !important;
+}
+
+/* Minimal splitter: no visible line by default, components almost glued; line on hover for resize */
+.trade-splitter {
+  background: transparent;
+  cursor: col-resize;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.trade-splitter-horz {
+  cursor: row-resize;
+}
+
+.trade-splitter::after {
+  content: '';
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+  border-radius: 1px;
+  background: transparent;
+  transition: background 0.15s ease;
+}
+
+.trade-splitter-horz::after {
+  top: 50%;
+  bottom: auto;
+  left: 10px;
+  right: 10px;
+  width: auto;
+  height: 1px;
+  transform: translateY(-50%);
+  background: transparent;
+}
+
+.trade-splitter:hover::after {
+  background: rgba(var(--ds-accent-rgb), 0.4);
+}
+
+/* Tight grid: minimal gap between chart and order panel */
+.trade-workspace-grid-tight {
+  gap: 0;
+}
+
+.trade-grid-tight {
+  gap: 0;
+}
+
+.trade-tip {
+  position: absolute;
+  left: var(--ds-spacing-3);
+  right: var(--ds-spacing-3);
+  bottom: var(--ds-spacing-3);
+  z-index: var(--ds-z-base);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-spacing-3);
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  border-radius: var(--ds-radius-lg);
+  border: var(--ds-border-width) solid rgba(var(--ds-accent-rgb), 0.35);
+  background: rgba(var(--ds-accent-rgb), 0.18);
+  color: var(--ds-text-primary);
+  backdrop-filter: blur(6px);
+}
+
+.trade-tip-text {
+  font-size: var(--ds-font-size-sm);
+  font-weight: 600;
+  line-height: var(--ds-line-height-tight);
+  min-width: 0;
+}
+
+.trade-tip-close {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.2);
+  color: #dbeafe;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trade-tip-close:hover {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.trade-pane-tabs {
+  display: flex;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-2);
+  border-bottom: var(--ds-border-width) solid var(--ds-border-color);
+  background: var(--ds-color-success-bg);
+}
+
+.trade-tab {
+  height: var(--ds-input-height-sm);
+  padding: 0 var(--ds-spacing-3);
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid var(--ds-border-color);
+  background: transparent;
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.trade-tab.active {
+  background: rgba(var(--ds-accent-rgb), 0.12);
+  border-color: rgba(var(--ds-accent-rgb), 0.55);
+  color: var(--ds-text-primary);
+}
+
+/* Bottom panel: closed = thin bar with one button; open = 50vh with Open Orders / History */
+.trade-bottom {
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-lg);
+  background: var(--ds-bg-surface);
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+.trade-bottom-closed {
+  min-height: 72px;
+  max-height: 72px;
+  justify-content: center;
+  align-items: stretch;
+}
+
+/* Zona sub chart: previzualizare cu Open Orders și Order History mereu vizibile */
+.trade-bottom-bar-closed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2);
+  padding: 0 var(--ds-spacing-3);
+  min-height: 44px;
+}
+
+.trade-bottom-preview-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--ds-border-color);
+  background: #000000;
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.trade-bottom-preview-btn:hover {
+  background: rgba(var(--ds-accent-rgb), 0.1);
+  border-color: rgba(var(--ds-accent-rgb), 0.4);
+  color: var(--ds-text-primary);
+}
+
+.trade-bottom-preview-btn.active {
+  background: rgba(var(--ds-accent-rgb), 0.15);
+  border-color: rgba(var(--ds-accent-rgb), 0.5);
+  color: var(--ds-text-primary);
+}
+
+.trade-bottom-close-btn {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.trade-bottom-open {
+  min-height: 0;
+  max-height: none;
+}
+
+.trade-bottom-tabs {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-2) var(--ds-spacing-2) var(--ds-spacing-2);
+  border-bottom: 1px solid var(--ds-border-color);
+  background: #000000;
+}
+
+.trade-bottom-tab {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--ds-border-color);
+  background: transparent;
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-sm);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.trade-bottom-tab.active {
+  background: rgba(var(--ds-accent-rgb), 0.12);
+  border-color: rgba(var(--ds-accent-rgb), 0.55);
+  color: var(--ds-text-primary);
+}
+
+.trade-bottom-spacer {
+  flex: 1;
+}
+
+.trade-bottom-hint {
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-sm);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.trade-bottom-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--ds-spacing-2);
+  justify-content: flex-start;
+  align-content: flex-start;
+  /* Scrollbar estetic (thin + styled) */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(79, 172, 254, 0.3) transparent;
+}
+
+/* Panou deschis: scroll în zona tabelului, nu „mare gol” în body */
+.trade-bottom-open .trade-bottom-body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.trade-bottom-open .trade-bottom-body > .trade-bottom-table {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* WebKit browsers (Chrome, Safari, Edge) */
+.trade-bottom-body::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.trade-bottom-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.trade-bottom-body::-webkit-scrollbar-thumb {
+  background: rgba(var(--ds-accent-rgb), 0.3);
+  border-radius: var(--ds-radius-xs);
+}
+
+.trade-bottom-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--ds-accent-rgb), 0.5);
+}
+
+.trade-bottom-loading,
+.trade-bottom-error,
+.trade-bottom-empty {
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-sm);
+  padding: var(--ds-spacing-2);
+}
+
+.trade-bottom-error {
+  color: var(--ds-color-warning);
+}
+
+/* Debug expand blocks (open orders / history) — sursă: răspuns API DEX backend */
+.trade-bottom-debug-details {
+  margin-top: var(--ds-spacing-3);
+  font-size: 0.6875rem;
+  font-family: ui-monospace, monospace;
+}
+
+.trade-bottom-debug-summary {
+  cursor: pointer;
+  color: var(--ds-text-secondary);
+}
+
+.trade-bottom-debug-pre {
+  margin-top: var(--ds-spacing-2);
+  padding: var(--ds-spacing-2);
+  background: var(--ds-bg-elevated);
+  border-radius: var(--ds-radius-md);
+  overflow: auto;
+}
+
+.trade-bottom-debug-panel {
+  margin-top: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3);
+  background: var(--ds-bg-elevated);
+  border-radius: var(--ds-radius-md);
+  text-align: left;
+}
+
+.trade-bottom-debug-copy-btn {
+  margin-bottom: var(--ds-spacing-3);
+  padding: 6px 12px;
+  background: var(--ds-accent, #22c55e);
+  color: #fff;
+  border: none;
+  border-radius: var(--ds-radius-md);
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.trade-bottom-debug-copy-btn:hover {
+  filter: brightness(1.08);
+}
+
+.trade-bottom-debug-label {
+  margin-bottom: var(--ds-spacing-2);
+}
+
+.trade-bottom-debug-pre--req {
+  margin-top: 4px;
+  color: var(--ds-color-success, #22c55e);
+}
+
+.trade-bottom-debug-pre--res {
+  margin-top: 4px;
+  color: var(--ds-accent-ota, #14f195);
+}
+
+.trade-bottom-debug-meta {
+  margin-top: 4px;
+  color: var(--ds-text-secondary);
+}
+
+.trade-bottom-error-title {
+  margin-bottom: var(--ds-spacing-2);
+  font-weight: 700;
+  color: var(--ds-text-primary);
+}
+
+.trade-open-orders-watching-row {
+  background: var(--ds-bg-elevated);
+  border-left: 3px solid var(--dex-accent, #6366f1);
+}
+
+.trade-open-orders-watching-cell {
+  font-size: 0.8125rem;
+  padding: 12px;
+}
+
+.trade-side-buy {
+  color: var(--ds-color-success, #10b981);
+  font-weight: 600;
+}
+
+.trade-side-sell {
+  color: var(--ds-color-danger, #ef4444);
+  font-weight: 600;
+}
+
+.trade-side-entry {
+  font-weight: 500;
+}
+
+.trade-open-order-pnl {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.trade-open-order-pnl-value {
+  font-weight: 700;
+  font-size: 0.8125rem;
+}
+
+.trade-open-order-pnl-pct {
+  font-weight: 600;
+  font-size: 0.6875rem;
+  opacity: 0.85;
+}
+
+.trade-open-order-pnl-profit {
+  color: var(--ds-color-success, #10b981);
+}
+
+.trade-open-order-pnl-loss {
+  color: var(--ds-color-danger, #ef4444);
+}
+
+.trade-muted {
+  color: var(--ds-text-secondary);
+  font-weight: 500;
+}
+
+.trade-history-status-filled {
+  color: var(--ds-color-success, #10b981);
+  text-transform: capitalize;
+}
+
+.trade-history-status-other {
+  color: var(--ds-text-secondary);
+  text-transform: capitalize;
+}
+
+.trade-bottom-empty-title {
+  color: var(--ds-text-primary);
+  font-weight: 800;
+  margin-bottom: var(--ds-spacing-2);
+}
+
+.trade-bottom-empty-subtitle {
+  color: var(--ds-text-secondary);
+  font-weight: 600;
+}
+
+.trade-bottom-table .ui-table-wrapper {
+  max-height: 100%;
+}
+
+/* Drawer */
+.trade-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(2px);
+}
+
+.trade-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: min(440px, 92vw);
+  z-index: 9999;
+  background: var(--ds-bg-surface);
+  border-left: 1px solid var(--ds-border-color);
+  box-shadow: -16px 0 40px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.trade-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ds-spacing-3) var(--ds-spacing-3);
+  border-bottom: 1px solid var(--ds-border-color);
+}
+
+.trade-drawer-title {
+  color: var(--ds-text-primary);
+  font-size: var(--ds-table-font-size);
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+.trade-drawer-close {
+  width: var(--ds-input-height-sm);
+  height: var(--ds-input-height-sm);
+  border-radius: var(--ds-radius-lg);
+  border: var(--ds-border-width) solid rgba(255, 255, 255, 0.12);
+  background: var(--ds-color-success-bg);
+  color: var(--ds-text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trade-drawer-close:hover {
+  background: #000000;
+}
+
+.trade-drawer-tabs {
+  padding: var(--ds-spacing-2);
+  border-bottom: 1px solid var(--ds-border-color);
+  display: flex;
+  gap: var(--ds-spacing-2);
+}
+
+.trade-drawer-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--ds-spacing-2);
+}
+
+.trade-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--ds-spacing-2);
+  gap: var(--ds-spacing-4);
+}
+
+.trade-page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-3); /* 12px - Sonnet */
+}
+
+.trade-header-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-spacing-3);
+  width: 100%;
+  min-width: 0;
+}
+
+.trade-header-toolbar-left,
+.trade-header-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-3);
+  min-width: 0;
+}
+
+/* Prevent token selector and FAV from overlapping when header is wide or narrow */
+.trade-header-toolbar-left {
+  gap: var(--ds-spacing-3);
+  flex-shrink: 0;
+}
+.trade-header-toolbar-right {
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+/* Token Selector (like Swap page) - WITH LOGO */
+/* Old token selector CSS removed - using SSOT header-token-selector.css */
+
+.trade-market-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  flex-shrink: 0;
+}
+
+.trade-market-chip {
+  display: inline-flex;
+  align-items: center;
+  height: var(--ds-input-height-sm);
+  padding: 0 var(--ds-spacing-3);
+  border-radius: var(--ds-radius-full);
+  border: 1px solid var(--ds-border-color);
+  background: var(--ds-bg-surface);
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  gap: var(--ds-spacing-2);
+}
+
+.trade-market-chip-icon {
+  width: var(--ds-icon-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trade-market-chip-value {
+  min-width: var(--ds-spacing-4);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.trade-market-chip-live {
+  min-width: 150px; /* stable width even if state flips */
+}
+
+.trade-market-chip-pairs {
+  min-width: 132px; /* stable width even when count loads */
+  justify-content: space-between;
+}
+
+.trade-market-chip.live {
+  color: var(--ds-accent-ota);
+  border-color: rgba(20, 241, 149, 0.35);
+  background: rgba(20, 241, 149, 0.08);
+}
+
+.trade-market-chip.offline {
+  color: var(--ds-color-warning);
+  border-color: rgba(251, 191, 36, 0.35);
+  background: rgba(251, 191, 36, 0.08);
+}
+
+/* When injected into header: full width so selector and FAV don't overlap with right block on large screens */
+.ai-trading-header-center {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+}
+.ai-trading-header-center .trade-header-toolbar {
+  width: 100%;
+  min-width: 0;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.ai-trading-header-center .trade-header-toolbar::-webkit-scrollbar {
+  display: none;
+}
+
+.trade-fav-label {
+  margin-left: var(--ds-spacing-1);
+  font-size: var(--ds-font-size-sm);
+  font-weight: 500;
+  line-height: 1;
+}
+
+/* Price alerts rendered in global Modal should feel integrated */
+.price-alerts-modal-wrapper .modal-body {
+  padding: 0;
+}
+
+/* Market overview in global Modal should feel integrated */
+.market-overview-modal-wrapper .modal-body {
+  padding: 0;
+}
+
+/* Favorite Button in Header */
+.trade-page-favorite-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 60px !important;
+  height: 32px !important;
+  padding: 0 8px !important;
+  background: var(--ds-bg-surface) !important;
+  border: 1px solid var(--ds-border-color) !important;
+  border-radius: var(--ds-radius-md) !important;
+  color: var(--ds-text-secondary) !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  flex-shrink: 0 !important;
+  gap: var(--ds-spacing-1) !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.trade-fav-menu {
+  position: relative;
+  display: inline-flex;
+}
+
+.trade-fav-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--ds-z-dropdown-above);
+  background: transparent;
+}
+
+.trade-fav-dropdown {
+  background: var(--ds-bg-surface);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-lg);
+  box-shadow: var(--ds-shadow-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.trade-fav-dropdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  border-bottom: 1px solid var(--ds-border-color);
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-sm);
+  font-weight: 700;
+}
+
+.trade-fav-close {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--ds-text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trade-fav-close:hover {
+  background: var(--ds-bg-hover);
+  border-color: var(--ds-border-color);
+  color: var(--ds-text-primary);
+}
+
+.trade-fav-dropdown-list {
+  padding: var(--ds-spacing-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-1);
+  max-height: 300px;
+  overflow: auto;
+}
+
+.trade-fav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-2);
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ds-text-primary);
+  cursor: pointer;
+}
+
+.trade-fav-item:hover {
+  background: var(--ds-bg-hover);
+  border-color: var(--ds-border-color);
+}
+
+.trade-fav-item.selected {
+  background: rgba(var(--ds-accent-rgb), 0.1);
+  border-color: var(--ds-accent);
+}
+
+.trade-fav-item-symbol {
+  font-weight: 700;
+  font-size: var(--ds-font-size-sm);
+  white-space: nowrap;
+}
+
+.trade-fav-item-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  color: var(--ds-text-secondary);
+}
+
+.trade-fav-star {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  color: var(--ds-text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trade-fav-star:hover {
+  background: var(--ds-bg-hover);
+  color: var(--ds-accent);
+}
+
+.trade-fav-star.active {
+  color: var(--ds-color-warning);
+}
+
+.trade-fav-empty {
+  padding: var(--ds-spacing-3) var(--ds-spacing-3);
+  text-align: center;
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-sm);
+}
+
+.trade-page-favorite-btn:hover {
+  background: var(--ds-bg-hover) !important;
+  border-color: var(--ds-accent) !important;
+  color: var(--ds-accent) !important;
+}
+
+.trade-page-favorite-btn.active {
+  color: #fbbf24 !important; /* Gold color for active favorite */
+  border-color: #fbbf24 !important;
+}
+
+.trade-page-favorite-btn.active:hover {
+  color: #f59e0b !important;
+  border-color: #f59e0b !important;
+}
+
+.trade-page-title {
+  font-size: var(--ds-font-size-xl);
+  font-weight: var(--ds-font-weight-semibold);
+  line-height: var(--ds-line-height-normal);
+  color: var(--ds-text-primary); /* Sonnet text */
+  margin: 0;
+}
+
+.trade-page-pair-selector {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+}
+
+.trade-page-select {
+  height: var(--ds-input-height-md) !important; /* 40px - Sonnet fixed height */
+  padding: 0 var(--ds-spacing-3) !important;
+  background-color: var(--ds-bg-surface) !important;
+  border: var(--ds-border-width) solid var(--ds-border-color) !important;
+  border-radius: var(--ds-radius-md) !important;
+  color: var(--ds-text-primary) !important;
+  font-size: var(--ds-font-size-base) !important;
+  font-weight: var(--ds-font-weight-medium) !important;
+  line-height: var(--ds-line-height-normal) !important;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 150ms;
+  box-sizing: border-box;
+}
+
+.trade-page-select:hover:not(:disabled) {
+  border-color: var(--ds-bg-hover) !important; /* Sonnet hover */
+}
+
+.trade-page-select:focus {
+  border-color: var(--ds-border-color-light) !important;
+}
+
+.trade-page-select:focus-visible {
+  outline: none !important;
+  box-shadow: var(--ds-focus-ring-box-shadow) !important; /* Sonnet focus ring */
+}
+
+/* Side-by-Side Layout: Chart Left (60%) + Limit Orders Right (40%) */
+.trade-page-content {
+  display: grid;
+  grid-template-columns: 1fr 400px; /* Chart 60% / Limit Orders 40% */
+  gap: var(--ds-spacing-6); /* 24px - Sonnet standard */
+  flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 0;
+  align-items: start;
+}
+
+/* Chart Zone - Left Side */
+.trade-page-chart-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 0 !important; /* Eliminat gap pentru a nu crea spațiu care ar putea arăta ca o linie */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Elimină orice border-top sau border-bottom din elementele din chart zone */
+.trade-page-chart-zone > * {
+  border-top: none !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.trade-page-chart-container {
+  background-color: var(--ds-bg-surface) !important;
+  border: var(--ds-border-width) solid var(--ds-border-color) !important;
+  border-top: none !important;
+  border-radius: var(--ds-chart-border-radius) !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  padding: var(--ds-chart-container-padding) !important;
+  margin-top: 0 !important;
+  min-height: var(--ds-chart-min-height-lg);
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Elimină border-top din orice element din interiorul chart container */
+.trade-page-chart-container > * {
+  border-top: none !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* Elimină border-bottom din TradingView container (dacă există) */
+.trade-page-chart-container .tradingview-chart-container {
+  border-top: none !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.trade-page-chart-container > * {
+  flex: 1 1 auto;
+  min-height: var(--ds-chart-min-height);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Limit Orders Panel - Right Side (Fixed Width) */
+.trade-page-limit-orders-zone {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden; /* Eliminat scroll complet */
+  align-self: start; /* Align to top */
+}
+
+/* Content Columns - Below Chart+Orders */
+.trade-page-content-columns {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: var(--ds-spacing-4, 16px);
+  width: 100%;
+  box-sizing: border-box;
+  align-items: start;
+  overflow-x: hidden;
+}
+
+/* Left Column */
+.trade-page-left-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-4);
+  width: 100%;
+  box-sizing: border-box;
+  align-items: stretch;
+}
+
+.trade-page-pairs-section {
+  flex-shrink: 0;
+}
+
+.trade-page-overview-section {
+  flex-shrink: 0;
+}
+
+/* Right Column - Grid cu 2 coloane */
+.trade-page-right-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--ds-spacing-4);
+  width: 100%;
+  box-sizing: border-box;
+  align-items: start;
+}
+
+/* Sections în grid */
+.trade-page-limit-orders-section,
+.trade-page-price-alerts-section,
+.trade-page-recent-trades-section,
+.trade-page-orderbook-section {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.trade-page-stats-section {
+  flex-shrink: 0;
+}
+
+.trade-page-orderbook-section {
+  flex-shrink: 0;
+  min-height: 400px;
+  min-width: 0; /* Prevent overflow */
+}
+
+/* Swap section removed - Swap is now a separate page */
+
+/* Chart Tools Section - In Chart Zone */
+.trade-page-chart-tools-section {
+  flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 1400px) {
+  .trade-page-content-columns {
+    grid-template-columns: 300px 1fr; /* Slightly narrower left column */
+  }
+}
+
+@media (max-width: 1200px) {
+  .trade-page-content {
+    grid-template-columns: 1fr; /* Single column on smaller screens */
+    grid-template-rows: auto auto; /* Chart top, Limit Orders bottom */
+  }
+
+  .trade-page-limit-orders-zone {
+    grid-row: 2;
+  }
+
+  .trade-page-content-columns {
+    grid-column: 1;
+    grid-row: 3;
+    grid-template-columns: 1fr; /* Single column on smaller screens */
+    gap: var(--ds-spacing-4); /* 16px */
+  }
+
+  .trade-page-left-column,
+  .trade-page-right-column {
+    max-height: none;
+  }
+
+  /* Right column - single column pe ecrane mai mici */
+  .trade-page-right-column {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .trade-workspace {
+    padding: 6px;
+  }
+
+  .trade-workspace-grid,
+  .trade-grid {
+    gap: 8px;
+  }
+
+  .trade-pane-orders {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .trade-page {
+    padding: var(--ds-spacing-3); /* 12px - Sonnet */
+    gap: var(--ds-spacing-3); /* 12px mobile */
+  }
+
+  .trade-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--ds-spacing-3); /* 12px mobile */
+  }
+
+  .trade-page-content {
+    gap: var(--ds-spacing-3); /* 12px mobile */
+  }
+
+  .trade-page-chart-container {
+    min-height: var(--ds-chart-min-height-sm);
+    height: auto;
+  }
+
+  .trade-page-left-column,
+  .trade-page-right-column {
+    max-height: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .trade-workspace {
+    padding: 4px;
+  }
+
+  .trade-workspace-grid,
+  .trade-grid {
+    gap: 6px;
+  }
+
+  .trade-page {
+    padding: var(--ds-spacing-2);
+  }
+
+  .trade-page-chart-container {
+    min-height: var(--ds-chart-min-height-xs);
+    height: auto;
+  }
+}

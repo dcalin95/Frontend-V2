@@ -1,0 +1,397 @@
+/**
+ * Email Auth Modal Styles - Sonnet (minimal)
+ */
+
+.email-auth-modal-sonnet {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Override default modal sizing ONLY for auth modal */
+.email-auth-modal-ai-shell {
+  max-width: 480px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(0, 255, 163, 0.08),
+    0 0 40px rgba(0, 255, 163, 0.08);
+  background:
+    radial-gradient(900px 400px at 20% -10%, rgba(0, 255, 163, 0.10), transparent 55%),
+    radial-gradient(700px 320px at 90% 0%, rgba(220, 31, 255, 0.08), transparent 55%),
+    var(--token-bg-surface, var(--bg-primary, #16182e));
+}
+
+/* Ensure we override Modal size presets deterministically */
+.modal-content.email-auth-modal-ai-shell {
+  max-width: 480px !important;
+}
+
+.email-auth-modal-content-sonnet {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0; /* modal-body already has padding */
+  width: 100%;
+}
+
+.email-auth-modal-narrow-sonnet {
+  width: 100%;
+  max-width: 400px;          /* slightly tighter for better proportions */
+  margin: 0 auto;            /* center form area */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.email-auth-modal-ai-shell .modal-body {
+  padding: 16px 18px 14px;   /* tighter than default */
+}
+
+.email-auth-ai-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.email-auth-ai-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.email-auth-ai-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  object-fit: contain;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.email-auth-ai-brand-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.email-auth-ai-brand-title {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.1;
+}
+
+.email-auth-ai-brand-subtitle {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.2;
+}
+
+.email-auth-ai-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: #000000;
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  line-height: 1;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.email-auth-ai-close:hover:not(:disabled) {
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.email-auth-ai-close:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.email-auth-modal-top-sonnet {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 8px;
+  align-items: center; /* prevent stretch, keeps proportions */
+}
+
+.email-auth-modal-title-row-sonnet {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center; /* prevent full-width tab bar */
+}
+
+.email-auth-modal-title-sonnet {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 750;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: -0.2px;
+  text-align: center;
+}
+
+.email-auth-mode-toggle-sonnet {
+  display: inline-flex;      /* never stretch full-width */
+  gap: 6px;
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: #000000;
+  width: auto;
+  max-width: 100%;
+  align-self: center;
+}
+
+.email-auth-mode-btn-sonnet {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.70);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+  min-width: 86px;           /* consistent proportions */
+}
+
+.email-auth-mode-btn-sonnet.active {
+  background: #000000;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.email-auth-mode-btn-sonnet:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Error / success */
+.email-auth-error-sonnet {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 13px;
+  width: 100%;
+}
+
+.email-auth-error-sonnet svg {
+  flex-shrink: 0;
+  color: #ef4444;
+}
+
+.email-auth-success-sonnet {
+  padding: 10px 12px;
+  background: rgba(34, 197, 94, 0.10);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 13px;
+  width: 100%;
+}
+
+/* Form */
+.email-auth-form-sonnet {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.email-auth-field-sonnet {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.email-auth-label-sonnet {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.email-auth-input-wrap-sonnet {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.email-auth-input-icon-sonnet {
+  position: absolute;
+  left: 12px;
+  color: rgba(255, 255, 255, 0.45);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.email-auth-input-sonnet {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px 0 40px;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.email-auth-input-sonnet::placeholder {
+  color: rgba(255, 255, 255, 0.40);
+}
+
+.email-auth-input-sonnet:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.22);
+  background: #000000;
+}
+
+.email-auth-field-sonnet:focus-within .email-auth-input-icon-sonnet {
+  color: rgba(255, 255, 255, 0.70);
+}
+
+.email-auth-input-sonnet:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.email-auth-links-sonnet {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.email-auth-link-sonnet {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.70);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 8px;
+}
+
+.email-auth-link-sonnet:hover:not(:disabled) {
+  background: #000000;
+  color: rgba(255, 255, 255, 0.90);
+}
+
+.email-auth-link-sonnet:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Submit button */
+.email-auth-submit-btn-sonnet {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 14px;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.email-auth-submit-btn-sonnet:hover:not(:disabled) {
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.email-auth-submit-btn-sonnet:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* OAuth divider + Google button */
+.email-auth-oauth-divider {
+  text-align: center;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 4px 0;
+}
+
+.email-auth-oauth-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 14px;
+  background: #1a73e8;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 120ms ease, opacity 120ms ease;
+  width: 100%;
+}
+
+.email-auth-oauth-btn:hover:not(:disabled) {
+  background: #1557b0;
+}
+
+.email-auth-oauth-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Biometric button */
+.email-auth-biometric-btn-sonnet {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 12px;
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.email-auth-biometric-btn-sonnet:hover:not(:disabled) {
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.email-auth-biometric-btn-sonnet:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .email-auth-modal-ai-shell { max-width: 94vw; }
+}

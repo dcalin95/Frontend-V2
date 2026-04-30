@@ -1,0 +1,148 @@
+/* Login Modal Styles */
+
+.login-modal-content {
+  padding: 1rem 0;
+}
+
+.login-step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+  gap: 0.5rem;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.step-number {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--color-border, #2a2a2a);
+  color: var(--color-text-secondary, #888);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.step.active .step-number {
+  background: var(--color-primary, #14f195);
+  color: var(--color-bg, #000);
+}
+
+.step.completed .step-number {
+  background: var(--color-success, #14f195);
+  color: var(--color-bg, #000);
+}
+
+.step-label {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #888);
+}
+
+.step.active .step-label {
+  color: var(--color-text, #fff);
+}
+
+.step-connector {
+  width: 3rem;
+  height: 2px;
+  background: var(--color-border, #2a2a2a);
+  margin: 0 0.5rem;
+}
+
+.login-message {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.login-message p {
+  font-size: 1rem;
+  color: var(--color-text, #fff);
+}
+
+.login-error {
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.login-error p {
+  color: #dc3545;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.login-wallet-info {
+  background: rgba(20, 241, 149, 0.1);
+  border: 1px solid rgba(20, 241, 149, 0.3);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.login-wallet-info p {
+  margin: 0;
+  color: var(--color-text, #fff);
+  font-size: 0.875rem;
+}
+
+.login-wallet-info strong {
+  color: var(--color-primary, #14f195);
+}
+
+.login-instructions {
+  background: #000000;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.login-instructions p {
+  margin: 0 0 1rem 0;
+  color: var(--color-text-secondary, #888);
+  font-size: 0.875rem;
+}
+
+.login-instructions ol {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: var(--color-text-secondary, #888);
+  font-size: 0.875rem;
+}
+
+.login-instructions li {
+  margin-bottom: 0.5rem;
+}
+
+.login-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid rgba(20, 241, 149, 0.2);
+  border-top-color: var(--color-primary, #14f195);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

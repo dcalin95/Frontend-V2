@@ -1,0 +1,297 @@
+/**
+ * 🎨 Sonnet Layout Primitives - Claude Sonnet / Anthropic Style
+ * 
+ * Clean, airy, correct proportions, clear hierarchy
+ * Reusable layout components: Container, Grid, Stack, Panel
+ */
+
+/* === CONTAINER / PAGE SHELL === */
+.sonnet-container {
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  padding-inline: var(--sonnet-spacing-6); /* 24px desktop */
+  box-sizing: border-box;
+}
+
+.sonnet-container-sm {
+  max-width: 1200px;
+}
+
+.sonnet-container-lg {
+  max-width: 1600px;
+}
+
+@media (max-width: 1024px) {
+  .sonnet-container {
+    padding-inline: var(--sonnet-spacing-4); /* 16px tablet */
+  }
+}
+
+@media (max-width: 768px) {
+  .sonnet-container {
+    padding-inline: var(--sonnet-spacing-3); /* 12px mobile */
+  }
+}
+
+/* === GRID === */
+.sonnet-grid {
+  display: grid;
+  gap: var(--sonnet-spacing-4); /* 16px default */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sonnet-grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.sonnet-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.sonnet-grid-auto {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.sonnet-grid-gap-3 {
+  gap: var(--sonnet-spacing-3); /* 12px */
+}
+
+.sonnet-grid-gap-4 {
+  gap: var(--sonnet-spacing-4); /* 16px */
+}
+
+.sonnet-grid-gap-6 {
+  gap: var(--sonnet-spacing-6); /* 24px */
+}
+
+@media (max-width: 1024px) {
+  .sonnet-grid-2,
+  .sonnet-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* === STACK === */
+.sonnet-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sonnet-spacing-4); /* 16px default */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sonnet-stack-sm {
+  gap: var(--sonnet-spacing-3); /* 12px */
+}
+
+.sonnet-stack-lg {
+  gap: var(--sonnet-spacing-6); /* 24px */
+}
+
+.sonnet-stack-horizontal {
+  flex-direction: row;
+  align-items: center;
+}
+
+/* === PANEL (Window/Panel Standard) === */
+.sonnet-panel {
+  background-color: var(--sonnet-bg-elevated);
+  border: 1px solid var(--sonnet-border-color);
+  border-radius: var(--sonnet-radius-md); /* 8px standard */
+  padding: var(--sonnet-spacing-4); /* 16px standard padding */
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* Allow shrink */
+  transition: border-color var(--sonnet-transition-base);
+}
+
+.sonnet-panel:hover {
+  border-color: var(--sonnet-border-color-light);
+}
+
+/* Panel Header */
+.sonnet-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sonnet-spacing-3); /* 12px */
+  margin-bottom: var(--sonnet-spacing-4); /* 16px */
+  padding-bottom: var(--sonnet-spacing-4); /* 16px */
+  border-bottom: 1px solid var(--sonnet-border-color);
+  min-height: 44px; /* Consistent header height */
+  box-sizing: border-box;
+}
+
+.sonnet-panel-title {
+  font-size: var(--sonnet-font-size-md); /* 16px */
+  font-weight: var(--sonnet-font-weight-semibold); /* 600 */
+  color: var(--sonnet-text-primary);
+  line-height: var(--sonnet-line-height-tight); /* 1.3 */
+  margin: 0;
+}
+
+.sonnet-panel-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sonnet-spacing-2); /* 8px */
+  flex-shrink: 0;
+}
+
+/* Panel Body */
+.sonnet-panel-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  color: var(--sonnet-text-secondary);
+  line-height: var(--sonnet-line-height-normal); /* 1.5 */
+}
+
+.sonnet-panel-body-no-scroll {
+  overflow: visible;
+}
+
+/* Panel Footer */
+.sonnet-panel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sonnet-spacing-3); /* 12px */
+  margin-top: var(--sonnet-spacing-4); /* 16px */
+  padding-top: var(--sonnet-spacing-4); /* 16px */
+  border-top: 1px solid var(--sonnet-border-color);
+  min-height: 44px; /* Consistent footer height */
+  box-sizing: border-box;
+}
+
+/* Panel Variants */
+.sonnet-panel-elevated {
+  box-shadow: var(--sonnet-shadow-md);
+  border-color: transparent;
+}
+
+.sonnet-panel-flat {
+  border-color: var(--sonnet-border-color-light);
+  background-color: var(--sonnet-bg-base);
+}
+
+/* === MODAL === */
+.sonnet-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: var(--sonnet-z-modal-backdrop);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sonnet-spacing-4); /* 16px */
+  box-sizing: border-box;
+}
+
+.sonnet-modal-content {
+  background-color: var(--sonnet-bg-elevated);
+  border: 1px solid var(--sonnet-border-color);
+  border-radius: var(--sonnet-radius-lg); /* 12px */
+  box-shadow: var(--sonnet-shadow-xl);
+  max-width: 600px;
+  width: 100%;
+  max-height: calc(100vh - 32px);
+  display: flex;
+  flex-direction: column;
+  z-index: var(--sonnet-z-modal);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.sonnet-modal-content-sm {
+  max-width: 400px;
+}
+
+.sonnet-modal-content-lg {
+  max-width: 800px;
+}
+
+.sonnet-modal-content-xl {
+  max-width: 1200px;
+}
+
+.sonnet-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sonnet-spacing-3);
+  padding: var(--sonnet-spacing-4);
+  border-bottom: 1px solid var(--sonnet-border-color);
+  min-height: 44px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.sonnet-modal-title {
+  font-size: var(--sonnet-font-size-lg); /* 18px */
+  font-weight: var(--sonnet-font-weight-semibold); /* 600 */
+  color: var(--sonnet-text-primary);
+  line-height: var(--sonnet-line-height-tight);
+  margin: 0;
+}
+
+.sonnet-modal-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--sonnet-spacing-4);
+  box-sizing: border-box;
+}
+
+.sonnet-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sonnet-spacing-3);
+  padding: var(--sonnet-spacing-4);
+  border-top: 1px solid var(--sonnet-border-color);
+  min-height: 44px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+/* === FOCUS RING (Consistent) === */
+*:focus-visible {
+  outline: var(--sonnet-focus-ring-width) solid var(--sonnet-focus-ring-color);
+  outline-offset: var(--sonnet-focus-ring-offset);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sonnet-panel {
+    padding: var(--sonnet-spacing-3); /* 12px mobile */
+  }
+
+  .sonnet-panel-header,
+  .sonnet-panel-footer {
+    margin-bottom: var(--sonnet-spacing-3);
+    margin-top: var(--sonnet-spacing-3);
+    padding-bottom: var(--sonnet-spacing-3);
+    padding-top: var(--sonnet-spacing-3);
+  }
+
+  .sonnet-modal-content {
+    max-width: calc(100vw - 32px);
+    max-height: calc(100vh - 32px);
+  }
+
+  .sonnet-modal-header,
+  .sonnet-modal-body,
+  .sonnet-modal-footer {
+    padding: var(--sonnet-spacing-3);
+  }
+}

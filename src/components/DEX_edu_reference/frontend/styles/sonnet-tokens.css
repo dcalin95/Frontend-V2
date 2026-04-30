@@ -1,0 +1,111 @@
+/**
+ * 🎨 Sonnet Design Tokens - Claude Sonnet / Anthropic Style
+ * 
+ * Clean, airy, correct proportions, clear hierarchy
+ * No dead spaces, no cramped layouts
+ */
+
+:root {
+  /* === SPACING SCALE === */
+  --sonnet-spacing-1: 4px;   /* Tiny gap */
+  --sonnet-spacing-2: 8px;   /* Small gap */
+  --sonnet-spacing-3: 12px;  /* Medium-small gap */
+  --sonnet-spacing-4: 16px;  /* Medium gap (standard) */
+  --sonnet-spacing-5: 20px;  /* Medium-large gap */
+  --sonnet-spacing-6: 24px;  /* Large gap */
+  --sonnet-spacing-8: 32px;  /* Extra large gap */
+  --sonnet-spacing-10: 40px; /* 2xl gap */
+  --sonnet-spacing-12: 48px; /* 3xl gap */
+  
+  /* === RADII === */
+  --sonnet-radius-sm: 6px;   /* Small radius */
+  --sonnet-radius-md: 8px;   /* Standard radius */
+  --sonnet-radius-lg: 12px;  /* Large radius */
+  --sonnet-radius-xl: 16px;  /* Extra large radius */
+  
+  /* === TYPOGRAPHY SCALE === */
+  --sonnet-font-family-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  --sonnet-font-family-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+  
+  --sonnet-font-size-xs: 11px;
+  --sonnet-font-size-sm: 13px;
+  --sonnet-font-size-base: 14px;
+  --sonnet-font-size-md: 16px;
+  --sonnet-font-size-lg: 18px;
+  --sonnet-font-size-xl: 20px;
+  --sonnet-font-size-2xl: 24px;
+  --sonnet-font-size-3xl: 30px;
+  
+  --sonnet-font-weight-normal: 400;
+  --sonnet-font-weight-medium: 500;
+  --sonnet-font-weight-semibold: 600;
+  --sonnet-font-weight-bold: 700;
+  
+  --sonnet-line-height-tight: 1.3;
+  --sonnet-line-height-normal: 1.5;
+  --sonnet-line-height-relaxed: 1.7;
+  
+  /* === COLORS (Light) === */
+  --sonnet-bg-base: #ffffff;
+  --sonnet-bg-elevated: #fafafa;
+  --sonnet-bg-hover: #f5f5f5;
+  --sonnet-bg-active: #f0f0f0;
+  
+  --sonnet-text-primary: #0a0a0a;
+  --sonnet-text-secondary: #6b7280;
+  --sonnet-text-tertiary: #9ca3af;
+  --sonnet-text-disabled: #d1d5db;
+  
+  --sonnet-border-color: #e5e7eb;
+  --sonnet-border-color-light: #f3f4f6;
+  --sonnet-border-color-focus: #3b82f6;
+  
+  --sonnet-color-primary: #3b82f6;
+  --sonnet-color-primary-hover: #2563eb;
+  --sonnet-color-error: #ef4444;
+  --sonnet-color-success: #10b981;
+  --sonnet-color-warning: #f59e0b;
+  
+  /* === SHADOWS === */
+  --sonnet-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --sonnet-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --sonnet-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --sonnet-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* === FOCUS RING === */
+  --sonnet-focus-ring-width: 2px;
+  --sonnet-focus-ring-color: var(--sonnet-color-primary);
+  --sonnet-focus-ring-offset: 2px;
+  --sonnet-focus-ring: 0 0 0 var(--sonnet-focus-ring-width) var(--sonnet-focus-ring-color);
+  
+  /* === Z-INDEX === */
+  --sonnet-z-base: 1;
+  --sonnet-z-sticky: 10;
+  --sonnet-z-dropdown: 100;
+  --sonnet-z-modal-backdrop: 1000;
+  --sonnet-z-modal: 1001;
+  --sonnet-z-popover: 1010;
+  --sonnet-z-tooltip: 1020;
+  
+  /* === TRANSITIONS === */
+  --sonnet-transition-fast: 150ms ease;
+  --sonnet-transition-base: 200ms ease;
+  --sonnet-transition-slow: 300ms ease;
+}
+
+/* Dark theme (optional) */
+[data-theme="dark"] {
+  --sonnet-bg-base: #0a0a0a;
+  --sonnet-bg-elevated: #1a1a1a;
+  --sonnet-bg-hover: #252525;
+  --sonnet-bg-active: #303030;
+  
+  --sonnet-text-primary: #fafafa;
+  --sonnet-text-secondary: #9ca3af;
+  --sonnet-text-tertiary: #6b7280;
+  --sonnet-text-disabled: #4b5563;
+  
+  --sonnet-border-color: #2a2a2a;
+  --sonnet-border-color-light: #353535;
+  --sonnet-border-color-focus: #60a5fa;
+}

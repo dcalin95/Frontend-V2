@@ -36,8 +36,48 @@ const queryClient = new QueryClient();
 // Create context
 const WalletContext = createContext();
 
+const noop = () => {};
+const asyncNoop = async () => {};
+const EMPTY_WALLET_CONTEXT = Object.freeze({
+  walletAddress: null,
+  evmWalletAddress: null,
+  solanaWalletAddress: null,
+  isConnected: false,
+  isEvmConnected: false,
+  isSolanaConnected: false,
+  ethBalance: "0",
+  solanaBalance: "0",
+  nativeSymbol: "BNB",
+  bitsBalance: "0",
+  walletType: null,
+  walletName: null,
+  walletIcon: null,
+  network: null,
+  chainId: null,
+  provider: null,
+  signer: null,
+  connector: null,
+  rememberWallet: false,
+  showWalletModal: false,
+  walletModalError: null,
+  walletModalOpenChain: null,
+  isConnectingWallet: false,
+  connectWallet: noop,
+  markConnectIntent: noop,
+  disconnectWallet: asyncNoop,
+  disconnectEvmWallet: asyncNoop,
+  disconnectSolanaWallet: asyncNoop,
+  hardReset: asyncNoop,
+  setRememberWalletEnabled: noop,
+  setWalletModalError: noop,
+  setIsConnectingWallet: noop,
+  switchChain: noop,
+  switchNetwork: noop,
+  setShowWalletModal: noop,
+});
+
 // Hook to use the context
-export const useWallet = () => useContext(WalletContext);
+export const useWallet = () => useContext(WalletContext) || EMPTY_WALLET_CONTEXT;
 
 // Internal component linking Wagmi to your app
 const InnerWalletProvider = ({ children }) => {
@@ -80,6 +120,9 @@ const InnerWalletProvider = ({ children }) => {
 
   // 🎨 Modal Control State
   const [showWalletModal, setShowWalletModal] = useState(false);
+  const [walletModalError, setWalletModalError] = useState(null);
+  const [walletModalOpenChain, setWalletModalOpenChain] = useState(null);
+  const [isConnectingWallet, setIsConnectingWallet] = useState(false);
   const [rememberWallet, setRememberWallet] = useState(() => {
     try {
       // default OFF unless explicitly set to "true"
@@ -473,35 +516,49 @@ const InnerWalletProvider = ({ children }) => {
     const evmActive = isConnected && address;
     const solanaActive = isSolanaConnected && solanaPublicKey;
     
-    // 🔥 IF BOTH CONNECTED: Disconnect Solana (EVM priority)
+    const solanaWasRequested = walletModalOpenChain === "solana";
+
+    // 🔥 IF BOTH CONNECTED: prioritize the chain explicitly requested from the modal.
     if (evmActive && solanaActive) {
-      console.warn("⚠️ [WalletContext] Both EVM and Solana connected! Prioritizing EVM, disconnecting Solana...");
-      
-      // Force disconnect Solana immediately
-      (async () => {
-        try {
-          await disconnectSolana();
-          console.log("✅ [WalletContext] Solana disconnected successfully");
-        } catch (e) {
-          console.warn("⚠️ [WalletContext] Solana disconnect error:", e);
-        }
-        
-        // Also clear Solana state manually
-        if (typeof window !== 'undefined' && window.solana) {
+      if (solanaWasRequested) {
+        console.warn("⚠️ [WalletContext] Both EVM and Solana connected after Solana request. Prioritizing Solana, disconnecting EVM...");
+        (async () => {
           try {
-            await window.solana.disconnect();
-          } catch (_) {}
-        }
-      })();
+            disconnect();
+            console.log("✅ [WalletContext] EVM disconnected successfully after Solana selection");
+          } catch (e) {
+            console.warn("⚠️ [WalletContext] EVM disconnect error:", e);
+          }
+        })();
+      } else {
+        console.warn("⚠️ [WalletContext] Both EVM and Solana connected! Prioritizing EVM, disconnecting Solana...");
       
-      // Clear Solana-related state immediately
-      setSolanaBalance("0");
-      setNativeSymbol("BNB"); // Reset to EVM default
-      // Continue to EVM setup below
+        // Force disconnect Solana immediately
+        (async () => {
+          try {
+            await disconnectSolana();
+            console.log("✅ [WalletContext] Solana disconnected successfully");
+          } catch (e) {
+            console.warn("⚠️ [WalletContext] Solana disconnect error:", e);
+          }
+          
+          // Also clear Solana state manually
+          if (typeof window !== 'undefined' && window.solana) {
+            try {
+              await window.solana.disconnect();
+            } catch (_) {}
+          }
+        })();
+      
+        // Clear Solana-related state immediately
+        setSolanaBalance("0");
+        setNativeSymbol("BNB"); // Reset to EVM default
+        // Continue to EVM setup below
+      }
     }
 
     // 🎯 PRIORITY 1: EVM CONNECTION (highest priority)
-    if (isConnected && address) {
+    if (isConnected && address && !solanaWasRequested) {
       // 🛡️ SECURITY: If remember wallet is OFF and this wasn't a fresh user click, disconnect.
       if (!rememberWallet && !userInitiated) {
         console.warn("🛑 [WalletContext] EVM Auto-connect blocked (Remember wallet is OFF).");
@@ -580,7 +637,7 @@ const InnerWalletProvider = ({ children }) => {
     
     // 🎯 PRIORITY 2: SOLANA CONNECTION (only if EVM is NOT connected)
     // 🛑 CRITICAL: Do NOT set Solana if EVM is already active!
-    if (isSolanaConnected && solanaPublicKey && !(isConnected && address)) {
+    if (isSolanaConnected && solanaPublicKey && (!(isConnected && address) || solanaWasRequested)) {
       const addr = solanaPublicKey.toBase58();
       console.log("✅ [WalletContext] Detected Solana connection:", addr);
       
@@ -627,7 +684,7 @@ const InnerWalletProvider = ({ children }) => {
       setSolanaBalance("0");
       setNativeSymbol("ETH");
     }
-  }, [isConnected, address, connector, chainId, isSolanaConnected, solanaPublicKey, selectedSolanaWallet, disconnect, rememberWallet]);
+  }, [isConnected, address, connector, chainId, isSolanaConnected, solanaPublicKey, selectedSolanaWallet, disconnect, disconnectSolana, rememberWallet, walletModalOpenChain]);
 
   // Balance Sync (Native Token - BNB/ETH)
   useEffect(() => {
@@ -659,16 +716,15 @@ const InnerWalletProvider = ({ children }) => {
     try {
       // 🎯 SIMPLE: Check if Solana or EVM
       const isSolana = selectedChain === "solana";
+      setWalletModalOpenChain(selectedChain || "evm");
+      setWalletModalError(null);
+      // Record explicit user intent before either modal path.
+      markConnectIntent();
       if (isSolana) {
         setShowWalletModal(true);
         return;
       }
 
-      // Dacă deja e conectat pe EVM, nu deschide din nou modalul
-      if (isConnected && address) {
-        return;
-      }
-      
       // 🛑 STEP 1: FIX PHANTOM HIJACK (if present)
       forceFixPhantomHijack();
       
@@ -702,8 +758,6 @@ const InnerWalletProvider = ({ children }) => {
         // Don't auto-set window.ethereum to Trust Wallet - let user choose
       }
       
-      // Record explicit user intent so any resulting connection is allowed
-      markConnectIntent();
       // ✅ Open our own unified modal (non-iframe) - user will select network and wallet
       setShowWalletModal(true);
     } catch (err) {
@@ -723,12 +777,12 @@ const InnerWalletProvider = ({ children }) => {
   }, []);
 
   // Compatibility functions (mapped to connectWallet)
-  const connectViaMetamask = connectWallet;
-  const connectViaPhantom = connectWallet;
-  const connectViaWeb3Auth = connectWallet;
-  const connectViaWalletConnect = connectWallet;
-  const connectViaCoinbase = connectWallet;
-  const connectViaRainbow = connectWallet;
+  const connectViaMetamask = () => connectWallet("evm");
+  const connectViaPhantom = () => connectWallet("solana");
+  const connectViaWeb3Auth = () => connectWallet("evm");
+  const connectViaWalletConnect = () => connectWallet("evm");
+  const connectViaCoinbase = () => connectWallet("evm");
+  const connectViaRainbow = () => connectWallet("evm");
 
   // 🧨 HARD RESET (Nuclear Option for stuck connections) - COMPLETE DISCONNECT
   const hardReset = async () => {
@@ -799,7 +853,11 @@ const InnerWalletProvider = ({ children }) => {
       value={{
         // Properties
         walletAddress,
+        evmWalletAddress: walletType === "EVM" ? walletAddress : null,
+        solanaWalletAddress: walletType === "SOLANA" ? walletAddress : null,
         isConnected,
+        isEvmConnected: !!(isConnected && address),
+        isSolanaConnected: !!(isSolanaConnected && solanaPublicKey),
         ethBalance,
         solanaBalance, // ✅ Expose Solana balance
         nativeSymbol, // Exportăm simbolul
@@ -813,13 +871,20 @@ const InnerWalletProvider = ({ children }) => {
         signer, // Adapter for ethers.js signer
         connector, // ✅ Expose connector separately (read-only)
         rememberWallet,
+        walletModalError,
+        walletModalOpenChain,
+        isConnectingWallet,
 
         // Functions
         connectWallet,
         markConnectIntent,
         disconnectWallet: safeDisconnect, // ✅ Use safe wrapper
+        disconnectEvmWallet: safeDisconnect,
+        disconnectSolanaWallet: safeDisconnect,
         hardReset, // 🧨 Nuclear option for stuck connections
         setRememberWalletEnabled,
+        setWalletModalError,
+        setIsConnectingWallet,
         
         // Legacy Functions (Mapped)
         connectViaMetamask,
@@ -830,6 +895,7 @@ const InnerWalletProvider = ({ children }) => {
         connectViaRainbow,
 
         // New Utility Functions
+        switchChain: (id) => switchChain({ chainId: id }),
         switchNetwork: (id) => switchChain({ chainId: id }),
 
         // Modal Control
@@ -844,7 +910,7 @@ const InnerWalletProvider = ({ children }) => {
 
 export const WalletProvider = ({ children }) => {
   return (
-    <WagmiProvider config={config} reconnectOnMount={false}>
+    <WagmiProvider config={config} reconnectOnMount={true}>
       <QueryClientProvider client={queryClient}>
         <InnerWalletProvider>
           {children}

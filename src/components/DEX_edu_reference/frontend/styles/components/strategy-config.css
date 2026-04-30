@@ -1,0 +1,196 @@
+/**
+ * ⚙️ Strategy Config Styles
+ */
+
+.strategy-config-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--ds-z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ds-spacing-6);
+}
+
+.strategy-config-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.strategy-config-modal-content {
+  position: relative;
+  background-color: var(--ds-bg-surface);
+  border-radius: var(--ds-radius-lg);
+  box-shadow: var(--ds-shadow-lg);
+  max-width: 700px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: var(--ds-z-modal);
+}
+
+.strategy-config-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ds-spacing-6);
+  border-bottom: 1px solid var(--ds-border-color);
+  position: sticky;
+  top: 0;
+  background-color: var(--ds-bg-surface);
+  z-index: 1;
+}
+
+.strategy-config-modal-title {
+  font-size: var(--ds-font-size-xl);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+}
+
+.strategy-config-modal-close {
+  padding: var(--ds-spacing-1);
+  cursor: pointer;
+  color: var(--ds-text-secondary);
+  transition: color var(--ds-transition-fast);
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.strategy-config-modal-close:hover {
+  color: var(--ds-text-primary);
+}
+
+.strategy-config-form {
+  padding: var(--ds-spacing-6);
+}
+
+.strategy-config-section {
+  margin-top: var(--ds-spacing-6);
+  padding-top: var(--ds-spacing-6);
+  border-top: 2px solid var(--ds-border-color);
+}
+
+.strategy-config-section-title {
+  font-size: var(--ds-font-size-lg);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.strategy-config-field {
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.strategy-config-label {
+  display: block;
+  margin-bottom: var(--ds-spacing-2);
+  font-weight: var(--ds-font-weight-medium);
+  color: var(--ds-text-primary);
+}
+
+.strategy-config-input,
+.strategy-config-select {
+  width: 100%;
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  font-size: var(--ds-font-size-base);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  transition: border-color var(--ds-transition-fast);
+  background-color: var(--ds-bg-surface);
+}
+
+.strategy-config-input:focus,
+.strategy-config-select:focus {
+  outline: none;
+  border-color: var(--ds-accent);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.strategy-config-error {
+  color: var(--ds-color-error);
+  font-size: var(--ds-font-size-sm);
+  margin-left: var(--ds-spacing-2);
+}
+
+.strategy-config-error-message {
+  padding: var(--ds-spacing-3);
+  background-color: #fee;
+  border: 1px solid var(--ds-color-error);
+  border-radius: var(--ds-radius-md);
+  color: var(--ds-color-error);
+  margin-top: var(--ds-spacing-3);
+  margin-bottom: var(--ds-spacing-3);
+}
+
+.strategy-config-modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--ds-spacing-3);
+  padding: var(--ds-spacing-6);
+  border-top: 1px solid var(--ds-border-color);
+  position: sticky;
+  bottom: 0;
+  background-color: var(--ds-bg-surface);
+}
+
+.strategy-config-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3) var(--ds-spacing-6);
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-medium);
+  border-radius: var(--ds-radius-md);
+  transition: all var(--ds-transition-fast);
+  cursor: pointer;
+  border: none;
+}
+
+.strategy-config-btn-cancel {
+  background-color: var(--ds-bg-surface);
+  color: var(--ds-text-primary);
+  border: 1px solid var(--ds-border-color);
+}
+
+.strategy-config-btn-cancel:hover:not(:disabled) {
+  background-color: var(--ds-bg-hover);
+}
+
+.strategy-config-btn-save {
+  background-color: var(--ds-accent);
+  color: var(--ds-text-primary);
+}
+
+.strategy-config-btn-save:hover:not(:disabled) {
+  background-color: var(--ds-border-color-focus);
+}
+
+.strategy-config-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .strategy-config-modal-content {
+    max-width: 100%;
+    margin: var(--ds-spacing-3);
+  }
+  
+  .strategy-config-form {
+    padding: var(--ds-spacing-3);
+  }
+}
+

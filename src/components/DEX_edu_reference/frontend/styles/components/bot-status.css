@@ -1,0 +1,151 @@
+/**
+ * 📊 Bot Status Styles
+ */
+
+.bot-status {
+  padding: var(--ds-spacing-6);
+  background-color: var(--ds-bg-surface);
+  border-radius: var(--ds-radius-lg);
+  border: 2px solid var(--ds-border-color);
+  transition: border-color var(--ds-transition-base);
+}
+
+.bot-status.running {
+  border-color: var(--ds-color-success);
+}
+
+.bot-status.stopped {
+  border-color: var(--ds-border-color-dark);
+}
+
+.bot-status.paused {
+  border-color: var(--ds-color-warning);
+}
+
+.bot-status.error {
+  border-color: var(--ds-color-error);
+}
+
+.bot-status-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--ds-spacing-3);
+}
+
+.bot-status-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+}
+
+.bot-status-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.bot-status-icon.running {
+  color: var(--ds-color-success);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.bot-status-icon.stopped {
+  color: var(--ds-text-secondary);
+}
+
+.bot-status-icon.paused {
+  color: var(--ds-color-warning);
+}
+
+.bot-status-icon.error {
+  color: var(--ds-color-error);
+}
+
+.bot-status-label {
+  font-weight: var(--ds-font-weight-semibold);
+  font-size: var(--ds-font-size-lg);
+}
+
+.bot-status-uptime {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-1);
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-sm);
+}
+
+.bot-status-last-update {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  margin-bottom: var(--ds-spacing-3);
+}
+
+.bot-status-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--ds-spacing-3);
+  margin-top: var(--ds-spacing-3);
+}
+
+.bot-status-stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-1);
+}
+
+.bot-status-stat-label {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+}
+
+.bot-status-stat-value {
+  font-size: var(--ds-font-size-lg);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* OpenAI Trading Agent (OTA) - Alias classes for backwards compatibility */
+.ota-status,
+.ota-status-header,
+.ota-status-indicator,
+.ota-status-icon,
+.ota-status-label,
+.ota-status-uptime,
+.ota-status-last-update,
+.ota-status-stats,
+.ota-status-stat-item,
+.ota-status-stat-label,
+.ota-status-stat-value,
+.ota-status-loading {
+  /* Inherit all styles from bot-* classes */
+}
+
+.ota-status { @extend .bot-status; }
+.ota-status.running { @extend .bot-status.running; }
+.ota-status.stopped { @extend .bot-status.stopped; }
+.ota-status.paused { @extend .bot-status.paused; }
+.ota-status.error { @extend .bot-status.error; }
+.ota-status-header { @extend .bot-status-header; }
+.ota-status-indicator { @extend .bot-status-indicator; }
+.ota-status-icon { @extend .bot-status-icon; }
+.ota-status-icon.running { @extend .bot-status-icon.running; }
+.ota-status-icon.stopped { @extend .bot-status-icon.stopped; }
+.ota-status-icon.paused { @extend .bot-status-icon.paused; }
+.ota-status-icon.error { @extend .bot-status-icon.error; }
+.ota-status-label { @extend .bot-status-label; }
+.ota-status-uptime { @extend .bot-status-uptime; }
+.ota-status-last-update { @extend .bot-status-last-update; }
+.ota-status-stats { @extend .bot-status-stats; }
+.ota-status-stat-item { @extend .bot-status-stat-item; }
+.ota-status-stat-label { @extend .bot-status-stat-label; }
+.ota-status-stat-value { @extend .bot-status-stat-value; }
+.ota-status-loading { @extend .bot-status-loading; }

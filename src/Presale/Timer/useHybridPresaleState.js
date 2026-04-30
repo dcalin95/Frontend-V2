@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { default as axios } from "axios";
+import { getPresaleCurrentUrl, parseLaunchPowerUsd } from "../presaleApi";
 import { useCellManager } from "../../context/CellManagerContext"; // ✅ Use Context
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
 
 export const useHybridPresaleState = () => {
   const [databaseState, setDatabaseState] = useState({
@@ -19,20 +18,17 @@ export const useHybridPresaleState = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(null);
 
-  // Get CellManager data from Context (single source)
   const cellManagerData = useCellManager();
 
-  // Fetch database data (sold + supply + progress)
   useEffect(() => {
     const fetchDatabaseData = async () => {
       try {
         console.log('🔄 [HYBRID] Fetching database data...');
-        const data = await axios.get(`${API_URL}/api/presale/current`);
+        const data = await axios.get(await getPresaleCurrentUrl(), { timeout: 25000 });
         console.log('📦 [HYBRID] Database Response:', data.data);
 
         if (data.data) {
           const dbData = data.data;
-          const now = Date.now();
           const serverEndTime = dbData.endTime * 1000;
           const serverStartTime = dbData.startTime * 1000;
 
@@ -41,7 +37,7 @@ export const useHybridPresaleState = () => {
             supply: (dbData.totalSupply || 0) - (dbData.sold || 0),
             totalSupply: dbData.totalSupply || 0,
             progress: dbData.progress || 0,
-            totalBoosted: dbData.totalBoosted || 0,
+            totalBoosted: Number.isFinite(parseLaunchPowerUsd(dbData)) ? parseLaunchPowerUsd(dbData) : 0,
             endTime: serverEndTime,
             startTime: serverStartTime,
             roundActive: true
@@ -54,8 +50,9 @@ export const useHybridPresaleState = () => {
         console.error('❌ [HYBRID] Error fetching database data:', err);
         if (err.response?.status === 404) {
           setDatabaseState(prev => ({ ...prev, roundActive: false }));
+          setError(null);
         } else {
-          setError(err.message);
+          setError(err.message || "Presale API error");
         }
         setIsLoaded(true);
       }
@@ -67,36 +64,34 @@ export const useHybridPresaleState = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Combine CellManager + Database data
-  const hybridState = {
-    // 📊 FROM CELLMANAGER (Blockchain) - PRIORITY
-    // ⚠️⚠️⚠️ WARNING: Acest cod STRICĂ prețul înmulțind cu 100!
-    // ⚠️ NU folosi acest price pentru afișare! Folosește cellManagerData.currentPrice DIRECT!
-    price: cellManagerData.currentPrice && !cellManagerData.loading && cellManagerData.currentPrice > 0 ? 
-           Math.round(cellManagerData.currentPrice * 100) : 
-           6, // Fallback to $0.06 if CellManager not configured
-    roundNumber: cellManagerData.roundNumber && !cellManagerData.loading && cellManagerData.roundNumber > 0 ? 
-                 cellManagerData.roundNumber : 
-                 2, // 🎯 FIX: Use current CellManager round (Cell ID 1 = Round 2)
-    
-    // 💾 FROM DATABASE (Simulations)
+  const hybridState = useMemo(() => {
+    const boosted = Number(databaseState.totalBoosted || 0);
+
+    return {
+    // 📊 Preț / rundă pentru UX: încă din CellManager (contract); agregatele monetare = doar API mai sus
+    price: cellManagerData.currentPrice && !cellManagerData.loading && cellManagerData.currentPrice > 0 ?
+           Math.round(cellManagerData.currentPrice * 100) :
+           6,
+    roundNumber: cellManagerData.roundNumber && !cellManagerData.loading && cellManagerData.roundNumber > 0 ?
+                 cellManagerData.roundNumber :
+                 2,
+
     sold: databaseState.sold,
     supply: databaseState.supply,
     totalSupply: databaseState.totalSupply,
     progress: databaseState.progress,
-    totalBoosted: databaseState.totalBoosted,
+    totalBoosted: boosted,
     endTime: databaseState.endTime,
     startTime: databaseState.startTime,
-    
-    // 🔧 COMPUTED VALUES
+
     roundActive: !cellManagerData.loading && (cellManagerData.roundNumber > 0 || databaseState.roundActive),
     totalRounds: 12,
     serverTimeOffset: 0,
-    
-    // 🎯 ADDITIONAL DATA
+
     cellManagerData: cellManagerData,
     databaseState: databaseState
-  };
+    };
+  }, [cellManagerData, databaseState]);
 
   console.log('🔄 [HYBRID] Combined State:', {
     cellManagerLoading: cellManagerData.loading,
@@ -110,7 +105,7 @@ export const useHybridPresaleState = () => {
     totalSupply: hybridState.totalSupply,
     roundActive: hybridState.roundActive
   });
-  
+
   console.log('🚨 [HYBRID FIX] Round number source:', {
     fromCellManager: cellManagerData.roundNumber,
     cellManagerLoading: cellManagerData.loading,

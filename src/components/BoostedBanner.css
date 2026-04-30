@@ -186,6 +186,41 @@
   box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.5);
 }
 
+/* DEX global style applied to legacy presale/floating banner surfaces. */
+body[class*="dex-theme-"] .total-boosted-banner,
+body[class*="dex-theme-"] .new-sale-notification,
+body[class*="dex-theme-"] .voice-button-mobile {
+  font-family: var(--ds-font-family-sans) !important;
+  background: var(--ds-bg-base) !important;
+  background-color: var(--ds-bg-base) !important;
+  border: 1px solid var(--ds-border-color) !important;
+  border-radius: var(--ds-radius-md) !important;
+  color: var(--ds-text-primary) !important;
+  box-shadow: var(--ds-shadow-sm) !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+body[class*="dex-theme-"] .notification-text,
+body[class*="dex-theme-"] .notification-amount,
+body[class*="dex-theme-"] .notification-crypto,
+body[class*="dex-theme-"] .notification-country,
+body[class*="dex-theme-"] .notification-geolocation,
+body[class*="dex-theme-"] .notification-country-name,
+body[class*="dex-theme-"] .crypto-symbol,
+body[class*="dex-theme-"] .crypto-name,
+body[class*="dex-theme-"] .crypto-label {
+  font-family: var(--ds-font-family-sans) !important;
+  color: var(--ds-text-secondary) !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+body[class*="dex-theme-"] .notification-amount,
+body[class*="dex-theme-"] .crypto-symbol {
+  color: var(--ds-accent) !important;
+}
+
 /* Pentru Chrome pe mobil - îmbunătățește răspunsul la touch */
 @media (hover: none) and (pointer: coarse) {
   .voice-button-mobile {
@@ -310,6 +345,8 @@
   font-weight: 500;
   letter-spacing: 0.5px;
   text-shadow: 0 0 3px #000;
+  color: #7fffd4 !important;
+  -webkit-text-fill-color: #7fffd4 !important;
 }
 
 .boosted-amount {
@@ -318,6 +355,8 @@
   text-shadow: 0 0 8px #4e20e5, 0 0 16px #ff4081;
   animation: wowEffect 0.8s ease-in-out;
   transition: all 0.3s ease;
+  color: #ffe066 !important;
+  -webkit-text-fill-color: #ffe066 !important;
 }
 
 .boosted-amount.wow {
@@ -874,5 +913,83 @@
     text-shadow: 0 0 2px #4e20e5, 0 0 4px #ff4081;
     color: #00ffff;
     font-size: 0.9rem;
+  }
+}
+
+/* DEX-style compact banner: keep it visible without covering the Presale hero. */
+body[class*="dex-theme-"] .total-boosted-banner {
+  top: 118px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: auto !important;
+  max-width: min(420px, calc(100vw - 360px)) !important;
+  min-height: 0 !important;
+  padding: 6px 10px !important;
+  gap: 7px !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0.78rem !important;
+  line-height: 1 !important;
+  letter-spacing: 0.01em !important;
+  z-index: 940 !important;
+  pointer-events: none !important;
+  background: rgba(3, 7, 18, 0.92) !important;
+  border: 1px solid color-mix(in srgb, var(--ds-border-color, #27272a) 62%, var(--ds-accent, #3b82f6) 38%) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 0 0 1px rgba(var(--ds-accent-rgb, 59, 130, 246), 0.12), 0 8px 22px rgba(0, 0, 0, 0.35) !important;
+}
+
+body[class*="dex-theme-"] .total-boosted-banner .bits-logo-floating {
+  width: 22px !important;
+  height: 22px !important;
+  margin: 0 !important;
+  box-shadow: 0 0 10px rgba(var(--ds-accent-rgb, 59, 130, 246), 0.45) !important;
+  animation: none !important;
+}
+
+body[class*="dex-theme-"] .total-boosted-banner .boosted-label {
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  color: var(--ds-text-secondary, #a1a1aa) !important;
+  text-transform: none !important;
+  white-space: nowrap !important;
+}
+
+body[class*="dex-theme-"] .total-boosted-banner .boosted-amount {
+  font-size: 1rem !important;
+  font-weight: 800 !important;
+  color: var(--ds-color-warning, #f59e0b) !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 1180px) {
+  body[class*="dex-theme-"] .total-boosted-banner {
+    top: 112px !important;
+    max-width: min(310px, calc(100vw - 260px)) !important;
+    padding: 5px 8px !important;
+    gap: 5px !important;
+  }
+
+  body[class*="dex-theme-"] .total-boosted-banner .bits-logo-floating {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  body[class*="dex-theme-"] .total-boosted-banner .boosted-label {
+    font-size: 0.64rem !important;
+  }
+
+  body[class*="dex-theme-"] .total-boosted-banner .boosted-amount {
+    font-size: 0.88rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  body[class*="dex-theme-"] .total-boosted-banner {
+    top: 96px !important;
+    left: 50% !important;
+    max-width: min(260px, calc(100vw - 24px)) !important;
   }
 }

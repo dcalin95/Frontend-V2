@@ -1,0 +1,90 @@
+/* OrdersListView – toolbar + table */
+.orders-list-view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-3);
+  padding: var(--ds-spacing-3);
+  background: var(--ds-bg-surface);
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid var(--ds-border-color);
+  min-height: 200px;
+}
+
+.orders-list-view-embedded {
+  padding: var(--ds-spacing-2);
+}
+
+.orders-list-view-title {
+  margin: 0;
+  font-size: var(--ds-font-size-xl);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+}
+
+.orders-list-view-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  flex-wrap: wrap;
+}
+
+.orders-list-view-toolbar-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--ds-border-color);
+}
+
+.orders-list-view-table {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 60vh;
+}
+
+.orders-list-view-loading,
+.orders-list-view-error,
+.orders-list-view-empty {
+  padding: var(--ds-spacing-4);
+  text-align: center;
+  color: var(--ds-text-secondary);
+}
+
+.orders-list-view-error {
+  color: var(--ds-color-error);
+}
+
+.orders-list-view-empty p {
+  margin: 0;
+}
+
+.orders-list-view-dex-sign-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-3);
+  padding: var(--ds-spacing-5);
+  text-align: center;
+}
+
+.orders-list-view-dex-sign-message {
+  margin: 0;
+  color: var(--ds-text-secondary);
+  max-width: 360px;
+}
+
+.orders-list-view-swap-hint {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  flex-wrap: wrap;
+  padding: var(--ds-spacing-2);
+  background: var(--ds-bg-subtle);
+  border-radius: var(--ds-radius-md);
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+}
+
+.orders-list-view-swap-hint span {
+  flex: 1;
+  min-width: 0;
+}

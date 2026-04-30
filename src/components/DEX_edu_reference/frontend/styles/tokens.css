@@ -1,0 +1,74 @@
+/**
+ * 🎨 Sonnet / Anthropic Design Tokens
+ * 
+ * Minimal, calm, premium design system
+ * All UI components MUST use these tokens - NO hardcoded values
+ */
+
+:root {
+  /* === SPACING (ONLY THESE VALUES) === */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+
+  /* === RADII === */
+  --r1: 10px;
+  --r2: 12px;
+  --r3: 14px;
+  --r4: 16px;
+
+  /* === HEIGHTS === */
+  --h-input: 40px;
+  --h-btn: 40px;
+  --h-btn-sm: 34px;
+  --h-btn-lg: 46px;
+  --h-row: 44px; /* list/table row */
+
+  /* === COLORS (Dark theme default for DEX - Apple Black) === */
+  --bg: #000000; /* Background general - Apple pure black */
+  --surface: #000000; /* Panouri/carduri - Apple pure black */
+  --surfaceHover: #0a0a0a; /* Hover subtil (foarte foarte discret) */
+  --border: #1a1a1a; /* 1px separators (foarte subtil pe negru) */
+  --text: #f5f5f7; /* Text principal */
+  --muted: #8b8b95; /* Text secundar (opacitate 0.65-0.75 în practică) */
+  --accent: #3b82f6; /* Culoare primary (una singură, "crisp") */
+  --danger: #ef4444; /* Semantic, dar discret */
+  --success: #10b981;
+  --warn: #f59e0b;
+
+  /* === FOCUS RING === */
+  --focusRing: 0 0 0 3px rgba(59, 130, 246, 0.2); /* Ring de 3px (semi-transparent, vizibil) */
+
+  /* === TYPOGRAPHY === */
+  /* Body: 14px / 20px, weight 500-600 */
+  --font-body-size: 14px;
+  --font-body-height: 20px;
+  --font-body-weight: 500;
+  
+  /* Heading: 16px/22px (card titles), 20px/28px (page titles) */
+  --font-heading-sm-size: 16px;
+  --font-heading-sm-height: 22px;
+  --font-heading-lg-size: 20px;
+  --font-heading-lg-height: 28px;
+  --font-heading-weight: 600;
+  
+  /* Text muted: opacitate 0.65–0.75 */
+  --muted-opacity: 0.7;
+}
+
+/* Light theme (optional) */
+[data-theme="light"] {
+  --bg: #ffffff;
+  --surface: #fafafa;
+  --surfaceHover: #f5f5f5;
+  --border: #e5e7eb;
+  --text: #0a0a0a;
+  --muted: #6b7280;
+  --accent: #3b82f6;
+  --danger: #ef4444;
+  --success: #10b981;
+  --warn: #f59e0b;
+}

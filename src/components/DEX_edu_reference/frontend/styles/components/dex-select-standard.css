@@ -1,0 +1,157 @@
+/**
+ * 🎨 DEX Select Standardization
+ * 
+ * Stiluri standardizate pentru TOATE select-urile din DEX:
+ * - Lățime fixă proporțională cu textul
+ * - Text cu nuanță diferită de alb pentru diferențiere
+ * - Stiluri consistente în toate componentele
+ */
+
+/* Standard DEX Select - aplicat pe select-urile specifice din panouri */
+.backtest-panel-select,
+.strategy-execution-panel-select,
+.model-inference-panel-select,
+.bandit-selector-panel-select,
+.market-analysis-select,
+.ota-conditions-editor-rule-select,
+.signals-filter-select,
+.trade-page-select,
+.performance-history-filter-select,
+.strategy-config-select,
+.trading-history-filter-select {
+  /* Dimensions - lățime standardizată și egală */
+  width: 200px !important; /* Lățime fixă egală pentru toate */
+  min-width: 200px !important;
+  max-width: 200px !important;
+  
+  /* Padding & Height */
+  padding: var(--ds-spacing-3) var(--ds-select-padding-x) !important;
+  padding-right: calc(var(--ds-select-padding-x) + var(--ds-icon-lg)) !important; /* Space for dropdown arrow */
+  min-height: var(--ds-select-height-md) !important;
+  height: var(--ds-select-height-md) !important;
+  
+  /* Typography - text vizibil cu nuanță diferită de alb */
+  font-size: var(--ds-select-font-size) !important;
+  font-weight: var(--ds-font-weight-medium) !important;
+  line-height: var(--ds-line-height-normal) !important;
+  color: var(--ds-text-secondary) !important;
+  
+  /* Background & Border */
+  background: var(--ds-bg-surface) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right var(--ds-select-padding-x) center !important;
+  background-size: var(--ds-icon-sm) !important;
+  border: var(--ds-input-border-width) solid var(--ds-border-color) !important;
+  border-radius: var(--ds-select-border-radius) !important;
+  
+  /* Appearance */
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+  
+  /* Overflow */
+  overflow: visible !important;
+  text-overflow: clip !important;
+  
+  /* Transitions */
+  transition: border-color var(--ds-transition-base) !important;
+}
+
+/* Hover state */
+.backtest-panel-select:hover:not(:disabled),
+.strategy-execution-panel-select:hover:not(:disabled),
+.model-inference-panel-select:hover:not(:disabled) {
+  border-color: var(--ds-border-color-light) !important;
+  background-color: var(--ds-bg-hover) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right var(--ds-select-padding-x) center !important;
+}
+
+/* Focus state */
+.backtest-panel-select:focus,
+.strategy-execution-panel-select:focus,
+.model-inference-panel-select:focus {
+  outline: none !important;
+  border-color: var(--ds-border-color-focus) !important;
+}
+
+.backtest-panel-select:focus-visible,
+.strategy-execution-panel-select:focus-visible,
+.model-inference-panel-select:focus-visible {
+  outline: var(--ds-focus-ring) !important;
+  outline-offset: var(--ds-focus-ring-offset) !important;
+}
+
+/* Disabled state */
+.backtest-panel-select:disabled,
+.strategy-execution-panel-select:disabled,
+.model-inference-panel-select:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+/* Dropdown options */
+.backtest-panel-select option,
+.strategy-execution-panel-select option,
+.model-inference-panel-select option,
+.bandit-selector-panel-select option,
+.market-analysis-select option {
+  background: var(--ds-bg-surface) !important;
+  color: var(--ds-text-secondary) !important;
+  padding: var(--ds-spacing-2) var(--ds-spacing-3) !important;
+  line-height: var(--ds-line-height-normal) !important;
+}
+
+/* Input fields - stiluri complete pentru Initial Capital și alte input-uri */
+.backtest-panel-input,
+.strategy-execution-panel-input {
+  width: 200px !important;
+  min-width: 200px !important;
+  max-width: 200px !important;
+  padding: var(--ds-spacing-3) var(--ds-input-padding-x) !important;
+  min-height: var(--ds-input-height-md) !important;
+  height: var(--ds-input-height-md) !important;
+  font-size: var(--ds-input-font-size) !important;
+  font-weight: var(--ds-font-weight-medium) !important;
+  line-height: var(--ds-line-height-normal) !important;
+  color: var(--ds-text-secondary) !important;
+  background: var(--ds-bg-surface) !important;
+  border: var(--ds-input-border-width) solid var(--ds-border-color) !important;
+  border-radius: var(--ds-input-border-radius) !important;
+  box-sizing: border-box !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  transition: border-color var(--ds-transition-base) !important;
+}
+
+.backtest-panel-input:hover:not(:disabled),
+.strategy-execution-panel-input:hover:not(:disabled) {
+  border-color: var(--ds-border-color-light) !important;
+  background-color: var(--ds-bg-hover) !important;
+}
+
+.backtest-panel-input:focus,
+.strategy-execution-panel-input:focus {
+  outline: none !important;
+  border-color: var(--ds-border-color-focus) !important;
+}
+
+.backtest-panel-input:focus-visible,
+.strategy-execution-panel-input:focus-visible {
+  outline: var(--ds-focus-ring) !important;
+  outline-offset: var(--ds-focus-ring-offset) !important;
+}
+
+/* Disabled state pentru input */
+.backtest-panel-input:disabled,
+.strategy-execution-panel-input:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}

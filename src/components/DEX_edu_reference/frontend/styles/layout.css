@@ -1,0 +1,30 @@
+/**
+ * 📐 Layout Styles - Layout Component Styles
+ */
+
+.ai-trading-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg, #000000); /* Folosește variabila --bg din tokens.css (Apple pure black) */
+}
+
+.ai-trading-content-wrapper {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.ai-trading-main-content {
+  flex: 1;
+  padding: 4px; /* FOARTE REDUS: doar 4px în loc de --spacing-lg */
+  overflow-y: auto;
+  background-color: var(--bg, #000000); /* Folosește variabila --bg din tokens.css (Apple pure black) */
+}
+
+@media (max-width: 768px) {
+  .ai-trading-main-content {
+    padding: 4px; /* FOARTE REDUS și pe mobile */
+  }
+}
+

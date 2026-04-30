@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="loadingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00FFA3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9945FF;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <path d="M 32 8 C 44 8 54 18 54 30 C 54 42 44 52 32 52" stroke="url(#loadingGradient)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <circle cx="32" cy="32" r="24" stroke="url(#loadingGradient)" stroke-width="2.5" fill="none" opacity="0.3"/>
+</svg>
+

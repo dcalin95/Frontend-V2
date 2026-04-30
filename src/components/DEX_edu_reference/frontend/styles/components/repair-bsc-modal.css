@@ -1,0 +1,122 @@
+/* Repair BSC Modal – minimal styling (reuses DEX design tokens) */
+
+/* Above SwapProgressModal so user always sees repair CTA */
+.repair-bsc-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--ds-modal-backdrop, rgba(0, 0, 0, 0.5));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--ds-z-modal-critical);
+  backdrop-filter: blur(4px);
+}
+
+.repair-bsc-modal {
+  background: var(--ds-bg-surface, #fff);
+  border: var(--ds-border-width, 1px) solid var(--ds-border-color, #e5e7eb);
+  border-radius: var(--ds-modal-border-radius, 12px);
+  box-shadow: var(--ds-shadow-xl, 0 20px 25px -5px rgba(0, 0, 0, 0.1));
+  max-width: 420px;
+  width: 90%;
+}
+
+.repair-bsc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ds-spacing-5, 1.25rem) var(--ds-spacing-6, 1.5rem) var(--ds-spacing-4, 1rem);
+  border-bottom: 1px solid var(--ds-border-color, #e5e7eb);
+}
+
+.repair-bsc-header h3 {
+  font-size: var(--ds-font-size-lg, 1.125rem);
+  font-weight: var(--ds-font-weight-semibold, 600);
+  color: var(--ds-text-primary, #111);
+  margin: 0;
+}
+
+.repair-bsc-close {
+  background: none;
+  border: none;
+  color: var(--ds-text-secondary, #6b7280);
+  cursor: pointer;
+  padding: var(--ds-spacing-1, 0.25rem);
+  border-radius: var(--ds-radius-xs, 4px);
+}
+
+.repair-bsc-close:hover {
+  background: var(--ds-bg-hover, #f3f4f6);
+  color: var(--ds-text-primary, #111);
+}
+
+.repair-bsc-body {
+  padding: var(--ds-spacing-6, 1.5rem);
+}
+
+.repair-bsc-message {
+  margin: 0 0 var(--ds-spacing-5, 1.25rem);
+  color: var(--ds-text-primary, #111);
+  font-size: var(--ds-font-size-base, 1rem);
+  line-height: 1.5;
+}
+
+.repair-bsc-actions {
+  display: flex;
+  gap: var(--ds-spacing-3, 0.75rem);
+  flex-wrap: wrap;
+}
+
+.repair-bsc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  border-radius: var(--ds-radius-md, 8px);
+  font-size: var(--ds-font-size-sm, 0.875rem);
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.repair-bsc-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.repair-bsc-btn-primary {
+  background: var(--ds-bg-primary, #3b82f6);
+  color: #fff;
+}
+
+.repair-bsc-btn-primary:hover:not(:disabled) {
+  background: var(--ds-bg-primary-hover, #2563eb);
+}
+
+.repair-bsc-btn-secondary {
+  background: var(--ds-bg-secondary, #f3f4f6);
+  color: var(--ds-text-primary, #111);
+}
+
+.repair-bsc-btn-secondary:hover {
+  background: var(--ds-bg-hover, #e5e7eb);
+}
+
+.repair-bsc-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: repair-bsc-spin 0.8s linear infinite;
+}
+
+@keyframes repair-bsc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

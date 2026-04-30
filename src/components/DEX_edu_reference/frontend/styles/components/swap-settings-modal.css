@@ -1,0 +1,199 @@
+/**
+ * ⚙️ Swap Settings Modal Styles - Binance/Uniswap Inspired
+ */
+
+.swap-settings-modal .modal-content {
+  background-color: var(--ds-bg-surface);
+  border: var(--ds-border-width) solid var(--ds-border-color);
+}
+
+.swap-settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-6); /* 24px */
+}
+
+.swap-settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-3); /* 12px */
+}
+
+.swap-settings-label {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2); /* 8px */
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+  color: var(--ds-text-primary);
+}
+
+.swap-settings-label-info {
+  display: inline-flex;
+  align-items: center;
+  color: var(--ds-text-secondary);
+  cursor: help;
+  transition: color var(--ds-transition-base);
+}
+
+.swap-settings-label-info:hover {
+  color: var(--ds-text-primary);
+}
+
+/* Slippage Presets */
+.swap-settings-slippage-presets {
+  display: flex;
+  gap: var(--ds-spacing-2); /* 8px */
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.swap-settings-custom-input {
+  flex: 1;
+  min-width: 100px;
+  max-width: 120px;
+}
+
+/* Deadline */
+.swap-settings-deadline {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-3); /* 12px */
+}
+
+.swap-settings-deadline-input {
+  flex: 1;
+  max-width: 150px;
+}
+
+.swap-settings-deadline-unit {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  white-space: nowrap;
+}
+
+/* Toggle Switch */
+.swap-settings-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-spacing-4); /* 16px */
+}
+
+.swap-settings-toggle-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-1); /* 4px */
+  flex: 1;
+}
+
+.swap-settings-toggle-label {
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+  color: var(--ds-text-primary);
+}
+
+.swap-settings-toggle-description {
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-text-secondary);
+  line-height: var(--ds-line-height-relaxed);
+}
+
+.swap-settings-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.swap-settings-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.swap-settings-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--ds-bg-overlay);
+  border: var(--ds-border-width) solid var(--ds-border-color);
+  transition: all var(--ds-transition-base);
+  border-radius: var(--ds-radius-full);
+}
+
+.swap-settings-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 2px;
+  bottom: 2px;
+  background-color: var(--ds-text-primary);
+  transition: all var(--ds-transition-base);
+  border-radius: var(--ds-radius-full);
+}
+
+.swap-settings-switch input:checked + .swap-settings-slider {
+  background-color: var(--ds-color-primary);
+  border-color: var(--ds-color-primary);
+}
+
+.swap-settings-switch input:checked + .swap-settings-slider:before {
+  transform: translateX(20px);
+}
+
+.swap-settings-switch input:focus-visible + .swap-settings-slider {
+  box-shadow: var(--ds-focus-ring-box-shadow);
+}
+
+/* Warnings */
+.swap-settings-warning {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2); /* 8px */
+  padding: var(--ds-spacing-3); /* 12px */
+  background: var(--ds-color-warning-bg);
+  border: var(--ds-border-width) solid var(--ds-color-warning-border);
+  border-radius: var(--ds-radius-sm);
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-color-warning);
+  margin-top: var(--ds-spacing-2);
+}
+
+.swap-settings-error {
+  background: var(--ds-color-error-bg);
+  border-color: var(--ds-color-error-border);
+  color: var(--ds-color-error);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .swap-settings-slippage-presets {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .swap-settings-custom-input {
+    max-width: 100%;
+  }
+
+  .swap-settings-deadline {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .swap-settings-deadline-input {
+    max-width: 100%;
+  }
+
+  .swap-settings-toggle {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

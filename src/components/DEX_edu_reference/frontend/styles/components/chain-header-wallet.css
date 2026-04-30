@@ -1,0 +1,33 @@
+/**
+ * Wallet block în header-urile SEI / STX / SOL – stânga, spațiu amplu față de titlu și nav.
+ * Același aspect pentru toate cele 3 chain-uri.
+ */
+.chain-header-wallet {
+  display: flex;
+  align-items: center;
+  gap: 6px 10px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+
+/* STX header – accent portocaliu */
+.stx-header .chain-header-wallet {
+  background: rgba(247, 147, 26, 0.08);
+  border-color: rgba(247, 147, 26, 0.25);
+}
+
+/* SOL header – accent verde */
+.sol-header .chain-header-wallet {
+  background: rgba(20, 241, 149, 0.08);
+  border-color: rgba(20, 241, 149, 0.25);
+}
+
+/* Not connected – accent violet / neutru */
+.chain-header-wallet.chain-header-wallet--not-connected {
+  background: rgba(124, 58, 237, 0.08);
+  border-color: rgba(124, 58, 237, 0.25);
+}

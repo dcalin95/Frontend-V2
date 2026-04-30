@@ -1,5 +1,7 @@
 import DOMPurify from 'dompurify'; // 🔒 SECURITY: XSS protection
 
+import { resolvePresaleBackendUrl } from "../presaleApi";
+
 const handleNowPayments = async ({ 
   amount, 
   bitsToReceive, 
@@ -32,7 +34,7 @@ Thank you for your patience! 🙏`);
 
   // Original code kept for future use
   try {
-    const backendURL = process.env.REACT_APP_BACKEND_URL || "http://localhost:4000";
+    const backendURL = await resolvePresaleBackendUrl();
     console.log("🌐 Backend URL:", backendURL);
 
     const payload = {

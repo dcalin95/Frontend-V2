@@ -1,6 +1,8 @@
 // Frontend Transak Integration - Widget-based fiat onramp
 import DOMPurify from 'dompurify'; // 🔒 SECURITY: XSS protection
 
+import { resolvePresaleBackendUrl } from "../presaleApi";
+
 const handleTransakPayment = async ({ 
   amount, 
   bitsToReceive, 
@@ -389,7 +391,7 @@ const createTransakModal = ({ widgetUrl, amount, bitsToReceive, walletAddress, o
 // 🔄 Handle Transak Success - Convert ETH to BITS
 const handleTransakSuccess = async ({ transactionData, walletAddress, bitsToReceive, bonusAmount, bonusPercentage }) => {
   try {
-    const backendURL = process.env.REACT_APP_BACKEND_URL || "http://localhost:4000";
+    const backendURL = await resolvePresaleBackendUrl();
     
     // Notify backend about Transak transaction completion
     const response = await fetch(`${backendURL}/api/transak/success`, {
@@ -421,4 +423,3 @@ const handleTransakSuccess = async ({ transactionData, walletAddress, bitsToRece
 };
 
 export default handleTransakPayment;
-

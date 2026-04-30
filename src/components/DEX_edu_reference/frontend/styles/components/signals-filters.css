@@ -1,0 +1,199 @@
+/**
+ * Signals filters — dashboard family.
+ * IMPORTANT: `dex-layout-fixes.css` (DEXApp) forces `select { height: 40px !important }` + heavy padding here
+ * clips native selects — override ONLY inside `.signals-filters` with higher specificity + !important.
+ * Search: box min-height must fit padding + line box (1rem × 1.5) inside border-box inner area.
+ */
+
+.signals-filters {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.signals-filters--bar {
+  padding: 10px 12px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(8, 10, 14, 0.97);
+  box-sizing: border-box;
+}
+
+.signals-filters__row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.signals-filters__grid {
+  flex: 1 1 0;
+  min-width: min(100%, 320px);
+  display: grid;
+  /* Search: lățime plafonată (~340px); restul spațiului merge la Status / Type / Sort */
+  grid-template-columns: minmax(200px, 340px) repeat(3, minmax(140px, 1fr));
+  gap: 12px 14px;
+  align-items: end;
+}
+
+.signals-filters__clear {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  padding-bottom: 2px;
+}
+
+/* Labels — L2, legible (not microtext) */
+.signals-filter-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: rgba(211, 218, 230, 0.94);
+  line-height: 1.45;
+}
+
+/* --- Search: flex row, icon + input share vertical center (no absolute, no translateY) --- */
+.signals-search {
+  min-width: 0;
+}
+
+.signals-search__box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  box-sizing: border-box;
+  /* Inner ≥ padding-y×2 + line box (~1rem × 1.5) — was 48px − 2px border → 46px inner, too tight with 13px padding */
+  min-height: 52px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.5);
+  gap: 10px;
+  overflow: visible;
+}
+
+.signals-search__box:focus-within {
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.signals-search__ico {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(160, 175, 200, 0.82);
+  line-height: 0;
+}
+
+.signals-search__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding: 11px 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5 !important;
+  color: rgba(248, 250, 252, 0.98);
+  height: auto !important;
+  min-height: 0;
+  overflow: visible;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.signals-search__input::placeholder {
+  color: rgba(168, 184, 208, 0.9);
+  opacity: 1;
+}
+
+.signals-search__input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Native selects: symmetric vertical padding + line-height ≥ font (avoids top crop on Windows/Chromium) */
+.signals-filter-group {
+  min-width: 0;
+  overflow: visible;
+}
+
+/**
+ * Beats global `select { height: 40px !important; }` (dex-layout-fixes.css).
+ */
+.signals-filters.signals-filters--bar select.signals-filter-select,
+.signals-page .signals-filters select.signals-filter-select {
+  display: block;
+  width: 100%;
+  box-sizing: border-box !important;
+  margin: 0;
+  height: auto !important;
+  min-height: 48px !important;
+  max-height: none !important;
+  padding: 11px 2.4rem 11px 13px !important;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.5 !important;
+  color: rgba(240, 244, 250, 0.98);
+  background-color: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9px;
+  cursor: pointer;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='rgba(185,198,218,0.85)' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 11px center;
+  background-clip: padding-box;
+}
+
+.signals-filters.signals-filters--bar select.signals-filter-select:hover,
+.signals-page .signals-filters select.signals-filter-select:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.signals-filters.signals-filters--bar select.signals-filter-select:focus,
+.signals-page .signals-filters select.signals-filter-select:focus {
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.07);
+}
+
+.signals-filter-select option {
+  background-color: #0c0e14;
+  color: rgba(240, 244, 250, 0.98);
+}
+
+@media (max-width: 1100px) {
+  .signals-filters__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .signals-search {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 560px) {
+  .signals-filters__row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .signals-filters__clear {
+    justify-content: flex-end;
+    padding-bottom: 0;
+  }
+
+  .signals-filters__grid {
+    grid-template-columns: 1fr;
+  }
+}

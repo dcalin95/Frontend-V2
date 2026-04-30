@@ -373,6 +373,146 @@ body .sidebar .btn-go-main {
   animation: bounceIcon 1.4s infinite ease-in-out; /* Kept bounce but fixed color */
 }
 
+/* DEX global style applied to legacy host sidebar. */
+body[class*="dex-theme-"] .sidebar {
+  background: transparent !important;
+  box-shadow: none !important;
+  font-family: var(--ds-font-family-sans) !important;
+  width: 56px !important;
+  min-width: 56px !important;
+  max-width: 56px !important;
+  padding: 14px 8px !important;
+  gap: 6px !important;
+  align-items: center !important;
+}
+
+body[class*="dex-theme-"] .sidebar.open {
+  width: 180px !important;
+  min-width: 180px !important;
+  max-width: 180px !important;
+  padding: 14px 12px !important;
+  align-items: flex-start !important;
+}
+
+body[class*="dex-theme-"] .sidebar button,
+body[class*="dex-theme-"] .sidebar a,
+body[class*="dex-theme-"] .sidebar .go-main,
+body[class*="dex-theme-"] .sidebar button.selected,
+body[class*="dex-theme-"] .sidebar a.selected,
+body[class*="dex-theme-"] .sidebar .btn-swap,
+body[class*="dex-theme-"] .sidebar .btn-pool,
+body[class*="dex-theme-"] .sidebar .btn-buy,
+body[class*="dex-theme-"] .sidebar .btn-how-to-buy,
+body[class*="dex-theme-"] .sidebar .btn-tokenomics,
+body[class*="dex-theme-"] .sidebar .btn-audit,
+body[class*="dex-theme-"] .sidebar .btn-invite,
+body[class*="dex-theme-"] .sidebar .btn-how-it-works,
+body[class*="dex-theme-"] .sidebar .btn-roadmap,
+body[class*="dex-theme-"] .sidebar .btn-leaderboard,
+body[class*="dex-theme-"] .sidebar .btn-about,
+body[class*="dex-theme-"] .sidebar .btn-mindmirror,
+body[class*="dex-theme-"] .sidebar .btn-go-main {
+  font-family: var(--ds-font-family-sans) !important;
+  font-size: var(--ds-font-size-sm) !important;
+  font-weight: var(--ds-font-weight-medium) !important;
+  background: var(--ds-bg-base) !important;
+  background-color: var(--ds-bg-base) !important;
+  background-image: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  -webkit-text-fill-color: var(--ds-text-primary) !important;
+  color: var(--ds-text-primary) !important;
+  border: 1px solid var(--ds-border-color-light) !important;
+  border-radius: var(--ds-radius-md) !important;
+  box-shadow: var(--ds-shadow-sm) !important;
+  text-shadow: none !important;
+  filter: none !important;
+  animation: none !important;
+  transform: none !important;
+  width: 38px !important;
+  min-width: 38px !important;
+  max-width: 38px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 8px !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  font-size: 0 !important;
+  line-height: 1 !important;
+}
+
+body[class*="dex-theme-"] .sidebar.open button,
+body[class*="dex-theme-"] .sidebar.open a,
+body[class*="dex-theme-"] .sidebar.open .go-main,
+body[class*="dex-theme-"] .sidebar.open button.selected,
+body[class*="dex-theme-"] .sidebar.open a.selected {
+  width: fit-content !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  height: auto !important;
+  min-height: 38px !important;
+  padding: 8px 10px !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  font-size: var(--ds-font-size-sm, 13px) !important;
+  line-height: 1.2 !important;
+}
+
+body[class*="dex-theme-"] .sidebar button:hover,
+body[class*="dex-theme-"] .sidebar a:hover,
+body[class*="dex-theme-"] .sidebar .go-main:hover,
+body[class*="dex-theme-"] .sidebar button.selected:hover,
+body[class*="dex-theme-"] .sidebar a.selected:hover {
+  background: var(--ds-bg-hover) !important;
+  border-color: var(--ds-accent) !important;
+  box-shadow: var(--ds-focus-ring-box-shadow) !important;
+  color: var(--ds-text-primary) !important;
+  -webkit-text-fill-color: var(--ds-text-primary) !important;
+  transform: none !important;
+}
+
+body[class*="dex-theme-"] .sidebar button i,
+body[class*="dex-theme-"] .sidebar a i,
+body[class*="dex-theme-"] .sidebar button.selected i,
+body[class*="dex-theme-"] .sidebar a.selected i {
+  color: var(--ds-accent) !important;
+  -webkit-text-fill-color: var(--ds-accent) !important;
+  background: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  animation: none !important;
+  transform: none !important;
+  font-size: 16px !important;
+  width: 18px !important;
+  height: 18px !important;
+  margin: 0 !important;
+}
+
+body[class*="dex-theme-"] .sidebar.open button i,
+body[class*="dex-theme-"] .sidebar.open a i,
+body[class*="dex-theme-"] .sidebar.open button.selected i,
+body[class*="dex-theme-"] .sidebar.open a.selected i {
+  width: 20px !important;
+  height: 20px !important;
+  font-size: 18px !important;
+  margin-right: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+body[class*="dex-theme-"] .sidebar:not(.open) .soon {
+  display: none !important;
+}
+
+body[class*="dex-theme-"] .sidebar.open .soon {
+  display: inline-flex !important;
+  font-size: 10px !important;
+  line-height: 1 !important;
+}
+
 @keyframes bounceIcon {
   0%, 100% {
     transform: scale(1.2) rotate(0deg);

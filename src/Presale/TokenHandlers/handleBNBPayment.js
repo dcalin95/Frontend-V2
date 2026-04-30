@@ -3,8 +3,7 @@ import axios from "axios";
 import { CONTRACTS } from "../../contract/contracts";
 import { notifyPresaleBuy } from "../../utils/telegramNotify";
 import { trackTikTokEvent } from "../../utils/tiktok";
-
-const API_ENDPOINT = (process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com") + "/transactions";
+import { resolvePresaleBackendUrl } from "../presaleApi";
 
 const handleBNBPayment = async ({
   amount,
@@ -227,7 +226,7 @@ const handleBNBPayment = async ({
 
       console.log("💾 Sending transaction to backend:", transactionData);
 
-      const response = await axios.post(API_ENDPOINT, transactionData);
+      const response = await axios.post(`${await resolvePresaleBackendUrl()}/api/transactions`, transactionData);
       console.log("✅ Transaction saved in backend:", response.data);
 
       // 🎯 TikTok CompletePayment event - BNB payment successful
@@ -332,7 +331,7 @@ const handleBNBPayment = async ({
 
       console.log("💾 Logging failed transaction:", failedTransaction);
 
-      await axios.post(API_ENDPOINT, failedTransaction);
+      await axios.post(`${await resolvePresaleBackendUrl()}/api/transactions`, failedTransaction);
 
     } catch (logError) {
       console.warn("⚠️ Error logging failed transaction:", logError.message);

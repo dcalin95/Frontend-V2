@@ -1,0 +1,119 @@
+/**
+ * 📐 Layout Styles - Layout Component Styles
+ */
+
+.ai-trading-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg, #000000); /* Folosește variabila --bg din tokens.css (Apple pure black) */
+}
+
+.ai-trading-content-wrapper {
+  display: flex;
+  flex: 1 1 0%;
+  min-height: 0; /* necesar ca main să primească înălțime în flex column */
+  overflow: hidden;
+}
+
+.ai-trading-main-content {
+  flex: 1;
+  min-height: 0; /* permite scroll când conținutul e mai mare decât zona */
+  padding: 4px; /* FOARTE REDUS: doar 4px în loc de --spacing-lg (24px) */
+  overflow-y: auto;
+  background-color: var(--bg, #000000); /* Folosește variabila --bg din tokens.css (Apple pure black) */
+}
+
+/* OTA Assistant chat: fără scroll pe <main> — pagina își gestionează singură înălțimea; altfel composerul apare în zona greșită.
+   Pe /dex/*, DEXPage.css poate forța overflow-y:auto pe main (!important) — override acolo pentru --ota-chat. */
+.ai-trading-main-content--ota-chat {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+  min-height: 0;
+  flex: 1 1 0%;
+  align-items: stretch;
+  align-self: stretch;
+  position: relative;
+}
+
+.ai-trading-main-content--ota-chat > .ota-chat-page {
+  flex: 1 1 0%;
+  min-height: 0;
+  max-height: 100%;
+  align-self: stretch;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Wallet Error Banner: lățime cât conținutul (nu întins pe tot ecranul) */
+.ai-trading-wallet-error {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background-color: rgba(239, 68, 68, 0.1);
+  border-bottom: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  font-size: var(--font-size-sm);
+  gap: var(--spacing-md);
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.ai-trading-wallet-error span {
+  flex: 0 1 auto;
+}
+
+.ai-trading-retry-btn {
+  padding: var(--spacing-xs) var(--spacing-md);
+  background-color: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--border-radius);
+  color: #ef4444;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.ai-trading-retry-btn:hover {
+  background-color: rgba(239, 68, 68, 0.3);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+@media (max-width: 768px) {
+  .ai-trading-main-content {
+    padding: 4px; /* FOARTE REDUS și pe mobile */
+  }
+
+  .ai-trading-main-content.ai-trading-main-content--ota-chat {
+    padding: 0;
+  }
+
+  .ai-trading-wallet-error {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .ai-trading-retry-btn {
+    width: 100%;
+  }
+}
+
+/* D1: Dev-only config source indicator */
+.ai-trading-config-source-indicator {
+  position: fixed;
+  bottom: 8px;
+  left: 8px;
+  padding: 4px 8px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  z-index: 9998;
+  pointer-events: none;
+}

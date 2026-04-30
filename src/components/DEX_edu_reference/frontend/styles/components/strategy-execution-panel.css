@@ -1,0 +1,339 @@
+/**
+ * Strategy Execution Panel Styles
+ */
+
+.strategy-execution-panel {
+  max-width: 680px;
+  width: 100%;
+  padding: var(--ds-spacing-5);
+  background: var(--ds-bg-surface);
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid var(--ds-border-color);
+  box-sizing: border-box;
+}
+
+.strategy-execution-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--ds-spacing-6);
+  gap: var(--ds-spacing-4);
+}
+
+.strategy-execution-panel-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-3);
+}
+
+.strategy-execution-panel-icon {
+  color: var(--primary);
+}
+
+.strategy-execution-panel-title {
+  font-size: var(--ds-font-size-md);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  margin: 0;
+}
+
+.strategy-execution-panel-refresh-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  background: var(--ds-bg-elevated);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  color: var(--ds-text-secondary);
+  cursor: pointer;
+  font-size: var(--ds-font-size-sm);
+  transition: all 0.2s ease;
+}
+
+.strategy-execution-panel-refresh-btn:hover:not(:disabled) {
+  background: var(--ds-bg-hover);
+  color: var(--ds-text-primary);
+  border-color: var(--primary);
+}
+
+.strategy-execution-panel-refresh-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.strategy-execution-panel-refresh-btn .rotating {
+  animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.strategy-execution-panel-error {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3);
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--ds-radius-md);
+  color: #ef4444;
+  margin-bottom: var(--ds-spacing-4);
+  font-size: var(--ds-font-size-base);
+}
+
+.strategy-execution-panel-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-6);
+}
+
+.strategy-execution-panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-3);
+}
+
+.strategy-execution-panel-section-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+}
+
+.strategy-execution-panel-section-title {
+  font-size: var(--ds-font-size-md);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  margin: 0;
+}
+
+.strategy-execution-panel-loading {
+  display: flex;
+  justify-content: center;
+  padding: var(--ds-spacing-6);
+}
+
+.strategy-execution-panel-strategies {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px; /* Consistent 16px gap */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.strategy-execution-panel-strategy-card {
+  padding: var(--ds-spacing-4);
+  background: var(--ds-bg-elevated);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: auto; /* Allow natural height */
+  overflow: visible; /* Don't clip content */
+}
+
+.strategy-execution-panel-strategy-card:hover {
+  background: var(--ds-bg-hover);
+  border-color: var(--primary);
+}
+
+.strategy-execution-panel-strategy-card.selected {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: var(--primary);
+}
+
+.strategy-execution-panel-strategy-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--ds-spacing-2);
+}
+
+.strategy-execution-panel-strategy-name {
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-base);
+  text-transform: capitalize;
+}
+
+.strategy-execution-panel-check-icon {
+  color: var(--primary);
+}
+
+.strategy-execution-panel-strategy-description {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  margin: 0 0 var(--ds-spacing-2) 0;
+}
+
+.strategy-execution-panel-strategy-indicators {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-tertiary);
+  line-height: var(--ds-line-height-normal);
+  padding-top: var(--ds-spacing-1); /* Small padding to ensure text visibility */
+  word-wrap: break-word; /* Allow long words to wrap */
+  overflow-wrap: break-word;
+}
+
+.strategy-execution-panel-empty {
+  padding: var(--ds-spacing-6);
+  text-align: center;
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-base);
+}
+
+.strategy-execution-panel-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-4);
+}
+
+.strategy-execution-panel-form-group {
+  display: grid;
+  grid-template-columns: 160px auto; /* Changed from 1fr to auto - select will only be as wide as needed */
+  gap: var(--ds-spacing-3);
+  align-items: center;
+  width: 100%;
+}
+
+.strategy-execution-panel-form-group .strategy-execution-panel-select {
+  width: auto; /* Changed from 100% - only take needed space */
+  min-width: 200px; /* Minimum reasonable width for dropdown */
+  max-width: 300px; /* Maximum width to prevent excessive width */
+}
+
+@media (max-width: 768px) {
+  .strategy-execution-panel-form-group {
+    grid-template-columns: 1fr;
+    gap: var(--ds-spacing-2);
+  }
+  
+  .strategy-execution-panel-form-group .strategy-execution-panel-select {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+
+.strategy-execution-panel-label {
+  font-size: var(--ds-font-size-base);
+  font-weight: 500;
+  color: var(--ds-text-primary);
+}
+
+/* Colors standardized by dex-text-hierarchy.css and dex-select-standard.css */
+
+/* Dropdown options and styles standardized by dex-select-standard.css */
+
+.strategy-execution-panel-select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.strategy-execution-panel-execute-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3) var(--ds-spacing-4);
+  background: var(--primary);
+  border: none;
+  border-radius: var(--ds-radius-md);
+  color: white;
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: var(--ds-spacing-2);
+  grid-column: 1 / -1; /* Span full width in grid */
+  width: 100%;
+  max-width: 300px; /* Prevent button from being too wide */
+}
+
+.strategy-execution-panel-execute-btn:hover:not(:disabled) {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.strategy-execution-panel-execute-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.strategy-execution-panel-decision {
+  padding: var(--ds-spacing-4);
+  background: var(--ds-bg-elevated);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+}
+
+.strategy-execution-panel-decision-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--ds-spacing-2) 0;
+  border-bottom: 1px solid var(--ds-border-color);
+}
+
+.strategy-execution-panel-decision-row:last-child {
+  border-bottom: none;
+}
+
+.strategy-execution-panel-decision-label {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-secondary);
+}
+
+.strategy-execution-panel-decision-value {
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}
+
+.strategy-execution-panel-decision-value.buy {
+  color: #10b981;
+}
+
+.strategy-execution-panel-decision-value.sell {
+  color: #ef4444;
+}
+
+.strategy-execution-panel-decision-value.hold {
+  color: var(--ds-text-secondary);
+}
+
+.strategy-execution-panel-status {
+  padding: var(--ds-spacing-4);
+  background: var(--ds-bg-elevated);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+}
+
+.strategy-execution-panel-status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--ds-spacing-2) 0;
+  border-bottom: 1px solid var(--ds-border-color);
+}
+
+.strategy-execution-panel-status-row:last-child {
+  border-bottom: none;
+}
+
+.strategy-execution-panel-status-label {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-secondary);
+}
+
+.strategy-execution-panel-status-value {
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}

@@ -1,0 +1,127 @@
+/**
+ * 📐 Layout Settings Styles - Trade Panel & Orderbook Position
+ * 
+ * CSS pentru aplicarea setărilor de layout din Settings:
+ * - Trade Panel Position (Left/Right)
+ * - Orderbook Position (Left Side/Right Side)
+ */
+
+/* ═══════════════════════════════════════════════════════════════════
+   TRADE PANEL POSITION - Left/Right
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Default: Trade Panel on Right (chart on left) */
+.dex-top-split {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  align-items: stretch;
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+/* Trade Panel on LEFT - Panel first, then Chart */
+[data-trade-panel-position="left"] .dex-top-split {
+  flex-direction: row;
+}
+
+[data-trade-panel-position="left"] .dex-top-split .dex-layout-sidebar-slot {
+  order: 1;
+}
+
+[data-trade-panel-position="left"] .dex-top-split .dex-chart-section {
+  order: 2;
+}
+
+/* Trade Panel on RIGHT - Chart first, then Panel (default) */
+[data-trade-panel-position="right"] .dex-top-split {
+  flex-direction: row;
+}
+
+[data-trade-panel-position="right"] .dex-top-split .dex-layout-sidebar-slot {
+  order: 2;
+}
+
+[data-trade-panel-position="right"] .dex-top-split .dex-chart-section {
+  order: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ORDERBOOK POSITION - Left Side/Right Side
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Orderbook container - if exists in trading layout */
+.dex-orderbook-container,
+.dex-orderbook-section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Orderbook on LEFT SIDE */
+[data-orderbook-position="left"] .dex-orderbook-container,
+[data-orderbook-position="left"] .dex-orderbook-section {
+  order: 1;
+}
+
+[data-orderbook-position="left"] .dex-trading-layout-with-orderbook .dex-chart-section,
+[data-orderbook-position="left"] .dex-trading-layout-with-orderbook .dex-layout-sidebar-slot {
+  order: 2;
+}
+
+/* Orderbook on RIGHT SIDE (default) */
+[data-orderbook-position="right"] .dex-orderbook-container,
+[data-orderbook-position="right"] .dex-orderbook-section {
+  order: 2;
+}
+
+[data-orderbook-position="right"] .dex-trading-layout-with-orderbook .dex-chart-section,
+[data-orderbook-position="right"] .dex-trading-layout-with-orderbook .dex-layout-sidebar-slot {
+  order: 1;
+}
+
+/* Smooth transitions for layout changes */
+.dex-top-split,
+.dex-layout-sidebar-slot,
+.dex-chart-section,
+.dex-orderbook-container,
+.dex-orderbook-section {
+  transition: order 0.3s ease;
+}
+
+[data-dex-density="compact"] .ai-trading-main-content {
+  --spacing-xs: 3px;
+  --spacing-sm: 6px;
+  --spacing-md: 10px;
+  --spacing-lg: 14px;
+  --spacing-xl: 18px;
+}
+
+[data-dex-density="compact"] .ai-trading-main-content .card,
+[data-dex-density="compact"] .ai-trading-main-content [class*="panel"],
+[data-dex-density="compact"] .ai-trading-main-content [class*="card"] {
+  --ds-card-padding: 12px;
+}
+
+/* Responsive: On mobile, always stack vertically */
+@media (max-width: 768px) {
+  [data-trade-panel-position="left"] .dex-top-split,
+  [data-trade-panel-position="right"] .dex-top-split {
+    flex-direction: column !important;
+  }
+  
+  [data-trade-panel-position="left"] .dex-top-split .dex-layout-sidebar-slot,
+  [data-trade-panel-position="right"] .dex-top-split .dex-layout-sidebar-slot,
+  [data-trade-panel-position="left"] .dex-top-split .dex-chart-section,
+  [data-trade-panel-position="right"] .dex-top-split .dex-chart-section {
+    order: 0 !important;
+  }
+  
+  [data-orderbook-position="left"] .dex-orderbook-container,
+  [data-orderbook-position="right"] .dex-orderbook-container,
+  [data-orderbook-position="left"] .dex-orderbook-section,
+  [data-orderbook-position="right"] .dex-orderbook-section {
+    order: 0 !important;
+  }
+}

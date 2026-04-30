@@ -1,0 +1,235 @@
+/* OTALogo Component Styles - Sharp AI Design */
+/* Aliniere unică peste tot: folosește .ota-title-row pe containerul logo + text */
+
+/* Container comun pentru logo OTA + titlu – aceeași linie, centrat vertical */
+.ota-title-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5em;
+  flex-wrap: wrap;
+}
+.ota-title-row .ota-logo {
+  flex-shrink: 0;
+  align-self: center;
+}
+/* Orice SVG sau icon în fața titlului: centrat vertical (elimină anomalia de baseline) */
+.ota-title-row > svg,
+.ota-title-row .ota-title-row-icon {
+  flex-shrink: 0;
+  align-self: center;
+  display: block;
+  vertical-align: middle;
+}
+.ota-title-row h1,
+.ota-title-row h2,
+.ota-title-row h3,
+.ota-title-row h4 {
+  line-height: 1 !important;
+  margin: 0;
+  align-self: center;
+}
+
+.ota-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ota-logo-size, 1.25em);
+  height: var(--ota-logo-size, 1.25em);
+  min-width: var(--ota-logo-size, 1.25em);
+  min-height: var(--ota-logo-size, 1.25em);
+  position: relative;
+  flex-shrink: 0;
+  align-self: center;
+  vertical-align: middle;
+  line-height: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  aspect-ratio: 1 / 1;
+}
+
+.ota-logo-svg,
+.ota-logo-svg-proportional {
+  width: 100%;
+  height: 100%;
+  display: block;
+  shape-rendering: geometricPrecision;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  /* PROPORTIONAL: SVG-ul se scalează proporțional cu containerul */
+  object-fit: contain;
+}
+
+.ota-logo-center {
+  transition: transform var(--ds-transition-base), opacity var(--ds-transition-base);
+}
+
+.ota-logo-neural {
+  transition: opacity var(--ds-transition-base);
+}
+
+.ota-logo-nodes {
+  transition: transform var(--ds-transition-base), opacity var(--ds-transition-base);
+}
+
+/* Border variant - sharp border */
+.ota-logo-border {
+  border-radius: 8px;
+  border: 2px solid var(--ds-color-primary);
+  padding: 3px;
+  background: var(--ds-bg-elevated);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+}
+
+/* Hover effects - sharp interactive */
+.ota-logo:hover .ota-logo-center {
+  transform: scale(1.15);
+  opacity: 1;
+}
+
+.ota-logo:hover .ota-logo-neural {
+  opacity: 1;
+  stroke-width: 2;
+}
+
+.ota-logo:hover .ota-logo-nodes circle {
+  transform: scale(1.15);
+  opacity: 1;
+}
+
+/* Size variants: mai mari și clare, aliniere cu text OTA */
+.ota-logo-xs {
+  width: 1.35em;
+  height: 1.35em;
+  min-width: 1.35em;
+  min-height: 1.35em;
+}
+
+.ota-logo-sm {
+  width: 1.5em;
+  height: 1.5em;
+  min-width: 1.5em;
+  min-height: 1.5em;
+}
+
+.ota-logo-md {
+  width: 1.75em;
+  height: 1.75em;
+  min-width: 1.75em;
+  min-height: 1.75em;
+}
+
+.ota-logo-lg {
+  width: 2.1em;
+  height: 2.1em;
+  min-width: 2.1em;
+  min-height: 2.1em;
+}
+
+.ota-logo-xl {
+  width: 2.6em;
+  height: 2.6em;
+  min-width: 2.6em;
+  min-height: 2.6em;
+}
+
+/* Animation for active state - sharp pulse */
+@keyframes ota-logo-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.95;
+  }
+}
+
+.ota-logo.ota-logo-active {
+  animation: ota-logo-pulse 2s ease-in-out infinite;
+}
+
+.ota-logo.ota-logo-active .ota-logo-center {
+  animation: ota-logo-pulse 2s ease-in-out infinite;
+}
+
+/* Connected state: animated when OpenAI API is available */
+@keyframes ota-logo-connected-center {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 6px rgba(255, 0, 0, 0.9));
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.12);
+    filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.95)) drop-shadow(0 0 16px rgba(255, 80, 80, 0.6));
+    opacity: 1;
+  }
+}
+
+@keyframes ota-logo-connected-nodes {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.95;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes ota-logo-connected-neural {
+  0%, 100% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.ota-logo.ota-logo-animated .ota-logo-center {
+  animation: ota-logo-connected-center 2.2s ease-in-out infinite;
+}
+
+.ota-logo.ota-logo-animated .ota-logo-neural {
+  animation: ota-logo-connected-neural 2.2s ease-in-out infinite;
+}
+
+.ota-logo.ota-logo-animated .ota-logo-nodes circle {
+  animation: ota-logo-connected-nodes 2.2s ease-in-out infinite;
+}
+
+/* Stagger outer nodes slightly for wave effect */
+.ota-logo.ota-logo-animated .ota-logo-nodes circle:nth-child(1) { animation-delay: 0s; }
+.ota-logo.ota-logo-animated .ota-logo-nodes circle:nth-child(2) { animation-delay: 0.15s; }
+.ota-logo.ota-logo-animated .ota-logo-nodes circle:nth-child(3) { animation-delay: 0.3s; }
+.ota-logo.ota-logo-animated .ota-logo-nodes circle:nth-child(4) { animation-delay: 0.45s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ota-logo.ota-logo-animated .ota-logo-center,
+  .ota-logo.ota-logo-animated .ota-logo-neural,
+  .ota-logo.ota-logo-animated .ota-logo-nodes circle {
+    animation: none;
+  }
+}
+
+/* Loading state */
+.ota-logo.ota-logo-loading {
+  opacity: 0.7;
+  animation: ota-logo-pulse 1.5s ease-in-out infinite;
+}
+
+/* Sharp rendering for high DPI */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .ota-logo-svg {
+    shape-rendering: geometricPrecision;
+  }
+}
+
+/* Focus state for accessibility */
+.ota-logo:focus-visible {
+  outline: 2px solid var(--ds-color-primary);
+  outline-offset: 2px;
+  border-radius: 8px;
+}

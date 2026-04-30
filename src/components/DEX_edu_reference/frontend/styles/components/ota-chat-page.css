@@ -1,0 +1,1440 @@
+/* OTA Assistant chat — header | thread scroll | composer (grid 3 rânduri, composer în flux, nu position:absolute). */
+
+.ota-chat-page {
+  --och-space-xs: 4px;
+  --och-space-sm: 8px;
+  --och-space-md: 16px;
+  --och-space-lg: 24px;
+  --och-ai-accent: #a78bfa;
+  --och-thread-max: 780px;
+  --och-user-bubble: rgba(167, 139, 250, 0.14);
+  --och-assistant-surface: rgba(255, 255, 255, 0.045);
+}
+
+.ota-chat-page {
+  position: relative;
+  display: grid;
+  /* Header | thread (scroll) | composer — tot în flux; evită absolute+bottom când 100% height se rupe (composer „la mijloc”). */
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: stretch;
+  /* Umple main-ul când părintele e flex/grid */
+  flex: 1 1 0%;
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  background: #000000;
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: none;
+  box-sizing: border-box;
+}
+
+.ota-chat-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* —— Top bar —— */
+.ota-chat-header {
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--och-space-md);
+  padding: var(--och-space-md) var(--och-space-lg);
+  background: #000000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+}
+
+.ota-chat-header__brand {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+
+.ota-chat-header__logo {
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.ota-chat-header__titles {
+  min-width: 0;
+}
+
+.ota-chat-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+  color: #ececf1;
+  letter-spacing: -0.02em;
+}
+
+.ota-chat-title-icon {
+  flex-shrink: 0;
+  color: var(--och-ai-accent);
+  opacity: 0.95;
+}
+
+.ota-chat-badge-2026 {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, var(--och-ai-accent) 0%, #6366f1 100%);
+  border-radius: 999px;
+  color: #fff;
+  vertical-align: middle;
+}
+
+.ota-chat-subtitle {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: #8e8ea0;
+  margin: 6px 0 0 0;
+  max-width: 52ch;
+}
+
+.ota-chat-subtitle strong {
+  color: #c5c5d2;
+  font-weight: 600;
+}
+
+.ota-chat-vault-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  color: #c5c5d2;
+  font-size: 0.85rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.ota-chat-vault-btn:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #ececf1;
+}
+
+/* —— Body: mijlocul grilei — banner + thread + erori; scroll doar în .ota-chat-scroll —— */
+.ota-chat-body {
+  grid-row: 2;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #000000;
+  box-sizing: border-box;
+}
+
+.ota-chat-banner-slot {
+  padding: 10px var(--och-space-md) 0;
+  max-width: var(--och-thread-max);
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ota-chat-scroll {
+  flex: 1 1 0%;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  /* Nu propaga scroll-ul la .dex-page-wrapper (scroll chaining / „fereastra urcă”). */
+  overscroll-behavior: contain;
+}
+
+.ota-chat-thread {
+  max-width: var(--och-thread-max);
+  margin: 0 auto;
+  /* Spațiu sub ultimul mesaj — FAB Support dreapta-jos poate acoperi text fără asta */
+  padding: 8px 16px max(24px, 72px);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ota-chat-scroll-anchor {
+  height: 1px;
+  width: 100%;
+}
+
+/* —— Welcome (empty state) —— */
+.ota-chat-welcome {
+  padding: 32px 8px 48px;
+  text-align: center;
+}
+
+.ota-chat-thread--empty {
+  padding-top: 4px;
+  padding-bottom: 16px;
+}
+
+.ota-chat-thread--empty .ota-chat-welcome {
+  padding: 8px 4px 12px;
+  margin: 0 auto;
+  max-width: min(100%, var(--och-thread-max));
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ota-chat-empty-panel {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 18px 14px 20px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.ota-chat-thread--empty .ota-chat-welcome__hero {
+  margin-bottom: 14px;
+}
+
+.ota-chat-thread--empty .ota-chat-welcome__icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 10px;
+}
+
+.ota-chat-thread--empty .ota-chat-welcome__title {
+  font-size: 1.2rem;
+}
+
+.ota-chat-thread--empty .ota-chat-welcome__lead {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.ota-chat-thread--empty .ota-chat-starters {
+  margin-bottom: 14px;
+}
+
+.ota-chat-thread--empty .ota-chat-hint {
+  font-size: 0.8125rem;
+  margin-bottom: 8px;
+}
+
+.ota-chat-welcome__hero {
+  margin-bottom: 24px;
+}
+
+.ota-chat-welcome__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 16px;
+  border-radius: 0;
+  background: transparent;
+  border: none;
+  color: inherit;
+}
+
+.ota-chat-welcome__title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ececf1;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.03em;
+}
+
+.ota-chat-welcome__lead {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: #9b9ba8;
+  margin: 0 auto;
+  max-width: 42ch;
+}
+
+.ota-chat-starters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 28px;
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ota-chat-starter-chip {
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: #d1d1db;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  max-width: 100%;
+}
+
+.ota-chat-starter-chip:hover {
+  background: rgba(167, 139, 250, 0.1);
+  border-color: rgba(167, 139, 250, 0.35);
+  color: #fff;
+}
+
+.ota-chat-hint {
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: #6e6e80;
+  margin: 0 auto 12px;
+  max-width: 52ch;
+  text-align: left;
+}
+
+.ota-chat-hint strong {
+  color: #9b9ba8;
+}
+
+.ota-chat-hint--muted {
+  margin-top: 8px;
+  font-size: 0.78rem;
+  color: #5c5c6a;
+}
+
+.ota-chat-code {
+  font-size: 0.78em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* —— Message rows (assistant left / user right) —— */
+.ota-chat-msg {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 20px;
+  max-width: 100%;
+}
+
+.ota-chat-msg--assistant {
+  justify-content: flex-start;
+}
+
+.ota-chat-msg--user {
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.ota-chat-msg__avatar {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+/* Fără chenar/fundal — doar sigla OTA (font-size pentru dimensiune em) */
+.ota-chat-msg__avatar--assistant {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 16px;
+}
+
+.ota-chat-msg__avatar--assistant .ota-chat-msg__ota-logo.ota-logo {
+  --ota-logo-size: 22px;
+  width: 22px !important;
+  height: 22px !important;
+  min-width: 22px;
+  min-height: 22px;
+  flex-shrink: 0;
+}
+
+/* În timpul „Thinking…” / înainte de primul token — sigla OTA se rotește */
+.ota-chat-msg__avatar--assistant.ota-chat-msg__avatar--waiting .ota-chat-msg__ota-logo.ota-logo {
+  animation: ota-chat-ota-logo-spin 0.88s linear infinite;
+  transform-origin: center center;
+}
+
+@keyframes ota-chat-ota-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ota-chat-msg__avatar--assistant.ota-chat-msg__avatar--waiting .ota-chat-msg__ota-logo.ota-logo {
+    animation: none;
+  }
+}
+
+.ota-chat-msg__avatar--user {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #b4b4c0;
+}
+
+.ota-chat-msg--user .ota-chat-msg__body {
+  display: flex;
+  justify-content: flex-end;
+  flex: 1;
+  min-width: 0;
+}
+
+.ota-chat-msg--assistant .ota-chat-msg__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.ota-chat-msg__bubble {
+  display: inline-block;
+  max-width: min(100%, 640px);
+  border-radius: 18px;
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ota-chat-msg--assistant .ota-chat-msg__bubble {
+  background: var(--och-assistant-surface);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+.ota-chat-msg--user .ota-chat-msg__bubble {
+  background: var(--och-user-bubble);
+  border-color: rgba(167, 139, 250, 0.22);
+}
+
+.ota-chat-msg__text {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: #ececf1;
+  word-break: break-word;
+}
+
+/* Markdown body (lists, headings, code) — replaces raw pre-wrap */
+.ota-chat-md {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: #ececf1;
+}
+
+.ota-chat-md > *:first-child {
+  margin-top: 0;
+}
+
+.ota-chat-md > *:last-child {
+  margin-bottom: 0;
+}
+
+.ota-chat-md p {
+  margin: 0 0 0.75em 0;
+}
+
+.ota-chat-md h1,
+.ota-chat-md h2,
+.ota-chat-md h3,
+.ota-chat-md h4 {
+  color: #f4f4f8;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 1em 0 0.5em 0;
+}
+
+.ota-chat-md h1 {
+  font-size: 1.25rem;
+}
+.ota-chat-md h2 {
+  font-size: 1.1rem;
+}
+.ota-chat-md h3 {
+  font-size: 1rem;
+}
+.ota-chat-md h4 {
+  font-size: 0.95rem;
+}
+
+.ota-chat-md ul,
+.ota-chat-md ol {
+  margin: 0 0 0.75em 0;
+  padding-left: 1.35em;
+}
+
+.ota-chat-md li {
+  margin: 0.25em 0;
+}
+
+.ota-chat-md li::marker {
+  color: #9b9ba8;
+}
+
+.ota-chat-md blockquote {
+  margin: 0.5em 0 0.75em 0;
+  padding: 8px 12px;
+  border-left: 3px solid rgba(167, 139, 250, 0.45);
+  background: rgba(255, 255, 255, 0.03);
+  color: #c5c5d2;
+}
+
+.ota-chat-md hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 1em 0;
+}
+
+.ota-chat-md strong {
+  font-weight: 600;
+  color: #f4f4f8;
+}
+
+.ota-chat-md a.ota-chat-md__a {
+  color: #a78bfa;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ota-chat-md a.ota-chat-md__a:hover {
+  color: #c4b5fd;
+}
+
+.ota-chat-md__img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 0.5em 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ota-chat-md__pre {
+  margin: 0.65em 0;
+  padding: 12px 14px;
+  overflow-x: auto;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.ota-chat-md__code--block {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  white-space: pre;
+}
+
+.ota-chat-md__code--inline {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-size: 0.88em;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: break-spaces;
+}
+
+.ota-chat-md__table-scroll {
+  margin: 0.65em 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ota-chat-md__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+
+.ota-chat-md__table th,
+.ota-chat-md__table td {
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: left;
+  vertical-align: top;
+}
+
+.ota-chat-md__table th {
+  background: rgba(255, 255, 255, 0.05);
+  color: #e4e4ec;
+  font-weight: 600;
+}
+
+.ota-chat-md__table tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.ota-chat-stream-placeholder {
+  opacity: 0.7;
+}
+
+/* Thinking: fără chenar (inclusiv verde din temă / focus) — doar text gri */
+.ota-chat-msg__bubble--thinking,
+.ota-chat-msg--typing .ota-chat-msg__bubble {
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 6px 2px 10px 2px !important;
+  border-radius: 0 !important;
+}
+
+.ota-chat-msg--typing .ota-chat-msg__body {
+  outline: none;
+}
+
+.ota-chat-msg__bubble--thinking .ota-chat-msg__text {
+  color: #9ca3af;
+}
+
+/* ChatGPT-style: each glyph fades in sequence (shimmer wave), neutral gray — never green */
+.ota-chat-thinking {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  font-weight: 400;
+  user-select: none;
+  color: #9ca3af;
+  letter-spacing: 0.01em;
+}
+
+.ota-chat-thinking__word,
+.ota-chat-thinking__ellipsis {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.ota-chat-thinking__ellipsis {
+  margin-left: 1px;
+  letter-spacing: 0.02em;
+}
+
+.ota-chat-thinking__glyph {
+  display: inline-block;
+  color: #9ca3af;
+  opacity: 0.28;
+  animation: ota-chat-gpt-thinking-wave 1.1s ease-in-out infinite;
+  animation-delay: calc(var(--ota-i, 0) * 88ms);
+  will-change: opacity;
+}
+
+@keyframes ota-chat-gpt-thinking-wave {
+  0%,
+  100% {
+    opacity: 0.22;
+  }
+  35% {
+    opacity: 1;
+  }
+}
+
+/* Product names — discrete accent (assistant + user bubbles) */
+.ota-chat-md .ota-chat-brand {
+  color: #67d4f0;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.ota-chat-msg--user .ota-chat-md .ota-chat-brand {
+  color: #93c5fd;
+}
+
+.ota-chat-msg--user .ota-chat-msg__text {
+  text-align: left;
+}
+
+.ota-chat-typing {
+  min-height: 1.25em;
+}
+
+.ota-chat-typing-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  vertical-align: middle;
+}
+
+.ota-chat-typing-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #8e8ea0;
+  animation: ota-chat-dot 1.2s ease-in-out infinite both;
+}
+
+.ota-chat-typing-dots span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.ota-chat-typing-dots span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes ota-chat-dot {
+  0%,
+  80%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.9);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* —— Error —— */
+.ota-chat-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  margin: 0 auto;
+  max-width: var(--och-thread-max);
+  width: calc(100% - 32px);
+  background: rgba(239, 68, 68, 0.12);
+  color: #fca5a5;
+  font-size: 0.875rem;
+  border-radius: 10px;
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.ota-chat-retry {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  color: #ececf1;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.ota-chat-retry:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* —— Composer: rând 3 în grid (nu absolute — altfel bottom:0 e relativ la înălțime greșită) —— */
+.ota-chat-composer {
+  grid-row: 3;
+  position: relative;
+  z-index: 5;
+  flex-shrink: 0;
+  align-self: stretch;
+  width: 100%;
+  padding: 12px 16px max(16px, env(safe-area-inset-bottom, 0px));
+  background: rgba(0, 0, 0, 0.92);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.ota-chat-composer__inner {
+  max-width: var(--och-thread-max);
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ota-chat-file-input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ota-chat-image-preview {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 0 0 10px;
+}
+
+.ota-chat-image-preview-img {
+  max-width: 120px;
+  max-height: 80px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.ota-chat-image-preview-remove {
+  flex-shrink: 0;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  color: #8e8ea0;
+  cursor: pointer;
+}
+
+.ota-chat-image-preview-remove:hover {
+  color: #ececf1;
+}
+
+.ota-chat-input-shell {
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 6px 8px 6px 14px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ota-chat-input-shell:focus-within {
+  border-color: rgba(167, 139, 250, 0.45);
+  box-shadow: 0 0 0 1px rgba(167, 139, 250, 0.12);
+}
+
+.ota-chat-input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--och-space-sm);
+}
+
+.ota-chat-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding-bottom: 4px;
+}
+
+.ota-chat-attach-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  color: #8e8ea0;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.ota-chat-attach-image:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ececf1;
+}
+
+.ota-chat-attach-image:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.ota-chat-attach-image:focus-visible {
+  outline: 2px solid #0da37f;
+  outline-offset: 2px;
+}
+
+.ota-chat-input {
+  flex: 1;
+  padding: 12px 4px 12px 0;
+  min-height: 48px;
+  max-height: 200px;
+  background: transparent;
+  color: #ececf1;
+  border: none;
+  border-radius: 0;
+  font-size: 0.9375rem;
+  font-family: inherit;
+  line-height: 1.45;
+  resize: vertical;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.ota-chat-input::placeholder {
+  color: #6e6e80;
+}
+
+.ota-chat-input:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.ota-chat-send {
+  flex-shrink: 0;
+  padding: 10px 18px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0da37f;
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.ota-chat-send:hover:not(:disabled) {
+  background: #0e8c6d;
+}
+
+.ota-chat-send:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.ota-chat-send:focus-visible {
+  outline: 2px solid #ececf1;
+  outline-offset: 2px;
+}
+
+.ota-chat-lang-hint {
+  margin: 10px 4px 0;
+  padding: 0 2px;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: rgba(236, 236, 241, 0.42);
+}
+
+.ota-chat-token-usage {
+  margin: 8px 4px 0;
+  padding: 0 2px;
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  color: rgba(236, 236, 241, 0.38);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Vault modal */
+.ota-vault-auth-required,
+.ota-vault-loading,
+.ota-vault-empty {
+  margin: 0;
+  padding: 1rem;
+  color: #8e8ea0;
+  font-size: 0.9375rem;
+}
+
+.ota-vault-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ota-vault-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.9rem;
+}
+
+.ota-vault-key {
+  font-weight: 500;
+  color: #ececf1;
+  min-width: 120px;
+}
+
+.ota-vault-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: ui-monospace, monospace;
+  font-size: 0.85rem;
+  color: #8e8ea0;
+  word-break: break-all;
+}
+
+.ota-vault-reveal {
+  padding: 4px;
+  background: transparent;
+  border: none;
+  color: #8e8ea0;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.ota-vault-reveal:hover {
+  color: #ececf1;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Rate limit */
+.ota-chat-rate-limit-banner {
+  padding: 8px 16px;
+  font-size: 0.8125rem;
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.08);
+  border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* —— OTA · $BITS layout (distinct from legacy assistant strip) —— */
+.ota-chat-page--bits {
+  background: radial-gradient(120% 80% at 10% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 55%),
+    radial-gradient(90% 60% at 100% 10%, rgba(167, 139, 250, 0.1) 0%, transparent 50%), #050508;
+}
+
+.ota-chat-header--bits {
+  position: relative;
+  padding: 0;
+  border-bottom: 1px solid rgba(99, 102, 241, 0.25);
+  background: linear-gradient(180deg, rgba(15, 15, 22, 0.98) 0%, rgba(5, 5, 8, 0.95) 100%);
+}
+
+/* Same column as thread + composer — avoids full-bleed header vs narrow chat */
+.ota-chat-header__strip {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--och-space-md);
+  max-width: var(--och-thread-max);
+  margin: 0 auto;
+  width: 100%;
+  padding: 10px 16px 12px calc(var(--och-space-md) + 10px);
+  box-sizing: border-box;
+}
+
+.ota-chat-header__bits-rail {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background: linear-gradient(180deg, #6366f1 0%, #a78bfa 50%, #22d3ee 100%);
+  border-radius: 0 3px 3px 0;
+}
+
+.ota-chat-header__brand--bits {
+  align-items: flex-start;
+}
+
+.ota-chat-header__logo--bits {
+  padding-top: 4px;
+}
+
+.ota-chat-bits-title-line {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  row-gap: 6px;
+}
+
+.ota-chat-bits-lockup-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ota-chat-bits-model-name {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.ota-chat-bits-model-name--openai {
+  color: #10b981;
+  text-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+}
+
+.ota-chat-bits-model-name--claude {
+  color: #d8b4fe;
+  text-shadow: 0 0 20px rgba(216, 180, 254, 0.25);
+}
+
+.ota-chat-ota-engine-warning {
+  margin: 8px 0 0 0;
+  padding: 10px 12px;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: #fde68a;
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  border-radius: 8px;
+  max-width: 62ch;
+}
+
+.ota-chat-bits-lockup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin-bottom: 6px;
+}
+
+.ota-chat-bits-lockup__ota {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #a5b4fc;
+}
+
+.ota-chat-bits-lockup__sep {
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 600;
+}
+
+.ota-chat-bits-lockup__bits {
+  font-family: ui-monospace, 'Cascadia Code', 'SFMono-Regular', Menlo, monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #f5f3ff;
+  text-shadow: 0 0 24px rgba(167, 139, 250, 0.35);
+}
+
+.ota-chat-bits-lockup__engine {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  border: 1px solid rgba(99, 102, 241, 0.45);
+  background: rgba(99, 102, 241, 0.15);
+  color: #e0e7ff;
+}
+
+.ota-chat-title--bits {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 1.05rem;
+  margin: 0;
+  line-height: 1.35;
+  flex-wrap: wrap;
+}
+
+.ota-chat-subtitle--bits {
+  max-width: 58ch;
+  margin-top: 4px;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.ota-chat-transcript-banner-wrap {
+  flex-shrink: 0;
+  max-width: var(--och-thread-max);
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 var(--och-space-md);
+  box-sizing: border-box;
+}
+
+.ota-chat-transcript-banner-wrap .ota-chat-transcript-banner {
+  border-radius: 0 0 10px 10px;
+}
+
+.ota-chat-vault-btn--bits {
+  border-color: rgba(99, 102, 241, 0.4);
+  background: rgba(99, 102, 241, 0.12);
+}
+
+.ota-chat-vault-btn--bits:hover {
+  background: rgba(99, 102, 241, 0.22);
+}
+
+.ota-chat-transcript-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 12px;
+  padding: 10px 16px;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: #c4c9e0;
+  background: rgba(34, 211, 238, 0.06);
+  border-bottom: 1px solid rgba(34, 211, 238, 0.15);
+  flex-shrink: 0;
+}
+
+.ota-chat-transcript-banner__label {
+  flex-shrink: 0;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #22d3ee;
+}
+
+.ota-chat-transcript-banner__text {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.ota-chat-transcript-banner__meta {
+  flex-shrink: 0;
+  font-size: 0.6875rem;
+  color: #8e8ea0;
+}
+
+.ota-chat-transcript-banner--emph {
+  padding: 14px 18px;
+  font-size: 0.875rem;
+  border-left: 4px solid #22d3ee;
+}
+
+.ota-chat-transcript-banner--emph .ota-chat-transcript-banner__label {
+  font-size: 0.6875rem;
+}
+
+/* ========== OTA $BITS Studio — alt layout: fereastră încadrată („console”), nu strip full-bleed ========== */
+
+.ota-chat-page--bits.ota-chat-page--studio {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 10px 14px 16px;
+  box-sizing: border-box;
+  /* Negru pal (nu #000 dur) */
+  background:
+    radial-gradient(ellipse 100% 90% at 50% -25%, rgba(99, 102, 241, 0.12), transparent 52%),
+    linear-gradient(180deg, #161618 0%, #121214 100%);
+  min-height: 0;
+}
+
+.ota-chat-page__shell {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
+  flex: 1 1 0%;
+  min-height: 0;
+  width: 100%;
+  max-width: min(928px, 100%);
+  margin: 0 auto;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(168deg, #1c1c22 0%, #141418 52%, #101012 100%);
+  box-shadow:
+    0 0 0 1px rgba(34, 211, 238, 0.09),
+    0 36px 100px rgba(0, 0, 0, 0.88),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  box-sizing: border-box;
+  overscroll-behavior: contain;
+}
+
+.ota-chat-header--bits.ota-chat-header--studio {
+  border-bottom: none;
+  background: transparent;
+}
+
+.ota-chat-header__strip--studio {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px 16px;
+  align-items: start;
+  max-width: none;
+  margin: 0;
+  width: 100%;
+  padding: 16px 18px 14px 20px;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: linear-gradient(175deg, rgba(99, 102, 241, 0.08) 0%, rgba(20, 20, 24, 0.6) 68%);
+}
+
+.ota-chat-studio-masthead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 22px;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.ota-chat-studio-masthead__mark {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  flex-shrink: 0;
+  min-height: 0;
+  padding: 4px 10px 4px 2px;
+  border-radius: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.ota-chat-studio-masthead__mark .ota-logo {
+  flex-shrink: 0;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Cercul alb din SVG (stroke inline) — fără halou în chat */
+.ota-chat-studio-masthead__mark .ota-logo-center {
+  stroke: none !important;
+}
+
+.ota-chat-studio-masthead__bits {
+  font-family: ui-monospace, 'Cascadia Code', 'SFMono-Regular', Menlo, monospace;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #e4e4ef;
+  line-height: 1;
+  text-shadow: 0 0 16px rgba(34, 211, 238, 0.15);
+}
+
+.ota-chat-studio-masthead__body {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+.ota-chat-title--studio {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #ececf1;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.ota-chat-title--studio__label {
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #71717a;
+}
+
+.ota-chat-studio-llm {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.ota-chat-studio-llm--openai {
+  color: #6ee7b7;
+  border: 1px solid rgba(52, 211, 153, 0.5);
+  background: rgba(6, 78, 59, 0.35);
+}
+
+.ota-chat-studio-llm--claude {
+  color: #e9d5ff;
+  border: 1px solid rgba(167, 139, 250, 0.48);
+  background: rgba(67, 56, 202, 0.28);
+}
+
+.ota-chat-studio-llm--off {
+  color: #fde68a;
+  border: 1px solid rgba(251, 191, 36, 0.45);
+  background: rgba(120, 53, 15, 0.35);
+}
+
+.ota-chat-subtitle--studio {
+  margin-top: 2px !important;
+}
+
+.ota-chat-body--studio {
+  background: transparent;
+}
+
+.ota-chat-composer--studio {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: #141418;
+  box-shadow: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding-top: 14px;
+}
+
+.ota-chat-vault-btn--studio {
+  align-self: center;
+}
+
+@media (max-width: 600px) {
+  .ota-chat-header:not(.ota-chat-header--bits) {
+    flex-wrap: wrap;
+    padding: 12px;
+  }
+
+  .ota-chat-header__strip {
+    flex-wrap: wrap;
+    padding: 8px 12px 10px calc(10px + 8px);
+  }
+
+  .ota-chat-msg__avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+  }
+
+  .ota-chat-welcome__title {
+    font-size: 1.25rem;
+  }
+
+  .ota-chat-starter-chip {
+    font-size: 0.78rem;
+    padding: 8px 12px;
+  }
+
+  .ota-chat-page--bits.ota-chat-page--studio {
+    padding: 6px 8px 10px;
+  }
+
+  .ota-chat-page__shell {
+    border-radius: 16px;
+  }
+
+  .ota-chat-header__strip--studio {
+    grid-template-columns: 1fr;
+    padding: 12px 14px 10px 14px;
+  }
+
+  .ota-chat-vault-btn--studio {
+    width: 100%;
+    justify-content: center;
+  }
+}

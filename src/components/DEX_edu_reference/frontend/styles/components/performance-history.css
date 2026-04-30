@@ -1,0 +1,237 @@
+/**
+ * 📜 Performance History Styles
+ */
+
+.performance-history {
+  padding: var(--ds-spacing-6);
+  background-color: var(--ds-bg-surface);
+  border-radius: var(--ds-radius-lg);
+}
+
+.performance-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.performance-history-title {
+  font-size: var(--ds-font-size-xl);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+}
+
+.performance-history-filters {
+  display: flex;
+  gap: var(--ds-spacing-3);
+}
+
+.performance-history-filter-select {
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  background-color: var(--ds-bg-surface);
+  font-size: var(--ds-font-size-base);
+  cursor: pointer;
+}
+
+.performance-history-filter-select:focus {
+  outline: none;
+  border-color: var(--ds-accent);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.performance-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-3);
+}
+
+.performance-history-item {
+  padding: var(--ds-spacing-6);
+  background-color: var(--ds-bg-surface);
+  border-radius: var(--ds-radius-md);
+  border: 1px solid var(--ds-border-color);
+  transition: all var(--ds-transition-base);
+}
+
+.performance-history-item:hover {
+  transform: translateX(4px);
+  box-shadow: var(--ds-shadow-md);
+}
+
+.performance-history-item.executed {
+  border-left: 4px solid var(--ds-color-success);
+}
+
+.performance-history-item.failed {
+  border-left: 4px solid var(--ds-color-error);
+}
+
+.performance-history-item.closed {
+  border-left: 4px solid var(--ds-accent);
+}
+
+.performance-history-item.pending {
+  border-left: 4px solid var(--ds-color-warning);
+}
+
+.performance-history-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--ds-spacing-3);
+}
+
+.performance-history-item-trade {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+}
+
+.performance-history-item-pair {
+  font-size: var(--ds-font-size-lg);
+}
+
+.performance-history-item-status {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-1);
+  padding: var(--ds-spacing-1) var(--ds-spacing-2);
+  border-radius: var(--ds-radius-sm);
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+}
+
+.performance-history-item-status.executed {
+  background-color: #d1fae5;
+  color: var(--ds-text-buy);
+}
+
+.performance-history-item-status.failed {
+  background-color: #fee2e2;
+  color: var(--ds-text-sell);
+}
+
+.performance-history-item-status.closed {
+  background-color: #e0e7ff;
+  color: var(--ds-accent);
+}
+
+.performance-history-item-status.pending {
+  background-color: #fef3c7;
+  color: var(--ds-color-warning);
+}
+
+.performance-history-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-3);
+}
+
+.performance-history-item-amounts,
+.performance-history-item-prices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-spacing-6);
+}
+
+.performance-history-item-amount,
+.performance-history-item-price {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-1);
+}
+
+.performance-history-item-amount-label,
+.performance-history-item-price-label {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+}
+
+.performance-history-item-amount-value,
+.performance-history-item-price-value {
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+}
+
+.performance-history-item-pnl {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3);
+  border-radius: var(--ds-radius-md);
+  font-weight: var(--ds-font-weight-semibold);
+}
+
+.performance-history-item-pnl.profit {
+  background-color: #d1fae5;
+  color: var(--ds-text-buy);
+}
+
+.performance-history-item-pnl.loss {
+  background-color: #fee2e2;
+  color: var(--ds-text-sell);
+}
+
+.performance-history-item-pnl-label {
+  font-size: var(--ds-font-size-base);
+}
+
+.performance-history-item-pnl-value {
+  font-size: var(--ds-font-size-lg);
+}
+
+.performance-history-item-tx {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  background-color: var(--ds-bg-surface);
+  border-radius: var(--ds-radius-sm);
+  font-family: var(--ds-font-family-mono);
+  font-size: var(--ds-font-size-sm);
+}
+
+.performance-history-item-tx-label {
+  color: var(--ds-text-secondary);
+}
+
+.performance-history-item-tx-value {
+  color: var(--ds-text-primary);
+  cursor: pointer;
+}
+
+.performance-history-item-tx-value:hover {
+  color: var(--ds-accent);
+  text-decoration: underline;
+}
+
+.performance-history-item-date {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+}
+
+.performance-history-empty {
+  padding: var(--ds-spacing-8);
+  text-align: center;
+  color: var(--ds-text-secondary);
+}
+
+@media (max-width: 768px) {
+  .performance-history-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--ds-spacing-3);
+  }
+  
+  .performance-history-item-amounts,
+  .performance-history-item-prices {
+    flex-direction: column;
+    gap: var(--ds-spacing-3);
+  }
+}
+

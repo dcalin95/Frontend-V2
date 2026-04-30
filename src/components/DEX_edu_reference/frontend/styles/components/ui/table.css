@@ -1,0 +1,116 @@
+/**
+ * 🎨 Table / List Row Styles - Design System v1 + Sonnet
+ * 
+ * Dimensions/spacing/typography: --ds-* (design-system-v1.css)
+ * Colors: --ds-* (design-system-v1.css)
+ */
+
+.ui-table-wrapper {
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border: var(--ds-border-width, 1px) solid var(--ds-border-color);
+  border-radius: var(--ds-radius-lg, var(--ds-radius-lg));
+  background-color: var(--ds-bg-surface);
+  box-sizing: border-box;
+}
+
+.ui-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--ds-table-font-size, var(--ds-table-font-size));
+  font-family: var(--ds-font-family-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif);
+}
+
+/* Header */
+.ui-table-header {
+  background-color: var(--ds-bg-surface);
+  position: sticky;
+  top: 0;
+  z-index: var(--ds-z-sticky, 10);
+}
+
+.ui-table-head {
+  height: var(--ds-table-header-height) !important;
+  padding: 0 var(--ds-table-cell-padding-x, var(--ds-spacing-3));
+  font-size: var(--ds-table-font-size, 13px) !important;
+  font-weight: var(--ds-font-weight-semibold, var(--ds-font-weight-semibold));
+  color: var(--ds-text-tertiary);
+  text-transform: uppercase;
+  text-align: left;
+  border-bottom: var(--ds-border-width, 1px) solid var(--ds-border-color);
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.ui-table-head-left { text-align: left; }
+.ui-table-head-center { text-align: center; }
+.ui-table-head-right { text-align: right; }
+
+/* Body */
+.ui-table-body {
+  background-color: var(--ds-bg-surface);
+}
+
+/* Row */
+.ui-table-row {
+  height: var(--ds-table-row-height) !important;
+  border-bottom: var(--ds-border-width, 1px) solid var(--ds-border-color);
+  transition: background-color var(--ds-transition-fast);
+}
+
+.ui-table-row:last-child {
+  border-bottom: none;
+}
+
+.ui-table-row:hover {
+  background-color: var(--ds-bg-hover); /* Subtle hover */
+}
+
+.ui-table-row-clickable {
+  cursor: pointer;
+}
+
+.ui-table-row-clickable:active {
+  background-color: var(--ds-bg-hover);
+}
+
+/* Cell */
+.ui-table-cell {
+  padding: var(--ds-table-cell-padding-y, 8px) var(--ds-table-cell-padding-x, var(--ds-spacing-3));
+  color: var(--ds-text-primary);
+  font-size: var(--ds-table-font-size, var(--ds-table-font-size));
+  line-height: var(--ds-line-height-normal);
+  text-align: left;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.ui-table-cell-left { text-align: left; }
+.ui-table-cell-center { text-align: center; }
+.ui-table-cell-right { text-align: right; }
+
+/* Numeric columns (right aligned, tabular nums) */
+.ui-table-cell-numeric {
+  font-family: var(--ds-font-family-mono, ui-monospace, monospace);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ui-table-wrapper {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  .ui-table {
+    font-size: var(--ds-table-font-size, 13px);
+  }
+
+  .ui-table-head,
+  .ui-table-cell {
+    padding: 0 var(--ds-table-cell-padding-x, var(--ds-spacing-3));
+  }
+}

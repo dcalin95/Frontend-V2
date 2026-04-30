@@ -410,3 +410,56 @@ body.mode-mobile.in-app-browser .clear-cache-btn {
     min-height: 55px !important;
   }
 }
+
+/* DEX copied modal structure: compact wallet sections */
+body.mode-mobile .unified-wallet-modal-overlay {
+  background: rgba(0, 0, 0, 0.9);
+  padding: 0;
+  z-index: 100001;
+}
+
+body.mode-mobile .unified-wallet-modal {
+  padding: 14px 16px 12px;
+  max-width: 96%;
+  width: 96%;
+  max-height: min(400px, 88vh);
+  border-radius: 12px;
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+body.mode-mobile .network-grid,
+body.mode-mobile .wallet-section-evm-buttons {
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+body.mode-mobile .network-grid {
+  margin-top: 8px;
+}
+
+body.mode-mobile .wallet-option-btn {
+  min-height: 44px;
+  padding: 10px 12px;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+}
+
+body.mode-mobile .wallet-section-solana .wallet-option-btn {
+  width: 100%;
+  min-width: 0;
+}
+
+body.mode-mobile .modal-title {
+  font-size: 1.125rem;
+  margin-bottom: 6px;
+  background: none;
+  -webkit-text-fill-color: currentColor;
+}
+
+body.mode-mobile .modal-close-btn {
+  width: 32px;
+  height: 32px;
+  top: 10px;
+  right: 10px;
+}

@@ -1,0 +1,32 @@
+/* Swap Header Toolbar - Token Selector + Open Orders / History in Header */
+.swap-header-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.swap-header-toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: var(--ds-font-size-sm, 14px);
+  font-weight: var(--ds-font-weight-medium, 500);
+  color: var(--ds-text-primary, #e5e7eb);
+  background: var(--ds-bg-elevated, #000000);
+  border: 1px solid var(--ds-border-color, #374151);
+  border-radius: var(--ds-radius-md, 8px);
+  cursor: pointer;
+  transition: background var(--ds-transition-fast), border-color var(--ds-transition-fast), color var(--ds-transition-fast);
+}
+
+.swap-header-toolbar-btn:hover {
+  background: var(--ds-bg-surface, #000000);
+  border-color: var(--ds-border-color-hover, #4b5563);
+  color: var(--ds-text-primary, #f3f4f6);
+}
+
+.swap-header-toolbar-btn:active {
+  transform: translateY(0);
+}

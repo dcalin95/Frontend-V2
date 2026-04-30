@@ -1,0 +1,874 @@
+/**
+ * FiatConvertPanel – Convert Fiat (Stripe) → BNB / USDT
+ * Aliniat vizual cu Personal Account (dark / premium); fără max-width artificial pe formular.
+ */
+.fiat-convert-panel {
+  margin-top: 0;
+}
+
+/* Accent discret, aceeași familie ca secțiunile dashboard (fără a depinde de dashboard-page.css) */
+.fiat-convert-panel--layout {
+  position: relative;
+  border: 1px solid var(--ds-border-color, rgba(255, 255, 255, 0.12));
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+}
+
+.fiat-convert-panel--layout::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: var(--ds-radius-lg) 0 0 var(--ds-radius-lg);
+  background: linear-gradient(180deg, rgba(79, 172, 254, 0.55), rgba(99, 102, 241, 0.35));
+  pointer-events: none;
+}
+
+.fiat-convert-panel__header {
+  margin-bottom: var(--ds-spacing-4);
+}
+
+.fiat-convert-panel__header--compact {
+  margin-bottom: var(--ds-spacing-3);
+}
+
+.fiat-convert-panel__title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ds-spacing-2) var(--ds-spacing-3);
+  margin-bottom: var(--ds-spacing-2);
+}
+
+.fiat-convert-panel__title-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(129, 180, 255, 0.9);
+  background: rgba(79, 172, 254, 0.1);
+  border: 1px solid rgba(79, 172, 254, 0.22);
+}
+
+.fiat-convert-panel__title-chip svg {
+  color: rgba(79, 172, 254, 0.65);
+}
+
+.fiat-convert-panel__title-sparkle {
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+  color: rgba(129, 180, 255, 0.42);
+  opacity: 0.95;
+}
+
+@media (max-width: 420px) {
+  .fiat-convert-panel__title-sparkle {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+.fiat-convert-panel__title {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  margin-bottom: 0;
+}
+
+.fiat-convert-panel__title-ico {
+  display: inline-flex;
+  color: var(--ds-accent, #4facfe);
+  opacity: 0.9;
+}
+
+.fiat-convert-panel__subtitle {
+  color: var(--ds-text-secondary);
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 72ch;
+}
+
+.fiat-convert-panel__subtitle--compact {
+  font-size: 13px;
+  line-height: 1.45;
+  max-width: 62ch;
+}
+
+.fiat-convert-panel__subtitle strong {
+  color: var(--ds-text-primary);
+  font-weight: 600;
+}
+
+.fiat-convert-panel__callout {
+  margin-bottom: var(--ds-spacing-5);
+  padding: var(--ds-spacing-3) var(--ds-spacing-4);
+  border-radius: var(--ds-radius-md);
+  border: 1px solid rgba(79, 172, 254, 0.22);
+  background: rgba(79, 172, 254, 0.06);
+}
+
+.fiat-convert-panel__callout--compact {
+  margin-bottom: var(--ds-spacing-4);
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+}
+
+.fiat-convert-panel__callout-single {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ds-text-secondary);
+}
+
+.fiat-convert-panel__callout-single strong {
+  color: var(--ds-text-primary);
+  font-weight: 600;
+}
+
+.fiat-convert-panel__callout-inline-ico {
+  display: inline-block;
+  vertical-align: -0.2em;
+  margin-right: 6px;
+  color: rgba(79, 172, 254, 0.55);
+}
+
+.fiat-convert-panel__callout-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ds-accent, #4facfe);
+  margin-bottom: var(--ds-spacing-3);
+}
+
+.fiat-convert-panel__callout-label-ico {
+  color: rgba(79, 172, 254, 0.75);
+  flex-shrink: 0;
+}
+
+.fiat-convert-panel__callout-text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ds-text-secondary);
+}
+
+.fiat-convert-panel__callout-text strong {
+  color: var(--ds-text-primary);
+}
+
+.fiat-convert-panel__callout-list {
+  margin: 0;
+  padding-left: 1.15rem;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ds-text-secondary);
+}
+
+.fiat-convert-panel__callout-list li {
+  margin-bottom: var(--ds-spacing-2);
+}
+
+.fiat-convert-panel__callout-list li:last-child {
+  margin-bottom: 0;
+}
+
+.fiat-convert-panel__callout-list strong {
+  color: var(--ds-text-primary);
+}
+
+.fiat-convert-panel__callout-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-3);
+}
+
+.fiat-convert-panel__callout-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.fiat-convert-panel__callout-ico {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: rgba(79, 172, 254, 0.55);
+}
+
+.fiat-convert-panel__callout-item-text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ds-text-secondary);
+}
+
+.fiat-convert-panel__callout-item-text strong {
+  color: var(--ds-text-primary);
+}
+
+/* Callout scurt, 2 linii scanabile (wallet vs vault) */
+.fiat-convert-panel__callout--scan {
+  margin-bottom: var(--ds-spacing-4);
+}
+
+.fiat-convert-panel__callout-scan {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-2);
+}
+
+.fiat-convert-panel__callout-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ds-text-secondary);
+}
+
+.fiat-convert-panel__callout-line-ico {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: rgba(79, 172, 254, 0.55);
+}
+
+.fiat-convert-panel__callout-line span strong {
+  color: var(--ds-text-primary);
+  font-weight: 600;
+}
+
+/* Desktop: form stânga, estimate dreapta */
+.fiat-convert-panel__workspace {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-5);
+  width: 100%;
+  min-width: 0;
+}
+
+.fiat-convert-panel__main {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.fiat-convert-panel__estimate-aside {
+  min-width: 0;
+  flex: 0 0 auto;
+  width: 100%;
+}
+
+@media (min-width: 900px) {
+  .fiat-convert-panel__workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 380px);
+    gap: var(--ds-spacing-6) var(--ds-spacing-7);
+    align-items: start;
+  }
+
+  .fiat-convert-panel__estimate-aside {
+    position: sticky;
+    top: var(--ds-spacing-4);
+  }
+}
+
+.fiat-convert-panel-quote--aside {
+  min-height: 10rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-shadow: 0 0 0 1px rgba(79, 172, 254, 0.06);
+  background: linear-gradient(165deg, rgba(79, 172, 254, 0.07) 0%, rgba(0, 0, 0, 0.22) 42%);
+}
+
+.fiat-convert-panel-quote__head-sparkle {
+  margin-left: auto;
+  opacity: 0.55;
+  color: rgba(129, 180, 255, 0.75);
+}
+
+.fiat-convert-panel__estimate-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-3);
+  min-height: 11rem;
+  padding: var(--ds-spacing-5) var(--ds-spacing-4);
+  border-radius: var(--ds-radius-md);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.18);
+  text-align: center;
+}
+
+.fiat-convert-panel__estimate-placeholder--loading {
+  flex-direction: row;
+  justify-content: center;
+  gap: var(--ds-spacing-3);
+  border-style: solid;
+  border-color: rgba(79, 172, 254, 0.2);
+  background: rgba(79, 172, 254, 0.05);
+  font-size: 13px;
+  color: var(--ds-text-secondary);
+}
+
+.fiat-convert-panel__estimate-placeholder-ico {
+  color: rgba(79, 172, 254, 0.45);
+  flex-shrink: 0;
+}
+
+.fiat-convert-panel__estimate-placeholder-text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ds-text-tertiary);
+  max-width: 22ch;
+}
+
+.fiat-convert-panel__balance-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-spacing-3);
+  margin-bottom: var(--ds-spacing-5);
+  padding: var(--ds-spacing-3) var(--ds-spacing-4);
+  border-radius: var(--ds-radius-md);
+  background: var(--ds-bg-secondary, rgba(0, 0, 0, 0.35));
+  border: 1px solid var(--ds-border, rgba(255, 255, 255, 0.08));
+}
+
+.fiat-convert-panel__balance-label-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  max-width: 16rem;
+}
+
+.fiat-convert-panel__balance-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--ds-text-tertiary);
+}
+
+.fiat-convert-panel__balance-hint {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--ds-text-tertiary);
+  opacity: 0.88;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.fiat-convert-panel__balance-label-ico {
+  color: rgba(0, 255, 163, 0.65);
+  flex-shrink: 0;
+}
+
+.fiat-convert-panel-desc {
+  color: var(--ds-text-secondary);
+  font-size: 14px;
+  margin: 0 0 var(--ds-spacing-4);
+  line-height: 1.5;
+}
+
+.fiat-convert-panel-connect {
+  padding: var(--ds-spacing-4);
+  background: var(--ds-bg-secondary, #000000);
+  border-radius: var(--ds-radius-md);
+}
+
+.fiat-convert-panel-balance {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  font-size: 14px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.fiat-convert-panel-balance span {
+  color: var(--ds-text-secondary);
+}
+
+.fiat-convert-panel-balance-btn {
+  box-sizing: border-box;
+  min-width: 5.5rem;
+  padding: 8px 14px;
+  border-radius: var(--ds-radius-sm);
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  font-family: ui-monospace, monospace;
+  text-align: center;
+  line-height: 1.3;
+  /* Explicit contrast: resetul global `button` nu setează color — moștenirea poate face textul invizibil pe fundal închis */
+  color: rgba(0, 255, 163, 0.95);
+  -webkit-text-fill-color: rgba(0, 255, 163, 0.95);
+  background: rgba(0, 255, 163, 0.08);
+  border: 1px solid rgba(0, 255, 163, 0.22);
+  cursor: pointer;
+  transition: background 150ms, border-color 150ms, color 150ms;
+}
+
+.fiat-convert-panel-balance-btn:hover {
+  color: rgba(0, 255, 163, 1);
+  -webkit-text-fill-color: rgba(0, 255, 163, 1);
+  background: rgba(0, 255, 163, 0.12);
+  border-color: rgba(0, 255, 163, 0.45);
+}
+
+.fiat-convert-panel-balance-btn:focus-visible {
+  outline: 2px solid rgba(0, 255, 163, 0.45);
+  outline-offset: 2px;
+}
+
+.fiat-convert-panel-balance-btn--active {
+  color: rgba(0, 255, 163, 1);
+  -webkit-text-fill-color: rgba(0, 255, 163, 1);
+  background: rgba(0, 255, 163, 0.16);
+  border-color: rgba(0, 255, 163, 0.55);
+  box-shadow:
+    0 0 0 1px rgba(0, 255, 163, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.fiat-convert-panel-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-4);
+  width: 100%;
+  max-width: none;
+}
+
+/* Formular compact pe desktop — nu întinde input-urile pe tot containerul */
+.fiat-convert-panel-form__cluster {
+  width: 100%;
+  max-width: min(100%, 26rem);
+}
+
+.fiat-convert-panel__fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--ds-spacing-4);
+}
+
+@media (min-width: 520px) {
+  .fiat-convert-panel__fields {
+    grid-template-columns: minmax(0, 11.5rem) minmax(0, 14rem);
+    align-items: end;
+    gap: var(--ds-spacing-4) var(--ds-spacing-5);
+  }
+}
+
+.fiat-convert-panel-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: var(--ds-spacing-3);
+  margin-top: var(--ds-spacing-3);
+  padding-top: var(--ds-spacing-2);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.fiat-convert-panel-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* CTA principal — ~5–10% mai prezent, fără glow agresiv */
+.fiat-convert-panel-submit--cta {
+  min-height: 48px;
+  padding: 13px 30px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  border-radius: var(--ds-radius-md, 10px);
+  border: 1px solid rgba(79, 172, 254, 0.35);
+  background: linear-gradient(180deg, rgba(79, 172, 254, 0.22) 0%, rgba(79, 172, 254, 0.08) 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.14) inset,
+    0 5px 16px rgba(79, 172, 254, 0.22);
+}
+
+.fiat-convert-panel-submit--cta:hover:not(:disabled) {
+  border-color: rgba(79, 172, 254, 0.5);
+  background: linear-gradient(180deg, rgba(79, 172, 254, 0.28) 0%, rgba(79, 172, 254, 0.12) 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.16) inset,
+    0 7px 22px rgba(79, 172, 254, 0.28);
+}
+
+.fiat-convert-panel-submit--cta:disabled {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: none;
+  opacity: 0.55;
+}
+
+.fiat-convert-panel__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-2);
+  min-width: 0;
+}
+
+.fiat-convert-panel__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ds-text-secondary);
+}
+
+.fiat-convert-panel__label-ico {
+  display: inline-flex;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.fiat-convert-panel__helper {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ds-text-tertiary);
+}
+
+.fiat-convert-panel__amount-row {
+  display: flex;
+  gap: var(--ds-spacing-2);
+  align-items: stretch;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.fiat-convert-panel-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+}
+
+.fiat-convert-panel-label {
+  font-size: 14px;
+  color: var(--ds-text-secondary);
+  min-width: 70px;
+}
+
+.fiat-convert-panel-input {
+  flex: 1 1 6.5rem;
+  width: 6.5rem;
+  max-width: 10rem;
+  min-width: 5rem;
+  padding: 10px 12px;
+  border-radius: var(--ds-radius-md);
+  border: 1px solid var(--ds-border);
+  font-size: 16px;
+  background: var(--ds-bg-primary);
+  color: var(--ds-text-primary);
+}
+
+@media (max-width: 519px) {
+  .fiat-convert-panel-input {
+    flex: 1;
+    width: auto;
+    max-width: none;
+  }
+}
+
+.fiat-convert-panel-input:focus {
+  outline: none;
+  border-color: var(--ds-accent);
+}
+
+.fiat-convert-panel-select {
+  padding: 10px 12px;
+  border-radius: var(--ds-radius-md);
+  border: 1px solid var(--ds-border);
+  font-size: 14px;
+  background: var(--ds-bg-primary);
+  color: var(--ds-text-primary);
+  cursor: pointer;
+}
+
+.fiat-convert-panel-select--currency {
+  flex: 0 0 auto;
+  min-width: 4.75rem;
+  max-width: 5.5rem;
+  padding-left: 10px;
+  padding-right: 8px;
+}
+
+.fiat-convert-panel-select--full {
+  width: 100%;
+  max-width: 14rem;
+}
+
+@media (max-width: 519px) {
+  .fiat-convert-panel-select--full {
+    max-width: none;
+  }
+}
+
+.fiat-convert-panel__quote-loading {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+@keyframes fiat-convert-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.fiat-convert-panel__spin {
+  animation: fiat-convert-spin 0.85s linear infinite;
+}
+
+.fiat-convert-panel__spin-slow {
+  animation: fiat-convert-spin 2.5s linear infinite;
+}
+
+.fiat-convert-panel-quote {
+  margin: 0;
+  padding: var(--ds-spacing-4);
+  border-radius: var(--ds-radius-md);
+  border: 1px solid var(--ds-border, rgba(255, 255, 255, 0.1));
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.fiat-convert-panel-quote__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: var(--ds-spacing-2);
+}
+
+.fiat-convert-panel-quote__head-ico {
+  color: rgba(79, 172, 254, 0.45);
+  flex-shrink: 0;
+}
+
+.fiat-convert-panel-quote__head-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ds-text-tertiary);
+}
+
+.fiat-convert-panel-quote__primary {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  line-height: 1.45;
+}
+
+.fiat-convert-panel-quote__arrow {
+  font-weight: 400;
+  color: var(--ds-text-tertiary);
+  margin: 0 0.25em;
+}
+
+.fiat-convert-panel-quote__line {
+  margin: var(--ds-spacing-2) 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.fiat-convert-panel-quote__warn {
+  margin: var(--ds-spacing-3) 0 0;
+  font-size: 13px;
+  color: var(--color-warning, #e6a23c);
+}
+
+.fiat-convert-panel-quote__delivery {
+  margin: var(--ds-spacing-3) 0 0;
+  padding-top: var(--ds-spacing-3);
+  border-top: 1px dashed var(--ds-border, rgba(255, 255, 255, 0.12));
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.fiat-convert-panel__inline-link {
+  font-weight: 500;
+}
+
+.fiat-convert-panel-error {
+  font-size: 14px;
+  color: var(--color-error, #f44);
+  margin: 0;
+}
+
+.fiat-convert-panel-submit {
+  align-self: flex-start;
+  min-width: 9.5rem;
+  margin-top: 0;
+}
+
+.fiat-convert-panel__foot-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: var(--ds-spacing-5);
+  padding-top: var(--ds-spacing-4);
+  border-top: 1px solid var(--ds-border, rgba(255, 255, 255, 0.08));
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.fiat-convert-panel__foot-ico {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.fiat-convert-panel-orders {
+  margin-top: var(--ds-spacing-6);
+  padding-top: var(--ds-spacing-4);
+  border-top: 1px solid var(--ds-border);
+}
+
+.fiat-convert-panel-orders--failed {
+  border-top-color: rgba(255, 68, 68, 0.25);
+}
+
+.fiat-convert-panel-orders-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0 0 var(--ds-spacing-3);
+  color: var(--ds-text-secondary);
+  letter-spacing: 0.02em;
+}
+
+.fiat-convert-panel__orders-ico {
+  flex-shrink: 0;
+  color: rgba(79, 172, 254, 0.55);
+}
+
+.fiat-convert-panel__orders-ico--ok {
+  color: rgba(0, 255, 163, 0.45);
+}
+
+.fiat-convert-panel__orders-ico--fail {
+  color: rgba(255, 100, 100, 0.55);
+}
+
+.fiat-convert-panel-orders-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.fiat-convert-panel-order-item {
+  font-size: 13px;
+  color: var(--ds-text-tertiary);
+  padding: var(--ds-spacing-2) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.fiat-convert-panel-order-item:last-child {
+  border-bottom: none;
+}
+
+.fiat-convert-panel-next-steps {
+  margin-top: var(--ds-spacing-6);
+  padding: var(--ds-spacing-4);
+  background: var(--ds-bg-secondary, #000000);
+  border: 1px dashed var(--ds-border, rgba(255, 255, 255, 0.15));
+  border-radius: var(--ds-radius-md);
+  font-size: 12px;
+}
+
+.fiat-convert-panel-next-steps-title {
+  font-weight: 600;
+  margin: 0 0 var(--ds-spacing-2);
+  color: var(--ds-text-secondary);
+}
+
+.fiat-convert-panel-next-steps-list {
+  list-style: none;
+  margin: 0 0 var(--ds-spacing-2);
+  padding: 0;
+  color: var(--ds-text-tertiary);
+}
+
+.fiat-convert-panel-next-steps-list li {
+  padding: 2px 0;
+}
+
+.fiat-convert-panel-next-steps-hint {
+  margin: 0;
+  color: var(--ds-text-tertiary);
+  font-size: 11px;
+}
+
+.fiat-convert-panel-next-steps code {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  padding: 1px 4px;
+  background: var(--ds-bg-tertiary, #000000);
+  border-radius: 4px;
+}
+
+.fiat-convert-panel-success-callout {
+  margin-top: var(--ds-spacing-5);
+}
+
+.fiat-convert-panel-success-callout-strong {
+  margin: 0 0 var(--ds-spacing-2);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}
+
+.fiat-convert-panel-success-callout-line {
+  margin: 0 0 var(--ds-spacing-2);
+  font-size: 13px;
+  color: var(--ds-text-secondary);
+}
+
+.fiat-convert-panel-success-cta-wrap {
+  margin: 0 0 var(--ds-spacing-2);
+}
+
+.fiat-convert-panel-deposit-cta {
+  text-decoration: none;
+  text-align: center;
+}
+
+.fiat-convert-panel-order-detail {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.fiat-convert-panel-order-failed .fiat-convert-panel-order-detail {
+  color: var(--color-error, #f66);
+}

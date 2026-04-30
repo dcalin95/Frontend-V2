@@ -1,0 +1,119 @@
+/**
+ * 📦 Modal Styles
+ */
+
+.modal-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Peste .dex-page-wrapper (100000) și wallet modal (100001) — altfel Risk/confirmări par „moarte” pe /dex/* */
+  z-index: var(--token-z-modal, 100002);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--token-spacing-5, 20px);
+  background-color: var(--token-bg-modal-backdrop, rgba(0, 0, 0, 0.75));
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  position: relative;
+  background-color: var(--token-bg-surface, var(--bg-primary, #16182e));
+  border: var(--token-border-width, 1px) solid var(--token-border-color, #2a2d47);
+  border-radius: var(--token-radius-lg, 12px);
+  box-shadow: var(--token-shadow-xl, 0 12px 24px rgba(0, 0, 0, 0.6));
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: var(--token-z-modal, 100002);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-size-small {
+  max-width: 400px;
+}
+
+.modal-size-medium {
+  max-width: 600px;
+}
+
+.modal-size-large {
+  max-width: 900px;
+}
+
+.modal-size-fullscreen {
+  max-width: 95vw;
+  max-height: 95vh;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--token-spacing-5, 20px);
+  border-bottom: var(--token-border-width, 1px) solid var(--token-border-color, #2a2d47);
+  position: sticky;
+  top: 0;
+  background-color: var(--token-bg-surface, var(--bg-primary, #16182e));
+  z-index: 1;
+}
+
+.modal-title {
+  font-size: var(--token-font-size-xl, 20px);
+  font-weight: var(--token-font-weight-semibold, 600);
+  color: var(--token-text-primary, #ffffff);
+  margin: 0;
+}
+
+.modal-close {
+  padding: var(--token-spacing-1, 4px);
+  cursor: pointer;
+  color: var(--token-text-secondary, #8b9bb4);
+  transition: all var(--token-transition-base, 200ms ease-in-out);
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--token-radius-sm, 6px);
+}
+
+.modal-close:hover {
+  color: var(--token-text-primary, #ffffff);
+  background-color: var(--token-bg-overlay, #252840);
+}
+
+.modal-body {
+  padding: var(--token-spacing-5, 20px);
+  flex: 1;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--token-spacing-4, 16px);
+  padding: var(--token-spacing-5, 20px);
+  border-top: var(--token-border-width, 1px) solid var(--token-border-color, #2a2d47);
+  position: sticky;
+  bottom: 0;
+  background-color: var(--token-bg-surface, var(--bg-primary, #16182e));
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    max-width: 100%;
+    margin: var(--spacing-md);
+  }
+  
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: var(--spacing-md);
+  }
+}
+

@@ -99,6 +99,52 @@
     text-shadow: 0 0 8px currentColor !important;
   }
 
+  body[class*="dex-theme-"] .mobile-hamburger,
+  body[class*="dex-theme-"] .mobile-hamburger:hover,
+  body[class*="dex-theme-"] .mobile-hamburger.open {
+    background: var(--ds-bg-base) !important;
+    border-color: var(--ds-border-color-light) !important;
+    box-shadow: var(--ds-shadow-sm) !important;
+  }
+
+  body[class*="dex-theme-"] .mobile-hamburger svg {
+    filter: none !important;
+  }
+
+  body[class*="dex-theme-"] .mobile-nav-menu {
+    background: var(--ds-bg-base) !important;
+    border-color: var(--ds-border-color) !important;
+  }
+
+  body[class*="dex-theme-"] .mobile-nav-menu a,
+  body[class*="dex-theme-"] .mobile-nav-menu button {
+    background: var(--ds-bg-base) !important;
+    background-color: var(--ds-bg-base) !important;
+    border-color: var(--ds-border-color-light) !important;
+    color: var(--ds-text-primary) !important;
+    -webkit-text-fill-color: var(--ds-text-primary) !important;
+    box-shadow: var(--ds-shadow-sm) !important;
+    text-shadow: none !important;
+  }
+
+  body[class*="dex-theme-"] .mobile-nav-menu a:hover,
+  body[class*="dex-theme-"] .mobile-nav-menu button:hover,
+  body[class*="dex-theme-"] .mobile-nav-menu a:active,
+  body[class*="dex-theme-"] .mobile-nav-menu button:active {
+    background: var(--ds-bg-hover) !important;
+    border-color: var(--ds-accent) !important;
+    box-shadow: var(--ds-focus-ring-box-shadow) !important;
+  }
+
+  body[class*="dex-theme-"] .mobile-text,
+  body[class*="dex-theme-"] .mobile-nav-menu a i,
+  body[class*="dex-theme-"] .mobile-nav-menu button i {
+    color: inherit !important;
+    -webkit-text-fill-color: currentColor !important;
+    text-shadow: none !important;
+    filter: none !important;
+  }
+
   /* 🔧 FIX: Ensure special buttons on mobile have visible text by overriding gradient text fill if needed */
   .mobile-nav-menu .mobile-btn-login .mobile-text,
   .mobile-nav-menu .mobile-btn-logout .mobile-text {
@@ -604,3 +650,138 @@ body.in-app-browser .social {
 .mobile-nav-menu { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 8px !important; padding: 10px !important; }
 
 @keyframes glow { 0% { text-shadow: 0 0 5px #00ffff; } 50% { text-shadow: 0 0 15px #00ffff, 0 0 30px #00ffff; } 100% { text-shadow: 0 0 5px #00ffff; } }
+
+/* Final DEX-theme pass after all mobile button color overrides. */
+@media (max-width: 1580px) {
+  body[class*="dex-theme-"] .header,
+  body[class*="dex-theme-"] .header.scrolled {
+    background: var(--ds-bg-base) !important;
+    border-bottom: 1px solid var(--ds-border-color) !important;
+    box-shadow: none !important;
+    color: var(--ds-text-primary) !important;
+    min-height: 56px !important;
+    padding: 8px 10px !important;
+    gap: 8px !important;
+  }
+
+  body[class*="dex-theme-"] .mobile-hamburger,
+  body[class*="dex-theme-"] .mobile-hamburger:hover,
+  body[class*="dex-theme-"] .mobile-hamburger.open,
+  body[class*="dex-theme-"] .mobile-nav-menu,
+  body[class*="dex-theme-"] .social-link {
+    background: var(--ds-bg-base) !important;
+    border-color: var(--ds-border-color-light) !important;
+    box-shadow: var(--ds-shadow-sm) !important;
+  }
+
+  body[class*="dex-theme-"] .mobile-nav-menu a,
+  body[class*="dex-theme-"] .mobile-nav-menu button,
+  body[class*="dex-theme-"] .mobile-nav-menu a.mobile-btn-presale,
+  body[class*="dex-theme-"] .mobile-nav-menu a.mobile-btn-staking,
+  body[class*="dex-theme-"] .mobile-nav-menu a.mobile-btn-smart,
+  body[class*="dex-theme-"] .mobile-nav-menu a.mobile-btn-orbit,
+  body[class*="dex-theme-"] .mobile-nav-menu a.mobile-btn-home,
+  body[class*="dex-theme-"] .mobile-nav-menu a.mobile-btn-paper,
+  body[class*="dex-theme-"] .mobile-nav-menu a.mobile-btn-analytics,
+  body[class*="dex-theme-"] .mobile-nav-menu a.mobile-btn-rewards,
+  body[class*="dex-theme-"] .mobile-nav-menu button.mobile-btn-ai,
+  body[class*="dex-theme-"] .mobile-nav-menu a.mobile-btn-ai,
+  body[class*="dex-theme-"] .mobile-nav-menu a.mobile-btn-whitepaper,
+  body[class*="dex-theme-"] .mobile-nav-menu a.mobile-btn-bitcoin,
+  body[class*="dex-theme-"] .mobile-nav-menu a.mobile-btn-education,
+  body[class*="dex-theme-"] .mobile-nav-menu a.mobile-btn-contact,
+  body[class*="dex-theme-"] .mobile-nav-menu a.mobile-btn-pox,
+  body[class*="dex-theme-"] .mobile-nav-menu a.mobile-btn-login,
+  body[class*="dex-theme-"] .mobile-nav-menu a.mobile-btn-logout,
+  body[class*="dex-theme-"] .mobile-nav-menu button.mobile-btn-logout,
+  body[class*="dex-theme-"] .mobile-nav-menu a.mobile-btn-ai-hub,
+  body[class*="dex-theme-"] .mobile-nav-menu a.mobile-btn-neural {
+    background: var(--ds-bg-base) !important;
+    background-color: var(--ds-bg-base) !important;
+    border-color: var(--ds-border-color-light) !important;
+    color: var(--ds-text-primary) !important;
+    -webkit-text-fill-color: var(--ds-text-primary) !important;
+    box-shadow: var(--ds-shadow-sm) !important;
+    text-shadow: none !important;
+    min-height: 32px !important;
+    height: 32px !important;
+    padding: 6px 8px !important;
+    font-size: var(--ds-font-size-sm, 12px) !important;
+    line-height: 1 !important;
+  }
+
+  body[class*="dex-theme-"] .mobile-nav-menu a:hover,
+  body[class*="dex-theme-"] .mobile-nav-menu button:hover,
+  body[class*="dex-theme-"] .mobile-nav-menu a:active,
+  body[class*="dex-theme-"] .mobile-nav-menu button:active {
+    background: var(--ds-bg-hover) !important;
+    border-color: var(--ds-accent) !important;
+    box-shadow: var(--ds-focus-ring-box-shadow) !important;
+  }
+
+  body[class*="dex-theme-"] .mobile-text,
+  body[class*="dex-theme-"] .mobile-nav-menu a i,
+  body[class*="dex-theme-"] .mobile-nav-menu button i,
+  body[class*="dex-theme-"] .header-mini-timer > div:last-child span,
+  body[class*="dex-theme-"] .header-mini-timer > a:last-child span {
+    background: none !important;
+    background-image: none !important;
+    -webkit-background-clip: border-box !important;
+    background-clip: border-box !important;
+    -webkit-text-fill-color: currentColor !important;
+    color: inherit !important;
+    text-shadow: none !important;
+    filter: none !important;
+  }
+
+  body[class*="dex-theme-"] .mobile-hamburger {
+    width: 34px !important;
+    height: 34px !important;
+    padding: 7px !important;
+    border-radius: var(--ds-radius-md, 8px) !important;
+  }
+
+  body[class*="dex-theme-"] .mobile-nav-menu {
+    gap: 6px !important;
+    padding: 8px !important;
+    border-radius: var(--ds-radius-lg, 12px) !important;
+  }
+
+  body[class*="dex-theme-"] .mobile-text {
+    font-size: var(--ds-font-size-sm, 12px) !important;
+    font-weight: var(--ds-font-weight-medium, 500) !important;
+    line-height: 1 !important;
+  }
+
+  body[class*="dex-theme-"] .logo-container .logo,
+  body[class*="dex-theme-"] .header.scrolled .logo-container .logo {
+    width: 34px !important;
+    height: 34px !important;
+    filter: none !important;
+  }
+
+  body[class*="dex-theme-"] .header-spacer {
+    height: 64px !important;
+  }
+
+  body[class*="dex-theme-"] .global-site-theme-switcher .ai-trading-theme-trigger {
+    min-width: 34px !important;
+    width: 34px !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 7px !important;
+    background: var(--ds-bg-base, #000000) !important;
+    border: 1px solid var(--ds-border-color-light, #3f3f46) !important;
+    color: var(--ds-text-primary, #fafafa) !important;
+    box-shadow: var(--ds-shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.25)) !important;
+  }
+
+  body[class*="dex-theme-"] .global-site-theme-switcher .ai-trading-theme-popover {
+    position: absolute !important;
+    top: calc(100% + 8px) !important;
+    left: 0 !important;
+    right: auto !important;
+    min-width: 220px !important;
+    z-index: 14001 !important;
+  }
+}

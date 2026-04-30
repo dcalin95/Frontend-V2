@@ -1,0 +1,67 @@
+# 🔒 BitSwapDEX AI Trading Frontend - Environment Variables Example
+# Copy this file to .env and fill in your values
+
+# ===== API Configuration =====
+# Backend-server is deployed on Render: https://backend-server-f82y.onrender.com
+# Runtime config (runtime-config.json) takes precedence over these env vars
+REACT_APP_API_BASE_URL=https://backend-server-f82y.onrender.com/api
+REACT_APP_ENVIRONMENT=production
+
+# ===== Backend Configuration =====
+# Backend URL pentru API requests
+# Backend-server is deployed on Render: https://backend-server-f82y.onrender.com
+REACT_APP_BACKEND_URL=https://backend-server-f82y.onrender.com
+
+# ===== Feature Flags =====
+REACT_APP_ENABLE_AI_TRADING=true
+REACT_APP_ENABLE_STRATEGIES=true
+REACT_APP_ENABLE_SIGNALS=true
+REACT_APP_ENABLE_PERFORMANCE=true
+REACT_APP_ENABLE_EXECUTION=true
+
+# ===== Analytics (Optional) =====
+# REACT_APP_GA_TRACKING_ID=G-XXXXXXXXXX
+
+# ===== Error Tracking (Optional) =====
+# REACT_APP_SENTRY_DSN=https://xxx@sentry.io/xxx
+
+# ===== BitSwapDEX Wrapper Configuration (Post-Deployment) =====
+# Enable BitSwapDEXWrapper for fee collection (set to true after deploying contract)
+REACT_APP_USE_BITSWAP_WRAPPER=true
+
+# BitSwapDEXWrapper contract address (set after deployment)
+# REACT_APP_BITSWAP_WRAPPER_ADDRESS=0x31fA98c1c0bc7409976C88Bb952691d304dfbFb4
+
+# Treasury address (for verification - optional)
+# REACT_APP_TREASURY_ADDRESS=0xYourTreasuryAddressHere
+
+# ===== OTA API (backend) – optional, pentru OTA pe SEI / micro-profit =====
+# Same as REACT_APP_BACKEND_URL or Render URL if OTA routes live there
+# REACT_APP_OTA_API_URL=https://backend-server-f82y.onrender.com
+
+# ===== SEI (CosmWasm) – for swap on /dex/sei/trade and /dex/sei/swap =====
+# These are FRONTEND vars (Render backend has its own SEI_*). Set in frontend .env or build env.
+# Testnet (Atlantic-2) – for test swap with SEI from faucet:
+# REACT_APP_SEI_CHAIN_ID=atlantic-2
+# REACT_APP_SEI_RPC=https://rpc.atlantic-2.seinetwork.io
+# REACT_APP_SEI_REST=https://rest.atlantic-2.seinetwork.io
+# REACT_APP_SEI_SWAP_EXECUTOR_ADDRESS=sei1lhc8rlvtqwv5ke9qlf0lp7eulzs9nwhq5qynass9cst78330c6eskkd74j
+# Deploy: see docs/SEI_DEPLOY_TOOLCHAIN_GUIDE.md and docs/SEI_ENV_EXAMPLE.md
+
+# ===== OTA contract overrides (staging / testnet) – optional =====
+# If set, contractMap.js uses these instead of mainnet defaults (C3)
+# REACT_APP_AI_TRADING_ACCESS_CONTROL_ADDRESS=0x...
+# REACT_APP_USER_VAULT_ADDRESS=0x...
+# REACT_APP_OTA_POLICY_MANAGER_ADDRESS=0x...
+# REACT_APP_OTA_AUTO_EXECUTOR_ADDRESS=0x...
+# Bot address: frontend gets it from backend GET /api/ai-trading/bot-address (no frontend env). See docs/OTA_FLOW_AND_CONTRACT_LOGIC.md.
+
+# ===== Leverage Trading (BSC) – /dex/leverage =====
+# Set after deploying LeverageTradingV2 (BSC). Can also be set in runtime-config.json.
+# REACT_APP_LEVERAGE_TRADING_ADDRESS=0x14e89879f5e7715Ea59ae54A5A161E28A9d58452
+
+# ===== Site admin (owner) – /dex/site-admin =====
+# Same pattern as legacy bits-ai.io #/admin-test: baked at build; must match backend ADMIN_PASSWORD (or ADMIN_PASS).
+# REACT_APP_ADMIN_PASS=your_strong_password
+# Route does NOT require DEX login (legacy parity). Optional allowlist: if set, only matching email/username can see UI (must match backend SITE_ADMIN_ALLOWED_EMAILS).
+# REACT_APP_SITE_ADMIN_EMAILS=you@example.com

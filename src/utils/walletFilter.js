@@ -264,3 +264,32 @@ export const forceFixPhantomHijack = () => {
   }
 };
 
+/**
+ * Forces window.ethereum to the requested EVM provider when multiple wallets are injected.
+ * Used by the copied DEX wallet flow before EVM connection attempts.
+ */
+export const forcePickEvmInjectedProvider = (preferred = 'metamask') => {
+  if (typeof window === 'undefined' || !window.ethereum) return false;
+
+  const pref = String(preferred || '').toLowerCase();
+  const providers = Array.isArray(window.ethereum.providers)
+    ? window.ethereum.providers
+    : [window.ethereum];
+
+  const isEvmProvider = (provider) => provider && !provider.isPhantom;
+  const findProvider = (predicate) => providers.find((provider) => isEvmProvider(provider) && predicate(provider));
+
+  const selected =
+    (pref.includes('trust') && findProvider((provider) => provider.isTrust)) ||
+    (pref.includes('coinbase') && findProvider((provider) => provider.isCoinbaseWallet)) ||
+    findProvider((provider) => provider.isMetaMask) ||
+    findProvider((provider) => provider.isTrust) ||
+    findProvider((provider) => provider.isCoinbaseWallet) ||
+    providers.find(isEvmProvider);
+
+  if (!selected || selected === window.ethereum) return false;
+
+  window.ethereum = selected;
+  return true;
+};
+

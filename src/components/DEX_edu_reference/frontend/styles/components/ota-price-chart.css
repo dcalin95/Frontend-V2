@@ -1,0 +1,77 @@
+/**
+ * OTAPriceChart – chart compact sub Authorize Bot, coloana dreaptă
+ */
+
+.ota-price-chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-2);
+  width: 100%;
+  min-width: 0;
+  padding: var(--ds-spacing-3);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-lg);
+  background: var(--ds-bg-surface);
+  box-sizing: border-box;
+}
+
+.ota-price-chart-header {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  flex-wrap: wrap;
+}
+
+.ota-price-chart-icon {
+  color: var(--ds-accent);
+  flex-shrink: 0;
+}
+
+.ota-price-chart-title {
+  font-size: 13px;
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  margin-right: auto;
+}
+
+.ota-price-chart-tabs {
+  display: flex;
+  gap: 2px;
+}
+
+.ota-price-chart-tab {
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: var(--ds-font-weight-medium);
+  border: 1px solid var(--ds-border-color);
+  background: var(--ds-bg-surface);
+  color: var(--ds-text-tertiary);
+  border-radius: var(--ds-radius-md);
+  cursor: pointer;
+  transition: background-color 150ms, color 150ms, border-color 150ms;
+}
+
+.ota-price-chart-tab:hover {
+  background: var(--ds-bg-hover);
+  color: var(--ds-text-primary);
+}
+
+.ota-price-chart-tab.active {
+  background: var(--ds-accent);
+  color: var(--ds-text-primary);
+  border-color: var(--ds-accent);
+}
+
+.ota-price-chart-body {
+  width: 100%;
+  min-height: 0;
+  border-radius: var(--ds-radius-md);
+  overflow: hidden;
+}
+
+/* Un singur chenar – elimină chenarul interior al TradingView */
+.ota-price-chart-body .tradingview-chart-container {
+  min-height: 180px;
+  border: none !important;
+  box-shadow: none !important;
+}

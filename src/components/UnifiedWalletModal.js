@@ -172,6 +172,8 @@ const UnifiedWalletModal = () => {
 
   // 🎯 DIRECT CONNECT FUNCTION (Bypasses generic modal to avoid Phantom conflict)
   const connectToSpecificWallet = async (walletName) => {
+    console.log(`🔌 [connectToSpecificWallet] START - walletName: ${walletName}`);
+    
     // 🔒 CONNECTION GUARD: Prevent overlapping connection attempts
     if (connectionLock) {
       console.warn('🛑 [UnifiedWalletModal] Connection already in progress, ignoring new request');
@@ -180,6 +182,7 @@ const UnifiedWalletModal = () => {
     }
     
     try {
+      console.log(`🔌 [connectToSpecificWallet] Setting connection lock and state...`);
       setConnectionLock(true); // 🔒 LOCK
       setError(null);
       setIsConnecting(true);
@@ -514,6 +517,9 @@ const UnifiedWalletModal = () => {
       }
 
       // For other wallets, find the specific connector
+      console.log(`🔍 [connectToSpecificWallet] Searching for connector: ${walletName}`);
+      console.log(`🔍 [connectToSpecificWallet] Available connectors:`, filteredConnectors.map(c => ({ id: c.id, name: c.name })));
+      
       const connector = filteredConnectors.find(c => {
         const id = c.id.toLowerCase();
 
@@ -568,7 +574,8 @@ const UnifiedWalletModal = () => {
       });
 
       if (connector) {
-        console.log(`🔌 Connecting directly to ${connector.name} (ID: ${connector.id})...`);
+        console.log(`✅ [connectToSpecificWallet] Found connector: ${connector.name} (ID: ${connector.id})`);
+        console.log(`🔌 [connectToSpecificWallet] Connecting directly to ${connector.name} (ID: ${connector.id})...`);
         
         // 🛑 CRITICAL: Final check - verify this is NOT Phantom
         const connectorName = (connector.name || '').toLowerCase();
@@ -841,7 +848,9 @@ const UnifiedWalletModal = () => {
       } else {
         // 🛑 CRITICAL: DO NOT fallback to Web3Modal - it will open Phantom!
         // Instead, show clear error message
-        console.error(`❌ [CRITICAL] Connector ${walletName} not found! Cannot connect.`);
+        console.error(`❌ [connectToSpecificWallet] Connector ${walletName} NOT FOUND!`);
+        console.error(`❌ [connectToSpecificWallet] Available connectors:`, filteredConnectors.map(c => ({ id: c.id, name: c.name })));
+        console.error(`❌ [connectToSpecificWallet] Cannot connect - connector not found.`);
         unlockConnection();
         
         if (walletName === 'MetaMask') {
@@ -872,8 +881,16 @@ const UnifiedWalletModal = () => {
 
   const handleEvmConnect = async (preferredWallet = null) => {
     try {
+      console.log(`🔌 [handleEvmConnect] START - wallet: ${preferredWallet}, selectedNetwork: ${selectedNetwork}`);
+      
       // ✅ Mark explicit user intent so WalletContext won't treat this as auto-connect
       if (typeof markConnectIntent === 'function') markConnectIntent();
+
+      // ✅ FIX: Set selectedNetwork to EVM if not already set
+      if (selectedNetwork !== "EVM") {
+        console.log(`🔌 [handleEvmConnect] Setting selectedNetwork to EVM`);
+        setSelectedNetwork("EVM");
+      }
 
       // 🛑 CRITICAL: Verify we're on EVM network, not Solana
       if (selectedNetwork !== "EVM" && selectedNetwork !== null) {
@@ -882,7 +899,7 @@ const UnifiedWalletModal = () => {
         return;
       }
 
-      console.log(`🔌 [handleEvmConnect] Called with wallet: ${preferredWallet}`);
+      console.log(`🔌 [handleEvmConnect] Proceeding with wallet: ${preferredWallet}`);
       
       // 🛑 CRITICAL: We NO LONGER call disconnect() on Solana here to avoid triggering Phantom popup
       // The application state will be updated naturally once EVM connects
@@ -890,8 +907,16 @@ const UnifiedWalletModal = () => {
       // If a specific wallet is requested, try direct connection first
       if (preferredWallet) {
         console.log(`🔌 [handleEvmConnect] Calling connectToSpecificWallet('${preferredWallet}')...`);
-        await connectToSpecificWallet(preferredWallet);
-        return;
+        try {
+          await connectToSpecificWallet(preferredWallet);
+          // Don't unlock here - connectToSpecificWallet handles it
+          return;
+        } catch (connectErr) {
+          console.error(`❌ [handleEvmConnect] connectToSpecificWallet failed for ${preferredWallet}:`, connectErr);
+          unlockConnection();
+          setError(`${preferredWallet} connection failed: ${connectErr.message || 'Unknown error'}`);
+          return;
+        }
       }
 
       // 🛑 CRITICAL: DO NOT open Web3Modal directly - it will open Phantom!
@@ -900,18 +925,17 @@ const UnifiedWalletModal = () => {
       setError('Please select a specific wallet from the list above.');
       unlockConnection();
     } catch (err) {
-      console.error('[WalletModal] EVM connection error:', err);
-      const errorInfo = await handleConnectionError(err);
+      console.error('❌ [handleEvmConnect] EVM connection error:', err);
+      unlockConnection();
+      const errorInfo = await handleConnectionError(err).catch(() => ({ reason: 'unknown' }));
       
       if (errorInfo.retry) {
         setError('EVM connection failed. Try "Clear Cache & Retry" button below.');
       } else if (errorInfo.reason === 'user_rejected') {
         setShowWalletModal(false);
       } else {
-        setError('EVM connection failed. Please try again.');
+        setError(`EVM connection failed: ${err.message || 'Please try again.'}`);
       }
-    } finally {
-      unlockConnection();
     }
   };
 

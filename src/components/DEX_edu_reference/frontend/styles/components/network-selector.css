@@ -1,0 +1,171 @@
+/* Network Selector Component Styles - Binance/PancakeSwap Style */
+
+.network-selector {
+  position: relative;
+  display: inline-block;
+}
+
+.network-selector-button {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-sm);
+  padding: var(--ds-spacing-sm) var(--ds-spacing-md);
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+  cursor: pointer;
+  transition: background 150ms, border-color 150ms;
+  min-width: 120px;
+}
+
+.network-selector-button:hover {
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.network-selector-button:focus {
+  outline: none;
+  border-color: var(--ds-border-color-focus);
+}
+
+.network-selector-button:focus-visible {
+  outline: var(--ds-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.network-selector-icon {
+  font-size: var(--ds-font-size-lg);
+  line-height: 1;
+}
+
+.network-selector-name {
+  flex: 1;
+  text-align: left;
+}
+
+.network-selector-chevron {
+  transition: transform var(--ds-transition-base);
+  color: var(--ds-text-secondary);
+}
+
+.network-selector-chevron-open {
+  transform: rotate(180deg);
+}
+
+/* Compact variant */
+.network-selector-compact .network-selector-button {
+  padding: var(--ds-spacing-xs) var(--ds-spacing-sm);
+  min-width: 80px;
+}
+
+.network-selector-compact .network-selector-name {
+  display: none;
+}
+
+/* Dropdown */
+.network-selector-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--ds-z-dropdown);
+  background: transparent;
+}
+
+.network-selector-dropdown {
+  position: absolute;
+  top: calc(100% + var(--ds-spacing-xs));
+  left: 0;
+  right: 0;
+  background: var(--ds-bg-secondary);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-border-radius);
+  box-shadow: var(--ds-shadow-lg);
+  z-index: calc(var(--ds-z-dropdown) + 1);
+  min-width: 240px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: var(--ds-spacing-xs);
+}
+
+.network-selector-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ds-spacing-md);
+  background: transparent;
+  border: none;
+  border-radius: var(--ds-border-radius-sm);
+  color: var(--ds-text-primary);
+  cursor: pointer;
+  transition: all var(--ds-transition-base);
+  text-align: left;
+}
+
+.network-selector-option:hover {
+  background: var(--ds-bg-hover);
+}
+
+.network-selector-option-selected {
+  background: var(--ds-bg-active);
+  border: 1px solid var(--ds-primary);
+}
+
+.network-selector-option-content {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-md);
+  flex: 1;
+}
+
+.network-selector-option-icon {
+  font-size: var(--ds-font-size-xl);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.network-selector-option-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.network-selector-option-name {
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+}
+
+.network-selector-option-fullname {
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-text-secondary);
+}
+
+.network-selector-check {
+  color: var(--ds-primary);
+  flex-shrink: 0;
+}
+
+/* Scrollbar */
+.network-selector-dropdown::-webkit-scrollbar {
+  width: 4px;
+}
+
+.network-selector-dropdown::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.network-selector-dropdown::-webkit-scrollbar-thumb {
+  background: var(--ds-border);
+  border-radius: 2px;
+}
+
+.network-selector-dropdown::-webkit-scrollbar-thumb:hover {
+  background: var(--ds-text-secondary);
+}

@@ -1,0 +1,115 @@
+/* Slider Component Styles - Oxium Match - COMPACT */
+.ui-slider-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Redus de la 10px */
+  padding: 2px; /* Redus padding */
+  margin: 12px 0 6px 0; /* Redus margin vertical */
+  box-sizing: border-box;
+  border: none;
+  background: transparent;
+}
+
+.ui-slider-input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px; /* Mărit track de la 6px la 8px */
+  border-radius: 4px;
+  background: #1a1a1a; /* Dark track */
+  outline: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  position: relative;
+  border: none;
+  display: block;
+}
+
+/* Thumb Styling - Webkit */
+.ui-slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px; /* Mărit de la 18px */
+  height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  border: 3px solid #000000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  margin-top: -7px; /* Reajustat pentru track de 8px */
+}
+
+.ui-slider-input::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+}
+
+/* Thumb Styling - Firefox */
+.ui-slider-input::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  border: 3px solid #000000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  box-sizing: border-box;
+}
+
+.ui-slider-input::-moz-range-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+}
+
+/* Track Styling - Firefox */
+.ui-slider-input::-moz-range-track {
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+  background: #1a1a1a;
+  border-radius: 4px;
+  border: none;
+}
+
+/* Marks - Horizontal layout below slider */
+.ui-slider-marks {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  width: 100% !important;
+  padding: 0;
+  margin: 0;
+  height: auto;
+  box-sizing: border-box;
+}
+
+.ui-slider-mark {
+  font-size: 13px; /* Mărit de la 11px */
+  font-weight: 500;
+  color: #888; /* Mai vizibil decât #666 */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Space Mono', monospace; /* Monospace for numbers */
+  user-select: none;
+  padding: 6px 4px; /* Mărit padding */
+  line-height: 1;
+  white-space: nowrap;
+  display: inline-block;
+  width: auto;
+  text-align: center;
+}
+
+.ui-slider-mark:hover {
+  color: #bbb; /* Mai vizibil la hover */
+}
+
+.ui-slider-mark.active {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px; /* Ușor mai mare când e activ */
+}

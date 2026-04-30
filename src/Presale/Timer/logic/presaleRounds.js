@@ -1,9 +1,9 @@
 // src/Presale/Timer/logic/presaleRounds.js
+import { getPresaleCurrentUrl } from "../../presaleApi";
 
 export async function fetchPresaleState() {
-  const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
   try {
-    const res = await fetch(`${API_URL}/api/presale/current`);
+    const res = await fetch(await getPresaleCurrentUrl(), { cache: "no-store" });
     if (!res.ok) throw new Error("Failed to fetch presale state");
     const data = await res.json();
     return data;

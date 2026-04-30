@@ -1,0 +1,46 @@
+/**
+ * Personal Account Header Badge – badge compact în Header
+ * Icon Landmark (bancă) + sold; fără text "Personal Account" (se subînțelege din logo)
+ */
+.personal-account-header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(79, 172, 254, 0.1);
+  border: 1px solid rgba(79, 172, 254, 0.25);
+  border-radius: 8px;
+  color: var(--ds-text-primary);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 150ms, border-color 150ms;
+  box-sizing: border-box;
+}
+
+.personal-account-header-badge:hover {
+  background: rgba(79, 172, 254, 0.18);
+  border-color: rgba(79, 172, 254, 0.4);
+  color: inherit;
+}
+
+/* Logo fosforescent, strălucitor – ciano/verde neon cu glow */
+.personal-account-header-badge-icon {
+  flex-shrink: 0;
+  color: #00ffcc;
+  filter: drop-shadow(0 0 4px #00ffcc) drop-shadow(0 0 8px rgba(0, 255, 204, 0.6));
+  transition: filter 200ms;
+}
+.personal-account-header-badge:hover .personal-account-header-badge-icon {
+  filter: drop-shadow(0 0 6px #00ffcc) drop-shadow(0 0 12px rgba(0, 255, 204, 0.8));
+}
+
+.personal-account-header-badge-label {
+  white-space: nowrap;
+}
+
+.personal-account-header-badge-balance {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+}

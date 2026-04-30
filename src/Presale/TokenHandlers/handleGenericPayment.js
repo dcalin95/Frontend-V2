@@ -5,8 +5,7 @@ import { CONTRACTS } from "../../contract/contracts";
 import { trackTikTokEvent } from "../../utils/tiktok";
 import ERC20ABI from "../../abi/erc20ABI.js";
 import { notifyPresaleBuy } from "../../utils/telegramNotify";
-
-const API_ENDPOINT = (process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com") + "/api/transactions";
+import { resolvePresaleBackendUrl } from "../presaleApi";
 
 const handleGenericPayment = async ({
   amount,
@@ -110,7 +109,7 @@ const handleGenericPayment = async ({
       };
 
       console.log("💾 [generic] Sending transaction to backend:", transactionData);
-      await axios.post(API_ENDPOINT, transactionData);
+      await axios.post(`${await resolvePresaleBackendUrl()}/api/transactions`, transactionData);
       
       // 🎯 TikTok CompletePayment event - Generic payment successful (ETH/USDT/USDC/MATIC)
       const tokenName = paymentTokenAddress === ethers.constants.AddressZero ? 'ETH' : 

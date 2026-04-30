@@ -1,0 +1,261 @@
+/**
+ * 🤖 AI Trading Dashboard Styles - Sonnet / Anthropic
+ * 
+ * All components use Sonnet tokens for correct proportions
+ * Background: Apple black (#000000)
+ */
+
+.ai-trading-dashboard {
+  width: 100%;
+  min-width: 0; /* Allow grid shrink */
+  box-sizing: border-box;
+}
+
+.ai-trading-dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--ds-spacing-6); /* 24px - Sonnet */
+  gap: var(--ds-spacing-4); /* 16px - Sonnet */
+}
+
+.ai-trading-dashboard-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-4); /* 16px - Sonnet */
+}
+
+.ai-trading-dashboard-logo {
+  flex-shrink: 0;
+}
+
+.ai-trading-dashboard-title {
+  font-size: var(--ds-font-size-xl); /* 20px - Sonnet page titles */
+  font-weight: var(--ds-font-weight-semibold); /* 600 */
+  line-height: var(--ds-line-height-relaxed); /* 28px */
+  color: var(--ds-text-primary); /* Sonnet text */
+  margin: 0;
+}
+
+.ai-trading-dashboard-preview-label {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-tertiary);
+  padding: 2px 8px;
+  border-radius: var(--ds-radius-md);
+  background: var(--ds-bg-hover);
+}
+
+.ai-trading-dashboard-preview-stat-text {
+  margin: 0;
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+}
+
+.ai-trading-dashboard-badge {
+  padding: var(--ds-spacing-1) var(--ds-spacing-2); /* 4px 8px - Sonnet */
+  background: var(--success); /* Sonnet success */
+  border-radius: var(--ds-radius-md); /* 10px - Sonnet */
+  font-size: var(--ds-font-size-base); /* 14px - Sonnet */
+  font-weight: var(--ds-font-weight-semibold); /* 600 */
+  color: var(--ds-text-primary); /* Sonnet text */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: none; /* No aggressive shadows */
+}
+
+.ai-trading-refreshing-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2); /* 8px - Sonnet */
+  color: var(--ds-text-tertiary); /* Sonnet muted */
+  font-size: var(--ds-font-size-base); /* 14px - Sonnet */
+}
+
+.ai-trading-dashboard-error {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2); /* 8px - Sonnet */
+  padding: var(--ds-spacing-4); /* 16px - Sonnet */
+  background: rgba(239, 68, 68, 0.1); /* Sonnet danger tint */
+  border: 1px solid var(--ds-color-error); /* Sonnet danger */
+  border-radius: var(--ds-radius-lg); /* 14px - Sonnet */
+  color: var(--ds-color-error); /* Sonnet danger */
+  margin-bottom: var(--ds-spacing-6); /* 24px - Sonnet */
+}
+
+.ai-trading-dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-6); /* 24px - Sonnet */
+}
+
+/* Dashboard Section - Panel (Sonnet) */
+.ai-trading-dashboard-section {
+  background-color: var(--ds-bg-surface); /* #000000 - Apple black */
+  border: 1px solid var(--ds-border-color); /* Sonnet 1px subtle */
+  border-radius: var(--ds-radius-lg); /* 14px - Sonnet standard */
+  padding: var(--ds-spacing-6); /* 24px - Sonnet standard */
+  box-shadow: none; /* No aggressive shadows */
+  box-sizing: border-box;
+}
+
+.ai-trading-dashboard-chart-section {
+  margin-bottom: var(--ds-spacing-6); /* 32px - Sonnet */
+  padding: 0 !important; /* Remove padding to let chart fill space */
+  background-color: transparent !important; /* Remove background so chart container shows */
+}
+
+.ai-trading-dashboard-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--ds-spacing-4); /* 16px - Sonnet */
+  padding: 0 var(--ds-spacing-6); /* 24px - Sonnet */
+  padding-bottom: var(--ds-spacing-3); /* 12px - Sonnet */
+  border-bottom: 1px solid var(--ds-border-color); /* Sonnet subtle divider */
+}
+
+.ai-trading-dashboard-chart-title {
+  font-size: var(--ds-font-size-md); /* 16px - Sonnet card titles */
+  font-weight: var(--ds-font-weight-semibold); /* 600 */
+  line-height: var(--ds-line-height-normal); /* 22px */
+  margin: 0;
+  color: var(--ds-text-primary); /* Sonnet text */
+}
+
+.ai-trading-dashboard-chart-token {
+  font-size: var(--ds-font-size-base); /* 14px - Sonnet */
+  font-weight: var(--ds-font-weight-medium); /* 500 */
+  color: var(--ds-text-tertiary); /* Sonnet muted */
+  padding: var(--ds-spacing-1) var(--ds-spacing-3); /* 4px 12px - Sonnet */
+  background: var(--ds-bg-hover); /* Sonnet hover */
+  border-radius: var(--ds-radius-md); /* 10px - Sonnet */
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .ai-trading-dashboard-header {
+    flex-wrap: wrap;
+  }
+
+  .ai-trading-dashboard-title-wrapper {
+    flex: 1 1 100%;
+    margin-bottom: var(--ds-spacing-2); /* 8px - Sonnet */
+  }
+
+  .ai-trading-dashboard-title {
+    font-size: var(--ds-font-size-md); /* 16px - Sonnet */
+  }
+
+  .ai-trading-dashboard-logo {
+    width: var(--ds-button-height-md); /* 40px - Sonnet */
+    height: var(--ds-button-height-md);
+  }
+}
+
+@media (max-width: 768px) {
+  .ai-trading-dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--ds-spacing-4); /* 16px - Sonnet */
+  }
+
+  .ai-trading-dashboard-title-wrapper {
+    width: 100%;
+  }
+
+  .ai-trading-dashboard-title {
+    font-size: var(--ds-font-size-md); /* 16px - Sonnet */
+  }
+
+  .ai-trading-dashboard-logo {
+    width: var(--ds-button-height-sm); /* 34px - Sonnet small */
+    height: var(--ds-button-height-sm);
+  }
+
+  .ai-trading-dashboard-badge {
+    font-size: 12px; /* Slightly smaller for mobile */
+    padding: var(--ds-spacing-1) var(--ds-spacing-2); /* 4px 8px - Sonnet */
+  }
+
+  .ai-trading-dashboard-section {
+    padding: var(--ds-spacing-4); /* 16px - Sonnet mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .ai-trading-dashboard-title {
+    font-size: var(--ds-font-size-md); /* 16px - Sonnet */
+  }
+
+  .ai-trading-dashboard-logo {
+    width: var(--ds-button-height-sm); /* 34px - Sonnet */
+    height: var(--ds-button-height-sm);
+  }
+}
+
+/* Preview Badge Animations */
+.ai-trading-dashboard-preview-badge {
+  animation: preview-badge-pulse 2s ease-in-out infinite;
+  position: relative;
+}
+
+.ai-trading-dashboard-preview-badge::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 12px;
+  background: linear-gradient(45deg, #14f195, #00ff88, #14f195);
+  opacity: 0;
+  animation: preview-badge-sparkle 3s ease-in-out infinite;
+  z-index: -1;
+}
+
+@keyframes preview-badge-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes preview-badge-sparkle {
+  0%, 100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes sparkle-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Fade-in animation for dashboard sections */
+.ai-trading-dashboard-section {
+  animation: fade-in-section 0.5s ease-out;
+}
+
+@keyframes fade-in-section {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

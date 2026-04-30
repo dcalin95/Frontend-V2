@@ -1,0 +1,52 @@
+/**
+ * 🔧 DEX Typography Fix - Corectare font-size și spacing
+ * 
+ * Corectează problemele cu font-size prea mare și lipsă de spacing logic
+ * în componentele DEX
+ */
+
+/* Global heading fixes pentru DEX pages (specificity: .context h2 = 2) */
+.dex-page h2,
+.dashboard-page h2,
+[class*="dex-"] h2 {
+  font-size: var(--ds-font-size-md) !important;
+  font-weight: var(--ds-font-weight-semibold) !important;
+  line-height: var(--ds-line-height-normal) !important;
+  margin: 0 0 var(--ds-spacing-3) 0 !important;
+  color: var(--ds-text-primary) !important;
+}
+
+.dex-page h3,
+.dashboard-page h3,
+[class*="dex-"] h3 {
+  font-size: var(--ds-font-size-base) !important;
+  font-weight: var(--ds-font-weight-semibold) !important;
+  line-height: var(--ds-line-height-normal) !important;
+  margin: 0 0 var(--ds-spacing-3) 0 !important;
+}
+
+.dex-page h4,
+.dashboard-page h4,
+[class*="dex-"] h4 {
+  font-size: var(--ds-table-font-size) !important;
+  font-weight: var(--ds-font-weight-semibold) !important;
+  line-height: var(--ds-line-height-normal) !important;
+  margin: 0 0 var(--ds-spacing-2) 0 !important;
+}
+
+.dex-page h2,
+.dashboard-page h2,
+.dashboard-page > * > h2,
+.dashboard-page > * > * > h2,
+[class*="dex-"] h2 {
+  font-size: var(--ds-font-size-md) !important;
+  margin-bottom: var(--ds-spacing-3) !important;
+}
+
+.dex-page p,
+.dashboard-page p,
+[class*="dex-"] p {
+  margin: 0 0 var(--ds-spacing-3) 0 !important;
+  line-height: var(--ds-line-height-normal) !important;
+  font-size: var(--ds-font-size-base) !important;
+}

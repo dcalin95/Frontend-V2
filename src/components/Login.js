@@ -142,7 +142,7 @@ export default function Login() {
     // SECURITY: Email format validation and normalization with sanitization
     const emailTrimmed = email.trim().toLowerCase();
     // Remove any potentially dangerous characters
-    const emailSanitized = emailTrimmed.replace(/[<>\"'&]/g, '');
+    const emailSanitized = emailTrimmed.replace(/[<>"'&]/g, '');
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/; // TLD must be at least 2 characters
     if (!emailRegex.test(emailSanitized) || emailSanitized.length > 254) {
       setError('Please enter a valid email address.');
@@ -158,7 +158,7 @@ export default function Login() {
       
       // SECURITY: Username validation and sanitization (3-20 characters, only letters, numbers, underscores, hyphens)
       const usernameTrimmed = username.trim();
-      const usernameSanitized = usernameTrimmed.replace(/[<>\"'&]/g, '');
+      const usernameSanitized = usernameTrimmed.replace(/[<>"'&]/g, '');
       if (usernameTrimmed.length < 3) {
         setError('Username must be at least 3 characters long.');
         return;
@@ -291,7 +291,7 @@ export default function Login() {
     
     // SECURITY: Email validation and sanitization
     const emailTrimmed = forgotPasswordEmail.trim().toLowerCase();
-    const emailSanitized = emailTrimmed.replace(/[<>\"'&]/g, '');
+    const emailSanitized = emailTrimmed.replace(/[<>"'&]/g, '');
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/; // TLD must be at least 2 characters
     if (!emailRegex.test(emailSanitized) || emailSanitized.length > 254) {
       setError('Please enter a valid email address.');
@@ -339,7 +339,7 @@ export default function Login() {
     
     // SECURITY: Email validation and sanitization
     const emailTrimmed = email.trim().toLowerCase();
-    const emailSanitized = emailTrimmed.replace(/[<>\"'&]/g, '');
+    const emailSanitized = emailTrimmed.replace(/[<>"'&]/g, '');
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/; // TLD must be at least 2 characters
     if (!emailRegex.test(emailSanitized) || emailSanitized.length > 254) {
       setError('Please enter a valid email address.');

@@ -1,0 +1,222 @@
+/**
+ * 📊 Bot Statistics Styles
+ */
+
+.bot-statistics {
+  padding: var(--ds-spacing-6);
+  background-color: var(--ds-bg-surface);
+  border-radius: var(--ds-radius-lg);
+}
+
+.bot-statistics-header {
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.bot-statistics-title {
+  font-size: var(--ds-font-size-xl);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+}
+
+.bot-statistics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--ds-spacing-6);
+}
+
+.bot-statistics-card {
+  padding: var(--ds-spacing-6);
+  background-color: var(--ds-bg-surface);
+  border-radius: var(--ds-radius-md);
+  border: 1px solid var(--ds-border-color);
+  transition: transform var(--ds-transition-base), box-shadow var(--ds-transition-base);
+}
+
+.bot-statistics-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--ds-shadow-md);
+}
+
+.bot-statistics-card.profit {
+  border-color: var(--ds-color-success);
+}
+
+.bot-statistics-card.loss {
+  border-color: var(--ds-color-error);
+}
+
+.bot-statistics-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  margin-bottom: var(--ds-spacing-3);
+}
+
+.bot-statistics-card-label {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  font-weight: var(--ds-font-weight-medium);
+}
+
+.bot-statistics-card-value {
+  font-size: var(--ds-font-size-2xl);
+  font-weight: var(--ds-font-weight-bold);
+  color: var(--ds-text-primary);
+}
+
+.bot-statistics-card-value.profit {
+  color: var(--ds-color-success);
+}
+
+.bot-statistics-card-value.loss {
+  color: var(--ds-color-error);
+}
+
+.bot-statistics-card-subtext {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  margin-top: var(--ds-spacing-1);
+}
+
+.bot-statistics-additional {
+  display: flex;
+  gap: var(--ds-spacing-6);
+  margin-top: var(--ds-spacing-6);
+  padding-top: var(--ds-spacing-6);
+  border-top: 1px solid var(--ds-border-color);
+}
+
+.bot-statistics-additional-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-1);
+}
+
+.bot-statistics-additional-label {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+}
+
+.bot-statistics-additional-value {
+  font-size: var(--ds-font-size-lg);
+  font-weight: var(--ds-font-weight-semibold);
+}
+
+.bot-statistics-additional-value.profit {
+  color: var(--ds-color-success);
+}
+
+.bot-statistics-additional-value.loss {
+  color: var(--ds-color-error);
+}
+
+/* OpenAI Trading Agent (OTA) - Alias classes (same styles as bot-* for backwards compatibility) */
+.ota-statistics {
+  padding: var(--ds-spacing-6);
+  background-color: var(--ds-bg-surface);
+  border-radius: var(--ds-radius-lg);
+}
+
+.ota-statistics-header { margin-bottom: var(--ds-spacing-6); }
+
+.ota-statistics-title {
+  font-size: var(--ds-font-size-xl);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+}
+
+.ota-statistics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--ds-spacing-6);
+}
+
+.ota-statistics-card {
+  padding: var(--ds-spacing-6);
+  background-color: var(--ds-bg-surface);
+  border-radius: var(--ds-radius-md);
+  border: 1px solid var(--ds-border-color);
+  transition: transform var(--ds-transition-base), box-shadow var(--ds-transition-base);
+}
+
+.ota-statistics-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--ds-shadow-md);
+}
+
+.ota-statistics-card.profit { border-color: var(--ds-color-success); }
+.ota-statistics-card.loss { border-color: var(--ds-color-error); }
+
+.ota-statistics-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  margin-bottom: var(--ds-spacing-3);
+}
+
+.ota-statistics-card-label {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  font-weight: var(--ds-font-weight-medium);
+}
+
+.ota-statistics-card-value {
+  font-size: var(--ds-font-size-2xl);
+  font-weight: var(--ds-font-weight-bold);
+  color: var(--ds-text-primary);
+}
+
+.ota-statistics-card-value.profit { color: var(--ds-color-success); }
+.ota-statistics-card-value.loss { color: var(--ds-color-error); }
+
+.ota-statistics-card-subtext {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  margin-top: var(--ds-spacing-1);
+}
+
+.ota-statistics-additional {
+  display: flex;
+  gap: var(--ds-spacing-6);
+  margin-top: var(--ds-spacing-6);
+  padding-top: var(--ds-spacing-6);
+  border-top: 1px solid var(--ds-border-color);
+}
+
+.ota-statistics-additional-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-1);
+}
+
+.ota-statistics-additional-label {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+}
+
+.ota-statistics-additional-value {
+  font-size: var(--ds-font-size-lg);
+  font-weight: var(--ds-font-weight-semibold);
+}
+
+.ota-statistics-additional-value.profit { color: var(--ds-color-success); }
+.ota-statistics-additional-value.loss { color: var(--ds-color-error); }
+
+.ota-statistics-empty {
+  text-align: center;
+  color: var(--ds-text-secondary);
+  padding: var(--ds-spacing-6);
+}
+
+@media (max-width: 768px) {
+  .bot-statistics-grid,
+  .ota-statistics-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .bot-statistics-additional,
+  .ota-statistics-additional {
+    flex-direction: column;
+  }
+}
+

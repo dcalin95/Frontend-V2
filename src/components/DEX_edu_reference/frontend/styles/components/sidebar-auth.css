@@ -1,0 +1,349 @@
+/**
+ * Sidebar Authentication Styles
+ * Layout fix (padding, gap, radius) ca aspectul să nu difere între teme.
+ * Culorile rămân din temă (--ds-*).
+ */
+
+.sidebar-auth-section {
+  margin-top: auto;
+  padding: 12px 8px;
+  border-top: 1px solid var(--ds-border-color);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.sidebar-social-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  align-items: flex-start;
+}
+
+.sidebar-social-link {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--ds-bg-hover);
+  border: 1px solid var(--ds-border-color);
+  color: var(--ds-text-primary);
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.sidebar-social-link svg {
+  width: 18px;
+  height: 18px;
+}
+
+.sidebar-social-link:hover {
+  background: var(--ds-bg-active);
+  border-color: var(--ds-border-color-light);
+}
+
+.sidebar-social-link:focus-visible {
+  outline: var(--ds-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.ai-trading-sidebar.collapsed .sidebar-auth-section {
+  align-items: center;
+}
+
+.ai-trading-sidebar.collapsed .sidebar-social-links {
+  justify-content: center;
+  align-items: center;
+}
+
+.sidebar-auth-btn {
+  width: fit-content;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--ds-border-color-focus);
+  color: var(--ds-text-primary);
+  border: 1px solid var(--ds-border-color-focus);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.sidebar-auth-btn svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.sidebar-auth-btn:hover:not(:disabled) {
+  background: var(--ds-border-color-light);
+  border-color: var(--ds-border-color-light);
+}
+
+.sidebar-auth-btn:focus-visible {
+  outline: var(--ds-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.sidebar-auth-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sidebar-auth-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.sidebar-auth-method-btn {
+  width: fit-content;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  background: var(--ds-bg-hover);
+  color: var(--ds-text-primary);
+  border: var(--ds-border-width) solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+  cursor: pointer;
+  transition: all var(--ds-transition-base);
+}
+
+.sidebar-auth-method-btn:hover:not(:disabled) {
+  background: var(--ds-bg-active);
+  border-color: var(--ds-border-color-light);
+}
+
+.sidebar-auth-method-btn:focus-visible {
+  outline: var(--ds-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.sidebar-auth-method-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sidebar-auth-google-btn {
+  background: var(--ds-color-info-bg);
+  border-color: var(--ds-border-color-light);
+}
+
+.sidebar-auth-google-btn:hover:not(:disabled) {
+  background: var(--ds-bg-hover);
+  border-color: var(--ds-border-color-focus);
+}
+
+.sidebar-auth-google-btn svg {
+  flex-shrink: 0;
+}
+
+.sidebar-auth-close-btn {
+  width: fit-content;
+  padding: 8px;
+  background: transparent;
+  color: var(--ds-text-tertiary);
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.sidebar-auth-close-btn:hover {
+  color: var(--ds-text-primary);
+}
+
+.sidebar-auth-close-btn:focus-visible {
+  outline: var(--ds-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.sidebar-user-menu {
+  position: relative;
+  width: 100%;
+}
+
+.sidebar-user-btn {
+  width: fit-content;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--ds-bg-hover);
+  color: var(--ds-text-primary);
+  border: 1px solid var(--ds-border-color);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.sidebar-user-btn:hover {
+  background: var(--ds-bg-active);
+  border-color: var(--ds-border-color-light);
+}
+
+.sidebar-user-btn:focus-visible {
+  outline: var(--ds-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.sidebar-user-initial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--ds-border-color-focus);
+  color: var(--ds-text-primary);
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.sidebar-user-name {
+  flex: 1;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-user-chevron {
+  transition: transform var(--ds-transition-base);
+  flex-shrink: 0;
+}
+
+.sidebar-user-chevron.open {
+  transform: rotate(180deg);
+}
+
+.sidebar-user-dropdown {
+  position: static;
+  margin-top: 8px;
+  background: var(--ds-bg-hover);
+  border: 1px solid var(--ds-border-color);
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--ds-border-color);
+}
+
+.sidebar-user-email,
+.sidebar-user-wallet,
+.sidebar-user-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ds-text-tertiary);
+}
+
+.sidebar-user-status {
+  color: var(--ds-color-success);
+}
+
+.sidebar-user-divider {
+  height: 1px;
+  background: var(--ds-border-color);
+  margin: 8px 0;
+}
+
+.sidebar-dropdown-link {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: transparent;
+  color: var(--ds-text-primary);
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  text-align: left;
+}
+.sidebar-dropdown-link svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.sidebar-dropdown-link:hover {
+  background: var(--ds-bg-hover);
+}
+
+.sidebar-dropdown-link:focus-visible {
+  outline: var(--ds-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.sidebar-dropdown-link.signout-link {
+  color: var(--ds-color-error);
+}
+
+.sidebar-dropdown-link.signout-link:hover {
+  background: var(--ds-color-error-bg);
+  color: var(--ds-color-error);
+}
+
+.ai-trading-sidebar.collapsed .sidebar-auth-btn,
+.ai-trading-sidebar.collapsed .sidebar-auth-method-btn,
+.ai-trading-sidebar.collapsed .sidebar-user-btn {
+  justify-content: center;
+}
+
+.ai-trading-sidebar.collapsed .sidebar-user-name {
+  display: none;
+}
+
+.ai-trading-sidebar.collapsed .sidebar-user-chevron {
+  display: none;
+}
+
+.ai-trading-sidebar.collapsed .sidebar-auth-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.ai-trading-sidebar.collapsed .sidebar-user-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.ai-trading-sidebar.collapsed .sidebar-user-initial {
+  width: var(--ds-icon-xl);
+  height: var(--ds-icon-xl);
+  font-size: var(--ds-font-size-sm);
+}

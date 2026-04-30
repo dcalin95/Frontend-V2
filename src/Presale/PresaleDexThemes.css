@@ -1,0 +1,190 @@
+body[class*="dex-theme-"] .presale-page {
+  --presale-theme-accent: var(--ds-accent, #3b82f6);
+  --presale-theme-accent-rgb: var(--ds-accent-rgb, 59, 130, 246);
+  --presale-theme-text: var(--ds-text-primary, #fafafa);
+  --presale-theme-muted: var(--ds-text-secondary, #a1a1aa);
+  --presale-theme-border: var(--ds-border-color, #27272a);
+  --presale-theme-surface: color-mix(in srgb, var(--ds-bg-surface, #000) 84%, var(--presale-theme-accent) 16%);
+  --presale-theme-elevated: color-mix(in srgb, var(--ds-bg-elevated, #000) 78%, var(--presale-theme-accent) 22%);
+  --presale-theme-button-bg: rgba(var(--presale-theme-accent-rgb), 0.08);
+  --presale-theme-button-hover: rgba(var(--presale-theme-accent-rgb), 0.15);
+  --presale-theme-heading-gradient: linear-gradient(90deg, var(--presale-theme-text), var(--presale-theme-accent));
+  --presale-theme-panel-bg: linear-gradient(180deg, rgba(var(--presale-theme-accent-rgb), 0.1), rgba(0, 0, 0, 0.86));
+  --presale-theme-hero-bg: radial-gradient(circle at 50% 0%, rgba(var(--presale-theme-accent-rgb), 0.2), transparent 42%), linear-gradient(180deg, rgba(var(--presale-theme-accent-rgb), 0.1), rgba(0, 0, 0, 0.88));
+  color: var(--presale-theme-text);
+}
+
+body.dex-theme-sonnet .presale-page {
+  --presale-theme-radius: 6px;
+  --presale-theme-shadow: 0 2px 8px rgba(0, 0, 0, 0.38);
+  --presale-theme-glow: rgba(59, 130, 246, 0.22);
+  --presale-theme-panel-bg: linear-gradient(180deg, rgba(59, 130, 246, 0.08), rgba(0, 0, 0, 0.9));
+  --presale-theme-hero-bg: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.18), transparent 38%), linear-gradient(180deg, rgba(59, 130, 246, 0.08), rgba(0, 0, 0, 0.9));
+}
+
+body.dex-theme-claude .presale-page {
+  --presale-theme-radius: 12px;
+  --presale-theme-shadow: 0 10px 28px rgba(0, 0, 0, 0.48);
+  --presale-theme-glow: rgba(245, 158, 11, 0.24);
+  --presale-theme-panel-bg: linear-gradient(180deg, rgba(245, 158, 11, 0.13), rgba(0, 0, 0, 0.86));
+  --presale-theme-hero-bg: radial-gradient(circle at 48% 0%, rgba(245, 158, 11, 0.24), transparent 44%), linear-gradient(180deg, rgba(245, 158, 11, 0.12), rgba(0, 0, 0, 0.87));
+}
+
+body.dex-theme-gemini .presale-page {
+  --presale-theme-radius: 16px;
+  --presale-theme-shadow: 0 10px 32px rgba(0, 0, 0, 0.42), 0 0 28px rgba(139, 92, 246, 0.14);
+  --presale-theme-glow: rgba(139, 92, 246, 0.25);
+  --presale-theme-panel-bg: linear-gradient(180deg, rgba(139, 92, 246, 0.14), rgba(0, 0, 0, 0.84));
+  --presale-theme-hero-bg: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.28), transparent 48%), linear-gradient(180deg, rgba(139, 92, 246, 0.14), rgba(0, 0, 0, 0.86));
+}
+
+body[class*="dex-theme-"] .presale-page .card-box,
+body[class*="dex-theme-"] .presale-page .grid-payment,
+body[class*="dex-theme-"] .presale-page .grid-panel,
+body[class*="dex-theme-"] .presale-page .grid-claim,
+body[class*="dex-theme-"] .presale-page .grid-summary,
+body[class*="dex-theme-"] .presale-page .why-invest-container,
+body[class*="dex-theme-"] .presale-page .stripe-card-box,
+body[class*="dex-theme-"] .presale-page .referral-code-container,
+body[class*="dex-theme-"] .presale-page .terms-checkbox-container,
+body[class*="dex-theme-"] .presale-page .price-line,
+body[class*="dex-theme-"] .presale-page .bonus-line,
+body[class*="dex-theme-"] .presale-page .bonus-summary,
+body[class*="dex-theme-"] .presale-page .input-box {
+  background: var(--presale-theme-panel-bg) !important;
+  border-color: color-mix(in srgb, var(--presale-theme-border) 62%, var(--presale-theme-accent) 38%) !important;
+  border-radius: var(--presale-theme-radius) !important;
+  box-shadow: var(--presale-theme-shadow) !important;
+  color: var(--presale-theme-text) !important;
+}
+
+body[class*="dex-theme-"] .presale-page .presale-hero {
+  background: var(--presale-theme-hero-bg) !important;
+  border-color: color-mix(in srgb, var(--presale-theme-border) 48%, var(--presale-theme-accent) 52%) !important;
+  border-radius: var(--presale-theme-radius) !important;
+  box-shadow: var(--presale-theme-shadow) !important;
+}
+
+body[class*="dex-theme-"] .presale-page .presale-hero-title,
+body[class*="dex-theme-"] .presale-page .payment-title,
+body[class*="dex-theme-"] .presale-page .token-selector h2,
+body[class*="dex-theme-"] .presale-page .why-invest-title,
+body[class*="dex-theme-"] .presale-page .presale-grid h3 {
+  color: var(--presale-theme-text) !important;
+  background: var(--presale-theme-heading-gradient) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  filter: drop-shadow(0 0 12px var(--presale-theme-glow)) !important;
+  text-shadow: none !important;
+}
+
+body[class*="dex-theme-"] .presale-page .presale-hero-launch-label,
+body[class*="dex-theme-"] .presale-page .boosted-label,
+body[class*="dex-theme-"] .presale-page .referral-code-label,
+body[class*="dex-theme-"] .presale-page .why-invest-item-title,
+body[class*="dex-theme-"] .presale-page .min-token-amount,
+body[class*="dex-theme-"] .presale-page .bits-token {
+  color: var(--presale-theme-accent) !important;
+  -webkit-text-fill-color: var(--presale-theme-accent) !important;
+  text-shadow: 0 0 12px var(--presale-theme-glow) !important;
+}
+
+body[class*="dex-theme-"] .presale-page .presale-hero-launch-value,
+body[class*="dex-theme-"] .presale-page .boosted-amount,
+body[class*="dex-theme-"] .presale-page .bonus-value {
+  color: var(--ds-color-warning, #f59e0b) !important;
+  -webkit-text-fill-color: var(--ds-color-warning, #f59e0b) !important;
+}
+
+body[class*="dex-theme-"] .presale-page .chain-tab,
+body[class*="dex-theme-"] .presale-page .token-button,
+body[class*="dex-theme-"] .presale-page .stripe-card-box__option,
+body[class*="dex-theme-"] .presale-page .input-box button,
+body[class*="dex-theme-"] .presale-page .buy-button,
+body[class*="dex-theme-"] .presale-page .presale-hero-cta,
+body[class*="dex-theme-"] .presale-page button {
+  background: var(--presale-theme-button-bg) !important;
+  border-color: color-mix(in srgb, var(--presale-theme-border) 58%, var(--presale-theme-accent) 42%) !important;
+  border-radius: var(--presale-theme-radius) !important;
+  box-shadow: 0 0 0 1px rgba(var(--presale-theme-accent-rgb), 0.08), 0 8px 20px rgba(0, 0, 0, 0.24) !important;
+}
+
+body[class*="dex-theme-"] .presale-page .chain-tab:hover,
+body[class*="dex-theme-"] .presale-page .token-button:hover,
+body[class*="dex-theme-"] .presale-page .stripe-card-box__option:hover,
+body[class*="dex-theme-"] .presale-page .presale-hero-cta:hover,
+body[class*="dex-theme-"] .presale-page button:hover {
+  background: var(--presale-theme-button-hover) !important;
+  border-color: var(--presale-theme-accent) !important;
+}
+
+body[class*="dex-theme-"] .presale-page .chain-tab.active,
+body[class*="dex-theme-"] .presale-page .token-button.active,
+body[class*="dex-theme-"] .presale-page .stripe-card-box__option.is-active,
+body[class*="dex-theme-"] .presale-page .buy-button,
+body[class*="dex-theme-"] .presale-page .presale-hero-cta-primary,
+body[class*="dex-theme-"] .presale-page .input-box button {
+  background: linear-gradient(135deg, var(--presale-theme-accent), color-mix(in srgb, var(--presale-theme-accent) 62%, #ffffff 38%)) !important;
+  color: #000 !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+body[class*="dex-theme-"] .presale-page input,
+body[class*="dex-theme-"] .presale-page textarea,
+body[class*="dex-theme-"] .presale-page select {
+  color: var(--presale-theme-text) !important;
+  border-color: color-mix(in srgb, var(--presale-theme-border) 60%, var(--presale-theme-accent) 40%) !important;
+  background: rgba(0, 0, 0, 0.52) !important;
+}
+
+body[class*="dex-theme-"] .presale-page input:focus,
+body[class*="dex-theme-"] .presale-page textarea:focus,
+body[class*="dex-theme-"] .presale-page select:focus {
+  border-color: var(--presale-theme-accent) !important;
+  box-shadow: var(--ds-focus-ring-box-shadow, 0 0 0 2px rgba(var(--presale-theme-accent-rgb), 0.35)) !important;
+}
+
+body[class*="dex-theme-"] .presale-page .presale-hero-subtitle,
+body[class*="dex-theme-"] .presale-page .presale-hero-round-status,
+body[class*="dex-theme-"] .presale-page .presale-hero-timer,
+body[class*="dex-theme-"] .presale-page .why-invest-item-text,
+body[class*="dex-theme-"] .presale-page .terms-text,
+body[class*="dex-theme-"] .presale-page .min-purchase-note,
+body[class*="dex-theme-"] .presale-page .stripe-card-box__header p,
+body[class*="dex-theme-"] .presale-page .stripe-card-box__option-sub {
+  color: var(--presale-theme-muted) !important;
+}
+
+body[class*="dex-theme-"] .presale-page .presale-hero-round-status {
+  background: rgba(var(--presale-theme-accent-rgb), 0.08) !important;
+  border-color: color-mix(in srgb, var(--presale-theme-border) 55%, var(--presale-theme-accent) 45%) !important;
+  color: var(--presale-theme-text) !important;
+  box-shadow: 0 0 0 1px rgba(var(--presale-theme-accent-rgb), 0.08), 0 8px 20px rgba(0, 0, 0, 0.22) !important;
+}
+
+body.dex-theme-sonnet .presale-page .card-box,
+body.dex-theme-sonnet .presale-page .grid-payment,
+body.dex-theme-sonnet .presale-page .grid-panel,
+body.dex-theme-sonnet .presale-page .grid-claim,
+body.dex-theme-sonnet .presale-page .grid-summary {
+  padding: var(--spacing-md, 0.75rem) !important;
+}
+
+body.dex-theme-claude .presale-page .presale-hero-title,
+body.dex-theme-claude .presale-page .payment-title,
+body.dex-theme-claude .presale-page .token-selector h2,
+body.dex-theme-claude .presale-page .why-invest-title,
+body.dex-theme-claude .presale-page .presale-grid h3 {
+  font-weight: 700 !important;
+}
+
+body.dex-theme-gemini .presale-page .card-box,
+body.dex-theme-gemini .presale-page .grid-payment,
+body.dex-theme-gemini .presale-page .grid-panel,
+body.dex-theme-gemini .presale-page .grid-claim,
+body.dex-theme-gemini .presale-page .grid-summary,
+body.dex-theme-gemini .presale-page .why-invest-container,
+body.dex-theme-gemini .presale-page .stripe-card-box {
+  padding: var(--spacing-lg, 1.75rem) !important;
+}

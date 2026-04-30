@@ -1,6 +1,8 @@
 // Frontend MoonPay Integration - Widget-based fiat onramp
 import DOMPurify from 'dompurify'; // 🔒 SECURITY: XSS protection
 
+import { resolvePresaleBackendUrl } from "../presaleApi";
+
 const handleMoonPayPayment = async ({ 
   amount, 
   bitsToReceive, 
@@ -385,7 +387,7 @@ const createMoonPayModal = ({ widgetUrl, amount, bitsToReceive, walletAddress, o
 // 🔄 Handle MoonPay Success - Convert ETH to BITS
 const handleMoonPaySuccess = async ({ transactionData, walletAddress, bitsToReceive, bonusAmount, bonusPercentage }) => {
   try {
-    const backendURL = process.env.REACT_APP_BACKEND_URL || "http://localhost:4000";
+    const backendURL = await resolvePresaleBackendUrl();
     
     // Notify backend about MoonPay transaction completion
     const response = await fetch(`${backendURL}/api/moonpay/success`, {
@@ -417,4 +419,3 @@ const handleMoonPaySuccess = async ({ transactionData, walletAddress, bitsToRece
 };
 
 export default handleMoonPayPayment;
-

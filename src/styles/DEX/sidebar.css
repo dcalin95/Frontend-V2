@@ -1,0 +1,238 @@
+/**
+ * 📊 Sidebar Styles - Layout fix, iconițe mai mari, aspect uniform în toate temele
+ * Layout și dimensiuni sunt fixe (px) ca sidebar-ul să nu se schimbe între Sonnet/Claude/Gemini.
+ * Culorile rămân din temă (--text-secondary, --bg-secondary, --color-primary).
+ */
+
+.ai-trading-sidebar {
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
+  background-color: #000000;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 14px 12px;
+  font-family: var(--token-font-family-sans, var(--font-family));
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: none;
+  transition: width 0.3s ease, min-width 0.3s ease, max-width 0.3s ease, padding 0.3s ease;
+  position: relative;
+  flex-shrink: 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+.ai-trading-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.ai-trading-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.ai-trading-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+.ai-trading-sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Collapsed State – puțin mai lat când e închis */
+.ai-trading-sidebar.collapsed {
+  width: 56px !important;
+  min-width: 56px !important;
+  max-width: 56px !important;
+  padding: 14px 8px !important;
+}
+
+.ai-trading-sidebar.collapsed .ai-trading-nav {
+  align-items: center;
+}
+
+.ai-trading-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 44px;
+  align-items: flex-start;
+}
+
+.ai-trading-sidebar.collapsed .ai-trading-nav {
+  align-items: center;
+}
+
+.ai-trading-nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  min-height: 38px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+  transition: background-color 0.15s ease, color 0.15s ease;
+  cursor: pointer;
+  background: none;
+  border: none;
+  text-align: left;
+  justify-content: flex-start;
+  white-space: nowrap;
+  font-family: var(--token-font-family-sans, var(--font-family));
+  width: fit-content;
+  max-width: 100%;
+}
+
+/* Iconițe mai mari (20px) – default era prea mic */
+.ai-trading-nav-item svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* OTA AI: chenar 20×20 ca celelalte icoane, logo-ul 40px rămâne mare (overflow) */
+.ai-trading-nav-ota-logo-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  overflow: visible;
+}
+.ai-trading-nav-ota-logo-wrap .ota-logo {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  margin: -10px;
+}
+.ai-trading-nav-ota-logo-wrap .ota-logo-svg,
+.ai-trading-nav-ota-logo-wrap .ota-logo-svg-proportional {
+  width: 40px !important;
+  height: 40px !important;
+}
+
+/* STX / SOL Trade: chenar 20×20 ca celelalte icoane, imaginea 40px rămâne mare (overflow) */
+.ai-trading-nav-chain-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  overflow: visible;
+}
+.ai-trading-nav-chain-icon {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px;
+  min-height: 40px;
+  flex-shrink: 0;
+  object-fit: contain;
+  display: block;
+  margin: -10px; /* imaginea 40px centrată în chenarul 20×20, overflow în afară */
+  box-sizing: border-box;
+  opacity: 0.9;
+  filter: brightness(0) invert(0.75);
+  transition: filter 0.15s ease, opacity 0.15s ease;
+}
+.ai-trading-nav-item:hover .ai-trading-nav-chain-icon {
+  filter: brightness(0) invert(0.95);
+}
+.ai-trading-nav-item.active .ai-trading-nav-chain-icon {
+  filter: brightness(0) invert(1);
+  opacity: 1;
+}
+
+.ai-trading-sidebar.collapsed .ai-trading-nav-item {
+  justify-content: center !important;
+  padding: 8px !important;
+  min-height: 38px;
+  min-width: 0 !important;
+  width: auto !important;
+}
+
+.ai-trading-nav-item:hover {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.ai-trading-nav-item.active {
+  background-color: var(--color-primary);
+  color: var(--text-white);
+}
+
+.ai-trading-nav-item.active svg {
+  color: var(--text-white);
+}
+
+.ai-trading-nav-label {
+  font-size: 13px;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: normal;
+  transition: opacity 0.15s ease;
+  max-width: 112px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ai-trading-sidebar.collapsed .ai-trading-nav-label {
+  display: none !important;
+  width: 0 !important;
+  opacity: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Toggle – iconiță mai mare (32px) */
+.ai-trading-sidebar-toggle {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  z-index: 10;
+}
+.ai-trading-sidebar-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+.ai-trading-sidebar-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.ai-trading-sidebar.collapsed .ai-trading-sidebar-toggle {
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@media (max-width: 768px) {
+  .ai-trading-sidebar {
+    width: 180px;
+    min-width: 180px;
+    max-width: 180px;
+    padding: 12px 10px;
+  }
+
+  .ai-trading-sidebar.collapsed {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+    padding: 12px 8px !important;
+  }
+
+  .ai-trading-nav-label {
+    font-size: 13px;
+  }
+}

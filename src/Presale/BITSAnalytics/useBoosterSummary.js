@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useContext } from "react";
 import { ethers } from "ethers";
 import WalletContext from "../../context/WalletContext";
 import { CONTRACT_MAP as CONTRACTS, getActiveNetwork } from "../../contract/contractMap";
+import { resolvePresaleBackendUrl } from "../presaleApi";
 
 export const useBoosterSummary = () => {
   const { walletAddress, provider, signer, walletType } = useContext(WalletContext);
@@ -47,7 +48,7 @@ export const useBoosterSummary = () => {
         
         // 1. Try backend first
         try {
-          const backendURL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+          const backendURL = await resolvePresaleBackendUrl();
           console.log(`🟣 [Solana] Fetching from backend: ${backendURL}/api/solana/payments/user/${walletAddress}`);
           
           const solanaResponse = await fetch(`${backendURL}/api/solana/payments/user/${walletAddress}`, {
@@ -246,7 +247,7 @@ export const useBoosterSummary = () => {
       let solanaBits = 0;
       let solanaUSD = 0;
       try {
-        const backendURL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+        const backendURL = await resolvePresaleBackendUrl();
         const solanaResponse = await fetch(`${backendURL}/api/solana/payments/user/${walletAddress}`, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' }
@@ -482,7 +483,7 @@ export const useBoosterSummary = () => {
       // 📡 Backend fallback (same as Rewards Hub) if on-chain is zero
       if (!telegramRewardBits && walletAddress) {
         try {
-          const backendURL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+          const backendURL = await resolvePresaleBackendUrl();
           const res = await fetch(`${backendURL}/api/telegram-rewards/reward/${walletAddress}`);
           if (res.ok) {
             const payload = await res.json();

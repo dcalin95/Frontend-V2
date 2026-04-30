@@ -1,0 +1,166 @@
+/**
+ * 🎮 Bot Controls Styles
+ */
+
+.bot-controls {
+  padding: var(--ds-spacing-6);
+  background-color: var(--ds-bg-surface);
+  border-radius: var(--ds-radius-lg);
+}
+
+.bot-controls-header,
+.ota-controls-header {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  margin-bottom: var(--ds-spacing-3);
+  padding-bottom: var(--ds-spacing-3);
+  border-bottom: 1px solid var(--ds-border-color);
+}
+
+.bot-controls-agent-name,
+.ota-controls-agent-name {
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+  color: var(--ds-text-secondary);
+}
+
+.bot-controls-buttons {
+  display: flex;
+  gap: var(--ds-spacing-3);
+  flex-wrap: wrap;
+}
+
+.ota-control-btn-logo {
+  margin-right: var(--ds-spacing-1);
+}
+
+.bot-control-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3) var(--ds-spacing-6);
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-medium);
+  border-radius: var(--ds-radius-md);
+  transition: all var(--ds-transition-base);
+  cursor: pointer;
+  border: none;
+}
+
+.bot-control-btn-start {
+  background-color: var(--ds-color-success);
+  color: var(--ds-text-primary);
+}
+
+.bot-control-btn-start:hover:not(:disabled) {
+  background-color: var(--ds-text-buy);
+  transform: translateY(-1px);
+  box-shadow: var(--ds-shadow-md);
+}
+
+.bot-control-btn-stop {
+  background-color: var(--ds-color-error);
+  color: var(--ds-text-primary);
+}
+
+.bot-control-btn-stop:hover:not(:disabled) {
+  background-color: var(--ds-text-sell);
+  transform: translateY(-1px);
+  box-shadow: var(--ds-shadow-md);
+}
+
+.bot-control-btn-secondary {
+  background-color: var(--ds-bg-surface);
+  color: var(--ds-text-primary);
+  border: 1px solid var(--ds-border-color);
+}
+
+.bot-control-btn-secondary:hover:not(:disabled) {
+  background-color: var(--ds-bg-hover);
+  border-color: var(--ds-border-color-dark);
+}
+
+.bot-control-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* OpenAI Trading Agent (OTA) - Alias classes (same styles as bot-* for backwards compatibility) */
+.ota-controls {
+  padding: var(--ds-spacing-6);
+  background-color: var(--ds-bg-surface);
+  border-radius: var(--ds-radius-lg);
+}
+
+.ota-controls-buttons {
+  display: flex;
+  gap: var(--ds-spacing-3);
+  flex-wrap: wrap;
+}
+
+.ota-control-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3) var(--ds-spacing-6);
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-medium);
+  border-radius: var(--ds-radius-md);
+  transition: all var(--ds-transition-base);
+  cursor: pointer;
+  border: none;
+}
+
+.ota-control-btn-start {
+  background-color: var(--ds-color-success);
+  color: var(--ds-text-primary);
+}
+
+.ota-control-btn-start:hover:not(:disabled) {
+  background-color: var(--ds-text-buy);
+  transform: translateY(-1px);
+  box-shadow: var(--ds-shadow-md);
+}
+
+.ota-control-btn-stop {
+  background-color: var(--ds-color-error);
+  color: var(--ds-text-primary);
+}
+
+.ota-control-btn-stop:hover:not(:disabled) {
+  background-color: var(--ds-text-sell);
+  transform: translateY(-1px);
+  box-shadow: var(--ds-shadow-md);
+}
+
+.ota-control-btn-secondary {
+  background-color: var(--ds-bg-surface);
+  color: var(--ds-text-primary);
+  border: 1px solid var(--ds-border-color);
+}
+
+.ota-control-btn-secondary:hover:not(:disabled) {
+  background-color: var(--ds-bg-hover);
+  border-color: var(--ds-border-color-dark);
+}
+
+.ota-control-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .bot-controls-buttons,
+  .ota-controls-buttons {
+    flex-direction: column;
+  }
+  
+  .bot-control-btn,
+  .ota-control-btn {
+    width: 100%;
+  }
+}
+

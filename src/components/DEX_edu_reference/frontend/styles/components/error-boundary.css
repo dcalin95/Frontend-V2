@@ -1,0 +1,70 @@
+/**
+ * 🛡️ Error Boundary Styles
+ * 
+ * Styles pentru ErrorBoundary component
+ */
+
+.error-boundary-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  margin: var(--ds-spacing-lg);
+}
+
+.error-boundary-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--ds-spacing-md);
+  max-width: 500px;
+}
+
+.error-boundary-icon {
+  color: var(--ds-color-error);
+  opacity: 0.8;
+}
+
+.error-boundary-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  margin: 0;
+}
+
+.error-boundary-message {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-secondary);
+  margin: 0;
+}
+
+.error-boundary-details {
+  width: 100%;
+  margin-top: var(--ds-spacing-md);
+  padding: var(--ds-spacing-md);
+  background: var(--ds-bg-tertiary);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-border-radius);
+  text-align: left;
+}
+
+.error-boundary-details summary {
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--ds-text-primary);
+  margin-bottom: var(--ds-spacing-sm);
+}
+
+.error-boundary-stack {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  font-family: var(--ds-font-family-mono);
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-x: auto;
+  margin: 0;
+  padding: var(--ds-spacing-sm);
+  background: var(--ds-bg-secondary);
+  border-radius: var(--ds-border-radius-sm);
+}

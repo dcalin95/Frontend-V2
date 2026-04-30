@@ -34,7 +34,6 @@ export function usePerformance(userId, options = {}) {
   const [riskMetrics, setRiskMetrics] = useState(null);
   const [history, setHistory] = useState([]);
   const [chartsData, setChartsData] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -166,7 +165,7 @@ export function usePerformance(userId, options = {}) {
     if (userId) {
       loadAll();
     }
-  }, [userId, period, periodStart, periodEnd, loadAll]);
+  }, [userId, period, loadAll]);
 
   // Auto-refresh interval (dacă e enabled)
   useEffect(() => {
@@ -184,7 +183,7 @@ export function usePerformance(userId, options = {}) {
     riskMetrics,
     history,
     chartsData,
-    loading,
+    loading: refreshing,
     error,
     refreshing,
     loadMetrics,

@@ -1,0 +1,252 @@
+/* Risk Gating Panel Styles - AI Trading Only */
+
+.ai-risk-gating-panel {
+  background: var(--ds-bg-secondary);
+  border-radius: var(--ds-border-radius);
+  padding: var(--ds-spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-lg);
+  border: 1px solid var(--ds-border);
+  box-shadow: var(--ds-shadow);
+}
+
+.ai-risk-gating-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--ds-spacing-md);
+}
+
+.ai-risk-gating-panel-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-sm);
+}
+
+.ai-risk-gating-panel-logo {
+  margin-right: var(--ds-spacing-xs);
+}
+
+.ai-risk-gating-panel-icon {
+  color: var(--ds-primary);
+}
+
+.ai-risk-gating-panel-title {
+  font-size: var(--ds-font-size-md);
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  margin: 0 0 12px 0;
+  line-height: var(--ds-line-height-normal);
+}
+
+.ai-risk-gating-panel-edit-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-xs);
+  padding: var(--ds-spacing-sm) var(--ds-spacing-md);
+  background: var(--ds-bg-tertiary);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-border-radius-sm);
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+  cursor: pointer;
+  transition: all var(--ds-transition-base);
+}
+
+.ai-risk-gating-panel-edit-btn:hover {
+  background: var(--ds-bg-hover);
+  border-color: var(--ds-primary);
+}
+
+.ai-risk-gating-panel-actions {
+  display: flex;
+  gap: var(--ds-spacing-sm);
+}
+
+.ai-risk-gating-panel-btn {
+  padding: var(--ds-spacing-sm) var(--ds-spacing-md);
+  border-radius: var(--ds-border-radius-sm);
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--ds-transition-base);
+  border: none;
+}
+
+.ai-risk-gating-panel-btn-secondary {
+  background: var(--ds-bg-tertiary);
+  color: var(--ds-text-primary);
+  border: 1px solid var(--ds-border);
+}
+
+.ai-risk-gating-panel-btn-secondary:hover {
+  background: var(--ds-bg-hover);
+}
+
+.ai-risk-gating-panel-btn-primary {
+  background: var(--ds-primary-gradient);
+  color: white;
+}
+
+.ai-risk-gating-panel-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--ds-shadow-primary);
+}
+
+.ai-risk-gating-panel-description {
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-sm);
+  line-height: var(--ds-line-height-relaxed);
+}
+
+.ai-risk-gating-panel-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-xl);
+}
+
+.ai-risk-gating-panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-md);
+}
+
+.ai-risk-gating-panel-section-title {
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  margin: 0;
+}
+
+/* Limits Grid */
+.ai-risk-gating-panel-limits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--ds-spacing-md);
+}
+
+.ai-risk-gating-panel-limit-card {
+  background: var(--ds-bg-tertiary);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-border-radius);
+  padding: var(--ds-spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-sm);
+  transition: all var(--ds-transition-base);
+}
+
+.ai-risk-gating-panel-limit-card:hover {
+  border-color: var(--ds-border-light);
+  box-shadow: var(--ds-shadow-sm);
+}
+
+.ai-risk-gating-panel-limit-header {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-sm);
+  color: var(--ds-text-secondary);
+}
+
+.ai-risk-gating-panel-limit-label {
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+}
+
+.ai-risk-gating-panel-limit-value {
+  font-size: var(--ds-font-size-xl);
+  font-weight: var(--ds-font-weight-bold);
+  color: var(--ds-text-primary);
+  font-family: var(--ds-font-family-mono);
+}
+
+.ai-risk-gating-panel-limit-input {
+  padding: var(--ds-spacing-sm);
+  background: var(--ds-bg-secondary);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-border-radius-sm);
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-xl);
+  font-weight: var(--ds-font-weight-bold);
+  font-family: var(--ds-font-family-mono);
+  transition: all var(--ds-transition-base);
+}
+
+.ai-risk-gating-panel-limit-input:focus {
+  outline: none;
+  border-color: var(--ds-primary);
+  box-shadow: 0 0 0 2px rgba(79, 172, 254, 0.1);
+}
+
+/* Settings */
+.ai-risk-gating-panel-settings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-md);
+}
+
+.ai-risk-gating-panel-setting {
+  display: flex;
+  align-items: center;
+}
+
+.ai-risk-gating-panel-setting-label {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-sm);
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-primary);
+  cursor: pointer;
+}
+
+.ai-risk-gating-panel-setting-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--ds-primary);
+}
+
+.ai-risk-gating-panel-setting-label input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.ai-risk-gating-panel-warning {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-sm);
+  padding: var(--ds-spacing-md);
+  background: var(--ds-warning-bg);
+  border: 1px solid var(--ds-warning-border);
+  border-radius: var(--ds-border-radius-sm);
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-warning);
+}
+
+.ai-risk-gating-panel-loading {
+  text-align: center;
+  padding: var(--ds-spacing-2xl);
+  color: var(--ds-text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ai-risk-gating-panel-limits-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .ai-risk-gating-panel-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .ai-risk-gating-panel-actions {
+    width: 100%;
+  }
+  
+  .ai-risk-gating-panel-btn {
+    flex: 1;
+  }
+}

@@ -1,0 +1,366 @@
+/**
+ * 🎨 Design System v1 - Complete Token System
+ * 
+ * Design tokens completi pentru DEX:
+ * - Spacing scale (4px base)
+ * - Typography scale (sizes, weights, line-height, letter-spacing)
+ * - Color system (background, surface, text, border, semantic)
+ * - Component tokens (button, input, card, table, badge, modal)
+ * - Shadows, z-index, transitions
+ * - Focus rings (accessibility)
+ * 
+ * @module DesignSystemV1
+ */
+
+:root {
+  /* ============================================
+     SPACING SCALE - 4px Base Unit
+     ============================================ */
+  
+  --ds-spacing-0: 0;
+  --ds-spacing-1: 4px;    /* xs */
+  --ds-spacing-2: 8px;    /* sm */
+  --ds-spacing-3: 12px;   /* md */
+  --ds-spacing-4: 16px;   /* lg */
+  --ds-spacing-5: 20px;
+  --ds-spacing-6: 24px;   /* xl */
+  --ds-spacing-8: 32px;   /* 2xl */
+  --ds-spacing-10: 40px;
+  --ds-spacing-12: 48px;  /* 3xl */
+  --ds-spacing-16: 64px;
+  --ds-spacing-20: 80px;
+  
+  /* ============================================
+     TYPOGRAPHY SCALE
+     ============================================ */
+  
+  /* Font Families */
+  --ds-font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  --ds-font-family-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Courier New', monospace;
+  
+  /* Font Sizes */
+  --ds-font-size-xs: 10px;
+  --ds-font-size-sm: 12px;
+  --ds-font-size-base: 14px;
+  --ds-font-size-md: 16px;
+  --ds-font-size-lg: 18px;
+  --ds-font-size-xl: 20px;
+  --ds-font-size-2xl: 24px;
+  --ds-font-size-3xl: 32px;
+  --ds-font-size-4xl: 40px;
+  --ds-font-size-5xl: 48px;
+  --ds-font-size-6xl: 56px;
+
+  /* Font Weights */
+  --ds-font-weight-normal: 400;
+  --ds-font-weight-medium: 500;
+  --ds-font-weight-semibold: 600;
+  --ds-font-weight-bold: 700;
+  
+  /* Line Heights */
+  --ds-line-height-tight: 1.2;
+  --ds-line-height-normal: 1.5;
+  --ds-line-height-relaxed: 1.75;
+  
+  /* Letter Spacing */
+  --ds-letter-spacing-tight: -0.02em;
+  --ds-letter-spacing-normal: 0;
+  --ds-letter-spacing-wide: 0.02em;
+  
+  /* ============================================
+     COLOR SYSTEM - Dark Theme
+     ============================================ */
+  
+  /* Background Colors – MANDATORY negru #000000 (docs/DEX_THEMES.md, docs/AI_CONTEXT.md) */
+  --ds-bg-base: #000000;
+  --ds-bg-surface: #000000;
+  --ds-bg-elevated: #000000;
+  --ds-bg-overlay: rgba(0, 0, 0, 0.95);
+  --ds-bg-hover: #000000;
+  --ds-bg-active: #000000;
+  --ds-bg-subtle: #000000;
+  --ds-bg-modal-backdrop: rgba(0, 0, 0, 0.85);
+  --ds-bg-overlay-dark: rgba(0, 0, 0, 0.95);
+  
+  /* Text Colors */
+  --ds-text-primary: #ffffff;         /* Main text */
+  --ds-text-secondary: #9ca3af;       /* Secondary text */
+  --ds-text-tertiary: #6b7280;        /* Tertiary text */
+  --ds-text-disabled: #4b5563;        /* Disabled text */
+  --ds-text-inverse: #000000;         /* Text on light bg */
+  
+  /* Border Colors */
+  --ds-border-width: 1px;
+  --ds-border-width-thick: 2px;
+  --ds-border-color: #1f1f1f;         /* Default border */
+  --ds-border-color-light: #2a2a2a;   /* Hover border */
+  --ds-border-color-dark: #121212;
+  --ds-border-color-focus: #3a3a3a;   /* Focus border */
+  --ds-border-color-error: #2a2a2a;   /* Error border */
+  
+  /* Semantic Colors */
+  --ds-color-success: #d1d5db;        /* Buy/Positive */
+  --ds-color-success-bg: #000000;
+  --ds-color-success-border: rgba(255, 255, 255, 0.1);
+  --ds-color-error: #9ca3af;          /* Sell/Negative */
+  --ds-color-error-bg: rgba(255, 255, 255, 0.05);
+  --ds-color-error-border: rgba(255, 255, 255, 0.1);
+  --ds-color-warning: #9ca3af;
+  --ds-color-warning-bg: #000000;
+  --ds-color-warning-border: rgba(245, 158, 11, 0.3);
+  --ds-color-info: #9ca3af;
+  --ds-color-info-bg: #000000;
+  
+  /* Primary accent (focus/active border) */
+  --ds-color-primary: #ffffff;
+  /* Accent (interactive highlight, e.g. favorite/selected) */
+  --ds-accent: #4facfe;
+  --ds-accent-rgb: 79, 172, 254; /* for rgba() */
+  /* OTA accent (green - mode selector, tutorial) */
+  --ds-accent-ota: #14f195;
+  /* Input background */
+  --ds-bg-input: #000000;
+
+  /* Trading Colors */
+  --ds-text-buy: #d1d5db;
+  --ds-text-sell: #9ca3af;
+  --ds-text-neutral: #9ca3af;
+  
+  /* ============================================
+     BORDER RADIUS
+     ============================================ */
+  
+  --ds-radius-xs: 4px;
+  --ds-radius-sm: 6px;
+  --ds-radius-md: 8px;
+  --ds-radius-lg: 12px;
+  --ds-radius-xl: 16px;
+  --ds-radius-2xl: 20px;
+  --ds-radius-full: 9999px;
+  
+  /* ============================================
+     SHADOWS
+     ============================================ */
+  
+  --ds-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --ds-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4);
+  --ds-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+  --ds-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
+  --ds-shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.6);
+  --ds-shadow-2xl: 0 16px 32px rgba(0, 0, 0, 0.6);
+  
+  /* ============================================
+     FOCUS RINGS (Accessibility)
+     ============================================ */
+  
+  --ds-focus-ring-width: 2px;
+  --ds-focus-ring-color: #3a3a3a;
+  --ds-focus-ring-offset: 2px;
+  /* Outline syntax for outline: ... (valid CSS) */
+  --ds-focus-ring: var(--ds-focus-ring-width) solid var(--ds-focus-ring-color);
+  /* Box-shadow variant for elements that use box-shadow for focus */
+  --ds-focus-ring-box-shadow: 0 0 0 var(--ds-focus-ring-width) var(--ds-focus-ring-color);
+  
+  /* ============================================
+     Z-INDEX LAYERS
+     ============================================ */
+  
+  --ds-z-base: 1;
+  --ds-z-dropdown: 1000;
+  --ds-z-sticky: 1020;
+  --ds-z-fixed: 1030;
+  /* Peste .dex-page-wrapper (100000) — overlay-uri modale/confirmări vizibile pe /dex/* */
+  --ds-z-modal-backdrop: 100002;
+  --ds-z-modal: 100003;
+  --ds-z-modal-critical: 100050;       /* Repair BSC modal */
+  --ds-z-modal-critical-plus: 100055; /* RPC repair - above repair BSC */
+  --ds-z-popover: 100010;
+  --ds-z-tooltip: 100011;
+  --ds-z-toast: 100012;
+  --ds-z-dropdown-above: 100020;
+  --ds-z-floating-ui: 100025;      /* Token selector etc. — peste modale standard */
+  
+  /* ============================================
+     TRANSITIONS
+     ============================================ */
+  
+  --ds-transition-fast: 100ms ease-in-out;
+  --ds-transition-base: 200ms ease-in-out;
+  --ds-transition-slow: 300ms ease-in-out;
+  
+  /* ============================================
+     COMPONENT TOKENS
+     ============================================ */
+  
+  /* Button */
+  --ds-button-height-sm: 32px;
+  --ds-button-height-md: 40px;
+  --ds-button-height-lg: 48px;
+  --ds-button-padding-x-sm: 12px;
+  --ds-button-padding-x-md: 16px;
+  --ds-button-padding-x-lg: 24px;
+  --ds-button-font-size-sm: 12px;
+  --ds-button-font-size-md: 14px;
+  --ds-button-font-size-lg: 16px;
+  --ds-button-border-radius: var(--ds-radius-md);
+  
+  /* Input */
+  --ds-input-height-sm: 32px;
+  --ds-input-height-md: 40px;
+  --ds-input-height-lg: 48px;
+  --ds-input-padding-x: 12px;
+  --ds-input-font-size: 14px;
+  --ds-input-border-radius: var(--ds-radius-md);
+  --ds-input-border-width: 1px;
+  
+  /* Select / Dropdown (reuses input dimensions; dropdown panel) */
+  --ds-select-height-sm: var(--ds-input-height-sm);
+  --ds-select-height-md: var(--ds-input-height-md);
+  --ds-select-height-lg: var(--ds-input-height-lg);
+  --ds-select-padding-x: var(--ds-input-padding-x);
+  --ds-select-font-size: var(--ds-input-font-size);
+  --ds-select-border-radius: var(--ds-input-border-radius);
+  --ds-dropdown-max-height: 300px;
+  --ds-dropdown-padding: var(--ds-spacing-1);
+  --ds-dropdown-border-radius: var(--ds-radius-md);
+  --ds-dropdown-z: var(--ds-z-dropdown);
+  
+  /* Card */
+  --ds-card-padding-sm: 12px;
+  --ds-card-padding-md: 16px;
+  --ds-card-padding-lg: 24px;
+  --ds-card-border-radius: var(--ds-radius-md);
+  --ds-card-border-width: 1px;
+  --ds-card-shadow: var(--ds-shadow-md);
+  
+  /* Table */
+  --ds-table-row-height: 40px;
+  --ds-table-header-height: 44px;
+  --ds-table-cell-padding-x: 12px;
+  --ds-table-cell-padding-y: 8px;
+  --ds-table-font-size: 13px;
+  --ds-table-border-color: var(--ds-border-color);
+  
+  /* Badge */
+  --ds-badge-height-sm: 20px;
+  --ds-badge-height-md: 24px;
+  --ds-badge-padding-x-sm: 6px;
+  --ds-badge-padding-x-md: 8px;
+  --ds-badge-font-size-sm: 10px;
+  --ds-badge-font-size-md: 12px;
+  --ds-badge-border-radius: var(--ds-radius-sm);
+  
+  /* Modal */
+  --ds-modal-backdrop: rgba(0, 0, 0, 0.85);
+  --ds-modal-border-radius: var(--ds-radius-lg);
+  --ds-modal-padding: var(--ds-spacing-6);
+  --ds-modal-max-width-sm: 400px;
+  --ds-modal-max-width-md: 600px;
+  --ds-modal-max-width-lg: 900px;
+  
+  /* Sidebar */
+  --ds-sidebar-width: 240px;
+  --ds-sidebar-item-height: 40px;
+  --ds-sidebar-item-padding-x: var(--ds-spacing-4);
+  --ds-sidebar-item-padding-y: var(--ds-spacing-2);
+  
+  /* Icon */
+  --ds-icon-xs: 12px;
+  --ds-icon-sm: 16px;
+  --ds-icon-md: 20px;
+  --ds-icon-lg: 24px;
+  --ds-icon-xl: 32px;
+
+  /* Chart containers */
+  --ds-chart-min-height: 500px;
+  --ds-chart-min-height-sm: 400px;
+  --ds-chart-min-height-xs: 300px;
+  --ds-chart-min-height-lg: 600px;
+  --ds-chart-container-padding: 0;
+  --ds-chart-border-radius: var(--ds-radius-lg);
+  --ds-chart-wrapper-height: 300px;
+  --ds-chart-wrapper-height-sm: 250px;
+
+  /* Aliases for --dex-* migration (same values, --ds-* names) */
+  --ds-spacing-xs: var(--ds-spacing-1);
+  --ds-spacing-sm: var(--ds-spacing-2);
+  --ds-spacing-md: var(--ds-spacing-3);
+  --ds-spacing-lg: var(--ds-spacing-4);
+  --ds-spacing-xl: var(--ds-spacing-6);
+  --ds-spacing-2xl: var(--ds-spacing-8);
+  --ds-spacing-3xl: var(--ds-spacing-12);
+  --ds-bg-primary: var(--ds-bg-base);
+  --ds-bg-secondary: var(--ds-bg-surface);
+  --ds-bg-tertiary: var(--ds-bg-elevated);
+  --ds-bg-quaternary: #000000;
+  --ds-border: var(--ds-border-color);
+  --ds-border-hover: var(--ds-border-color-light);
+  --ds-border-radius: var(--ds-radius-md);
+  --ds-border-radius-sm: var(--ds-radius-xs);
+  --ds-border-radius-lg: var(--ds-radius-lg);
+  --ds-border-radius-xl: var(--ds-radius-xl);
+  --ds-shadow: var(--ds-shadow-sm);
+  --ds-primary: var(--ds-color-primary);
+  --ds-primary-hover: var(--ds-border-color-light);
+  --ds-success: var(--ds-color-success);
+  --ds-error: var(--ds-color-error);
+  --ds-token-logo-xs: 16px;
+  --ds-token-logo-sm: 20px;
+  --ds-token-logo-md: 24px;
+  --ds-token-logo-selector: 30px; /* Header/token selector logo */
+  --ds-token-logo-lg: 32px;
+  --ds-token-logo-xl: 40px;
+  --ds-token-logo-2xl: 48px;
+}
+
+/* ============================================
+   UTILITY CLASSES - Base Components
+   ============================================ */
+
+/* Focus Visible (Accessibility) */
+*:focus-visible {
+  outline: var(--ds-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+/* Base Reset */
+.ds-reset {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ============================================
+   LAYOUT UTILITIES (Epic 9 - Deduplication)
+   ============================================ */
+
+.ds-flex-col {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.ds-flex-row {
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+}
+
+.ds-gap-1 { gap: var(--ds-spacing-1); }
+.ds-gap-2 { gap: var(--ds-spacing-2); }
+.ds-gap-3 { gap: var(--ds-spacing-3); }
+.ds-gap-4 { gap: var(--ds-spacing-4); }
+.ds-gap-6 { gap: var(--ds-spacing-6); }
+
+.ds-p-2 { padding: var(--ds-spacing-2); }
+.ds-p-3 { padding: var(--ds-spacing-3); }
+.ds-p-4 { padding: var(--ds-spacing-4); }
+.ds-p-6 { padding: var(--ds-spacing-6); }
+
+.ds-rounded-md { border-radius: var(--ds-radius-md); }
+.ds-rounded-lg { border-radius: var(--ds-radius-lg); }
+.ds-surface {
+  background: var(--ds-bg-surface);
+  border: var(--ds-border-width) solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+}

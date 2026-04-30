@@ -1,0 +1,303 @@
+/**
+ * 🎨 DEX Design System - Standardizat Binance/PancakeSwap Style
+ * 
+ * Design system global standardizat pentru BitSwapDEX:
+ * - Color palette (Binance/PancakeSwap inspired)
+ * - Typography
+ * - Spacing system
+ * - Component tokens
+ * - Token logo support
+ * 
+ * @module DesignSystem
+ */
+
+:root {
+  /* ============================================
+     COLOR SYSTEM - Binance/PancakeSwap Style
+     ============================================ */
+  
+  /* Primary Colors - White/Grey (Oxium-inspired) */
+  --dex-primary: #ffffff;
+  --dex-primary-dark: #e5e7eb;
+  --dex-primary-light: #f9fafb;
+  --dex-primary-gradient: linear-gradient(135deg, #ffffff 0%, #e5e7eb 100%);
+  
+  /* Secondary Colors - Grey Scale */
+  --dex-secondary: #9ca3af;
+  --dex-secondary-dark: #6b7280;
+  --dex-secondary-light: #d1d5db;
+  
+  /* Success/Error Colors (Trading) - Grey Scale */
+  --dex-success: #d1d5db;
+  --dex-success-dark: #9ca3af;
+  --dex-success-light: #e5e7eb;
+  --dex-success-bg: #000000;
+  --dex-success-border: rgba(255, 255, 255, 0.1);
+  
+  --dex-error: #9ca3af;
+  --dex-error-dark: #6b7280;
+  --dex-error-light: #d1d5db;
+  --dex-error-bg: #000000;
+  --dex-error-border: rgba(255, 255, 255, 0.1);
+  
+  --dex-warning: #9ca3af;
+  --dex-warning-dark: #6b7280;
+  --dex-warning-light: #d1d5db;
+  --dex-warning-bg: #000000;
+  --dex-warning-border: rgba(255, 255, 255, 0.1);
+  
+  --dex-info: #9ca3af;
+  --dex-info-dark: #6b7280;
+  --dex-info-light: #60a5fa;
+  --dex-info-bg: rgba(59, 130, 246, 0.1);
+  --dex-info-border: rgba(59, 130, 246, 0.3);
+  
+  /* ============================================
+     BACKGROUND COLORS - Dark Theme
+     ============================================ */
+  
+  /* Main Backgrounds - INVERTED (Background lighter, Cards pure black) */
+  --dex-bg-primary: #000000;        /* MANDATORY negru (docs/DEX_THEMES.md) */
+  --dex-bg-secondary: #000000;     /* Card backgrounds - PURE BLACK (Apple black) */
+  --dex-bg-tertiary: #000000;      /* Nested cards, inputs - PURE BLACK */
+  --dex-bg-hover: #000000;
+  --dex-bg-active: #000000;
+  
+  /* Overlay Backgrounds */
+  --dex-bg-overlay: rgba(0, 0, 0, 0.95);
+  --dex-bg-modal: rgba(0, 0, 0, 0.85);
+  
+  /* ============================================
+     TEXT COLORS
+     ============================================ */
+  
+  --dex-text-primary: #ffffff;
+  --dex-text-secondary: #8b9bb4;
+  --dex-text-tertiary: #6b7280;
+  --dex-text-disabled: #4b5563;
+  --dex-text-inverse: #0b0e23;
+  
+  /* Trading Colors */
+  --dex-text-buy: #d1d5db; /* Grey for buy */
+  --dex-text-sell: #9ca3af; /* Grey for sell */
+  --dex-text-neutral: #9ca3af;
+  
+  /* ============================================
+     BORDERS
+     ============================================ */
+  
+  --dex-border: #2a2d47;
+  --dex-border-light: #3a3d57;
+  --dex-border-dark: #1a1d35;
+  --dex-border-radius: 8px;
+  --dex-border-radius-sm: 4px;
+  --dex-border-radius-lg: 12px;
+  --dex-border-radius-xl: 16px;
+  --dex-border-radius-full: 9999px;
+  
+  /* ============================================
+     SHADOWS - Binance Style
+     ============================================ */
+  
+  --dex-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --dex-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
+  --dex-shadow-md: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
+  --dex-shadow-lg: 0 8px 16px 0 rgba(0, 0, 0, 0.5);
+  --dex-shadow-xl: 0 12px 24px 0 rgba(0, 0, 0, 0.6);
+  
+  /* Colored Shadows */
+  --dex-shadow-primary: 0 4px 12px rgba(79, 172, 254, 0.3);
+  --dex-shadow-success: 0 4px 12px rgba(34, 197, 94, 0.3);
+  --dex-shadow-error: 0 4px 12px rgba(239, 68, 68, 0.3);
+  
+  /* ============================================
+     SPACING SYSTEM
+     ============================================ */
+  
+  --dex-spacing-xs: 4px;
+  --dex-spacing-sm: 8px;
+  --dex-spacing-md: 12px;
+  --dex-spacing-lg: 16px;
+  --dex-spacing-xl: 24px;
+  --dex-spacing-2xl: 32px;
+  --dex-spacing-3xl: 48px;
+  
+  /* ============================================
+     TYPOGRAPHY
+     ============================================ */
+  
+  --dex-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  --dex-font-family-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Courier New', monospace;
+  
+  /* Font Sizes */
+  --dex-font-size-xs: 10px;
+  --dex-font-size-sm: 12px;
+  --dex-font-size-base: 14px;
+  --dex-font-size-md: 16px;
+  --dex-font-size-lg: 18px;
+  --dex-font-size-xl: 20px;
+  --dex-font-size-2xl: 24px;
+  --dex-font-size-3xl: 32px;
+  --dex-font-size-4xl: 40px;
+  
+  /* Font Weights */
+  --dex-font-weight-normal: 400;
+  --dex-font-weight-medium: 500;
+  --dex-font-weight-semibold: 600;
+  --dex-font-weight-bold: 700;
+  
+  /* Line Heights */
+  --dex-line-height-tight: 1.2;
+  --dex-line-height-normal: 1.5;
+  --dex-line-height-relaxed: 1.75;
+  
+  /* ============================================
+     TRANSITIONS
+     ============================================ */
+  
+  --dex-transition-fast: 150ms ease-in-out;
+  --dex-transition-base: 200ms ease-in-out;
+  --dex-transition-slow: 300ms ease-in-out;
+  
+  /* ============================================
+     Z-INDEX LAYERS
+     ============================================ */
+  
+  --dex-z-base: 1;
+  --dex-z-dropdown: 1000;
+  --dex-z-sticky: 1020;
+  --dex-z-fixed: 1030;
+  --dex-z-modal-backdrop: 1040;
+  --dex-z-modal: 1050;
+  --dex-z-popover: 1060;
+  --dex-z-tooltip: 1070;
+  --dex-z-toast: 1080;
+  
+  /* ============================================
+     TOKEN LOGO SIZES
+     ============================================ */
+  
+  --dex-token-logo-xs: 16px;
+  --dex-token-logo-sm: 20px;
+  --dex-token-logo-md: 24px;
+  --dex-token-logo-lg: 32px;
+  --dex-token-logo-xl: 40px;
+  --dex-token-logo-2xl: 48px;
+}
+
+/* ============================================
+   LIGHT THEME OVERRIDES (Optional)
+   ============================================ */
+
+[data-theme="light"] {
+  /* Background Colors - Light Theme */
+  --dex-bg-primary: #ffffff;
+  --dex-bg-secondary: #f9fafb;
+  --dex-bg-tertiary: #f3f4f6;
+  --dex-bg-hover: #e5e7eb;
+  --dex-bg-active: #d1d5db;
+  --dex-bg-overlay: rgba(0, 0, 0, 0.5);
+  --dex-bg-modal: rgba(0, 0, 0, 0.4);
+  
+  /* Text Colors - Light Theme */
+  --dex-text-primary: #111827;
+  --dex-text-secondary: #6b7280;
+  --dex-text-tertiary: #9ca3af;
+  --dex-text-disabled: #d1d5db;
+  --dex-text-inverse: #ffffff;
+  
+  /* Trading Text Colors - Light Theme (with proper colors) */
+  --dex-text-buy: #059669;
+  --dex-text-sell: #dc2626;
+  --dex-text-neutral: #6b7280;
+  
+  /* Border Colors - Light Theme */
+  --dex-border: #e5e7eb;
+  --dex-border-light: #d1d5db;
+  --dex-border-dark: #9ca3af;
+  
+  /* Shadows - Light Theme (softer) */
+  --dex-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --dex-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+  --dex-shadow-md: 0 4px 8px 0 rgba(0, 0, 0, 0.1);
+  --dex-shadow-lg: 0 8px 16px 0 rgba(0, 0, 0, 0.12);
+  --dex-shadow-xl: 0 12px 24px 0 rgba(0, 0, 0, 0.15);
+  
+  /* Colored Shadows - Light Theme */
+  --dex-shadow-primary: 0 4px 12px rgba(99, 102, 241, 0.2);
+  --dex-shadow-success: 0 4px 12px rgba(5, 150, 105, 0.2);
+  --dex-shadow-error: 0 4px 12px rgba(220, 38, 38, 0.2);
+  
+  /* Primary Colors - Light Theme */
+  --dex-primary: #6366f1;
+  --dex-primary-dark: #4f46e5;
+  --dex-primary-light: #818cf8;
+  --dex-primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  
+  /* Secondary Colors - Light Theme */
+  --dex-secondary: #6b7280;
+  --dex-secondary-dark: #4b5563;
+  --dex-secondary-light: #9ca3af;
+  
+  /* Success/Error Colors - Light Theme (proper colors) */
+  --dex-success: #059669;
+  --dex-success-dark: #047857;
+  --dex-success-light: #10b981;
+  --dex-success-bg: rgba(16, 185, 129, 0.1);
+  --dex-success-border: rgba(16, 185, 129, 0.2);
+  
+  --dex-error: #dc2626;
+  --dex-error-dark: #b91c1c;
+  --dex-error-light: #ef4444;
+  --dex-error-bg: rgba(239, 68, 68, 0.1);
+  --dex-error-border: rgba(239, 68, 68, 0.2);
+  
+  --dex-warning: #d97706;
+  --dex-warning-dark: #b45309;
+  --dex-warning-light: #f59e0b;
+  --dex-warning-bg: rgba(245, 158, 11, 0.1);
+  --dex-warning-border: rgba(245, 158, 11, 0.2);
+  
+  --dex-info: #2563eb;
+  --dex-info-dark: #1d4ed8;
+  --dex-info-light: #3b82f6;
+  --dex-info-bg: rgba(59, 130, 246, 0.1);
+  --dex-info-border: rgba(59, 130, 246, 0.2);
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+.dex-container {
+  background: var(--dex-bg-primary);
+  color: var(--dex-text-primary);
+  min-height: 100vh;
+}
+
+.dex-card {
+  background: var(--dex-bg-secondary);
+  border: 1px solid var(--dex-border);
+  border-radius: var(--dex-border-radius);
+  padding: var(--dex-spacing-lg);
+  box-shadow: var(--dex-shadow);
+  transition: all var(--dex-transition-base);
+}
+
+.dex-card:hover {
+  border-color: var(--dex-border-light);
+  box-shadow: var(--dex-shadow-md);
+}
+
+.dex-text-buy {
+  color: var(--dex-text-buy);
+}
+
+.dex-text-sell {
+  color: var(--dex-text-sell);
+}
+
+.dex-text-neutral {
+  color: var(--dex-text-neutral);
+}

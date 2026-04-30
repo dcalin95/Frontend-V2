@@ -1,0 +1,158 @@
+/**
+ * 🎨 Input / Select / Dropdown Styles - Design System v1 + Sonnet
+ * 
+ * Dimensions/spacing/radius: --ds-* (design-system-v1.css)
+ * Colors: Sonnet tokens (--text, --surface, --border, etc.)
+ */
+
+.ui-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-2, var(--ds-spacing-2));
+}
+
+.ui-input-full {
+  width: 100%;
+}
+
+/* Label */
+.ui-input-label {
+  font-size: var(--ds-font-size-base, var(--ds-font-size-base));
+  font-weight: var(--ds-font-weight-medium, var(--ds-font-weight-medium));
+  color: var(--ds-text-primary);
+  line-height: var(--ds-line-height-normal, var(--ds-line-height-normal));
+}
+
+.ui-input-required {
+  color: var(--ds-color-error);
+  margin-left: var(--ds-spacing-1, var(--ds-spacing-1));
+}
+
+/* Container */
+.ui-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Input Field */
+.ui-input,
+.ui-select {
+  height: var(--ds-input-height-md, var(--ds-input-height-md));
+  padding: 0 var(--ds-input-padding-x, var(--ds-spacing-3));
+  font-size: var(--ds-input-font-size, var(--ds-font-size-base));
+  font-weight: var(--ds-font-weight-medium, var(--ds-font-weight-medium));
+  line-height: var(--ds-line-height-normal, var(--ds-line-height-normal));
+  color: var(--ds-text-primary);
+  background-color: var(--ds-bg-surface);
+  border: var(--ds-input-border-width, 1px) solid var(--ds-border-color);
+  border-radius: var(--ds-input-border-radius, var(--ds-radius-md, var(--ds-radius-md)));
+  outline: none;
+  transition: border-color var(--ds-transition-fast, 150ms);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.ui-input::placeholder {
+  color: var(--ds-text-tertiary);
+  opacity: 0.7; /* 0.7 */
+}
+
+/* States */
+.ui-input:hover:not(:disabled),
+.ui-select:hover:not(:disabled) {
+  border-color: var(--ds-bg-hover);
+}
+
+.ui-input:focus,
+.ui-select:focus {
+  border-color: var(--ds-accent);
+}
+
+.ui-input:focus-visible,
+.ui-select:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring, var(--ds-focus-ring));
+  outline-offset: var(--ds-focus-ring-offset, 2px);
+}
+
+/* Error state (discreet) */
+.ui-input-error .ui-input,
+.ui-input-field-error {
+  border-color: var(--ds-color-error);
+}
+
+.ui-input-error .ui-input:focus {
+  border-color: var(--ds-color-error);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2); /* Danger ring */
+}
+
+/* Disabled */
+.ui-input:disabled,
+.ui-select:disabled {
+  opacity: 0.55; /* Sonnet disabled */
+  cursor: not-allowed;
+  background-color: var(--ds-bg-hover);
+}
+
+/* Icons */
+.ui-input-icon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ds-text-tertiary);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ui-input-icon-left {
+  left: var(--ds-input-padding-x, var(--ds-spacing-3));
+}
+
+.ui-input-icon-right {
+  right: var(--ds-input-padding-x, var(--ds-spacing-3));
+}
+
+.ui-input-with-icon-left {
+  padding-left: calc(var(--ds-input-padding-x, var(--ds-spacing-3)) + 24px);
+}
+
+.ui-input-with-icon-right {
+  padding-right: calc(var(--ds-input-padding-x, var(--ds-spacing-3)) + 24px);
+}
+
+/* Error Message */
+.ui-input-error-message {
+  font-size: var(--ds-table-font-size, 13px);
+  color: var(--ds-color-error);
+  line-height: var(--ds-line-height-normal);
+  margin-top: var(--ds-spacing-1, var(--ds-spacing-1));
+}
+
+/* Helper Text */
+.ui-input-helper {
+  font-size: var(--ds-table-font-size, 13px);
+  color: var(--ds-text-tertiary);
+  line-height: var(--ds-line-height-normal);
+  margin-top: var(--ds-spacing-1, var(--ds-spacing-1));
+}
+
+/* Number Input - Remove spinners */
+.ui-input[type="number"]::-webkit-inner-spin-button,
+.ui-input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.ui-input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ui-input,
+  .ui-select {
+    font-size: var(--ds-font-size-md, 16px); /* Prevent zoom on iOS */
+  }
+}

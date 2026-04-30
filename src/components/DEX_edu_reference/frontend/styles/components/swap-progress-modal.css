@@ -1,0 +1,396 @@
+/* Swap Progress Modal Styles */
+
+.swap-progress-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--ds-modal-backdrop);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--ds-z-modal-backdrop);
+  backdrop-filter: blur(4px);
+}
+
+.swap-progress-modal {
+  background: var(--ds-bg-surface);
+  border: var(--ds-border-width) solid var(--ds-border-color);
+  border-radius: var(--ds-modal-border-radius);
+  box-shadow: var(--ds-shadow-xl);
+  max-width: 480px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.swap-progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ds-spacing-5) var(--ds-spacing-6) var(--ds-spacing-4);
+  border-bottom: var(--ds-border-width) solid var(--ds-border-color);
+}
+
+.swap-progress-header h3 {
+  font-size: var(--ds-font-size-lg);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  margin: 0;
+}
+
+.swap-progress-close {
+  background: none;
+  border: none;
+  color: var(--ds-text-secondary);
+  cursor: pointer;
+  padding: var(--ds-spacing-1);
+  border-radius: var(--ds-radius-xs);
+  transition: all var(--ds-transition-base);
+}
+
+.swap-progress-close:hover {
+  background: var(--ds-bg-hover);
+  color: var(--ds-text-primary);
+}
+
+.swap-progress-close:focus-visible {
+  outline: var(--ds-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.swap-progress-content {
+  padding: var(--ds-spacing-5) var(--ds-spacing-6) var(--ds-spacing-6);
+}
+
+/* Swap Details */
+.swap-progress-details {
+  background: var(--ds-bg-elevated);
+  border-radius: var(--ds-radius-lg);
+  padding: var(--ds-spacing-4);
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.swap-progress-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--ds-spacing-2) 0;
+  font-size: var(--ds-font-size-base);
+}
+
+.swap-progress-detail-row span:first-child {
+  color: var(--ds-text-secondary);
+  font-weight: var(--ds-font-weight-medium);
+}
+
+.swap-progress-detail-value {
+  color: var(--ds-text-primary);
+  font-weight: var(--ds-font-weight-semibold);
+  text-align: right;
+}
+
+/* Progress Steps */
+.swap-progress-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-4);
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.swap-progress-step {
+  display: flex;
+  gap: var(--ds-spacing-3);
+}
+
+.swap-progress-step-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.swap-progress-step-number {
+  width: var(--ds-icon-xl);
+  height: var(--ds-icon-xl);
+  border-radius: var(--ds-radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--ds-border-width-thick) solid var(--ds-border-color);
+  background: var(--ds-bg-tertiary);
+  transition: all var(--ds-transition-slow);
+  flex-shrink: 0;
+}
+
+.swap-progress-step.completed .swap-progress-step-number {
+  border-color: var(--ds-color-success);
+  background: var(--ds-color-success);
+}
+
+.swap-progress-step.loading .swap-progress-step-number {
+  border-color: var(--ds-border-color-focus);
+  background: var(--ds-border-color-focus);
+}
+
+.swap-progress-step-line {
+  width: var(--ds-border-width-thick);
+  height: 20px;
+  background: var(--ds-border-color);
+  margin-top: var(--ds-spacing-1);
+  transition: all var(--ds-transition-slow);
+}
+
+.swap-progress-step-line.completed {
+  background: var(--ds-color-success);
+}
+
+.swap-progress-step-content {
+  flex: 1;
+  padding-top: var(--ds-spacing-1);
+}
+
+.swap-progress-step-label {
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  margin-bottom: var(--ds-spacing-1);
+}
+
+.swap-progress-step.pending .swap-progress-step-label {
+  color: var(--ds-text-secondary);
+}
+
+.swap-progress-step-sublabel {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  font-style: italic;
+}
+
+/* Icons */
+.swap-progress-step-icon {
+  color: #ffffff;
+}
+
+.swap-progress-step-icon.loading {
+  animation: spin 1s linear infinite;
+}
+
+.swap-progress-step-icon.completed {
+  color: #ffffff;
+}
+
+.swap-progress-step-icon.pending {
+  color: var(--ds-text-tertiary);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Success State */
+.swap-progress-success {
+  text-align: center;
+  padding: var(--ds-spacing-5);
+  background: var(--ds-color-success-bg);
+  border-radius: var(--ds-radius-lg);
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.swap-progress-success-icon {
+  color: var(--ds-color-success);
+  margin-bottom: var(--ds-spacing-3);
+}
+
+.swap-progress-success h4 {
+  font-size: var(--ds-font-size-lg);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  margin: 0 0 var(--ds-spacing-2) 0;
+}
+
+.swap-progress-success p {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-secondary);
+  margin: 0 0 var(--ds-spacing-4) 0;
+}
+
+.swap-progress-bscscan-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3) var(--ds-spacing-4);
+  background: var(--ds-border-color-focus);
+  color: var(--ds-text-primary);
+  text-decoration: none;
+  border-radius: var(--ds-radius-md);
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-semibold);
+  transition: all var(--ds-transition-base);
+}
+
+.swap-progress-bscscan-link:hover {
+  background: var(--ds-border-color-light);
+}
+
+.swap-progress-bscscan-link:focus-visible {
+  outline: var(--ds-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.swap-progress-tx-hash {
+  font-family: var(--ds-font-family-mono);
+  font-size: var(--ds-font-size-sm);
+  opacity: 0.8;
+}
+
+/* Error State */
+.swap-progress-error {
+  text-align: center;
+  padding: var(--ds-spacing-5);
+  background: var(--ds-color-error-bg);
+  border-radius: var(--ds-radius-lg);
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.swap-progress-error-icon {
+  color: var(--ds-color-error);
+  margin-bottom: var(--ds-spacing-3);
+}
+
+.swap-progress-error h4 {
+  font-size: var(--ds-font-size-lg);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  margin: 0 0 var(--ds-spacing-3) 0;
+}
+
+.swap-progress-error-message {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-secondary);
+  line-height: var(--ds-line-height-normal);
+  background: var(--ds-bg-tertiary);
+  padding: var(--ds-spacing-3);
+  border-radius: var(--ds-radius-md);
+  border-left: 3px solid var(--ds-color-error);
+  text-align: left;
+  margin-bottom: var(--ds-spacing-4);
+}
+
+.swap-progress-error-help {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ds-spacing-2);
+  background: var(--ds-bg-quaternary);
+  padding: var(--ds-spacing-3);
+  border-radius: var(--ds-radius-md);
+  text-align: left;
+  font-size: var(--ds-table-font-size);
+}
+
+.swap-progress-error-help span {
+  color: var(--ds-text-secondary);
+  line-height: var(--ds-line-height-normal);
+}
+
+.swap-progress-error-help strong {
+  color: var(--ds-text-primary);
+}
+
+.swap-progress-error-rpc {
+  flex-wrap: wrap;
+}
+
+.swap-progress-error-rpc-intro {
+  margin: 0 0 0.5rem 0;
+  width: 100%;
+  font-size: var(--ds-font-size-sm, 0.875rem);
+  color: var(--ds-text-secondary, #6b7280);
+}
+
+.swap-progress-copy-rpc {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-spacing-1);
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  background: var(--ds-border-color-focus);
+  color: var(--ds-text-primary);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  font-size: var(--ds-font-size-sm);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.swap-progress-copy-rpc:hover {
+  background: var(--ds-bg-hover);
+}
+
+/* Action Buttons */
+.swap-progress-actions {
+  display: flex;
+  gap: var(--ds-spacing-3);
+  justify-content: flex-end;
+}
+
+.swap-progress-btn {
+  padding: var(--ds-spacing-3) var(--ds-spacing-5);
+  border-radius: var(--ds-radius-md);
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--ds-transition-base);
+  border: none;
+  min-width: 100px;
+}
+
+.swap-progress-btn:focus-visible {
+  outline: var(--ds-focus-ring);
+  outline-offset: var(--ds-focus-ring-offset);
+}
+
+.swap-progress-btn.primary {
+  background: var(--ds-border-color-focus);
+  color: var(--ds-text-primary);
+}
+
+.swap-progress-btn.primary:hover {
+  background: var(--ds-border-color-light);
+}
+
+.swap-progress-btn.secondary {
+  background: transparent;
+  color: var(--ds-text-secondary);
+  border: var(--ds-border-width) solid var(--ds-border-color);
+}
+
+.swap-progress-btn.secondary:hover {
+  background: var(--ds-bg-hover);
+  color: var(--ds-text-primary);
+  border-color: var(--ds-border-color-light);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .swap-progress-modal {
+    max-width: 95%;
+    margin: var(--ds-spacing-5);
+  }
+  
+  .swap-progress-header,
+  .swap-progress-content {
+    padding-left: var(--ds-spacing-4);
+    padding-right: var(--ds-spacing-4);
+  }
+  
+  .swap-progress-actions {
+    flex-direction: column;
+  }
+  
+  .swap-progress-btn {
+    width: 100%;
+  }
+}

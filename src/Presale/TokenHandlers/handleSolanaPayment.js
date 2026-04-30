@@ -11,6 +11,7 @@ import {
   createTransferInstruction,
   TOKEN_PROGRAM_ID
 } from "@solana/spl-token";
+import { resolvePresaleBackendUrl } from "../presaleApi";
 
 // Mainnet info
 const SOLANA_RPC = process.env.REACT_APP_SOL_RPC_HTTP || "https://api.mainnet-beta.solana.com";
@@ -80,7 +81,7 @@ const handleUSDCOnSolanaPayment = async ({
     console.log("✅ USDC Transfer TX:", sig);
 
     // 🔁 Trimite la backend (INCLUDE USD FOR LOYALTY BONUS)
-    const backendURL = process.env.REACT_APP_BACKEND_URL || "http://localhost:4000";
+    const backendURL = await resolvePresaleBackendUrl();
     
     // 🎁 USDC is stablecoin, so amount IS the USD value  
     const usdInvested = amount; // USDC = 1:1 USD

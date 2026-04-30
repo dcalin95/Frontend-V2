@@ -1,0 +1,72 @@
+/* Percentage Buttons - Oxium Style (NO slider track) */
+.swap-panel-percentage-buttons,
+.limit-order-panel-percentage-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 12px 0 8px 0;
+  padding: 0;
+}
+
+.swap-panel-percentage-btn,
+.limit-order-panel-percentage-btn {
+  flex: 1;
+  background: transparent;
+  border: 1px solid var(--ds-border-color);
+  border-radius: 6px;
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-table-font-size);
+  font-weight: 600;
+  padding: 6px 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  text-align: center;
+  min-width: 0;
+}
+
+.swap-panel-percentage-btn:hover,
+.limit-order-panel-percentage-btn:hover {
+  background: var(--ds-bg-hover);
+  border-color: var(--ds-accent);
+  color: var(--ds-text-primary);
+}
+
+.swap-panel-percentage-btn.active,
+.limit-order-panel-percentage-btn.active {
+  background: rgba(var(--ds-accent-rgb), 0.55);
+  border-color: var(--ds-accent);
+  color: #fff;
+  font-weight: 800;
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 255, 255, 0.2),
+    0 0 0 2px var(--ds-accent),
+    0 0 16px rgba(var(--ds-accent-rgb), 0.45);
+}
+
+.swap-panel-percentage-btn.active:hover,
+.limit-order-panel-percentage-btn.active:hover {
+  background: rgba(var(--ds-accent-rgb), 0.62);
+  border-color: var(--ds-accent);
+  color: #fff;
+}
+
+.swap-panel-percentage-btn:active,
+.limit-order-panel-percentage-btn:active {
+  transform: scale(0.95);
+}
+
+/* Responsive - mai mici pe mobile */
+@media (max-width: 480px) {
+  .swap-panel-percentage-buttons,
+  .limit-order-panel-percentage-buttons {
+    gap: 6px;
+  }
+  
+  .swap-panel-percentage-btn,
+  .limit-order-panel-percentage-btn {
+    font-size: 12px;
+    padding: 5px 6px;
+  }
+}

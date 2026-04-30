@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import CountUp from "react-countup";
 import "./BoostedBanner.css";
+import { getPresaleCurrentUrl, parseLaunchPowerUsd } from "../Presale/presaleApi";
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
-
+/** Citește suma cumulativă din /api/presale/current (0 este valid — nu folosi truthiness pe totalBoosted). */
 const BoostedBanner = () => {
   const [boosted, setBoosted] = useState(null);
   const [showWowEffect, setShowWowEffect] = useState(false);
@@ -406,12 +406,19 @@ const BoostedBanner = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/presale/current`);
-        const data = await res.json();
+        const res = await fetch(await getPresaleCurrentUrl(), { cache: "no-store" });
+        const data = await res.json().catch(() => ({}));
 
-        if (data.totalBoosted) {
-          const newBoosted = data.totalBoosted;
+        if (!res.ok) {
+          if (res.status === 404) {
+            setBoosted((prev) => (prev === null ? 0 : prev));
+          }
+          console.warn("[BoostedBanner] presale/current failed:", res.status, data?.message || data?.error);
+          return;
+        }
 
+        const newBoosted = parseLaunchPowerUsd(data);
+        if (Number.isFinite(newBoosted)) {
           if (prevBoosted.current !== null && newBoosted > prevBoosted.current) {
             const increaseAmount = newBoosted - prevBoosted.current;
             
@@ -447,6 +454,8 @@ const BoostedBanner = () => {
                forceUserInteraction();
              }, 3000); // Așteaptă 3 secunde după încărcare
            }
+        } else {
+          console.warn("[BoostedBanner] Răspuns fără totalBoosted/totalRaised numeric:", data);
         }
       } catch (err) {
         console.error("❌ Failed to fetch boost data:", err);

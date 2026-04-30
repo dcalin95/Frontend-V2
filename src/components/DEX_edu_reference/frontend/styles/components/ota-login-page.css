@@ -1,0 +1,460 @@
+/**
+ * OTA Login Page Styles
+ * Design tokens: --ds-* (spacing, radius, font), --primary, --bg
+ */
+
+.ota-login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ds-spacing-6);
+  background: var(--bg, var(--ds-bg-base, #000000));
+}
+
+.ota-login-container {
+  width: 100%;
+  max-width: 440px;
+  padding: var(--ds-spacing-6);
+  background: var(--ds-bg-surface);
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid var(--ds-border-color);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+}
+
+.ota-login-header {
+  text-align: center;
+  margin-bottom: var(--ds-spacing-6);
+}
+
+.ota-login-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-3);
+  font-size: var(--ds-font-size-xl);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  margin: 0 0 var(--ds-spacing-2) 0;
+}
+
+.ota-login-title-logo {
+  flex-shrink: 0;
+}
+
+.ota-login-subtitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2);
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-secondary);
+  margin: 0;
+}
+
+.ota-login-subtitle-logo {
+  flex-shrink: 0;
+}
+
+.ota-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-4);
+}
+
+.ota-login-error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3);
+  background: var(--ds-bg-error-subtle, rgba(239, 68, 68, 0.1));
+  border: 1px solid var(--ds-border-error, rgba(239, 68, 68, 0.35));
+  border-radius: var(--ds-radius-md);
+  color: var(--ds-text-error, #ef4444);
+  font-size: var(--ds-font-size-sm);
+}
+
+.ota-login-error:focus-within {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ds-border-error, rgba(239, 68, 68, 0.3));
+}
+
+.ota-login-error-row {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+}
+
+.ota-login-error-forgot {
+  margin-top: var(--ds-spacing-1);
+}
+
+.ota-login-error-forgot a {
+  color: var(--ds-border-color-focus, #3b82f6);
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.ota-login-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-2);
+}
+
+.ota-login-label {
+  font-size: var(--ds-font-size-base);
+  font-weight: 500;
+  color: var(--ds-text-primary);
+}
+
+.ota-login-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ota-login-input-icon {
+  position: absolute;
+  left: var(--ds-spacing-3);
+  color: var(--ds-text-secondary);
+  pointer-events: none;
+}
+
+.ota-login-input {
+  width: 100%;
+  padding: var(--ds-spacing-3) var(--ds-spacing-3) var(--ds-spacing-3) calc(var(--ds-spacing-3) * 2 + 20px);
+  background: var(--ds-bg-elevated);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-base);
+  transition: all 0.2s ease;
+}
+
+.ota-login-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.ota-login-input:focus-visible {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--ds-border-focus, rgba(59, 130, 246, 0.25));
+}
+
+.ota-login-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ota-login-form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ota-login-form-hint {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-tertiary);
+  margin: 4px 0 0;
+}
+
+.unified-auth-phone-back {
+  display: block;
+  margin-top: var(--ds-spacing-2);
+  background: none;
+  border: none;
+  color: var(--ds-text-tertiary);
+  font-size: var(--ds-font-size-sm);
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none;
+}
+
+.unified-auth-phone-back:hover:not(:disabled) {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.ota-login-forgot-link {
+  font-size: var(--ds-font-size-sm);
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.ota-login-forgot-link:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
+}
+
+.ota-login-submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3) var(--ds-spacing-4);
+  background: var(--primary);
+  border: none;
+  border-radius: var(--ds-radius-md);
+  color: white;
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ota-login-submit-btn:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.ota-login-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ota-login-footer {
+  margin-top: var(--ds-spacing-6);
+  text-align: center;
+}
+
+.ota-login-footer-text {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-secondary);
+  margin: 0;
+}
+
+.ota-login-register-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.ota-login-register-link:hover {
+  color: var(--primary-hover, #2563eb);
+  text-decoration: underline;
+}
+
+.ota-login-register-link:focus-visible {
+  outline: none;
+  border-radius: var(--ds-radius-sm);
+  box-shadow: 0 0 0 2px var(--primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ota-login-page {
+    padding: var(--ds-spacing-4);
+  }
+
+  .ota-login-container {
+    padding: var(--ds-spacing-6);
+  }
+
+  .ota-login-title {
+    font-size: var(--ds-font-size-md);
+  }
+}
+
+/* ========== Unified Auth Page (wallet + email + register + OAuth) ========== */
+.unified-auth-page .ota-login-container {
+  max-width: 480px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.unified-auth-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: var(--ds-spacing-4);
+  border-bottom: 1px solid var(--ds-border-color);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.unified-auth-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.unified-auth-tab {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3) var(--ds-spacing-2);
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.15s ease;
+}
+
+.unified-auth-tab:hover {
+  color: var(--ds-text-primary);
+  background: var(--ds-bg-elevated);
+}
+
+.unified-auth-tab.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.unified-auth-tab:focus-visible {
+  outline: none;
+  background: var(--ds-bg-elevated);
+  box-shadow: inset 0 0 0 2px var(--primary);
+}
+
+.unified-auth-panel {
+  margin-top: var(--ds-spacing-2);
+  margin-bottom: var(--ds-spacing-4);
+  min-height: 120px;
+}
+
+.unified-auth-hint {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  margin: 0 0 var(--ds-spacing-4) 0;
+  line-height: 1.45;
+}
+
+.unified-auth-loading {
+  margin-bottom: var(--ds-spacing-4);
+  display: flex;
+  justify-content: center;
+}
+
+.unified-auth-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-3);
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  margin: var(--ds-spacing-4) 0 var(--ds-spacing-3) 0;
+}
+
+.unified-auth-divider::before,
+.unified-auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--ds-border-color);
+}
+
+.unified-auth-oauth {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-spacing-2);
+  justify-content: center;
+  margin-bottom: var(--ds-spacing-4);
+}
+
+.unified-auth-oauth-btn {
+  flex: 1 1 120px;
+  min-width: 0;
+  padding: var(--ds-spacing-3) var(--ds-spacing-4);
+  background: var(--ds-bg-elevated);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.unified-auth-oauth-btn:hover {
+  background: var(--ds-bg-surface);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.unified-auth-oauth-btn:focus-visible {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--ds-border-focus, rgba(59, 130, 246, 0.35));
+}
+
+.unified-auth-quick-toggle {
+  display: block;
+  width: 100%;
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  background: transparent;
+  border: none;
+  border-radius: var(--ds-radius-sm);
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-sm);
+  cursor: pointer;
+  text-decoration: underline;
+  margin-bottom: var(--ds-spacing-2);
+  transition: color 0.2s ease, background 0.15s ease;
+}
+
+.unified-auth-quick-toggle:hover {
+  color: var(--primary);
+}
+
+.unified-auth-quick-toggle:focus-visible {
+  outline: none;
+  background: var(--ds-bg-elevated);
+  box-shadow: 0 0 0 2px var(--primary);
+}
+
+.unified-auth-quick-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-3);
+  margin-bottom: var(--ds-spacing-4);
+  padding: var(--ds-spacing-4);
+  background: var(--ds-bg-elevated);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+}
+
+.unified-auth-quick-form .ota-login-input {
+  padding-left: var(--ds-spacing-3);
+}
+
+.unified-auth-container .ota-login-register-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  padding: var(--ds-spacing-1) var(--ds-spacing-2);
+  border-radius: var(--ds-radius-sm);
+}
+
+.unified-auth-container .ota-login-register-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--primary);
+}
+
+/* Unified: error/success above tabs optional – keep spacing consistent */
+.unified-auth-page .ota-login-error,
+.unified-auth-page .ota-register-success {
+  margin-bottom: var(--ds-spacing-3);
+}
+
+/* Responsive: unified auth */
+@media (max-width: 480px) {
+  .unified-auth-page .ota-login-container {
+    padding: var(--ds-spacing-4);
+    margin: var(--ds-spacing-2);
+  }
+
+  .unified-auth-tab {
+    padding: var(--ds-spacing-2) var(--ds-spacing-1);
+    font-size: 0.8125rem;
+  }
+
+  .unified-auth-oauth-btn {
+    flex: 1 1 100%;
+  }
+
+  }

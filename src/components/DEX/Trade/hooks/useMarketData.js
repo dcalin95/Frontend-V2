@@ -2,9 +2,12 @@
  * 📊 useMarketData Hook
  * 
  * Hook pentru market data (24h stats)
+ * DEV MODE – Uses CoinGecko API (browser-friendly), will be replaced by backend
+ * NOTE: Binance API is NOT browser-safe (CORS) - used only behind backend/proxy
  */
 
 import { useState, useEffect } from 'react';
+import devMarketDataService from '../../services/devMarketDataService';
 
 const useMarketData = (tokenIn, tokenOut) => {
   const [marketData, setMarketData] = useState(null);
@@ -21,23 +24,14 @@ const useMarketData = (tokenIn, tokenOut) => {
     const fetchMarketData = async () => {
       setLoading(true);
       try {
-        // TODO: Replace with real API call
-        // const response = await marketDataService.getMarketData(tokenIn, tokenOut);
-        
-        // Mock data
-        const mockData = {
-          price: 0.123,
-          change24h: -0.0005,
-          changePercent24h: -0.41,
-          volume24h: 1087413.58,
-          high24h: 0.13,
-          low24h: 0.12
-        };
-
-        setMarketData(mockData);
+        // DEV MODE – External API, will be replaced by backend
+        const data = await devMarketDataService.getMarketData(tokenIn, tokenOut);
+        setMarketData(data);
         setError(null);
       } catch (err) {
+        console.error('DEV MODE – Market data fetch error:', err);
         setError(err.message);
+        // Don't set marketData to null on error, keep last valid data
       } finally {
         setLoading(false);
       }
@@ -45,10 +39,32 @@ const useMarketData = (tokenIn, tokenOut) => {
 
     fetchMarketData();
 
-    // Poll for updates every 5 seconds
-    const interval = setInterval(fetchMarketData, 5000);
+    // Poll for updates every 5 seconds (DEV MODE)
+    // Pause polling when tab is hidden to reduce unnecessary requests
+    let interval;
+    const startPolling = () => {
+      interval = setInterval(() => {
+        if (document.visibilityState === 'visible') {
+          fetchMarketData();
+        }
+      }, 5000);
+    };
+    
+    startPolling();
+    
+    // Pause/resume based on visibility
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchMarketData(); // Immediate update when tab becomes visible
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    return () => clearInterval(interval);
+    return () => {
+      if (interval) clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, [tokenIn, tokenOut]);
 
   return { marketData, loading, error };

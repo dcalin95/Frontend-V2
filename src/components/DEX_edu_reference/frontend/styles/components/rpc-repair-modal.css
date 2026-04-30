@@ -1,0 +1,155 @@
+/* RpcRepairModal – BSC RPC misconfigured (Invalid RPC URL) */
+
+.rpc-repair-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--ds-modal-backdrop, rgba(0, 0, 0, 0.5));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--ds-z-modal-critical-plus);
+  backdrop-filter: blur(4px);
+}
+
+.rpc-repair-modal {
+  background: var(--ds-bg-surface, #fff);
+  border: var(--ds-border-width, 1px) solid var(--ds-border-color, #e5e7eb);
+  border-radius: var(--ds-modal-border-radius, 12px);
+  box-shadow: var(--ds-shadow-xl, 0 20px 25px -5px rgba(0, 0, 0, 0.1));
+  max-width: 440px;
+  width: 90%;
+}
+
+.rpc-repair-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ds-spacing-5, 1.25rem) var(--ds-spacing-6, 1.5rem) var(--ds-spacing-4, 1rem);
+  border-bottom: 1px solid var(--ds-border-color, #e5e7eb);
+}
+
+.rpc-repair-header h3 {
+  font-size: var(--ds-font-size-lg, 1.125rem);
+  font-weight: 600;
+  color: var(--ds-text-primary, #111);
+  margin: 0;
+}
+
+.rpc-repair-close {
+  background: none;
+  border: none;
+  color: var(--ds-text-secondary, #6b7280);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+}
+
+.rpc-repair-close:hover {
+  background: var(--ds-bg-hover, #f3f4f6);
+  color: var(--ds-text-primary, #111);
+}
+
+.rpc-repair-body {
+  padding: var(--ds-spacing-6, 1.5rem);
+}
+
+.rpc-repair-message {
+  margin: 0 0 0.75rem;
+  color: var(--ds-text-primary, #111);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.rpc-repair-manual {
+  margin: 0 0 0.5rem;
+  font-size: 0.875rem;
+  color: var(--ds-text-secondary, #6b7280);
+  line-height: 1.4;
+}
+
+.rpc-repair-url {
+  display: block;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--ds-bg-secondary, #f3f4f6);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  word-break: break-all;
+  color: var(--ds-text-primary, #111);
+}
+
+.rpc-repair-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.rpc-repair-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  border-radius: var(--ds-radius-md, 8px);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.rpc-repair-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.rpc-repair-btn-primary {
+  background: var(--ds-bg-primary, #3b82f6);
+  color: #fff;
+}
+
+.rpc-repair-btn-primary:hover:not(:disabled) {
+  background: var(--ds-bg-primary-hover, #2563eb);
+}
+
+.rpc-repair-btn-secondary {
+  background: var(--ds-bg-secondary, #f3f4f6);
+  color: var(--ds-text-primary, #111);
+}
+
+.rpc-repair-btn-secondary:hover {
+  background: var(--ds-bg-hover, #e5e7eb);
+}
+
+.rpc-repair-btn-ghost {
+  background: transparent;
+  color: var(--ds-text-secondary, #6b7280);
+}
+
+.rpc-repair-btn-ghost:hover {
+  background: var(--ds-bg-hover, #f3f4f6);
+}
+
+.rpc-repair-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: rpc-repair-spin 0.8s linear infinite;
+}
+
+.rpc-repair-btn-secondary .rpc-repair-spinner,
+.rpc-repair-btn-ghost .rpc-repair-spinner {
+  border-color: rgba(0, 0, 0, 0.2);
+  border-top-color: #111;
+}
+
+@keyframes rpc-repair-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

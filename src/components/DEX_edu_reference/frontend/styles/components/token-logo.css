@@ -1,0 +1,129 @@
+/* Token Logo Component Styles - Binance/PancakeSwap Style */
+
+.token-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-weight: var(--ds-font-weight-semibold);
+  user-select: none;
+  overflow: hidden;
+  position: relative;
+}
+
+.token-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+}
+
+.token-logo .token-logo-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Sizes */
+.token-logo-xs {
+  width: var(--ds-token-logo-xs, 16px);
+  height: var(--ds-token-logo-xs, 16px);
+  font-size: var(--ds-font-size-xs);
+}
+
+.token-logo-sm {
+  width: var(--ds-token-logo-sm, 20px);
+  height: var(--ds-token-logo-sm, 20px);
+  font-size: var(--ds-font-size-sm);
+}
+
+.token-logo-md {
+  width: var(--ds-token-logo-md, 24px);
+  height: var(--ds-token-logo-md, 24px);
+  font-size: var(--ds-font-size-base);
+}
+
+.token-logo-24 {
+  width: 24px;
+  height: 24px;
+  font-size: var(--ds-font-size-base);
+}
+
+.token-logo-30 {
+  width: var(--ds-token-logo-selector, 30px);
+  height: var(--ds-token-logo-selector, 30px);
+  font-size: var(--ds-font-size-base);
+}
+
+.token-logo-lg {
+  width: var(--ds-token-logo-lg, 32px);
+  height: var(--ds-token-logo-lg, 32px);
+  font-size: var(--ds-font-size-lg);
+}
+
+.token-logo-xl {
+  width: var(--ds-token-logo-xl, 40px);
+  height: var(--ds-token-logo-xl, 40px);
+  font-size: 22px;
+}
+
+.token-logo-2xl {
+  width: var(--ds-token-logo-2xl, 48px);
+  height: var(--ds-token-logo-2xl, 48px);
+  font-size: var(--ds-font-size-3xl);
+}
+
+/* Border variant */
+.token-logo-border {
+  border: 2px solid var(--ds-border-color);
+}
+
+.token-logo-char {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  line-height: 1;
+}
+
+/* Double token logo (for pairs like BTC/USDT) */
+.token-logo-pair {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+}
+
+.token-logo-pair .token-logo:first-child {
+  z-index: 2;
+}
+
+.token-logo-pair .token-logo:last-child {
+  margin-left: -8px;
+  z-index: 1;
+}
+
+.token-logo-pair.token-logo-pair-sm .token-logo:last-child {
+  margin-left: -6px;
+}
+
+.token-logo-pair.token-logo-pair-md .token-logo:last-child {
+  margin-left: -8px;
+}
+
+.token-logo-pair.token-logo-pair-lg .token-logo:last-child {
+  margin-left: -10px;
+}
+
+/* Hover effect */
+.token-logo:hover {
+  transform: scale(1.05);
+  transition: transform var(--ds-transition-fast);
+}

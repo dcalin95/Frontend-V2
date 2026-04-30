@@ -1,0 +1,370 @@
+/**
+ * 📊 Trading History Modal Styles
+ * 
+ * Styles pentru TradingHistoryModal component
+ */
+
+/* Fullscreen: modal occupies most of viewport */
+.trading-history-modal.modal-content {
+  width: 95vw;
+  height: 95vh;
+  max-width: 95vw;
+  max-height: 95vh;
+}
+
+.trading-history-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-md);
+  max-height: calc(95vh - 140px);
+  min-height: 400px;
+  overflow: hidden;
+}
+
+.trading-history-wallet-hint {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-md);
+  flex-wrap: wrap;
+  padding: var(--ds-spacing-sm) var(--ds-spacing-md);
+  background: var(--ds-bg-tertiary);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+}
+
+.trading-history-wallet-hint span {
+  flex: 1;
+  min-width: 0;
+}
+
+.trading-history-modal-error {
+  padding: var(--ds-spacing-sm) var(--ds-spacing-md);
+  margin: var(--ds-spacing-sm) 0;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid var(--ds-status-error, #ef4444);
+  border-radius: var(--ds-radius-md);
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-status-error, #ef4444);
+}
+
+/* Tabs */
+.trading-history-tabs {
+  display: flex;
+  gap: var(--ds-spacing-xs);
+  border-bottom: 1px solid var(--ds-border);
+  padding-bottom: var(--ds-spacing-sm);
+}
+
+.trading-history-tab {
+  padding: var(--ds-spacing-sm) var(--ds-spacing-md);
+  border: none;
+  background: transparent;
+  color: var(--ds-text-secondary);
+  border-radius: var(--ds-border-radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  font-size: var(--ds-font-size-base);
+  position: relative;
+}
+
+.trading-history-tab:hover {
+  background: var(--ds-bg-hover);
+  color: var(--ds-text-primary);
+}
+
+.trading-history-tab.active {
+  color: var(--ds-primary);
+  background: var(--ds-bg-hover);
+}
+
+.trading-history-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -9px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--ds-primary);
+}
+
+/* Toolbar */
+.trading-history-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-spacing-md);
+  flex-wrap: wrap;
+}
+
+.trading-history-toolbar-left,
+.trading-history-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-sm);
+}
+
+.trading-history-toolbar-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--ds-border-color);
+}
+
+/* Filters Panel */
+.trading-history-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--ds-spacing-md);
+  padding: var(--ds-spacing-md);
+  background: var(--ds-bg-tertiary);
+  border-radius: var(--ds-border-radius);
+  border: 1px solid var(--ds-border);
+}
+
+.trading-history-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-xs);
+}
+
+.trading-history-filter-group label {
+  font-size: 0.75rem;
+  color: var(--ds-text-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.trading-history-filter-select {
+  padding: var(--ds-spacing-sm) var(--ds-spacing-md);
+  background: var(--ds-bg-secondary);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-border-radius-sm);
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-base);
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  outline: none;
+}
+
+.trading-history-filter-select:hover {
+  border-color: var(--ds-primary);
+}
+
+.trading-history-filter-select:focus {
+  border-color: var(--ds-primary);
+  box-shadow: 0 0 0 2px rgba(79, 172, 254, 0.1);
+}
+
+/* Results Count */
+.trading-history-results {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-secondary);
+  padding: var(--ds-spacing-sm) 0;
+}
+
+/* Table Container – scroll orizontal pe ecran mic (UI-1 responsive) */
+.trading-history-table-container {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: auto;
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-border-radius);
+  background: var(--ds-bg-secondary);
+}
+
+.trading-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--ds-font-size-base);
+}
+
+.trading-history-table thead {
+  position: sticky;
+  top: 0;
+  background: var(--ds-bg-secondary);
+  z-index: 1;
+  border-bottom: 2px solid var(--ds-border);
+}
+
+.trading-history-table th {
+  padding: var(--ds-spacing-md);
+  text-align: left;
+  font-weight: 600;
+  color: var(--ds-text-secondary);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+.trading-history-table tbody tr {
+  border-bottom: 1px solid var(--ds-border);
+  transition: background 0.2s ease;
+}
+
+.trading-history-table tbody tr:hover {
+  background: var(--ds-bg-hover);
+}
+
+.trading-history-table td {
+  padding: var(--ds-spacing-md);
+  color: var(--ds-text-primary);
+}
+
+/* Force visible content in data cells (avoid hidden/green blocks) */
+.trading-history-table-container .trading-history-table tbody td {
+  color: var(--ds-text-primary, #e2e8f0) !important;
+  background: transparent !important;
+  opacity: 1 !important;
+  font-size: inherit !important;
+}
+.trading-history-table-container .trading-history-table tbody td span,
+.trading-history-table-container .trading-history-table tbody td div {
+  color: inherit !important;
+}
+
+.trading-history-empty {
+  text-align: center;
+  padding: var(--ds-spacing-xl) !important;
+  color: var(--ds-text-tertiary);
+}
+
+.trading-history-empty-hint {
+  display: block;
+  margin-top: var(--ds-spacing-sm);
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-tertiary);
+  opacity: 0.9;
+}
+
+/* Type Column */
+.trading-history-type {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-xs);
+  font-weight: 500;
+}
+
+.trading-history-type-buy {
+  color: var(--ds-text-buy);
+}
+
+.trading-history-type-sell {
+  color: var(--ds-text-sell);
+}
+
+.trading-history-type-swap {
+  color: var(--ds-text-secondary);
+}
+
+/* Token Column */
+.trading-history-token {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-xs);
+  font-weight: 500;
+}
+
+.trading-history-token-sep {
+  color: var(--ds-text-tertiary, rgba(255,255,255,0.5));
+  font-weight: 400;
+  user-select: none;
+}
+
+/* Pagination */
+.trading-history-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-md);
+  padding: var(--ds-spacing-md);
+}
+
+.trading-history-pagination-info {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-secondary);
+  font-weight: 500;
+}
+
+/* Info (empty state below table) */
+.trading-history-info {
+  padding: var(--ds-spacing-md);
+  text-align: center;
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+}
+
+/* Warning */
+.trading-history-warning {
+  padding: var(--ds-spacing-sm);
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--ds-text-tertiary);
+  background: var(--ds-bg-tertiary);
+  border-radius: var(--ds-border-radius-sm);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .trading-history-modal-content {
+    max-height: 90vh;
+  }
+
+  .trading-history-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .trading-history-toolbar-left,
+  .trading-history-toolbar-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .trading-history-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .trading-history-table-container {
+    overflow-x: auto;
+  }
+
+  .trading-history-table {
+    min-width: 800px;
+  }
+
+  .trading-history-table th,
+  .trading-history-table td {
+    padding: var(--ds-spacing-sm);
+    font-size: 0.75rem;
+  }
+}
+
+/* Source column: OTA Auto vs Manual */
+.trading-history-source-manual {
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-sm);
+}
+
+/* Tx link to BSCScan */
+.trading-history-tx-link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--ds-primary);
+  text-decoration: none;
+}
+.trading-history-tx-link:hover {
+  text-decoration: underline;
+}
+.trading-history-tx-empty {
+  color: var(--ds-text-tertiary);
+}
+
+/* Placeholder când preț/total nu e disponibil (în loc de $0.00) */
+.trading-history-auto-cursor {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  font-weight: 500;
+}

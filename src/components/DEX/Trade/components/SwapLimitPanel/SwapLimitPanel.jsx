@@ -15,6 +15,7 @@ const SwapLimitPanel = ({
   tokenOut = null,
   tokens = [],
   balances = {},
+  marketData = null,
   onTokenChange = () => {},
   onSwap = () => {},
   onLimitOrder = () => {},
@@ -47,6 +48,7 @@ const SwapLimitPanel = ({
             tokenOut={tokenOut}
             tokens={tokens}
             balances={balances}
+            marketData={marketData}
             onTokenChange={onTokenChange}
             onSwap={onSwap}
             walletAddress={walletAddress}

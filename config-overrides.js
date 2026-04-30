@@ -79,9 +79,23 @@ module.exports = function override(config) {
   });
 
   // ====== (Opțional) ascunde mesajele „Failed to parse source map” rămase
+  // ====== FIX: Ascunde warning-ul DefinePlugin pentru process.env (child compilations)
+  // NOTE: Child compilation warnings are hard to suppress in webpack 5 without eject
+  // This warning is harmless and doesn't affect functionality
   config.ignoreWarnings = [
     ...(config.ignoreWarnings || []),
     /Failed to parse source map/i,
+    (warning) => {
+      // Function form - catch DefinePlugin warnings from child compilations
+      const message = warning.message || warning.toString();
+      if (message && (
+        message.includes('DefinePlugin') && 
+        message.includes("Conflicting values for 'process.env'")
+      )) {
+        return true;
+      }
+      return false;
+    },
   ];
 
   return config;

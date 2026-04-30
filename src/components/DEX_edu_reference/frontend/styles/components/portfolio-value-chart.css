@@ -1,0 +1,127 @@
+/**
+ * 📈 Portfolio Value Chart Styles
+ * 
+ * Styles pentru PortfolioValueChart component
+ */
+
+.portfolio-value-chart-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-md);
+}
+
+.portfolio-value-chart-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ds-spacing-md);
+  flex-wrap: wrap;
+}
+
+.portfolio-value-chart-stats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-xs);
+  margin-top: var(--ds-spacing-sm);
+}
+
+.portfolio-value-chart-current-value {
+  font-size: var(--ds-font-size-2xl);
+  font-weight: var(--ds-font-weight-bold);
+  color: var(--ds-text-primary);
+  font-family: var(--ds-font-family-mono);
+}
+
+.portfolio-value-chart-change {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-xs);
+  font-size: var(--ds-font-size-base);
+  font-weight: var(--ds-font-weight-semibold);
+  font-family: var(--ds-font-family-mono);
+}
+
+.portfolio-value-chart-change.positive {
+  color: var(--ds-text-buy);
+}
+
+.portfolio-value-chart-change.negative {
+  color: var(--ds-text-sell);
+}
+
+.portfolio-value-chart-change-amount {
+  color: var(--ds-text-secondary);
+  font-weight: var(--ds-font-weight-normal);
+  font-size: var(--ds-font-size-sm);
+}
+
+.portfolio-value-chart-period-selector {
+  display: flex;
+  gap: var(--ds-spacing-xs);
+  background: var(--ds-bg-tertiary);
+  border-radius: var(--ds-border-radius);
+  padding: var(--ds-spacing-xs);
+}
+
+.portfolio-value-chart-period-btn {
+  padding: var(--ds-spacing-xs) var(--ds-spacing-sm);
+  border: none;
+  background: transparent;
+  color: var(--ds-text-secondary);
+  border-radius: var(--ds-border-radius-sm);
+  cursor: pointer;
+  transition: all var(--ds-transition-base);
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-medium);
+  min-width: var(--ds-input-height-md);
+}
+
+.portfolio-value-chart-period-btn:hover {
+  background: var(--ds-bg-hover);
+  color: var(--ds-text-primary);
+}
+
+.portfolio-value-chart-period-btn.active {
+  background: var(--ds-bg-secondary);
+  color: var(--ds-primary);
+  box-shadow: var(--ds-shadow);
+}
+
+.portfolio-value-chart-wrapper {
+  width: 100%;
+  height: var(--ds-chart-wrapper-height);
+  margin-top: var(--ds-spacing-md);
+}
+
+.portfolio-value-chart-warning {
+  padding: var(--ds-spacing-sm);
+  text-align: center;
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-tertiary);
+  background: var(--ds-bg-tertiary);
+  border-radius: var(--ds-border-radius-sm);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .portfolio-value-chart-header {
+    flex-direction: column;
+  }
+
+  .portfolio-value-chart-period-selector {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .portfolio-value-chart-period-btn {
+    flex: 1;
+  }
+
+  .portfolio-value-chart-wrapper {
+    height: var(--ds-chart-wrapper-height-sm);
+  }
+
+  .portfolio-value-chart-current-value {
+    font-size: var(--ds-font-size-xl);
+  }
+}

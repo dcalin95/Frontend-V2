@@ -1,0 +1,71 @@
+/**
+ * 📊 Performance Chart Styles - Standardized chart container
+ * Uses --ds-chart-* and --ds-* tokens
+ */
+
+.performance-chart {
+  padding: var(--ds-spacing-4);
+  background-color: var(--ds-bg-surface);
+  border-radius: var(--ds-chart-border-radius);
+  border: var(--ds-border-width) solid var(--ds-border-color);
+}
+
+.performance-chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--ds-spacing-4);
+}
+
+.performance-chart-title {
+  font-size: var(--ds-font-size-xl);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+}
+
+.performance-chart-type-selector {
+  display: flex;
+  gap: var(--ds-spacing-1);
+}
+
+.performance-chart-type-btn {
+  padding: var(--ds-spacing-2);
+  background-color: var(--ds-bg-hover);
+  border: var(--ds-border-width) solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  cursor: pointer;
+  transition: all var(--ds-transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.performance-chart-type-btn:hover {
+  background-color: var(--ds-bg-active);
+}
+
+.performance-chart-type-btn.active {
+  background-color: var(--ds-border-color-focus);
+  border-color: var(--ds-border-color-focus);
+  color: var(--ds-text-primary);
+}
+
+.performance-chart-content {
+  width: 100%;
+  min-height: var(--ds-chart-min-height-sm);
+}
+
+.performance-chart-empty {
+  padding: var(--ds-spacing-8);
+  text-align: center;
+  color: var(--ds-text-secondary);
+}
+
+@media (max-width: 768px) {
+  .performance-chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--ds-spacing-3);
+  }
+}
+

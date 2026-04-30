@@ -1,0 +1,930 @@
+/**
+ * 📊 Limit Order Panel Styles
+ * 
+ * Styles pentru LimitOrderPanel component
+ */
+
+.limit-order-panel-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  height: auto;
+  max-height: calc(100vh - 200px);
+  overflow: hidden;
+  overflow-x: hidden;
+  padding-top: 0 !important;
+}
+
+/* Card.Body fără scroll */
+.limit-order-panel-container .ui-card-body,
+.limit-order-panel-body-no-scroll {
+  overflow: hidden !important;
+  overflow-x: hidden !important;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-xs);
+  padding-top: 0 !important;
+  position: relative;
+}
+
+/* Ensure Card itself doesn't clip tooltips - avoid contain: layout so Buy/Sell buttons receive clicks */
+.limit-order-panel-container.ui-card {
+  position: relative; /* Create positioning context */
+  padding-top: var(--ds-spacing-xs) !important; /* Redus drastic padding de sus: 4px în loc de 24px */
+  padding-left: var(--ds-spacing-md) !important;
+  padding-right: var(--ds-spacing-md) !important;
+  padding-bottom: var(--ds-spacing-md) !important;
+}
+
+/* Body: scroll vertical ca Risk Management să fie accesibil */
+.limit-order-panel-container.ui-card .ui-card-body {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  contain: none; /* Don't contain tooltips */
+}
+
+.limit-order-panel-loading {
+  padding: var(--ds-spacing-xl);
+  text-align: center;
+  color: var(--ds-text-secondary);
+}
+
+/* Rate Info Section (for Fee, Rate display) */
+.limit-order-panel-rate-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  background: var(--ds-bg-elevated);
+  border-radius: 8px;
+  font-size: var(--ds-font-size-base);
+}
+
+.limit-order-panel-rate-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--ds-text-secondary);
+}
+
+.limit-order-panel-rate-item span:first-child {
+  font-weight: var(--ds-font-weight-medium);
+}
+
+.limit-order-panel-rate-item span:last-child {
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}
+
+/* Tabs - Limit/Swap (compact, small text like Oxium) */
+.limit-order-panel-tabs {
+  display: flex;
+  gap: 4px;
+  margin-top: 0; /* Eliminat margin de sus */
+  margin-bottom: var(--ds-spacing-sm);
+  padding-top: 0; /* Eliminat padding de sus */
+  padding-bottom: 0;
+  background: transparent;
+  border: none !important;
+  outline: none !important;
+}
+
+.limit-order-panel-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  border: none !important; /* Eliminat complet chenarul */
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  outline: none !important; /* Eliminat outline */
+  background: transparent !important; /* Eliminat chenar - fără background */
+  color: var(--ds-text-secondary);
+  border-radius: 0 !important; /* Eliminat chenar - fără border-radius */
+  cursor: pointer;
+  transition: color 0.2s ease, font-weight 0.2s ease; /* Doar culoare și font-weight */
+  font-weight: 400;
+  font-size: 1.125rem; /* Mărit cu 50%: 0.75rem * 1.5 = 1.125rem */
+  font-family: var(--ds-font-family-sans); /* Inter like Oxium */
+  line-height: 1.2;
+  box-shadow: none !important; /* Eliminat orice shadow */
+  -webkit-appearance: none !important; /* Eliminat stiluri browser default */
+  -moz-appearance: none !important;
+  appearance: none !important;
+}
+
+.limit-order-panel-tab:hover {
+  background: transparent !important; /* Eliminat chenar la hover */
+  color: var(--ds-text-primary);
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.limit-order-panel-tab.active {
+  background: transparent !important; /* Eliminat chenar - fără background */
+  color: var(--ds-text-primary);
+  font-weight: 600; /* Mărit puțin pentru a diferenția starea activă */
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.limit-order-panel-tab:focus,
+.limit-order-panel-tab:focus-visible {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Buy/Sell Side Tabs - radio + label ca click-ul să funcționeze mereu */
+.limit-order-panel-side-tab-radio {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+}
+
+.limit-order-panel-side-tabs {
+  display: flex;
+  gap: var(--ds-spacing-xs);
+  margin-bottom: var(--ds-spacing-sm);
+  background: var(--ds-bg-tertiary);
+  border-radius: var(--ds-border-radius);
+  padding: var(--ds-spacing-xs);
+  position: relative;
+  z-index: 10;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.limit-order-panel-side-tabs .limit-order-panel-side-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-xs);
+  padding: var(--ds-spacing-sm) var(--ds-spacing-md);
+  border: none;
+  background: transparent;
+  color: var(--ds-text-secondary);
+  border-radius: var(--ds-border-radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: var(--ds-font-weight-medium);
+  font-size: var(--ds-font-size-base);
+  font-family: var(--ds-font-family-sans);
+  position: relative;
+  z-index: 2;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  margin: 0;
+}
+
+.limit-order-panel-side-tab:hover {
+  background: var(--ds-bg-hover);
+  color: var(--ds-text-primary);
+}
+
+.limit-order-panel-side-tab.active {
+  box-shadow: var(--ds-shadow);
+  font-weight: 600;
+}
+
+/* Tab activ Buy = albastru clar */
+.limit-order-panel-side-tabs .limit-order-panel-side-tab:first-child.active,
+.limit-order-panel-side-tabs .limit-order-panel-side-tab[for="limit-order-tab-buy"].active {
+  background: var(--ds-accent, #4facfe);
+  color: #ffffff;
+  border: 1px solid var(--ds-accent, #4facfe);
+}
+
+/* Tab activ Sell = roșu clar */
+.limit-order-panel-side-tabs .limit-order-panel-side-tab:last-child.active,
+.limit-order-panel-side-tabs .limit-order-panel-side-tab[for="limit-order-tab-sell"].active {
+  background: #ef4444;
+  color: #ffffff;
+  border: 1px solid #ef4444;
+}
+
+/* Notice: limit orders not executed on-chain automatically */
+.limit-order-panel-notice {
+  margin: 0 0 var(--ds-spacing-3);
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-text-tertiary);
+  line-height: 1.4;
+}
+.limit-order-panel-notice a {
+  color: var(--ds-color-info);
+  text-decoration: none;
+}
+.limit-order-panel-notice a:hover {
+  text-decoration: underline;
+}
+
+/* Input Group - Darker black for Limit - Different from background */
+.limit-order-panel-input-group {
+  background: #000000;
+  border: 1px solid #1a1a1a;
+  border-radius: 12px;
+  padding: var(--ds-spacing-3);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all var(--ds-transition-base);
+  position: relative;
+}
+
+.limit-order-panel-input-group:hover {
+  border-color: #2a2a2a;
+  background: #000000;
+}
+
+.limit-order-panel-input-group:focus-within {
+  border-color: var(--ds-color-primary);
+  background: #000000;
+}
+
+.limit-order-panel-section-label {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: var(--ds-font-weight-medium);
+  font-family: var(--ds-font-family-sans); /* Inter like Oxium */
+}
+
+.limit-order-panel-input-row {
+  display: flex;
+  align-items: center;
+  gap: 4px; /* Redus de la sm (8px) la 4px */
+  background: var(--ds-bg-tertiary);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-border-radius);
+  padding: 2px 4px; /* REDUS: 2px vertical, 4px orizontal */
+  transition: border-color 0.2s ease;
+  min-height: auto;
+}
+
+.limit-order-panel-input-row:focus-within {
+  border-color: var(--ds-primary);
+  box-shadow: 0 0 0 2px rgba(79, 172, 254, 0.1);
+}
+
+.limit-order-panel-price-input,
+.limit-order-panel-amount-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: var(--ds-primary);
+  font-size: 1.65rem; /* Redus de la 1.75rem cu ~6% */
+  font-weight: var(--ds-font-weight-bold);
+  outline: none;
+  font-family: var(--ds-font-family-mono);
+  line-height: var(--ds-line-height-normal);
+  overflow: hidden; /* Previne overflow */
+  text-overflow: ellipsis; /* Adaugă ... dacă nu încape */
+}
+
+/* Asigură că stilurile se aplică și pentru input-uri disabled/readOnly */
+.limit-order-panel-price-input:disabled,
+.limit-order-panel-amount-input:disabled,
+.limit-order-panel-price-input[readOnly],
+.limit-order-panel-amount-input[readOnly] {
+  color: var(--ds-primary) !important; /* Forțează culoarea primară */
+  font-weight: 700 !important; /* Forțează bold */
+  opacity: 1; /* Menține opacitatea completă */
+  cursor: default;
+}
+
+.limit-order-panel-price-input::placeholder,
+.limit-order-panel-amount-input::placeholder {
+  color: var(--ds-text-tertiary);
+}
+
+/* Eliminat butoanele native de increment/decrement pentru input-uri number */
+.limit-order-panel-price-input::-webkit-inner-spin-button,
+.limit-order-panel-price-input::-webkit-outer-spin-button,
+.limit-order-panel-amount-input::-webkit-inner-spin-button,
+.limit-order-panel-amount-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+  display: none;
+}
+
+.limit-order-panel-price-input[type="number"],
+.limit-order-panel-amount-input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.limit-order-panel-price-actions {
+  display: flex;
+  gap: var(--ds-spacing-xs);
+}
+
+.limit-order-panel-price-quick-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Changed from space-between to flex-start */
+  gap: 6px; /* Increased gap for better spacing */
+  margin-top: var(--ds-spacing-1);
+  flex-wrap: nowrap; /* Prevent wrapping - keep all buttons on one line */
+  overflow-x: auto; /* Allow horizontal scroll if needed on very small screens */
+}
+
+.limit-order-panel-quick-btn {
+  padding: var(--ds-spacing-2) var(--ds-spacing-2);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-bg-tertiary);
+  color: var(--ds-text-secondary);
+  border-radius: var(--ds-border-radius-sm);
+  cursor: pointer;
+  font-size: 1rem; /* Larger font for +/- symbols */
+  transition: all 0.2s ease;
+  font-weight: 600;
+  font-family: var(--ds-font-family-sans); /* Inter like Oxium */
+  white-space: nowrap; /* Prevent text wrapping */
+  flex-shrink: 0; /* Prevent buttons from shrinking */
+  min-width: 36px; /* Fixed width for +/- buttons */
+  text-align: center;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0; /* No gap for icon buttons */
+}
+
+/* Icon buttons (like reset) */
+.limit-order-panel-quick-btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.limit-order-panel-quick-btn:hover {
+  background: var(--ds-bg-hover);
+  border-color: var(--ds-primary);
+  color: var(--ds-text-primary);
+}
+
+.limit-order-panel-market-price {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  font-weight: var(--ds-font-weight-medium);
+}
+
+.limit-order-panel-token-button {
+  display: flex;
+  align-items: center;
+  gap: 2px; /* Redus gap */
+  padding: 2px 5px; /* REDUS padding: 2px vertical, 5px orizontal */
+  background: var(--ds-bg-secondary);
+  border-radius: var(--ds-border-radius);
+  cursor: pointer;
+  transition: background 0.2s ease;
+  border: none;
+  flex-shrink: 0;
+  min-width: fit-content;
+  white-space: nowrap;
+  overflow: visible;
+}
+
+.limit-order-panel-token-button:hover {
+  background: var(--ds-bg-hover);
+}
+
+.limit-order-panel-token-symbol {
+  font-size: 1.2rem; /* Mărit de la 1.1rem */
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  font-family: var(--ds-font-family-sans);
+}
+
+.limit-order-panel-amount-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  flex-wrap: wrap;
+  gap: var(--ds-spacing-xs);
+  font-family: var(--ds-font-family-sans); /* Inter like Oxium */
+}
+
+.limit-order-panel-usd-value {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-tertiary);
+  font-family: var(--ds-font-family-sans); /* Inter like Oxium */
+}
+
+.limit-order-panel-balance-group {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-xs);
+  flex-wrap: wrap;
+}
+
+.limit-order-panel-balance {
+  font-size: var(--ds-font-size-sm);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Percentage Buttons - Wallet Balance Quick Select */
+.limit-order-panel-percentage-buttons {
+  display: flex;
+  align-items: center;
+  gap: 4px; /* Very compact gap */
+  flex-wrap: nowrap; /* Prevent wrapping - keep all buttons on one line */
+}
+
+.limit-order-panel-percentage-btn {
+  padding: var(--ds-spacing-1) var(--ds-spacing-2);
+  background: transparent;
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-border-radius-sm);
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-sm); /* Smaller font size */
+  font-weight: 600;
+  font-family: var(--ds-font-family-mono, monospace);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 38px; /* Compact min-width */
+  text-align: center;
+  line-height: 1.2;
+}
+
+.limit-order-panel-percentage-btn:hover {
+  background: var(--ds-bg-hover);
+  border-color: var(--ds-primary);
+  color: var(--ds-primary);
+}
+
+.limit-order-panel-percentage-btn:active {
+  transform: scale(0.95);
+}
+
+/* Legacy max-btn - kept for backward compatibility, but percentage buttons are preferred */
+.limit-order-panel-max-btn {
+  padding: var(--ds-spacing-xs) var(--ds-spacing-sm);
+  border: 1px solid var(--ds-primary);
+  background: transparent;
+  color: var(--ds-primary);
+  border-radius: var(--ds-border-radius-sm);
+  cursor: pointer;
+  font-size: var(--ds-font-size-sm);
+  font-weight: 600;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+
+.limit-order-panel-max-btn:hover {
+  background: var(--ds-primary);
+  color: #fff;
+}
+
+/* Reverse Button */
+.limit-order-panel-reverse-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: var(--ds-spacing-xs) 0;
+  flex-shrink: 0;
+  min-height: 28px; /* Redus de la 36px */
+  max-width: 40px; /* Limitează lățimea - reduce spațiu mort */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.limit-order-panel-reverse-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; /* Redus de la 36px */
+  height: 32px; /* Redus de la 36px */
+  border: 1px solid var(--ds-border);
+  background: var(--ds-bg-tertiary);
+  border-radius: 50%;
+  color: var(--ds-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.limit-order-panel-reverse-btn:hover {
+  background: var(--ds-bg-hover);
+  border-color: var(--ds-primary);
+  color: var(--ds-primary);
+  transform: rotate(180deg);
+}
+
+.limit-order-panel-reverse-btn:active {
+  transform: rotate(180deg) scale(0.95);
+}
+
+/* Total */
+.limit-order-panel-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ds-spacing-md);
+  background: var(--ds-bg-tertiary);
+  border-radius: var(--ds-border-radius);
+  margin-bottom: var(--ds-spacing-md);
+}
+
+.limit-order-panel-total span:first-child {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-secondary);
+  font-weight: var(--ds-font-weight-medium);
+}
+
+.limit-order-panel-total-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  font-family: var(--ds-font-family-mono); /* SF Mono for numbers */
+}
+
+/* Error */
+.limit-order-panel-error {
+  padding: var(--ds-spacing-sm) var(--ds-spacing-md);
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--ds-border-radius);
+  color: var(--ds-text-sell);
+  font-size: var(--ds-font-size-base);
+  margin-bottom: var(--ds-spacing-md);
+}
+
+/* Active Orders List */
+.limit-order-panel-orders-list {
+  margin-top: var(--ds-spacing-md); /* Redus de la lg la md */
+  padding-top: var(--ds-spacing-md); /* Redus de la lg la md */
+  border-top: 1px solid var(--ds-border);
+}
+
+.limit-order-panel-orders-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--ds-spacing-sm); /* Redus de la md la sm */
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  font-family: var(--ds-font-family-sans); /* Inter like Oxium */
+}
+
+.limit-order-panel-orders-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-xs);
+}
+
+.limit-order-panel-order-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ds-spacing-sm) var(--ds-spacing-md);
+  background: var(--ds-bg-tertiary);
+  border-radius: var(--ds-border-radius);
+  transition: background 0.2s ease;
+}
+
+.limit-order-panel-order-item:hover {
+  background: var(--ds-bg-hover);
+}
+
+.limit-order-panel-order-info {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-md);
+  flex: 1;
+}
+
+.limit-order-panel-order-price {
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+  min-width: 100px;
+}
+
+.limit-order-panel-order-amount {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-secondary);
+  font-family: var(--ds-font-family-mono); /* SF Mono for numbers */
+  min-width: 120px;
+}
+
+.limit-order-panel-order-total {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-secondary);
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+  min-width: 100px;
+}
+
+/* Warning */
+.limit-order-panel-warning {
+  margin-top: var(--ds-spacing-md);
+  padding: var(--ds-spacing-sm);
+  text-align: center;
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-tertiary);
+  background: var(--ds-bg-tertiary);
+  border-radius: var(--ds-border-radius-sm);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .limit-order-panel-container {
+    min-width: 100%;
+  }
+
+  .limit-order-panel-tabs {
+    gap: var(--ds-spacing-xs);
+    padding: var(--ds-spacing-xs);
+  }
+
+  .limit-order-panel-tab {
+    padding: var(--ds-spacing-xs) var(--ds-spacing-sm);
+    font-size: var(--ds-font-size-sm);
+  }
+
+  .limit-order-panel-input-row {
+    flex-wrap: wrap;
+    gap: var(--ds-spacing-xs);
+  }
+
+  .limit-order-panel-price-actions {
+    width: 100%;
+    margin-top: var(--ds-spacing-xs);
+  }
+
+  .limit-order-panel-price-quick-actions {
+    flex-wrap: wrap;
+    gap: var(--ds-spacing-xs);
+  }
+
+  .limit-order-panel-quick-btn {
+    flex: 1;
+    min-width: 60px;
+    font-size: var(--ds-font-size-sm);
+    padding: var(--ds-spacing-xs);
+  }
+
+  .limit-order-panel-market-price {
+    width: 100%;
+    text-align: center;
+    order: -1;
+  }
+
+  .limit-order-panel-order-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--ds-spacing-xs);
+  }
+
+  .limit-order-panel-order-price,
+  .limit-order-panel-order-amount,
+  .limit-order-panel-order-total {
+    min-width: auto;
+    font-size: var(--ds-font-size-sm);
+  }
+
+  .limit-order-panel-total {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--ds-spacing-xs);
+  }
+}
+
+@media (max-width: 480px) {
+  .limit-order-panel-tabs {
+    flex-direction: column;
+  }
+
+  .limit-order-panel-tab {
+    width: 100%;
+  }
+
+  .limit-order-panel-price-quick-actions {
+    flex-direction: column;
+  }
+
+  .limit-order-panel-market-price {
+    order: 0;
+    margin-bottom: var(--ds-spacing-xs);
+  }
+}
+
+/* Tooltip Styles */
+.limit-order-panel-tooltip-wrapper {
+  position: relative;
+  display: inline-flex;
+  cursor: help;
+  /* Ensure tooltip container doesn't clip */
+  overflow: visible;
+}
+
+/* Tooltip wrapper for buttons - buttons should be clickable */
+.limit-order-panel-price-quick-actions .limit-order-panel-tooltip-wrapper {
+  cursor: default;
+  overflow: visible;
+}
+
+.limit-order-panel-tooltip-icon {
+  color: var(--ds-text-tertiary);
+  opacity: 0.7;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.limit-order-panel-tooltip-wrapper:hover .limit-order-panel-tooltip-icon {
+  opacity: 1;
+  color: var(--ds-primary);
+}
+
+.limit-order-panel-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 8px;
+  padding: 10px 14px;
+  background: var(--ds-bg-primary);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-border-radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  color: var(--ds-text-primary);
+  font-size: var(--ds-font-size-sm);
+  line-height: var(--ds-line-height-normal);
+  white-space: normal;
+  width: 280px;
+  max-width: calc(100vw - 20px); /* Ensure it doesn't go off screen */
+  z-index: 99999; /* Very high z-index to appear above everything */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+  font-family: var(--ds-font-family-sans);
+}
+
+/* Smaller tooltip for quick action buttons */
+.limit-order-panel-price-quick-actions .limit-order-panel-tooltip {
+  width: 240px;
+  padding: var(--ds-spacing-2) var(--ds-spacing-3);
+  font-size: var(--ds-font-size-sm);
+  bottom: calc(100% + 4px);
+}
+
+.limit-order-panel-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--ds-bg-primary);
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
+}
+
+.limit-order-panel-tooltip-wrapper:hover .limit-order-panel-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+/* Tooltip for buttons - appears above */
+.limit-order-panel-price-quick-actions .limit-order-panel-tooltip-wrapper:hover .limit-order-panel-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-2px);
+}
+
+/* Ensure parent containers don't clip tooltips - but allow scrolling for content */
+.limit-order-panel-input-group,
+.limit-order-panel-price-quick-actions,
+.limit-order-panel-tooltip-wrapper {
+  overflow: visible !important; /* Allow tooltips to overflow */
+  position: relative; /* Create stacking context for tooltips */
+}
+
+/* Container - no scroll, tooltips should overflow */
+.limit-order-panel-container {
+  overflow: hidden; /* Eliminat scroll complet */
+  position: relative; /* For tooltip positioning */
+}
+
+.limit-order-panel-body-no-scroll {
+  overflow: hidden;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Risk section */
+.limit-order-panel-risk-section {
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 10;
+}
+.limit-order-panel-risk-section button {
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 11;
+}
+
+/* Modal Risk Management: fereastră mică (360px), nu pe tot ecranul */
+.limit-order-panel-risk-modal.modal-content {
+  max-width: 360px !important;
+  width: 100%;
+}
+
+/* Popover Risk Management: folosit și în portal cu -fixed (position:fixed din JS) */
+.limit-order-panel-risk-popover {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 6px;
+  z-index: 20;
+  background: var(--ds-bg-surface, #16182e);
+  border: 1px solid var(--ds-border-color, #2a2d47);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.limit-order-panel-risk-popover-fixed {
+  z-index: 1050;
+  max-height: 50vh;
+}
+
+.limit-order-panel-risk-popover-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--ds-border-color, #2a2d47);
+  background: rgba(79, 172, 254, 0.08);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ds-text-primary);
+}
+
+.limit-order-panel-risk-popover-close {
+  padding: 4px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: var(--ds-text-secondary);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.limit-order-panel-risk-popover-close:hover {
+  color: var(--ds-text-primary);
+  background: #000000;
+}
+
+.limit-order-panel-risk-popover-body {
+  padding: 12px;
+}
+
+.limit-order-panel-tooltip-title {
+  font-weight: 600;
+  margin-bottom: var(--ds-spacing-2);
+  color: var(--ds-text-primary);
+}
+
+.limit-order-panel-tooltip-text {
+  color: var(--ds-text-secondary);
+  margin: 0;
+}
+
+.limit-order-panel-tooltip-text strong {
+  color: var(--ds-primary);
+  font-weight: 600;
+}

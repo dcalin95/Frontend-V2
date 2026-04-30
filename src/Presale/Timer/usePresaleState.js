@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { default as axios } from "axios";
 import contractService from "../../services/contractService";
 import cachedFetch, { rateLimitConfig, requestLimiter } from "../../utils/requestCache.js";
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+import { getPresaleCurrentUrl, parseLaunchPowerUsd } from "../presaleApi";
 
 export const usePresaleState = () => {
   const [state, setState] = useState({
@@ -50,7 +49,7 @@ export const usePresaleState = () => {
     const fetchPresaleData = async () => {
       try {
         console.log('🔄 Fetching presale data...');
-        const data = await cachedFetch.get(`${API_URL}/api/presale/current`, {
+        const data = await cachedFetch.get(await getPresaleCurrentUrl(), {
           cacheTTL: rateLimitConfig.presaleData
         });
         console.log('📦 Raw API Response:', data);
@@ -73,7 +72,7 @@ export const usePresaleState = () => {
             // ⚠️ Pentru prețul LIVE corect, folosește useCellManagerData.currentPrice!
             price: data.price || 0.01,
             progress: data.progress || 0,
-            totalBoosted: data.totalBoosted || 0,
+            totalBoosted: Number.isFinite(parseLaunchPowerUsd(data)) ? parseLaunchPowerUsd(data) : 0,
             roundActive: true, // Always active - no round limit
             roundNumber: data.roundNumber || 1,
             totalRounds: 12,

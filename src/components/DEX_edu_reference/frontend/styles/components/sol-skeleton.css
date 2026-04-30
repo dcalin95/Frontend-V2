@@ -1,0 +1,656 @@
+/* SOL Trade / Swap – fundal clar, nu alb; accent #14f195 */
+
+.sol-layout {
+  min-height: 100%;
+  background: var(--ds-bg-base, #0f0f12);
+  color: var(--ds-text-primary, #e2e8f0);
+}
+
+.sol-main {
+  background: var(--ds-bg-base, #0f0f12);
+  color: var(--ds-text-primary, #e2e8f0);
+}
+
+.sol-trade-page,
+.sol-swap-page {
+  box-sizing: border-box;
+  min-height: 60vh;
+}
+
+.sol-skeleton-card {
+  background: var(--ds-bg-surface, #18181b) !important;
+  border-color: var(--ds-border-color, #27272a) !important;
+}
+
+.sol-terminal {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 0 12px 32px;
+}
+
+.sol-terminal-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 520px);
+  gap: 18px;
+  align-items: stretch;
+  margin: 16px 0;
+  padding: 18px;
+  border: 1px solid var(--ds-border-color, #27272a);
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(20, 241, 149, 0.08), rgba(24, 24, 27, 0.96));
+}
+
+.sol-terminal-hero h1 {
+  margin: 8px 0 6px;
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+
+.sol-terminal-hero p,
+.sol-panel-title-row p,
+.sol-perps-summary p {
+  margin: 0;
+  color: var(--ds-text-secondary, #a1a1aa);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.sol-terminal-kicker,
+.sol-mode-tabs,
+.sol-terminal-metrics,
+.sol-route-samples,
+.sol-provider-card,
+.sol-perps-stats,
+.sol-side-toggle,
+.sol-risk-box,
+.sol-doc-link,
+.sol-market-toolbar {
+  display: flex;
+}
+
+.sol-terminal-kicker,
+.sol-mode-tabs,
+.sol-route-samples {
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sol-status-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--ds-border-color, #27272a);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.sol-status-pill--live {
+  color: #14f195;
+  background: rgba(20, 241, 149, 0.12);
+  border-color: rgba(20, 241, 149, 0.28);
+}
+
+.sol-status-pill--planned {
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.28);
+}
+
+.sol-status-pill--manual {
+  color: #facc15;
+  background: rgba(250, 204, 21, 0.12);
+  border-color: rgba(250, 204, 21, 0.28);
+}
+
+.sol-terminal-metrics {
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.sol-terminal-metrics div,
+.sol-perps-stats div {
+  min-width: 130px;
+  padding: 12px;
+  border: 1px solid var(--ds-border-subtle, #27272a);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.sol-terminal-metrics span,
+.sol-perps-stats span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--ds-text-secondary, #a1a1aa);
+  font-size: 11px;
+}
+
+.sol-terminal-metrics strong,
+.sol-perps-stats strong {
+  color: var(--ds-text-primary, #e2e8f0);
+  font-size: 14px;
+}
+
+.sol-wallet-banner,
+.sol-inline-warning {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: var(--ds-text-primary, #e2e8f0);
+  font-size: 14px;
+}
+
+.sol-wallet-banner {
+  border: 1px solid rgba(20, 241, 149, 0.3);
+  background: rgba(20, 241, 149, 0.12);
+}
+
+.sol-ota-status-card {
+  margin-bottom: 16px;
+  padding: 16px;
+  border: 1px solid var(--ds-border-color, #27272a);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.sol-ota-status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.sol-ota-status-item {
+  min-height: 122px;
+  padding: 12px;
+  border: 1px solid var(--ds-border-subtle, #27272a);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.sol-ota-status-item span,
+.sol-ota-status-item strong,
+.sol-ota-status-item p {
+  display: block;
+}
+
+.sol-ota-status-item span {
+  margin-bottom: 6px;
+  color: var(--ds-text-secondary, #a1a1aa);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.sol-ota-status-item strong {
+  margin-bottom: 8px;
+  color: var(--ds-text-primary, #e2e8f0);
+  font-size: 14px;
+}
+
+.sol-ota-status-item p {
+  margin: 0;
+  color: var(--ds-text-secondary, #a1a1aa);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.sol-ota-status-item.is-enabled {
+  border-color: rgba(20, 241, 149, 0.28);
+  background: rgba(20, 241, 149, 0.07);
+}
+
+.sol-ota-status-item.is-assisted {
+  border-color: rgba(250, 204, 21, 0.28);
+  background: rgba(250, 204, 21, 0.06);
+}
+
+.sol-ota-status-item.is-locked {
+  border-color: rgba(239, 68, 68, 0.26);
+  background: rgba(239, 68, 68, 0.055);
+}
+
+.sol-assisted-panel {
+  margin-bottom: 16px;
+  padding: 16px;
+  border: 1px solid rgba(250, 204, 21, 0.24);
+  border-radius: 8px;
+  background: rgba(250, 204, 21, 0.055);
+}
+
+.sol-assisted-grid {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.9fr) minmax(160px, 0.7fr) minmax(220px, 0.8fr);
+  gap: 10px;
+  align-items: end;
+}
+
+.sol-assisted-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--ds-text-secondary, #a1a1aa);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.sol-assisted-grid input,
+.sol-assisted-grid select {
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  padding: 7px 9px;
+  border: 1px solid var(--ds-border-subtle, #27272a);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.22);
+  color: var(--ds-text-primary, #e2e8f0);
+}
+
+.sol-assisted-grid button {
+  min-height: 38px;
+  border: 1px solid rgba(250, 204, 21, 0.4);
+  border-radius: 8px;
+  background: rgba(250, 204, 21, 0.14);
+  color: #facc15;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.sol-assisted-grid button:disabled {
+  border-color: var(--ds-border-subtle, #27272a);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--ds-text-secondary, #a1a1aa);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.sol-assisted-note {
+  margin: 10px 0 0;
+  color: var(--ds-text-secondary, #a1a1aa);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.sol-inline-warning {
+  border: 1px solid rgba(239, 68, 68, 0.34);
+  background: rgba(239, 68, 68, 0.08);
+  color: #fca5a5;
+}
+
+.sol-terminal-tab {
+  min-height: 34px;
+  padding: 7px 14px;
+  border: 1px solid var(--ds-border-subtle, #27272a);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ds-text-secondary, #a1a1aa);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sol-terminal-tab.is-active {
+  border-color: rgba(20, 241, 149, 0.5);
+  background: rgba(20, 241, 149, 0.16);
+  color: #14f195;
+}
+
+.sol-mode-tabs {
+  margin: 12px 0 16px;
+}
+
+.sol-mode-tabs--compact {
+  margin: 0 0 14px;
+}
+
+.sol-terminal-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px minmax(320px, 460px);
+  gap: 18px;
+  align-items: stretch;
+  margin-bottom: 20px;
+  min-height: 440px;
+}
+
+.sol-chart-panel,
+.sol-market-panel,
+.sol-action-panel,
+.sol-orders-section {
+  padding: 16px;
+  border: 1px solid var(--ds-border-color, #27272a);
+  border-radius: 8px;
+}
+
+.sol-panel-title-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.sol-panel-title-row h3 {
+  margin: 0 0 4px;
+  color: var(--ds-text-primary, #e2e8f0);
+  font-size: 15px;
+  letter-spacing: 0;
+}
+
+.sol-chart-frame {
+  min-height: 360px;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.sol-chart-fallback {
+  padding: 24px;
+  border-radius: 8px;
+  background: var(--ds-bg-subtle, #111827);
+  color: var(--ds-text-secondary, #a1a1aa);
+}
+
+.sol-market-toolbar {
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.sol-market-toolbar button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 5px 10px;
+  border: 1px solid var(--ds-border-subtle, #27272a);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--ds-text-secondary, #a1a1aa);
+  cursor: pointer;
+}
+
+.sol-depth-panel {
+  min-width: 0;
+}
+
+.sol-terminal-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.sol-terminal-table th,
+.sol-terminal-table td {
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--ds-border-subtle, #27272a);
+}
+
+.sol-terminal-table th {
+  color: var(--ds-text-secondary, #a1a1aa);
+  font-weight: 600;
+  text-align: right;
+}
+
+.sol-terminal-table th:first-child,
+.sol-terminal-table td:first-child {
+  text-align: left;
+}
+
+.sol-terminal-table td {
+  text-align: right;
+}
+
+.sol-depth-row--bid {
+  background: rgba(34, 197, 94, 0.06);
+}
+
+.sol-depth-row--bid td:first-child,
+.sol-route-chip--buy {
+  color: var(--ds-success, #22c55e);
+}
+
+.sol-depth-row--ask {
+  background: rgba(239, 68, 68, 0.06);
+}
+
+.sol-depth-row--ask td:first-child,
+.sol-route-chip--sell {
+  color: var(--ds-danger, #ef4444);
+}
+
+.sol-spread-row td {
+  text-align: center;
+  color: var(--ds-text-secondary, #a1a1aa);
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.sol-empty-cell {
+  padding: 24px !important;
+  text-align: center !important;
+  color: var(--ds-text-secondary, #a1a1aa);
+}
+
+.sol-empty-cell strong,
+.sol-empty-cell span {
+  display: block;
+}
+
+.sol-empty-cell strong {
+  margin-bottom: 4px;
+  color: var(--ds-text-primary, #e2e8f0);
+}
+
+.sol-route-samples {
+  margin-top: 12px;
+}
+
+.sol-route-chip {
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.035);
+  font-size: 11px;
+}
+
+.sol-perps-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sol-perps-provider-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.sol-provider-card {
+  flex-direction: column;
+  gap: 4px;
+  min-height: 86px;
+  padding: 10px;
+  border: 1px solid var(--ds-border-subtle, #27272a);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--ds-text-secondary, #a1a1aa);
+  text-align: left;
+  cursor: pointer;
+}
+
+.sol-provider-card.is-active {
+  border-color: rgba(20, 241, 149, 0.42);
+  background: rgba(20, 241, 149, 0.1);
+}
+
+.sol-provider-card__name {
+  color: var(--ds-text-primary, #e2e8f0);
+  font-weight: 800;
+  font-size: 12px;
+}
+
+.sol-provider-card__meta,
+.sol-provider-card__note {
+  font-size: 11px;
+}
+
+.sol-perps-card {
+  padding: 12px;
+  border: 1px solid var(--ds-border-subtle, #27272a);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.sol-doc-link {
+  align-items: center;
+  gap: 5px;
+  color: #14f195;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.sol-perps-stats {
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+
+.sol-perps-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr 0.7fr;
+  gap: 8px;
+}
+
+.sol-perps-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: var(--ds-text-secondary, #a1a1aa);
+  font-size: 11px;
+}
+
+.sol-perps-form input,
+.sol-perps-form select {
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  border: 1px solid var(--ds-border-subtle, #27272a);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--ds-text-primary, #e2e8f0);
+  padding: 7px 9px;
+}
+
+.sol-side-toggle {
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.sol-side-toggle button {
+  flex: 1;
+  min-height: 38px;
+  border: 1px solid var(--ds-border-subtle, #27272a);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--ds-text-secondary, #a1a1aa);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.sol-side-toggle .is-long {
+  color: #22c55e;
+  border-color: rgba(34, 197, 94, 0.38);
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.sol-side-toggle .is-short {
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.38);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.sol-risk-box {
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px;
+  border: 1px solid rgba(250, 204, 21, 0.26);
+  border-radius: 8px;
+  background: rgba(250, 204, 21, 0.08);
+  color: #facc15;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.sol-risk-box strong,
+.sol-risk-box span {
+  display: block;
+}
+
+.sol-risk-box span {
+  margin-top: 3px;
+  color: var(--ds-text-secondary, #a1a1aa);
+}
+
+.sol-disabled-submit {
+  width: 100%;
+  min-height: 42px;
+  margin-top: 12px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ds-text-secondary, #a1a1aa);
+  font-weight: 800;
+  cursor: not-allowed;
+}
+
+.sol-perps-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--ds-text-secondary, #a1a1aa);
+}
+
+.sol-perps-summary h3 {
+  margin: 0;
+  color: var(--ds-text-primary, #e2e8f0);
+}
+
+.sol-perps-summary ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.sol-spin {
+  animation: sol-spin 1s linear infinite;
+}
+
+@keyframes sol-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Oxium layout: 3 coloane – pe mobil stack vertical */
+.sol-trade-page .sei-top-three {
+  grid-template-columns: 1fr 300px minmax(300px, 440px);
+}
+@media (max-width: 900px) {
+  .sol-trade-page .sei-top-three {
+    grid-template-columns: 1fr !important;
+  }
+
+  .sol-terminal-hero,
+  .sol-terminal-grid,
+  .sol-ota-status-grid,
+  .sol-assisted-grid,
+  .sol-perps-form {
+    grid-template-columns: 1fr;
+  }
+
+  .sol-terminal-metrics {
+    justify-content: flex-start;
+  }
+
+  .sol-perps-provider-grid {
+    grid-template-columns: 1fr;
+  }
+}

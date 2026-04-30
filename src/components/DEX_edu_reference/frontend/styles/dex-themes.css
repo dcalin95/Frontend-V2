@@ -1,0 +1,380 @@
+/**
+ * DEX Global Display Themes
+ *
+ * Fiecare temă schimbă: culori, spațiere (densitate), raze, umbre, tipografie.
+ * Nu doar nuanțe – diferențe vizibile de „feel” (compact vs aerisit, flat vs elevate).
+ */
+
+/* ========== SONNET – compact, colțuri ascuțite, umbre discrete ========== */
+.dex-theme-sonnet {
+  /* Culori – MANDATORY: background negru #000000 peste tot (docs/DEX_THEMES.md, docs/AI_CONTEXT.md) */
+  --ds-bg-base: #000000;
+  --ds-bg-surface: #000000;
+  --ds-bg-elevated: #000000;
+  --ds-bg-hover: #000000;
+  --ds-bg-active: #000000;
+  --ds-text-primary: #fafafa;
+  --ds-text-secondary: #a1a1aa;
+  --ds-text-tertiary: #71717a;
+  --ds-text-disabled: #52525b;
+  --ds-border-color: #27272a;
+  --ds-border-color-light: #3f3f46;
+  --ds-border-color-focus: #3b82f6;
+  --ds-accent: #3b82f6;
+  --ds-accent-rgb: 59, 130, 246;
+  --ds-color-primary: #fafafa;
+  --ds-color-success: #22c55e;
+  --ds-color-error: #ef4444;
+  --ds-color-warning: #f59e0b;
+  --ds-color-info: #3b82f6;
+
+  /* Formă: colțuri mai ascuțite */
+  --ds-radius-md: 6px;
+  --ds-radius-lg: 10px;
+  --ds-radius-xl: 14px;
+  --border-radius: 6px;
+  --border-radius-lg: 10px;
+
+  /* Umbre: discrete, flat */
+  --ds-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --ds-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --ds-shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.35);
+
+  /* Spațiere: compact */
+  --spacing-xs: 0.2rem;
+  --spacing-sm: 0.4rem;
+  --spacing-md: 0.75rem;
+  --spacing-lg: 1.125rem;
+  --spacing-xl: 1.5rem;
+  --spacing-2xl: 2rem;
+
+  /* Tipografie: standard */
+  --font-size-xs: 0.7rem;
+  --font-size-sm: 0.8125rem;
+  --font-size-base: 0.875rem;
+  --font-size-lg: 1rem;
+  --font-size-xl: 1.125rem;
+  --font-size-2xl: 1.25rem;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  --ds-focus-ring-color: #3b82f6;
+  --ds-focus-ring-box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35);
+
+  --bg-primary: #000000;
+  --bg-secondary: #000000;
+  --bg-tertiary: #000000;
+  --bg-dark: #000000;
+  --color-primary: #3b82f6;
+  --color-primary-dark: #2563eb;
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-white: #ffffff;
+  --border-color: #27272a;
+  --bg: #000000;
+  --surface: #000000;
+  --surfaceHover: #000000;
+  --border: #27272a;
+  --text: #fafafa;
+  --muted: #71717a;
+  --accent: #3b82f6;
+  /* Aliasuri pentru ShortOpsPanel și alte componente care le folosesc */
+  --ds-surface-1: #0f172a;
+  --ds-surface-2: #1e293b;
+  --ds-warning-muted: #422006;
+  --ds-danger-muted: #450a0a;
+  --ds-warning: #f59e0b;
+  --ds-danger: #ef4444;
+  --ds-success: #22c55e;
+  --ds-muted: #a1a1aa;
+  --ds-border: #27272a;
+}
+
+/* ========== CLAUDE – cald, borduri groase, umbre puternice, titluri bold ========== */
+.dex-theme-claude {
+  /* MANDATORY: background negru #000000 (docs/DEX_THEMES.md) */
+  --ds-bg-base: #000000;
+  --ds-bg-surface: #000000;
+  --ds-bg-elevated: #000000;
+  --ds-bg-hover: #000000;
+  --ds-bg-active: #000000;
+  --ds-text-primary: #fef3e2;
+  --ds-text-secondary: #c4b8a8;
+  --ds-text-tertiary: #8a7f72;
+  --ds-text-disabled: #5c544a;
+  --ds-border-color: #3d362c;
+  --ds-border-color-light: #4a4238;
+  --ds-border-color-focus: #f59e0b;
+  --ds-accent: #f59e0b;
+  --ds-accent-rgb: 245, 158, 11;
+  --ds-color-primary: #fef3e2;
+  --ds-color-success: #22c55e;
+  --ds-color-error: #ef4444;
+  --ds-color-warning: #f59e0b;
+  --ds-color-info: #3b82f6;
+
+  /* Formă: rotunjit, „soft” */
+  --ds-radius-md: 10px;
+  --ds-radius-lg: 16px;
+  --ds-radius-xl: 22px;
+  --border-radius: 10px;
+  --border-radius-lg: 16px;
+
+  /* Umbre: puternice, carduri „ridicate” */
+  --ds-shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.4);
+  --ds-shadow-md: 0 6px 20px rgba(0, 0, 0, 0.5);
+  --ds-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.4);
+  --shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
+
+  /* Spațiere: generoasă */
+  --spacing-xs: 0.3rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 2.5rem;
+
+  /* Tipografie: titluri mai bold */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 0.9375rem;
+  --font-size-lg: 1.0625rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 700;
+
+  --ds-focus-ring-color: #f59e0b;
+  --ds-focus-ring-box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.4);
+
+  --bg-primary: #000000;
+  --bg-secondary: #000000;
+  --bg-tertiary: #000000;
+  --bg-dark: #000000;
+  --color-primary: #f59e0b;
+  --color-primary-dark: #d97706;
+  --text-primary: #fef3e2;
+  --text-secondary: #c4b8a8;
+  --text-white: #ffffff;
+  --border-color: #3d362c;
+  --bg: #000000;
+  --surface: #000000;
+  --surfaceHover: #000000;
+  --border: #3d362c;
+  --text: #fef3e2;
+  --muted: #8a7f72;
+  --accent: #f59e0b;
+  --ds-surface-1: #1a1612;
+  --ds-surface-2: #252019;
+  --ds-warning-muted: #422006;
+  --ds-danger-muted: #450a0a;
+  --ds-warning: #f59e0b;
+  --ds-danger: #ef4444;
+  --ds-success: #22c55e;
+  --ds-muted: #c4b8a8;
+  --ds-border: #3d362c;
+}
+
+/* ========== GEMINI – aerisit, colțuri foarte rotunjite, umbre cu glow violet ========== */
+.dex-theme-gemini {
+  /* MANDATORY: background negru #000000 (docs/DEX_THEMES.md) */
+  --ds-bg-base: #000000;
+  --ds-bg-surface: #000000;
+  --ds-bg-elevated: #000000;
+  --ds-bg-hover: #000000;
+  --ds-bg-active: #000000;
+  --ds-text-primary: #f5f3ff;
+  --ds-text-secondary: #a5a0b8;
+  --ds-text-tertiary: #7c7694;
+  --ds-text-disabled: #5c5670;
+  --ds-border-color: #2a2638;
+  --ds-border-color-light: #3d3654;
+  --ds-border-color-focus: #8b5cf6;
+  --ds-accent: #8b5cf6;
+  --ds-accent-rgb: 139, 92, 246;
+  --ds-color-primary: #f5f3ff;
+  --ds-color-success: #22c55e;
+  --ds-color-error: #ef4444;
+  --ds-color-warning: #f59e0b;
+  --ds-color-info: #8b5cf6;
+
+  /* Formă: foarte rotunjit, „pill” style */
+  --ds-radius-md: 12px;
+  --ds-radius-lg: 18px;
+  --ds-radius-xl: 24px;
+  --border-radius: 12px;
+  --border-radius-lg: 18px;
+
+  /* Umbre: glow violet discret */
+  --ds-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35), 0 0 12px rgba(139, 92, 246, 0.08);
+  --ds-shadow-md: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 24px rgba(139, 92, 246, 0.1);
+  --ds-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 32px rgba(139, 92, 246, 0.12);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35), 0 0 12px rgba(139, 92, 246, 0.08);
+  --shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 16px rgba(139, 92, 246, 0.08);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 24px rgba(139, 92, 246, 0.1);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 32px rgba(139, 92, 246, 0.12);
+
+  /* Spațiere: foarte aerisit */
+  --spacing-xs: 0.35rem;
+  --spacing-sm: 0.6rem;
+  --spacing-md: 1.125rem;
+  --spacing-lg: 1.75rem;
+  --spacing-xl: 2.25rem;
+  --spacing-2xl: 3rem;
+
+  /* Tipografie: text ușor mai mare, headings mai ușori */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 0.9375rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.3125rem;
+  --font-size-2xl: 1.625rem;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  --ds-focus-ring-color: #8b5cf6;
+  --ds-focus-ring-box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.35);
+
+  --bg-primary: #000000;
+  --bg-secondary: #000000;
+  --bg-tertiary: #000000;
+  --bg-dark: #000000;
+  --color-primary: #8b5cf6;
+  --color-primary-dark: #7c3aed;
+  --text-primary: #f5f3ff;
+  --text-secondary: #a5a0b8;
+  --text-white: #ffffff;
+  --border-color: #2a2638;
+  --bg: #000000;
+  --surface: #000000;
+  --surfaceHover: #000000;
+  --border: #2a2638;
+  --text: #f5f3ff;
+  --muted: #7c7694;
+  --accent: #8b5cf6;
+  --ds-surface-1: #15131c;
+  --ds-surface-2: #1e1b28;
+  --ds-warning-muted: #3d2a4a;
+  --ds-danger-muted: #3d1a1a;
+  --ds-warning: #f59e0b;
+  --ds-danger: #ef4444;
+  --ds-success: #22c55e;
+  --ds-muted: #a5a0b8;
+  --ds-border: #2a2638;
+}
+
+/* ========== DEFAULT – neutru, aliniat la design-system-v1 :root ========== */
+.dex-theme-default {
+  --ds-bg-base: #000000;
+  --ds-bg-surface: #000000;
+  --ds-bg-elevated: #000000;
+  --ds-bg-hover: #000000;
+  --ds-bg-active: #000000;
+  --ds-text-primary: #ffffff;
+  --ds-text-secondary: #9ca3af;
+  --ds-text-tertiary: #6b7280;
+  --ds-text-disabled: #4b5563;
+  --ds-border-color: #1f1f1f;
+  --ds-border-color-light: #2a2a2a;
+  --ds-border-color-focus: #3a3a3a;
+  --ds-accent: #4facfe;
+  --ds-accent-rgb: 79, 172, 254;
+  --ds-color-primary: #ffffff;
+  --ds-color-success: #22c55e;
+  --ds-color-error: #ef4444;
+  --ds-color-warning: #f59e0b;
+  --ds-color-info: #3b82f6;
+  --ds-radius-md: 8px;
+  --ds-radius-lg: 12px;
+  --ds-radius-xl: 16px;
+  --border-radius: 8px;
+  --border-radius-lg: 12px;
+  --ds-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --ds-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
+  --ds-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.3);
+  --ds-focus-ring-color: #4facfe;
+  --ds-focus-ring-box-shadow: 0 0 0 2px rgba(79, 172, 254, 0.3);
+  --bg-primary: #000000;
+  --bg-secondary: #000000;
+  --bg-tertiary: #000000;
+  --bg-dark: #000000;
+  --color-primary: #4facfe;
+  --color-primary-dark: #3b82f6;
+  --text-primary: #ffffff;
+  --text-secondary: #9ca3af;
+  --text-white: #ffffff;
+  --border-color: #1f1f1f;
+  --bg: #000000;
+  --surface: #000000;
+  --surfaceHover: #000000;
+  --border: #1f1f1f;
+  --text: #ffffff;
+  --muted: #6b7280;
+  --accent: #4facfe;
+  --ds-surface-1: #0f172a;
+  --ds-surface-2: #1e293b;
+  --ds-warning-muted: #1e3a5f;
+  --ds-danger-muted: #3d1a1a;
+  --ds-warning: #f59e0b;
+  --ds-danger: #ef4444;
+  --ds-success: #22c55e;
+  --ds-muted: #9ca3af;
+  --ds-border: #1f1f1f;
+}
+
+/* ---------- Semnături vizuale per temă: fără linie sub header / lângă sidebar ---------- */
+/* Liniile galbene/colorate sub header și lângă sidebar au fost eliminate la cerere. */
+.dex-theme-sonnet .ai-trading-sidebar,
+.dex-theme-claude .ai-trading-sidebar,
+.dex-theme-gemini .ai-trading-sidebar,
+.dex-theme-default .ai-trading-sidebar {
+  border-left: none;
+  border-right: none;
+  box-shadow: none;
+}
+.dex-theme-sonnet .ai-trading-header,
+.dex-theme-claude .ai-trading-header,
+.dex-theme-gemini .ai-trading-header,
+.dex-theme-default .ai-trading-header {
+  border-bottom: none;
+  box-shadow: none;
+}
+
+/* ---------- Gemini: sidebar fără deformare, scrollbar subțire ---------- */
+.dex-theme-gemini .ai-trading-sidebar {
+  width: 180px !important;
+  min-width: 180px !important;
+  max-width: 180px !important;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ds-border-color-light) transparent;
+}
+.dex-theme-gemini .ai-trading-sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.dex-theme-gemini .ai-trading-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.dex-theme-gemini .ai-trading-sidebar::-webkit-scrollbar-thumb {
+  background: var(--ds-border-color-light);
+  border-radius: 3px;
+}
+.dex-theme-gemini .ai-trading-sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--ds-border-color-focus);
+}
+
+/* OTA accent rămâne verde în toate temele (brand OTA) */
+.dex-theme-sonnet,
+.dex-theme-claude,
+.dex-theme-gemini,
+.dex-theme-default {
+  --ds-accent-ota: #14f195;
+}

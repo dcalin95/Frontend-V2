@@ -1,0 +1,603 @@
+/**
+ * OTA SEI LP Panel – stilul Sonnet, aliniat cu ota-sei-micro-profit.css
+ * /dex/ota/sei → LP Market Making section
+ */
+
+.ota-sei-lp-panel {
+  --lp-accent: var(--ds-accent, #6366f1);
+  --lp-accent-dim: rgba(99, 102, 241, 0.12);
+  --lp-success: var(--ds-success, #22c55e);
+  --lp-success-dim: rgba(34, 197, 94, 0.10);
+  --lp-warning: #fbbf24;
+  --lp-danger: #ef4444;
+  --lp-surface: var(--ds-bg-surface, #18181b);
+  --lp-block: rgba(255, 255, 255, 0.03);
+  --lp-border: var(--ds-border-color, #27272a);
+  --lp-radius: 10px;
+  --lp-radius-sm: 6px;
+
+  position: relative;
+  margin-top: 20px;
+  padding: 0 0 0 4px;
+  border-radius: var(--lp-radius);
+  background: var(--lp-surface);
+  border: 1px solid var(--lp-border);
+  overflow: hidden;
+}
+
+/* Accent bar stânga (identic cu ota-sei-micro-profit) */
+.ota-sei-lp-panel::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--lp-accent);
+  border-radius: 4px 0 0 4px;
+}
+
+/* ---- Toggle row (header colapsibil) ---- */
+.ota-sei-lp-panel__toggle-row {
+  width: 100%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 12px 14px 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+
+.ota-sei-lp-panel__toggle-row[aria-expanded="true"] {
+  border-bottom-color: var(--lp-border);
+}
+
+.ota-sei-lp-panel__toggle-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.ota-sei-lp-panel__toggle-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ds-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.ota-sei-lp-panel__toggle-sub {
+  font-size: 11px;
+  color: var(--ds-text-secondary);
+}
+
+.ota-sei-lp-panel__toggle-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ds-text-secondary);
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.ota-sei-lp-panel__toggle-stats {
+  font-size: 11px;
+  color: var(--ds-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Body (expandat) ---- */
+.ota-sei-lp-panel__body {
+  padding: 12px 14px 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Heading (deprecated – păstrat pentru compatibilitate) */
+.ota-sei-lp-panel__heading {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0;
+  padding: 16px 18px 10px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: -0.02em;
+  color: var(--ds-text-primary);
+  border-bottom: 1px solid var(--lp-border);
+}
+
+.ota-sei-lp-panel__heading-icon {
+  color: var(--lp-accent);
+  flex-shrink: 0;
+}
+
+.ota-sei-lp-panel__heading-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ota-sei-lp-panel__subtitle {
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+  margin: 0;
+  padding: 0 18px 14px 18px;
+  line-height: 1.45;
+}
+
+/* ---- APY Badge ---- */
+.ota-sei-lp-panel__apy-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 20px;
+  background: var(--lp-success-dim);
+  color: var(--lp-success);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  white-space: nowrap;
+}
+
+/* ---- Pool Stats Row (deprecated – acum în toggle-stats) ---- */
+.ota-sei-lp-panel__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--lp-border);
+  border-bottom: 1px solid var(--lp-border);
+}
+
+.ota-sei-lp-panel__stat {
+  padding: 10px 14px;
+  background: var(--lp-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ota-sei-lp-panel__stat-label {
+  font-size: 10px;
+  color: var(--ds-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ota-sei-lp-panel__stat-value {
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--ds-text-primary);
+}
+
+/* ---- Two inputs side by side ---- */
+.ota-sei-lp-panel__two-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* ---- Poziția mea (compact inline) ---- */
+.ota-sei-lp-panel__position {
+  padding: 8px 12px;
+  border-radius: var(--lp-radius-sm);
+  background: var(--lp-success-dim);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ota-sei-lp-panel__position-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--lp-success);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.ota-sei-lp-panel__position-nums {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ds-text-primary);
+}
+
+/* ---- Tabs ---- */
+.ota-sei-lp-panel__tabs {
+  display: flex;
+  border-bottom: 1px solid var(--lp-border);
+}
+
+.ota-sei-lp-panel__tab {
+  flex: 1;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ds-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.ota-sei-lp-panel__tab:hover:not(:disabled) {
+  color: var(--ds-text-primary);
+}
+
+.ota-sei-lp-panel__tab--active {
+  color: var(--lp-accent);
+  border-bottom-color: var(--lp-accent);
+  font-weight: 600;
+}
+
+.ota-sei-lp-panel__tab:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ---- Tab body ---- */
+.ota-sei-lp-panel__tab-body {
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ---- Form rows ---- */
+.ota-sei-lp-panel__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ota-sei-lp-panel__label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ds-text-secondary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ota-sei-lp-panel__label-usd {
+  font-size: 11px;
+  color: var(--lp-accent);
+}
+
+.ota-sei-lp-panel__input {
+  width: 100%;
+  padding: 9px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--lp-border);
+  border-radius: var(--lp-radius-sm);
+  color: var(--ds-text-primary);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+
+.ota-sei-lp-panel__input:focus {
+  border-color: var(--lp-accent);
+}
+
+/* ---- Slippage row ---- */
+.ota-sei-lp-panel__slippage-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+}
+
+.ota-sei-lp-panel__slippage-btn {
+  padding: 3px 9px;
+  border-radius: var(--lp-radius-sm);
+  border: 1px solid var(--lp-border);
+  background: transparent;
+  color: var(--ds-text-secondary);
+  cursor: pointer;
+  font-size: 11px;
+  transition: all 0.15s;
+}
+
+.ota-sei-lp-panel__slippage-btn--active,
+.ota-sei-lp-panel__slippage-btn:hover {
+  border-color: var(--lp-accent);
+  color: var(--lp-accent);
+  background: var(--lp-accent-dim);
+}
+
+/* ---- Ratio hint ---- */
+.ota-sei-lp-panel__ratio-hint {
+  font-size: 11px;
+  color: var(--ds-text-secondary);
+  text-align: center;
+  padding: 4px 0 0;
+}
+
+/* ---- Total value hint ---- */
+.ota-sei-lp-panel__total {
+  text-align: right;
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+}
+
+.ota-sei-lp-panel__total strong {
+  color: var(--lp-success);
+}
+
+/* ---- Hint info row ---- */
+.ota-sei-lp-panel__hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+  line-height: 1.5;
+}
+
+/* ---- Not connected ---- */
+.ota-sei-lp-panel__not-connected {
+  text-align: center;
+  font-size: 13px;
+  color: var(--ds-text-secondary);
+  padding: 16px 0;
+}
+
+/* ---- Remove slider ---- */
+.ota-sei-lp-panel__slider {
+  width: 100%;
+  accent-color: var(--lp-accent);
+}
+
+.ota-sei-lp-panel__slider-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--ds-text-secondary);
+}
+
+.ota-sei-lp-panel__pct-btn {
+  padding: 2px 7px;
+  border-radius: var(--lp-radius-sm);
+  border: 1px solid var(--lp-border);
+  background: transparent;
+  color: var(--ds-text-secondary);
+  cursor: pointer;
+  font-size: 11px;
+  transition: all 0.15s;
+}
+
+.ota-sei-lp-panel__pct-btn--active,
+.ota-sei-lp-panel__pct-btn:hover {
+  border-color: var(--lp-accent);
+  color: var(--lp-accent);
+}
+
+/* ---- Preview block ---- */
+.ota-sei-lp-panel__preview {
+  background: var(--lp-block);
+  border-radius: var(--lp-radius-sm);
+  border: 1px solid var(--lp-border);
+  padding: 10px 14px;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ota-sei-lp-panel__preview-label {
+  font-size: 11px;
+  color: var(--ds-text-secondary);
+  margin-bottom: 4px;
+}
+
+.ota-sei-lp-panel__preview-row {
+  font-variant-numeric: tabular-nums;
+  color: var(--ds-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ota-sei-lp-panel__preview-row span {
+  color: var(--ds-text-secondary);
+  font-size: 11px;
+}
+
+/* ---- Buttons ---- */
+.ota-sei-lp-panel__btn {
+  width: 100%;
+  padding: 11px 16px;
+  border-radius: var(--lp-radius-sm);
+  border: none;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: opacity 0.15s;
+}
+
+.ota-sei-lp-panel__btn--add {
+  background: linear-gradient(135deg, var(--lp-accent), #6366f1);
+  color: #fff;
+}
+
+.ota-sei-lp-panel__btn--remove {
+  background: rgba(239, 68, 68, 0.75);
+  color: #fff;
+}
+
+.ota-sei-lp-panel__btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ---- Success result ---- */
+.ota-sei-lp-panel__result {
+  padding: 10px 14px;
+  border-radius: var(--lp-radius-sm);
+  background: var(--lp-success-dim);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  font-size: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ota-sei-lp-panel__result-label {
+  color: var(--lp-success);
+  font-weight: 600;
+}
+
+.ota-sei-lp-panel__result-link {
+  color: var(--lp-accent);
+  word-break: break-all;
+  text-decoration: none;
+}
+
+.ota-sei-lp-panel__result-link:hover {
+  text-decoration: underline;
+}
+
+/* ---- Error ---- */
+.ota-sei-lp-panel__error {
+  padding: 10px 14px;
+  border-radius: var(--lp-radius-sm);
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  font-size: 12px;
+  color: #f87171;
+  word-break: break-word;
+  line-height: 1.5;
+}
+
+/* ---- Info tab ---- */
+.ota-sei-lp-panel__info-block {
+  background: var(--lp-accent-dim);
+  border-radius: var(--lp-radius-sm);
+  padding: 14px;
+  font-size: 12px;
+}
+
+.ota-sei-lp-panel__info-title {
+  font-weight: 700;
+  color: var(--ds-text-primary);
+  margin: 0 0 8px;
+  font-size: 13px;
+}
+
+.ota-sei-lp-panel__info-list {
+  margin: 0;
+  padding-left: 16px;
+  line-height: 1.8;
+  color: var(--ds-text-secondary);
+}
+
+.ota-sei-lp-panel__info-list strong {
+  color: var(--lp-success);
+}
+
+.ota-sei-lp-panel__warn-block {
+  background: rgba(251, 191, 36, 0.06);
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  border-radius: var(--lp-radius-sm);
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  line-height: 1.55;
+}
+
+.ota-sei-lp-panel__warn-title {
+  color: var(--lp-warning);
+  font-weight: 600;
+  margin: 0 0 4px;
+  font-size: 12px;
+}
+
+.ota-sei-lp-panel__warn-body {
+  color: var(--ds-text-secondary);
+  line-height: 1.6;
+  margin: 0;
+  font-size: 12px;
+}
+
+.ota-sei-lp-panel__info-links {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+}
+
+.ota-sei-lp-panel__info-links a {
+  color: var(--lp-accent);
+  text-decoration: none;
+}
+
+.ota-sei-lp-panel__info-links a:hover {
+  text-decoration: underline;
+}
+
+.ota-sei-lp-panel__contract {
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  word-break: break-all;
+}
+
+/* ---- Icon buttons ---- */
+.ota-sei-lp-panel__icon-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--ds-text-secondary);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  border-radius: var(--lp-radius-sm);
+  transition: color 0.15s;
+}
+
+.ota-sei-lp-panel__icon-btn:hover {
+  color: var(--ds-text-primary);
+}
+
+/* ---- Spinner ---- */
+@keyframes lp-spin {
+  to { transform: rotate(360deg); }
+}
+.ota-sei-lp-panel__spin {
+  animation: lp-spin 0.8s linear infinite;
+}
+
+/* ---- No position ---- */
+.ota-sei-lp-panel__no-position {
+  text-align: center;
+  padding: 20px 0;
+  font-size: 13px;
+  color: var(--ds-text-secondary);
+}

@@ -1,0 +1,194 @@
+/**
+ * LLM Monitoring Panel – preț, P&L, sursă preț, sfaturi
+ */
+
+.llm-monitoring-panel {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--ds-border-color, rgba(255, 255, 255, 0.1));
+  border-radius: 8px;
+  background: var(--ds-bg-surface, #000000);
+}
+
+.llm-monitoring-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.llm-monitoring-panel-icon {
+  color: #a78bfa;
+}
+
+.llm-monitoring-panel-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ds-text-primary, #f9fafb);
+}
+
+.llm-monitoring-panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.llm-monitoring-section {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ds-border-color, rgba(255, 255, 255, 0.06));
+}
+
+.llm-monitoring-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.llm-monitoring-section-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 6px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ds-text-secondary, #9ca3af);
+}
+
+.llm-monitoring-section-desc {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+}
+
+.llm-monitoring-sources {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+}
+
+.llm-monitoring-sources li {
+  margin-bottom: 4px;
+}
+
+.llm-monitoring-source-label {
+  font-weight: 500;
+  color: var(--ds-text-primary);
+}
+
+.llm-monitoring-source-desc {
+  margin-left: 6px;
+  color: var(--ds-text-secondary);
+}
+
+.llm-monitoring-pnl-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  font-size: 13px;
+}
+
+.llm-monitoring-pnl-label {
+  color: var(--ds-text-secondary);
+}
+
+.llm-monitoring-pnl-value {
+  color: var(--ds-text-primary);
+  font-weight: 500;
+}
+
+.llm-monitoring-pnl.positive {
+  color: #10b981;
+}
+
+.llm-monitoring-pnl.negative {
+  color: #ef4444;
+}
+
+.llm-monitoring-tips-desc {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+  line-height: 1.5;
+}
+
+.llm-monitoring-tips-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #a78bfa;
+  text-decoration: none;
+}
+
+.llm-monitoring-tips-link:hover {
+  text-decoration: underline;
+}
+
+.llm-monitoring-advice-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  padding: 6px 12px;
+  background: rgba(167, 139, 250, 0.12);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  border-radius: 6px;
+  color: #a78bfa;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.llm-monitoring-advice-btn:hover:not(:disabled) {
+  background: rgba(167, 139, 250, 0.2);
+  border-color: rgba(167, 139, 250, 0.45);
+}
+
+.llm-monitoring-advice-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.llm-monitoring-advice-btn .spin {
+  animation: llm-monitoring-spin 0.8s linear infinite;
+}
+
+@keyframes llm-monitoring-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.llm-monitoring-advice-block {
+  margin: 8px 0;
+  padding: 8px 10px;
+  background: var(--ds-bg-base, #000000);
+  border-radius: 6px;
+  border-left: 3px solid #a78bfa;
+}
+
+.llm-monitoring-advice-signal {
+  margin: 0 0 6px 0;
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+}
+
+.llm-monitoring-advice-signal strong {
+  color: var(--ds-text-primary);
+}
+
+.llm-monitoring-advice-text {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ds-text-primary);
+  line-height: 1.5;
+}
+
+.llm-monitoring-advice-provenance {
+  margin: 8px 0 0 0;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 11px;
+  color: var(--ds-text-secondary, #9ca3af);
+  opacity: 0.9;
+}

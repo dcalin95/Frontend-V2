@@ -1,0 +1,473 @@
+/**
+ * 🎨 OTA Conditions Editor Styles - Sonnet / Anthropic
+ * 
+ * All components use Sonnet tokens for correct proportions
+ * Background: Apple black (#000000)
+ */
+
+/* Main Container - Panel (Sonnet) */
+.ota-conditions-editor {
+  background-color: var(--ds-bg-surface); /* #000000 - Apple black */
+  border: 1px solid var(--ds-border-color); /* 1px subtle border */
+  border-radius: var(--ds-radius-lg); /* 14px - Sonnet standard */
+  padding: var(--ds-spacing-6); /* 24px - Sonnet standard */
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-4); /* 16px - Sonnet standard */
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Header - Standard Panel Header (Sonnet) */
+.ota-conditions-editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--ds-spacing-3); /* 12px */
+  margin-bottom: var(--ds-spacing-4); /* 16px */
+  padding-bottom: var(--ds-spacing-4); /* 16px */
+  border-bottom: 1px solid var(--ds-border-color); /* Subtle divider */
+  min-height: var(--ds-table-header-height); /* 44px - consistent header height */
+}
+
+.ota-conditions-editor-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2); /* 8px */
+}
+
+.ota-conditions-editor-logo {
+  margin-right: var(--ds-spacing-1); /* 4px */
+}
+
+.ota-conditions-editor-icon {
+  color: var(--ds-accent); /* Sonnet accent */
+}
+
+.ota-conditions-editor-title {
+  font-size: var(--ds-font-size-md); /* 16px - card titles */
+  font-weight: var(--ds-font-weight-semibold); /* 600 */
+  line-height: var(--ds-line-height-normal); /* 22px */
+  color: var(--ds-text-primary); /* Sonnet text */
+  margin: 0;
+}
+
+/* Save Button - Sonnet Button Primary */
+.ota-conditions-editor-save-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-2); /* 8px */
+  height: var(--ds-button-height-md); /* 40px - Sonnet */
+  padding: 0 var(--ds-spacing-4); /* 16px - Sonnet */
+  background-color: var(--ds-accent); /* Sonnet accent (solid blue) */
+  color: var(--ds-text-primary); /* Sonnet text (white) */
+  border: 1px solid var(--ds-accent); /* Sonnet accent */
+  border-radius: var(--ds-radius-md); /* 10px - Sonnet */
+  font-size: var(--ds-font-size-base); /* 14px - Sonnet */
+  font-weight: var(--ds-font-weight-medium); /* 500 */
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 150ms, border-color 150ms;
+  min-width: 140px;
+  white-space: nowrap;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+.ota-conditions-editor-save-btn:hover:not(:disabled) {
+  background-color: #2563eb; /* Slightly darker blue */
+  border-color: #2563eb;
+}
+
+.ota-conditions-editor-save-btn:active:not(:disabled) {
+  transform: translateY(1px); /* Subtle active */
+}
+
+.ota-conditions-editor-save-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring-box-shadow); /* Sonnet focus ring */
+}
+
+.ota-conditions-editor-save-btn:disabled {
+  opacity: 0.55; /* Sonnet disabled */
+  cursor: not-allowed;
+}
+
+/* Description - Body Text (Sonnet) */
+.ota-conditions-editor-description {
+  color: var(--ds-text-tertiary); /* Sonnet muted text */
+  font-size: var(--ds-font-size-base); /* 14px */
+  line-height: var(--ds-line-height-normal); /* 20px */
+  margin: 0;
+}
+
+/* Content - Body (Sonnet) */
+.ota-conditions-editor-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-4); /* 16px - consistent vertical spacing */
+}
+
+.ota-conditions-editor-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-3); /* 12px */
+}
+
+.ota-conditions-editor-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--ds-spacing-3); /* 12px */
+  flex-wrap: wrap;
+}
+
+.ota-conditions-editor-section-title {
+  font-size: var(--ds-font-size-md); /* 16px */
+  font-weight: var(--ds-font-weight-semibold); /* 600 */
+  line-height: var(--ds-line-height-normal); /* 22px */
+  color: var(--ds-text-primary); /* Sonnet text */
+  margin: 0;
+}
+
+/* Add Button - Sonnet Button Ghost */
+.ota-conditions-editor-add-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-1); /* 4px */
+  height: var(--ds-button-height-sm); /* 34px - small button */
+  padding: 0 var(--ds-spacing-3); /* 12px */
+  background-color: transparent; /* Sonnet ghost */
+  border: 1px solid var(--ds-border-color); /* Sonnet border */
+  border-radius: var(--ds-radius-md); /* 10px */
+  color: var(--ds-text-primary); /* Sonnet text */
+  font-size: 13px; /* Small button font */
+  font-weight: var(--ds-font-weight-medium); /* 500 */
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 150ms, border-color 150ms;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.ota-conditions-editor-add-btn:hover {
+  background-color: var(--ds-bg-hover); /* Sonnet hover */
+  border-color: var(--ds-bg-hover);
+}
+
+.ota-conditions-editor-add-btn:active {
+  transform: translateY(1px); /* Subtle active */
+}
+
+.ota-conditions-editor-add-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring-box-shadow); /* Sonnet focus ring */
+}
+
+/* Risk Grid - Grid (Sonnet) */
+.ota-conditions-editor-risk-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--ds-spacing-3); /* 12px - consistent gap */
+}
+
+/* Risk Card - Panel (Sonnet) */
+.ota-conditions-editor-risk-card {
+  background-color: var(--ds-bg-surface); /* #000000 */
+  border: 1px solid var(--ds-border-color); /* Subtle border */
+  border-radius: var(--ds-radius-lg); /* 14px */
+  padding: var(--ds-spacing-4); /* 16px */
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-3); /* 12px */
+  box-sizing: border-box;
+}
+
+/* Risk Label - Row (Sonnet) */
+.ota-conditions-editor-risk-label {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-3); /* 12px */
+  font-size: var(--ds-font-size-base); /* 14px */
+  font-weight: var(--ds-font-weight-medium); /* 500 */
+  color: var(--ds-text-primary); /* Sonnet text */
+  line-height: var(--ds-line-height-normal); /* 20px */
+  cursor: pointer;
+}
+
+.ota-conditions-editor-risk-label input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: var(--ds-accent); /* Sonnet accent */
+  flex-shrink: 0;
+}
+
+/* Risk Inputs - Row (Sonnet) */
+.ota-conditions-editor-risk-inputs {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-3); /* 12px */
+}
+
+/* Risk Type - Select Small (Sonnet) */
+.ota-conditions-editor-risk-type {
+  height: var(--ds-input-height-md); /* 40px - Sonnet input height */
+  padding: 0 var(--ds-spacing-3); /* 12px */
+  background-color: var(--ds-bg-surface); /* #000000 */
+  border: 1px solid var(--ds-border-color); /* Subtle border */
+  border-radius: var(--ds-radius-md); /* 10px */
+  color: var(--ds-text-primary); /* Sonnet text */
+  font-size: var(--ds-font-size-base); /* 14px */
+  font-weight: var(--ds-font-weight-medium); /* 500 */
+  line-height: var(--ds-line-height-normal); /* 20px */
+  cursor: pointer;
+  transition: border-color 150ms;
+  box-sizing: border-box;
+}
+
+.ota-conditions-editor-risk-type:hover {
+  border-color: var(--ds-bg-hover); /* Sonnet hover */
+}
+
+.ota-conditions-editor-risk-type:focus {
+  outline: none;
+  border-color: var(--ds-accent); /* Sonnet accent */
+  box-shadow: var(--ds-focus-ring-box-shadow); /* Sonnet focus ring */
+}
+
+/* Risk Value - Input (Sonnet) */
+.ota-conditions-editor-risk-value {
+  flex: 1;
+  height: var(--ds-input-height-md); /* 40px - Sonnet input height */
+  padding: 0 var(--ds-spacing-3); /* 12px */
+  background-color: var(--ds-bg-surface); /* #000000 */
+  border: 1px solid var(--ds-border-color); /* Subtle border */
+  border-radius: var(--ds-radius-md); /* 10px */
+  color: var(--ds-text-primary); /* Sonnet text */
+  font-size: var(--ds-font-size-base); /* 14px */
+  font-weight: var(--ds-font-weight-medium); /* 500 */
+  line-height: var(--ds-line-height-normal); /* 20px */
+  font-family: ui-monospace, monospace; /* Monospace for numbers */
+  transition: border-color 150ms;
+  box-sizing: border-box;
+}
+
+.ota-conditions-editor-risk-value::placeholder {
+  color: var(--ds-text-tertiary); /* Sonnet muted */
+}
+
+.ota-conditions-editor-risk-value:focus {
+  outline: none;
+  border-color: var(--ds-accent); /* Sonnet accent */
+  box-shadow: var(--ds-focus-ring-box-shadow); /* Sonnet focus ring */
+}
+
+/* Risk Unit - Text (Sonnet) */
+.ota-conditions-editor-risk-unit {
+  font-size: var(--ds-font-size-base); /* 14px */
+  color: var(--ds-text-tertiary); /* Sonnet muted */
+  line-height: var(--ds-line-height-normal); /* 20px */
+  min-width: 20px;
+  flex-shrink: 0;
+}
+
+/* Rules List - Stack (Sonnet) */
+.ota-conditions-editor-rules-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-3); /* 12px */
+}
+
+/* Rule Item - List Row (Sonnet) */
+.ota-conditions-editor-rule {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-3); /* 12px */
+  height: var(--ds-table-header-height); /* 44px - consistent row height */
+  padding: 0 var(--ds-spacing-4); /* 16px */
+  background-color: var(--ds-bg-surface); /* #000000 */
+  border: 1px solid var(--ds-border-color); /* Subtle border */
+  border-radius: var(--ds-radius-lg); /* 12px */
+  transition: background-color 150ms;
+  box-sizing: border-box;
+}
+
+.ota-conditions-editor-rule:hover {
+  background-color: var(--ds-bg-hover); /* Subtle hover */
+}
+
+.ota-conditions-editor-rule-checkbox {
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.ota-conditions-editor-rule-checkbox input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: var(--ds-accent); /* Sonnet accent */
+}
+
+/* Rule Select - Select Small (Sonnet) */
+.ota-conditions-editor-rule-select {
+  flex: 1;
+  height: var(--ds-input-height-md); /* 40px - Sonnet input height */
+  padding: 0 var(--ds-spacing-3); /* 12px */
+  background-color: var(--ds-bg-surface); /* #000000 */
+  border: 1px solid var(--ds-border-color); /* Subtle border */
+  border-radius: var(--ds-radius-md); /* 10px */
+  color: var(--ds-text-primary); /* Sonnet text */
+  font-size: var(--ds-font-size-base); /* 14px */
+  font-weight: var(--ds-font-weight-medium); /* 500 */
+  line-height: var(--ds-line-height-normal); /* 20px */
+  cursor: pointer;
+  transition: border-color 150ms;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.ota-conditions-editor-rule-select:hover {
+  border-color: var(--ds-bg-hover); /* Sonnet hover */
+}
+
+.ota-conditions-editor-rule-select:focus {
+  outline: none;
+  border-color: var(--ds-accent); /* Sonnet accent */
+  box-shadow: var(--ds-focus-ring-box-shadow); /* Sonnet focus ring */
+}
+
+/* Rule Value - Input Small (Sonnet) */
+.ota-conditions-editor-rule-value {
+  width: 120px;
+  height: var(--ds-input-height-md); /* 40px - Sonnet input height */
+  padding: 0 var(--ds-spacing-3); /* 12px */
+  background-color: var(--ds-bg-surface); /* #000000 */
+  border: 1px solid var(--ds-border-color); /* Subtle border */
+  border-radius: var(--ds-radius-md); /* 10px */
+  color: var(--ds-text-primary); /* Sonnet text */
+  font-size: var(--ds-font-size-base); /* 14px */
+  font-weight: var(--ds-font-weight-medium); /* 500 */
+  line-height: var(--ds-line-height-normal); /* 20px */
+  font-family: ui-monospace, monospace; /* Monospace for numbers */
+  transition: border-color 150ms;
+  box-sizing: border-box;
+  text-align: right; /* Right align for numbers */
+}
+
+.ota-conditions-editor-rule-value::placeholder {
+  color: var(--ds-text-tertiary); /* Sonnet muted */
+}
+
+.ota-conditions-editor-rule-value:focus {
+  outline: none;
+  border-color: var(--ds-accent); /* Sonnet accent */
+  box-shadow: var(--ds-focus-ring-box-shadow); /* Sonnet focus ring */
+}
+
+/* Rule Remove - Button Ghost Danger (Sonnet) */
+.ota-conditions-editor-rule-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ds-button-height-sm); /* 34px - square button */
+  height: var(--ds-button-height-sm); /* 34px */
+  padding: 0;
+  background-color: transparent; /* Sonnet ghost */
+  border: 1px solid transparent;
+  border-radius: var(--ds-radius-md); /* 10px */
+  color: var(--ds-text-tertiary); /* Sonnet muted */
+  cursor: pointer;
+  transition: background-color 150ms, color 150ms;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.ota-conditions-editor-rule-remove:hover {
+  background-color: var(--ds-bg-hover); /* Sonnet hover */
+  color: var(--ds-color-error); /* Sonnet danger */
+}
+
+.ota-conditions-editor-rule-remove:active {
+  transform: translateY(1px); /* Subtle active */
+}
+
+.ota-conditions-editor-rule-remove:focus-visible {
+  outline: none;
+  box-shadow: var(--ds-focus-ring-box-shadow); /* Sonnet focus ring */
+}
+
+/* Warning Banner - Sonnet Banner */
+.ota-conditions-editor-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ds-spacing-3); /* 12px */
+  padding: var(--ds-spacing-4); /* 16px */
+  background: rgba(245, 158, 11, 0.1); /* Warn tint (discreet) */
+  border: 1px solid rgba(245, 158, 11, 0.3); /* Warn border */
+  border-radius: var(--ds-radius-lg); /* 12px */
+  font-size: var(--ds-font-size-base); /* 14px */
+  color: var(--warn); /* Sonnet warn */
+  line-height: var(--ds-line-height-normal); /* 20px */
+}
+
+/* Focus styles for accessibility */
+.ota-conditions-editor-risk-label:focus-within,
+.ota-conditions-editor-rule:focus-within {
+  outline: none;
+  box-shadow: var(--ds-focus-ring-box-shadow); /* Sonnet focus ring */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ota-conditions-editor {
+    padding: var(--ds-spacing-4); /* 16px mobile */
+  }
+
+  .ota-conditions-editor-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--ds-spacing-3); /* 12px mobile */
+    margin-bottom: var(--ds-spacing-3);
+    padding-bottom: var(--ds-spacing-3);
+  }
+
+  .ota-conditions-editor-save-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .ota-conditions-editor-risk-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ota-conditions-editor-rule {
+    flex-wrap: wrap;
+    height: auto;
+    padding: var(--ds-spacing-3); /* 12px mobile */
+  }
+
+  .ota-conditions-editor-rule-value {
+    width: 100%;
+  }
+
+  .ota-conditions-editor-content {
+    gap: var(--ds-spacing-4); /* 16px - still consistent */
+  }
+}
+
+@media (max-width: 480px) {
+  .ota-conditions-editor {
+    padding: var(--ds-spacing-3); /* 12px small mobile */
+    gap: var(--ds-spacing-3); /* 12px */
+  }
+
+  .ota-conditions-editor-section-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--ds-spacing-3); /* 12px */
+  }
+
+  .ota-conditions-editor-add-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

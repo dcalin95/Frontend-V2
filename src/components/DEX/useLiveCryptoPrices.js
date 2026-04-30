@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import getCurrentBitsPrice from '../../Presale/BITSAnalytics/common/getCurrentBitsPrice';
+import backendClient from './services/backendClient';
+import { DEX_DATA_SOURCE } from './config/dataSource';
 
 /**
- * Hook pentru prețuri LIVE crypto - FĂRĂ FALLBACK HARDCODAT!
+ * Hook pentru prețuri LIVE crypto - DEV MODE with backend integration
  * ✅ Folosește componenta existentă pentru BITS price
+ * DEV MODE – Tries backend first, falls back to CoinGecko if backend unavailable
  */
 export const useLiveCryptoPrices = () => {
   const [prices, setPrices] = useState({});
@@ -30,74 +33,37 @@ export const useLiveCryptoPrices = () => {
       setLoading(true);
       setSource('LOADING...');
       
-      // Try Binance first (faster, no rate limit) - Use 24h ticker for price changes
-      try {
-        console.log('🔄 Fetching from Binance 24h Ticker API...');
-        const response = await fetch(
-          'https://api.binance.com/api/v3/ticker/24hr?symbols=["BTCUSDT","BNBUSDT","ETHUSDT","STXUSDT"]'
-        );
-        
-        if (response.ok) {
-          const data = await response.json();
-          
-          // Fetch BITS price from contract
-          const bitsPrice = await fetchBitsPrice();
-          
-          const binancePrices = {
-            BTC: parseFloat(data.find(t => t.symbol === 'BTCUSDT')?.lastPrice) || null,
-            BNB: parseFloat(data.find(t => t.symbol === 'BNBUSDT')?.lastPrice) || null,
-            ETH: parseFloat(data.find(t => t.symbol === 'ETHUSDT')?.lastPrice) || null,
-            STX: parseFloat(data.find(t => t.symbol === 'STXUSDT')?.lastPrice) || null,
-            USDT: 1.00,
-            BITS: bitsPrice,
-          };
-          
-          const binanceChanges = {
-            BTC: parseFloat(data.find(t => t.symbol === 'BTCUSDT')?.priceChangePercent) || 0,
-            BNB: parseFloat(data.find(t => t.symbol === 'BNBUSDT')?.priceChangePercent) || 0,
-            ETH: parseFloat(data.find(t => t.symbol === 'ETHUSDT')?.priceChangePercent) || 0,
-            STX: parseFloat(data.find(t => t.symbol === 'STXUSDT')?.priceChangePercent) || 0,
-            USDT: 0,
-            BITS: 0, // BITS doesn't have 24h data
-          };
-          
-          console.log('✅ LIVE PRICES FROM BINANCE + CONTRACT:', binancePrices);
-          console.log('📊 24H PRICE CHANGES:', binanceChanges);
-          
-          // Verifică dacă prețurile CRITICE sunt valide (BTC, BNB, ETH)
-          // ✅ BITS nu este obligatoriu aici (vine separat din useCellManagerData în SwapPanel)
-          const allValid = binancePrices.BTC && binancePrices.BNB && binancePrices.ETH;
-          
-          if (!allValid) {
-            console.error('❌ Some critical prices are NULL! Cannot proceed!');
-            setError('Failed to fetch critical prices');
-            setSource('ERROR');
-            setPrices({});
-            setPriceChanges({});
-            setLoading(false);
-            return;
+      // DEV MODE – Check backend health first (if AUTO or BACKEND mode)
+      let useBackend = false;
+      if (DEX_DATA_SOURCE === 'AUTO' || DEX_DATA_SOURCE === 'BACKEND') {
+        try {
+          const healthResult = await backendClient.checkBackendHealth();
+          if (healthResult.ok) {
+            useBackend = true;
+            console.log('✅ Backend is healthy, will use backend API');
+          } else {
+            console.warn('⚠️ Backend health check failed, falling back to CoinGecko:', healthResult.error);
           }
-          
-          // ⚠️ BITS poate fi null și e ok - se ia din useCellManagerData
-          if (!binancePrices.BITS) {
-            console.warn('⚠️ BITS price is NULL, but continuing with other prices...');
-          }
-          
-          setPrices(binancePrices);
-          setPriceChanges(binanceChanges);
-          setSource('Binance API + Contract');
-          setError(null);
-          setLoading(false);
-          return;
+        } catch (healthError) {
+          console.warn('⚠️ Backend health check error, falling back to CoinGecko:', healthError);
         }
-      } catch (binanceError) {
-        console.error('❌ Binance API failed:', binanceError.message);
       }
 
-      // Fallback to CoinGecko
+      // If backend is available and we want to use it, try backend first
+      // Note: Backend /market/price doesn't support batch, so for multiple tokens we still use CoinGecko
+      // But we verify backend is available first
+      if (useBackend && DEX_DATA_SOURCE === 'BACKEND') {
+        // For BACKEND-only mode, we could call backend 4 times (inefficient)
+        // For now, fall through to CoinGecko (backend is just a proxy anyway)
+        console.log('DEV MODE – Backend-only mode, but using CoinGecko for batch (backend is proxy)');
+      }
+
+      // DEV MODE – Use CoinGecko (browser-friendly, CORS-enabled)
+      // IMPORTANT: Binance API is NOT browser-safe (CORS restrictions)
+      // Binance APIs should be used ONLY behind a proxy/backend later
       console.log('🔄 Fetching from CoinGecko API...');
       const response = await fetch(
-        'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,binancecoin,ethereum,stacks&vs_currencies=usd'
+        'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,binancecoin,ethereum,stacks&vs_currencies=usd&include_24hr_change=true'
       );
       
       if (!response.ok) {
@@ -116,6 +82,15 @@ export const useLiveCryptoPrices = () => {
         BITS: bitsPrice,
       };
       
+      const coingeckoChanges = {
+        BTC: data.bitcoin?.usd_24h_change || 0,
+        BNB: data.binancecoin?.usd_24h_change || 0,
+        ETH: data.ethereum?.usd_24h_change || 0,
+        STX: data.stacks?.usd_24h_change || 0,
+        USDT: 0,
+        BITS: 0, // BITS doesn't have 24h data
+      };
+      
       // ✅ BITS nu este obligatoriu - se ia separat din useCellManagerData
       const allValid = coingeckoPrices.BTC && coingeckoPrices.BNB && coingeckoPrices.ETH;
       
@@ -127,25 +102,23 @@ export const useLiveCryptoPrices = () => {
         console.warn('⚠️ BITS price is NULL from CoinGecko, but continuing...');
       }
       
-      const coingeckoChanges = {
-        BTC: 0,
-        BNB: 0,
-        ETH: 0,
-        STX: 0,
-        USDT: 0,
-        BITS: 0,
-      };
+      // Set source label based on backend availability
+      const sourceLabel = useBackend 
+        ? 'Backend (available) + CoinGecko + Contract'
+        : 'CoinGecko (DEV fallback) + Contract';
       
-      console.log('✅ LIVE PRICES FROM COINGECKO + CONTRACT:', coingeckoPrices);
+      console.log(`✅ LIVE PRICES FROM ${sourceLabel}:`, coingeckoPrices);
       setPrices(coingeckoPrices);
-      setPriceChanges(coingeckoChanges); // CoinGecko simple/price doesn't have 24h change
-      setSource('CoinGecko API + Contract');
+      setPriceChanges(coingeckoChanges);
+      setSource(sourceLabel);
       setError(null);
     } catch (err) {
       console.error('❌ ALL APIs FAILED:', err);
       setError(err.message);
       setSource('ERROR');
-      setPrices({}); // ❌ FĂRĂ FALLBACK HARDCODAT!
+      // Don't block UI - set empty prices but allow component to render
+      setPrices({});
+      setPriceChanges({});
     } finally {
       setLoading(false);
     }
@@ -171,4 +144,3 @@ export const useLiveCryptoPrices = () => {
 };
 
 export default useLiveCryptoPrices;
-

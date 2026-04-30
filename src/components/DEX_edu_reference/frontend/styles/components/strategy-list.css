@@ -1,0 +1,46 @@
+/* Strategy List Component Styles - Binance-Inspired Refactored */
+
+.strategy-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-4);
+}
+
+.strategy-list-refreshing {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3);
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-sm);
+  margin-bottom: var(--ds-spacing-3);
+}
+
+.strategy-list-error {
+  text-align: center;
+  padding: var(--ds-spacing-6);
+}
+
+.strategy-list-error p {
+  color: var(--ds-color-error);
+  margin-bottom: var(--ds-spacing-3);
+}
+
+.strategy-list-empty {
+  padding: var(--ds-spacing-12) var(--ds-spacing-5);
+  text-align: center;
+}
+
+.strategy-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: var(--ds-spacing-4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .strategy-list-grid {
+    grid-template-columns: 1fr;
+    gap: var(--ds-spacing-3);
+  }
+}

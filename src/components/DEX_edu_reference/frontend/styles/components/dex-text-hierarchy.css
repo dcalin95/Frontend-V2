@@ -1,0 +1,102 @@
+/**
+ * 🎨 DEX Text Hierarchy - Diferențiere vizuală clară
+ * 
+ * Ierarhie de culori și sizing pentru tipuri diferite de text:
+ * 1. Titluri (Headings) - mai mari, mai bright (#ffffff)
+ * 2. Valori/Date (BTC, 10000, "Trend Following") - distincte (#e5e7eb)
+ * 3. Label-uri/Explicații (Strategy:, Token:, description) - subtile (#8b8b95)
+ * 4. Text normal - între (#d1d5db)
+ */
+
+/* ============================================
+   1. TITLURI (Headings) - Cel mai vizibil
+   ============================================ */
+.backtest-panel-title,
+.strategy-execution-panel-title,
+.backtest-panel-section-title,
+.strategy-execution-panel-section-title,
+h3, h4, h5, h6 {
+  color: #ffffff !important; /* Alb pur - cel mai vizibil */
+  font-weight: 600 !important;
+  font-size: var(--ds-font-size-md) !important;
+}
+
+/* ============================================
+   2. VALORI/DATE în Select-uri și Input-uri
+   (BTC, ETH, 10000, "Trend Following")
+   ============================================ */
+.backtest-panel-select,
+.strategy-execution-panel-select,
+.model-inference-panel-select,
+.backtest-panel-input,
+.strategy-execution-panel-input {
+  color: #e5e7eb !important; /* Gri foarte deschis - distinct pentru valori */
+  font-weight: 500 !important;
+  font-size: var(--ds-font-size-base) !important;
+}
+
+/* Valori în strategii carduri */
+.strategy-execution-panel-strategy-name,
+.backtest-panel-result-value {
+  color: #e5e7eb !important; /* Gri deschis pentru valori */
+  font-weight: 600 !important;
+}
+
+/* ============================================
+   3. LABEL-URI/EXPLICAȚII - Subtile
+   (Strategy:, Token:, description text)
+   ============================================ */
+.backtest-panel-label,
+.strategy-execution-panel-label,
+.backtest-panel-metric-label,
+.backtest-panel-result-label,
+.strategy-execution-panel-decision-label,
+.strategy-execution-panel-status-label {
+  color: #8b8b95 !important; /* Gri mediu - subtil pentru label-uri */
+  font-weight: 500 !important;
+  font-size: var(--ds-font-size-base) !important;
+}
+
+/* Text descriptiv/explicații */
+.strategy-execution-panel-strategy-description,
+.backtest-panel-strategy-description,
+.backtest-panel-metric-value {
+  color: #8b8b95 !important; /* Gri mediu pentru texte explicative */
+  font-weight: 400 !important;
+  font-size: var(--ds-table-font-size) !important;
+}
+
+.strategy-execution-panel-strategy-indicators {
+  color: #6b7280 !important; /* Gri mai închis pentru text secundar */
+  font-weight: 400 !important;
+  font-size: var(--ds-table-font-size) !important;
+}
+
+/* ============================================
+   4. TEXT NORMAL - Între
+   ============================================ */
+.backtest-panel-empty,
+.strategy-execution-panel-empty {
+  color: #d1d5db !important; /* Gri deschis pentru text normal */
+  font-weight: 400 !important;
+  font-size: var(--ds-font-size-base) !important;
+}
+
+/* ============================================
+   OVERRIDE pentru specificități
+   ============================================ */
+/* Asigură că titlurile rămân albe */
+.backtest-panel-title,
+.strategy-execution-panel-title {
+  color: #ffffff !important;
+  font-size: var(--ds-font-size-lg) !important;
+  font-weight: 600 !important;
+}
+
+/* Section titles - mai mici decât panel titles */
+.backtest-panel-section-title,
+.strategy-execution-panel-section-title {
+  color: #ffffff !important;
+  font-size: var(--ds-font-size-md) !important;
+  font-weight: 600 !important;
+}

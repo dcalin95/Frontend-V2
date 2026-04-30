@@ -9,7 +9,7 @@ body, p, a, button, input, label, span, h1, h2, h3, h4, h5, h6 {
 }
 
 /* Remove legacy experimental class */
-.laser-sharp {
+body:not([class*="dex-theme-"]) .laser-sharp {
   text-shadow: none !important;
   filter: none !important;
   -webkit-font-smoothing: antialiased !important;
@@ -186,8 +186,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* 🌌 AI SOLANA STYLE - GLOBAL HEADINGS OVERRIDE (MOBILE & DESKTOP) */
-body h1, body h2, body h3, body h4, body h5, body h6,
-.whitepaper-title, .section-title, .main-title {
+body:not(.dex-edu-active):not([class*="dex-theme-"]) h1,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) h2,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) h3,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) h4,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) h5,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) h6,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) .whitepaper-title,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) .section-title,
+body:not(.dex-edu-active):not([class*="dex-theme-"]) .main-title {
   background: linear-gradient(135deg, #00FFA3 0%, #DC1FFF 100%) !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
@@ -500,4 +507,249 @@ canvas#starfield-canvas {
   }
 }
 /* (removed) Web3Modal/AppKit/WCM CSS overrides — we do not embed Web3Modal in this app */
+
+/* DEX global visual bridge: apply the real DEX design tokens and font to host pages. */
+body[class*="dex-theme-"],
+body[class*="dex-theme-"] #root,
+body[class*="dex-theme-"] .app-container,
+body[class*="dex-theme-"] .content-container,
+body[class*="dex-theme-"] .content-container-standalone {
+  font-family: var(--ds-font-family-sans) !important;
+  background: var(--ds-bg-base) !important;
+  color: var(--ds-text-primary) !important;
+}
+
+body[class*="dex-theme-"] h1,
+body[class*="dex-theme-"] h2,
+body[class*="dex-theme-"] h3,
+body[class*="dex-theme-"] h4,
+body[class*="dex-theme-"] h5,
+body[class*="dex-theme-"] h6,
+body[class*="dex-theme-"] p,
+body[class*="dex-theme-"] a,
+body[class*="dex-theme-"] button,
+body[class*="dex-theme-"] input,
+body[class*="dex-theme-"] label,
+body[class*="dex-theme-"] span,
+body[class*="dex-theme-"] div {
+  font-family: var(--ds-font-family-sans) !important;
+}
+
+body[class*="dex-theme-"] h1,
+body[class*="dex-theme-"] h2,
+body[class*="dex-theme-"] h3,
+body[class*="dex-theme-"] h4,
+body[class*="dex-theme-"] h5,
+body[class*="dex-theme-"] h6,
+body[class*="dex-theme-"] .whitepaper-title,
+body[class*="dex-theme-"] .section-title,
+body[class*="dex-theme-"] .main-title,
+body[class*="dex-theme-"] .rewards-title,
+body[class*="dex-theme-"] .bitsPulseLabel {
+  background: none !important;
+  background-image: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  -webkit-text-fill-color: currentColor !important;
+  color: var(--ds-text-primary) !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+body[class*="dex-theme-"] .global-button,
+body[class*="dex-theme-"] .global-input,
+body[class*="dex-theme-"] .card,
+body[class*="dex-theme-"] .glass-card,
+body[class*="dex-theme-"] .panel,
+body[class*="dex-theme-"] .modal,
+body[class*="dex-theme-"] .modal-content,
+body[class*="dex-theme-"] .page-container,
+body[class*="dex-theme-"] .section-container,
+body[class*="dex-theme-"] .content-container,
+body[class*="dex-theme-"] .content-container-standalone {
+  background: var(--dex-global-surface, var(--ds-bg-base)) !important;
+  background-color: var(--ds-bg-base) !important;
+  border-color: var(--dex-global-border, var(--ds-border-color)) !important;
+  color: var(--ds-text-primary) !important;
+  box-shadow: var(--dex-global-shadow, var(--ds-shadow-sm)) !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+body[class*="dex-theme-"] .app-container,
+body[class*="dex-theme-"] .content-container,
+body[class*="dex-theme-"] .content-container-standalone,
+body[class*="dex-theme-"] .main-content,
+body[class*="dex-theme-"] main {
+  padding-top: var(--ds-spacing-sm, 8px) !important;
+}
+
+body[class*="dex-theme-"] h1,
+body[class*="dex-theme-"] .main-title,
+body[class*="dex-theme-"] .section-title,
+body[class*="dex-theme-"] .whitepaper-title {
+  font-size: clamp(1.75rem, 3vw, 2.5rem) !important;
+  line-height: 1.1 !important;
+  margin-bottom: var(--ds-spacing-md, 12px) !important;
+}
+
+body[class*="dex-theme-"] h2 {
+  font-size: clamp(1.35rem, 2.2vw, 2rem) !important;
+  line-height: 1.15 !important;
+}
+
+body[class*="dex-theme-"] p,
+body[class*="dex-theme-"] .description,
+body[class*="dex-theme-"] .subtitle {
+  font-size: var(--ds-font-size-sm, 13px) !important;
+  line-height: 1.45 !important;
+}
+
+body[class*="dex-theme-"] .global-button,
+body[class*="dex-theme-"] button,
+body[class*="dex-theme-"] input,
+body[class*="dex-theme-"] select {
+  min-height: 32px !important;
+  font-size: var(--ds-font-size-sm, 12px) !important;
+}
+
+body[class*="dex-theme-"] .card,
+body[class*="dex-theme-"] .glass-card,
+body[class*="dex-theme-"] .panel,
+body[class*="dex-theme-"] .modal-content,
+body[class*="dex-theme-"] .section-container {
+  padding: var(--ds-spacing-md, 12px) !important;
+  border-radius: var(--ds-radius-lg, 12px) !important;
+}
+
+html[class*="dex-theme-"],
+body[class*="dex-theme-"] {
+  --font-family: var(--ds-font-family-sans) !important;
+  --font-heading: var(--ds-font-family-sans) !important;
+  --font-secondary: var(--ds-font-family-sans) !important;
+  --font-family-mono: var(--ds-font-family-mono) !important;
+  --dex-global-surface: linear-gradient(180deg, rgba(var(--ds-accent-rgb, 59, 130, 246), 0.08), rgba(0, 0, 0, 0.92));
+  --dex-global-elevated: linear-gradient(180deg, rgba(var(--ds-accent-rgb, 59, 130, 246), 0.12), rgba(0, 0, 0, 0.9));
+  --dex-global-border: color-mix(in srgb, var(--ds-border-color, #27272a) 64%, var(--ds-accent, #3b82f6) 36%);
+  --dex-global-shadow: var(--ds-shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.25));
+  --dex-global-button-bg: rgba(var(--ds-accent-rgb, 59, 130, 246), 0.08);
+  --dex-global-button-hover: rgba(var(--ds-accent-rgb, 59, 130, 246), 0.14);
+  --dex-global-radial-primary: rgba(var(--ds-accent-rgb, 59, 130, 246), 0.12);
+  --dex-global-radial-secondary: rgba(var(--ds-accent-rgb, 59, 130, 246), 0.08);
+  background: var(--ds-bg-base, #000000) !important;
+  background-color: var(--ds-bg-base, #000000) !important;
+  color-scheme: dark !important;
+  font-family: var(--ds-font-family-sans) !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: optimizeLegibility !important;
+}
+
+body.dex-theme-sonnet {
+  --dex-global-surface: linear-gradient(180deg, rgba(59, 130, 246, 0.07), rgba(0, 0, 0, 0.94));
+  --dex-global-elevated: linear-gradient(180deg, rgba(59, 130, 246, 0.11), rgba(0, 0, 0, 0.92));
+  --dex-global-border: color-mix(in srgb, var(--ds-border-color, #27272a) 72%, #3b82f6 28%);
+  --dex-global-shadow: 0 2px 8px rgba(0, 0, 0, 0.34);
+  --dex-global-button-bg: rgba(59, 130, 246, 0.07);
+  --dex-global-button-hover: rgba(59, 130, 246, 0.13);
+  --dex-global-radial-primary: rgba(59, 130, 246, 0.11);
+  --dex-global-radial-secondary: rgba(59, 130, 246, 0.06);
+}
+
+body.dex-theme-claude {
+  --dex-global-surface: linear-gradient(180deg, rgba(245, 158, 11, 0.11), rgba(0, 0, 0, 0.9));
+  --dex-global-elevated: linear-gradient(180deg, rgba(245, 158, 11, 0.16), rgba(0, 0, 0, 0.88));
+  --dex-global-border: color-mix(in srgb, var(--ds-border-color, #3d362c) 58%, #f59e0b 42%);
+  --dex-global-shadow: 0 10px 28px rgba(0, 0, 0, 0.46);
+  --dex-global-button-bg: rgba(245, 158, 11, 0.1);
+  --dex-global-button-hover: rgba(245, 158, 11, 0.18);
+  --dex-global-radial-primary: rgba(245, 158, 11, 0.14);
+  --dex-global-radial-secondary: rgba(245, 158, 11, 0.08);
+}
+
+body.dex-theme-gemini {
+  --dex-global-surface: linear-gradient(180deg, rgba(139, 92, 246, 0.12), rgba(0, 0, 0, 0.89));
+  --dex-global-elevated: linear-gradient(180deg, rgba(139, 92, 246, 0.17), rgba(0, 0, 0, 0.87));
+  --dex-global-border: color-mix(in srgb, var(--ds-border-color, #2a2638) 56%, #8b5cf6 44%);
+  --dex-global-shadow: 0 12px 32px rgba(0, 0, 0, 0.44), 0 0 30px rgba(139, 92, 246, 0.12);
+  --dex-global-button-bg: rgba(139, 92, 246, 0.1);
+  --dex-global-button-hover: rgba(139, 92, 246, 0.18);
+  --dex-global-radial-primary: rgba(139, 92, 246, 0.15);
+  --dex-global-radial-secondary: rgba(139, 92, 246, 0.09);
+}
+
+body[class*="dex-theme-"] :where(
+  h1, h2, h3, h4, h5, h6,
+  p, a, button, input, textarea, select, label,
+  span, div, section, article, aside, nav, header, footer,
+  ul, ol, li, table, thead, tbody, tr, th, td,
+  small, strong, em, b, time
+) {
+  font-family: var(--ds-font-family-sans) !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: optimizeLegibility !important;
+}
+
+body[class*="dex-theme-"] :where(
+  code, pre, kbd, samp,
+  .mono, .monospace,
+  .wallet-address, .wallet-balance,
+  .ai-trading-wallet-address, .ai-trading-wallet-balance,
+  .header-price-value, .header-price-change
+) {
+  font-family: var(--ds-font-family-mono) !important;
+}
+
+body[class*="dex-theme-"]::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 18%, var(--dex-global-radial-primary), transparent 28%),
+    radial-gradient(circle at 14% 82%, var(--dex-global-radial-secondary), transparent 24%),
+    var(--ds-bg-base, #000000);
+}
+
+body[class*="dex-theme-"] #root,
+body[class*="dex-theme-"] .app-container,
+body[class*="dex-theme-"] .content-container,
+body[class*="dex-theme-"] .content-container-standalone,
+body[class*="dex-theme-"] .page-container,
+body[class*="dex-theme-"] .main-content,
+body[class*="dex-theme-"] main {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+body[class*="dex-theme-"] .card,
+body[class*="dex-theme-"] .glass-card,
+body[class*="dex-theme-"] .panel,
+body[class*="dex-theme-"] .modal,
+body[class*="dex-theme-"] .modal-content,
+body[class*="dex-theme-"] .section-container,
+body[class*="dex-theme-"] .global-input,
+body[class*="dex-theme-"] input,
+body[class*="dex-theme-"] textarea,
+body[class*="dex-theme-"] select {
+  background: var(--dex-global-elevated, var(--ds-surface-1, var(--ds-bg-surface, #000000))) !important;
+  background-color: var(--ds-surface-1, var(--ds-bg-surface, #000000)) !important;
+  border: 1px solid var(--dex-global-border, var(--ds-border-color, #27272a)) !important;
+  box-shadow: var(--dex-global-shadow, var(--ds-shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.25))) !important;
+}
+
+body[class*="dex-theme-"] .global-button,
+body[class*="dex-theme-"] button {
+  background: var(--dex-global-button-bg, var(--ds-bg-base, #000000)) !important;
+  border-color: var(--dex-global-border, var(--ds-border-color-light, #3f3f46)) !important;
+  color: var(--ds-text-primary, #fafafa) !important;
+}
+
+body[class*="dex-theme-"] .global-button:hover,
+body[class*="dex-theme-"] button:hover {
+  background: var(--dex-global-button-hover, var(--ds-surface-2, var(--ds-bg-hover, #000000))) !important;
+  border-color: var(--ds-accent, #3b82f6) !important;
+}
 

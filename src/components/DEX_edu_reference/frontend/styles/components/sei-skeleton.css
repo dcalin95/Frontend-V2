@@ -1,0 +1,62 @@
+/* SEI Trade / Swap – fundal clar, nu alb; clarificare preview / date eșantion */
+
+.sei-layout {
+  min-height: 100%;
+  background: var(--ds-bg-base, #0f0f12);
+  color: var(--ds-text-primary, #e2e8f0);
+}
+
+.sei-main {
+  background: var(--ds-bg-base, #0f0f12);
+  color: var(--ds-text-primary, #e2e8f0);
+}
+
+/* Container pagini: fundal ușor elevat față de layout */
+.sei-trade-page,
+.sei-swap-page {
+  box-sizing: border-box;
+  min-height: 60vh;
+}
+
+/* Carduri: surface distinct, vizibil pe orice fundal */
+.sei-skeleton-card {
+  background: var(--ds-bg-surface, #18181b) !important;
+  border-color: var(--ds-border-color, #27272a) !important;
+}
+
+/* Oxium: Chart | Order Book | Swap/Limit (un panou cu butoane Swap | Limit) – pe mobil stack vertical */
+.sei-top-three {
+  grid-template-columns: 1fr 300px minmax(300px, 440px);
+}
+@media (max-width: 900px) {
+  .sei-top-three {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Responsive: chart + order book – order book sub chart pe mobil */
+@media (max-width: 768px) {
+  .sei-chart-orderbook {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.sei-trade-page .sei-trade-clob-link {
+  color: var(--ds-accent, #6366f1);
+  text-decoration: none;
+}
+.sei-trade-page .sei-trade-clob-link:hover {
+  text-decoration: underline;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

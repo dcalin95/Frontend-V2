@@ -1,0 +1,112 @@
+/**
+ * OtaSeiLiveStrip – LIVE strip (price + status). /dex/ota/sei
+ */
+
+/* OTA SEI / STX page: strip is first direct child of .ota-page-main; full width (același schelet) */
+.ota-sei-page .ota-page-main > .ota-sei-live-strip,
+.ota-stx-page .ota-page-main > .ota-sei-live-strip {
+  width: 100%;
+  max-width: 100%;
+  align-self: stretch;
+}
+
+.ota-sei-live-strip {
+  width: 100%;
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(34, 197, 94, 0.12) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+.ota-sei-live-strip__inner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  padding: 14px 20px;
+  font-size: 14px;
+  color: var(--ds-text-primary, #e4e4e7);
+}
+
+.ota-sei-live-strip__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--ds-success, #22c55e);
+  text-transform: uppercase;
+}
+
+.ota-sei-live-strip__badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: ota-sei-live-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes ota-sei-live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.9); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ota-sei-live-strip__badge-dot {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+.ota-sei-live-strip__pair {
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}
+
+.ota-sei-live-strip__price {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--ds-success, #22c55e);
+}
+
+.ota-sei-live-strip__source {
+  font-size: 10px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: #000000;
+  color: var(--ds-text-tertiary);
+}
+
+.ota-sei-live-strip__loading {
+  color: var(--ds-text-tertiary);
+}
+
+.ota-sei-live-strip__error {
+  color: var(--ds-danger, #ef4444);
+  font-size: 12px;
+}
+
+.ota-sei-live-strip__ago {
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  color: var(--ds-text-tertiary);
+}
+
+.ota-sei-live-strip__sep {
+  color: var(--ds-text-tertiary);
+  font-weight: 300;
+}
+
+.ota-sei-live-strip__ota {
+  color: var(--ds-text-secondary);
+}
+
+.ota-sei-live-strip__where {
+  font-size: 12px;
+  color: var(--ds-text-tertiary);
+}

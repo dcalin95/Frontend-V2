@@ -4,8 +4,7 @@ import axios from "axios";
 import { ethers } from "ethers";
 import { CONTRACTS } from "../../contract/contracts";
 import { trackTikTokEvent } from "../../utils/tiktok";
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+import { getPresaleCurrentUrl, resolvePresaleBackendUrl } from "../presaleApi";
 
 // AnimatedNumber component
 const AnimatedNumber = ({ value, duration = 1000, prefix = "", suffix = "", compact = false, decimals = 2 }) => {
@@ -101,16 +100,9 @@ const NewPresaleStats = ({ sold, supply, price, roundNumber }) => {
   const safeSupply = Math.max(0, supply || 0);
   const totalSupply = safeSold + safeSupply;
   const remainingTokens = safeSupply;
-  
-  // Normalize price that might come as cents (e.g., 0.06 -> 6)
-  const priceFromProp = Number(price || 0);
-  const normalizedPropPrice = priceFromProp > 1 ? (priceFromProp / 100) : priceFromProp;
 
   // Prefer database history for the current round if available
   const soldInUse = Math.max(0, Number(currentRoundFromHistory?.soldBits ?? safeSold) || 0);
-  const priceInUse = Number(currentRoundFromHistory?.price || 0) > 0
-    ? Number(currentRoundFromHistory.price)
-    : normalizedPropPrice;
 
   // Fix percentage calculation - avoid division by zero
   const currentRoundPercentage = (soldInUse + safeSupply) > 0 ? ((soldInUse / (soldInUse + safeSupply)) * 100) : 0;
@@ -142,7 +134,8 @@ const NewPresaleStats = ({ sold, supply, price, roundNumber }) => {
   useEffect(() => {
     const fetchAllRoundsData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/presale/history`);
+        const backendUrl = await resolvePresaleBackendUrl();
+        const response = await axios.get(`${backendUrl}/api/presale/history`);
         const history = response.data || [];
         
         // Calculate total sold from all previous rounds
@@ -194,7 +187,7 @@ const NewPresaleStats = ({ sold, supply, price, roundNumber }) => {
   useEffect(() => {
     const fetchCurrentRoundState = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/presale/current`);
+        const res = await axios.get(await getPresaleCurrentUrl());
         const { startTime, endTime } = res.data || {};
         if (startTime) setRoundStart(new Date(startTime * 1000));
         if (endTime) setRoundEnd(new Date(endTime * 1000));
@@ -210,19 +203,20 @@ const NewPresaleStats = ({ sold, supply, price, roundNumber }) => {
     const fetchSimulatedHolders = async () => {
       try {
         // 1) Transactions
-        const resTx = await axios.get(`${API_URL}/api/transactions`);
+        const backendUrl = await resolvePresaleBackendUrl();
+        const resTx = await axios.get(`${backendUrl}/api/transactions`);
         const txs = Array.isArray(resTx.data) ? resTx.data : [];
         const txBuyCount = txs.filter((t) => (t?.type || '').toLowerCase() === 'buy_bits').length || txs.length;
         setTxCount(txBuyCount);
 
         // 2) Telegram linked wallets (summary endpoint lightweight)
-        const resTg = await axios.get(`${API_URL}/api/telegram-rewards/group-members`);
+        const resTg = await axios.get(`${backendUrl}/api/telegram-rewards/group-members`);
         const linked = Number(resTg?.data?.linked || 0);
         let totalMembers = Number(resTg?.data?.total || 0);
 
         // Try live count via Telegram API if available
         try {
-          const resLive = await axios.get(`${API_URL}/api/telegram-rewards/group-live`);
+          const resLive = await axios.get(`${backendUrl}/api/telegram-rewards/group-live`);
           if (resLive?.data?.member_count) {
             totalMembers = Number(resLive.data.member_count);
           }
@@ -246,9 +240,10 @@ const NewPresaleStats = ({ sold, supply, price, roundNumber }) => {
     let isMounted = true;
     const fetchMembers = async () => {
       try {
+        const backendUrl = await resolvePresaleBackendUrl();
         let total = 0;
         try {
-          const resLive = await axios.get(`${API_URL}/api/telegram-rewards/group-live`);
+          const resLive = await axios.get(`${backendUrl}/api/telegram-rewards/group-live`);
           if (typeof resLive?.data?.member_count === 'number') {
             total = resLive.data.member_count;
           }
@@ -256,7 +251,7 @@ const NewPresaleStats = ({ sold, supply, price, roundNumber }) => {
 
         if (!total) {
           try {
-            const resTg = await axios.get(`${API_URL}/api/telegram-rewards/group-members`);
+            const resTg = await axios.get(`${backendUrl}/api/telegram-rewards/group-members`);
             total = Number(resTg?.data?.total || 0);
           } catch (_) {}
         }
@@ -309,6 +304,13 @@ const NewPresaleStats = ({ sold, supply, price, roundNumber }) => {
     } catch (_) { return null; }
   }, [previousRoundData]);
 
+  /** USD strâns în runda curentă — doar din DB (`/api/presale/history` → raised_usd), fără sold×preț */
+  const roundRaisedUsdDb = useMemo(() => {
+    if (!currentRoundFromHistory) return null;
+    const v = Number(currentRoundFromHistory.raisedUSD);
+    return Number.isFinite(v) ? v : null;
+  }, [currentRoundFromHistory]);
+
   return (
     <div className={styles.container}>
       <h3 className={styles.title}>🎯 Round {roundNumber} Statistics</h3>
@@ -316,16 +318,18 @@ const NewPresaleStats = ({ sold, supply, price, roundNumber }) => {
       {/* Explanation Box */}
       <div className={styles.explanationBox}>
         <div className={styles.explanationIcon}>ℹ️</div>
-                 <div className={styles.explanationText}>
-          <strong>Live presale updates:</strong> Prices and stats update in real time. The cards show $BITS sold this round,
-          USD raised, remaining $BITS supply, Telegram members and registered transactions. Join our Telegram group and invite
-          friends — both activity and invitations grant $BITS rewards. Buy early — each round has a limited allocation and the
-          price increases in the next round.
-          <br/>
-          <span style={{color:'#ffd93d', fontWeight:700}}>
-            Listing price on exchanges will be much higher than the last presale round.
+        <div className={styles.explanationText}>
+          <strong>Live presale:</strong> Prices and stats refresh as data arrives. The cards summarize this round — $BITS sold,
+          USD raised, supply left, Telegram reach, and registered transactions. Join{' '}
+          <a href="https://t.me/BitSwapDEX_AI" target="_blank" rel="noreferrer" style={{ color: '#2aa1ff', fontWeight: 600 }}>
+            our Telegram
+          </a>
+          ; activity and invites can earn $BITS rewards. Each round has limited allocation; the next round steps the price up.
+          <br />
+          <span style={{ color: '#ffd93d', fontWeight: 700 }}>
+            Exchange listing price is expected to be well above the final presale round.
           </span>
-         </div>
+        </div>
       </div>
       
       <div className={styles.statsGrid}>
@@ -371,12 +375,13 @@ const NewPresaleStats = ({ sold, supply, price, roundNumber }) => {
           <div className={styles.statContent}>
             <div className={styles.statLabel}>Round <span style={{color:'#6cf'}}>{roundNumber}</span> Raised</div>
             <div className={styles.statValue}>
-              <AnimatedNumber value={(() => {
-                const base = Number(currentRoundFromHistory?.raisedUSD || ((Number(soldInUse)||0) * (Number(priceInUse)||0)));
-                // Upscale if soldInUse suggests thousands but USD is < 1000
-                if (soldInUse >= 1000 && base < 1000) return base * 1000;
-                return base;
-              })()} prefix="$" compact decimals={2} />
+              {loading ? (
+                <span style={{ color: "#888" }}>…</span>
+              ) : roundRaisedUsdDb !== null ? (
+                <AnimatedNumber value={roundRaisedUsdDb} prefix="$" compact decimals={2} />
+              ) : (
+                <span style={{ color: "#888" }} title="Lipsește raised_usd pentru această rundă în API (presale/history)">—</span>
+              )}
             </div>
             <div className={styles.subValue}><AnimatedNumber value={soldInUse} compact decimals={2} /> $BITS</div>
           </div>

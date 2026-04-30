@@ -1,0 +1,65 @@
+/* Trade List Component Styles - Binance-Inspired Refactored */
+
+.trade-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-4);
+}
+
+.trade-list-refreshing {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3);
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-sm);
+  margin-bottom: var(--ds-spacing-3);
+}
+
+.trade-list-error {
+  text-align: center;
+  padding: var(--ds-spacing-6);
+}
+
+.trade-list-error p {
+  color: var(--ds-color-error);
+  margin-bottom: var(--ds-spacing-3);
+}
+
+.trade-list-empty {
+  padding: var(--ds-spacing-12) var(--ds-spacing-5);
+  text-align: center;
+}
+
+.trade-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: var(--ds-spacing-4);
+}
+
+.trade-list-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ds-spacing-3);
+  width: 100%;
+}
+
+.trade-list-pagination-info {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-secondary);
+  font-family: var(--ds-font-family-mono);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .trade-list-grid {
+    grid-template-columns: 1fr;
+    gap: var(--ds-spacing-3);
+  }
+  
+  .trade-list-pagination {
+    flex-direction: column;
+    gap: var(--ds-spacing-2);
+  }
+}

@@ -194,6 +194,16 @@ const AdminPanel = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthorized]);
 
+  // Round "ended" display: use CellManager as source of truth. Only show "Round Complete" when
+  // (1) backend time says round ended (roundEndData set) AND (2) contract has no supply left (availableBits === 0).
+  // If CellManager still has availableBits > 0, the round is active and we do not show RoundEndDisplay.
+  useEffect(() => {
+    if (!roundEndData) return;
+    if (cellManagerData.loading) return;
+    const availableBits = cellManagerData.availableBits ?? 0;
+    setShowRoundEndStats(availableBits === 0);
+  }, [roundEndData, cellManagerData.loading, cellManagerData.availableBits]);
+
   // Load Solana payments only when the user opens the tab (prevents 404/toast spam)
   useEffect(() => {
     if (!isAuthorized) return;
@@ -985,13 +995,14 @@ const AdminPanel = () => {
       console.log("🔍 [DATABASE DEBUG] round:", response.data?.round);
       console.log("🔍 [CALCULATION DEBUG] Should be:", (response.data?.totalSupply || 0) - (response.data?.sold || 0));
       
-      // Check if round has ended (14 days = 1,209,600 seconds)
+      // Check if round has ended by time (14 days = 1,209,600 seconds).
+      // Only store roundEndData here; whether to SHOW "Round Complete" is decided in useEffect below
+      // using CellManager as source of truth: if contract still has availableBits > 0, round is still active.
       const now = Math.floor(Date.now() / 1000);
       const roundDuration = 14 * 24 * 60 * 60; // 14 days in seconds
       const roundEndTime = response.data?.startTime + roundDuration;
-      
-      if (now >= roundEndTime && !showRoundEndStats) {
-        // Round has ended, prepare stats
+
+      if (now >= roundEndTime) {
         const endStats = {
           roundNumber: response.data?.roundNumber || 1,
           totalSold: response.data?.sold || 0,
@@ -1007,7 +1018,10 @@ const AdminPanel = () => {
           }
         };
         setRoundEndData(endStats);
-        setShowRoundEndStats(true);
+        // Do NOT set showRoundEndStats here – see useEffect below (CellManager is source of truth)
+      } else {
+        setRoundEndData(null);
+        setShowRoundEndStats(false);
       }
       
       // Check AutoSim blocking conditions

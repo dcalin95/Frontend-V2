@@ -13,6 +13,7 @@ const SwapPanel = ({
   tokenOut = null,
   tokens = [],
   balances = {},
+  marketData = null,
   onTokenChange = () => {},
   onSwap = () => {},
   walletAddress = null,
@@ -23,17 +24,26 @@ const SwapPanel = ({
   const [showTokenSelector, setShowTokenSelector] = useState(null);
   const [slippage, setSlippage] = useState(0.5);
 
-  // Calculate amount out (mock for now)
+  // DEV MODE – Calculate amount out using CoinGecko price ratio
+  // Will be replaced by backend DEX quote when deployed
   useEffect(() => {
     if (amountIn && tokenIn && tokenOut) {
-      // Mock calculation - replace with real quote
-      const mockPrice = 1.0; // Replace with real price
-      const calculated = parseFloat(amountIn) * mockPrice;
+      let exchangeRate = 1.0; // Default fallback
+      
+      if (marketData && marketData.price) {
+        // Use CoinGecko price ratio (DEV MODE only)
+        exchangeRate = marketData.price;
+      } else if (tokenIn.price && tokenOut.price) {
+        // Fallback to token prices if available
+        exchangeRate = tokenIn.price / tokenOut.price;
+      }
+      
+      const calculated = parseFloat(amountIn) * exchangeRate;
       setAmountOut(calculated.toFixed(6));
     } else {
       setAmountOut('');
     }
-  }, [amountIn, tokenIn, tokenOut]);
+  }, [amountIn, tokenIn, tokenOut, marketData]);
 
   const handleSwap = () => {
     if (!walletAddress) {
@@ -142,6 +152,15 @@ const SwapPanel = ({
           </span>
         </div>
       </div>
+
+      {/* DEV MODE – Fee display (static, will be replaced by backend) */}
+      {amountIn && tokenIn && tokenOut && (
+        <div className="swap-fee-info">
+          <span className="fee-label">Fee:</span>
+          <span className="fee-value">0.3%</span>
+          <span className="fee-note">(DEV MODE – will be replaced by backend)</span>
+        </div>
+      )}
 
       {!walletAddress ? (
         <button className="swap-button connect" onClick={onConnectWallet}>

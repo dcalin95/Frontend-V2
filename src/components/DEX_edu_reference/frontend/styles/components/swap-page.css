@@ -1,0 +1,193 @@
+/**
+ * 💱 Swap Page Styles - Oxium-Inspired
+ * 
+ * Stiluri pentru pagina Swap:
+ * - Layout centrat pentru SwapPanel/LimitOrderPanel
+ * - Design clean și simplu
+ * - Tabs pentru Swap/Limit (ca Oxium)
+ * - Token selector in header
+ */
+
+/* Fără scroll când e pagina Swap (inclusiv la Limit tab) */
+.ai-trading-main-content:has(.swap-page) {
+  overflow: hidden !important;
+}
+
+.swap-page {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 4px 8px 8px 8px; /* FOARTE REDUS: doar 4px sus, 8px laterale */
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Tabs Header (like Oxium) */
+.swap-page-tabs {
+  display: flex;
+  gap: var(--ds-spacing-2); /* 8px */
+  background: transparent;
+  border-bottom: 1px solid var(--ds-border-color);
+  padding-top: 0; /* Eliminat padding de sus */
+  padding-bottom: var(--ds-spacing-1); /* Redus de la 8px la 4px */
+  margin-top: 0; /* Eliminat margin de sus */
+  margin-bottom: 0;
+  max-width: 450px; /* Redus cu 25%: 600px * 0.75 = 450px */
+  width: 100%;
+  align-self: center;
+}
+
+.swap-page-tab {
+  flex: 1;
+  padding: var(--ds-spacing-2) var(--ds-spacing-4); /* 8px 16px */
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--ds-text-secondary);
+  font-size: var(--ds-font-size-base); /* 14px */
+  font-weight: var(--ds-font-weight-normal);
+  font-family: var(--ds-font-family-sans);
+  cursor: pointer;
+  transition: all var(--ds-transition-base);
+  text-align: center;
+  position: relative;
+  margin-bottom: calc(var(--ds-spacing-2) * -1); /* -8px to align with border */
+}
+
+.swap-page-tab:hover {
+  color: var(--ds-text-primary);
+}
+
+.swap-page-tab.active {
+  color: var(--ds-text-primary);
+  border-bottom-color: var(--ds-text-primary);
+  font-weight: var(--ds-font-weight-medium);
+}
+
+.swap-page-title {
+  font-size: var(--ds-font-size-2xl); /* 24px - Oxium style (smaller) */
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  margin: 0 0 var(--ds-spacing-1) 0;
+}
+
+.swap-page-subtitle {
+  font-size: var(--ds-font-size-sm); /* 12px - Oxium style */
+  color: var(--ds-text-secondary);
+  margin: 0;
+}
+
+.swap-page-content {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex: 1;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  min-height: 0;
+  overflow: hidden;
+  margin-top: 0; /* ELIMINAT complet */
+  padding-top: 0;
+}
+
+.swap-page-content > * {
+  max-width: 450px; /* Redus cu 25%: 600px * 0.75 = 450px */
+  width: 100%;
+}
+
+/* Limit panel pe Swap: fără scroll (elimină efectul de scroll la click pe Limit) */
+.swap-page-content .limit-order-panel-container {
+  overflow: hidden !important;
+  max-height: none;
+}
+.swap-page-content .limit-order-panel-container .ui-card-body {
+  overflow: hidden !important;
+}
+
+/* Footer pe Swap (Limit tab): același chenar ca pe Trade */
+.swap-page-content .limit-order-panel-container .ui-card-footer {
+  margin-top: 0 !important;
+  padding: var(--ds-spacing-2, 8px) var(--ds-spacing-3, 12px) !important;
+  padding-top: var(--ds-spacing-2, 8px) !important;
+  padding-bottom: var(--ds-spacing-2, 8px) !important;
+  border-top: none !important;
+  border: 1px solid var(--ds-border-color, #2a2d47) !important;
+  border-radius: 10px !important;
+  background: var(--ds-bg-elevated) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  gap: var(--ds-spacing-2);
+}
+.swap-page-content .limit-order-panel-container .ui-card-footer .ui-button {
+  min-height: 32px !important;
+  height: 32px !important;
+  padding: 0 12px !important;
+  font-size: var(--ds-font-size-sm) !important;
+  font-weight: var(--ds-font-weight-medium) !important;
+  line-height: var(--ds-line-height-tight) !important;
+  border-radius: var(--ds-radius-md) !important;
+  border: 1px solid transparent !important;
+  transition: all var(--ds-transition-fast) ease !important;
+  color: #ffffff !important;
+}
+.swap-page-content .limit-order-panel-container .ui-card-footer .ui-button.ui-button-primary {
+  background: #1e40af !important;
+  border-color: #1e40af !important;
+}
+.swap-page-content .limit-order-panel-container .ui-card-footer .ui-button.ui-button-primary:hover:not(:disabled) {
+  background: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.4) !important;
+}
+.swap-page-content .limit-order-panel-container .ui-card-footer .ui-button.ui-button-danger {
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+}
+.swap-page-content .limit-order-panel-container .ui-card-footer .ui-button.ui-button-danger:hover:not(:disabled) {
+  background: #b91c1c !important;
+  border-color: #b91c1c !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4) !important;
+}
+.swap-page-content .limit-order-panel-container .ui-card-footer .ui-button:active {
+  transform: translateY(0) !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .swap-page {
+    padding: 6px;
+    gap: 8px;
+  }
+
+  .swap-page-header {
+    padding-bottom: var(--ds-spacing-3); /* 12px - consistent spacing */
+    margin-bottom: var(--ds-spacing-4); /* 16px - consistent spacing */
+  }
+
+  .swap-page-title {
+    font-size: var(--ds-font-size-2xl); /* 24px */
+  }
+
+  .swap-page-content > * {
+    max-width: 100%; /* Full width on mobile */
+    min-width: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .swap-page {
+    padding: 4px;
+    gap: 6px;
+  }
+
+  .swap-page-tabs {
+    max-width: 100%;
+    gap: 4px;
+  }
+}

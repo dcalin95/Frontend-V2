@@ -1,0 +1,156 @@
+/**
+ * OTA Activity Panel – fereastră sub Chart, colapsabilă
+ */
+
+.ota-activity-panel {
+  margin-top: 10px;
+  border: 1px solid var(--ds-border-color, rgba(255, 255, 255, 0.1));
+  border-radius: 8px;
+  background: var(--ds-bg-surface, #000000);
+  overflow: hidden;
+}
+
+.ota-activity-panel-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  color: var(--ds-text-primary, #f9fafb);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.ota-activity-panel-toggle:hover {
+  background: #000000;
+}
+
+.ota-activity-panel-toggle-icon {
+  color: #34d399;
+  flex-shrink: 0;
+}
+
+.ota-activity-panel-toggle-label {
+  flex: 1;
+}
+
+.ota-activity-panel-body {
+  padding: 12px 14px;
+  border-top: 1px solid var(--ds-border-color, rgba(255, 255, 255, 0.06));
+}
+
+.ota-activity-panel-loading,
+.ota-activity-panel-error,
+.ota-activity-panel-muted {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ds-text-secondary, #9ca3af);
+}
+
+.ota-activity-panel-error {
+  color: #f87171;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ota-activity-panel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.ota-activity-panel-block {
+  min-width: 0;
+}
+
+.ota-activity-panel-block-title {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ds-text-secondary, #9ca3af);
+}
+
+.ota-activity-panel-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ota-activity-panel-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.ota-activity-panel-label {
+  color: var(--ds-text-secondary, #9ca3af);
+  flex-shrink: 0;
+}
+
+.ota-activity-panel-value {
+  font-weight: 500;
+  color: var(--ds-text-primary, #f9fafb);
+  text-align: right;
+}
+
+.ota-activity-panel-value-profit {
+  color: #34d399;
+}
+
+.ota-activity-panel-value-loss {
+  color: #f87171;
+}
+
+.ota-activity-panel-value-warn {
+  color: #fbbf24;
+}
+
+.ota-activity-panel-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ota-activity-panel-refresh {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--ds-border-color, rgba(255, 255, 255, 0.1));
+  border-radius: 6px;
+  color: var(--ds-text-secondary, #9ca3af);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.ota-activity-panel-refresh:hover:not(:disabled) {
+  background: #000000;
+  color: var(--ds-text-primary, #f9fafb);
+}
+
+.ota-activity-panel-refresh:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ota-activity-panel-spin {
+  animation: ota-activity-spin 0.8s linear infinite;
+}
+
+@keyframes ota-activity-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

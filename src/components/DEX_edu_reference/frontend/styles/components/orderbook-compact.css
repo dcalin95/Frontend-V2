@@ -1,0 +1,95 @@
+/**
+ * Orderbook Compact - Minimalist Button/Dropdown
+ */
+
+.orderbook-compact {
+  position: relative;
+  width: 100%;
+}
+
+.orderbook-compact-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 14px;
+  background-color: var(--ds-bg-surface);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-lg);
+  color: var(--ds-text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.orderbook-compact-button:hover {
+  background-color: var(--ds-bg-hover);
+  border-color: var(--ds-accent);
+}
+
+.orderbook-compact-label {
+  flex: 1;
+  text-align: left;
+}
+
+.orderbook-compact-chevron {
+  transition: transform 0.2s ease;
+  opacity: 0.7;
+}
+
+.orderbook-compact-chevron.open {
+  transform: rotate(180deg);
+}
+
+.orderbook-compact-loading,
+.orderbook-compact-empty {
+  display: block;
+  padding: 10px 14px;
+  color: var(--ds-text-secondary);
+  font-size: 12px;
+  text-align: center;
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-lg);
+  background-color: var(--ds-bg-surface);
+}
+
+.orderbook-compact-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9998;
+  background: transparent;
+}
+
+.orderbook-compact-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  max-height: 600px;
+  overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.orderbook-compact-menu .orderbook-container {
+  border-radius: var(--ds-radius-lg);
+}
+
+.orderbook-compact-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.orderbook-compact-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.orderbook-compact-menu::-webkit-scrollbar-thumb {
+  background: var(--ds-border-color);
+  border-radius: 3px;
+}

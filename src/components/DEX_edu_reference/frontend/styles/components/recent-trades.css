@@ -1,0 +1,160 @@
+/**
+ * 📊 Recent Trades Styles
+ * 
+ * Styles pentru RecentTrades component
+ */
+
+.recent-trades-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-md);
+  max-height: 400px;
+  overflow: hidden;
+}
+
+.recent-trades-loading {
+  padding: var(--ds-spacing-xl);
+  text-align: center;
+  color: var(--ds-text-secondary);
+}
+
+.recent-trades-empty {
+  padding: var(--ds-spacing-xl);
+  text-align: center;
+  color: var(--ds-text-tertiary);
+  font-size: var(--ds-font-size-base);
+}
+
+.recent-trades-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-xs);
+  max-height: 350px;
+  overflow-y: auto;
+  padding-right: var(--ds-spacing-xs);
+}
+
+/* Custom scrollbar */
+.recent-trades-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.recent-trades-list::-webkit-scrollbar-track {
+  background: var(--ds-bg-tertiary);
+  border-radius: var(--ds-border-radius);
+}
+
+.recent-trades-list::-webkit-scrollbar-thumb {
+  background: var(--ds-text-tertiary);
+  border-radius: var(--ds-border-radius);
+}
+
+.recent-trades-list::-webkit-scrollbar-thumb:hover {
+  background: var(--ds-text-secondary);
+}
+
+.recent-trades-item {
+  display: grid;
+  grid-template-columns: 60px 1fr 1fr 80px;
+  align-items: center;
+  gap: var(--ds-spacing-sm);
+  padding: var(--ds-spacing-sm) var(--ds-spacing-md);
+  background: var(--ds-bg-tertiary);
+  border-radius: var(--ds-border-radius-sm);
+  transition: all 0.2s ease;
+  animation: recent-trades-fade-in 0.3s ease-out;
+  border-left: 3px solid transparent;
+}
+
+.recent-trades-item:hover {
+  background: var(--ds-bg-hover);
+  transform: translateX(2px);
+}
+
+.recent-trades-item-buy {
+  border-left-color: var(--ds-text-buy);
+}
+
+.recent-trades-item-sell {
+  border-left-color: var(--ds-text-sell);
+}
+
+.recent-trades-side {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-xs);
+}
+
+.recent-trades-icon-buy {
+  color: var(--ds-text-buy);
+}
+
+.recent-trades-icon-sell {
+  color: var(--ds-text-sell);
+}
+
+.recent-trades-type {
+  font-size: var(--ds-font-size-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.recent-trades-type-buy {
+  color: var(--ds-text-buy);
+}
+
+.recent-trades-type-sell {
+  color: var(--ds-text-sell);
+}
+
+.recent-trades-price {
+  font-size: var(--ds-font-size-base);
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+  text-align: right;
+}
+
+.recent-trades-amount {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-secondary);
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+  text-align: right;
+}
+
+.recent-trades-time {
+  font-size: var(--ds-font-size-sm);
+  color: var(--ds-text-tertiary);
+  text-align: right;
+}
+
+/* Animation */
+@keyframes recent-trades-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .recent-trades-item {
+    grid-template-columns: 50px 1fr 1fr 70px;
+    gap: var(--ds-spacing-xs);
+    padding: var(--ds-spacing-xs) var(--ds-spacing-sm);
+  }
+
+  .recent-trades-price,
+  .recent-trades-amount {
+    font-size: var(--ds-font-size-sm);
+  }
+
+  .recent-trades-time {
+    font-size: var(--ds-font-size-sm);
+  }
+}

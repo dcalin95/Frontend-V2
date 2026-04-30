@@ -1,0 +1,2249 @@
+/**
+ * OTA SEI Micro-Profit – stil propriu: secțiuni clare, accent lateral, numere monospace
+ * /dex/ota/sei
+ */
+
+/* Auxiliary vs selected pair — unambiguous block */
+.ota-sei-micro-profit__auxiliary-callout {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--ota-sei-border);
+  border-radius: var(--ota-sei-radius-sm);
+  background: var(--ota-sei-block);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.ota-sei-micro-profit__auxiliary-callout-title {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ota-sei-accent);
+}
+.ota-sei-micro-profit__auxiliary-callout-list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+.ota-sei-micro-profit__auxiliary-callout-list li {
+  margin-bottom: 6px;
+}
+.ota-sei-micro-profit__auxiliary-callout-list li:last-child {
+  margin-bottom: 0;
+}
+
+.ota-sei-micro-profit {
+  --ota-sei-accent: var(--ds-accent, #6366f1);
+  --ota-sei-accent-dim: rgba(99, 102, 241, 0.15);
+  --ota-sei-success: var(--ds-success, #22c55e);
+  --ota-sei-success-dim: rgba(34, 197, 94, 0.12);
+  --ota-sei-surface: var(--ds-bg-surface, #18181b);
+  --ota-sei-block: rgba(255, 255, 255, 0.03);
+  --ota-sei-border: var(--ds-border-color, #27272a);
+  --ota-sei-radius: 10px;
+  --ota-sei-radius-sm: 6px;
+
+  position: relative;
+  margin-top: 20px;
+  padding: 0 0 0 4px;
+  border-radius: var(--ota-sei-radius);
+  background: var(--ota-sei-surface);
+  border: 1px solid var(--ota-sei-border);
+  overflow: hidden;
+}
+
+.ota-sei-micro-profit::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--ota-sei-accent);
+  border-radius: 4px 0 0 4px;
+}
+
+/* Settings / Display cards (split): no left accent bar */
+.ota-sei-micro-profit-settings::before,
+.ota-sei-micro-profit-display::before {
+  display: none;
+}
+.ota-sei-micro-profit-settings,
+.ota-sei-micro-profit-display {
+  padding-left: 0;
+  --ota-sei-unified-r: 8px;
+  --ota-sei-unified-pad: 12px 14px;
+  --ota-sei-unified-btn-pad: 8px 14px;
+  --ota-sei-unified-btn-h: 36px;
+  --ota-sei-unified-input-h: 36px;
+  border-radius: var(--ota-sei-unified-r) !important;
+}
+
+/* Unificare totală în cele două ferestre: același chenar, aceeași padding/înălțime */
+.ota-sei-micro-profit-settings .ota-sei-micro-profit__row,
+.ota-sei-micro-profit-settings .ota-sei-micro-profit__contract-row,
+.ota-sei-micro-profit-settings .ota-sei-micro-profit__onchain,
+.ota-sei-micro-profit-settings .ota-sei-micro-profit__gas-row,
+.ota-sei-micro-profit-settings .ota-sei-micro-profit__profit-block,
+.ota-sei-micro-profit-settings .ota-sei-micro-profit__insight,
+.ota-sei-micro-profit-settings .ota-sei-micro-profit__input-group,
+.ota-sei-micro-profit-settings .ota-sei-micro-profit__recent-activity,
+.ota-sei-micro-profit-settings .ota-sei-micro-profit__live-price,
+.ota-sei-micro-profit-settings .ota-sei-micro-profit__alert,
+.ota-sei-micro-profit-settings .ota-sei-micro-profit__signal-box,
+.ota-sei-micro-profit-settings .ota-sei-micro-profit__result,
+.ota-sei-micro-profit-display .ota-sei-micro-profit__row,
+.ota-sei-micro-profit-display .ota-sei-micro-profit__contract-row,
+.ota-sei-micro-profit-display .ota-sei-micro-profit__onchain,
+.ota-sei-micro-profit-display .ota-sei-micro-profit__gas-row,
+.ota-sei-micro-profit-display .ota-sei-micro-profit__profit-block,
+.ota-sei-micro-profit-display .ota-sei-micro-profit__insight,
+.ota-sei-micro-profit-display .ota-sei-micro-profit__input-group,
+.ota-sei-micro-profit-display .ota-sei-micro-profit__recent-activity,
+.ota-sei-micro-profit-display .ota-sei-micro-profit__activity-profit,
+.ota-sei-micro-profit-display .ota-sei-micro-profit__live-price,
+.ota-sei-micro-profit-display .ota-sei-micro-profit__alert,
+.ota-sei-micro-profit-display .ota-sei-micro-profit__signal-box,
+.ota-sei-micro-profit-display .ota-sei-micro-profit__result {
+  padding: var(--ota-sei-unified-pad) !important;
+  border-radius: var(--ota-sei-unified-r) !important;
+}
+.ota-sei-micro-profit-settings input,
+.ota-sei-micro-profit-settings button,
+.ota-sei-micro-profit-settings select,
+.ota-sei-micro-profit-settings textarea,
+.ota-sei-micro-profit-settings code,
+.ota-sei-micro-profit-display input,
+.ota-sei-micro-profit-display button,
+.ota-sei-micro-profit-display select,
+.ota-sei-micro-profit-display textarea,
+.ota-sei-micro-profit-display code {
+  border-radius: var(--ota-sei-unified-r) !important;
+  box-sizing: border-box !important;
+}
+.ota-sei-micro-profit-settings input,
+.ota-sei-micro-profit-settings select,
+.ota-sei-micro-profit-settings textarea,
+.ota-sei-micro-profit-display input,
+.ota-sei-micro-profit-display select,
+.ota-sei-micro-profit-display textarea {
+  min-height: var(--ota-sei-unified-input-h) !important;
+  padding: 8px 12px !important;
+}
+.ota-sei-micro-profit-settings button,
+.ota-sei-micro-profit-display button {
+  min-height: var(--ota-sei-unified-btn-h) !important;
+  padding: var(--ota-sei-unified-btn-pad) !important;
+  height: auto !important;
+}
+.ota-sei-micro-profit-settings code,
+.ota-sei-micro-profit-display code {
+  padding: 8px 12px !important;
+  min-height: 0 !important;
+}
+.ota-sei-micro-profit-settings .ota-sei-micro-profit__input,
+.ota-sei-micro-profit-display .ota-sei-micro-profit__input {
+  width: 25% !important;
+  min-width: 4rem !important;
+  max-width: 50% !important;
+  min-height: var(--ota-sei-unified-input-h) !important;
+  padding: 8px 12px !important;
+  box-sizing: border-box !important;
+}
+.ota-sei-micro-profit-settings .ota-sei-micro-profit__btn-pct,
+.ota-sei-micro-profit-display .ota-sei-micro-profit__btn-pct {
+  min-width: 0 !important;
+  flex: 1 1 0 !important;
+}
+.ota-sei-micro-profit-settings .ota-sei-micro-profit__percent-row,
+.ota-sei-micro-profit-display .ota-sei-micro-profit__percent-row {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+}
+.ota-sei-micro-profit-settings .ota-sei-micro-profit__percent-row .ota-sei-micro-profit__label-inline,
+.ota-sei-micro-profit-display .ota-sei-micro-profit__percent-row .ota-sei-micro-profit__label-inline {
+  flex-shrink: 0 !important;
+  margin-right: 0 !important;
+}
+.ota-sei-micro-profit-settings .ota-sei-micro-profit__presence,
+.ota-sei-micro-profit-settings .ota-sei-micro-profit__ota-ai-section,
+.ota-sei-micro-profit-settings .ota-sei-micro-profit__sei-auto,
+.ota-sei-micro-profit-settings .ota-sei-micro-profit__how-it-works,
+.ota-sei-micro-profit-display .ota-sei-micro-profit__presence,
+.ota-sei-micro-profit-display .ota-sei-micro-profit__ota-ai-section,
+.ota-sei-micro-profit-display .ota-sei-micro-profit__sei-auto,
+.ota-sei-micro-profit-display .ota-sei-micro-profit__how-it-works {
+  border-radius: var(--ota-sei-unified-r) !important;
+  padding: var(--ota-sei-unified-pad) !important;
+}
+
+.ota-sei-micro-profit__heading {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0;
+  padding: 18px 18px 10px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: -0.02em;
+  color: var(--ds-text-primary);
+  border-bottom: 1px solid var(--ota-sei-border);
+}
+
+.ota-sei-micro-profit__heading--compact {
+  margin-bottom: 0;
+  padding-bottom: 12px;
+  border-bottom: none;
+}
+
+.ota-sei-micro-profit__heading-icon {
+  color: var(--ota-sei-accent);
+  flex-shrink: 0;
+}
+
+.ota-sei-micro-profit__subtitle {
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+  margin: 0;
+  padding: 0 18px 16px 18px;
+  line-height: 1.45;
+}
+
+.ota-sei-micro-profit .ota-sei-micro-profit__subtitle--alone {
+  font-size: 13px;
+  padding-bottom: 18px;
+}
+
+/* ------ Live price strip ------ */
+.ota-sei-micro-profit__live-price {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px 14px 18px;
+  font-size: 13px;
+  color: var(--ds-text-secondary);
+  border-bottom: 1px solid var(--ota-sei-border);
+  border-radius: var(--ota-sei-radius-sm);
+}
+
+.ota-sei-micro-profit__live-price-label {
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}
+
+.ota-sei-micro-profit__live-price-value {
+  font-variant-numeric: tabular-nums;
+  color: var(--ota-sei-success);
+  font-weight: 600;
+}
+
+.ota-sei-micro-profit__live-price-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ota-sei-success);
+  animation: ota-sei-micro-profit-pulse 2s ease-in-out infinite;
+}
+
+@keyframes ota-sei-micro-profit-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.ota-sei-micro-profit__live-price-err,
+.ota-sei-micro-profit__live-price-loading {
+  color: var(--ds-text-tertiary);
+  font-size: 12px;
+}
+
+/* ------ Recent activity strip ------ */
+.ota-sei-micro-profit__recent-activity {
+  padding: 12px 18px 16px 18px;
+  border-bottom: 1px solid var(--ota-sei-border);
+  background: var(--ota-sei-block);
+  border-radius: var(--ota-sei-radius-sm);
+}
+
+.ota-sei-micro-profit__recent-activity-title {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ds-text-tertiary);
+  margin-bottom: 8px;
+}
+
+.ota-sei-micro-profit__recent-activity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ota-sei-micro-profit__recent-activity-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  padding: 4px 0;
+  color: var(--ds-text-secondary);
+}
+
+.ota-sei-micro-profit__recent-activity-time {
+  font-variant-numeric: tabular-nums;
+  min-width: 140px;
+  color: var(--ds-text-tertiary);
+}
+
+.ota-sei-micro-profit__recent-activity-pair {
+  color: var(--ds-text-primary);
+}
+
+/* OTA AI Activity & Profit block */
+.ota-sei-micro-profit__activity-profit {
+  padding: var(--ota-sei-unified-pad, 12px 14px);
+  border-bottom: 1px solid var(--ota-sei-border);
+  background: var(--ota-sei-block);
+}
+.ota-sei-micro-profit__activity-profit-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.ota-sei-micro-profit__activity-profit-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ds-text-tertiary);
+}
+.ota-sei-micro-profit__activity-profit-refresh,
+.ota-sei-micro-profit__activity-profit-export {
+  flex-shrink: 0;
+}
+.ota-sei-micro-profit__activity-profit-export {
+  margin-top: 6px;
+}
+.ota-sei-micro-profit__activity-profit-status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-bottom: 10px;
+}
+.ota-sei-micro-profit__activity-profit-lastrun {
+  font-size: 11px;
+  color: var(--ds-text-tertiary);
+}
+.ota-sei-micro-profit__activity-profit-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: var(--ota-sei-unified-r, 8px);
+  font-size: 12px;
+  font-weight: 600;
+}
+.ota-sei-micro-profit__activity-profit-badge--action {
+  background: var(--ota-sei-success-dim);
+  color: var(--ota-sei-success);
+}
+.ota-sei-micro-profit__activity-profit-badge--waiting {
+  background: var(--ota-sei-accent-dim);
+  color: var(--ota-sei-accent);
+}
+.ota-sei-micro-profit__activity-profit-badge--stopped {
+  background: var(--ota-sei-border);
+  color: var(--ds-text-tertiary);
+}
+.ota-sei-micro-profit__activity-profit-kpis {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin-bottom: 8px;
+}
+.ota-sei-micro-profit__activity-profit-kpi {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ota-sei-micro-profit__activity-profit-kpi .ota-sei-micro-profit__activity-profit-label {
+  font-size: 12px;
+  color: var(--ds-text-tertiary);
+}
+.ota-sei-micro-profit__activity-profit-value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}
+.ota-sei-micro-profit__activity-profit-cap {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--ds-text-tertiary);
+  margin-left: 4px;
+}
+.ota-sei-micro-profit__activity-profit-reset {
+  margin-left: 8px;
+  padding: 2px 8px;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+.ota-sei-micro-profit__activity-profit-cap-hint {
+  font-size: 11px;
+  color: var(--ota-sei-accent);
+  margin: 0 0 6px 0;
+}
+.ota-sei-micro-profit__activity-profit-hint {
+  font-size: 11px;
+  color: var(--ds-text-tertiary);
+  margin: 0;
+}
+
+.ota-sei-micro-profit__activity-profit-session-hint {
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+.ota-sei-micro-profit__input-group--row {
+  align-items: center;
+}
+.ota-sei-micro-profit__checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.ota-sei-micro-profit__checkbox-label input { margin: 0; }
+.ota-sei-micro-profit__input--narrow {
+  width: 6rem;
+  min-width: 4rem;
+}
+.ota-sei-micro-profit__input-hint-icon {
+  flex-shrink: 0;
+  color: var(--ds-text-tertiary);
+  vertical-align: middle;
+}
+.ota-sei-micro-profit__input-hint {
+  display: block;
+  font-size: 11px;
+  color: var(--ds-text-tertiary);
+  margin-top: 4px;
+}
+
+/* ------ How it works (expandable) ------ */
+.ota-sei-micro-profit__how-it-works {
+  margin: 0 18px 12px 18px;
+  border: 1px solid var(--ota-sei-border);
+  border-radius: var(--ota-sei-radius-sm);
+  background: var(--ota-sei-block);
+  overflow: hidden;
+}
+
+.ota-sei-micro-profit__how-it-works-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  color: var(--ds-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+}
+
+.ota-sei-micro-profit__how-it-works-trigger:hover {
+  color: var(--ds-text-primary);
+  background: #000000;
+}
+
+.ota-sei-micro-profit__how-it-works-body {
+  padding: 12px 14px 14px 14px;
+  border-top: 1px solid var(--ota-sei-border);
+}
+
+.ota-sei-micro-profit__how-it-works-body p {
+  margin: 0 0 10px 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ds-text-secondary);
+}
+
+.ota-sei-micro-profit__how-it-works-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* ------ OTA AI presence (visual: who is connected, status, capabilities) ------ */
+.ota-sei-micro-profit__presence {
+  margin: 0 18px 16px 18px;
+  padding: 14px 16px;
+  border-radius: var(--ota-sei-radius-sm);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(16, 185, 129, 0.08) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+}
+
+.ota-sei-micro-profit__presence-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.ota-sei-micro-profit__presence-logo {
+  flex-shrink: 0;
+}
+
+.ota-sei-micro-profit__presence-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ota-sei-micro-profit__presence-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ds-text-primary);
+  letter-spacing: -0.02em;
+}
+
+.ota-sei-micro-profit__presence-model {
+  font-size: 11px;
+  color: var(--ds-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ota-sei-micro-profit__presence-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.ota-sei-micro-profit__presence-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ota-sei-micro-profit__presence-dot--present {
+  background: var(--ota-sei-success);
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.3);
+  animation: ota-sei-presence-pulse 2s ease-in-out infinite;
+}
+
+.ota-sei-micro-profit__presence-dot--connecting {
+  background: var(--ota-sei-accent);
+  opacity: 0.9;
+  animation: ota-sei-presence-pulse 1s ease-in-out infinite;
+}
+
+.ota-sei-micro-profit__presence-dot--off {
+  background: var(--ds-text-tertiary);
+  opacity: 0.6;
+}
+
+@keyframes ota-sei-presence-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.1); }
+}
+
+.ota-sei-micro-profit__presence-status-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ds-text-secondary);
+}
+
+.ota-sei-micro-profit__presence-dot--present + .ota-sei-micro-profit__presence-status-text {
+  color: var(--ota-sei-success);
+}
+
+.ota-sei-micro-profit__presence-caps {
+  margin: 0;
+  padding: 0 0 0 20px;
+  list-style: none;
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+  line-height: 1.6;
+}
+
+.ota-sei-micro-profit__presence-caps li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.ota-sei-micro-profit__presence-caps li:last-child {
+  margin-bottom: 0;
+}
+
+.ota-sei-micro-profit__presence-caps li svg {
+  flex-shrink: 0;
+  color: var(--ota-sei-accent);
+  opacity: 0.9;
+}
+
+/* ------ OTA AI (OpenAI) section ------ */
+.ota-sei-micro-profit__ota-ai-section {
+  margin: 0 18px 14px 18px;
+  padding: 14px;
+  border-radius: var(--ota-sei-radius-sm);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(16, 185, 129, 0.06) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+.ota-sei-micro-profit__ota-ai-disconnected {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ds-text-secondary);
+  padding: 8px 0;
+}
+
+.ota-sei-micro-profit__ota-ai-disconnected-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ota-sei-micro-profit__ota-ai-disconnected svg {
+  flex-shrink: 0;
+  color: #ef4444;
+}
+
+.ota-sei-micro-profit__ota-ai-why {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ds-text-secondary);
+  padding: 8px 10px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ota-sei-micro-profit__ota-ai-why code {
+  font-size: 11px;
+  padding: 1px 3px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.ota-sei-micro-profit__chat-link {
+  color: var(--ota-sei-accent, #6366f1);
+  text-decoration: underline;
+}
+
+.ota-sei-micro-profit__chat-link:hover {
+  opacity: 0.9;
+}
+
+.ota-sei-micro-profit__ota-ai-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.ota-sei-micro-profit__ota-ai-icon {
+  color: var(--ota-sei-accent);
+  flex-shrink: 0;
+}
+
+.ota-sei-micro-profit__ota-ai-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}
+
+.ota-sei-micro-profit__ota-ai-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: var(--ota-sei-radius-sm);
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--ota-sei-success);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ota-sei-micro-profit__ota-ai-content {
+  font-size: 13px;
+}
+
+.ota-sei-micro-profit__ota-ai-signal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.ota-sei-micro-profit__ota-ai-signal-value {
+  text-transform: uppercase;
+}
+
+.ota-sei-micro-profit__ota-ai-signal--buy {
+  color: var(--ota-sei-success);
+}
+
+.ota-sei-micro-profit__ota-ai-signal--sell {
+  color: var(--ds-error, #ef4444);
+}
+
+.ota-sei-micro-profit__ota-ai-signal--hold {
+  color: var(--ds-text-tertiary);
+}
+
+.ota-sei-micro-profit__ota-ai-reasoning {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ds-text-secondary);
+}
+
+.ota-sei-micro-profit__ota-ai-error {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ds-text-tertiary);
+}
+
+/* ------ Status block (strategie + contract) ------ */
+.ota-sei-micro-profit__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 14px 18px;
+  flex-wrap: wrap;
+  background: var(--ota-sei-block);
+  border-bottom: 1px solid var(--ota-sei-border);
+  border-radius: var(--ota-sei-radius-sm);
+}
+
+.ota-sei-micro-profit__row--pair {
+  margin-bottom: 8px;
+}
+
+.ota-sei-micro-profit__row--pair .ota-sei-micro-profit__label {
+  flex-shrink: 0;
+}
+
+.ota-sei-micro-profit__label {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--ds-text-secondary);
+}
+
+.ota-sei-micro-profit__label-inline {
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.ota-sei-micro-profit__btn-toggle {
+  padding: 6px 16px;
+  border-radius: var(--ota-sei-radius-sm);
+  border: none;
+  background: var(--ds-bg-subtle);
+  color: var(--ds-text-secondary);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.15s, color 0.15s;
+}
+
+.ota-sei-micro-profit__btn-toggle:hover:not(:disabled) {
+  background: #000000;
+  color: var(--ds-text-primary);
+}
+
+.ota-sei-micro-profit__btn-toggle.is-enabled {
+  background: var(--ota-sei-success-dim);
+  color: var(--ota-sei-success);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+}
+
+.ota-sei-micro-profit__btn-toggle.is-enabled:hover:not(:disabled) {
+  background: rgba(34, 197, 94, 0.2);
+}
+
+.ota-sei-micro-profit__btn-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ------ Contract row ------ */
+.ota-sei-micro-profit__contract-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 12px 18px;
+  font-size: 13px;
+  flex-wrap: wrap;
+  background: var(--ota-sei-block);
+  border-bottom: 1px solid var(--ota-sei-border);
+  border-radius: var(--ota-sei-radius-sm);
+}
+
+.ota-sei-micro-profit__contract-ok {
+  color: var(--ota-sei-success);
+}
+
+.ota-sei-micro-profit__contract-err {
+  color: var(--ds-danger);
+}
+
+.ota-sei-micro-profit__contract-verifying {
+  color: var(--ota-sei-accent);
+  font-weight: 500;
+}
+
+.ota-sei-micro-profit__contract-err-msg {
+  color: var(--ds-danger);
+  max-width: 100%;
+}
+
+.ota-sei-micro-profit__btn-verify {
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  margin-left: 4px;
+  border-radius: var(--ota-sei-radius-sm);
+  border: 1px solid var(--ota-sei-border);
+  background: transparent;
+  color: var(--ds-text-secondary);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.ota-sei-micro-profit__btn-verify:hover {
+  border-color: var(--ds-text-tertiary);
+  color: var(--ds-text-primary);
+}
+
+.ota-sei-micro-profit__badge {
+  margin-left: auto;
+  padding: 3px 10px;
+  border-radius: var(--ota-sei-radius-sm);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: var(--ota-sei-accent-dim);
+  color: var(--ota-sei-accent);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+}
+
+/* ------ On-chain data ------ */
+.ota-sei-micro-profit__onchain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  margin: 0;
+  padding: 10px 18px;
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+  background: rgba(99, 102, 241, 0.06);
+  border-bottom: 1px solid var(--ota-sei-border);
+  border-radius: var(--ota-sei-radius-sm);
+}
+
+.ota-sei-micro-profit__onchain-label {
+  font-weight: 600;
+  color: var(--ota-sei-accent);
+  margin-right: 4px;
+}
+
+/* ------ AI-style insight ------ */
+.ota-sei-micro-profit__insight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 18px;
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(34, 197, 94, 0.06) 100%);
+  border-bottom: 1px solid var(--ota-sei-border);
+  border-radius: var(--ota-sei-radius-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.ota-sei-micro-profit__insight-icon {
+  color: var(--ota-sei-accent);
+  flex-shrink: 0;
+}
+
+/* ------ Gas + Profit block ------ */
+.ota-sei-micro-profit__gas-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin: 0;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--ota-sei-border);
+  border-radius: var(--ota-sei-radius-sm);
+}
+
+.ota-sei-micro-profit__gas-value {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ota-sei-micro-profit__gas-value .ota-sei-micro-profit__label-inline {
+  margin-right: 2px;
+}
+
+.ota-sei-micro-profit__btn-secondary {
+  padding: 5px 12px;
+  border-radius: var(--ota-sei-radius-sm);
+  border: 1px solid var(--ota-sei-border);
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.ota-sei-micro-profit__btn-secondary:hover:not(:disabled) {
+  border-color: var(--ds-text-tertiary);
+  color: var(--ds-text-primary);
+  background: var(--ota-sei-block);
+}
+
+.ota-sei-micro-profit__btn-secondary:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.ota-sei-micro-profit__profit-block {
+  margin: 0;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--ota-sei-border);
+  border-radius: var(--ota-sei-radius-sm);
+}
+
+.ota-sei-micro-profit__profit-line {
+  font-size: 13px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.ota-sei-micro-profit__profit-line strong {
+  color: var(--ds-text-primary);
+  font-weight: 600;
+}
+
+.ota-sei-micro-profit__percent-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ota-sei-micro-profit__btn-pct {
+  padding: 5px 12px;
+  border-radius: var(--ota-sei-radius-sm);
+  border: 1px solid var(--ota-sei-border);
+  background: transparent;
+  color: var(--ds-text-secondary);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.ota-sei-micro-profit__btn-pct:hover {
+  border-color: var(--ds-text-tertiary);
+  color: var(--ds-text-primary);
+  background: var(--ota-sei-block);
+}
+
+.ota-sei-micro-profit__btn-pct.is-selected {
+  background: var(--ota-sei-accent-dim);
+  color: var(--ota-sei-accent);
+  border-color: var(--ota-sei-accent);
+}
+
+.ota-sei-micro-profit__info-icon {
+  cursor: help;
+  opacity: 0.6;
+  color: var(--ds-text-tertiary);
+}
+
+/* ------ Alert, signal, result ------ */
+.ota-sei-micro-profit__alert {
+  margin: 0;
+  padding: 10px 18px;
+  font-size: 13px;
+  color: var(--ds-danger);
+  background: rgba(239, 68, 68, 0.08);
+  border-bottom: 1px solid var(--ota-sei-border);
+  border-radius: var(--ota-sei-radius-sm);
+}
+
+/* OTA STX: missing env for local dex-wrapper — warning (not hard error) */
+.ota-sei-micro-profit__alert--stx-env {
+  color: var(--ds-text-primary, #e8e8ed);
+  background: rgba(245, 158, 11, 0.1);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.ota-sei-micro-profit__env-missing-list {
+  margin: 8px 0 0 1rem;
+  padding: 0;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.ota-sei-micro-profit__env-missing-note {
+  margin: 10px 0 0;
+  font-size: 12px;
+  opacity: 0.88;
+}
+
+.ota-sei-micro-profit__signal-box {
+  margin: 0;
+  padding: 12px 18px;
+  border-radius: var(--ota-sei-radius-sm);
+  background: var(--ota-sei-block);
+  font-size: 13px;
+  border-bottom: 1px solid var(--ota-sei-border);
+}
+
+.ota-sei-micro-profit__result {
+  margin: 0;
+  padding: 12px 18px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--ota-sei-border);
+  border-radius: var(--ota-sei-radius-sm);
+}
+
+.ota-sei-micro-profit__result--success {
+  color: var(--ota-sei-success);
+  background: var(--ota-sei-success-dim);
+}
+
+.ota-sei-micro-profit__result--error {
+  color: var(--ds-danger);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.ota-sei-micro-profit__result-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ota-sei-micro-profit__result-link:hover {
+  opacity: 0.9;
+}
+
+.ota-sei-micro-profit__result-block {
+  margin: 0 0 8px 0;
+  border-bottom: 1px solid var(--ota-sei-border);
+}
+
+.ota-sei-micro-profit__result-hint {
+  margin: 8px 18px 12px;
+  font-size: 12px;
+  color: var(--ota-sei-muted);
+  line-height: 1.4;
+}
+
+.ota-sei-micro-profit__result-hint--modal {
+  margin-top: 12px;
+  margin-bottom: 0;
+}
+
+/* ------ Input + actions ------ */
+.ota-sei-micro-profit__input-group {
+  margin: 0;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--ota-sei-border);
+  border-radius: var(--ota-sei-radius-sm);
+}
+
+.ota-sei-micro-profit__input-label {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  display: block;
+  margin-bottom: 8px;
+  color: var(--ds-text-secondary);
+}
+
+.ota-sei-micro-profit__input {
+  width: 100%;
+  max-width: 140px;
+  padding: 10px 12px;
+  border-radius: var(--ota-sei-radius-sm);
+  border: 1px solid var(--ota-sei-border);
+  background: var(--ds-bg-subtle);
+  color: var(--ds-text-primary);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  transition: border-color 0.15s;
+}
+
+.ota-sei-micro-profit__input:focus {
+  outline: none;
+  border-color: var(--ota-sei-accent);
+}
+
+.ota-sei-micro-profit__select {
+  cursor: pointer;
+  appearance: auto;
+  min-width: 140px;
+}
+
+.ota-sei-micro-profit__actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 16px 0 0 0;
+  margin-top: 4px;
+  border-top: 1px solid var(--ota-sei-border);
+}
+
+.ota-sei-micro-profit-settings .ota-sei-micro-profit__actions {
+  padding: var(--ota-sei-unified-pad) !important;
+  padding-top: 14px !important;
+  margin-top: 8px !important;
+  border-radius: 0 0 var(--ota-sei-unified-r) var(--ota-sei-unified-r);
+}
+
+.ota-sei-micro-profit__btn-outline {
+  padding: 10px 18px;
+  border-radius: var(--ota-sei-radius-sm);
+  border: 1px solid var(--ota-sei-border);
+  background: transparent;
+  color: var(--ds-text-primary);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.ota-sei-micro-profit__btn-outline:hover:not(:disabled) {
+  border-color: var(--ds-text-tertiary);
+  background: var(--ota-sei-block);
+}
+
+.ota-sei-micro-profit__btn-outline:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.ota-sei-micro-profit__btn-signal {
+  padding: 10px 18px;
+  border-radius: var(--ota-sei-radius-sm);
+  border: 1px solid var(--ota-sei-accent);
+  background: var(--ota-sei-accent-dim);
+  color: var(--ota-sei-accent);
+  font-weight: 600;
+  font-size: 13px;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+.ota-sei-micro-profit__btn-signal:hover:not(:disabled) {
+  background: rgba(99, 102, 241, 0.25);
+  color: var(--ds-text-primary);
+  box-shadow: 0 0 0 1px var(--ota-sei-accent);
+}
+
+.ota-sei-micro-profit__btn-signal:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.ota-sei-micro-profit__btn-signal:focus-visible {
+  outline: 2px solid var(--ota-sei-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ota-sei-micro-profit__btn-signal {
+    transition: none;
+  }
+}
+
+.ota-sei-micro-profit__btn-round-trip {
+  padding: 10px 18px;
+  border-radius: var(--ota-sei-radius-sm);
+  border: 1px solid var(--ota-sei-success);
+  background: var(--ota-sei-success-dim);
+  color: var(--ota-sei-success);
+  font-weight: 600;
+  font-size: 13px;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+.ota-sei-micro-profit__btn-round-trip:hover:not(:disabled) {
+  background: rgba(34, 197, 94, 0.25);
+  color: var(--ds-text-primary);
+  box-shadow: 0 0 0 1px var(--ota-sei-success);
+}
+
+.ota-sei-micro-profit__btn-round-trip:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.ota-sei-micro-profit__btn-round-trip:focus-visible {
+  outline: 2px solid var(--ota-sei-success);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ota-sei-micro-profit__btn-round-trip {
+    transition: none;
+  }
+}
+
+.ota-sei-micro-profit__btn-primary {
+  padding: 10px 20px;
+  border-radius: var(--ota-sei-radius-sm);
+  border: 1px solid var(--ota-sei-accent);
+  background: var(--ota-sei-accent-dim);
+  color: var(--ota-sei-accent);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+.ota-sei-micro-profit__btn-primary:hover:not(:disabled) {
+  background: rgba(99, 102, 241, 0.25);
+  color: var(--ds-text-primary);
+  box-shadow: 0 0 0 1px var(--ota-sei-accent);
+}
+
+.ota-sei-micro-profit__btn-primary:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ------ Modals (verify, launch, round-trip, signal) ------ */
+.ota-sei-micro-profit__modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--ds-z-floating-ui);
+  background: var(--ds-bg-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  overflow-y: auto;
+  animation: ota-sei-modal-backdrop-in 0.2s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ota-sei-micro-profit__modal-backdrop {
+    animation: none;
+  }
+}
+
+@keyframes ota-sei-modal-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.ota-sei-micro-profit__modal {
+  background: var(--ota-sei-surface);
+  border: 1px solid var(--ota-sei-border);
+  border-radius: var(--ota-sei-radius);
+  max-width: 500px;
+  width: 100%;
+  max-height: min(88vh, 640px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  flex-shrink: 0;
+  margin: auto;
+  animation: ota-sei-modal-in 0.22s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ota-sei-micro-profit__modal {
+    animation: none;
+  }
+}
+
+@keyframes ota-sei-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Launch confirm modal: slightly wider, frame border */
+.ota-sei-micro-profit__modal--launch {
+  max-width: 520px;
+  border: 2px solid var(--ota-sei-border);
+  border-left: 4px solid var(--ota-sei-accent);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 24px 48px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+/* Check signal modal – revert la stilul inițial (fără override-uri specifice) */
+
+
+.ota-sei-micro-profit__modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--ota-sei-border);
+  flex-shrink: 0;
+}
+
+.ota-sei-micro-profit__modal-header > div:first-child {
+  min-width: 0;
+  flex: 1;
+}
+
+.ota-sei-micro-profit__modal-header h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  line-height: 1.3;
+}
+
+.ota-sei-micro-profit__modal-close {
+  padding: 8px;
+  border: none;
+  background: transparent;
+  color: var(--ds-text-secondary);
+  cursor: pointer;
+  border-radius: var(--ota-sei-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.ota-sei-micro-profit__modal-close:hover {
+  background: var(--ota-sei-block);
+  color: var(--ds-text-primary);
+}
+
+.ota-sei-micro-profit__modal-close:focus-visible {
+  outline: 2px solid var(--ota-sei-accent);
+  outline-offset: 2px;
+}
+
+/* SEI contract data modal – evidențiere, Copy, Close */
+.ota-sei-micro-profit__modal--contract-data .ota-sei-micro-profit__modal-header {
+  flex-wrap: wrap;
+}
+
+.ota-sei-micro-profit__modal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.ota-sei-micro-profit__modal-btn-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ds-text-secondary);
+  background: var(--ota-sei-block);
+  border: 1px solid var(--ota-sei-border);
+  border-radius: var(--ota-sei-radius-sm);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.ota-sei-micro-profit__modal-btn-copy:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--ds-text-primary);
+  border-color: var(--ota-sei-accent);
+}
+
+.ota-sei-micro-profit__modal-btn-copy:focus-visible {
+  outline: 2px solid var(--ota-sei-accent);
+  outline-offset: 2px;
+}
+
+.ota-sei-micro-profit__contract-data-block {
+  padding: 14px 16px;
+  background: var(--ota-sei-block);
+  border: 1px solid var(--ota-sei-border);
+  border-radius: var(--ota-sei-radius-sm);
+}
+
+.ota-sei-micro-profit__contract-data-block + .ota-sei-micro-profit__contract-data-block {
+  margin-top: 14px;
+}
+
+.ota-sei-micro-profit__contract-data-value {
+  font-weight: 500;
+  color: var(--ds-text-primary) !important;
+}
+
+.ota-sei-micro-profit__contract-data-highlight {
+  padding: 6px 10px;
+  background: rgba(99, 102, 241, 0.12);
+  border-radius: 6px;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  word-break: break-all;
+}
+
+.ota-sei-micro-profit__contract-data-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+.ota-sei-micro-profit__contract-data-badge.ota-sei-micro-profit__modal-ok {
+  background: var(--ota-sei-success-dim);
+  color: var(--ota-sei-success);
+}
+
+.ota-sei-micro-profit__contract-data-badge.ota-sei-micro-profit__modal-err {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--ds-error, #ef4444);
+}
+
+.ota-sei-micro-profit__modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 14px 20px;
+  border-top: 1px solid var(--ota-sei-border);
+  background: var(--ota-sei-block);
+  flex-shrink: 0;
+}
+
+.ota-sei-micro-profit__modal-btn-close {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  background: var(--ota-sei-accent);
+  border: none;
+  border-radius: var(--ota-sei-radius-sm);
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.ota-sei-micro-profit__modal-btn-close:hover {
+  opacity: 0.9;
+  filter: brightness(1.1);
+}
+
+.ota-sei-micro-profit__modal-btn-close:focus-visible {
+  outline: 2px solid var(--ota-sei-accent);
+  outline-offset: 2px;
+}
+
+.ota-sei-micro-profit__modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.ota-sei-micro-profit__modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.ota-sei-micro-profit__modal-body::-webkit-scrollbar-track {
+  background: var(--ota-sei-block);
+  border-radius: 4px;
+}
+
+.ota-sei-micro-profit__modal-body::-webkit-scrollbar-thumb {
+  background: var(--ota-sei-border);
+  border-radius: 4px;
+}
+
+.ota-sei-micro-profit__modal-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.ota-sei-micro-profit__modal-section {
+  margin-bottom: 20px;
+}
+
+.ota-sei-micro-profit__modal-section:last-child {
+  margin-bottom: 0;
+}
+
+.ota-sei-micro-profit__modal-section-title {
+  margin: 0 0 10px 0;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ota-sei-accent);
+  line-height: 1.3;
+}
+
+/* OTA AI Live block inside round-trip modal (price + activity) */
+.ota-sei-micro-profit__live-block {
+  padding: 12px 14px;
+  border-radius: var(--ota-sei-radius-sm);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(16, 185, 129, 0.06) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+.ota-sei-micro-profit__live-block-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+
+.ota-sei-micro-profit__live-block-pair {
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}
+
+.ota-sei-micro-profit__live-block-price {
+  font-family: var(--ds-font-mono, monospace);
+  font-weight: 700;
+  color: var(--ota-sei-success);
+}
+
+.ota-sei-micro-profit__live-block-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ota-sei-success);
+  flex-shrink: 0;
+  animation: ota-sei-presence-pulse 2s ease-in-out infinite;
+}
+
+.ota-sei-micro-profit__live-block-activity {
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+}
+
+.ota-sei-micro-profit__modal-ok {
+  color: var(--ota-sei-success);
+}
+
+.ota-sei-micro-profit__modal-dl {
+  margin: 0;
+}
+
+.ota-sei-micro-profit__modal-dl dt {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ds-text-tertiary);
+  margin-top: 12px;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.ota-sei-micro-profit__modal-dl dt:first-child {
+  margin-top: 0;
+}
+
+.ota-sei-micro-profit__modal-dl dd {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ds-text-primary);
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+.ota-sei-micro-profit__modal-dl--compact dt {
+  margin-top: 8px;
+}
+
+.ota-sei-micro-profit__modal-dl--compact dt:first-child {
+  margin-top: 0;
+}
+
+.ota-sei-micro-profit__modal-monospace {
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+}
+
+.ota-sei-micro-profit__modal-err {
+  color: var(--ds-error, #ef4444);
+}
+
+.ota-sei-micro-profit__modal-muted {
+  color: var(--ds-text-tertiary);
+  font-size: 12px;
+}
+
+.ota-sei-micro-profit__modal-list {
+  margin: 0;
+  padding-left: 18px;
+  list-style: disc;
+}
+
+.ota-sei-micro-profit__modal-list li {
+  margin: 4px 0;
+}
+
+/* ------ Launch session row & confirm modal ------ */
+.ota-sei-micro-profit__row--launch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+
+.ota-sei-micro-profit__badge {
+  padding: 4px 10px;
+  border-radius: var(--ota-sei-radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ota-sei-micro-profit__badge--active {
+  background: var(--ota-sei-success-dim);
+  color: var(--ota-sei-success);
+}
+
+.ota-sei-micro-profit__btn--launch {
+  min-width: 180px;
+  font-weight: 600;
+}
+
+.ota-sei-micro-profit__btn--launch:focus-visible {
+  outline: 2px solid var(--ota-sei-accent);
+  outline-offset: 2px;
+}
+
+.ota-sei-micro-profit__btn--stop {
+  color: var(--ds-text-secondary);
+}
+
+.ota-sei-micro-profit__btn--stop:hover:not(:disabled) {
+  color: var(--ds-error, #ef4444);
+  border-color: var(--ds-error, #ef4444);
+}
+
+.ota-sei-micro-profit__btn--stop:focus-visible {
+  outline: 2px solid var(--ds-error, #ef4444);
+  outline-offset: 2px;
+}
+
+.ota-sei-micro-profit__hint {
+  width: 100%;
+  font-size: 12px;
+  color: var(--ds-text-tertiary);
+}
+
+.ota-sei-micro-profit__hint--muted {
+  color: var(--ds-text-tertiary);
+  opacity: 0.85;
+  font-style: italic;
+}
+
+.ota-sei-micro-profit__modal-subtitle {
+  margin: 8px 0 0 0;
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+  line-height: 1.45;
+  max-width: 42ch;
+}
+
+.ota-sei-micro-profit__modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ota-sei-border);
+}
+
+.ota-sei-micro-profit__modal-actions .ota-sei-micro-profit__btn-primary:focus-visible,
+.ota-sei-micro-profit__modal-actions .ota-sei-micro-profit__btn-outline:focus-visible {
+  outline: 2px solid var(--ota-sei-accent);
+  outline-offset: 2px;
+}
+
+.ota-sei-micro-profit__modal-checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ota-sei-micro-profit__modal-checklist li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.ota-sei-micro-profit__modal-checklist li svg {
+  flex-shrink: 0;
+}
+
+.ota-sei-micro-profit__check--ok {
+  color: var(--ota-sei-success);
+}
+
+.ota-sei-micro-profit__check--missing {
+  color: var(--ds-text-tertiary);
+}
+
+.ota-sei-micro-profit__modal-all-set {
+  margin: 12px 0 0 0;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--ota-sei-success);
+  font-weight: 600;
+  background: var(--ota-sei-success-dim);
+  border-radius: var(--ota-sei-radius-sm);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+.ota-sei-micro-profit__modal-text {
+  margin: 0 0 12px 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ds-text-secondary);
+}
+
+.ota-sei-micro-profit__modal-text:last-child {
+  margin-bottom: 0;
+}
+
+.ota-sei-micro-profit__modal-text strong {
+  color: var(--ds-text-primary);
+}
+
+/* ------ Execute session CTA (visible without expanding SEI Auto) ------ */
+.ota-sei-micro-profit__execute-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  padding: 14px 16px;
+  margin: 10px 0;
+  border-radius: var(--ota-sei-radius-sm);
+  background: linear-gradient(135deg, var(--ota-sei-block) 0%, rgba(99, 102, 241, 0.06) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.02);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ota-sei-micro-profit__execute-cta {
+    transition: none;
+  }
+}
+
+.ota-sei-micro-profit__execute-cta:focus-within {
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.15);
+}
+
+.ota-sei-micro-profit__execute-cta-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}
+
+.ota-sei-micro-profit__btn--execute-cta {
+  min-width: 168px;
+  font-weight: 600;
+}
+
+.ota-sei-micro-profit__btn--execute-cta:focus-visible {
+  outline: 2px solid var(--ota-sei-accent);
+  outline-offset: 2px;
+}
+
+.ota-sei-micro-profit__execute-cta .ota-sei-micro-profit__hint {
+  width: 100%;
+  margin-top: 2px;
+}
+
+/* Session active: same area as execute CTA, so user always sees status + where to go */
+.ota-sei-micro-profit__session-active-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 14px 16px;
+  margin: 10px 0;
+  border-radius: var(--ota-sei-radius-sm);
+  background: var(--ota-sei-success-dim);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+.ota-sei-micro-profit__session-active-cta .ota-sei-micro-profit__execute-cta-label {
+  color: var(--ota-sei-success);
+}
+
+.ota-sei-micro-profit__session-active-cta .ota-sei-micro-profit__hint {
+  width: 100%;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ds-text-secondary);
+}
+
+.ota-sei-micro-profit__session-active-cta .ota-sei-micro-profit__hint strong {
+  color: var(--ds-text-primary);
+}
+
+/* Manual round-trip – vizibil sus, fără scroll */
+.ota-sei-micro-profit__manual-round-trip {
+  padding: 14px 16px;
+  margin: 10px 0;
+  border-radius: var(--ota-sei-radius-sm);
+  background: var(--ota-sei-block);
+  border: 1px solid var(--ota-sei-border);
+}
+.ota-sei-micro-profit__manual-round-trip .ota-sei-micro-profit__row--manual {
+  margin-bottom: 10px;
+}
+.ota-sei-micro-profit__manual-round-trip .ota-sei-micro-profit__label {
+  font-weight: 600;
+  font-size: 13px;
+}
+.ota-sei-micro-profit__manual-round-trip .ota-sei-micro-profit__actions {
+  margin-top: 10px;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* Open position – buy SEI with USDC, appears in Open Orders */
+.ota-sei-micro-profit__open-position {
+  padding: 14px 16px;
+  margin: 10px 0;
+  border-radius: var(--ota-sei-radius-sm);
+  background: var(--ota-sei-block);
+  border: 1px solid var(--ota-sei-border);
+}
+.ota-sei-micro-profit__open-position .ota-sei-micro-profit__row--manual {
+  margin-bottom: 8px;
+}
+.ota-sei-micro-profit__open-position .ota-sei-micro-profit__input-group {
+  margin-bottom: 8px;
+}
+.ota-sei-micro-profit__open-position .ota-sei-micro-profit__btn-open-position {
+  margin-top: 4px;
+}
+.ota-sei-micro-profit__signal-status--error {
+  color: var(--ds-danger, #ef4444) !important;
+}
+.ota-sei-micro-profit__open-position--compact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  margin: 8px 0;
+}
+.ota-sei-micro-profit__open-position--compact .ota-sei-micro-profit__input--small {
+  width: 60px;
+}
+
+/* ------ Signal modal (Check signal popup) ------ */
+.ota-sei-micro-profit__signal-explainer {
+  margin: 0 0 16px 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ds-text-secondary);
+}
+
+.ota-sei-micro-profit__signal-status {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ds-text-tertiary);
+}
+
+.ota-sei-micro-profit__signal-result {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 12px;
+  padding: 12px 14px;
+  border-radius: var(--ota-sei-radius-sm);
+  font-size: 13px;
+}
+
+.ota-sei-micro-profit__signal-result--trigger {
+  background: var(--ota-sei-success-dim);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  color: var(--ota-sei-success);
+}
+
+.ota-sei-micro-profit__signal-result--no-trigger {
+  background: var(--ota-sei-block);
+  border: 1px solid var(--ota-sei-border);
+  color: var(--ds-text-secondary);
+}
+
+.ota-sei-micro-profit__signal-result-label {
+  font-weight: 600;
+}
+
+.ota-sei-micro-profit__signal-result-side {
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.ota-sei-micro-profit__signal-result-reason {
+  width: 100%;
+  margin-top: 2px;
+  color: inherit;
+  opacity: 0.95;
+}
+
+/* ------ Round-trip modal ------ */
+.ota-sei-micro-profit__round-trip-result {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 12px 14px;
+  border-radius: var(--ota-sei-radius-sm);
+  font-size: 13px;
+}
+
+.ota-sei-micro-profit__round-trip-result--success {
+  background: var(--ota-sei-success-dim);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  color: var(--ota-sei-success);
+}
+
+.ota-sei-micro-profit__round-trip-result--error {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: var(--ds-error, #ef4444);
+}
+
+.ota-sei-micro-profit__round-trip-result-label {
+  font-weight: 600;
+}
+
+.ota-sei-micro-profit__round-trip-result-error {
+  font-size: 13px;
+}
+
+.ota-sei-micro-profit__ota-ai-block {
+  padding: 12px 14px;
+  border-radius: var(--ota-sei-radius-sm);
+  background: var(--ota-sei-block);
+  border: 1px solid var(--ota-sei-border);
+}
+
+.ota-sei-micro-profit__ota-ai-message {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ds-text-primary);
+}
+
+.ota-sei-micro-profit__ota-ai-note {
+  margin: 10px 0 0 0;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--ds-text-tertiary);
+}
+
+/* ------ SEI Auto (bot runs round-trips) ------ */
+.ota-sei-micro-profit__sei-auto {
+  margin-top: 12px;
+  border: 1px solid var(--ota-sei-border);
+  border-radius: var(--ota-sei-radius-sm);
+  overflow: hidden;
+  background: var(--ota-sei-block);
+}
+
+.ota-sei-micro-profit__sei-auto-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border: none;
+  background: transparent;
+  color: var(--ds-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+}
+
+.ota-sei-micro-profit__sei-auto-head:hover {
+  background: #000000;
+}
+
+.ota-sei-micro-profit__sei-auto-head:focus-visible {
+  outline: 2px solid var(--ota-sei-accent);
+  outline-offset: -2px;
+}
+
+.ota-sei-micro-profit__sei-auto-body {
+  padding: 12px 14px 16px 14px;
+  border-top: 1px solid var(--ota-sei-border);
+}
+
+.ota-sei-micro-profit__sei-auto-deposit {
+  margin: 12px 0;
+}
+
+.ota-sei-micro-profit__sei-auto-deposit .ota-sei-micro-profit__label {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.ota-sei-micro-profit__sei-auto-address {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+  line-height: 1.4;
+}
+
+.ota-sei-micro-profit__sei-auto-custodial-warning {
+  margin: 0 0 8px 0;
+  font-size: 11px;
+  color: var(--ds-color-warning, #b45309);
+  font-weight: 500;
+}
+
+.ota-sei-micro-profit__sei-auto-deposit code {
+  display: block;
+  padding: 8px 10px;
+  border-radius: var(--ota-sei-radius-sm);
+  background: rgba(0, 0, 0, 0.2);
+  font-size: 11px;
+  word-break: break-all;
+}
+
+.ota-sei-micro-profit__sei-auto-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 10px 0;
+  font-size: 12px;
+  color: var(--ds-text-secondary);
+}
+
+.ota-sei-micro-profit__sei-auto-status span:first-child {
+  margin-right: 4px;
+}
+
+/* SEI execution history table */
+.ota-sei-micro-profit__history-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.ota-sei-micro-profit__history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.ota-sei-micro-profit__history-table th,
+.ota-sei-micro-profit__history-table td {
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--ota-sei-border);
+}
+
+.ota-sei-micro-profit__history-table th {
+  color: var(--ds-text-secondary);
+  font-weight: 600;
+}
+
+.ota-sei-micro-profit__history-table td {
+  color: var(--ds-text-primary);
+}
+
+.ota-sei-micro-profit__history-table .ota-sei-micro-profit__result-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ota-sei-micro-profit__profit--pos {
+  color: var(--ota-sei-success);
+  font-variant-numeric: tabular-nums;
+}
+
+.ota-sei-micro-profit__profit--neg {
+  color: var(--ds-danger, #ef4444);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Bot deposit guide ─────────────────────────────────────── */
+.ota-sei-micro-profit__deposit-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.ota-sei-micro-profit__bot-addr-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.ota-sei-micro-profit__bot-addr-code {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 260px;
+}
+
+.ota-sei-micro-profit__btn-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--ota-sei-border, #334155);
+  background: transparent;
+  color: var(--ds-text-secondary, #94a3b8);
+  font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+.ota-sei-micro-profit__btn-copy:hover {
+  background: var(--ota-sei-hover, rgba(99,102,241,0.08));
+  color: var(--ds-text-primary, #f1f5f9);
+}
+
+.ota-sei-micro-profit__btn-ghost {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--ota-sei-accent, #6366f1);
+  font-size: 12px;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+.ota-sei-micro-profit__btn-ghost:hover {
+  color: var(--ota-sei-accent-light, #818cf8);
+}
+
+.ota-sei-micro-profit__bot-balance-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.ota-sei-micro-profit__bot-balance-val {
+  color: #4ade80;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: ui-monospace, monospace;
+}
+
+.ota-sei-micro-profit__deposit-guide {
+  background: var(--ds-bg-tertiary, rgba(30,41,59,0.6));
+  border: 1px solid var(--ota-sei-border, #334155);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-top: 8px;
+}
+
+.ota-sei-micro-profit__deposit-guide-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ds-text-primary, #f1f5f9);
+  margin: 0 0 10px;
+}
+
+.ota-sei-micro-profit__deposit-steps {
+  margin: 0 0 10px;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ota-sei-micro-profit__deposit-steps li {
+  font-size: 12px;
+  color: var(--ds-text-secondary, #94a3b8);
+  line-height: 1.5;
+}
+
+.ota-sei-micro-profit__deposit-steps li strong {
+  color: var(--ds-text-primary, #f1f5f9);
+}
+
+.ota-sei-micro-profit__link {
+  color: var(--ota-sei-accent, #6366f1);
+  text-decoration: underline;
+}
+.ota-sei-micro-profit__link:hover {
+  color: var(--ota-sei-accent-light, #818cf8);
+}

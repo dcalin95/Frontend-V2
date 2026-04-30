@@ -1,0 +1,753 @@
+/**
+ * 📋 Header Styles - Header Component Styles
+ */
+
+.ai-trading-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+}
+
+.ai-trading-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg, 20px);
+}
+
+/* Titlu Leverage: spațiu între Logo Bits și titlu */
+.ai-trading-header-leverage-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 0 28px;
+  padding: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary, var(--ds-text-primary));
+  white-space: nowrap;
+}
+
+/* Spațiu amplu între logo și blocul SEI în header principal */
+.ai-trading-header-left .ai-trading-sei-wallet {
+  margin-left: 28px;
+}
+
+.ai-trading-header-center {
+  flex: 1;
+  min-width: 0; /* allow children to shrink / scroll */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--spacing-md);
+}
+
+.ai-trading-header-center:empty {
+  display: none;
+}
+
+.ai-trading-logo {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing-sm) * 1.1);
+  color: var(--color-primary);
+}
+
+.ai-trading-logo-text {
+  font-size: calc(var(--font-size-lg) * 1.265);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.ai-trading-logo-text .bits-s-dollar {
+  position: relative;
+  display: inline-block;
+}
+
+.ai-trading-logo-text .bits-b-dollar {
+  position: relative;
+  display: inline-block;
+}
+
+/* doar linia "dollar" roșie peste litera S (S rămâne culoarea normală) */
+.ai-trading-logo-text .bits-s-dollar::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2px;
+  height: 1.15em;
+  background: #ff3b30;
+  transform: translate(-50%, -52%);
+  border-radius: 1px;
+  pointer-events: none;
+}
+
+
+.ai-trading-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+/* SEI wallet (pe /dex/ota/sei) – stânga header, evidențiat, Copy + Disconnect */
+.ai-trading-sei-wallet {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+.ai-trading-sei-wallet:has(.ai-trading-sei-wallet-not-connected) {
+  background: rgba(124, 58, 237, 0.08);
+  border-color: rgba(124, 58, 237, 0.25);
+}
+.ai-trading-sei-wallet-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ai-trading-sei-wallet-logo {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+.ai-trading-sei-wallet-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.ai-trading-sei-wallet-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1.2;
+}
+.ai-trading-sei-wallet-label {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+.ai-trading-sei-wallet-network {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(34, 197, 94, 0.9);
+  opacity: 0.95;
+}
+.ai-trading-sei-wallet-address {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+.ai-trading-sei-wallet-balance {
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: #4ade80;
+  margin-top: 2px;
+}
+.ai-trading-sei-wallet-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 4px;
+  padding-left: 8px;
+  border-left: 1px solid rgba(34, 197, 94, 0.2);
+}
+.ai-trading-sei-wallet-copy,
+.ai-trading-sei-wallet-disconnect {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+.ai-trading-sei-wallet-copy:hover,
+.ai-trading-sei-wallet-disconnect:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+.ai-trading-sei-wallet-copy:focus-visible,
+.ai-trading-sei-wallet-disconnect:focus-visible {
+  outline: 2px solid var(--ds-accent, #6366f1);
+  outline-offset: 2px;
+}
+.ai-trading-sei-wallet-copy svg {
+  color: inherit;
+}
+.ai-trading-sei-wallet-disconnect {
+  border: none;
+}
+.ai-trading-sei-wallet-disconnect:hover {
+  color: var(--ds-error, #ef4444);
+}
+.ai-trading-sei-wallet-not-connected {
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+/* Social / Docs – discret, colț dreapta-sus (mutat din sidebar) */
+.header-social-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: 4px;
+}
+.header-social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.5));
+  background: transparent;
+  border: none;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.header-social-link:hover {
+  color: var(--text-primary, #fff);
+  background: rgba(255, 255, 255, 0.06);
+}
+.header-social-link svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Theme switcher: popover cu swatches + descrieri */
+.ai-trading-theme-switcher {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ai-trading-theme-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm, 8px);
+  padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
+  background: #050505;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: var(--ds-text-primary, var(--text-primary, #fff));
+  font-size: var(--font-size-sm, 13px);
+  font-weight: var(--font-weight-medium, 500);
+  cursor: pointer;
+  outline: none;
+  min-width: 0;
+  transition: background 150ms, border-color 150ms;
+}
+
+.ai-trading-theme-trigger:hover,
+.ai-trading-theme-trigger:focus-visible {
+  background: #080808;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.ai-trading-theme-trigger-label {
+  max-width: 72px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ai-trading-theme-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 200px;
+  padding: var(--spacing-sm);
+  background: var(--bg-elevated, var(--bg-secondary, #161616));
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg, 12px);
+  box-shadow: var(--shadow-lg, 0 8px 24px rgba(0, 0, 0, 0.4));
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ai-trading-theme-option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: none;
+  border-radius: var(--border-radius, 8px);
+  background: transparent;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.ai-trading-theme-option:hover {
+  background: var(--surfaceHover, rgba(255, 255, 255, 0.08));
+}
+
+.ai-trading-theme-option.selected {
+  background: var(--surfaceHover, rgba(255, 255, 255, 0.08));
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.ai-trading-theme-swatch {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.ai-trading-theme-option-label {
+  font-weight: var(--font-weight-medium, 500);
+}
+
+.ai-trading-wallet-connected {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: #050505;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: var(--ds-text-secondary, var(--text-secondary));
+  font-size: var(--font-size-sm);
+}
+
+.ai-trading-wallet-icon {
+  flex-shrink: 0;
+  color: #00d9a5;
+  /* accent verde – modern, vizibil pe fundal întunecat */
+}
+
+.ai-trading-wallet-address {
+  font-family: var(--font-family-mono);
+}
+
+.ai-trading-wallet-balance {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-secondary, #888);
+  margin-left: var(--spacing-xs, 0.25rem);
+  font-weight: var(--font-weight-medium, 500);
+  min-width: 85px; /* Rezervă spațiu fix pentru balance să nu sară layout-ul */
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  white-space: nowrap;
+  transition: opacity 0.2s ease; /* Smooth transition la loading */
+}
+
+/* Loader Animation - Discrete spinner pentru balance loading */
+.ai-trading-balance-loader {
+  animation: spin-loader 1s linear infinite;
+  color: var(--color-primary, #4facfe);
+  opacity: 0.8;
+}
+
+@keyframes spin-loader {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ai-trading-network-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--spacing-xs, 0.25rem) var(--spacing-sm, 0.5rem);
+  background: #050505;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--ds-text-secondary, var(--text-secondary, #888));
+  white-space: nowrap;
+  margin-right: var(--spacing-sm, 0.5rem);
+}
+
+.ai-trading-network-logo {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  object-fit: contain;
+}
+
+.ai-trading-connect-wallet-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background: #050505;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--ds-text-primary, var(--text-primary, #fff));
+  border-radius: 8px;
+  font-weight: var(--font-weight-medium);
+  transition: background 150ms, border-color 150ms;
+}
+
+.ai-trading-connect-wallet-btn:hover:not(:disabled) {
+  background: #080808;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.ai-trading-connect-wallet-btn:disabled,
+.ai-trading-connect-wallet-btn.connecting {
+  opacity: 0.7;
+  cursor: not-allowed;
+  position: relative;
+}
+
+.ai-trading-connect-wallet-btn.connecting::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  margin-left: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.ai-trading-disconnect-wallet-btn {
+  background: #050505;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--ds-text-secondary, var(--text-secondary));
+  font-size: 18px;
+  line-height: 1;
+  padding: 0;
+  margin-left: var(--spacing-xs);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 150ms, border-color 150ms, color 150ms;
+}
+
+.ai-trading-disconnect-wallet-btn:hover {
+  background: #080808;
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--ds-text-primary, var(--text-primary));
+}
+
+.ai-trading-settings-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-sm);
+  background: #050505;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: var(--ds-text-secondary, var(--text-secondary));
+  cursor: pointer;
+  transition: background 150ms, border-color 150ms, color 150ms;
+  width: 36px;
+  height: 36px;
+}
+
+.ai-trading-settings-btn:hover {
+  background: #080808;
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--ds-text-primary, var(--text-primary));
+  transform: translateY(-1px);
+}
+
+.ai-trading-settings-btn:active {
+  transform: translateY(0);
+}
+
+.ai-trading-user-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.ai-trading-user-name {
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+/* Account / Profil – lângă Wallet */
+.header-account-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.header-account-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  color: var(--text-primary);
+  font-size: 12px;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.header-account-link:hover {
+  background: var(--surfaceHover, rgba(255, 255, 255, 0.08));
+  border-color: var(--color-primary, rgba(79, 172, 254, 0.4));
+  color: var(--text-primary);
+}
+.header-account-avatar-slot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.2);
+}
+.header-account-avatar-img-fill {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.header-account-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.header-account-initial {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-primary, rgba(79, 172, 254, 0.25));
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.header-account-name {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+.header-account-address {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--text-secondary, #888);
+}
+.header-account-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.header-account-chevron:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+.header-account-dropdown,
+.header-account-auth-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 160px;
+  padding: 6px;
+  background: var(--bg-elevated, #1a1e26);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 1030;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.header-account-dropdown-item,
+.header-account-auth-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  width: 100%;
+}
+.header-account-dropdown-item:hover,
+.header-account-auth-item:hover:not(:disabled) {
+  background: var(--surfaceHover, rgba(255, 255, 255, 0.08));
+}
+.header-account-auth-item:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.header-account-signout {
+  color: var(--ds-color-error, #ef4444);
+}
+.header-account-signout:hover {
+  background: var(--ds-color-error-bg, rgba(239, 68, 68, 0.15));
+}
+.header-account-google svg {
+  flex-shrink: 0;
+}
+.header-account-login-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.header-account-login-btn:hover {
+  background: var(--surfaceHover, rgba(255, 255, 255, 0.08));
+  border-color: var(--color-primary, rgba(79, 172, 254, 0.4));
+}
+
+/* Token Selector in Header - COMPACT & TIGHT */
+.ai-trading-token-selector {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-right: var(--spacing-sm);
+}
+
+.ai-trading-token-select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px; /* Redus gap */
+  background: var(--bg-secondary, #1a1e26);
+  border: 1px solid var(--border-color, #252840);
+  border-radius: 6px; /* Redus border-radius */
+  padding: 4px 8px; /* Redus padding pentru compact */
+  transition: all 0.15s ease;
+  height: 32px; /* Redus înălțime */
+}
+
+.ai-trading-token-select-wrapper:hover {
+  background: var(--bg-tertiary, #252840);
+  border-color: var(--color-primary, #4facfe);
+}
+
+.ai-trading-token-select-logo {
+  flex-shrink: 0;
+  pointer-events: none;
+  width: 20px; /* Redus logo */
+  height: 20px;
+}
+
+.ai-trading-token-select {
+  height: auto !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  color: var(--text-primary, #ffffff) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  font-family: var(--font-family, system-ui) !important;
+  cursor: pointer;
+  outline: none;
+  transition: none;
+  width: auto !important; /* AUTO WIDTH - doar cât textul */
+  min-width: 50px !important; /* Minim pentru BNB */
+  max-width: 80px !important; /* Maxim pentru texte lungi */
+  line-height: 1.2;
+}
+
+.ai-trading-token-select:hover {
+  background: transparent !important;
+}
+
+.ai-trading-token-select:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* DROPDOWN OPTIONS - VIZIBILE! */
+.ai-trading-token-select option {
+  background: #1a1e26 !important; /* Gri închis pentru contrast */
+  color: #ffffff !important; /* Alb text */
+  padding: 10px 12px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  border-bottom: 1px solid #252840 !important;
+}
+
+.ai-trading-token-select option:hover {
+  background: #252840 !important; /* Mai deschis la hover */
+  color: #4facfe !important; /* Primary color la hover */
+}
+
+@media (max-width: 768px) {
+  .ai-trading-header {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  
+  .ai-trading-logo-text {
+    font-size: calc(var(--font-size-base) * 1.265);
+  }
+  
+  .ai-trading-token-selector {
+    display: none; /* Hide on mobile to save space */
+  }
+}
+

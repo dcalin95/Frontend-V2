@@ -1,0 +1,860 @@
+/* Dashboard Page Styles - Sonnet / Anthropic */
+
+.dashboard-page {
+  --dash-accent: #14f195;
+  --dash-accent-rgb: 20, 241, 149;
+  --ota-section-gap: var(--ds-spacing-6);
+  --ota-grid-gap: var(--ds-spacing-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-4);
+  padding: var(--ds-spacing-4) var(--ds-spacing-5);
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  background-color: #000000;
+  position: relative;
+}
+
+/* /dex/dashboard — spacing scale fix (8·12·16·24·32·40); fundal negru pur, fără overlay colorat */
+.dashboard-page--cmd {
+  --dash-s-1: 8px;
+  --dash-s-2: 12px;
+  --dash-s-3: 16px;
+  --dash-s-4: 24px;
+  --dash-s-5: 32px;
+  --dash-s-6: 40px;
+  --dash-radius-panel: 14px;
+  /* Premium desk tokens — low saturation, value-first */
+  --dash-accent-money: rgba(154, 214, 188, 0.88);
+  --dash-accent-positive: rgba(124, 214, 160, 0.82);
+  --dash-accent-negative: rgba(220, 140, 120, 0.9);
+  --dash-accent-neutral: rgba(165, 211, 232, 0.88);
+  --dash-accent-warning: rgba(251, 191, 36, 0.75);
+  --dash-accent-danger: rgba(180, 90, 75, 0.88);
+  --dash-text-strong: rgba(252, 252, 252, 0.98);
+  /* L2 body/helper: lizibil la 100% zoom, fără alb plat */
+  --dash-text-soft: rgba(211, 218, 230, 0.84);
+  --dash-text-muted: rgba(163, 176, 198, 0.76);
+  --dash-text-faint: rgba(148, 163, 184, 0.58);
+  /* Final polish: +1px față de treapta anterioară — doar /dex/dashboard */
+  --dash-tx-read: 1.0625rem;
+  --dash-tx-read-sm: 1rem;
+  --dash-tx-caption: 0.9375rem;
+  --dash-tx-eyebrow: 0.875rem;
+  --dash-border-soft: rgba(255, 255, 255, 0.06);
+  --dash-surface-1: rgba(12, 14, 20, 0.92);
+  --dash-surface-2: rgba(8, 10, 16, 0.88);
+  --dash-surface-3: rgba(6, 8, 14, 0.82);
+  gap: var(--dash-s-2);
+  padding: var(--dash-s-3) var(--dash-s-3);
+  background-color: #000000;
+}
+
+/* Fără mesh / gradient pe fundal — la fel ca shell-ul DEX (Apple black) */
+.dashboard-page::before,
+.dashboard-page.dashboard-page--cmd::before {
+  content: none;
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dashboard-section-reveal,
+  .dashboard-region-reveal {
+    animation: dashboard-section-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .dashboard-section-reveal-delay,
+  .dashboard-region-reveal--mid {
+    animation-delay: 0.08s;
+  }
+
+  .dashboard-section-reveal-delay-2,
+  .dashboard-region-reveal--late {
+    animation-delay: 0.14s;
+  }
+}
+
+@keyframes dashboard-section-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dashboard Shell: același max-width ca Trade/Swap/Leverage – 1800px */
+.dashboard-page-shell {
+  position: relative;
+  z-index: 1;
+  max-width: 1800px;
+  width: 100%;
+  margin: 0 auto;
+  padding-inline: var(--ds-spacing-6, 24px);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-4);
+}
+
+/* Hub: fără hero separat — command strip conține titlul */
+.dashboard-page-shell--hub {
+  gap: var(--ds-spacing-3);
+  padding-top: var(--ds-spacing-2);
+}
+
+.dashboard-page--cmd .dashboard-page-shell--hub {
+  gap: 8px;
+  padding-top: 2px;
+  padding-inline: var(--ds-spacing-4);
+}
+
+/* Un singur main: lățime + ritm vertical — fără shell în plus */
+.dashboard-canvas {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 0 var(--dash-s-3);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--dash-s-3);
+}
+
+/* Eyebrow command center: gri, nu verde neon */
+.dashboard-page--cmd .dashboard-page-hero-eyebrow,
+.dashboard-page--cmd .dash-cc-eyebrow {
+  color: rgba(255, 255, 255, 0.42) !important;
+}
+
+/* Titluri secțiuni zona jos (activity + insights) */
+.dash-page-section-title {
+  font-size: clamp(0.9375rem, 1.1vw, 1.0625rem) !important;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ds-text-primary);
+  margin: 0 0 6px !important;
+  padding-bottom: 0 !important;
+  border-bottom: none !important;
+}
+
+.dashboard-page--cmd .dash-page-section-title {
+  font-size: clamp(0.94rem, 1.22vw, 1.08rem) !important;
+  letter-spacing: 0.055em !important;
+  margin: 0 0 3px !important;
+}
+
+.dash-page-section-title::before {
+  display: none !important;
+}
+
+.dash-hub-col-desc {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--ds-text-secondary);
+  max-width: 62ch;
+}
+
+.dashboard-page--cmd .dash-hub-col-desc {
+  font-size: 0.875rem;
+  line-height: 1.42;
+  max-width: 48ch;
+  color: rgba(203, 213, 225, 0.82);
+}
+
+.dash-hub-col-header {
+  margin-bottom: 2px;
+}
+
+.dashboard-page--cmd .dash-hub-col-header {
+  margin-bottom: 0;
+}
+
+/* Hero: title + subtitle + decorative glow */
+.dashboard-page-hero {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: var(--ds-spacing-3);
+  margin-bottom: 0;
+  position: relative;
+}
+
+.dashboard-page-hero-text {
+  min-width: 0;
+}
+
+.dashboard-page-hero-eyebrow {
+  margin: 0 0 6px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(var(--dash-accent-rgb), 0.85);
+}
+
+.dashboard-page-hero-sub {
+  margin: 6px 0 0;
+  max-width: 56ch;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--ds-text-secondary);
+}
+
+.dashboard-page-hero-glow {
+  width: min(200px, 28vw);
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--dash-accent-rgb), 0.2) 0%, transparent 70%);
+  filter: blur(2px);
+  flex-shrink: 0;
+  margin-top: -8px;
+}
+
+/* Hero fără glow — bandă densă, alt look față de varianta „card mare + featured” */
+.dashboard-page-hero--compact {
+  grid-template-columns: 1fr;
+  gap: var(--ds-spacing-2);
+  margin-bottom: 0;
+}
+
+.dashboard-page-hero--compact .dashboard-page-title {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.8vw, 1.85rem);
+  letter-spacing: -0.03em;
+}
+
+.dashboard-page-hero--compact .dashboard-page-hero-sub {
+  margin-top: 4px;
+  max-width: 64ch;
+  font-size: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .dashboard-page-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-page-hero-glow {
+    display: none;
+  }
+}
+
+.dashboard-page-title {
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  font-weight: var(--ds-font-weight-semibold);
+  line-height: var(--ds-line-height-tight, 1.2);
+  color: var(--ds-text-primary);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+/* Solana chain notice – when wallet is Solana, stats are from API; swap/on-chain use SOL */
+.dashboard-solana-notice {
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: rgba(20, 241, 149, 0.08);
+  border: 1px solid rgba(20, 241, 149, 0.25);
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Section titles: clear, concise, proportional */
+.dashboard-page-section-title {
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 var(--ds-spacing-3);
+  padding-bottom: var(--ds-spacing-2);
+  border-bottom: 1px solid var(--ds-border-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dashboard-page-section-title::before {
+  content: '';
+  width: 3px;
+  height: 1em;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--dash-accent), rgba(var(--dash-accent-rgb), 0.35));
+  flex-shrink: 0;
+}
+
+.dashboard-page-section {
+  width: 100%;
+}
+
+/* Proportional: 2fr left (Overview), 3fr right (OTA & Trading) */
+.dashboard-page-content {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: var(--ds-spacing-6, 24px);
+  align-items: start;
+  width: 100%;
+  box-sizing: border-box;
+  grid-auto-rows: min-content;
+  overflow-x: hidden;
+}
+
+/* No "phantom column" - if side panel doesn't exist, layout becomes 1 column */
+.dashboard-page-content:has(.dashboard-page-right:empty) {
+  grid-template-columns: 1fr;
+}
+
+.dashboard-page-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-4);
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  box-sizing: border-box;
+  align-items: stretch;
+}
+
+.dashboard-page-right {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-spacing-4);
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  box-sizing: border-box;
+  align-items: stretch;
+}
+
+/* OTA layout: logică și proporționalitate */
+.dashboard-page-ota-sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ota-section-gap);
+  width: 100%;
+}
+
+.dashboard-page-ota-section {
+  width: 100%;
+}
+
+/* ========== OTA Learning Features (titlu + descriere + grid) ========== */
+/* Accent verde OTA – o singură sursă pentru consistență */
+.dashboard-page-ota-learning {
+  --ota-accent: #14f195;
+  --ota-accent-rgb: 20, 241, 149;
+}
+
+/* Container: titlu, panou Auto, grid panouri */
+.dashboard-page-ota-features {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ota-grid-gap);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Bloc titlu + descriere (banner vizual distinct) */
+.dashboard-page-ota-title-wrap {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto;
+  gap: var(--ds-spacing-3, 12px);
+  align-items: start;
+  margin-bottom: var(--ds-spacing-5, 24px);
+  padding: var(--ds-spacing-5, 24px) var(--ds-spacing-6, 28px);
+  background: linear-gradient(135deg, rgba(var(--ota-accent-rgb), 0.1) 0%, rgba(var(--ota-accent-rgb), 0.03) 50%, transparent 100%);
+  border: 1px solid rgba(var(--ota-accent-rgb), 0.22);
+  border-radius: var(--ds-radius-lg, 14px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard-page-ota-title {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: var(--ds-spacing-3, 12px);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--ds-text-primary, #fff);
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
+
+.dashboard-page-ota-title .dashboard-page-ota-title-badge {
+  margin-left: auto;
+}
+
+.dashboard-page-ota-title-desc {
+  margin: 0;
+  padding: 0;
+  font-size: 0.9375rem;
+  color: var(--ds-text-secondary, rgba(255, 255, 255, 0.8));
+  line-height: 1.6;
+  max-width: 56ch;
+  grid-column: 1 / -1;
+  grid-row: 2;
+  padding-left: 0.25rem;
+}
+
+.dashboard-page-ota-assisted-hint {
+  margin: 0.5rem 0 0;
+  padding: 0;
+  font-size: 0.875rem;
+  color: var(--ds-text-secondary, rgba(255, 255, 255, 0.75));
+  line-height: 1.5;
+  padding-left: 0.25rem;
+}
+
+.dashboard-page-ota-assisted-hint a,
+.dashboard-page-ota-trade-link {
+  color: var(--ds-link-color, var(--ota-accent, #3b82f6));
+  text-decoration: none;
+}
+
+.dashboard-page-ota-assisted-hint a:hover,
+.dashboard-page-ota-trade-link:hover {
+  text-decoration: underline;
+}
+
+.dashboard-page-ota-title-logo {
+  flex-shrink: 0;
+  --ota-logo-size: 1.5em !important;
+  opacity: 0.95;
+}
+
+.dashboard-page-ota-title-logo.ota-logo {
+  width: 1.5em !important;
+  height: 1.5em !important;
+  min-width: 1.5em !important;
+  min-height: 1.5em !important;
+}
+
+.dashboard-page-ota-title-badge {
+  display: inline-block;
+  margin-left: auto;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background: rgba(var(--ota-accent-rgb), 0.15);
+  border: 1px solid rgba(var(--ota-accent-rgb), 0.35);
+  color: var(--ota-accent);
+  text-transform: capitalize;
+}
+
+@media (max-width: 640px) {
+  .dashboard-page-ota-title-wrap {
+    padding: var(--ds-spacing-4, 16px);
+  }
+}
+
+/* 2. Trading: panel stânga, mode selector dreapta */
+.dashboard-page-ota-trading {
+  width: 100%;
+}
+
+.dashboard-page-ota-trading-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--ota-grid-gap);
+  align-items: start;
+  width: 100%;
+}
+
+.dashboard-page-ota-trading-panel {
+  min-width: 0;
+}
+
+.dashboard-page-ota-trading-modes {
+  min-width: 0;
+}
+
+.dashboard-page-ota-trading-modes .ota-trading-mode-selector {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .dashboard-page-ota-trading-grid {
+    grid-template-columns: 1fr;
+    gap: var(--ds-spacing-4);
+  }
+}
+
+/* Secțiune OTA Learning Features – wrapper vizual distinct */
+.dashboard-page-ota-learning {
+  margin-top: var(--ds-spacing-6, 28px);
+  margin-bottom: var(--ds-spacing-6, 28px);
+  padding: var(--ds-spacing-5, 24px);
+  background: linear-gradient(180deg, rgba(var(--ota-accent-rgb), 0.06) 0%, rgba(var(--ota-accent-rgb), 0.02) 30%, transparent 100%);
+  border: 1px solid rgba(var(--ota-accent-rgb), 0.15);
+  border-radius: var(--ds-radius-xl, 18px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.dashboard-page-ota-features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--ota-grid-gap);
+  grid-auto-rows: minmax(260px, auto);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1100px) {
+  .dashboard-page-ota-features-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: minmax(240px, auto);
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-page-ota-features-grid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: minmax(220px, auto);
+  }
+}
+
+/* Placeholder pentru celula goală în mode=auto (evită zonă moartă) */
+.dashboard-page-ota-features-grid-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  padding: var(--ds-spacing-4);
+  background: rgba(var(--ota-accent-rgb), 0.03);
+  border: 1px dashed rgba(var(--ota-accent-rgb), 0.2);
+  border-radius: var(--ds-radius-lg, 14px);
+  box-sizing: border-box;
+}
+
+.dashboard-page-ota-features-grid-placeholder-text {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ds-text-tertiary, rgba(255, 255, 255, 0.5));
+  text-align: center;
+  line-height: 1.4;
+}
+
+@media (max-width: 1100px) {
+  .dashboard-page-ota-features-grid-placeholder {
+    min-height: 240px;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-page-ota-features-grid-placeholder {
+    min-height: 180px;
+  }
+}
+
+/* Learning cards: compact, simplificate (3 pe rând) */
+.dashboard-page-ota-features-grid .ota-preview-gate-content {
+  padding: var(--ds-spacing-3);
+}
+.dashboard-page-ota-features-grid .ota-preview-gate-badge {
+  padding: 4px 10px;
+  font-size: 11px;
+  margin-bottom: 10px;
+}
+.dashboard-page-ota-features-grid .ota-preview-gate-title {
+  font-size: 14px;
+  margin-bottom: var(--ds-spacing-2);
+}
+.dashboard-page-ota-features-grid .ota-preview-gate-description {
+  font-size: 12px;
+  margin-bottom: var(--ds-spacing-3);
+  line-height: var(--ds-line-height-normal);
+}
+.dashboard-page-ota-features-grid .ota-preview-gate-preview {
+  margin-bottom: var(--ds-spacing-3);
+  padding: var(--ds-spacing-2);
+}
+.dashboard-page-ota-features-grid .ota-preview-gate-blurred {
+  margin-bottom: var(--ds-spacing-3);
+}
+.dashboard-page-ota-features-grid .ota-preview-gate-cta {
+  padding: var(--ds-spacing-3);
+  margin-top: 12px;
+}
+.dashboard-page-ota-features-grid .ota-preview-gate-cta-content {
+  margin-bottom: var(--ds-spacing-3);
+  gap: 10px;
+}
+.dashboard-page-ota-features-grid .ota-preview-gate-cta-title {
+  font-size: 13px;
+  margin-bottom: var(--ds-spacing-1);
+}
+.dashboard-page-ota-features-grid .ota-preview-gate-cta-message {
+  font-size: 12px;
+}
+.dashboard-page-ota-features-grid .ota-preview-gate-cta-button {
+  padding: 8px 14px;
+  font-size: 12px;
+}
+.dashboard-page-ota-features-grid .ota-preview-gate-benefits {
+  margin-top: 12px;
+  padding: var(--ds-spacing-3);
+}
+.dashboard-page-ota-features-grid .ota-preview-gate-benefits-title {
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+.dashboard-page-ota-features-grid .ota-preview-gate-benefits-list {
+  gap: var(--ds-spacing-2);
+}
+.dashboard-page-ota-features-grid .ota-preview-gate-benefits-list li {
+  font-size: 12px;
+}
+
+/* 4. Configuration – unificat (Access / Settings / Conditions), vizibil non-moarte */
+.dashboard-page-ota-config {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: var(--ds-spacing-5, 24px);
+  padding: var(--ds-spacing-5, 24px);
+  background: rgba(var(--ota-accent-rgb), 0.04);
+  border: 1px solid rgba(var(--ota-accent-rgb), 0.12);
+  border-radius: var(--ds-radius-lg, 14px);
+}
+
+.dashboard-page-ota-config-title {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-3);
+  font-size: var(--ds-font-size-md);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  margin: 0;
+  opacity: 1;
+}
+
+.dashboard-page-ota-config-title-logo {
+  flex-shrink: 0;
+}
+
+.dashboard-page-ota-config-grid {
+  display: grid;
+  /* Keep cards usable on desktop: prevent "too narrow" panels */
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--ota-grid-gap);
+  align-items: start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dashboard-page-ota-config-grid > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (min-width: 769px) {
+  .dashboard-page-ota-config-grid--three {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* 5. Help & Documentation – vizibil, non-moarte */
+.dashboard-page-ota-help {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: var(--ota-section-gap, 32px);
+  padding: var(--ds-spacing-6);
+  background: rgba(var(--ota-accent-rgb), 0.04);
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid rgba(var(--ota-accent-rgb), 0.12);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dashboard-page-ota-help-title {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-3);
+  font-size: var(--ds-font-size-md);
+  font-weight: var(--ds-font-weight-semibold);
+  color: var(--ds-text-primary);
+  margin: 0;
+}
+
+.dashboard-page-ota-help-icon {
+  color: var(--primary);
+}
+
+.dashboard-page-ota-help-description {
+  font-size: var(--ds-font-size-base);
+  color: var(--ds-text-secondary);
+  margin: 0;
+  line-height: var(--ds-line-height-normal);
+}
+
+.dashboard-page-ota-help-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--ds-spacing-3);
+  margin-top: var(--ds-spacing-2);
+}
+
+.dashboard-page-ota-help-link {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-spacing-2);
+  padding: var(--ds-spacing-3);
+  background: var(--ds-bg-surface);
+  border: 1px solid var(--ds-border-color);
+  border-radius: var(--ds-radius-md);
+  color: var(--ds-text-primary);
+  text-decoration: none;
+  font-size: var(--ds-font-size-base);
+  transition: all 0.2s ease;
+}
+
+.dashboard-page-ota-help-link:hover {
+  background: var(--ds-bg-hover);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.dashboard-page-ota-help-link svg:last-child {
+  margin-left: auto;
+  opacity: 0.6;
+}
+
+@media (max-width: 768px) {
+  .dashboard-page-ota-sections {
+    gap: var(--ds-spacing-6);
+  }
+
+  .dashboard-page-ota-config {
+    gap: 16px;
+  }
+
+  .dashboard-page-ota-config-grid,
+  .dashboard-page-ota-config-grid.dashboard-page-ota-config-grid--three {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* Responsive Breakpoints */
+
+/* Tablet: 1024px - 1399px – keep proportional 2fr 3fr */
+@media (max-width: 1399px) {
+  .dashboard-page-shell {
+    max-width: 1200px;
+    padding-inline: 24px;
+  }
+  
+  .dashboard-page-content {
+    grid-template-columns: minmax(260px, 2fr) minmax(360px, 3fr);
+    gap: var(--ds-spacing-5);
+  }
+}
+
+/* Tablet/Mobile: < 1024px – single column, stacked */
+@media (max-width: 1023px) {
+  .dashboard-page-shell {
+    max-width: 100%;
+    padding-inline: 24px;
+  }
+  
+  .dashboard-page-content {
+    grid-template-columns: 1fr;
+    gap: var(--ds-spacing-5);
+  }
+
+  .dashboard-page-left,
+  .dashboard-page-right {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-page {
+    padding: var(--ds-spacing-4); /* 16px mobile */
+    gap: var(--ds-spacing-4); /* 16px mobile */
+  }
+
+  .dashboard-page-shell {
+    padding-inline: 16px; /* 16px mobile */
+  }
+
+  .dashboard-page-title {
+    font-size: var(--ds-font-size-md);
+    line-height: var(--ds-line-height-normal);
+  }
+
+  .dashboard-page-ota-features {
+    gap: 16px; /* 16px gap on mobile */
+  }
+
+  .dashboard-page-ota-title-wrap {
+    padding: var(--ds-spacing-4);
+  }
+
+  .dashboard-page-ota-title {
+    font-size: 1.125rem;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .dashboard-page-ota-title-badge {
+    margin-left: 0;
+  }
+
+  .dashboard-page-ota-help {
+    padding: var(--ds-spacing-4); /* 16px mobile */
+  }
+
+  .dashboard-page-ota-help-links {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-page {
+    padding: var(--ds-spacing-3); /* 12px small mobile */
+    gap: var(--ds-spacing-3); /* 12px */
+  }
+
+  .dashboard-page-shell {
+    padding-inline: 12px; /* 12px small mobile */
+  }
+
+  .dashboard-page-ota-features-grid {
+    gap: 16px; /* 16px gap on small mobile */
+  }
+
+  .dashboard-page-ota-config-grid {
+    grid-template-columns: 1fr;
+    gap: var(--ds-spacing-3);
+  }
+
+  .dashboard-page-ota-title {
+    font-size: 1rem;
+  }
+
+  .dashboard-page-ota-title-wrap {
+    padding: var(--ds-spacing-3);
+  }
+}

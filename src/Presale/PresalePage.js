@@ -6,8 +6,9 @@ import "./PaymentBox/PaymentBox.desktop.css";
 import "./PaymentBox/PaymentBox.mobile.css";
 import "./PaymentBox/InputBox.css";
 import "./PaymentBox/PaymentSummary.css";
+import "./PresaleDexThemes.css";
 
-import React, { useState, useEffect, Suspense, lazy, useMemo } from "react";
+import React, { useState, useEffect, useRef, useCallback, Suspense, lazy, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import useGoogleAnalytics from "../hooks/useGoogleAnalytics";
@@ -83,6 +84,16 @@ const PresalePage = () => {
     : null;
   const [daysRemaining, setDaysRemaining] = useState(null);
   const [isHeroLoading, setIsHeroLoading] = useState(true);
+  const paymentSectionRef = useRef(null);
+
+  const scrollToPayment = useCallback(() => {
+    if (paymentSectionRef.current) {
+      paymentSectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      const el = document.querySelector(".grid-payment");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, []);
 
   // Calculate days remaining from endTime
   useEffect(() => {
@@ -417,9 +428,15 @@ const PresalePage = () => {
           {/* Hero Section */}
           <div className="grid-hero">
             <PresaleHero 
+              onStartInvesting={scrollToPayment}
               currentPrice={currentPrice}
               daysRemaining={daysRemaining}
               isLoading={isHeroLoading || cellManagerData?.loading}
+              launchPowerUsd={
+                typeof hybridState?.totalBoosted === "number" && Number.isFinite(hybridState.totalBoosted)
+                  ? hybridState.totalBoosted
+                  : null
+              }
             />
           </div>
 
@@ -440,7 +457,7 @@ const PresalePage = () => {
           </div>
 
           {/* Payment */}
-          <div className="grid-payment card-box">
+          <div ref={paymentSectionRef} className="grid-payment card-box">
             <Suspense fallback={<PresaleLoading />}>
               <PaymentBox
                 selectedToken={selectedToken}
