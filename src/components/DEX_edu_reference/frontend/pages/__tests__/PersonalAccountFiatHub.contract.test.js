@@ -20,7 +20,7 @@ describe('FIAT entry hub and deep link', () => {
   it('PersonalAccountPage keeps OTA profit card read-only without auto opening wallet auth', () => {
     const src = fs.readFileSync(personalAccountPath, 'utf8');
     expect(src).toMatch(/autoEnsureSession:\s*false/);
-    expect(src).toContain('nu mai deschide MetaMask automat');
+    expect(src).toContain('no longer opens MetaMask automatically');
   });
 
   it('OTAProfilePage links to Personal Account convert section', () => {

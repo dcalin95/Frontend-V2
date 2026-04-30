@@ -6,20 +6,20 @@ describe('LoadingSpinner', () => {
   it('should render loading spinner with text', () => {
     render(<LoadingSpinner />);
     
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getByText('INITIALIZING AI PROTOCOL')).toBeInTheDocument();
   });
 
   it('should have correct CSS classes', () => {
     const { container } = render(<LoadingSpinner />);
     
-    const loadingContainer = container.querySelector('.loading-container');
-    const loadingSpinner = container.querySelector('.loading-spinner');
-    const spinnerRings = container.querySelectorAll('.spinner-ring');
-    const loadingText = container.querySelector('.loading-text');
+    const loadingContainer = container.querySelector('.dex-cinematic-loader-overlay-v2');
+    const loadingSpinner = container.querySelector('.dex-reactor-container');
+    const spinnerRings = container.querySelectorAll('.reactor-ring');
+    const loadingText = container.querySelector('.dex-loader-text');
     
     expect(loadingContainer).toBeInTheDocument();
     expect(loadingSpinner).toBeInTheDocument();
-    expect(spinnerRings).toHaveLength(3);
+    expect(spinnerRings).toHaveLength(4);
     expect(loadingText).toBeInTheDocument();
   });
 
@@ -27,10 +27,10 @@ describe('LoadingSpinner', () => {
     render(<LoadingSpinner />);
     
     // Check if the loading text is accessible
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getByText('INITIALIZING AI PROTOCOL')).toBeInTheDocument();
     
     // Check if the component has proper structure
-    const loadingContainer = screen.getByText('Loading...').closest('.loading-container');
+    const loadingContainer = screen.getByText('INITIALIZING AI PROTOCOL').closest('.dex-cinematic-loader-overlay-v2');
     expect(loadingContainer).toBeInTheDocument();
   });
 
@@ -43,19 +43,19 @@ describe('LoadingSpinner', () => {
     
     // Check the overall structure
     const loadingContainer = container.firstChild;
-    expect(loadingContainer).toHaveClass('loading-container');
+    expect(loadingContainer).toHaveClass('dex-cinematic-loader-overlay-v2');
     
     // Check spinner structure
-    const spinner = loadingContainer.querySelector('.loading-spinner');
+    const spinner = loadingContainer.querySelector('.dex-reactor-container');
     expect(spinner).toBeInTheDocument();
     
     // Check rings structure
-    const rings = spinner.querySelectorAll('.spinner-ring');
-    expect(rings).toHaveLength(3);
+    const rings = spinner.querySelectorAll('.reactor-ring');
+    expect(rings).toHaveLength(4);
     
     // Check text structure
-    const text = spinner.querySelector('.loading-text');
+    const text = loadingContainer.querySelector('.dex-loader-text');
     expect(text).toBeInTheDocument();
-    expect(text).toHaveTextContent('Loading...');
+    expect(text).toHaveTextContent('INITIALIZING NEURAL LINK');
   });
 }); 

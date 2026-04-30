@@ -17,6 +17,7 @@
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { useAITrading } from '../hooks/useAITrading';
 import { aiTradingApiService } from '../services';
+import { analyzeMarketWithLlmProvider } from '../services/otaAnalyzeFacade';
 import { handleApiError } from '../utils/helpers';
 import * as otaOutcomesHelper from '../utils/otaOutcomesHelper';
 
@@ -29,6 +30,13 @@ jest.mock('../services', () => ({
     stopAITradingBot: jest.fn(),
     analyzeMarket: jest.fn()
   }
+}));
+
+jest.mock('../services/otaAnalyzeFacade', () => ({
+  analyzeMarketWithLlmProvider: jest.fn((token, options) => {
+    const { aiTradingApiService } = require('../services');
+    return aiTradingApiService.analyzeMarket(token, options);
+  })
 }));
 
 jest.mock('../utils/helpers', () => ({
@@ -59,6 +67,9 @@ describe('useAITrading', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    analyzeMarketWithLlmProvider.mockImplementation((token, options) =>
+      aiTradingApiService.analyzeMarket(token, options)
+    );
     otaOutcomesHelper.loadOutcomesForAnalyze.mockResolvedValue([]);
   });
 

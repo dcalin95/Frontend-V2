@@ -3,7 +3,7 @@ import { buildDashboardWalletSnapshot } from '../buildDashboardWalletSnapshot';
 describe('buildDashboardWalletSnapshot', () => {
   it('returns loading placeholder when loading', () => {
     const r = buildDashboardWalletSnapshot({ loading: true });
-    expect(r.headline).toMatch(/încarcă/i);
+    expect(r.headline).toMatch(/Loading account/i);
     expect(r.rows.length).toBeGreaterThan(0);
   });
 

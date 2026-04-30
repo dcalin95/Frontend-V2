@@ -103,10 +103,10 @@ describe('OTAPage Advisory', () => {
   it('randează OTA cu mod advisory vizibil', async () => {
     renderOTAPage();
     await waitFor(() => {
-      const headings = screen.getAllByRole('heading', { name: /OTA/i });
-      expect(headings.length).toBeGreaterThan(0);
+      expect(screen.getByText(/Live Analysis/i)).toBeInTheDocument();
     });
-    expect(screen.getAllByText(/advisory/i).length).toBeGreaterThan(0);
+    expect(screen.getByRole('group', { name: /analysis mode/i })).toBeInTheDocument();
+    expect(screen.getAllByText(/OTA Engine/i).length).toBeGreaterThan(0);
   });
 
   it('conține link către Swap pentru execuție semnal', async () => {

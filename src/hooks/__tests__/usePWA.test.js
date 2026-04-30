@@ -4,6 +4,7 @@ import { usePWA } from '../usePWA';
 // Mock service worker
 const mockServiceWorker = {
   register: jest.fn().mockResolvedValue({}),
+  getRegistrations: jest.fn().mockResolvedValue([]),
 };
 
 // Mock window.matchMedia
@@ -35,20 +36,30 @@ describe('usePWA', () => {
   beforeEach(() => {
     // Reset mocks
     jest.clearAllMocks();
+    mockServiceWorker.register.mockResolvedValue({});
+    mockServiceWorker.getRegistrations.mockResolvedValue([]);
     
     // Mock global objects
-    global.navigator = {
-      onLine: true,
-      serviceWorker: mockServiceWorker,
-    };
-    
-    global.window = {
-      matchMedia: mockMatchMedia,
-      addEventListener: mockAddEventListener,
-      removeEventListener: mockRemoveEventListener,
-    };
-    
+    Object.defineProperty(window.navigator, 'onLine', {
+      configurable: true,
+      value: true,
+    });
+    Object.defineProperty(window.navigator, 'serviceWorker', {
+      configurable: true,
+      value: mockServiceWorker,
+    });
+
+    window.matchMedia = mockMatchMedia;
+    window.addEventListener = mockAddEventListener;
+    window.removeEventListener = mockRemoveEventListener;
+
+    mockNotification.permission = 'granted';
+    mockNotification.requestPermission.mockResolvedValue('granted');
     global.Notification = mockNotification;
+    Object.defineProperty(window, 'Notification', {
+      configurable: true,
+      value: mockNotification,
+    });
   });
 
   it('should initialize with default values', () => {
@@ -72,24 +83,22 @@ describe('usePWA', () => {
     expect(result.current.isInstalled).toBe(true);
   });
 
-  it('should register service worker on mount', () => {
+  it('should unregister existing service workers on mount', async () => {
     mockMatchMedia.mockReturnValue({ matches: false });
     
     renderHook(() => usePWA());
 
-    expect(mockServiceWorker.register).toHaveBeenCalledWith('/sw.js');
+    expect(mockServiceWorker.register).not.toHaveBeenCalled();
+    expect(mockServiceWorker.getRegistrations).toHaveBeenCalled();
   });
 
-  it('should handle service worker registration error', () => {
+  it('should not attempt service worker registration when disabled', () => {
     mockMatchMedia.mockReturnValue({ matches: false });
     mockServiceWorker.register.mockRejectedValue(new Error('Registration failed'));
     
     renderHook(() => usePWA());
 
-    expect(console.error).toHaveBeenCalledWith(
-      'Service Worker registration failed:',
-      expect.any(Error)
-    );
+    expect(mockServiceWorker.register).not.toHaveBeenCalled();
   });
 
   it('should handle beforeinstallprompt event', () => {
@@ -191,6 +200,11 @@ describe('usePWA', () => {
       close: jest.fn(),
     };
     global.Notification = jest.fn().mockImplementation(() => mockNotificationInstance);
+    global.Notification.permission = 'granted';
+    Object.defineProperty(window, 'Notification', {
+      configurable: true,
+      value: global.Notification,
+    });
 
     act(() => {
       result.current.sendNotification('Test Title', { body: 'Test Body' });
@@ -210,6 +224,11 @@ describe('usePWA', () => {
     const { result } = renderHook(() => usePWA());
 
     global.Notification = jest.fn();
+    global.Notification.permission = 'denied';
+    Object.defineProperty(window, 'Notification', {
+      configurable: true,
+      value: global.Notification,
+    });
 
     act(() => {
       result.current.sendNotification('Test Title');
@@ -223,8 +242,8 @@ describe('usePWA', () => {
     
     const { result } = renderHook(() => usePWA());
 
-    // Mock deferred prompt
     const mockDeferredPrompt = {
+      preventDefault: jest.fn(),
       prompt: jest.fn().mockResolvedValue(),
       userChoice: Promise.resolve({ outcome: 'accepted' }),
     };
@@ -236,16 +255,8 @@ describe('usePWA', () => {
       )?.[1];
 
       if (beforeInstallPromptListener) {
-        beforeInstallPromptListener({
-          preventDefault: jest.fn(),
-        });
+        beforeInstallPromptListener(mockDeferredPrompt);
       }
-    });
-
-    // Mock the deferred prompt
-    act(() => {
-      // This is a simplified test - in reality, the deferred prompt would be set internally
-      result.current.deferredPrompt = mockDeferredPrompt;
     });
 
     await act(async () => {

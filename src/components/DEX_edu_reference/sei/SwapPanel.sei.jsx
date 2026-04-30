@@ -547,6 +547,7 @@ export default function SwapPanelSei() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, width: '100%' }}>
             <TokenLogo symbol={fromPair} size="24" showBorder />
             <input
+              aria-label="Amount from"
               type="number" min="0" placeholder="0.0" value={fromAmount}
               onChange={e => setFromAmount(e.target.value)}
               style={{ flex: '1 1 0', minWidth: 0, width: 0, border: 'none', background: 'transparent', fontSize: 20, fontWeight: 600, outline: 'none', color: 'var(--ds-text-primary, #e2e8f0)' }}
@@ -621,7 +622,7 @@ export default function SwapPanelSei() {
         <div style={{ padding: '10px 12px', borderRadius: 10, background: (!skipMode && impactHigh && !userLpInThisPool) ? 'rgba(239,68,68,0.04)' : (skipMode || (impactHigh && userLpInThisPool)) ? 'rgba(99,102,241,0.04)' : 'rgba(34,197,94,0.03)', border: `1px solid ${(!skipMode && impactHigh && !userLpInThisPool) ? 'rgba(239,68,68,0.25)' : (skipMode || (impactHigh && userLpInThisPool)) ? 'rgba(99,102,241,0.25)' : 'rgba(34,197,94,0.12)'}`, display: 'flex', flexDirection: 'column', gap: 3 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, width: '100%' }}>
             <TokenLogo symbol={toPair} size="24" showBorder />
-            <div style={{ flex: 1, fontSize: 20, fontWeight: 600, color: (!skipMode && impactHigh && !userLpInThisPool) ? '#f87171' : (quoteLoading || skipLoading) ? '#475569' : displayQuote != null ? (skipMode || (impactHigh && userLpInThisPool) ? '#818cf8' : '#22c55e') : 'var(--ds-text-secondary)' }}>
+            <div aria-label="Amount to" style={{ flex: 1, fontSize: 20, fontWeight: 600, color: (!skipMode && impactHigh && !userLpInThisPool) ? '#f87171' : (quoteLoading || skipLoading) ? '#475569' : displayQuote != null ? (skipMode || (impactHigh && userLpInThisPool) ? '#818cf8' : '#22c55e') : 'var(--ds-text-secondary)' }}>
               {!skipMode && impactHigh && !userLpInThisPool ? (
                 <span style={{ fontSize: 14, fontWeight: 500 }}>⛔ Blocked</span>
               ) : (quoteLoading || skipLoading) ? (
@@ -751,7 +752,7 @@ export default function SwapPanelSei() {
 
       {/* ERROR */}
       {error && (
-        <div style={{ padding: '8px 12px', borderRadius: 8, background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.25)', fontSize: 12, color: '#f87171', lineHeight: 1.5, wordBreak: 'break-word' }}>
+        <div role="alert" style={{ padding: '8px 12px', borderRadius: 8, background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.25)', fontSize: 12, color: '#f87171', lineHeight: 1.5, wordBreak: 'break-word' }}>
           {error}
         </div>
       )}

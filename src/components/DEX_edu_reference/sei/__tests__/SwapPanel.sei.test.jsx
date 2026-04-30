@@ -9,6 +9,9 @@ import '@testing-library/jest-dom';
 jest.mock('../context/SeiWalletContext', () => ({
   useSeiWallet: () => ({
     address: 'sei1dan7dtc9mect9807kptfwu8kj3d87qm85jkjsh',
+    balance: '10',
+    isConnected: true,
+    connect: jest.fn(),
     getOfflineSigner: jest.fn(() => Promise.resolve({})),
   }),
 }));
@@ -16,6 +19,8 @@ jest.mock('../context/SeiWalletContext', () => ({
 const mockExecuteSwap = jest.fn();
 jest.mock('../services/seiContractService', () => ({
   executeSwap: (...args) => mockExecuteSwap(...args),
+  calcPlatformFee: () => ({ willCollect: false, feeAmount: 0 }),
+  PLATFORM_FEE_PCT: 0.001,
 }));
 
 const SwapPanelSei = require('../SwapPanel.sei').default;
@@ -23,6 +28,32 @@ const SwapPanelSei = require('../SwapPanel.sei').default;
 describe('SwapPanel.sei', () => {
   beforeEach(() => {
     mockExecuteSwap.mockReset();
+    global.fetch = jest.fn((url) => {
+      const href = String(url);
+      if (href.includes('coingecko')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({
+            'sei-network': { usd: 0.058 },
+            cosmos: { usd: 1.918 },
+          }),
+        });
+      }
+      if (href.includes('ticker/price')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ price: '1' }),
+        });
+      }
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ data: { amount: '100000' } }),
+      });
+    });
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it('renders From/To inputs and Swap button', () => {

@@ -62,7 +62,7 @@ describe('buildDashboardSystemCards', () => {
       lastSignal: null,
     });
     expect(cards[0].level).toBe('partial');
-    expect(cards[0].headline).toBe('API indisponibil');
+    expect(cards[0].headline).toBe('API unavailable');
     expect(cards[0].secondary.some((l) => /short-ops/i.test(l))).toBe(true);
   });
 });

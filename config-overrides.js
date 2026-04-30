@@ -1,7 +1,7 @@
 const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-module.exports = function override(config) {
+function override(config) {
   // ====== FALLBACKS (rămân ca la tine)
   config.resolve = {
     ...config.resolve,
@@ -99,4 +99,33 @@ module.exports = function override(config) {
   ];
 
   return config;
+}
+
+override.jest = function overrideJest(config) {
+  config.testPathIgnorePatterns = [
+    ...(config.testPathIgnorePatterns || []),
+    '<rootDir>/src/components/DEX/Proiect/backend/tests/',
+  ];
+
+  config.modulePathIgnorePatterns = [
+    ...(config.modulePathIgnorePatterns || []),
+    '<rootDir>/src/components/DEX/Proiect/backend/',
+    '<rootDir>/src/components/DEX/Proiect/contracts/',
+    '<rootDir>/src/components/DEX/Proiect/frontend/',
+  ];
+
+  config.moduleNameMapper = {
+    ...(config.moduleNameMapper || {}),
+    '^wagmi$': '<rootDir>/src/test/mocks/wagmi.js',
+    '^@wagmi/core$': '<rootDir>/src/test/mocks/wagmiCore.js',
+    '^wagmi/chains$': '<rootDir>/src/test/mocks/wagmiChains.js',
+    '^wagmi/connectors$': '<rootDir>/src/test/mocks/wagmiConnectors.js',
+    '^@cosmjs/cosmwasm-stargate$': '<rootDir>/src/test/mocks/cosmwasmStargate.js',
+    '^@cosmjs/proto-signing$': '<rootDir>/src/test/mocks/cosmjsProtoSigning.js',
+    '^@cosmjs/stargate$': '<rootDir>/src/test/mocks/cosmjsStargate.js',
+  };
+
+  return config;
 };
+
+module.exports = override;

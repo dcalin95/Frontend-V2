@@ -38,6 +38,7 @@ import { BACKEND_URL, API_ENDPOINTS } from '../../utils/constants';
 // Mock API base URL: apiEndpoints uses runtimeConfig, so mock runtimeConfig so getBackendUrl() returns localhost
 jest.mock('../../../config/runtimeConfig.js', () => ({
   getBackendUrl: () => 'http://localhost:5000',
+  getAuthBackendUrl: () => 'http://localhost:5000',
   getApiBaseUrl: () => 'http://localhost:5000/api',
 }));
 

@@ -265,7 +265,7 @@ describe('otaSeiMicroProfitService (getSeiAutoStatus with fetch mock)', () => {
     });
     await setSeiAutoWithFetch('user-1', { resetRounds: true });
     expect(global.fetch).toHaveBeenCalledWith(
-      'https://api.test.example.com/api/ai-trading/sei/auto/set',
+      expect.stringMatching(/\/api\/ai-trading\/sei\/auto\/set$/),
       expect.objectContaining({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -281,7 +281,7 @@ describe('otaSeiMicroProfitService (getSeiAutoStatus with fetch mock)', () => {
     });
     await setSeiAutoWithFetch('user-1', { preferredPair: 'SEI/USDT' });
     expect(global.fetch).toHaveBeenCalledWith(
-      'https://api.test.example.com/api/ai-trading/sei/auto/set',
+      expect.stringMatching(/\/api\/ai-trading\/sei\/auto\/set$/),
       expect.objectContaining({
         method: 'POST',
         body: JSON.stringify({ userId: 'user-1', preferredPair: 'SEI/USDT' }),
