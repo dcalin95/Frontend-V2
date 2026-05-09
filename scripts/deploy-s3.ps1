@@ -43,6 +43,65 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Host "Build completed successfully" -ForegroundColor Green
 
+# 2.1 Preserve/inject runtime-only OTA secrets before uploading runtime-config.json.
+# GitHub Actions injects these from repository secrets; local deploys should not wipe them.
+$RuntimeConfigPath = "build/runtime-config.json"
+if (Test-Path $RuntimeConfigPath) {
+    $runtimeConfig = Get-Content $RuntimeConfigPath -Raw | ConvertFrom-Json
+
+    $shortSecret = if (-not [string]::IsNullOrWhiteSpace($env:REACT_APP_OTA_SHORT_OPS_SECRET)) {
+        $env:REACT_APP_OTA_SHORT_OPS_SECRET.Trim()
+    } elseif (-not [string]::IsNullOrWhiteSpace($env:OTA_SHORT_OPS_SECRET)) {
+        $env:OTA_SHORT_OPS_SECRET.Trim()
+    } else {
+        ""
+    }
+
+    $longSecret = if (-not [string]::IsNullOrWhiteSpace($env:REACT_APP_OTA_LONG_OPS_SECRET)) {
+        $env:REACT_APP_OTA_LONG_OPS_SECRET.Trim()
+    } elseif (-not [string]::IsNullOrWhiteSpace($env:OTA_LONG_OPS_SECRET)) {
+        $env:OTA_LONG_OPS_SECRET.Trim()
+    } else {
+        ""
+    }
+
+    if ([string]::IsNullOrWhiteSpace($shortSecret) -or [string]::IsNullOrWhiteSpace($longSecret)) {
+        $existingRuntimeConfig = $null
+        $tempRuntimeConfig = Join-Path $env:TEMP ("runtime-config-" + [guid]::NewGuid().ToString("N") + ".json")
+
+        aws s3 cp "s3://$BucketName/runtime-config.json" $tempRuntimeConfig --only-show-errors 2>$null | Out-Null
+        if ($LASTEXITCODE -eq 0 -and (Test-Path $tempRuntimeConfig)) {
+            try {
+                $existingRuntimeConfig = Get-Content $tempRuntimeConfig -Raw | ConvertFrom-Json
+            } catch {
+                Write-Host "  Existing runtime-config.json could not be parsed; skipping secret preservation." -ForegroundColor Yellow
+            }
+        }
+        if (Test-Path $tempRuntimeConfig) {
+            Remove-Item -Force $tempRuntimeConfig
+        }
+
+        if ([string]::IsNullOrWhiteSpace($shortSecret) -and $existingRuntimeConfig -and $existingRuntimeConfig.OTA_SHORT_OPS_SECRET) {
+            $shortSecret = [string]$existingRuntimeConfig.OTA_SHORT_OPS_SECRET
+        }
+        if ([string]::IsNullOrWhiteSpace($longSecret) -and $existingRuntimeConfig -and $existingRuntimeConfig.OTA_LONG_OPS_SECRET) {
+            $longSecret = [string]$existingRuntimeConfig.OTA_LONG_OPS_SECRET
+        }
+    }
+
+    if (-not [string]::IsNullOrWhiteSpace($shortSecret)) {
+        $runtimeConfig | Add-Member -NotePropertyName "OTA_SHORT_OPS_SECRET" -NotePropertyValue $shortSecret -Force
+    }
+    if (-not [string]::IsNullOrWhiteSpace($longSecret)) {
+        $runtimeConfig | Add-Member -NotePropertyName "OTA_LONG_OPS_SECRET" -NotePropertyValue $longSecret -Force
+    }
+
+    $runtimeConfig | ConvertTo-Json -Depth 20 | Set-Content $RuntimeConfigPath -Encoding UTF8
+    Write-Host "Runtime OTA secrets prepared for deploy (short=$(-not [string]::IsNullOrWhiteSpace($shortSecret)), long=$(-not [string]::IsNullOrWhiteSpace($longSecret)); values hidden)." -ForegroundColor Green
+} else {
+    Write-Host "runtime-config.json missing from build; skipping OTA secret injection." -ForegroundColor Yellow
+}
+
 # 3. Sync to S3
 Write-Host "==> Uploading to S3 bucket: $BucketName" -ForegroundColor Blue
 
