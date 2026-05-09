@@ -3800,6 +3800,14 @@
   table-layout: auto;
 }
 
+.ota-short-ops-page .short-ops-table-wrap--open-longs {
+  scrollbar-gutter: stable;
+}
+
+.ota-short-ops-page .short-ops-table--open-longs {
+  min-width: 92rem;
+}
+
 .ota-short-ops-page .short-ops-th {
   text-align: left;
   padding: 0.3rem 0.25rem;
@@ -3826,6 +3834,53 @@
 
 .ota-short-ops-page .short-ops-td--right {
   text-align: right;
+}
+
+.ota-short-ops-page .short-ops-th--long-actions,
+.ota-short-ops-page .short-ops-td--long-actions {
+  width: 12.25rem;
+  min-width: 12.25rem;
+  max-width: 12.25rem;
+  position: sticky;
+  right: 0;
+  background: #000;
+  box-shadow: -10px 0 14px rgba(0, 0, 0, 0.72);
+}
+
+.ota-short-ops-page .short-ops-th--long-actions {
+  z-index: 4;
+}
+
+.ota-short-ops-page .short-ops-td--long-actions {
+  z-index: 3;
+  vertical-align: top;
+}
+
+.ota-short-ops-page tbody tr:hover .short-ops-td--long-actions {
+  background: #050505;
+}
+
+.ota-short-ops-page .short-ops-position-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.38rem;
+  width: 100%;
+  min-width: 10.9rem;
+}
+
+.ota-short-ops-page .short-ops-position-actions > button {
+  width: 100%;
+  min-height: 1.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  text-align: center;
+}
+
+.ota-short-ops-page .short-ops-position-actions label {
+  max-width: 10.9rem !important;
 }
 
 .ota-short-ops-page .short-ops-td--pad {
