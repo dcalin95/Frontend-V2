@@ -96,7 +96,12 @@ if (Test-Path $RuntimeConfigPath) {
         $runtimeConfig | Add-Member -NotePropertyName "OTA_LONG_OPS_SECRET" -NotePropertyValue $longSecret -Force
     }
 
-    $runtimeConfig | ConvertTo-Json -Depth 20 | Set-Content $RuntimeConfigPath -Encoding UTF8
+    $runtimeConfigJson = $runtimeConfig | ConvertTo-Json -Depth 20
+    [System.IO.File]::WriteAllText(
+        (Resolve-Path $RuntimeConfigPath),
+        $runtimeConfigJson + [Environment]::NewLine,
+        [System.Text.UTF8Encoding]::new($false)
+    )
     Write-Host "Runtime OTA secrets prepared for deploy (short=$(-not [string]::IsNullOrWhiteSpace($shortSecret)), long=$(-not [string]::IsNullOrWhiteSpace($longSecret)); values hidden)." -ForegroundColor Green
 } else {
     Write-Host "runtime-config.json missing from build; skipping OTA secret injection." -ForegroundColor Yellow
