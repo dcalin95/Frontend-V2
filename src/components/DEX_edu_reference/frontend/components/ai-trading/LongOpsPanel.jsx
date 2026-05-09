@@ -1161,10 +1161,9 @@ function PositionRow({
           : <span style={{ color: '#475569' }}>—</span>
         }
       </td>
-      <td className="short-ops-td short-ops-td--long-actions">
-        <div className="short-ops-position-actions">
+      <td className="short-ops-td">
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 6 }}>
           <button
-            className="short-ops-position-close-btn"
             onClick={handleInlineClose}
             disabled={closing}
             style={{ padding: '3px 10px', background: closing ? '#7f1d1d' : '#dc2626', color: '#fff', border: 'none', borderRadius: 5, cursor: closing ? 'wait' : 'pointer', fontSize: 10, fontWeight: 800, whiteSpace: 'nowrap', transition: 'background 0.2s' }}
@@ -3944,8 +3943,8 @@ export default function LongOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
           </div>
         )}
 
-        <div className="short-ops-table-wrap short-ops-table-wrap--open-longs" style={{ overflowX: 'auto' }}>
-          <table className="short-ops-table short-ops-table--open-longs">
+        <div className="short-ops-table-wrap" style={{ overflowX: 'auto' }}>
+          <table className="short-ops-table" style={{ minWidth: 900 }}>
             <thead>
               <tr style={{ background: SOP.black }}>
                 <th className="short-ops-th short-ops-th--left">User</th>
@@ -3981,7 +3980,7 @@ export default function LongOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
                 <th className="short-ops-th short-ops-th--right" style={{ color: '#fb923c' }} title="Funding rate × notional × 3 payments/day (8h interval)">Funding/day 💸</th>
                 <th className="short-ops-th short-ops-th--left">Duration</th>
                 <th className="short-ops-th short-ops-th--left">LLM signal</th>
-                <th className="short-ops-th short-ops-th--left short-ops-th--long-actions">Actions</th>
+                <th className="short-ops-th short-ops-th--left">Actions</th>
               </tr>
             </thead>
             <tbody>
