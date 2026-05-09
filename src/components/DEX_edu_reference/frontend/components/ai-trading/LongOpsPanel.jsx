@@ -898,7 +898,6 @@ function PositionRow({
   const sl = getMetaField(p, 'stopLoss', 'stop_loss', 'stopLossPrice');
   const confidence = getMetaField(p, 'confidence', 'llmConfidence');
   const btcBias = getMetaField(p, 'btcBias', 'btc_bias');
-  const originalSignal = getMetaField(p, 'originalSignal', 'original_signal', 'promotedFromSignal');
 
   const entry = Number(p.entry_mark_price);
   const liq = Number(p.liquidation_price);
@@ -1154,12 +1153,6 @@ function PositionRow({
           <Clock size={10} style={{ verticalAlign: 'middle', marginRight: 3 }} />
           {elapsed}
         </span>
-      </td>
-      <td className="short-ops-td">
-        {originalSignal
-          ? <span style={{ fontSize: 10, background: SOP.surfaceRaised, color: SOP.textSecondary, padding: '1px 5px', borderRadius: 3 }}>{originalSignal}</span>
-          : <span style={{ color: '#475569' }}>—</span>
-        }
       </td>
       <td className="short-ops-td">
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 6 }}>
@@ -3979,16 +3972,15 @@ export default function LongOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
                 <th className="short-ops-th short-ops-th--right" style={{ color: '#facc15' }} title="Trailing stop: active after 3% profit. Closes at +1.5% callback. Max 10%.">Trailing 📈</th>
                 <th className="short-ops-th short-ops-th--right" style={{ color: '#fb923c' }} title="Funding rate × notional × 3 payments/day (8h interval)">Funding/day 💸</th>
                 <th className="short-ops-th short-ops-th--left">Duration</th>
-                <th className="short-ops-th short-ops-th--left">LLM signal</th>
                 <th className="short-ops-th short-ops-th--left">Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading && positions.length === 0 ? (
-                <tr><td colSpan={18} className="short-ops-td short-ops-td--pad">Loading…</td></tr>
+                <tr><td colSpan={17} className="short-ops-td short-ops-td--pad">Loading…</td></tr>
               ) : positions.length === 0 ? (
                 <tr>
-                  <td colSpan={18} className="short-ops-td short-ops-td--pad short-ops-td--muted" style={{ textAlign: 'center', padding: '24px 0' }}>
+                  <td colSpan={17} className="short-ops-td short-ops-td--pad short-ops-td--muted" style={{ textAlign: 'center', padding: '24px 0' }}>
                     <TrendingUp size={24} style={{ color: SOP.borderMuted, marginBottom: 6, display: 'block', margin: '0 auto 6px' }} />
                     No active long positions right now.
                   </td>
