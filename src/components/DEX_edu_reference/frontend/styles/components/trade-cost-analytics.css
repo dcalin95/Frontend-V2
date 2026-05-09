@@ -3805,7 +3805,7 @@
 }
 
 .ota-short-ops-page .short-ops-table--open-longs {
-  min-width: 108rem;
+  min-width: 92rem;
 }
 
 .ota-short-ops-page .short-ops-th {
@@ -3836,25 +3836,15 @@
   text-align: right;
 }
 
-.ota-short-ops-page .short-ops-th--long-trailing,
-.ota-short-ops-page .short-ops-td--long-trailing {
-  min-width: 6.8rem;
-}
-
-.ota-short-ops-page .short-ops-th--long-funding,
-.ota-short-ops-page .short-ops-td--long-funding {
-  min-width: 7.4rem;
-}
-
 .ota-short-ops-page .short-ops-th--long-actions,
 .ota-short-ops-page .short-ops-td--long-actions {
-  width: 13.5rem;
-  min-width: 13.5rem;
-  max-width: 13.5rem;
+  width: 12.25rem;
+  min-width: 12.25rem;
+  max-width: 12.25rem;
   position: sticky;
   right: 0;
-  background: #020202;
-  box-shadow: -1px 0 0 var(--tca-border), -8px 0 12px rgba(0, 0, 0, 0.45);
+  background: #000;
+  box-shadow: -10px 0 14px rgba(0, 0, 0, 0.72);
 }
 
 .ota-short-ops-page .short-ops-th--long-actions {
@@ -3863,7 +3853,6 @@
 
 .ota-short-ops-page .short-ops-td--long-actions {
   z-index: 3;
-  padding-left: 0.65rem;
   vertical-align: top;
 }
 
@@ -3877,7 +3866,7 @@
   align-items: stretch;
   gap: 0.38rem;
   width: 100%;
-  min-width: 12.1rem;
+  min-width: 10.9rem;
 }
 
 .ota-short-ops-page .short-ops-position-actions > button {
@@ -3891,7 +3880,7 @@
 }
 
 .ota-short-ops-page .short-ops-position-actions label {
-  max-width: 12.1rem !important;
+  max-width: 10.9rem !important;
 }
 
 .ota-short-ops-page .short-ops-td--pad {

@@ -1048,7 +1048,7 @@ function PositionRow({
           : <span style={{ color: '#475569' }}>—</span>
         }
       </td>
-      <td className="short-ops-td short-ops-td--right short-ops-td--long-trailing" title="Dynamic trailing stop: active after 3% profit. Closes when price rises 1.5% from the low reached. Max TP: 10%.">
+      <td className="short-ops-td short-ops-td--right" title="Dynamic trailing stop: active after 3% profit. Closes when price rises 1.5% from the low reached. Max TP: 10%.">
         {(() => {
           const trailingActive = meta.trailingActive === true;
           const trailingMin = meta.trailingMin != null ? Number(meta.trailingMin) : null;
@@ -1170,7 +1170,7 @@ function PositionRow({
             style={{ padding: '3px 10px', background: closing ? '#7f1d1d' : '#dc2626', color: '#fff', border: 'none', borderRadius: 5, cursor: closing ? 'wait' : 'pointer', fontSize: 10, fontWeight: 800, whiteSpace: 'nowrap', transition: 'background 0.2s' }}
             title="Manually close this LONG position now"
           >
-            {closing ? '⏳ …' : '✕ Close manual'}
+            {closing ? '⏳ …' : '✕ Close'}
           </button>
           <OtaLlmSuspendControl
             walletAddress={String(p.user_id || '').trim().toLowerCase()}
@@ -3977,8 +3977,8 @@ export default function LongOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
                 </th>
                 <th className="short-ops-th short-ops-th--right">Conf.</th>
                 <th className="short-ops-th short-ops-th--left">BTC bias</th>
-                <th className="short-ops-th short-ops-th--right short-ops-th--long-trailing" style={{ color: '#facc15' }} title="Trailing stop: active after 3% profit. Closes at +1.5% callback. Max 10%.">Trailing 📈</th>
-                <th className="short-ops-th short-ops-th--right short-ops-th--long-funding" style={{ color: '#fb923c' }} title="Funding rate × notional × 3 payments/day (8h interval)">Funding/day 💸</th>
+                <th className="short-ops-th short-ops-th--right" style={{ color: '#facc15' }} title="Trailing stop: active after 3% profit. Closes at +1.5% callback. Max 10%.">Trailing 📈</th>
+                <th className="short-ops-th short-ops-th--right" style={{ color: '#fb923c' }} title="Funding rate × notional × 3 payments/day (8h interval)">Funding/day 💸</th>
                 <th className="short-ops-th short-ops-th--left">Duration</th>
                 <th className="short-ops-th short-ops-th--left">LLM signal</th>
                 <th className="short-ops-th short-ops-th--left short-ops-th--long-actions">Actions</th>
