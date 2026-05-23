@@ -57,6 +57,18 @@ function makeInFlightGetKey(url, defaultOptions) {
   return `${url}|auth:${auth}|ops:${shortSecret}:${longSecret}`;
 }
 
+function cloneJsonPayload(value) {
+  if (value == null || typeof value !== 'object') return value;
+  try {
+    if (typeof structuredClone === 'function') return structuredClone(value);
+  } catch (_) {}
+  try {
+    return JSON.parse(JSON.stringify(value));
+  } catch (_) {
+    return value;
+  }
+}
+
 /** Mesaje user-friendly per cod HTTP / tip eroare. La 503 păstrăm mesajul backend. La 500 mesaj care nu sperie userul. */
 function getUserFriendlyMessage(status, errorData) {
   const msg = errorData?.message || errorData?.error;
@@ -287,13 +299,19 @@ export async function otaApiRequest(endpoint, options = {}, retryCount = 0) {
     const now = Date.now();
     if (existing && now - existing.at < INFLIGHT_GET_DEDUPE_MS) {
       clearTimeout(timeoutId);
-      return existing.promise;
+      if (existing.value !== undefined) return cloneJsonPayload(existing.value);
+      return existing.promise.then(cloneJsonPayload);
     }
     const promise = executeRequest();
     inFlightGetRequests.set(key, { at: now, promise });
-    promise.then(() => {
+    promise.then((value) => {
       if (inFlightGetRequests.get(key)?.promise === promise) {
-        inFlightGetRequests.delete(key);
+        inFlightGetRequests.set(key, { at: Date.now(), value });
+        setTimeout(() => {
+          if (Date.now() - (inFlightGetRequests.get(key)?.at || 0) >= INFLIGHT_GET_DEDUPE_MS) {
+            inFlightGetRequests.delete(key);
+          }
+        }, INFLIGHT_GET_DEDUPE_MS + 100);
       }
     }, () => {
       if (inFlightGetRequests.get(key)?.promise === promise) {

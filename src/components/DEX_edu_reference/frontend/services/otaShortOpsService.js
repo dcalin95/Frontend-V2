@@ -15,6 +15,9 @@ import {
 } from '../utils/otaSignalsListClientCache';
 import { coerceSignalsArrayFromApiPayload } from '../utils/otaSignalsPayloadCoerce';
 
+const SHORT_OPS_GET_CACHE_MS = 2500;
+const shortOpsGetCache = new Map();
+
 /** Normalize backend errors (ex. 503 când lipsește OTA_SHORT_OPS_SECRET pe server). */
 function throwShortOpsHttp(res, data) {
   const body = data && typeof data === 'object' ? data : {};
@@ -41,11 +44,37 @@ function requireUserId(userId, caller = 'short ops') {
 async function shortOpsFetch(input, init = {}) {
   await loadRuntimeConfig();
   const baseH = getShortOpsHeaders();
-  return fetch(input, {
+  const method = String(init.method || 'GET').toUpperCase();
+  const headers = { ...baseH, ...(init.headers || {}) };
+  const cacheKey = method === 'GET' ? `${String(input)}|secret:${headers['X-Ota-Short-Ops-Secret'] ? 'set' : 'none'}` : null;
+  const now = Date.now();
+  if (cacheKey) {
+    const cached = shortOpsGetCache.get(cacheKey);
+    if (cached && now - cached.at < SHORT_OPS_GET_CACHE_MS) {
+      if (cached.response) return cached.response.clone();
+      if (cached.promise) return cached.promise.then((res) => res.clone());
+    }
+  }
+  const promise = fetch(input, {
     ...init,
     credentials: init.credentials ?? 'include',
-    headers: { ...baseH, ...(init.headers || {}) },
+    headers,
   });
+  if (!cacheKey) return promise;
+  shortOpsGetCache.set(cacheKey, { at: now, promise });
+  promise.then((res) => {
+    if (shortOpsGetCache.get(cacheKey)?.promise === promise) {
+      shortOpsGetCache.set(cacheKey, { at: Date.now(), response: res.clone() });
+      setTimeout(() => {
+        if (Date.now() - (shortOpsGetCache.get(cacheKey)?.at || 0) >= SHORT_OPS_GET_CACHE_MS) {
+          shortOpsGetCache.delete(cacheKey);
+        }
+      }, SHORT_OPS_GET_CACHE_MS + 100);
+    }
+  }, () => {
+    if (shortOpsGetCache.get(cacheKey)?.promise === promise) shortOpsGetCache.delete(cacheKey);
+  });
+  return promise;
 }
 
 /** True dacă există secret în runtime-config sau în bundle (REACT_APP_*). */

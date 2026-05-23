@@ -14,6 +14,9 @@ import {
 } from '../utils/otaSignalsListClientCache';
 import { coerceSignalsArrayFromApiPayload } from '../utils/otaSignalsPayloadCoerce';
 
+const LONG_OPS_GET_CACHE_MS = 2500;
+const longOpsGetCache = new Map();
+
 function throwLongOpsHttp(res, data) {
   const body = data && typeof data === 'object' ? data : {};
   if (res.status === 503 && body.code === 'LONG_OPS_SERVER_UNCONFIGURED') {
@@ -39,11 +42,37 @@ function requireUserId(userId, caller = 'long ops') {
 async function longOpsFetch(input, init = {}) {
   await loadRuntimeConfig();
   const baseH = getLongOpsHeaders();
-  return fetch(input, {
+  const method = String(init.method || 'GET').toUpperCase();
+  const headers = { ...baseH, ...(init.headers || {}) };
+  const cacheKey = method === 'GET' ? `${String(input)}|secret:${headers['X-Ota-Long-Ops-Secret'] ? 'set' : 'none'}` : null;
+  const now = Date.now();
+  if (cacheKey) {
+    const cached = longOpsGetCache.get(cacheKey);
+    if (cached && now - cached.at < LONG_OPS_GET_CACHE_MS) {
+      if (cached.response) return cached.response.clone();
+      if (cached.promise) return cached.promise.then((res) => res.clone());
+    }
+  }
+  const promise = fetch(input, {
     ...init,
     credentials: init.credentials ?? 'include',
-    headers: { ...baseH, ...(init.headers || {}) },
+    headers,
   });
+  if (!cacheKey) return promise;
+  longOpsGetCache.set(cacheKey, { at: now, promise });
+  promise.then((res) => {
+    if (longOpsGetCache.get(cacheKey)?.promise === promise) {
+      longOpsGetCache.set(cacheKey, { at: Date.now(), response: res.clone() });
+      setTimeout(() => {
+        if (Date.now() - (longOpsGetCache.get(cacheKey)?.at || 0) >= LONG_OPS_GET_CACHE_MS) {
+          longOpsGetCache.delete(cacheKey);
+        }
+      }, LONG_OPS_GET_CACHE_MS + 100);
+    }
+  }, () => {
+    if (longOpsGetCache.get(cacheKey)?.promise === promise) longOpsGetCache.delete(cacheKey);
+  });
+  return promise;
 }
 
 /** True dacă există secret în runtime-config, bundle (REACT_APP_*) sau fallback la secret SHORT. */
