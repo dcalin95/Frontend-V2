@@ -604,12 +604,26 @@ const AutoTradePanel = React.memo(() => {
   }, [executorAuth, authDisplayPrices]);
 
   /** Vault balance (UserVault) for selected quote – BNB, USDT; ETH not in vault on BSC. */
+  const getRawVaultBalance = useCallback((addr) => {
+    if (!addr || !vaultBalances) return '0';
+    return vaultBalances[addr] || vaultBalances[String(addr).toLowerCase()] || '0';
+  }, [vaultBalances]);
+
+  const getBnbVaultBalanceRaw = useCallback(() => {
+    let nativeRaw = getRawVaultBalance(ethers.constants.AddressZero);
+    if (!nativeRaw || nativeRaw === '0') nativeRaw = vaultBalances?.BNB || '0';
+    const wbnbRaw = getRawVaultBalance(WBNB_BSC);
+    return ethers.BigNumber.from(nativeRaw || '0')
+      .add(ethers.BigNumber.from(wbnbRaw || '0'));
+  }, [getRawVaultBalance, vaultBalances]);
+
   const getVaultBalanceForQuote = useCallback((quoteToken) => {
     if (!quoteToken || !vaultBalances) return null;
     let addr;
     let decimals = 18;
+    let raw;
     if (quoteToken === 'BNB') {
-      addr = ethers.constants.AddressZero;
+      raw = getBnbVaultBalanceRaw().toString();
     } else if (quoteToken === 'USDT') {
       addr = CONTRACT_MAP?.USDT?.address;
       decimals = CONTRACT_MAP?.USDT?.decimals ?? 18;
@@ -620,20 +634,22 @@ const AutoTradePanel = React.memo(() => {
     } else {
       return null;
     }
-    const raw = vaultBalances[addr] || '0';
+    raw = raw ?? getRawVaultBalance(addr);
     const num = parseFloat(ethers.utils.formatUnits(raw, decimals));
     if (!Number.isFinite(num) || num < 0) return null;
     const formatted = num >= 0.000001 ? (num < 0.01 ? '<0.01' : formatNumber(num, num >= 1 ? 4 : 6)) : '0';
     return `${formatted} ${quoteToken}`;
-  }, [vaultBalances]);
+  }, [getBnbVaultBalanceRaw, getRawVaultBalance, vaultBalances]);
 
   /** Raw vault balance number for percentage buttons. */
   const getVaultBalanceNumber = useCallback((quoteToken) => {
     if (!quoteToken || !vaultBalances) return 0;
     let addr;
     let decimals = 18;
-    if (quoteToken === 'BNB') addr = ethers.constants.AddressZero;
-    else if (quoteToken === 'USDT') {
+    let raw;
+    if (quoteToken === 'BNB') {
+      raw = getBnbVaultBalanceRaw().toString();
+    } else if (quoteToken === 'USDT') {
       addr = CONTRACT_MAP?.USDT?.address;
       decimals = CONTRACT_MAP?.USDT?.decimals ?? 18;
     } else if (quoteToken === 'ETH') {
@@ -641,10 +657,10 @@ const AutoTradePanel = React.memo(() => {
       if (!addr) return 0;
       decimals = TOKEN_REGISTRY?.ETH?.decimals ?? CONTRACT_MAP?.ETH?.decimals ?? 18;
     } else return 0;
-    const raw = vaultBalances[addr] || '0';
+    raw = raw ?? getRawVaultBalance(addr);
     const num = parseFloat(ethers.utils.formatUnits(raw, decimals));
     return Number.isFinite(num) && num >= 0 ? num : 0;
-  }, [vaultBalances]);
+  }, [getBnbVaultBalanceRaw, getRawVaultBalance, vaultBalances]);
 
   const setDirectEntryAmountPercent = useCallback((pct) => {
     const balance = getVaultBalanceNumber(directEntryQuoteToken);
