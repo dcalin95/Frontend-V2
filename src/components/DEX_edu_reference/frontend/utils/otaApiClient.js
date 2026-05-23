@@ -8,6 +8,11 @@
 
 import * as apiEndpoints from '../../config/apiEndpoints.js';
 import {
+  getOtaLongOpsSecret,
+  getOtaShortOpsSecret,
+  loadRuntimeConfig,
+} from '../../config/runtimeConfig.js';
+import {
   getOtaWalletAuthToken,
   clearOtaWalletSession,
   waitForOtaWalletSessionRefresh,
@@ -79,6 +84,7 @@ function getUserFriendlyMessage(status, errorData) {
  * @returns {Promise<Object>} JSON response
  */
 export async function otaApiRequest(endpoint, options = {}, retryCount = 0) {
+  await loadRuntimeConfig();
   const isDE = endpoint.includes('direct-entry');
   let baseUrl = apiEndpoints.getApiBaseUrl();
   if (!baseUrl || typeof baseUrl !== 'string' || baseUrl.trim() === '') {
@@ -106,6 +112,14 @@ export async function otaApiRequest(endpoint, options = {}, retryCount = 0) {
   const otaTok =
     typeof window !== 'undefined' && !omitOtaWalletBearer ? getOtaWalletAuthToken() : null;
   const epNorm = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  if (epNorm.includes('/ai-trading/short/') && !mergedHeaders['X-Ota-Short-Ops-Secret']) {
+    const shortOpsSecret = getOtaShortOpsSecret();
+    if (shortOpsSecret) mergedHeaders['X-Ota-Short-Ops-Secret'] = shortOpsSecret;
+  }
+  if (epNorm.includes('/ai-trading/long/') && !mergedHeaders['X-Ota-Long-Ops-Secret']) {
+    const longOpsSecret = getOtaLongOpsSecret();
+    if (longOpsSecret) mergedHeaders['X-Ota-Long-Ops-Secret'] = longOpsSecret;
+  }
   if (
     otaTok &&
     epNorm.includes('/ai-trading') &&
