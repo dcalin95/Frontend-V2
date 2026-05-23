@@ -32,6 +32,8 @@ const isDev = typeof process !== 'undefined' && process.env?.NODE_ENV === 'devel
 export const REQUEST_TIMEOUT_MS = 15000;
 const MAX_RETRIES = 1;
 const RATE_LIMIT_RETRY_DELAY_MS = 4000;
+const INFLIGHT_GET_DEDUPE_MS = 2500;
+const inFlightGetRequests = new Map();
 /** Limitează ștergerea sesiunii + evenimentul „invalid” + așteptarea resign — evită sute de prompturi MetaMask la fiecare 401 din poll. */
 let lastOtaWalletClearNotifyAt = 0;
 const OTA_WALLET_CLEAR_NOTIFY_MIN_MS = 120000;
@@ -45,6 +47,14 @@ function isNetworkError(error) {
   if (!error || typeof error !== 'object') return false;
   if (error.name === 'TypeError' && (error.message === 'Failed to fetch' || error.message?.includes('fetch'))) return true;
   return false;
+}
+
+function makeInFlightGetKey(url, defaultOptions) {
+  const headers = defaultOptions?.headers || {};
+  const auth = headers.Authorization || headers.authorization || '';
+  const shortSecret = headers['X-Ota-Short-Ops-Secret'] ? 'short' : '';
+  const longSecret = headers['X-Ota-Long-Ops-Secret'] ? 'long' : '';
+  return `${url}|auth:${auth}|ops:${shortSecret}:${longSecret}`;
 }
 
 /** Mesaje user-friendly per cod HTTP / tip eroare. La 503 păstrăm mesajul backend. La 500 mesaj care nu sperie userul. */
@@ -139,6 +149,7 @@ export async function otaApiRequest(endpoint, options = {}, retryCount = 0) {
 
   const isDirectEntry = endpoint.includes('direct-entry');
 
+  const executeRequest = async () => {
   try {
     const response = await fetch(url, defaultOptions);
     clearTimeout(timeoutId);
@@ -263,6 +274,36 @@ export async function otaApiRequest(endpoint, options = {}, retryCount = 0) {
     }
     throw error;
   }
+  };
+
+  const canDedupeInFlight =
+    requestMethod === 'GET' &&
+    retryCount === 0 &&
+    options.dedupeInFlight !== false;
+
+  if (canDedupeInFlight) {
+    const key = makeInFlightGetKey(url, defaultOptions);
+    const existing = inFlightGetRequests.get(key);
+    const now = Date.now();
+    if (existing && now - existing.at < INFLIGHT_GET_DEDUPE_MS) {
+      clearTimeout(timeoutId);
+      return existing.promise;
+    }
+    const promise = executeRequest();
+    inFlightGetRequests.set(key, { at: now, promise });
+    promise.then(() => {
+      if (inFlightGetRequests.get(key)?.promise === promise) {
+        inFlightGetRequests.delete(key);
+      }
+    }, () => {
+      if (inFlightGetRequests.get(key)?.promise === promise) {
+        inFlightGetRequests.delete(key);
+      }
+    });
+    return promise;
+  }
+
+  return executeRequest();
 }
 
 /** Timeout pentru SSE chat (răspunsuri lungi); separat de REQUEST_TIMEOUT_MS. */
