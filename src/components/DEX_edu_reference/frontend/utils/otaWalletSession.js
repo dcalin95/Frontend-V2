@@ -42,6 +42,7 @@ const SESSION_PROBE_OK_CACHE_MS = 15 * 60 * 1000;
 const SESSION_PROBE_MAX_ATTEMPTS = 3;
 /** @type {{ key: string, until: number }} */
 let sessionProbeOkCache = { key: '', until: 0 };
+const sessionProbeInFlight = new Map();
 
 function sessionProbeCacheKey(token, expectedWalletAddress) {
   if (!token) return '';
@@ -225,11 +226,14 @@ export async function validateCachedOtaWalletSession(expectedWalletAddress = nul
   if (readSessionProbeOkCache(tok, expectedWalletAddress)) {
     return true;
   }
+  const probeKey = sessionProbeCacheKey(tok, expectedWalletAddress);
+  const existingProbe = probeKey ? sessionProbeInFlight.get(probeKey) : null;
+  if (existingProbe) return existingProbe;
   const base = apiEndpoints.getApiBaseUrl();
   if (!base || typeof base !== 'string') return null;
   const root = base.replace(/\/$/, '');
   const url = `${root}/ai-trading/auth/evm/session`;
-  try {
+  const probePromise = (async () => {
     for (let attempt = 0; attempt < SESSION_PROBE_MAX_ATTEMPTS; attempt++) {
       if (attempt > 0) {
         await new Promise((r) => setTimeout(r, 200 * attempt));
@@ -263,6 +267,17 @@ export async function validateCachedOtaWalletSession(expectedWalletAddress = nul
       return null;
     }
     return false;
+  })();
+  if (probeKey) {
+    sessionProbeInFlight.set(probeKey, probePromise);
+    probePromise.finally(() => {
+      if (sessionProbeInFlight.get(probeKey) === probePromise) {
+        sessionProbeInFlight.delete(probeKey);
+      }
+    });
+  }
+  try {
+    return await probePromise;
   } catch {
     return null;
   }
