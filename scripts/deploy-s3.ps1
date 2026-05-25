@@ -43,6 +43,49 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Host "Build completed successfully" -ForegroundColor Green
 
+# 2b. Inject OTA ops secrets into runtime config when provided.
+# Keep these values out of public/runtime-config.json in git; only the generated build artifact is updated.
+$RuntimeConfigPath = "build/runtime-config.json"
+$ShortOpsSecret = if (-not [string]::IsNullOrWhiteSpace($env:REACT_APP_OTA_SHORT_OPS_SECRET)) {
+    $env:REACT_APP_OTA_SHORT_OPS_SECRET.Trim()
+} elseif (-not [string]::IsNullOrWhiteSpace($env:OTA_SHORT_OPS_SECRET)) {
+    $env:OTA_SHORT_OPS_SECRET.Trim()
+} else {
+    ""
+}
+
+$LongOpsSecret = if (-not [string]::IsNullOrWhiteSpace($env:REACT_APP_OTA_LONG_OPS_SECRET)) {
+    $env:REACT_APP_OTA_LONG_OPS_SECRET.Trim()
+} elseif (-not [string]::IsNullOrWhiteSpace($env:OTA_LONG_OPS_SECRET)) {
+    $env:OTA_LONG_OPS_SECRET.Trim()
+} else {
+    $ShortOpsSecret
+}
+
+if ((-not [string]::IsNullOrWhiteSpace($ShortOpsSecret)) -or (-not [string]::IsNullOrWhiteSpace($LongOpsSecret))) {
+    if (Test-Path $RuntimeConfigPath) {
+        Write-Host "==> Injecting OTA ops secrets into runtime config..." -ForegroundColor Blue
+        $RuntimeConfig = Get-Content $RuntimeConfigPath -Raw | ConvertFrom-Json
+        if (-not [string]::IsNullOrWhiteSpace($ShortOpsSecret)) {
+            $RuntimeConfig | Add-Member -NotePropertyName "OTA_SHORT_OPS_SECRET" -NotePropertyValue $ShortOpsSecret -Force
+        }
+        if (-not [string]::IsNullOrWhiteSpace($LongOpsSecret)) {
+            $RuntimeConfig | Add-Member -NotePropertyName "OTA_LONG_OPS_SECRET" -NotePropertyValue $LongOpsSecret -Force
+        }
+        $RuntimeConfigJson = $RuntimeConfig | ConvertTo-Json -Depth 10
+        [System.IO.File]::WriteAllText(
+            (Resolve-Path $RuntimeConfigPath),
+            $RuntimeConfigJson,
+            [System.Text.UTF8Encoding]::new($false)
+        )
+        Write-Host "OTA ops secrets injected (values hidden)" -ForegroundColor Green
+    } else {
+        Write-Host "runtime-config.json missing in build; skipping OTA ops secret injection." -ForegroundColor Yellow
+    }
+} else {
+    Write-Host "No OTA ops secrets found in env; runtime-config.json not modified." -ForegroundColor Yellow
+}
+
 # 3. Sync to S3
 Write-Host "==> Uploading to S3 bucket: $BucketName" -ForegroundColor Blue
 
@@ -65,9 +108,15 @@ if (Test-Path "build/_error.html") {
     aws s3 cp build/_error.html "s3://$BucketName/" --cache-control "no-cache,no-store,must-revalidate" --metadata-directive REPLACE
 }
 
+# Upload runtime config WITHOUT cache (if it exists)
+if (Test-Path "build/runtime-config.json") {
+    Write-Host "  Uploading runtime-config.json..." -ForegroundColor Cyan
+    aws s3 cp build/runtime-config.json "s3://$BucketName/" --cache-control "no-cache,no-store,must-revalidate" --metadata-directive REPLACE --content-type "application/json"
+}
+
 # Upload all other files
 Write-Host "  Uploading remaining files..." -ForegroundColor Cyan
-aws s3 sync build/ "s3://$BucketName/" --delete --exclude "index.html" --exclude "404.html" --exclude "_error.html" --exclude "static/*" --cache-control "public,max-age=3600"
+aws s3 sync build/ "s3://$BucketName/" --delete --exclude "index.html" --exclude "404.html" --exclude "_error.html" --exclude "runtime-config.json" --exclude "static/*" --cache-control "public,max-age=3600"
 
 Write-Host "Files uploaded to S3" -ForegroundColor Green
 
