@@ -59,6 +59,8 @@ backend/telegram-bot-repo/node_modules/
 **/*password*
 !src/components/DEX_edu_reference/frontend/pages/OTAResetPasswordPage.jsx
 !src/components/DEX_edu_reference/frontend/styles/components/ota-reset-password-page.css
+!src/components/DEX_edu_reference/frontend/pages/OTAForgotPasswordPage.jsx
+!src/components/DEX_edu_reference/frontend/styles/components/ota-forgot-password-page.css
 
 # =====================
 # đź¤– Telegram Bot Specific
