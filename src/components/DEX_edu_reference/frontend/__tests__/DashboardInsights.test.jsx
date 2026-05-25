@@ -52,8 +52,8 @@ describe('DashboardInsights', () => {
       isInitialLoading: false,
       lastUpdatedAt: Date.now(),
       signals: [
-        { id: 'new', token: 'SOL', signal: 'sell', entryPrice: 85.22 },
-        { id: 'older', token: 'ADA', signal: 'open_short', entryPrice: 0.24 },
+        { id: 'older', token: 'ADA', signal: 'open_short', entryPrice: 0.24, createdAt: '2026-05-25T04:20:00.000Z' },
+        { id: 'new', token: 'SOL', signal: 'sell', entryPrice: 85.22, createdAt: '2026-05-25T04:29:28.000Z' },
       ],
       lastSignal: { token: 'XRP', side: 'buy' },
       otaStats: null,

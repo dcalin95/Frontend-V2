@@ -113,6 +113,17 @@ function pickLatestSignalFromFeed(signals) {
   return normalizeLastSignalFromFeed(latest?.signal);
 }
 
+function sortSignalsNewestFirst(signals) {
+  if (!Array.isArray(signals)) return [];
+  return signals
+    .map((signal, index) => ({ signal, index, timeMs: signalTimeMs(signal) }))
+    .sort((a, b) => {
+      if (a.timeMs !== b.timeMs) return b.timeMs - a.timeMs;
+      return a.index - b.index;
+    })
+    .map(({ signal }) => signal);
+}
+
 /**
  * @param {string|null|undefined} routeUserId - din rută / auth (poate fi id cont sau adresă)
  * @param {{ walletAddress?: string|null, walletType?: string|null }} [options]
@@ -247,7 +258,7 @@ export function useDashboardAggregate(routeUserId, options = {}) {
 
       const trades = tradesRes?.trades || tradesRes || [];
       const tradesTotal = tradesRes?.total ?? (Array.isArray(trades) ? trades.length : 0);
-      const signals = Array.isArray(signalsRes?.signals) ? signalsRes.signals : [];
+      const signals = sortSignalsNewestFirst(signalsRes?.signals);
       const latestSignalFromFeed = pickLatestSignalFromFeed(signals);
       const signalsToday = signals.filter(
         (s) => new Date(s.createdAt || s.created_at || 0) >= todayStart

@@ -33,11 +33,38 @@ function pickOtaStatLines(otaStats) {
   return rows.slice(0, 6);
 }
 
+function signalTimeMs(signal) {
+  if (!signal || typeof signal !== 'object') return 0;
+  const raw =
+    signal.createdAt ||
+    signal.created_at ||
+    signal.timestamp ||
+    signal.analyzedAt ||
+    signal.analysisAt ||
+    signal.lastAnalysisAt ||
+    signal.executedAt ||
+    signal.updatedAt ||
+    signal.updated_at;
+  const ms = raw ? new Date(raw).getTime() : 0;
+  return Number.isFinite(ms) ? ms : 0;
+}
+
+function sortSignalsNewestFirst(signals) {
+  if (!Array.isArray(signals)) return [];
+  return signals
+    .map((signal, index) => ({ signal, index, timeMs: signalTimeMs(signal) }))
+    .sort((a, b) => {
+      if (a.timeMs !== b.timeMs) return b.timeMs - a.timeMs;
+      return a.index - b.index;
+    })
+    .map(({ signal }) => signal);
+}
+
 export default function DashboardInsights({ aggregate }) {
   const { loading, isInitialLoading, signals, lastSignal, otaStats, lastUpdatedAt } = aggregate || {};
   const showSkeleton = Boolean(isInitialLoading ?? loading) && lastUpdatedAt == null;
 
-  const recent = useMemo(() => (Array.isArray(signals) ? signals.slice(0, 6) : []), [signals]);
+  const recent = useMemo(() => sortSignalsNewestFirst(signals).slice(0, 6), [signals]);
   const highlightedSignal = useMemo(() => recent[0] || lastSignal || null, [recent, lastSignal]);
   const statLines = useMemo(() => pickOtaStatLines(otaStats), [otaStats]);
 

@@ -502,12 +502,13 @@ export async function setAutoSession(userId, enabled, options = {}) {
   if (!userId) return undefined;
   try {
     const body = { userId, enabled };
+    const hasOption = (key) => Object.prototype.hasOwnProperty.call(options, key);
     if (options.minProfitOverGasPercent != null) body.minProfitOverGasPercent = options.minProfitOverGasPercent;
     if (options.maxLossPercent != null) body.maxLossPercent = options.maxLossPercent;
-    if (options.usdMinPerTrade != null) body.usdMinPerTrade = options.usdMinPerTrade;
-    if (options.usdMaxPerTrade != null) body.usdMaxPerTrade = options.usdMaxPerTrade;
-    if (options.usdDailyCap != null) body.usdDailyCap = options.usdDailyCap;
-    if (options.maxTradesPer12h != null) body.maxTradesPer12h = options.maxTradesPer12h;
+    if (hasOption('usdMinPerTrade')) body.usdMinPerTrade = options.usdMinPerTrade;
+    if (hasOption('usdMaxPerTrade')) body.usdMaxPerTrade = options.usdMaxPerTrade;
+    if (hasOption('usdDailyCap')) body.usdDailyCap = options.usdDailyCap;
+    if (hasOption('maxTradesPer12h')) body.maxTradesPer12h = options.maxTradesPer12h;
     if (options.forceOpenNow === true) body.forceOpenNow = true;
     const res = await apiRequest(API_ENDPOINTS.OTA_AUTO_SESSION || '/ai-trading/auto/session', {
       method: 'POST',
@@ -785,4 +786,3 @@ export default {
   getAgentMode,
   setAgentMode
 };
-

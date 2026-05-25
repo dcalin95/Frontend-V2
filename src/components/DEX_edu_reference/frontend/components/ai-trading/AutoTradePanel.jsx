@@ -2136,19 +2136,21 @@ const AutoTradePanel = React.memo(() => {
       return;
     }
 
-    try {
-      if (usdLimitsStorageKey) {
-        localStorage.setItem(
-          usdLimitsStorageKey,
-          JSON.stringify({
-            minUsd: minUsd != null ? String(minUsd) : '',
-            maxUsd: maxUsd != null ? String(maxUsd) : '',
-            dailyCapUsd: dailyCapUsd != null ? String(dailyCapUsd) : '',
-            maxTradesPer12h: maxTradesPer12hVal != null ? String(maxTradesPer12hVal) : ''
-          })
-        );
-      }
-    } catch (_) { /* non-blocking */ }
+    const cacheUsdLimits = () => {
+      try {
+        if (usdLimitsStorageKey) {
+          localStorage.setItem(
+            usdLimitsStorageKey,
+            JSON.stringify({
+              minUsd: minUsd != null ? String(minUsd) : '',
+              maxUsd: maxUsd != null ? String(maxUsd) : '',
+              dailyCapUsd: dailyCapUsd != null ? String(dailyCapUsd) : '',
+              maxTradesPer12h: maxTradesPer12hVal != null ? String(maxTradesPer12hVal) : ''
+            })
+          );
+        }
+      } catch (_) { /* non-blocking */ }
+    };
 
     if (walletAddress && isAuthenticated) {
       setSaving(true);
@@ -2161,6 +2163,7 @@ const AutoTradePanel = React.memo(() => {
           usdDailyCap: dailyCapUsd,
           maxTradesPer12h: maxTradesPer12hVal
         });
+        cacheUsdLimits();
         toast.success('USD limits au fost trimise la backend (Render).', { autoClose: 4000 });
         const fromSession = sessionRes && (sessionRes.usdMinPerTrade != null || sessionRes.usdMaxPerTrade != null || sessionRes.usdDailyCap != null || sessionRes.maxTradesPer12h != null);
         const limitsPersisted = sessionRes?.limitsPersisted === true;
@@ -2204,6 +2207,7 @@ const AutoTradePanel = React.memo(() => {
       return;
     }
 
+    cacheUsdLimits();
     toast.success('USD limits saved. Connect wallet and save again to sync to backend.');
   }, [usdTradeLimits, usdLimitsStorageKey, policy, walletAddress, isAuthenticated]);
 
