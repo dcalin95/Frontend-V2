@@ -43,7 +43,7 @@ jest.mock('../../utils/dashboardPipelineDebug', () => ({
 
 import { getTrades } from '../../services/executionApiService';
 import { getSignals } from '../../services/signalApiService';
-import { getOTAHistory } from '../../services/aiTradingApiService';
+import { getLastSignal, getOTAHistory } from '../../services/aiTradingApiService';
 import { getMetrics } from '../../services/performanceApiService';
 import { getLiveStatus, getOpenShorts } from '../../services/otaShortOpsService';
 import { getOpenPositionsAnalytics } from '../../services/analyticsApiService';
@@ -155,5 +155,29 @@ describe('useDashboardAggregate stale-while-revalidate', () => {
       resolveSlow(defaultTrades);
     });
     await waitFor(() => expect(result.current.isRefreshing).toBe(false));
+  });
+
+  it('derives latest signal from the signals feed before stale last-signal fallback', async () => {
+    getSignals.mockResolvedValue({
+      signals: [
+        { id: 'older', token: 'XRP', signal: 'open_short', createdAt: '2026-05-25T04:29:20.000Z' },
+        { id: 'newer', token: 'SOL', signal: 'sell', createdAt: '2026-05-25T04:29:28.954Z' },
+      ],
+    });
+    getLastSignal.mockResolvedValue({
+      lastSignal: { token: 'XRP', side: 'buy', executedAt: '2026-05-25T04:29:10.000Z' },
+    });
+
+    const { result } = renderHook(() =>
+      useDashboardAggregate(null, { walletAddress: '0x2222222222222222222222222222222222222222', walletType: 'EVM' })
+    );
+
+    await waitFor(() => expect(result.current.isInitialLoading).toBe(false));
+
+    expect(result.current.lastSignal).toMatchObject({
+      token: 'SOL',
+      side: 'sell',
+      signal: 'sell',
+    });
   });
 });

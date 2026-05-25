@@ -65,6 +65,54 @@ async function safe(fn, fallback) {
   }
 }
 
+function signalTimeMs(signal) {
+  if (!signal || typeof signal !== 'object') return 0;
+  const raw =
+    signal.createdAt ||
+    signal.created_at ||
+    signal.timestamp ||
+    signal.analyzedAt ||
+    signal.analysisAt ||
+    signal.lastAnalysisAt ||
+    signal.executedAt ||
+    signal.updatedAt ||
+    signal.updated_at;
+  const ms = raw ? new Date(raw).getTime() : 0;
+  return Number.isFinite(ms) ? ms : 0;
+}
+
+function normalizeLastSignalFromFeed(signal) {
+  if (!signal || typeof signal !== 'object') return null;
+  const token = signal.token || signal.symbol || signal.baseToken || signal.base || null;
+  const side = signal.side || signal.signal || signal.action || null;
+  if (!token && !side) return null;
+  return {
+    ...signal,
+    token,
+    side,
+    signal: signal.signal || side,
+    executedAt:
+      signal.executedAt ||
+      signal.createdAt ||
+      signal.created_at ||
+      signal.timestamp ||
+      signal.analyzedAt ||
+      signal.analysisAt ||
+      null,
+  };
+}
+
+function pickLatestSignalFromFeed(signals) {
+  if (!Array.isArray(signals) || signals.length === 0) return null;
+  const [latest] = signals
+    .map((signal, index) => ({ signal, index, timeMs: signalTimeMs(signal) }))
+    .sort((a, b) => {
+      if (a.timeMs !== b.timeMs) return b.timeMs - a.timeMs;
+      return a.index - b.index;
+    });
+  return normalizeLastSignalFromFeed(latest?.signal);
+}
+
 /**
  * @param {string|null|undefined} routeUserId - din rută / auth (poate fi id cont sau adresă)
  * @param {{ walletAddress?: string|null, walletType?: string|null }} [options]
@@ -200,6 +248,7 @@ export function useDashboardAggregate(routeUserId, options = {}) {
       const trades = tradesRes?.trades || tradesRes || [];
       const tradesTotal = tradesRes?.total ?? (Array.isArray(trades) ? trades.length : 0);
       const signals = Array.isArray(signalsRes?.signals) ? signalsRes.signals : [];
+      const latestSignalFromFeed = pickLatestSignalFromFeed(signals);
       const signalsToday = signals.filter(
         (s) => new Date(s.createdAt || s.created_at || 0) >= todayStart
       ).length;
@@ -227,7 +276,7 @@ export function useDashboardAggregate(routeUserId, options = {}) {
         autoStatus: autoRes,
         otaStats: statsRes,
         otaQuota: quotaRes,
-        lastSignal: lastSignalRes?.lastSignal ?? null,
+        lastSignal: latestSignalFromFeed ?? lastSignalRes?.lastSignal ?? null,
         otaHealth: healthRes,
         metrics,
         profitSummary: profitRes,

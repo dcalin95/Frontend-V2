@@ -45,4 +45,25 @@ describe('DashboardInsights', () => {
     expect(screen.getByText(/signal price \$100\.00/i)).toBeInTheDocument();
     expect(document.querySelector('.dash-insights__skeleton')).toBeNull();
   });
+
+  it('uses the newest feed signal for the highlighted latest signal', () => {
+    const aggregate = {
+      loading: false,
+      isInitialLoading: false,
+      lastUpdatedAt: Date.now(),
+      signals: [
+        { id: 'new', token: 'SOL', signal: 'sell', entryPrice: 85.22 },
+        { id: 'older', token: 'ADA', signal: 'open_short', entryPrice: 0.24 },
+      ],
+      lastSignal: { token: 'XRP', side: 'buy' },
+      otaStats: null,
+    };
+    render(
+      <MemoryRouter>
+        <DashboardInsights aggregate={aggregate} />
+      </MemoryRouter>
+    );
+    expect(screen.queryByText(/XRP\s+—\s+BUY/i)).not.toBeInTheDocument();
+    expect(screen.getAllByText(/SOL\s+—\s+SELL/i).length).toBeGreaterThan(0);
+  });
 });

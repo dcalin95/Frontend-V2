@@ -38,14 +38,16 @@ export default function DashboardInsights({ aggregate }) {
   const showSkeleton = Boolean(isInitialLoading ?? loading) && lastUpdatedAt == null;
 
   const recent = useMemo(() => (Array.isArray(signals) ? signals.slice(0, 6) : []), [signals]);
+  const highlightedSignal = useMemo(() => recent[0] || lastSignal || null, [recent, lastSignal]);
   const statLines = useMemo(() => pickOtaStatLines(otaStats), [otaStats]);
 
   const lastSignalSideClass = useMemo(() => {
-    if (!lastSignal) return 'hold';
-    const sk = String(lastSignal.side || lastSignal.signal || 'hold').toLowerCase();
-    if (sk === 'buy' || sk === 'sell') return sk;
+    if (!highlightedSignal) return 'hold';
+    const sk = String(highlightedSignal.side || highlightedSignal.signal || 'hold').toLowerCase();
+    if (sk === 'buy' || sk === 'open_long') return 'buy';
+    if (sk === 'sell' || sk === 'open_short') return 'sell';
     return 'hold';
-  }, [lastSignal]);
+  }, [highlightedSignal]);
 
   return (
     <article
@@ -72,11 +74,11 @@ export default function DashboardInsights({ aggregate }) {
         </div>
       ) : (
         <>
-          {lastSignal && (lastSignal.token || lastSignal.side) ? (
+          {highlightedSignal && (highlightedSignal.token || highlightedSignal.side || highlightedSignal.signal) ? (
             <section className="dash-insights__hl" aria-label="Last execution signal">
               <span className="dash-insights__hl-label">Latest AI signal</span>
               <span className={`dash-insights__hl-value dash-insights__hl-value--${lastSignalSideClass}`}>
-                {lastSignal.token || '—'} — {String(lastSignal.side || lastSignal.signal || '—').toUpperCase()}
+                {highlightedSignal.token || '—'} — {String(highlightedSignal.side || highlightedSignal.signal || '—').toUpperCase()}
               </span>
             </section>
           ) : null}
