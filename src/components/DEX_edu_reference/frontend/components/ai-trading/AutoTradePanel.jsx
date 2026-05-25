@@ -55,7 +55,7 @@ import AutoTradeStartStop from './AutoTradeStartStop';
 import AutoTradeDirectEntry from './AutoTradeDirectEntry';
 import OtaAutotradeLlmPauseCard from './OtaAutotradeLlmPauseCard';
 import OtaFuturesAgentTraceStrip from './OtaFuturesAgentTraceStrip';
-import { deriveAutoTradeRuntimeSummary } from './autoTradeRuntimeSummary';
+import { deriveAutoTradeRuntimeSummary, formatAdaptiveGuard } from './autoTradeRuntimeSummary';
 import RpcRepairModal from '../trade/RpcRepairModal';
 import GridTradingPanel from '../../../common/GridTradingPanel';
 import '../../styles/components/auto-trade-panel.css';
@@ -4353,6 +4353,7 @@ const AutoTradePanel = React.memo(() => {
                 const trackedTokens = Array.isArray(autoExecutionStatus?.diagnostic?.trackedTokens) ? autoExecutionStatus.diagnostic.trackedTokens : [];
                 const latestExecutorDecision = autoExecutionStatus?.latestExecutorDecision || null;
                 const latestAnalysisSignal = autoExecutionStatus?.latestAnalysisSignal || null;
+                const latestAdaptiveGuardText = formatAdaptiveGuard(latestAnalysisSignal?.adaptiveGuard);
                 const latestExecutionResult = autoExecutionStatus?.latestExecutionResult || null;
                 const otaAutoClarity = autoExecutionStatus?.otaAutoClarity || null;
                 const hasAny =
@@ -4453,6 +4454,11 @@ const AutoTradePanel = React.memo(() => {
                             Latest analysis signal: <strong>{String(latestAnalysisSignal.signal || '—').toUpperCase()}</strong>
                             {latestAnalysisSignal.token ? ` · ${latestAnalysisSignal.token}` : ''}
                             {latestAnalysisSignal.created_at ? ` @ ${new Date(latestAnalysisSignal.created_at).toLocaleString()}` : ''}
+                          </li>
+                        )}
+                        {latestAdaptiveGuardText && (
+                          <li>
+                            Adaptive open block: <strong>{latestAdaptiveGuardText}</strong>
                           </li>
                         )}
                         {latestExecutorDecision && (

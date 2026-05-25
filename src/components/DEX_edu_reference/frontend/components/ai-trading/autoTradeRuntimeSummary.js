@@ -8,11 +8,21 @@ function humanizeReason(value) {
   if (!value) return 'unknown';
   const raw = String(value).trim();
   const lower = raw.toLowerCase();
+  if (lower.includes('adaptive_bad_regime')) return 'adaptive guard: bad trading regime';
   if (lower.includes('loss_streak')) return 'loss streak cooldown active';
   if (lower.includes('low_confidence')) return 'confidence below open threshold';
   if (lower.includes('trade_gate')) return 'trade gate blocked the open path';
   if (lower.includes('safety')) return 'runtime safety gate blocked execution';
   return raw.replace(/_/g, ' ');
+}
+
+export function formatAdaptiveGuard(guard) {
+  if (!guard?.blocked) return null;
+  const parts = ['adaptive guard: bad trading regime'];
+  if (Number.isFinite(Number(guard.winRatePct))) parts.push(`win-rate ${Number(guard.winRatePct).toFixed(1)}%`);
+  if (Number.isFinite(Number(guard.lossStreak))) parts.push(`loss streak ${Number(guard.lossStreak)}`);
+  if (Number.isFinite(Number(guard.drawdownUsd))) parts.push(`drawdown $${Number(guard.drawdownUsd).toFixed(2)}`);
+  return parts.join(' - ');
 }
 
 export function deriveAutoTradeRuntimeSummary({
@@ -71,6 +81,7 @@ export function deriveAutoTradeRuntimeSummary({
     : 'none';
   const signalConfidence = toPercent(latestAnalysisSignal?.confidence);
   const latestSignalValue = signalConfidence ? `${signalLabel} ${signalConfidence}` : signalLabel;
+  const adaptiveGuardText = formatAdaptiveGuard(latestAnalysisSignal?.adaptiveGuard);
   const latestDecisionValue = latestExecutorDecision?.final_action
     ? `${latestExecutorDecision?.token ? `${String(latestExecutorDecision.token).toUpperCase()} · ` : ''}${String(latestExecutorDecision.final_action)}${
         latestExecutorDecision?.final_reason ? ` · ${humanizeReason(latestExecutorDecision.final_reason)}` : ''
@@ -101,6 +112,10 @@ export function deriveAutoTradeRuntimeSummary({
     tone = 'warning';
     headline = 'This wallet is not in the executor queue';
     summary = 'The server worker is alive, but this wallet is not currently registered in the active auto queue, so it is not being scanned for opens.';
+  } else if (adaptiveGuardText) {
+    tone = 'danger';
+    headline = `Open blocked: ${adaptiveGuardText}`;
+    summary = 'The worker is running, but adaptive protection converted the latest open signal to HOLD because recent real outcomes are losing. This is a server-confirmed trading block, not a missing UI refresh.';
   } else if (latestAnalysisSignal?.signal) {
     tone = 'warning';
     headline = `Latest analysis signal: ${latestSignalValue}`;
@@ -130,7 +145,7 @@ export function deriveAutoTradeRuntimeSummary({
       },
       {
         label: 'Latest signal',
-        value: latestSignalValue,
+        value: adaptiveGuardText ? `${latestSignalValue} - ${adaptiveGuardText}` : latestSignalValue,
       },
       {
         label: 'Latest recorded executor',
