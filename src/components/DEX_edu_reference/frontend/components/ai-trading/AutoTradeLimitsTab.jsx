@@ -175,7 +175,7 @@ function AutoTradeLimitsTab({
         <div style={{ marginTop: 16, borderTop: '1px solid rgba(148, 163, 184, 0.2)', paddingTop: 14 }}>
           <h5 style={{ margin: '0 0 10px 0', color: '#e2e8f0' }}>USD Safety Limits (Auto Mode)</h5>
           <p style={{ margin: '0 0 10px 0', color: '#94a3b8', fontSize: 12 }}>
-            Saved in <strong>backend-server (Render)</strong>. Leave Min/Max/Daily empty = no USD limits. Set values and Save USD Limits to store on server.
+            Saved in <strong>backend-server (Render)</strong>. Leave Min/Max/Daily empty = no USD limits. These are per-trade risk caps, separate from the bot authorization amount.
           </p>
 
           <div className="auto-trade-panel-form-group">
@@ -210,6 +210,9 @@ function AutoTradeLimitsTab({
 
           <div className="auto-trade-panel-form-group">
             <label className="auto-trade-panel-label">Max Trade USD (optional)</label>
+            <p style={{ margin: '0 0 6px 0', color: '#94a3b8', fontSize: 11 }}>
+              Per-trade cap from backend policy. This is not the on-chain bot authorization limit.
+            </p>
             <input
               type="number"
               min="0"
@@ -217,7 +220,7 @@ function AutoTradeLimitsTab({
               value={usdTradeLimits.maxUsd}
               onChange={(e) => setUsdTradeLimits((prev) => ({ ...prev, maxUsd: e.target.value }))}
               className="auto-trade-panel-input"
-              placeholder="empty = no max"
+              placeholder="empty = no per-trade cap"
             />
           </div>
 

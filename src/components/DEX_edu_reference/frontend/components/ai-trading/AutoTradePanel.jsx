@@ -214,7 +214,7 @@ const AutoTradePanel = React.memo(() => {
   });
   const [usdTradeLimits, setUsdTradeLimits] = useState({
     minUsd: '',
-    maxUsd: '0.5',
+    maxUsd: '',
     dailyCapUsd: '',
     maxTradesPer12h: '20'
   });
@@ -2534,9 +2534,10 @@ const AutoTradePanel = React.memo(() => {
       const raw = localStorage.getItem(usdLimitsStorageKey);
       if (!raw) return;
       const parsed = JSON.parse(raw);
+      const cachedMaxUsd = parsed?.maxUsd === '0.5' ? '' : (parsed?.maxUsd ?? '');
       setUsdTradeLimits({
         minUsd: parsed?.minUsd ?? '',
-        maxUsd: parsed?.maxUsd ?? '0.5',
+        maxUsd: cachedMaxUsd,
         dailyCapUsd: parsed?.dailyCapUsd ?? '',
         maxTradesPer12h: parsed?.maxTradesPer12h ?? ''
       });
