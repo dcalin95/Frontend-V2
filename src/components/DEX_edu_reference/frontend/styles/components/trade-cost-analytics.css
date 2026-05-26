@@ -3487,19 +3487,28 @@
 .ota-short-ops-page .short-ops-live-top-grid,
 .short-ops-panel .short-ops-live-top-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(19rem, 0.8fr);
+  grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.58fr);
   gap: 0.9rem;
   align-items: start;
   margin-bottom: 0.65rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
-.ota-short-ops-page .short-ops-live-window {
+.ota-short-ops-page .short-ops-live-window,
+.short-ops-panel .short-ops-live-window {
   margin: 0;
   padding: 10px 12px;
   background: #0a0a0a;
   border: 1px solid #2c2c2e;
   border-radius: 8px;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
 }
 
 .ota-short-ops-page .short-ops-live-head {
@@ -3570,7 +3579,7 @@
   line-height: 1.4;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1500px) {
   .ota-short-ops-page .short-ops-live-top-grid,
   .short-ops-panel .short-ops-live-top-grid {
     grid-template-columns: 1fr;
@@ -3685,12 +3694,16 @@
   border: 1px solid rgba(14, 165, 233, 0.25);
   border-radius: 8px;
   overflow: hidden;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .ota-short-ops-page .sop-all-probes-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
   padding: 0.45rem 0.75rem;
   background: rgba(14, 165, 233, 0.12);
   border-bottom: 1px solid rgba(14, 165, 233, 0.2);
@@ -3698,13 +3711,16 @@
   font-weight: 600;
   color: #7dd3fc;
   letter-spacing: 0.03em;
+  min-width: 0;
+  flex-wrap: wrap;
 }
 
 .ota-short-ops-page .sop-all-probes-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
   background: rgba(255,255,255,0.05);
+  min-width: 0;
 }
 
 .ota-short-ops-page .sop-probe-tile {
