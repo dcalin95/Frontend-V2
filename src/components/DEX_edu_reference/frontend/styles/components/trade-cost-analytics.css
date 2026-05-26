@@ -1449,13 +1449,13 @@
  * ============================================================================= */
 
 .ota-short-ops-page {
-  /* Panou ops: lățime tip „document”, nu dashboard lat */
-  max-width: min(1440px, 100%);
+  /* Futures ops is an operator workspace: use the full available DEX content width. */
+  max-width: none;
   width: 100%;
   margin-left: auto;
   margin-right: auto;
   box-sizing: border-box;
-  padding: 0.65rem clamp(0.4rem, 1vw, 0.8rem) 1.1rem;
+  padding: 0.65rem clamp(0.45rem, 0.8vw, 1rem) 1.1rem;
   font-family: var(--tca-font-sans);
   color: var(--tca-text);
   font-size: 1.04rem;
@@ -3810,7 +3810,9 @@
 }
 
 .ota-short-ops-page .short-ops-table {
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
+  max-width: none;
   border-collapse: collapse;
   font-size: 0.75rem;
   table-layout: auto;
