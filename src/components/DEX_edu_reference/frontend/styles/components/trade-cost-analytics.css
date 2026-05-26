@@ -1449,8 +1449,8 @@
  * ============================================================================= */
 
 .ota-short-ops-page {
-  /* Futures ops is an operator workspace: use the full available DEX content width. */
-  max-width: none;
+  /* Futures ops is an operator workspace, but it still needs a readable working width. */
+  max-width: min(1640px, calc(100vw - 36px));
   width: 100%;
   margin-left: auto;
   margin-right: auto;
@@ -3810,9 +3810,9 @@
 }
 
 .ota-short-ops-page .short-ops-table {
-  width: max-content;
+  width: 100%;
   min-width: 100%;
-  max-width: none;
+  max-width: 100%;
   border-collapse: collapse;
   font-size: 0.75rem;
   table-layout: auto;
