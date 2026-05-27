@@ -1238,16 +1238,18 @@ function TransactionRow({ tx, explorerTxUrl }) {
         <td className="cell-date">{dateStr}</td>
         <td className="cell-pair">{tx.tokenIn} → {tx.tokenOut}</td>
         <td className="cell-side">
-          <span className={`badge side-${(tx.side || '').toLowerCase()}`}>{SIDE_LABEL[tx.side] || tx.side}</span>
-          {(tx.actionFamily === 'open_short' || tx.actionFamily === 'close_short' || tx.positionSide === 'SHORT') && (
-            <span style={{ marginLeft: 4, fontSize: 9, fontWeight: 700, background: '#7f1d1d', color: '#fca5a5', padding: '1px 5px', borderRadius: 3, letterSpacing: 0.5 }}>SHORT</span>
-          )}
-          {(tx.instrumentKind === 'long_futures_perp' || tx.actionFamily === 'open_long_futures' || tx.actionFamily === 'close_long_futures') && (
-            <span style={{ marginLeft: 4, fontSize: 9, fontWeight: 700, background: '#422006', color: '#fcd34d', padding: '1px 5px', borderRadius: 3, letterSpacing: 0.5 }}>LONG FUT</span>
-          )}
-          {(tx.paperShadow === true || tx.paper === true) && (
-            <span style={{ marginLeft: 4, fontSize: 9, fontWeight: 700, background: '#1e3a5f', color: '#93c5fd', padding: '1px 5px', borderRadius: 3, letterSpacing: 0.5 }}>PAPER</span>
-          )}
+          <span className="cell-badge-stack cell-badge-stack--side">
+            <span className={`badge side-${(tx.side || '').toLowerCase()}`}>{SIDE_LABEL[tx.side] || tx.side}</span>
+            {(tx.actionFamily === 'open_short' || tx.actionFamily === 'close_short' || tx.positionSide === 'SHORT') && (
+              <span style={{ fontSize: 9, fontWeight: 700, background: '#7f1d1d', color: '#fca5a5', padding: '1px 5px', borderRadius: 3, letterSpacing: 0.5 }}>SHORT</span>
+            )}
+            {(tx.instrumentKind === 'long_futures_perp' || tx.actionFamily === 'open_long_futures' || tx.actionFamily === 'close_long_futures') && (
+              <span style={{ fontSize: 9, fontWeight: 700, background: '#422006', color: '#fcd34d', padding: '1px 5px', borderRadius: 3, letterSpacing: 0.5 }}>LONG FUT</span>
+            )}
+            {(tx.paperShadow === true || tx.paper === true) && (
+              <span style={{ fontSize: 9, fontWeight: 700, background: '#1e3a5f', color: '#93c5fd', padding: '1px 5px', borderRadius: 3, letterSpacing: 0.5 }}>PAPER</span>
+            )}
+          </span>
         </td>
         <td className="cell-amount">
           {formatAmountHuman(tx.amountInHuman ?? tx.amountInRaw, tx.displayTokenIn || tx.tokenIn, 4) || '—'}
@@ -1273,10 +1275,12 @@ function TransactionRow({ tx, explorerTxUrl }) {
           ) : '—'}
         </td>
         <td className="cell-status">
-          <span className={`badge status-${(tx.status || '').toLowerCase()}`}>{tx.status}</span>
-          {tx.dataSource && (
-            <span className="badge data-source" title="Data source">{DATA_SOURCE_LABEL[tx.dataSource] || tx.dataSource}</span>
-          )}
+          <span className="cell-badge-stack cell-badge-stack--status">
+            <span className={`badge status-${(tx.status || '').toLowerCase()}`}>{tx.status}</span>
+            {tx.dataSource && (
+              <span className="badge data-source" title="Data source">{DATA_SOURCE_LABEL[tx.dataSource] || tx.dataSource}</span>
+            )}
+          </span>
         </td>
         <td className="cell-link">
           {tx.txHash ? (

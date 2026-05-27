@@ -1249,6 +1249,27 @@
   color: var(--tca-text);
 }
 
+.trade-cost-analytics-table td.cell-side {
+  min-width: 8.5rem;
+}
+
+.trade-cost-analytics-table td.cell-status {
+  min-width: 10.5rem;
+}
+
+.trade-cost-analytics-table .cell-badge-stack {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  line-height: 1.25;
+}
+
+.trade-cost-analytics-table .cell-badge-stack .badge {
+  margin: 0;
+  white-space: nowrap;
+}
+
 .cell-num {
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
@@ -1351,7 +1372,6 @@
 .badge.data-source {
   background: var(--tca-accent-dim);
   color: var(--tca-accent);
-  margin-left: 0.35rem;
 }
 
 .cell-link a {
