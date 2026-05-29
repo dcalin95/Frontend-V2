@@ -783,7 +783,8 @@ function OpenPositionsSection({ walletAddress, onCloseDone, onUnrealizedPnlCompu
                 <tr>
                   <th>Source</th>
                   <th>Symbol</th>
-                  <th>Notional</th>
+                  <th>Margin</th>
+                  <th>Exposure</th>
                   <th>Leverage</th>
                   <th>Entry mark</th>
                   <th>Mark live</th>
@@ -800,6 +801,8 @@ function OpenPositionsSection({ walletAddress, onCloseDone, onUnrealizedPnlCompu
                   const pnlUsd = parseFiniteUsd(pos?.pnl_estimated_usd);
                   const leverage = Number.isFinite(Number(pos?.leverage)) ? `${Number(pos.leverage)}x` : '—';
                   const notionalUsd = parseFiniteUsd(pos?.notional_usd);
+                  const leverageNum = Number.isFinite(Number(pos?.leverage)) ? Number(pos.leverage) : null;
+                  const exposureUsd = notionalUsd != null && leverageNum != null ? notionalUsd * leverageNum : null;
                   const entryMark = parseFiniteUsd(pos?.entry_mark_price);
                   const liveMark = parseFiniteUsd(pos?.current_price);
                   const takeProfit = parseFiniteUsd(pos?.metadata?.takeProfit);
@@ -808,7 +811,12 @@ function OpenPositionsSection({ walletAddress, onCloseDone, onUnrealizedPnlCompu
                     <tr key={pos.rowKey}>
                       <td className="cell-source"><span title={`OTA ${pos.side} futures`} className="cell-source-ota-logo cell-source-ota-logo--large"><OTALogo size="xs" aria-label={`OTA ${pos.side} futures`} /></span></td>
                       <td className="cell-pair">{token} PERP <span className={pos.lane === 'short' ? 'trade-cost-analytics-side-pill trade-cost-analytics-side-pill--short' : 'trade-cost-analytics-side-pill trade-cost-analytics-side-pill--long'}>{pos.side}</span></td>
-                      <td className="cell-num">{notionalUsd != null ? formatPnlUsdHuman(notionalUsd) : '—'}</td>
+                      <td className="cell-num" title="Margin/capital allocated to this futures position, before leverage.">
+                        {notionalUsd != null ? formatPnlUsdHuman(notionalUsd) : '—'}
+                      </td>
+                      <td className="cell-num" title="Estimated leveraged market exposure: margin x leverage. This is what PnL moves against.">
+                        {exposureUsd != null ? formatPnlUsdHuman(exposureUsd) : '—'}
+                      </td>
                       <td className="cell-num">{leverage}</td>
                       <td className="cell-num">{entryMark != null ? formatPriceHuman(entryMark) : '—'}</td>
                       <td className="cell-num">{liveMark != null ? formatPriceHuman(liveMark) : '—'}</td>
