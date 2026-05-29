@@ -10,6 +10,7 @@
 import { getOpenPositionsCostBasis, getOpenPositionsAnalytics } from './analyticsApiService';
 import { getDirectEntryPosition } from './aiTradingApiService';
 import { getOpenLongs } from './otaLongOpsService';
+import { getOpenShorts } from './otaShortOpsService';
 
 /** In-flight promise per userId. Cleared when the promise settles. */
 const inFlightByUserId = new Map();
@@ -17,18 +18,19 @@ const inFlightByUserId = new Map();
 const emptyCostBasis = { positions: [] };
 const emptyAnalytics = { positionExitMode: 'auto', positions: [] };
 const emptyLongFutures = { positions: [] };
+const emptyShortFutures = { positions: [] };
 
 /**
  * Fetch all data needed for the open-positions analytics section in one go.
  * Deduplication: if a request for the same userId is already in flight, returns that promise.
  *
  * @param {string} userId - wallet address
- * @returns {Promise<[unknown[], { positions: object[] }, { positionExitMode: string, positions: object[], [key: string]: unknown }, { positions: object[] }]>}
- *   [directEntryList, costBasisResult, analyticsResult, longFuturesResult]
+ * @returns {Promise<[unknown[], { positions: object[] }, { positionExitMode: string, positions: object[], [key: string]: unknown }, { positions: object[] }, { positions: object[] }]>}
+ *   [directEntryList, costBasisResult, analyticsResult, longFuturesResult, shortFuturesResult]
  */
 export function fetchOpenPositionsAnalyticsBundle(userId) {
   if (!userId) {
-    return Promise.resolve([[], emptyCostBasis, emptyAnalytics, emptyLongFutures]);
+    return Promise.resolve([[], emptyCostBasis, emptyAnalytics, emptyLongFutures, emptyShortFutures]);
   }
 
   const existing = inFlightByUserId.get(userId);
@@ -41,6 +43,7 @@ export function fetchOpenPositionsAnalyticsBundle(userId) {
     getOpenPositionsCostBasis(userId).catch(() => emptyCostBasis),
     getOpenPositionsAnalytics(userId).catch(() => emptyAnalytics),
     getOpenLongs(userId).catch(() => emptyLongFutures),
+    getOpenShorts(userId).catch(() => emptyShortFutures),
   ]).finally(() => {
     inFlightByUserId.delete(userId);
   });

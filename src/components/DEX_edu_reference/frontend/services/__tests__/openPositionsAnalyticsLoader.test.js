@@ -16,15 +16,20 @@ jest.mock('../aiTradingApiService', () => ({
 jest.mock('../otaLongOpsService', () => ({
   getOpenLongs: jest.fn(),
 }));
+jest.mock('../otaShortOpsService', () => ({
+  getOpenShorts: jest.fn(),
+}));
 
 import { getOpenPositionsCostBasis, getOpenPositionsAnalytics } from '../analyticsApiService';
 import { getDirectEntryPosition } from '../aiTradingApiService';
 import { getOpenLongs } from '../otaLongOpsService';
+import { getOpenShorts } from '../otaShortOpsService';
 
 const deList = [];
 const costRes = { positions: [] };
 const analyticsRes = { positionExitMode: 'auto', positions: [], userId: '0xuser' };
 const longRes = { positions: [] };
+const shortRes = { positions: [] };
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -32,19 +37,21 @@ beforeEach(() => {
   getOpenPositionsCostBasis.mockResolvedValue(costRes);
   getOpenPositionsAnalytics.mockResolvedValue(analyticsRes);
   getOpenLongs.mockResolvedValue(longRes);
+  getOpenShorts.mockResolvedValue(shortRes);
 });
 
 describe('fetchOpenPositionsAnalyticsBundle', () => {
   it('returns empty bundle when userId is falsy', async () => {
     const out = await fetchOpenPositionsAnalyticsBundle('');
-    expect(out).toEqual([[], { positions: [] }, { positionExitMode: 'auto', positions: [] }, { positions: [] }]);
+    expect(out).toEqual([[], { positions: [] }, { positionExitMode: 'auto', positions: [] }, { positions: [] }, { positions: [] }]);
     expect(getDirectEntryPosition).not.toHaveBeenCalled();
     expect(getOpenPositionsCostBasis).not.toHaveBeenCalled();
     expect(getOpenPositionsAnalytics).not.toHaveBeenCalled();
     expect(getOpenLongs).not.toHaveBeenCalled();
+    expect(getOpenShorts).not.toHaveBeenCalled();
   });
 
-  it('calls all four APIs once for a single invocation', async () => {
+  it('calls all five APIs once for a single invocation', async () => {
     await fetchOpenPositionsAnalyticsBundle('0xuser');
     expect(getDirectEntryPosition).toHaveBeenCalledTimes(1);
     expect(getDirectEntryPosition).toHaveBeenCalledWith('0xuser');
@@ -54,6 +61,8 @@ describe('fetchOpenPositionsAnalyticsBundle', () => {
     expect(getOpenPositionsAnalytics).toHaveBeenCalledWith('0xuser');
     expect(getOpenLongs).toHaveBeenCalledTimes(1);
     expect(getOpenLongs).toHaveBeenCalledWith('0xuser');
+    expect(getOpenShorts).toHaveBeenCalledTimes(1);
+    expect(getOpenShorts).toHaveBeenCalledWith('0xuser');
   });
 
   it('deduplicates: two parallel calls for same userId result in one set of requests', async () => {
@@ -66,6 +75,7 @@ describe('fetchOpenPositionsAnalyticsBundle', () => {
     expect(getOpenPositionsCostBasis).toHaveBeenCalledTimes(1);
     expect(getOpenPositionsAnalytics).toHaveBeenCalledTimes(1);
     expect(getOpenLongs).toHaveBeenCalledTimes(1);
+    expect(getOpenShorts).toHaveBeenCalledTimes(1);
   });
 
   it('different userIds do not deduplicate', async () => {
@@ -77,6 +87,7 @@ describe('fetchOpenPositionsAnalyticsBundle', () => {
     expect(getOpenPositionsCostBasis).toHaveBeenCalledTimes(2);
     expect(getOpenPositionsAnalytics).toHaveBeenCalledTimes(2);
     expect(getOpenLongs).toHaveBeenCalledTimes(2);
+    expect(getOpenShorts).toHaveBeenCalledTimes(2);
   });
 
   it('after first request settles, a new call for same userId starts a new request', async () => {
@@ -85,14 +96,16 @@ describe('fetchOpenPositionsAnalyticsBundle', () => {
     await fetchOpenPositionsAnalyticsBundle('0xuser');
     expect(getOpenPositionsAnalytics).toHaveBeenCalledTimes(2);
     expect(getOpenLongs).toHaveBeenCalledTimes(2);
+    expect(getOpenShorts).toHaveBeenCalledTimes(2);
   });
 
-  it('returns [deList, costRes, analyticsRes, longRes] shape', async () => {
-    const [directEntry, costBasis, analytics, longPositions] = await fetchOpenPositionsAnalyticsBundle('0xuser');
+  it('returns [deList, costRes, analyticsRes, longRes, shortRes] shape', async () => {
+    const [directEntry, costBasis, analytics, longPositions, shortPositions] = await fetchOpenPositionsAnalyticsBundle('0xuser');
     expect(Array.isArray(directEntry)).toBe(true);
     expect(costBasis).toHaveProperty('positions');
     expect(analytics).toHaveProperty('positionExitMode');
     expect(analytics).toHaveProperty('positions');
     expect(longPositions).toHaveProperty('positions');
+    expect(shortPositions).toHaveProperty('positions');
   });
 });

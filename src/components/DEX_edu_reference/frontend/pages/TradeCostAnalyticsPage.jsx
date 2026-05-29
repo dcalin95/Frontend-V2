@@ -2,7 +2,7 @@
  * Trade Cost Analytics - complete cost, expense, and OTA / auto-trading result tracking.
  * Clear split: gas, slippage, realized PnL, exact vs estimated.
  */
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   BarChart2,
@@ -51,7 +51,7 @@ import { ensureOtaWalletForApiIfNeeded } from '../utils/otaWalletSession';
 import { formatOtaSessionUserMessage } from '../utils/otaSessionUserMessage';
 import '../styles/components/trade-cost-analytics.css';
 
-/** Warning: the Open Positions list is not the Vault balance; long perps are included here when the API provides them. */
+/** Warning: the Open Positions list is not the Vault balance; Binance futures perps are included here when the API provides them. */
 function OpenPositionsVaultDisclaimer() {
   return (
     <div
@@ -61,8 +61,8 @@ function OpenPositionsVaultDisclaimer() {
       <Info size={16} aria-hidden />
       <span>
         <strong>Vault vs this list:</strong> rows reconstruct positions from execution history (BUY/SELL), not the raw Vault balance. You can hold tokens in Vault (for example SHIB) without a row here.
-        Long futures perps (for example ADA) are listed separately below when the backend provides them and can be fully managed in{' '}
-        <Link to="/dex-edu/ota/short-ops?tab=long">OTA &rarr; Long</Link>. To use tokens without waiting for an OTA sell:{' '}
+        Binance futures perps, LONG and SHORT, are listed below when the backend provides them and can be fully managed in{' '}
+        <Link to="/dex-edu/ota/short-ops">OTA futures ops</Link>. To use tokens without waiting for an OTA sell:{' '}
         <Link to="/dex-edu/swap">Swap</Link> (for example SHIB &rarr; USDT).
       </span>
     </div>
@@ -122,6 +122,7 @@ function useOpenPositions(walletAddress) {
   const [directEntry, setDirectEntry] = useState([]);
   const [executionHistory, setExecutionHistory] = useState([]);
   const [longFutures, setLongFutures] = useState([]);
+  const [shortFutures, setShortFutures] = useState([]);
   const [positionExitMode, setPositionExitMode] = useState('auto');
   const [honestMode, setHonestMode] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -137,6 +138,7 @@ function useOpenPositions(walletAddress) {
       setDirectEntry([]);
       setExecutionHistory([]);
       setLongFutures([]);
+      setShortFutures([]);
       return;
     }
     if (!background) {
@@ -151,7 +153,7 @@ function useOpenPositions(walletAddress) {
           /* The user may reject the signature; still try loading so 401 can show a clear message. */
         }
       }
-      const [deList, costRes, analyticsRes, longRes] = await fetchOpenPositionsAnalyticsBundle(walletAddress);
+      const [deList, costRes, analyticsRes, longRes, shortRes] = await fetchOpenPositionsAnalyticsBundle(walletAddress);
       if (analyticsRes && (analyticsRes.positionExitMode === 'manual' || analyticsRes.positionExitMode === 'auto')) {
         setPositionExitMode(analyticsRes.positionExitMode);
       }
@@ -169,6 +171,7 @@ function useOpenPositions(walletAddress) {
       const deOpen = Array.isArray(deList) ? deList.filter((p) => p && p.status === 'open') : [];
       setDirectEntry(deOpen);
       setLongFutures(Array.isArray(longRes?.positions) ? longRes.positions : []);
+      setShortFutures(Array.isArray(shortRes?.positions) ? shortRes.positions : []);
 
       const execPositions = costRes?.positions || [];
       const analyticsPosByToken = new Map();
@@ -319,8 +322,8 @@ function useOpenPositions(walletAddress) {
     };
   }, [walletAddress]); // Intentionally omits fetchOpen: starts once on mount/wallet change; the next refresh is scheduled by fetchOpen.
 
-  const hasAny = directEntry.length > 0 || executionHistory.length > 0 || longFutures.length > 0;
-  return { directEntry, executionHistory, longFutures, positionExitMode, honestMode, loading, error, setError, fetchOpen, hasAny, lastRefreshedAt, justRefreshed, refreshTick };
+  const hasAny = directEntry.length > 0 || executionHistory.length > 0 || longFutures.length > 0 || shortFutures.length > 0;
+  return { directEntry, executionHistory, longFutures, shortFutures, positionExitMode, honestMode, loading, error, setError, fetchOpen, hasAny, lastRefreshedAt, justRefreshed, refreshTick };
 }
 
 /** Open Positions section: Direct Entry + OTA Auto execution history, live PnL, manual close only for Direct Entry. */
@@ -335,8 +338,22 @@ function parseFiniteUsd(v) {
   return Number.isFinite(n) ? n : null;
 }
 
+function normalizeAnalyticsFuturesPosition(pos, lane) {
+  const side = lane === 'short' ? 'SHORT' : 'LONG';
+  const token = String(pos?.symbol || pos?.token || '---').toUpperCase();
+  const openedAtRaw = pos?.opened_at || pos?.openedAt || pos?.created_at || null;
+  return {
+    ...pos,
+    lane,
+    side,
+    token,
+    rowKey: `${lane}-futures-${pos?.id ?? token}`,
+    openedAtLabel: openedAtRaw ? new Date(openedAtRaw).toLocaleString('en-US') : '---',
+  };
+}
+
 function OpenPositionsSection({ walletAddress, onCloseDone, onUnrealizedPnlComputed }) {
-  const { directEntry, executionHistory, longFutures, positionExitMode, honestMode, loading, error, setError, fetchOpen, hasAny, lastRefreshedAt, justRefreshed, refreshTick } = useOpenPositions(walletAddress);
+  const { directEntry, executionHistory, longFutures, shortFutures, positionExitMode, honestMode, loading, error, setError, fetchOpen, hasAny, lastRefreshedAt, justRefreshed, refreshTick } = useOpenPositions(walletAddress);
   const [closingId, setClosingId] = useState(null);
   const [requestingOtaToken, setRequestingOtaToken] = useState(null);
   const [llmSuspendToken, setLlmSuspendToken] = useState(null);
@@ -659,14 +676,18 @@ function OpenPositionsSection({ walletAddress, onCloseDone, onUnrealizedPnlCompu
     ...directEntry.map((p) => ({ ...p, source: 'direct_entry', rowKey: `de-${p.id}` })),
     ...executionHistory.map((p) => ({ ...p, rowKey: `exec-${p.token}` })),
   ];
+  const futuresRows = useMemo(() => [
+    ...longFutures.map((p) => normalizeAnalyticsFuturesPosition(p, 'long')),
+    ...shortFutures.map((p) => normalizeAnalyticsFuturesPosition(p, 'short')),
+  ], [longFutures, shortFutures]);
 
   useEffect(() => {
     const total = rows.reduce((s, p) => {
       const pnl = p.pnl ?? (p.currentValueUsd != null && p.entryValueUsd != null ? p.currentValueUsd - p.entryValueUsd : null);
       return s + (pnl != null && Number.isFinite(pnl) ? pnl : 0);
-    }, 0) + longFutures.reduce((s, p) => s + (parseFiniteUsd(p?.pnl_estimated_usd) || 0), 0);
+    }, 0) + futuresRows.reduce((s, p) => s + (parseFiniteUsd(p?.pnl_estimated_usd) || 0), 0);
     onUnrealizedPnlComputed?.(total);
-  }, [directEntry, executionHistory, longFutures, onUnrealizedPnlComputed]);
+  }, [directEntry, executionHistory, futuresRows, onUnrealizedPnlComputed]);
 
   if (loading && !hasAny) {
     return (
@@ -747,13 +768,13 @@ function OpenPositionsSection({ walletAddress, onCloseDone, onUnrealizedPnlCompu
           {error}
         </div>
       )}
-      {longFutures.length > 0 && (
+      {futuresRows.length > 0 && (
         <>
           <div className="trade-cost-analytics-open-positions-banner trade-cost-analytics-open-positions-banner--info" role="status">
             <Info size={16} aria-hidden />
             <span>
-              <strong>OTA Long futures live:</strong> these positions come from <code>/ai-trading/long/open-longs</code> and are no longer hidden from analytics. For full management, go to{' '}
-              <Link to="/dex-edu/ota/short-ops?tab=long">OTA &rarr; Long</Link>.
+              <strong>OTA Binance futures live:</strong> these positions come from <code>/ai-trading/long/open-longs</code> and <code>/ai-trading/short/open-shorts</code> and are no longer hidden from analytics. For full management, go to{' '}
+              <Link to="/dex-edu/ota/short-ops">OTA futures ops</Link>.
             </span>
           </div>
           <div className="table-wrapper">
@@ -774,10 +795,9 @@ function OpenPositionsSection({ walletAddress, onCloseDone, onUnrealizedPnlCompu
                 </tr>
               </thead>
               <tbody>
-                {longFutures.map((pos) => {
-                  const token = String(pos?.symbol || pos?.token || '—').toUpperCase();
+                {futuresRows.map((pos) => {
+                  const token = pos.token;
                   const pnlUsd = parseFiniteUsd(pos?.pnl_estimated_usd);
-                  const openedAt = pos?.opened_at ? new Date(pos.opened_at).toLocaleString('en-US') : '—';
                   const leverage = Number.isFinite(Number(pos?.leverage)) ? `${Number(pos.leverage)}x` : '—';
                   const notionalUsd = parseFiniteUsd(pos?.notional_usd);
                   const entryMark = parseFiniteUsd(pos?.entry_mark_price);
@@ -785,9 +805,9 @@ function OpenPositionsSection({ walletAddress, onCloseDone, onUnrealizedPnlCompu
                   const takeProfit = parseFiniteUsd(pos?.metadata?.takeProfit);
                   const stopLoss = parseFiniteUsd(pos?.metadata?.stopLoss);
                   return (
-                    <tr key={`long-futures-${pos?.id ?? token}`}>
-                      <td className="cell-source"><span title="OTA Long futures" className="cell-source-ota-logo cell-source-ota-logo--large"><OTALogo size="xs" aria-label="OTA Long futures" /></span></td>
-                      <td className="cell-pair">{token} PERP</td>
+                    <tr key={pos.rowKey}>
+                      <td className="cell-source"><span title={`OTA ${pos.side} futures`} className="cell-source-ota-logo cell-source-ota-logo--large"><OTALogo size="xs" aria-label={`OTA ${pos.side} futures`} /></span></td>
+                      <td className="cell-pair">{token} PERP <span className={pos.lane === 'short' ? 'trade-cost-analytics-side-pill trade-cost-analytics-side-pill--short' : 'trade-cost-analytics-side-pill trade-cost-analytics-side-pill--long'}>{pos.side}</span></td>
                       <td className="cell-num">{notionalUsd != null ? formatPnlUsdHuman(notionalUsd) : '—'}</td>
                       <td className="cell-num">{leverage}</td>
                       <td className="cell-num">{entryMark != null ? formatPriceHuman(entryMark) : '—'}</td>
@@ -795,10 +815,10 @@ function OpenPositionsSection({ walletAddress, onCloseDone, onUnrealizedPnlCompu
                       <td className="cell-num">{takeProfit != null ? formatPriceHuman(takeProfit) : '—'}</td>
                       <td className="cell-num">{stopLoss != null ? formatPriceHuman(stopLoss) : '—'}</td>
                       <td className={`cell-num ${pnlUsd != null && pnlUsd < 0 ? 'pnl-negative' : 'pnl-positive'}`}>{pnlUsd != null ? formatPnlUsdHuman(pnlUsd) : '—'}</td>
-                      <td>{openedAt}</td>
+                      <td>{pos.openedAtLabel}</td>
                       <td>
-                        <Link className="trade-cost-analytics-btn-close" to="/dex-edu/ota/short-ops?tab=long">
-                          View in OTA Long
+                        <Link className="trade-cost-analytics-btn-close" to={`/dex-edu/ota/short-ops?tab=${pos.lane}`}>
+                          View in OTA {pos.side}
                         </Link>
                       </td>
                     </tr>
@@ -809,9 +829,9 @@ function OpenPositionsSection({ walletAddress, onCloseDone, onUnrealizedPnlCompu
           </div>
         </>
       )}
-      {rows.length === 0 && longFutures.length > 0 && (
+      {rows.length === 0 && futuresRows.length > 0 && (
         <p className="trade-cost-analytics-open-positions-empty">
-          There are no open Direct Entry / OTA Auto spot positions. Active LONG futures positions are listed above.
+          There are no open Direct Entry / OTA Auto spot positions. Active Binance futures positions are listed above.
         </p>
       )}
       {rows.length > 0 && (
