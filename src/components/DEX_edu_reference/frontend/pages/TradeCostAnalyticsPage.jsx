@@ -352,6 +352,14 @@ function normalizeAnalyticsFuturesPosition(pos, lane) {
   };
 }
 
+function formatFuturesMarkPrice(value) {
+  if (value == null || !Number.isFinite(value)) return '—';
+  return value.toLocaleString('en-US', {
+    minimumFractionDigits: value >= 1000 ? 2 : 4,
+    maximumFractionDigits: value >= 1000 ? 2 : 6,
+  });
+}
+
 function OpenPositionsSection({ walletAddress, onCloseDone, onUnrealizedPnlComputed }) {
   const { directEntry, executionHistory, longFutures, shortFutures, positionExitMode, honestMode, loading, error, setError, fetchOpen, hasAny, lastRefreshedAt, justRefreshed, refreshTick } = useOpenPositions(walletAddress);
   const [closingId, setClosingId] = useState(null);
@@ -783,8 +791,8 @@ function OpenPositionsSection({ walletAddress, onCloseDone, onUnrealizedPnlCompu
                 <tr>
                   <th>Source</th>
                   <th>Symbol</th>
-                  <th>Margin</th>
-                  <th>Exposure</th>
+                  <th>Notional</th>
+                  <th>Margin est.</th>
                   <th>Leverage</th>
                   <th>Entry mark</th>
                   <th>Mark live</th>
@@ -802,7 +810,7 @@ function OpenPositionsSection({ walletAddress, onCloseDone, onUnrealizedPnlCompu
                   const leverage = Number.isFinite(Number(pos?.leverage)) ? `${Number(pos.leverage)}x` : '—';
                   const notionalUsd = parseFiniteUsd(pos?.notional_usd);
                   const leverageNum = Number.isFinite(Number(pos?.leverage)) ? Number(pos.leverage) : null;
-                  const exposureUsd = notionalUsd != null && leverageNum != null ? notionalUsd * leverageNum : null;
+                  const marginUsd = notionalUsd != null && leverageNum != null && leverageNum > 0 ? notionalUsd / leverageNum : null;
                   const entryMark = parseFiniteUsd(pos?.entry_mark_price);
                   const liveMark = parseFiniteUsd(pos?.current_price);
                   const takeProfit = parseFiniteUsd(pos?.metadata?.takeProfit);
@@ -811,15 +819,15 @@ function OpenPositionsSection({ walletAddress, onCloseDone, onUnrealizedPnlCompu
                     <tr key={pos.rowKey}>
                       <td className="cell-source"><span title={`OTA ${pos.side} futures`} className="cell-source-ota-logo cell-source-ota-logo--large"><OTALogo size="xs" aria-label={`OTA ${pos.side} futures`} /></span></td>
                       <td className="cell-pair">{token} PERP <span className={pos.lane === 'short' ? 'trade-cost-analytics-side-pill trade-cost-analytics-side-pill--short' : 'trade-cost-analytics-side-pill trade-cost-analytics-side-pill--long'}>{pos.side}</span></td>
-                      <td className="cell-num" title="Margin/capital allocated to this futures position, before leverage.">
+                      <td className="cell-num" title="Actual futures position notional from the backend/Binance position row. PnL is calculated against this notional, not notional x leverage again.">
                         {notionalUsd != null ? formatPnlUsdHuman(notionalUsd) : '—'}
                       </td>
-                      <td className="cell-num" title="Estimated leveraged market exposure: margin x leverage. This is what PnL moves against.">
-                        {exposureUsd != null ? formatPnlUsdHuman(exposureUsd) : '—'}
+                      <td className="cell-num" title="Estimated margin/collateral: notional divided by leverage. This is informative only; backend PnL uses the notional column.">
+                        {marginUsd != null ? formatPnlUsdHuman(marginUsd) : '—'}
                       </td>
                       <td className="cell-num">{leverage}</td>
-                      <td className="cell-num">{entryMark != null ? formatPriceHuman(entryMark) : '—'}</td>
-                      <td className="cell-num">{liveMark != null ? formatPriceHuman(liveMark) : '—'}</td>
+                      <td className="cell-num">{entryMark != null ? formatFuturesMarkPrice(entryMark) : '—'}</td>
+                      <td className="cell-num">{liveMark != null ? formatFuturesMarkPrice(liveMark) : '—'}</td>
                       <td className="cell-num">{takeProfit != null ? formatPriceHuman(takeProfit) : '—'}</td>
                       <td className="cell-num">{stopLoss != null ? formatPriceHuman(stopLoss) : '—'}</td>
                       <td className="cell-num">
