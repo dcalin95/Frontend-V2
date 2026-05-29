@@ -1303,12 +1303,33 @@
 
 .pnl-positive {
   color: var(--tca-positive);
-  font-weight: 500;
+  font-weight: 700;
 }
 
 .pnl-negative {
   color: var(--tca-negative);
-  font-weight: 500;
+  font-weight: 700;
+}
+
+.trade-cost-analytics-pnl-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 5.6rem;
+  padding: 0.18rem 0.45rem;
+  border-radius: 0.28rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+}
+
+.trade-cost-analytics-pnl-chip.pnl-positive {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.24);
+}
+
+.trade-cost-analytics-pnl-chip.pnl-negative {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.24);
 }
 
 /* ---- Provenanță vault: vizual agresiv pentru !EXACT / UNKNOWN ---- */

@@ -814,7 +814,13 @@ function OpenPositionsSection({ walletAddress, onCloseDone, onUnrealizedPnlCompu
                       <td className="cell-num">{liveMark != null ? formatPriceHuman(liveMark) : '—'}</td>
                       <td className="cell-num">{takeProfit != null ? formatPriceHuman(takeProfit) : '—'}</td>
                       <td className="cell-num">{stopLoss != null ? formatPriceHuman(stopLoss) : '—'}</td>
-                      <td className={`cell-num ${pnlUsd != null && pnlUsd < 0 ? 'pnl-negative' : 'pnl-positive'}`}>{pnlUsd != null ? formatPnlUsdHuman(pnlUsd) : '—'}</td>
+                      <td className="cell-num">
+                        {pnlUsd != null ? (
+                          <span className={`trade-cost-analytics-pnl-chip ${pnlUsd >= 0 ? 'pnl-positive' : 'pnl-negative'}`}>
+                            {formatPnlUsdHuman(pnlUsd)}
+                          </span>
+                        ) : '—'}
+                      </td>
                       <td>{pos.openedAtLabel}</td>
                       <td>
                         <Link className="trade-cost-analytics-btn-close" to={`/dex-edu/ota/short-ops?tab=${pos.lane}`}>
@@ -1000,14 +1006,14 @@ function OpenPositionsSection({ walletAddress, onCloseDone, onUnrealizedPnlCompu
                   </td>
                   <td className="cell-num">
                     {pnlUsd != null ? (
-                      <span className={pnlUsd >= 0 ? 'pnl-positive' : 'pnl-negative'}>
+                      <span className={`trade-cost-analytics-pnl-chip ${pnlUsd >= 0 ? 'pnl-positive' : 'pnl-negative'}`}>
                         {formatPnlUsdHuman(pnlUsd)}
                       </span>
                     ) : 'Unavailable'}
                   </td>
                   <td className="cell-num">
                     {pnlNetUsd != null ? (
-                      <span className={pnlNetUsd >= 0 ? 'pnl-positive' : 'pnl-negative'}>
+                      <span className={`trade-cost-analytics-pnl-chip ${pnlNetUsd >= 0 ? 'pnl-positive' : 'pnl-negative'}`}>
                         {formatPnlUsdHuman(pnlNetUsd)}
                       </span>
                     ) : 'Unavailable'}
@@ -1028,7 +1034,7 @@ function OpenPositionsSection({ walletAddress, onCloseDone, onUnrealizedPnlCompu
                       const capped = Math.max(-999, Math.min(999, raw));
                       const label = raw > 999 ? '>999%' : raw < -999 ? '<-999%' : `${(capped >= 0 ? '+' : '')}${formatNumber(capped, 2)}%`;
                       return (
-                        <span className={raw >= 0 ? 'pnl-positive' : 'pnl-negative'}>
+                        <span className={`trade-cost-analytics-pnl-chip ${raw >= 0 ? 'pnl-positive' : 'pnl-negative'}`}>
                           {label}
                         </span>
                       );
@@ -1289,7 +1295,7 @@ function TransactionRow({ tx, explorerTxUrl }) {
         </td>
         <td className="cell-num">
           {(tx.realizedPnlNetUsd != null ? tx.realizedPnlNetUsd : tx.realizedPnlUsd) != null ? (
-            <span className={(tx.realizedPnlNetUsd != null ? tx.realizedPnlNetUsd : tx.realizedPnlUsd) >= 0 ? 'pnl-positive' : 'pnl-negative'}>
+            <span className={`trade-cost-analytics-pnl-chip ${(tx.realizedPnlNetUsd != null ? tx.realizedPnlNetUsd : tx.realizedPnlUsd) >= 0 ? 'pnl-positive' : 'pnl-negative'}`}>
               {(tx.realizedPnlNetUsd != null ? tx.realizedPnlNetUsd : tx.realizedPnlUsd) >= 0 ? '+' : ''}{formatNumber(tx.realizedPnlNetUsd != null ? tx.realizedPnlNetUsd : tx.realizedPnlUsd, 4)} USD
             </span>
           ) : '—'}
