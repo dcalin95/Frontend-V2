@@ -76,9 +76,33 @@ const DATA_SOURCE_LABEL = {
   futures_venue: 'Venue FUT',
 };
 const SIDE_LABEL = { OPEN: 'OPEN', BUY: 'BUY', CLOSE: 'CLOSE', SELL: 'SELL', FAILED: 'FAILED', REVERTED: 'REVERTED' };
+const STATUS_SHORT_LABEL = {
+  confirmed: 'CON',
+  completed: 'CMP',
+  failed: 'FLD',
+  reverted: 'REV',
+  pending: 'PND',
+  estimated: 'EST',
+};
 const BSCSCAN_TX = (hash) => `https://bscscan.com/tx/${hash}`;
 /** Slippage bps used only for net PnL estimation; approximate, not from the real execution. Labeled as Estimated in UI. */
 const ESTIMATED_SLIPPAGE_BPS_FOR_PNL = 30;
+
+function toThreeLetterCode(value, fallback = 'UNK') {
+  const compact = String(value || '').replace(/[^a-z0-9]/gi, '').slice(0, 3).toUpperCase();
+  return compact || fallback;
+}
+
+function getStatusShortLabel(status) {
+  const key = String(status || '').toLowerCase();
+  return STATUS_SHORT_LABEL[key] || toThreeLetterCode(status);
+}
+
+function getTransactionStatusTitle(tx) {
+  const status = tx?.status || 'unknown';
+  const dataSource = tx?.dataSource ? (DATA_SOURCE_LABEL[tx.dataSource] || tx.dataSource) : null;
+  return dataSource ? `Status: ${status} | Data source: ${dataSource}` : `Status: ${status}`;
+}
 
 function renderVaultFlowLines(rows = [], resolveSymbol = null, emptyLabel = '—') {
   if (!Array.isArray(rows) || rows.length === 0) {
@@ -1329,11 +1353,13 @@ function TransactionRow({ tx, explorerTxUrl }) {
           ) : '—'}
         </td>
         <td className="cell-status">
-          <span className="cell-badge-stack cell-badge-stack--status">
-            <span className={`badge status-${(tx.status || '').toLowerCase()}`}>{tx.status}</span>
-            {tx.dataSource && (
-              <span className="badge data-source" title="Data source">{DATA_SOURCE_LABEL[tx.dataSource] || tx.dataSource}</span>
-            )}
+          <span
+            className={`cell-status-compact status-${(tx.status || '').toLowerCase()}`}
+            title={getTransactionStatusTitle(tx)}
+            aria-label={getTransactionStatusTitle(tx)}
+          >
+            <span className={`cell-status-dot cell-status-dot--${(tx.status || '').toLowerCase()}`} aria-hidden="true" />
+            <span className="cell-status-code">{getStatusShortLabel(tx.status)}</span>
           </span>
         </td>
         <td className="cell-link">

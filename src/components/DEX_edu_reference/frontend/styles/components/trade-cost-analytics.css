@@ -1278,7 +1278,8 @@
 }
 
 .trade-cost-analytics-table td.cell-status {
-  min-width: 10.5rem;
+  min-width: 4.8rem;
+  width: 4.8rem;
 }
 
 .trade-cost-analytics-table .cell-badge-stack {
@@ -1292,6 +1293,69 @@
 .trade-cost-analytics-table .cell-badge-stack .badge {
   margin: 0;
   white-space: nowrap;
+}
+
+.trade-cost-analytics-table .cell-status-compact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: 3.7rem;
+  min-width: 3.7rem;
+  height: 1.55rem;
+  padding: 0 0.45rem;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.08);
+  color: var(--tca-text-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.trade-cost-analytics-table .cell-status-code {
+  display: inline-block;
+  width: 3ch;
+  min-width: 3ch;
+  text-align: left;
+  font-family: var(--tca-font-mono);
+}
+
+.trade-cost-analytics-table .cell-status-dot {
+  width: 0.48rem;
+  height: 0.48rem;
+  min-width: 0.48rem;
+  border-radius: 999px;
+  background: var(--tca-text-muted);
+  box-shadow: 0 0 0 0.16rem rgba(148, 163, 184, 0.12);
+}
+
+.trade-cost-analytics-table .cell-status-compact.status-confirmed,
+.trade-cost-analytics-table .cell-status-compact.status-completed {
+  border-color: rgba(16, 185, 129, 0.32);
+  background: rgba(16, 185, 129, 0.11);
+  color: var(--tca-positive);
+}
+
+.trade-cost-analytics-table .cell-status-compact.status-failed,
+.trade-cost-analytics-table .cell-status-compact.status-reverted {
+  border-color: rgba(239, 68, 68, 0.32);
+  background: rgba(239, 68, 68, 0.11);
+  color: var(--tca-negative);
+}
+
+.trade-cost-analytics-table .cell-status-dot--confirmed,
+.trade-cost-analytics-table .cell-status-dot--completed {
+  background: var(--tca-positive);
+  box-shadow: 0 0 0 0.16rem rgba(16, 185, 129, 0.16);
+}
+
+.trade-cost-analytics-table .cell-status-dot--failed,
+.trade-cost-analytics-table .cell-status-dot--reverted {
+  background: var(--tca-negative);
+  box-shadow: 0 0 0 0.16rem rgba(239, 68, 68, 0.16);
 }
 
 .cell-num {
