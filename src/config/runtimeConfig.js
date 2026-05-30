@@ -39,9 +39,9 @@ async function loadRuntimeConfig() {
       
       // Fetch runtime-config.json from public directory
       // Use no-store to bypass cache and always fetch fresh
-      // Add timeout (3 seconds) to prevent hanging
+      // Add timeout to prevent hanging, but keep enough room for cold CDN edges.
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
       
       try {
         const response = await fetch(configFile, {
@@ -129,7 +129,7 @@ async function loadRuntimeConfig() {
       } catch (fetchError) {
         clearTimeout(timeoutId);
         if (fetchError.name === 'AbortError') {
-          throw new Error(`Timeout fetching ${configFile} (3s)`);
+          throw new Error(`Timeout fetching ${configFile} (8s)`);
         }
         throw fetchError;
       }
@@ -137,6 +137,9 @@ async function loadRuntimeConfig() {
       // Log concise warning and fall back to env vars
       const reason = error.message || 'Unknown error';
       console.warn(`[RuntimeConfig] Invalid runtime-config.json: ${reason}. Falling back.`);
+      // Do not memoize a failed load. A transient CDN/network miss must be recoverable
+      // because protected ops panels depend on secrets delivered by runtime-config.json.
+      configLoadPromise = null;
       return null;
     }
   })();

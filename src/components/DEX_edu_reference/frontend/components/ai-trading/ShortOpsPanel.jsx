@@ -1303,15 +1303,27 @@ export default function ShortOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
     () => String(process.env.REACT_APP_OTA_SHORT_OPS_SECRET || '').trim().length > 0,
     []
   );
-  const [shortOpsSecretFromConfig, setShortOpsSecretFromConfig] = useState(() => isShortOpsClientSecretConfigured());
+  const [shortOpsSecretFromConfig, setShortOpsSecretFromConfig] = useState(() =>
+    isShortOpsClientSecretConfigured() ? true : null
+  );
   useEffect(() => {
-    if (envBakedShortOpsSecret) return;
+    if (envBakedShortOpsSecret) {
+      setShortOpsSecretFromConfig(true);
+      return undefined;
+    }
     let cancelled = false;
-    loadRuntimeConfig().then(() => {
-      if (!cancelled) setShortOpsSecretFromConfig(isShortOpsClientSecretConfigured());
-    });
+    let retryTimer = null;
+    const checkRuntimeSecret = async () => {
+      await loadRuntimeConfig();
+      if (cancelled) return;
+      const hasSecret = isShortOpsClientSecretConfigured();
+      setShortOpsSecretFromConfig(hasSecret);
+      if (!hasSecret) retryTimer = window.setTimeout(checkRuntimeSecret, 5000);
+    };
+    checkRuntimeSecret();
     return () => {
       cancelled = true;
+      if (retryTimer) window.clearTimeout(retryTimer);
     };
   }, [envBakedShortOpsSecret]);
   useEffect(() => {
@@ -2516,7 +2528,7 @@ export default function ShortOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
         </button>
       </div>
 
-      {!shortOpsSecretFromConfig && (
+      {shortOpsSecretFromConfig === false && (
         <div
           role="alert"
           style={{
@@ -2536,7 +2548,7 @@ export default function ShortOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
           <code style={{ fontSize: 11 }}>/runtime-config.json</code> (key <code style={{ fontSize: 11 }}>OTA_SHORT_OPS_SECRET</code>), then
           reload the page (no rebuild if you only update JSON on S3). Otherwise{' '}
           <code style={{ fontSize: 11 }}>X-Ota-Short-Ops-Secret</code> is missing →{' '}
-          <em>Unauthorized: provide X-Ota-Short-Ops-Secret or ?secret=</em>. CI:{' '}
+          <em>protected Short Ops requests will fail until the secret is available</em>. CI:{' '}
           <code style={{ fontSize: 11 }}>REACT_APP_OTA_SHORT_OPS_SECRET</code>,{' '}
           <code style={{ fontSize: 11 }}>PRODUCTION_DOTENV</code> or the key in JSON —{' '}
           <code style={{ fontSize: 11 }}>.github/workflows/deploy-s3-main.yml</code>.

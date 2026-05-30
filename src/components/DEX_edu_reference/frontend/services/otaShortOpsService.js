@@ -43,7 +43,11 @@ function requireUserId(userId, caller = 'short ops') {
 /** @param {RequestInfo|URL} input @param {RequestInit} [init] */
 async function shortOpsFetch(input, init = {}) {
   await loadRuntimeConfig();
-  const baseH = getShortOpsHeaders();
+  let baseH = getShortOpsHeaders();
+  if (!baseH['X-Ota-Short-Ops-Secret']) {
+    await loadRuntimeConfig();
+    baseH = getShortOpsHeaders();
+  }
   const method = String(init.method || 'GET').toUpperCase();
   const headers = { ...baseH, ...(init.headers || {}) };
   const cacheKey = method === 'GET' ? `${String(input)}|secret:${headers['X-Ota-Short-Ops-Secret'] ? 'set' : 'none'}` : null;

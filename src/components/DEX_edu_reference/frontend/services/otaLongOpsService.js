@@ -41,7 +41,11 @@ function requireUserId(userId, caller = 'long ops') {
 /** @param {RequestInfo|URL} input @param {RequestInit} [init] */
 async function longOpsFetch(input, init = {}) {
   await loadRuntimeConfig();
-  const baseH = getLongOpsHeaders();
+  let baseH = getLongOpsHeaders();
+  if (!baseH['X-Ota-Long-Ops-Secret']) {
+    await loadRuntimeConfig();
+    baseH = getLongOpsHeaders();
+  }
   const method = String(init.method || 'GET').toUpperCase();
   const headers = { ...baseH, ...(init.headers || {}) };
   const cacheKey = method === 'GET' ? `${String(input)}|secret:${headers['X-Ota-Long-Ops-Secret'] ? 'set' : 'none'}` : null;
