@@ -352,6 +352,18 @@ function normalizeAnalyticsFuturesPosition(pos, lane) {
   };
 }
 
+function computeFuturesPnlUsd(pos) {
+  const notionalUsd = parseFiniteUsd(pos?.notional_usd);
+  const entryMark = parseFiniteUsd(pos?.entry_mark_price);
+  const liveMark = parseFiniteUsd(pos?.current_price);
+  if (notionalUsd == null || entryMark == null || liveMark == null || entryMark <= 0) return null;
+  const priceMove = pos?.lane === 'short'
+    ? (entryMark - liveMark) / entryMark
+    : (liveMark - entryMark) / entryMark;
+  const pnl = notionalUsd * priceMove;
+  return Number.isFinite(pnl) ? Math.round(pnl * 10000) / 10000 : null;
+}
+
 function formatFuturesMarkPrice(value) {
   if (value == null || !Number.isFinite(value)) return '—';
   return value.toLocaleString('en-US', {
@@ -693,7 +705,7 @@ function OpenPositionsSection({ walletAddress, onCloseDone, onUnrealizedPnlCompu
     const total = rows.reduce((s, p) => {
       const pnl = p.pnl ?? (p.currentValueUsd != null && p.entryValueUsd != null ? p.currentValueUsd - p.entryValueUsd : null);
       return s + (pnl != null && Number.isFinite(pnl) ? pnl : 0);
-    }, 0) + futuresRows.reduce((s, p) => s + (parseFiniteUsd(p?.pnl_estimated_usd) || 0), 0);
+    }, 0) + futuresRows.reduce((s, p) => s + (computeFuturesPnlUsd(p) || 0), 0);
     onUnrealizedPnlComputed?.(total);
   }, [directEntry, executionHistory, futuresRows, onUnrealizedPnlComputed]);
 
@@ -806,13 +818,13 @@ function OpenPositionsSection({ walletAddress, onCloseDone, onUnrealizedPnlCompu
               <tbody>
                 {futuresRows.map((pos) => {
                   const token = pos.token;
-                  const pnlUsd = parseFiniteUsd(pos?.pnl_estimated_usd);
                   const leverage = Number.isFinite(Number(pos?.leverage)) ? `${Number(pos.leverage)}x` : '—';
                   const notionalUsd = parseFiniteUsd(pos?.notional_usd);
                   const leverageNum = Number.isFinite(Number(pos?.leverage)) ? Number(pos.leverage) : null;
                   const marginUsd = notionalUsd != null && leverageNum != null && leverageNum > 0 ? notionalUsd / leverageNum : null;
                   const entryMark = parseFiniteUsd(pos?.entry_mark_price);
                   const liveMark = parseFiniteUsd(pos?.current_price);
+                  const pnlUsd = computeFuturesPnlUsd(pos);
                   const takeProfit = parseFiniteUsd(pos?.metadata?.takeProfit);
                   const stopLoss = parseFiniteUsd(pos?.metadata?.stopLoss);
                   return (
