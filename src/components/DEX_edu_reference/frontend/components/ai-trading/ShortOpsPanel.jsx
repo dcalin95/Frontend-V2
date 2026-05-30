@@ -169,6 +169,7 @@ import {
   isShortOpsClientSecretConfigured,
   subscribeOtaSignalsListStream,
 } from '../../services/otaShortOpsService';
+import { getVenuePosition as getLongVenuePosition } from '../../services/otaLongOpsService';
 import { loadRuntimeConfig } from '../../../config/runtimeConfig.js';
 import { getOtaPositionOpenAiSuspendList } from '../../services/aiTradingApiService';
 import { analyzeMarketWithLlmProvider } from '../../services/otaAnalyzeFacade';
@@ -3184,7 +3185,19 @@ export default function ShortOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
                     {[
                       ['Funding', () => getVenueFunding(probeSymbol.trim() || 'BTC')],
                       ['Margin mode', () => getVenueMarginMode(probeSymbol.trim() || 'BTC', resetUserId || walletAddress || filterUserId)],
-                      ['Position', () => getVenuePosition(probeSymbol.trim() || 'BTC', resetUserId || walletAddress || filterUserId)],
+                      ['Position', async () => {
+                        const symbol = probeSymbol.trim() || 'BTC';
+                        const user = resetUserId || walletAddress || filterUserId;
+                        const shortPosition = await getVenuePosition(symbol, user);
+                        let longPosition = null;
+                        let longPositionError = null;
+                        try {
+                          longPosition = await getLongVenuePosition(symbol, user);
+                        } catch (e) {
+                          longPositionError = e?.message || String(e);
+                        }
+                        return { ...shortPosition, lane: 'SHORT', shortPosition, longPosition, longPositionError };
+                      }],
                       ['Margin acct', () => getVenueMargin(resetUserId || walletAddress || filterUserId)],
                       ['Reconcile', () => getVenueReconcile(probeSymbol.trim() || 'BTC', null, resetUserId || walletAddress || filterUserId)],
                     ].map(([label, fn]) => (
@@ -3265,7 +3278,14 @@ export default function ShortOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
                       ) : probeLast.label === 'Position' ? (
                         <div className="short-ops-probe-card">
                           {probeLast.r?.position == null ? (
-                            <span className="sop-probe-sub">✓ No open position on {probeSymbol}</span>
+                            <>
+                              <span className="sop-probe-sub">No open SHORT position on {probeLast.r?.venueSymbol || probeSymbol}</span>
+                              {probeLast.r?.longPosition?.position ? (
+                                <span className="sop-probe-val sop-probe-val--pos" style={{ display: 'block', marginTop: 6 }}>
+                                  LONG exists on {probeLast.r.longPosition.venueSymbol || probeLast.r?.venueSymbol || probeSymbol} · {probeLast.r.longPosition.position.positionAmt || probeLast.r.longPosition.position.size} · entry ${Number(probeLast.r.longPosition.position.entryPrice || 0).toFixed(4)}
+                                </span>
+                              ) : null}
+                            </>
                           ) : (
                             <>
                               <div className="sop-margin-row"><span className="sop-probe-label">Side</span><span className="sop-probe-val sop-probe-val--neg">{probeLast.r.position.positionSide || probeLast.r.position.side || 'SHORT'}</span></div>
@@ -3304,6 +3324,7 @@ export default function ShortOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
                           ['marginMode', () => getVenueMarginMode(sym, resetUserId || walletAddress || filterUserId)],
                           ['margin', () => getVenueMargin(resetUserId || walletAddress || filterUserId)],
                           ['position', () => getVenuePosition(sym, resetUserId || walletAddress || filterUserId)],
+                          ['longPosition', () => getLongVenuePosition(sym, resetUserId || walletAddress || filterUserId)],
                         ];
                         await Promise.allSettled(tasks.map(async ([key, fn]) => {
                           try { results[key] = { ok: true, r: await fn() }; }
@@ -3386,7 +3407,7 @@ export default function ShortOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
                         </div>
                         <div className="sop-probe-tile sop-probe-tile--wide">
                           <span className="sop-probe-tile-label">
-                            Exchange position (
+                            SHORT exchange position (
                             {(allProbesData.results.position?.ok && allProbesData.results.position.r?.venueSymbol)
                               || (allProbesData.results.mark?.ok && allProbesData.results.mark.r?.venueSymbol)
                               || allProbesData.sym}
@@ -3396,7 +3417,15 @@ export default function ShortOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
                             ? (allProbesData.results.position.r?.position == null
                                 ? (
                                   <>
-                                    <span className="sop-probe-tile-val sop-probe-val--pos">✓ No open position</span>
+                                    <span className="sop-probe-tile-val sop-probe-val--pos">No SHORT position</span>
+                                    {allProbesData.results.longPosition?.ok && allProbesData.results.longPosition.r?.position ? (
+                                      <span
+                                        className="sop-probe-sub"
+                                        style={{ display: 'block', marginTop: 6, fontSize: 10, lineHeight: 1.35, color: '#86efac', fontWeight: 700 }}
+                                      >
+                                        LONG exists on {allProbesData.results.longPosition.r.venueSymbol || allProbesData.results.position.r?.venueSymbol || allProbesData.sym}: {allProbesData.results.longPosition.r.position.positionAmt || allProbesData.results.longPosition.r.position.size} · entry ${Number(allProbesData.results.longPosition.r.position.entryPrice || 0).toFixed(4)}
+                                      </span>
+                                    ) : null}
                                     {allProbesData.results.margin?.ok
                                       && Math.abs(Number(allProbesData.results.margin.r?.marginStatus?.totalUnrealizedProfit || 0)) > 1e-4
                                       ? (
