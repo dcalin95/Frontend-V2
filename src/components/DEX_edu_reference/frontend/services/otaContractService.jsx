@@ -23,6 +23,77 @@ function getReadProvider() {
   return new ethers.providers.JsonRpcProvider(rpcUrl);
 }
 
+async function getExecutorBotAddressFromApi() {
+  try {
+    const data = await otaApiRequest('/ai-trading/bot-address', { method: 'GET', timeoutMs: 10000 });
+    const addr = data?.botWalletAddress ?? data?.address ?? data?.botAddress;
+    return typeof addr === 'string' && ethers.utils.isAddress(addr) ? ethers.utils.getAddress(addr) : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+function normalizeBotAuthorization(raw, fallbackBotAddress) {
+  const a = Array.isArray(raw)
+    ? {
+        botAddress: raw[0] ?? fallbackBotAddress,
+        maxAmount: raw[1],
+        usedAmount: raw[2],
+        authorizedAt: raw[3],
+        isActive: raw[4],
+      }
+    : {
+        botAddress: raw?.botAddress ?? fallbackBotAddress,
+        maxAmount: raw?.maxAmount,
+        usedAmount: raw?.usedAmount,
+        authorizedAt: raw?.authorizedAt,
+        isActive: raw?.isActive,
+      };
+  const authorizedAtRaw =
+    a?.authorizedAt != null ? a.authorizedAt.toString?.() ?? String(a.authorizedAt) : '0';
+  const authorizedAtNum = parseInt(authorizedAtRaw, 10) || 0;
+  const isActiveBool =
+    a?.isActive === true ||
+    a?.isActive === 1 ||
+    (a?.isActive != null && String(a.isActive).toLowerCase() === 'true');
+  const maxB = ethers.BigNumber.from(a.maxAmount != null ? a.maxAmount : 0);
+  const usedB = ethers.BigNumber.from(a.usedAmount != null ? a.usedAmount : 0);
+  const unlimitedCap = maxB.isZero();
+  let remainingWei = '0';
+  let amountExhausted = false;
+  if (!unlimitedCap) {
+    remainingWei = maxB.sub(usedB).toString();
+    amountExhausted = ethers.BigNumber.from(remainingWei).lte(0);
+  }
+  const effectiveActive = isActiveBool && (unlimitedCap || ethers.BigNumber.from(remainingWei).gt(0));
+  const expiredByTimestamp = false;
+  return {
+    botAddress: String(a.botAddress || fallbackBotAddress),
+    maxAmount: maxB.toString(),
+    usedAmount: usedB.toString(),
+    remainingWei,
+    unlimitedCap,
+    authorizedAt: authorizedAtRaw,
+    authorizedAtSeconds: authorizedAtNum,
+    authorizedAtIso: authorizedAtNum > 0 ? new Date(authorizedAtNum * 1000).toISOString() : null,
+    expiresAtRaw: '0',
+    expiresAtSeconds: 0,
+    expiresAtIso: null,
+    isActive: isActiveBool,
+    expiresAtIsZero: true,
+    expiredByTimestamp,
+    amountExhausted,
+    effectiveActive,
+    reason: !isActiveBool
+      ? 'INACTIVE_FLAG'
+      : unlimitedCap
+        ? 'OK_UNLIMITED'
+        : amountExhausted
+          ? 'AMOUNT_EXHAUSTED'
+          : 'OK',
+  };
+}
+
 /**
  * Get signer (wallet) for on-chain writes.
  * @returns {ethers.providers.Web3Provider|null} Provider instance or null if MetaMask not available
@@ -102,68 +173,7 @@ export async function getRegistrationStatus(walletAddress) {
           bots.map(async (botAddr) => {
             try {
               const raw = await userVault.getBotAuthorization(walletAddress, botAddr);
-              const a = Array.isArray(raw)
-                ? {
-                    botAddress: raw[0] ?? botAddr,
-                    maxAmount: raw[1],
-                    usedAmount: raw[2],
-                    authorizedAt: raw[3],
-                    isActive: raw[4],
-                  }
-                : {
-                    botAddress: raw?.botAddress ?? botAddr,
-                    maxAmount: raw?.maxAmount,
-                    usedAmount: raw?.usedAmount,
-                    authorizedAt: raw?.authorizedAt,
-                    isActive: raw?.isActive,
-                  };
-              const authorizedAtRaw =
-                a?.authorizedAt != null ? a.authorizedAt.toString?.() ?? String(a.authorizedAt) : '0';
-              const authorizedAtNum = parseInt(authorizedAtRaw, 10) || 0;
-              const isActiveBool =
-                a?.isActive === true ||
-                a?.isActive === 1 ||
-                (a?.isActive != null && String(a.isActive).toLowerCase() === 'true');
-              const maxB = ethers.BigNumber.from(a.maxAmount != null ? a.maxAmount : 0);
-              const usedB = ethers.BigNumber.from(a.usedAmount != null ? a.usedAmount : 0);
-              /** Contract: maxAmount 0 = nelimitat */
-              const unlimitedCap = maxB.isZero();
-              let remainingWei = '0';
-              let amountExhausted = false;
-              if (unlimitedCap) {
-                remainingWei = '0';
-                amountExhausted = false;
-              } else {
-                remainingWei = maxB.sub(usedB).toString();
-                amountExhausted = ethers.BigNumber.from(remainingWei).lte(0);
-              }
-              const effectiveActive = isActiveBool && (unlimitedCap || ethers.BigNumber.from(remainingWei).gt(0));
-              const expiredByTimestamp = false;
-              return {
-                botAddress: String(a.botAddress || botAddr),
-                maxAmount: maxB.toString(),
-                usedAmount: usedB.toString(),
-                remainingWei,
-                unlimitedCap,
-                authorizedAt: authorizedAtRaw,
-                authorizedAtSeconds: authorizedAtNum,
-                authorizedAtIso: authorizedAtNum > 0 ? new Date(authorizedAtNum * 1000).toISOString() : null,
-                expiresAtRaw: '0',
-                expiresAtSeconds: 0,
-                expiresAtIso: null,
-                isActive: isActiveBool,
-                expiresAtIsZero: true,
-                expiredByTimestamp,
-                amountExhausted,
-                effectiveActive,
-                reason: !isActiveBool
-                  ? 'INACTIVE_FLAG'
-                  : unlimitedCap
-                    ? 'OK_UNLIMITED'
-                    : amountExhausted
-                      ? 'AMOUNT_EXHAUSTED'
-                      : 'OK',
-              };
+              return normalizeBotAuthorization(raw, botAddr);
             } catch {
               return {
                 botAddress: botAddr,
@@ -184,6 +194,27 @@ export async function getRegistrationStatus(walletAddress) {
       }
     } catch (_) {
       // ignore
+    }
+
+    // Robust fallback for the current executor bot. The Auto page only cares whether the
+    // bot returned by the backend is authorized; if the bot list read is stale/empty,
+    // query that exact bot directly before showing "Bot authorization is missing".
+    try {
+      const executorBotAddress = await getExecutorBotAddressFromApi();
+      if (executorBotAddress) {
+        const hasExecutorAuth = botAuthorizations.some(
+          (auth) => String(auth?.botAddress || '').toLowerCase() === executorBotAddress.toLowerCase()
+        );
+        if (!hasExecutorAuth) {
+          const raw = await userVault.getBotAuthorization(walletAddress, executorBotAddress);
+          const directAuth = normalizeBotAuthorization(raw, executorBotAddress);
+          if (directAuth?.isActive || directAuth?.maxAmount !== '0' || directAuth?.authorizedAt !== '0') {
+            botAuthorizations = [...botAuthorizations, directAuth];
+          }
+        }
+      }
+    } catch (_) {
+      // ignore: registration status still works without the direct bot fallback
     }
 
     const bitsBalance = ethers.utils.formatUnits(bitsBalRaw, bitsDecimals);
