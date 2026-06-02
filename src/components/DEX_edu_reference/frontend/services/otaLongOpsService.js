@@ -32,6 +32,21 @@ function getLongOpsHeaders() {
   return headers;
 }
 
+function withLongOpsSecretQuery(input, secret) {
+  const value = String(secret || '').trim();
+  if (!value || typeof input !== 'string') return input;
+  try {
+    const url = new URL(input, typeof window !== 'undefined' ? window.location.origin : undefined);
+    if (!url.searchParams.get('secret')) {
+      url.searchParams.set('secret', value);
+    }
+    return url.toString();
+  } catch (_) {
+    const separator = String(input).includes('?') ? '&' : '?';
+    return `${input}${separator}secret=${encodeURIComponent(value)}`;
+  }
+}
+
 function requireUserId(userId, caller = 'long ops') {
   const uid = String(userId || '').trim();
   if (!uid) throw new Error(`${caller}: userId required`);
@@ -48,7 +63,9 @@ async function longOpsFetch(input, init = {}) {
   }
   const method = String(init.method || 'GET').toUpperCase();
   const headers = { ...baseH, ...(init.headers || {}) };
-  const cacheKey = method === 'GET' ? `${String(input)}|secret:${headers['X-Ota-Long-Ops-Secret'] ? 'set' : 'none'}` : null;
+  const secret = headers['X-Ota-Long-Ops-Secret'] || '';
+  const requestInput = withLongOpsSecretQuery(input, secret);
+  const cacheKey = method === 'GET' ? `${String(requestInput)}|secret:${secret ? 'set' : 'none'}` : null;
   const now = Date.now();
   if (cacheKey) {
     const cached = longOpsGetCache.get(cacheKey);
@@ -57,7 +74,7 @@ async function longOpsFetch(input, init = {}) {
       if (cached.promise) return cached.promise.then((res) => res.clone());
     }
   }
-  const promise = fetch(input, {
+  const promise = fetch(requestInput, {
     ...init,
     credentials: init.credentials ?? 'include',
     headers,

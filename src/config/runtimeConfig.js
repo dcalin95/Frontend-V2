@@ -260,6 +260,44 @@ function getOtaOpsSecretFromUrl(...keys) {
   return '';
 }
 
+const OTA_OPS_SECRET_STORAGE_KEYS = {
+  generic: 'bitswapdex.ota.ops.secret',
+  short: 'bitswapdex.ota.shortOps.secret',
+  long: 'bitswapdex.ota.longOps.secret',
+};
+
+function readStoredOtaOpsSecret(...storageKeys) {
+  if (typeof window === 'undefined') return '';
+  for (const storage of [window.sessionStorage, window.localStorage]) {
+    if (!storage) continue;
+    for (const key of storageKeys) {
+      try {
+        const value = storage.getItem(key);
+        if (value && String(value).trim()) return String(value).trim();
+      } catch (_) {
+        // Storage can be blocked by browser privacy settings.
+      }
+    }
+  }
+  return '';
+}
+
+function rememberOtaOpsSecret(secret, ...storageKeys) {
+  const value = String(secret || '').trim();
+  if (!value || typeof window === 'undefined') return value;
+  for (const storage of [window.sessionStorage, window.localStorage]) {
+    if (!storage) continue;
+    for (const key of storageKeys) {
+      try {
+        storage.setItem(key, value);
+      } catch (_) {
+        // Ignore blocked storage; callers still get the URL/config value.
+      }
+    }
+  }
+  return value;
+}
+
 /**
  * Secret pentru header X-Ota-Short-Ops-Secret: runtime-config.json (OTA_SHORT_OPS_SECRET),
  * URL-ul paginii (?otaShortOpsSecret=, ?shortOpsSecret= sau ?secret=), apoi REACT_APP_* la build.
@@ -272,8 +310,27 @@ export function getOtaShortOpsSecret() {
       : '';
   if (fromRc) return fromRc;
   const fromUrl = getOtaOpsSecretFromUrl('otaShortOpsSecret', 'shortOpsSecret', 'secret');
-  if (fromUrl) return fromUrl;
-  return (process.env.REACT_APP_OTA_SHORT_OPS_SECRET || '').trim();
+  if (fromUrl) {
+    return rememberOtaOpsSecret(
+      fromUrl,
+      OTA_OPS_SECRET_STORAGE_KEYS.short,
+      OTA_OPS_SECRET_STORAGE_KEYS.generic
+    );
+  }
+  const fromStorage = readStoredOtaOpsSecret(
+    OTA_OPS_SECRET_STORAGE_KEYS.short,
+    OTA_OPS_SECRET_STORAGE_KEYS.generic
+  );
+  if (fromStorage) return fromStorage;
+  const fromEnv = (process.env.REACT_APP_OTA_SHORT_OPS_SECRET || '').trim();
+  if (fromEnv) {
+    return rememberOtaOpsSecret(
+      fromEnv,
+      OTA_OPS_SECRET_STORAGE_KEYS.short,
+      OTA_OPS_SECRET_STORAGE_KEYS.generic
+    );
+  }
+  return '';
 }
 
 /**
@@ -288,9 +345,26 @@ export function getOtaLongOpsSecret() {
       : '';
   if (fromRc) return fromRc;
   const fromUrl = getOtaOpsSecretFromUrl('otaLongOpsSecret', 'longOpsSecret', 'secret');
-  if (fromUrl) return fromUrl;
+  if (fromUrl) {
+    return rememberOtaOpsSecret(
+      fromUrl,
+      OTA_OPS_SECRET_STORAGE_KEYS.long,
+      OTA_OPS_SECRET_STORAGE_KEYS.generic
+    );
+  }
+  const fromStorage = readStoredOtaOpsSecret(
+    OTA_OPS_SECRET_STORAGE_KEYS.long,
+    OTA_OPS_SECRET_STORAGE_KEYS.generic
+  );
+  if (fromStorage) return fromStorage;
   const fromEnv = (process.env.REACT_APP_OTA_LONG_OPS_SECRET || '').trim();
-  if (fromEnv) return fromEnv;
+  if (fromEnv) {
+    return rememberOtaOpsSecret(
+      fromEnv,
+      OTA_OPS_SECRET_STORAGE_KEYS.long,
+      OTA_OPS_SECRET_STORAGE_KEYS.generic
+    );
+  }
   return getOtaShortOpsSecret();
 }
 
