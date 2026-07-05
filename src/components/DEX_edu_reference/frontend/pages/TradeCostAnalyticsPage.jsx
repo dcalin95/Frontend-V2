@@ -1304,6 +1304,11 @@ function TransactionRow({ tx, explorerTxUrl }) {
   const [expanded, setExpanded] = useState(false);
   const isSuccess = tx.status === 'confirmed' || tx.status === 'completed';
   const isFailed = tx.status === 'failed' || tx.status === 'reverted';
+  const isVenueFlatPnlUnknown = tx.pnlDisplayStatus === 'unknown_venue_flat_sync'
+    || String(tx.pnlModelSource || '').includes('venue_flat')
+    || String(tx.costModelSource || '').includes('venue_flat')
+    || String(tx.dataSource || '').includes('venue_flat')
+    || String(tx.forcedCloseReason || '').includes('venue_flat');
   const dateStr = tx.executedAt ? new Date(tx.executedAt).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' }) : '—';
 
   return (
@@ -1334,7 +1339,7 @@ function TransactionRow({ tx, explorerTxUrl }) {
           {(tx.displayTokenIn || tx.tokenIn) ? ` ${tx.displayTokenIn || tx.tokenIn}` : ''}
         </td>
         <td className="cell-amount">
-          {tx.displayTokenOut === 'USD' && tx.amountOutHuman != null && Number.isFinite(Number(tx.amountOutHuman))
+          {isVenueFlatPnlUnknown ? '-' : tx.displayTokenOut === 'USD' && tx.amountOutHuman != null && Number.isFinite(Number(tx.amountOutHuman))
             ? `${Number(tx.amountOutHuman) >= 0 ? '+' : ''}${formatNumber(Number(tx.amountOutHuman), 4)}`
             : (formatAmountHuman(tx.amountOutHuman ?? tx.amountOutRaw, tx.displayTokenOut || tx.tokenOut, 4) || '—')}
           {(tx.displayTokenOut || tx.tokenOut) ? ` ${tx.displayTokenOut || tx.tokenOut}` : ''}
@@ -1346,7 +1351,9 @@ function TransactionRow({ tx, explorerTxUrl }) {
           {tx.totalFeesUsd != null ? `$${formatNumber(tx.totalFeesUsd, 4)}` : '—'}
         </td>
         <td className="cell-num">
-          {(tx.realizedPnlNetUsd != null ? tx.realizedPnlNetUsd : tx.realizedPnlUsd) != null ? (
+          {isVenueFlatPnlUnknown ? (
+            <span title="Venue reported the futures position already flat; OTA only synced the DB row, so realized PnL is unknown here.">-</span>
+          ) : (tx.realizedPnlNetUsd != null ? tx.realizedPnlNetUsd : tx.realizedPnlUsd) != null ? (
             <span className={`trade-cost-analytics-pnl-chip ${(tx.realizedPnlNetUsd != null ? tx.realizedPnlNetUsd : tx.realizedPnlUsd) >= 0 ? 'pnl-positive' : 'pnl-negative'}`}>
               {(tx.realizedPnlNetUsd != null ? tx.realizedPnlNetUsd : tx.realizedPnlUsd) >= 0 ? '+' : ''}{formatNumber(tx.realizedPnlNetUsd != null ? tx.realizedPnlNetUsd : tx.realizedPnlUsd, 4)} USD
             </span>
