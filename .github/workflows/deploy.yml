@@ -6,6 +6,10 @@ on:
       - main
   workflow_dispatch: # Permite deploy manual din GitHub UI
 
+concurrency:
+  group: frontend-production-deploy
+  cancel-in-progress: true
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -97,6 +101,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      - name: Validate AWS target access
+        run: |
+          aws sts get-caller-identity --query 'Account' --output text >/dev/null
+          aws s3api head-bucket --bucket bits-ai.io
+          aws cloudfront get-distribution --id E2TIH6RJTHIT1M --query 'Distribution.Status' --output text >/dev/null
+          echo "AWS identity, S3 bucket, and CloudFront distribution are reachable."
+
       - name: Deploy to S3
         run: |
           # Upload static assets with long cache (1 year)
@@ -109,6 +120,14 @@ jobs:
           aws s3 cp build/index.html s3://bits-ai.io/ \
             --cache-control "no-cache,no-store,must-revalidate" \
             --metadata-directive REPLACE
+
+          # Upload runtime config WITHOUT cache so OTA/API changes are visible immediately
+          if [ -f build/runtime-config.json ]; then
+            aws s3 cp build/runtime-config.json s3://bits-ai.io/ \
+              --cache-control "no-cache,no-store,must-revalidate" \
+              --content-type "application/json" \
+              --metadata-directive REPLACE
+          fi
           
           # Upload error pages WITHOUT cache (if they exist)
           if [ -f build/404.html ]; then
@@ -127,6 +146,7 @@ jobs:
           aws s3 sync build/ s3://bits-ai.io/ \
             --delete \
             --exclude "index.html" \
+            --exclude "runtime-config.json" \
             --exclude "404.html" \
             --exclude "_error.html" \
             --exclude "static/*" \
