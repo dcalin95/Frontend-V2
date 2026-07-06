@@ -106,7 +106,7 @@ function AutoTradeLimitsTab({
           Token Limits
         </h4>
         <p className="auto-trade-panel-hint" style={{ marginTop: 4, marginBottom: 12, color: '#94a3b8', fontSize: 12 }}>
-          Set limits for tracked tokens and the <strong>quote tokens</strong> used for opens: <strong>USDT, BNB, ETH</strong> (Binance-Peg). Otherwise the executor reports maxPerTrade=0 for that quote. Include CAKE, DOGE, SHIB, SOL, STX, MATIC, LINK. <strong>0 = the executor skips that token/quote</strong>. For "unlimited", use a large value (for example 1000000).
+          Set limits for tracked tokens and the <strong>quote tokens</strong> used for opens: <strong>USDT, BNB, ETH</strong> (Binance-Peg). Otherwise the executor reports maxPerTrade=0 for that quote. Production tracked tokens are loaded from backend; current baseline is BTC, ETH, BNB, LINK, XRP, ADA, AVAX, SOL, DOGE. <strong>0 = the executor skips that token/quote</strong>. For "unlimited", use a large value (for example 1000000).
         </p>
 
         <div className="auto-trade-panel-form-group">

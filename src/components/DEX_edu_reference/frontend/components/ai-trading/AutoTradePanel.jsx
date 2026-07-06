@@ -4399,7 +4399,7 @@ const AutoTradePanel = React.memo(() => {
                       </div>
                     )}
                     {noTrackedTokens && (
-                      <div className="auto-trade-panel-why-no-open-hint">OTA_TRACKED_TOKENS is empty on the server; there are no tokens to analyze. Set it on backend (for example BTC,ETH,BNB).</div>
+                      <div className="auto-trade-panel-why-no-open-hint">OTA_TRACKED_TOKENS is empty on the server; there are no tokens to analyze. Set the production baseline on backend: BTC,ETH,BNB,LINK,XRP,ADA,AVAX,SOL,DOGE.</div>
                     )}
                     {workerDisabled && (
                       <div className="auto-trade-panel-why-no-open-hint">Worker disabled on server (OTA_AUTO_EXECUTION_ENABLED is not true).</div>
@@ -4500,7 +4500,7 @@ const AutoTradePanel = React.memo(() => {
         </section>
       )}
 
-      {/* Analyzed tokens + how to remove a token, for example SHIB. */}
+      {/* Analyzed tokens come from the backend production contract. */}
       {autoExecutionStatus?.diagnostic?.trackedTokens?.length > 0 && (policy.enabled || walletAddress) && (
         <section className="auto-trade-panel-why-no-open" aria-label="Tracked tokens and how to remove one">
           <div className="auto-trade-panel-why-no-open-card">
@@ -4515,10 +4515,10 @@ const AutoTradePanel = React.memo(() => {
                 The list comes from <strong>Render → backend-server → Environment → OTA_TRACKED_TOKENS</strong>. You cannot deselect it from the UI.
               </p>
               <p className="auto-trade-panel-why-no-open-hint" style={{ fontSize: '0.85rem', marginTop: '0.5rem' }}>
-                <strong>To remove SHIB or another token:</strong> edit <code>OTA_TRACKED_TOKENS</code> on Render, delete the token from the list (for example SHIB), then Save → Redeploy. Or copy the list without SHIB:
+                <strong>To change analyzed tokens:</strong> edit <code>OTA_TRACKED_TOKENS</code> on Render, keep only tokens that pass <code>/ota-config-health</code>, then Save → Redeploy. Current production baseline:
               </p>
               <code className="auto-trade-panel-why-no-open-hint" style={{ display: 'block', marginTop: '0.25rem', padding: '0.35rem', background: 'rgba(0,0,0,0.2)', borderRadius: 4, fontSize: '0.8rem', wordBreak: 'break-all' }} title="Copy and set as OTA_TRACKED_TOKENS on Render">
-                BTC,ETH,BNB,SOL,STX,DOGE,CAKE,MATIC,BITS,XRP,ADA,LINK
+                BTC,ETH,BNB,LINK,XRP,ADA,AVAX,SOL,DOGE
               </code>
             </div>
           </div>
