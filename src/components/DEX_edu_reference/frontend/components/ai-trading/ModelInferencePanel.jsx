@@ -14,16 +14,16 @@ import TokenLogo from '../common/TokenLogo';
 import '../../styles/components/model-inference-panel.css';
 import '../../styles/components/auto-trade-panel.css';
 
-// BTC/ETH excluded from BSC Auto (2-hop path): do not show them as BSC analysis options.
 const TOKENS = [
+  { symbol: 'BTC',  label: 'BTC/USDT' },
+  { symbol: 'ETH',  label: 'ETH/USDT' },
   { symbol: 'BNB',  label: 'BNB/USDT' },
-  { symbol: 'DOGE', label: 'DOGE/USDT' },
+  { symbol: 'LINK', label: 'LINK/USDT' },
+  { symbol: 'XRP',  label: 'XRP/USDT' },
+  { symbol: 'ADA',  label: 'ADA/USDT' },
+  { symbol: 'AVAX', label: 'AVAX/USDT' },
   { symbol: 'SOL',  label: 'SOL/USDT' },
-  { symbol: 'PEPE', label: 'PEPE/USDT' },
-  { symbol: 'SHIB', label: 'SHIB/USDT' },
-  { symbol: 'CAKE', label: 'CAKE/USDT' },
-  { symbol: 'SEI',  label: 'SEI/USDT' },
-  { symbol: 'ATOM', label: 'ATOM/USDT' },
+  { symbol: 'DOGE', label: 'DOGE/USDT' },
 ];
 
 const REGIME_CONFIG = {
@@ -2158,7 +2158,7 @@ export default function ModelInferencePanel({ className = '', externalBrainTabRe
                 className="mip-command-input"
                 value={llmCommand}
                 onChange={(e) => setLlmCommand(e.target.value)}
-                placeholder='Example: "Analyze CAKE risk now and tell me if Auto should stay ON."'
+                placeholder='Example: "Analyze LINK risk now and tell me if Auto should stay ON."'
                 rows={3}
                 disabled={llmCommandLoading}
               />

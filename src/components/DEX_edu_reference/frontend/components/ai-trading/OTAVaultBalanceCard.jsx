@@ -12,8 +12,8 @@ import { useOTAAccess } from '../../hooks/useOTAAccess';
 import '../../styles/components/ota-vault-balance-card.css';
 import '../../styles/components/personal-account-header-badge.css';
 
-/** Tokeni relevanți pentru profit OTA: quote (USDT, BNB) + tokeni cumpărați de Auto (ex. MATIC după Buy USDT→MATIC) */
-const PROFIT_TOKENS = ['USDT', 'BNB', 'MATIC'];
+/** OTA profit balances: quote tokens plus current production tracked-token baseline. */
+const PROFIT_TOKENS = ['USDT', 'BNB', 'ETH', 'BTC', 'LINK', 'XRP', 'ADA', 'AVAX', 'SOL', 'DOGE'];
 
 export default function OTAVaultBalanceCard() {
   const navigate = useNavigate();

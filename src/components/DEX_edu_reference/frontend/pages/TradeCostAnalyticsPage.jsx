@@ -60,10 +60,10 @@ function OpenPositionsVaultDisclaimer() {
     >
       <Info size={16} aria-hidden />
       <span>
-        <strong>Vault vs this list:</strong> rows reconstruct positions from execution history (BUY/SELL), not the raw Vault balance. You can hold tokens in Vault (for example SHIB) without a row here.
+        <strong>Vault vs this list:</strong> rows reconstruct positions from execution history (BUY/SELL), not the raw Vault balance. You can hold tokens in Vault (for example LINK) without a row here.
         Binance futures perps, LONG and SHORT, are listed below when the backend provides them and can be fully managed in{' '}
         <Link to="/dex-edu/ota/short-ops">OTA futures ops</Link>. To use tokens without waiting for an OTA sell:{' '}
-        <Link to="/dex-edu/swap">Swap</Link> (for example SHIB &rarr; USDT).
+        <Link to="/dex-edu/swap">Swap</Link> (for example LINK &rarr; USDT).
       </span>
     </div>
   );
