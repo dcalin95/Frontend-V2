@@ -47,7 +47,7 @@ if [ -z "${CLOUDFRONT_DISTRIBUTION_ID:-}" ] && [ "$S3_BUCKET_NAME" = "bits-ai.io
     CLOUDFRONT_DISTRIBUTION_ID="E2TIH6RJTHIT1M"
 fi
 
-export NODE_OPTIONS="${NODE_OPTIONS:---max_old_space_size=6144}"
+export NODE_OPTIONS="${NODE_OPTIONS:---max-old-space-size=6144}"
 
 print_step "Starting BitSwapDEX deployment to S3..."
 

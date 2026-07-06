@@ -79,7 +79,7 @@
     "prestart": "node scripts/check-env.js",
     "start": "react-app-rewired start",
     "prebuild": "node scripts/check-env.js",
-    "build": "react-app-rewired build",
+    "build": "node --max-old-space-size=6144 ./node_modules/react-app-rewired/bin/index.js build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "deploy:s3": "powershell -Command \"$env:S3_BUCKET_NAME='bits-ai.io'; powershell -ExecutionPolicy Bypass -File ./scripts/deploy-s3.ps1\"",

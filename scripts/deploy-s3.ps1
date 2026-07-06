@@ -26,7 +26,7 @@ if ([string]::IsNullOrEmpty($BucketName)) {
 }
 
 if ([string]::IsNullOrWhiteSpace($env:NODE_OPTIONS)) {
-    $env:NODE_OPTIONS = "--max_old_space_size=6144"
+    $env:NODE_OPTIONS = "--max-old-space-size=6144"
 }
 
 Write-Host "==> Starting BitSwapDEX deployment to S3..." -ForegroundColor Blue
