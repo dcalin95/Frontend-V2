@@ -18,24 +18,18 @@ const WBNB_BSC = '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c';
 const ADDRESS_ETH_SENTINEL = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 const CAKE_BSC = '0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82';
 const SOL_BSC = TOKEN_REGISTRY.SOL?.address || '0x570a5d26f7765ecb712c0924e4de545b89fd43df';
-const STX_BSC = TOKEN_REGISTRY.STX?.address || '0x0104f019c8889BdabC62aE6C7b84F6f2ed351133';
-const SHIB_BSC = TOKEN_REGISTRY.SHIB?.address || '0x2859e4544c4bb03966803b044a93563bd2d0dd4d';
+const OTA_PRODUCTION_BASELINE_SYMBOLS = ['BTC', 'ETH', 'LINK', 'XRP', 'ADA', 'AVAX', 'SOL', 'DOGE'];
 
-// BTC/ETH are excluded from BSC Auto (2-hop executor), so they are not included in allowlist presets.
-// STX/XRP/ADA are included: users can authorize them in Limit (3-hop BSC).
+// Production baseline first; legacy BSC tokens stay selectable for manual/direct-entry cleanup only.
 const ALLOWLIST_TOKEN_OPTIONS = [
   { symbol: 'BNB', address: ADDRESS_ZERO },
-  { symbol: 'SOL', address: TOKEN_REGISTRY.SOL?.address },
-  { symbol: 'STX', address: STX_BSC },
-  { symbol: 'CAKE', address: CAKE_BSC },
-  { symbol: 'SHIB', address: SHIB_BSC },
   { symbol: 'USDT', address: TOKEN_REGISTRY.USDT?.address },
-  { symbol: 'DOGE', address: TOKEN_REGISTRY.DOGE?.address },
-  { symbol: 'LINK', address: TOKEN_REGISTRY.LINK?.address },
+  ...OTA_PRODUCTION_BASELINE_SYMBOLS.map(symbol => ({ symbol, address: TOKEN_REGISTRY[symbol]?.address })),
+  { symbol: 'BUSD', address: TOKEN_REGISTRY.BUSD?.address },
+  { symbol: 'CAKE', address: TOKEN_REGISTRY.CAKE?.address || CAKE_BSC },
   { symbol: 'MATIC', address: TOKEN_REGISTRY.MATIC?.address },
-  { symbol: 'XRP', address: TOKEN_REGISTRY.XRP?.address },
-  { symbol: 'ADA', address: TOKEN_REGISTRY.ADA?.address },
-  { symbol: 'BUSD', address: TOKEN_REGISTRY.BUSD?.address }
+  { symbol: 'SHIB', address: TOKEN_REGISTRY.SHIB?.address },
+  { symbol: 'STX', address: TOKEN_REGISTRY.STX?.address }
 ].filter(p => p.address);
 
 /** All token addresses used for full on-chain scan, exported for the Panel. */
@@ -204,12 +198,14 @@ function AutoTradeAllowlistTab({
   const [fetchedPairsResult, setFetchedPairsResult] = useState(null);
   const [loadingFetchTokens, setLoadingFetchTokens] = useState(false);
   const [loadingFetchPairs, setLoadingFetchPairs] = useState(false);
-  const recommendedTokens = [ADDRESS_ZERO, USDT_BSC, CAKE_BSC, SOL_BSC].filter(Boolean);
+  const recommendedBaselineAddresses = OTA_PRODUCTION_BASELINE_SYMBOLS
+    .map(symbol => TOKEN_REGISTRY[symbol]?.address)
+    .filter(Boolean);
+  const recommendedTokens = [ADDRESS_ZERO, USDT_BSC, ...recommendedBaselineAddresses].filter(Boolean);
   const recommendedPairs = [
     { tokenIn: ADDRESS_ZERO, tokenOut: USDT_BSC },
-    { tokenIn: ADDRESS_ZERO, tokenOut: CAKE_BSC },
     { tokenIn: USDT_BSC, tokenOut: ADDRESS_ZERO },
-    { tokenIn: USDT_BSC, tokenOut: SOL_BSC }
+    ...recommendedBaselineAddresses.map(tokenOut => ({ tokenIn: USDT_BSC, tokenOut }))
   ].filter(p => p.tokenIn && p.tokenOut);
   const addrMatches = (a, b) => { const na = normalizeAddr(a); const nb = normalizeAddr(b); return na && nb && na === nb; };
   const tokensToAdd = recommendedTokens.filter(addr => !tokenAllowlist.some(t => addrMatches(t, addr)));
@@ -329,10 +325,10 @@ function AutoTradeAllowlistTab({
               Recommended for most users
             </h5>
             <p className="auto-trade-panel-allowlist-recommended-desc">
-              One click adds: BNB, USDT, CAKE, SOL and pairs BNB/USDT, BNB/CAKE, USDT→SOL. STX on BSC Pancake is not supported (reverts); Stacks STX is on /dex-edu/stx.
+              One click adds the production OTA baseline: BTC, ETH, BNB, LINK, XRP, ADA, AVAX, SOL, DOGE plus USDT quote pairs.
             </p>
             <p className={`auto-trade-panel-allowlist-recommended-hint ${(tokensAlreadyApproved.length > 0 || pairsAlreadyApproved.length > 0) ? 'has-approved' : ''}`}>
-              <strong>One-time setup:</strong> You sign <strong>once per token and once per pair</strong> in MetaMask (~11 times for full recommended). Adding a token (e.g. + CAKE) also adds the required BNB→token pairs. After that, each Direct Entry is only <strong>1 signature</strong>. Items already approved below do <strong>not</strong> need to be approved again.
+              <strong>One-time setup:</strong> You sign <strong>once per token and once per pair</strong> in MetaMask for missing baseline items. After that, each Direct Entry is only <strong>1 signature</strong>. Items already approved below do <strong>not</strong> need to be approved again.
             </p>
             {(tokensAlreadyApproved.length > 0 || pairsAlreadyApproved.length > 0) && (
               <p className="auto-trade-panel-allowlist-already-approved">
@@ -428,7 +424,7 @@ function AutoTradeAllowlistTab({
                 onClick={onAddAllPairsForTokens}
                 disabled={saving || verifyingAllowlist || !hasBaseTokens || pairsToAddForTokensCount === 0}
                 style={{ minWidth: 200 }}
-                title={!hasBaseTokens ? 'Add at least one token (e.g. CAKE, USDT) below first' : pairsToAddForTokensCount === 0 ? 'All BNB→token pairs already in allowlist' : `Add ${pairsToAddForTokensCount} BNB→token pair(s)`}
+                title={!hasBaseTokens ? 'Add at least one baseline token below first' : pairsToAddForTokensCount === 0 ? 'All BNB→token pairs already in allowlist' : `Add ${pairsToAddForTokensCount} BNB→token pair(s)`}
               >
                 {saving ? <LoadingSpinner size={14} /> : null}
                 {saving ? ' Adding…' : pairsToAddForTokensCount === 0 ? 'Pairs complete' : `Add all pairs (${pairsToAddForTokensCount})`}
