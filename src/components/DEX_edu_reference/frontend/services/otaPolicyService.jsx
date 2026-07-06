@@ -772,8 +772,14 @@ export async function getTrackedTokensFromBackend() {
   const endpoint = API_ENDPOINTS.OTA_TRACKED_TOKENS_GET || '/ai-trading/tracked-tokens';
   try {
     const response = await apiRequest(endpoint, { method: 'GET', timeoutMs: 10000 });
+    if (response?.success === false || (Array.isArray(response?.errors) && response.errors.length > 0)) {
+      console.warn('[OTA Policy] tracked-tokens returned an unhealthy payload:', response?.errors || response);
+      return [];
+    }
     if (response?.tokens && Array.isArray(response.tokens)) {
-      return response.tokens.map((t) => ({ symbol: t.symbol, address: t.address || undefined }));
+      return response.tokens
+        .filter((t) => t?.symbol && t?.address)
+        .map((t) => ({ symbol: t.symbol, address: t.address }));
     }
     if (response?.symbols && Array.isArray(response.symbols)) {
       return response.symbols.map((s) => ({ symbol: String(s) }));

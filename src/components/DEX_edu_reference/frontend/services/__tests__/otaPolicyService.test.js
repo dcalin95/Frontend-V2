@@ -9,7 +9,10 @@ jest.mock('../../utils/otaApiClient', () => ({
 }));
 
 jest.mock('../../../config/apiEndpoints.js', () => ({
-  API_ENDPOINTS: { OTA_POLICY_GET: '/ai-trading/policy/get' }
+  API_ENDPOINTS: {
+    OTA_POLICY_GET: '/ai-trading/policy/get',
+    OTA_TRACKED_TOKENS_GET: '/ai-trading/tracked-tokens'
+  }
 }));
 
 describe('otaPolicyService - getPolicyFromBackendOnly', () => {
@@ -57,5 +60,42 @@ describe('otaPolicyService - getPolicyFromBackendOnly', () => {
     mockOtaApiRequest.mockResolvedValueOnce({});
     const result = await getPolicyFromBackendOnly('0xdef');
     expect(result).toBeNull();
+  });
+});
+
+describe('otaPolicyService - getTrackedTokensFromBackend', () => {
+  beforeEach(() => {
+    mockOtaApiRequest.mockReset();
+  });
+
+  test('returns empty list when backend marks tracked tokens payload unhealthy', async () => {
+    const { getTrackedTokensFromBackend } = require('../otaPolicyService');
+    mockOtaApiRequest.mockResolvedValueOnce({
+      success: false,
+      errors: [{ code: 'token_missing_address', symbol: 'SHIB' }],
+      tokens: [{ symbol: 'SHIB' }]
+    });
+
+    const result = await getTrackedTokensFromBackend();
+
+    expect(result).toEqual([]);
+    expect(mockOtaApiRequest).toHaveBeenCalledWith('/ai-trading/tracked-tokens', { method: 'GET', timeoutMs: 10000 });
+  });
+
+  test('keeps only tracked tokens that include backend address metadata', async () => {
+    const { getTrackedTokensFromBackend } = require('../otaPolicyService');
+    mockOtaApiRequest.mockResolvedValueOnce({
+      success: true,
+      tokens: [
+        { symbol: 'BNB', address: '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' },
+        { symbol: 'SHIB' },
+        { symbol: 'LINK', address: '0x1111111111111111111111111111111111111111' }
+      ]
+    });
+
+    await expect(getTrackedTokensFromBackend()).resolves.toEqual([
+      { symbol: 'BNB', address: '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' },
+      { symbol: 'LINK', address: '0x1111111111111111111111111111111111111111' }
+    ]);
   });
 });
