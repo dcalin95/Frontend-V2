@@ -19,6 +19,7 @@ function override(config) {
       url: require.resolve("url/"),
       zlib: require.resolve("browserify-zlib"),
       vm: require.resolve("vm-browserify"),
+      "@react-native-async-storage/async-storage": false,
       fs: false,
     },
   };
