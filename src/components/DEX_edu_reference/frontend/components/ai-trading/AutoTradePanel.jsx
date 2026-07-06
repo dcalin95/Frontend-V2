@@ -1837,7 +1837,7 @@ const AutoTradePanel = React.memo(() => {
         setPolicyLastCheckedAt(new Date().toISOString());
         if (arePoliciesEqual(beforePayload, policyPayloadForSave)) {
           setSavedPolicySummary(buildSummaryFromPayload(beforePayload));
-          toast.success('Min decision score set to 0.40 (SHIB). Press Save policy to save.');
+          toast.success('Min decision score set to 0.40. Press Save policy to save.');
           return;
         }
       }
@@ -5019,7 +5019,7 @@ const AutoTradePanel = React.memo(() => {
             </p>
             {directEntryErrorModal.openAllowlist && (
               <p className="auto-trade-panel-direct-entry-error-allowlist-hint" style={{ marginTop: 8, fontSize: 13, color: 'var(--dex-text-secondary, #aaa)' }}>
-                BNB is represented on-chain as <strong>0x0</strong>. In Allowlist, add <strong>BNB</strong> and pair <strong>BNB → token</strong> (for example BNB→CAKE), then retry Direct Entry.
+                BNB is represented on-chain as <strong>0x0</strong>. In Allowlist, add <strong>BNB</strong> and pair <strong>BNB → token</strong> (for example BNB -> LINK), then retry Direct Entry.
               </p>
             )}
             <div className="auto-trade-panel-direct-entry-error-actions">

@@ -382,11 +382,11 @@ function AutoTradeAllowlistTab({
                 onClick={onAddCakeForDirectEntry}
                 disabled={saving || verifyingAllowlist || cakeFullyApproved}
                 style={{ minWidth: 180 }}
-                title={cakeFullyApproved ? 'CAKE already approved' : 'Add CAKE token and BNB→CAKE pairs for Direct Entry'}
-                aria-label={cakeFullyApproved ? 'CAKE already approved' : 'Add CAKE token and pairs'}
+                title={cakeFullyApproved ? 'CAKE already approved' : 'Add legacy CAKE token and BNB -> CAKE pairs for manual Direct Entry'}
+                aria-label={cakeFullyApproved ? 'CAKE already approved' : 'Add legacy CAKE token and pairs'}
               >
                 {saving ? <LoadingSpinner size={14} /> : null}
-                {saving ? ' Adding…' : cakeFullyApproved ? 'CAKE approved' : 'Add CAKE (token + pairs)'}
+                {saving ? ' Adding…' : cakeFullyApproved ? 'Legacy CAKE approved' : 'Add legacy CAKE'}
               </button>
             )}
             {onAddUsdtForDirectEntry && (

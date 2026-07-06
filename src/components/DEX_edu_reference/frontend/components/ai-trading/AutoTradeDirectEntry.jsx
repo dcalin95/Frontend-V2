@@ -341,7 +341,7 @@ function AutoTradeDirectEntry({
 
         {/* Linie 6: Hint text – div allows LoadingSpinner (div) inside without validateDOMNesting */}
         <div className="auto-trade-panel-direct-entry-hint">
-          Open a position manually (no AI signal). <strong>Buy</strong>: token from header (e.g. CAKE, SHIB). <strong>Pay with</strong>: BNB, USDT, or ETH from your Personal Account (quote ≠ token).{directEntryQuoteToken === 'BNB' && ' Min ~0.01 BNB.'} {positionCount >= 3 ? 'Maximum 3 positions – close one in Open Orders first.' : hasOpenPosition ? `${positionCount}/3 positions – you can open more.` : (
+          Open a position manually (no AI signal). <strong>Buy</strong>: token from header (for example LINK or SOL). <strong>Pay with</strong>: BNB, USDT, or ETH from your Personal Account (quote ≠ token).{directEntryQuoteToken === 'BNB' && ' Min ~0.01 BNB.'} {positionCount >= 3 ? 'Maximum 3 positions – close one in Open Orders first.' : hasOpenPosition ? `${positionCount}/3 positions – you can open more.` : (
             <>
               Buy <strong>{advisoryToken || 'BNB'}</strong> with <strong>{directEntryAmount || '…'} {directEntryQuoteToken}</strong>
               {bnbAmountUsd != null && (
@@ -375,7 +375,7 @@ function AutoTradeDirectEntry({
           <strong>BSC gas:</strong> Each open and close pays a transaction fee (~$0.20–0.50 in BNB). On small positions, gas can eat most or all profit. Prefer larger size (e.g. $50+) so fees are a smaller share of PnL.
         </p>
         <p className="auto-trade-panel-direct-entry-vault-hint">
-          <strong>Have only BNB in wallet?</strong> <strong>Deposit first</strong> – transfer BNB to your Personal Account (real tx): <button type="button" className="auto-trade-panel-direct-entry-link" onClick={() => navigate('/dex-edu/leverage?tab=deposit')}>Leverage → Deposit</button>. Then <strong>Authorize</strong> – sets limit bot can use <em>from your account</em> (no transfer; account must have balance). <strong>Changed your mind?</strong> <button type="button" className="auto-trade-panel-direct-entry-link" onClick={() => navigate('/dex-edu/leverage?tab=withdraw')}>Withdraw</button> anytime. Then here: select token (e.g. CAKE), quote BNB, amount.
+          <strong>Have only BNB in wallet?</strong> <strong>Deposit first</strong> – transfer BNB to your Personal Account (real tx): <button type="button" className="auto-trade-panel-direct-entry-link" onClick={() => navigate('/dex-edu/leverage?tab=deposit')}>Leverage → Deposit</button>. Then <strong>Authorize</strong> – sets limit bot can use <em>from your account</em> (no transfer; account must have balance). <strong>Changed your mind?</strong> <button type="button" className="auto-trade-panel-direct-entry-link" onClick={() => navigate('/dex-edu/leverage?tab=withdraw')}>Withdraw</button> anytime. Then here: select a baseline token (for example LINK), quote BNB, amount.
         </p>
         <ConfirmationModal
           isOpen={directEntryConfirmOpen}
