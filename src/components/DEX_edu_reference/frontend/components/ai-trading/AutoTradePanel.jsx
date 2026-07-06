@@ -66,18 +66,18 @@ const ADDRESS_ZERO_STATIC = '0x0000000000000000000000000000000000000000';
 const WBNB_BSC = '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c';
 const isDev = typeof process !== 'undefined' && process.env?.NODE_ENV === 'development';
 const DE_DEBUG = false; // set true to re-enable [DE] console logs
-// Tokens for Limits: addresses from TOKEN_REGISTRY (BSC). Limits are read only from contract (getTokenLimits), not backend.
+// Tokens for Limits: quote tokens plus the production OTA tracked-token baseline.
 // Include USDT + BNB (WBNB) + ETH: executor _getBestQuoteToken reads getTokenLimits on these addresses; without ETH in the list, ETH quote always stays maxPerTrade=0.
 const OTA_LIMITS_TOKENS = [
-  { symbol: 'SOL', address: TOKEN_REGISTRY.SOL?.address },
-  { symbol: 'BNB', address: WBNB_BSC },
+  { symbol: 'BTC', address: TOKEN_REGISTRY.BTC?.address },
   { symbol: 'ETH', address: TOKEN_REGISTRY.ETH?.address },
-  { symbol: 'STX', address: TOKEN_REGISTRY.STX?.address },
-  { symbol: 'CAKE', address: TOKEN_REGISTRY.CAKE?.address },
-  { symbol: 'DOGE', address: TOKEN_REGISTRY.DOGE?.address },
-  { symbol: 'SHIB', address: TOKEN_REGISTRY.SHIB?.address },
-  { symbol: 'MATIC', address: TOKEN_REGISTRY.MATIC?.address },
+  { symbol: 'BNB', address: WBNB_BSC },
   { symbol: 'LINK', address: TOKEN_REGISTRY.LINK?.address },
+  { symbol: 'XRP', address: TOKEN_REGISTRY.XRP?.address },
+  { symbol: 'ADA', address: TOKEN_REGISTRY.ADA?.address },
+  { symbol: 'AVAX', address: TOKEN_REGISTRY.AVAX?.address },
+  { symbol: 'SOL', address: TOKEN_REGISTRY.SOL?.address },
+  { symbol: 'DOGE', address: TOKEN_REGISTRY.DOGE?.address },
   { symbol: 'USDT', address: TOKEN_REGISTRY.USDT?.address }
 ].filter((p) => p.address);
 
@@ -2976,18 +2976,30 @@ const AutoTradePanel = React.memo(() => {
     }
   }, [walletAddress, isAuthenticated, persistAllowlist]);
 
-  // Recommended allowlist: BNB (0x0), USDT, CAKE, SOL + pairs (STX BSC exclus – Pancake revert, vezi AITradingExecutor)
+  // Recommended allowlist: quote tokens + current production OTA baseline.
   const RECOMMENDED_TOKENS = useMemo(() => [
     ADDRESS_ZERO,
     TOKEN_REGISTRY.USDT?.address,
-    '0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82', // CAKE BSC
-    TOKEN_REGISTRY.SOL?.address // SOL BSC
+    TOKEN_REGISTRY.BTC?.address,
+    TOKEN_REGISTRY.ETH?.address,
+    TOKEN_REGISTRY.LINK?.address,
+    TOKEN_REGISTRY.XRP?.address,
+    TOKEN_REGISTRY.ADA?.address,
+    TOKEN_REGISTRY.AVAX?.address,
+    TOKEN_REGISTRY.SOL?.address,
+    TOKEN_REGISTRY.DOGE?.address
   ].filter(Boolean), []);
   const RECOMMENDED_PAIRS = useMemo(() => [
     { tokenIn: ADDRESS_ZERO, tokenOut: TOKEN_REGISTRY.USDT?.address },
-    { tokenIn: ADDRESS_ZERO, tokenOut: '0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82' },
     { tokenIn: TOKEN_REGISTRY.USDT?.address, tokenOut: ADDRESS_ZERO },
-    { tokenIn: TOKEN_REGISTRY.USDT?.address, tokenOut: TOKEN_REGISTRY.SOL?.address }
+    { tokenIn: TOKEN_REGISTRY.USDT?.address, tokenOut: TOKEN_REGISTRY.BTC?.address },
+    { tokenIn: TOKEN_REGISTRY.USDT?.address, tokenOut: TOKEN_REGISTRY.ETH?.address },
+    { tokenIn: TOKEN_REGISTRY.USDT?.address, tokenOut: TOKEN_REGISTRY.LINK?.address },
+    { tokenIn: TOKEN_REGISTRY.USDT?.address, tokenOut: TOKEN_REGISTRY.XRP?.address },
+    { tokenIn: TOKEN_REGISTRY.USDT?.address, tokenOut: TOKEN_REGISTRY.ADA?.address },
+    { tokenIn: TOKEN_REGISTRY.USDT?.address, tokenOut: TOKEN_REGISTRY.AVAX?.address },
+    { tokenIn: TOKEN_REGISTRY.USDT?.address, tokenOut: TOKEN_REGISTRY.SOL?.address },
+    { tokenIn: TOKEN_REGISTRY.USDT?.address, tokenOut: TOKEN_REGISTRY.DOGE?.address }
   ].filter(p => p.tokenIn && p.tokenOut), []);
 
   const handleAddAllRecommendedAllowlist = useCallback(async () => {
@@ -3026,7 +3038,7 @@ const AutoTradePanel = React.memo(() => {
         persistAllowlist(null, pairs);
         done += 1;
       }
-      toast.success(`Recommended allowlist set (${tokensToAdd.length} tokens, ${pairsToAdd.length} pairs). BNB/USDT/CAKE/SOL pe BSC; STX Stacks pe /dex-edu/stx.`);
+      toast.success(`Recommended allowlist set (${tokensToAdd.length} tokens, ${pairsToAdd.length} pairs). Production baseline: BTC/ETH/BNB/LINK/XRP/ADA/AVAX/SOL/DOGE.`);
     } catch (error) {
       console.error('Recommended allowlist error:', error);
       if (error?.showRpcRepairModal) {
@@ -3049,7 +3061,7 @@ const AutoTradePanel = React.memo(() => {
     const quoteSet = new Set(QUOTE_TOKENS.map(q => q.toLowerCase()));
     const baseTokens = tokenAllowlist.filter(t => t && !quoteSet.has(String(t).toLowerCase()));
     if (baseTokens.length === 0) {
-      toast.info('Add at least one token (e.g. CAKE, USDT) in the list below, then use this button to add all pairs.');
+      toast.info('Add at least one baseline token (for example LINK or SOL) plus a quote token, then use this button to add all pairs.');
       return;
     }
     const pairsToAdd = [];

@@ -237,6 +237,17 @@ export const TOKEN_REGISTRY = {
     type: 'erc20',
     displayOrder: 24
   },
+  AVAX: {
+    symbol: 'AVAX',
+    name: 'Avalanche (Binance-Peg)',
+    address: '0x1CE0c2827e342e765BfEF1e182FB9F9ceFe2496e',
+    decimals: 18,
+    logoUrl: null,
+    isNative: false,
+    isStablecoin: false,
+    type: 'erc20',
+    displayOrder: 25
+  },
   STX: {
     symbol: 'STX',
     name: 'Stacks (Binance-Peg)',
@@ -246,7 +257,7 @@ export const TOKEN_REGISTRY = {
     isNative: false,
     isStablecoin: false,
     type: 'erc20',
-    displayOrder: 25
+    displayOrder: 26
   }
 };
 
