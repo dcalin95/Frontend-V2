@@ -13,6 +13,11 @@ import { API_ENDPOINTS } from '../utils/constants';
 import { otaApiRequest } from '../utils/otaApiClient';
 import { logWithPrefix, errorWithPrefix } from '../utils/logger';
 
+const OTA_EMERGENCY_NEW_TRADES_DISABLED =
+  process.env.REACT_APP_OTA_EMERGENCY_NEW_TRADES_DISABLED === 'true';
+const OTA_EMERGENCY_MESSAGE =
+  'Emergency safety lock is active: enabling or creating active trading strategies is disabled.';
+
 async function apiRequest(endpoint, options = {}) {
   try {
     logWithPrefix('StrategyAPI', 'Request:', { endpoint, method: options.method || 'GET' });
@@ -63,6 +68,9 @@ export async function getStrategy(userId, strategyId) {
  * @returns {Promise<Object>} Created strategy
  */
 export async function createStrategy(userId, strategyData) {
+  if (OTA_EMERGENCY_NEW_TRADES_DISABLED && strategyData?.enabled === true) {
+    throw new Error(OTA_EMERGENCY_MESSAGE);
+  }
   if (!userId) {
     throw new Error('User ID is required');
   }
@@ -81,6 +89,9 @@ export async function createStrategy(userId, strategyData) {
  * @returns {Promise<Object>} Updated strategy
  */
 export async function updateStrategy(userId, strategyId, updates) {
+  if (OTA_EMERGENCY_NEW_TRADES_DISABLED && updates?.enabled === true) {
+    throw new Error(OTA_EMERGENCY_MESSAGE);
+  }
   if (!userId || !strategyId) {
     throw new Error('User ID and Strategy ID are required');
   }
@@ -114,6 +125,9 @@ export async function deleteStrategy(userId, strategyId) {
  * @returns {Promise<Object>} Success response
  */
 export async function enableStrategy(userId, strategyId) {
+  if (OTA_EMERGENCY_NEW_TRADES_DISABLED) {
+    throw new Error(OTA_EMERGENCY_MESSAGE);
+  }
   if (!userId || !strategyId) {
     throw new Error('User ID and Strategy ID are required');
   }

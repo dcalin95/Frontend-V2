@@ -17,6 +17,14 @@ import { shouldRequestEngineNoOpenAiFromPreference } from '../utils/otaAnalysisM
 
 const isDev = typeof process !== 'undefined' && process.env?.NODE_ENV === 'development';
 const DE_DEBUG = false; // set true to re-enable [DE] console logs
+export const OTA_EMERGENCY_NEW_TRADES_DISABLED =
+  process.env.REACT_APP_OTA_EMERGENCY_NEW_TRADES_DISABLED === 'true';
+const OTA_EMERGENCY_MESSAGE =
+  'Emergency safety lock is active: new real trades are disabled. Closing existing positions remains available.';
+
+function throwEmergencyNewTradesDisabled() {
+  throw new Error(OTA_EMERGENCY_MESSAGE);
+}
 
 /** Request către OTA/backend: timeout 15s, 1 retry la eroare de rețea, getApiBaseUrl() la fiecare request. */
 async function apiRequest(endpoint, options = {}) {
@@ -50,6 +58,7 @@ async function apiRequest(endpoint, options = {}) {
  * @returns {Promise<Object>} Bot instance ID
  */
 export async function startAITradingBot(userId, config) {
+  if (OTA_EMERGENCY_NEW_TRADES_DISABLED) throwEmergencyNewTradesDisabled();
   if (!userId) {
     throw new Error('User ID is required');
   }
@@ -485,6 +494,7 @@ export function getOtaAgentTraceStreamUrl(runId, userId) {
  * Fire-and-forget (catch and log only).
  */
 export async function clearSafetyStopForBsc(walletAddress) {
+  if (OTA_EMERGENCY_NEW_TRADES_DISABLED) return;
   if (!walletAddress) return;
   try {
     await apiRequest(API_ENDPOINTS.OTA_SAFETY_SET || '/ai-trading/safety/set', {
@@ -500,6 +510,9 @@ export async function clearSafetyStopForBsc(walletAddress) {
 
 export async function setAutoSession(userId, enabled, options = {}) {
   if (!userId) return undefined;
+  if (enabled === true && OTA_EMERGENCY_NEW_TRADES_DISABLED) {
+    throwEmergencyNewTradesDisabled();
+  }
   try {
     const body = { userId, enabled };
     const hasOption = (key) => Object.prototype.hasOwnProperty.call(options, key);
@@ -572,6 +585,7 @@ export async function recordManualOutcome(payload) {
  * @param {string} [path] - Optional 2-hop path [quoteTokenAddress, tokenAddress]. When provided, backend uses it (avoids 3-hop when executor allows only 2-hop).
  */
 export async function directEntryOpen(walletAddress, token, amountUsd = 10, quoteToken = 'USDT', maxSlippageBps = undefined, maxLossPct = undefined, path = undefined) {
+  if (OTA_EMERGENCY_NEW_TRADES_DISABLED) throwEmergencyNewTradesDisabled();
   if (!walletAddress || !token) {
     throw new Error('walletAddress and token are required');
   }

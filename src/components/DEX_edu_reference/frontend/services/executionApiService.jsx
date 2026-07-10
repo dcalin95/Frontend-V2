@@ -13,6 +13,11 @@
 import { API_ENDPOINTS } from '../utils/constants';
 import { otaApiRequest } from '../utils/otaApiClient';
 
+const OTA_EMERGENCY_NEW_TRADES_DISABLED =
+  process.env.REACT_APP_OTA_EMERGENCY_NEW_TRADES_DISABLED === 'true';
+const OTA_EMERGENCY_MESSAGE =
+  'Emergency safety lock is active: new real trades are disabled. Closing/canceling existing trades remains available.';
+
 /** Request către backend: timeout 15s, 1 retry la eroare de rețea, getApiBaseUrl() la fiecare request. */
 async function apiRequest(endpoint, options = {}) {
   try {
@@ -32,6 +37,9 @@ async function apiRequest(endpoint, options = {}) {
  * @returns {Promise<Object>} Executed trade { tradeId?, txHash?, source?: 'ota_auto' }
  */
 export async function executeTrade(userId, tradeData) {
+  if (OTA_EMERGENCY_NEW_TRADES_DISABLED) {
+    throw new Error(OTA_EMERGENCY_MESSAGE);
+  }
   if (!userId) {
     throw new Error('User ID is required');
   }

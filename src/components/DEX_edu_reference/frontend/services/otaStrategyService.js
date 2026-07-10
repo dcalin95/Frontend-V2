@@ -5,6 +5,11 @@
 
 import { otaApiRequest } from '../utils/otaApiClient';
 
+const OTA_EMERGENCY_NEW_TRADES_DISABLED =
+  process.env.REACT_APP_OTA_EMERGENCY_NEW_TRADES_DISABLED === 'true';
+const OTA_EMERGENCY_MESSAGE =
+  'Emergency safety lock is active: strategy execution is disabled.';
+
 async function apiRequest(endpoint, options = {}) {
   try {
     return await otaApiRequest(endpoint, options);
@@ -36,6 +41,9 @@ export async function listStrategies() {
  * @returns {Promise<Object>} Execution results
  */
 export async function executeStrategy(params = {}) {
+  if (OTA_EMERGENCY_NEW_TRADES_DISABLED) {
+    throw new Error(OTA_EMERGENCY_MESSAGE);
+  }
   const {
     strategyName,
     token,
