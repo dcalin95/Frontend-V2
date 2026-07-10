@@ -71,6 +71,62 @@ const MarketAnalysis = lazy(() =>
   })
 );
 
+function OtaSafetyDashboard() {
+  const dashboard = useOtaAutoDashboard();
+  const status = dashboard?.autoStatus;
+  const safety = status?.safety || {};
+  const pnl = safety?.pnlAccounting || {};
+  const activeUsers = status?.activeUsers ?? 0;
+  const realMoneyLocked = safety.paperOnlyMode === true || safety.emergencyNewTradesDisabled === true;
+  const pnlHealthy = pnl.healthy !== false;
+  const updated = dashboard?.lastFetchAt ? new Date(dashboard.lastFetchAt).toLocaleTimeString() : 'not checked';
+
+  return (
+    <section className="ota-safety-dashboard" aria-label="OTA safety status">
+      <div className="ota-safety-dashboard__header">
+        <span className={`ota-safety-dashboard__state ${realMoneyLocked ? 'is-locked' : 'is-live'}`}>
+          <Shield size={16} aria-hidden />
+          {realMoneyLocked ? 'Real money locked' : 'Real money enabled'}
+        </span>
+        <button type="button" className="ota-safety-dashboard__refresh" onClick={dashboard?.refresh}>
+          <Radio size={14} aria-hidden />
+          Refresh
+        </button>
+      </div>
+      <div className="ota-safety-dashboard__grid">
+        <div className="ota-safety-dashboard__item">
+          <span>Paper only</span>
+          <strong>{safety.paperOnlyMode === true ? 'ON' : 'OFF'}</strong>
+        </div>
+        <div className="ota-safety-dashboard__item">
+          <span>Active users</span>
+          <strong>{activeUsers}</strong>
+        </div>
+        <div className="ota-safety-dashboard__item">
+          <span>PnL accounting</span>
+          <strong>{pnlHealthy ? 'OK' : 'BLOCKING'}</strong>
+        </div>
+        <div className="ota-safety-dashboard__item">
+          <span>PnL coverage</span>
+          <strong>{Number.isFinite(Number(pnl.coveragePct)) ? `${Number(pnl.coveragePct).toFixed(1)}%` : '-'}</strong>
+        </div>
+        <div className="ota-safety-dashboard__item">
+          <span>Missing PnL</span>
+          <strong>{pnl.missingPnl ?? 0}</strong>
+        </div>
+        <div className="ota-safety-dashboard__item">
+          <span>Loss cooldown</span>
+          <strong>{safety.pairLossChurnGuardEnabled === false ? 'OFF' : `${safety.pairLossCooldownMinutes ?? '-'} min`}</strong>
+        </div>
+      </div>
+      <p className="ota-safety-dashboard__note">
+        Auto opens stay blocked while paper-only, emergency lock, or PnL accounting guard is active. Last check: {updated}.
+        {dashboard?.autoStatusError?.message ? ` Status error: ${dashboard.autoStatusError.message}` : ''}
+      </p>
+    </section>
+  );
+}
+
 const OTAPageInner = memo(() => {
   const navigate = useNavigate();
   const { walletAddress, isAuthenticated, user } = useDexAuth();
@@ -494,6 +550,7 @@ const OTAPageInner = memo(() => {
         {hasFullAccess && currentMode === 'auto' && (
           <div className="ota-page-auto-layout" role="region" aria-label="Auto mode: policy and configuration">
             <div className="ota-page-auto-main">
+              <OtaSafetyDashboard />
               <ErrorBoundary>
                 <Suspense fallback={<Skeleton variant="card" height={420} />}>
                   <AutoTradePanel />
