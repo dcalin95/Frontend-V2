@@ -105,6 +105,10 @@ function OtaSafetyDashboard() {
           <strong>{activeUsers}</strong>
         </div>
         <div className="ota-safety-dashboard__item">
+          <span>Production profile</span>
+          <strong>{safetyLoaded ? (safety.productionLiveProfileEnabled === true ? 'ON' : 'OFF') : '-'}</strong>
+        </div>
+        <div className="ota-safety-dashboard__item">
           <span>PnL accounting</span>
           <strong>{safetyLoaded ? (pnlHealthy ? 'OK' : 'BLOCKING') : '-'}</strong>
         </div>
