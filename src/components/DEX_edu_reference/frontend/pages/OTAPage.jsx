@@ -74,19 +74,21 @@ const MarketAnalysis = lazy(() =>
 function OtaSafetyDashboard() {
   const dashboard = useOtaAutoDashboard();
   const status = dashboard?.autoStatus;
+  const safetyLoaded = !!status?.safety;
   const safety = status?.safety || {};
   const pnl = safety?.pnlAccounting || {};
   const activeUsers = status?.activeUsers ?? 0;
-  const realMoneyLocked = safety.paperOnlyMode === true || safety.emergencyNewTradesDisabled === true;
-  const pnlHealthy = pnl.healthy !== false;
+  const realMoneyLocked = !safetyLoaded || safety.paperOnlyMode === true || safety.emergencyNewTradesDisabled === true;
+  const pnlHealthy = safetyLoaded && pnl.healthy !== false;
   const updated = dashboard?.lastFetchAt ? new Date(dashboard.lastFetchAt).toLocaleTimeString() : 'not checked';
+  const stateLabel = !safetyLoaded ? 'Checking safety' : (realMoneyLocked ? 'Real money locked' : 'Real money enabled');
 
   return (
     <section className="ota-safety-dashboard" aria-label="OTA safety status">
       <div className="ota-safety-dashboard__header">
         <span className={`ota-safety-dashboard__state ${realMoneyLocked ? 'is-locked' : 'is-live'}`}>
           <Shield size={16} aria-hidden />
-          {realMoneyLocked ? 'Real money locked' : 'Real money enabled'}
+          {stateLabel}
         </span>
         <button type="button" className="ota-safety-dashboard__refresh" onClick={dashboard?.refresh}>
           <Radio size={14} aria-hidden />
@@ -96,7 +98,7 @@ function OtaSafetyDashboard() {
       <div className="ota-safety-dashboard__grid">
         <div className="ota-safety-dashboard__item">
           <span>Paper only</span>
-          <strong>{safety.paperOnlyMode === true ? 'ON' : 'OFF'}</strong>
+          <strong>{safetyLoaded ? (safety.paperOnlyMode === true ? 'ON' : 'OFF') : '-'}</strong>
         </div>
         <div className="ota-safety-dashboard__item">
           <span>Active users</span>
@@ -104,7 +106,7 @@ function OtaSafetyDashboard() {
         </div>
         <div className="ota-safety-dashboard__item">
           <span>PnL accounting</span>
-          <strong>{pnlHealthy ? 'OK' : 'BLOCKING'}</strong>
+          <strong>{safetyLoaded ? (pnlHealthy ? 'OK' : 'BLOCKING') : '-'}</strong>
         </div>
         <div className="ota-safety-dashboard__item">
           <span>PnL coverage</span>
@@ -112,7 +114,7 @@ function OtaSafetyDashboard() {
         </div>
         <div className="ota-safety-dashboard__item">
           <span>Missing PnL</span>
-          <strong>{pnl.missingPnl ?? 0}</strong>
+          <strong>{safetyLoaded ? (pnl.missingPnl ?? 0) : '-'}</strong>
         </div>
         <div className="ota-safety-dashboard__item">
           <span>Loss cooldown</span>
