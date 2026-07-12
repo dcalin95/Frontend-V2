@@ -196,7 +196,8 @@ const ProtectedRoute = ({
                     if (!base) return;
                     const origin = window.location.origin || `${window.location.protocol}//${window.location.hostname}:${window.location.port || '3000'}`;
                     const returnUrl = `${origin}/#/dex-edu/profile?auth=success`;
-                    window.location.href = `${base.replace(/\/$/, '')}/api/auth/google/start?redirect=${encodeURIComponent(returnUrl)}`;
+                    const requestBase = origin === 'https://bits-ai.io' ? origin : base;
+                    window.location.href = `${requestBase.replace(/\/$/, '')}/api/auth/google/start?redirect=${encodeURIComponent(returnUrl)}`;
                   }}
                   style={{ width: '100%', maxWidth: '360px', padding: '10px 16px', marginTop: '0.5rem', borderRadius: '8px', border: '1px solid var(--ds-border-color, rgba(255,255,255,0.2))', background: 'var(--ds-bg-input, rgba(0,0,0,0.2))', color: 'var(--ds-text-primary, #e2e8f0)', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
                 >

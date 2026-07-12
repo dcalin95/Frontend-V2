@@ -59,7 +59,11 @@ async function authApiRequest(endpoint, options = {}) {
     if (!base || typeof base !== 'string') {
       throw new Error('Backend URL is not configured. Please refresh the page.');
     }
-    const url = `${base.replace(/\/$/, '')}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+    const isMainSiteAuth = typeof window !== 'undefined'
+      && window.location?.origin === 'https://bits-ai.io'
+      && endpoint.startsWith('/api/auth/');
+    const requestBase = isMainSiteAuth ? window.location.origin : base;
+    const url = `${requestBase.replace(/\/$/, '')}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
 
     const defaultOptions = {
       method: 'GET',
@@ -728,7 +732,8 @@ export const loginWithProvider = (provider) => {
   }
   const origin = window.location.origin || `${window.location.protocol}//${window.location.hostname}:${window.location.port || '3000'}`;
   const returnUrl = `${origin}/#/dex-edu/profile?auth=success`;
-  const authUrl = `${base.replace(/\/$/, '')}/api/auth/${provider}/start?redirect=${encodeURIComponent(returnUrl)}`;
+  const requestBase = origin === 'https://bits-ai.io' ? origin : base;
+  const authUrl = `${requestBase.replace(/\/$/, '')}/api/auth/${provider}/start?redirect=${encodeURIComponent(returnUrl)}`;
   window.location.href = authUrl;
 };
 
