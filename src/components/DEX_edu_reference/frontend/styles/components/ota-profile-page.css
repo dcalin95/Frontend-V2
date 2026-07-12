@@ -1601,3 +1601,79 @@ select.ota-profile-input.ota-profile-documents-type {
   font-size: 13px;
 }
 
+.ota-bsc-whales {
+  margin-top: 16px;
+  border: 1px solid rgba(82, 116, 151, 0.32);
+  background: #030609;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.ota-bsc-whales-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border-bottom: 1px solid rgba(82, 116, 151, 0.25);
+}
+
+.ota-bsc-whales-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: #f2f7fb;
+  font-size: 16px;
+  letter-spacing: 0;
+}
+
+.ota-bsc-whales-header h2 svg { color: #24d6a4; }
+.ota-bsc-whales-header p { margin: 6px 0 0; color: #8ca2b8; font-size: 12px; }
+
+.ota-bsc-whales-refresh,
+.ota-bsc-whales-tx {
+  width: 36px;
+  height: 36px;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 36px;
+  border: 1px solid #1c4f78;
+  border-radius: 5px;
+  color: #55b9ff;
+  background: #07111a;
+  cursor: pointer;
+}
+
+.ota-bsc-whales-refresh:disabled { opacity: 0.55; cursor: wait; }
+.ota-bsc-whales-refresh:hover:not(:disabled), .ota-bsc-whales-tx:hover { border-color: #55b9ff; color: #fff; }
+.ota-bsc-whales-refresh .is-spinning { animation: ota-bsc-spin 0.9s linear infinite; }
+@keyframes ota-bsc-spin { to { transform: rotate(360deg); } }
+
+.ota-bsc-whales-state { padding: 28px 16px; color: #93a9bc; text-align: center; font-size: 13px; }
+.ota-bsc-whales-error { color: #ff8b8b; }
+.ota-bsc-whales-table-wrap { width: 100%; overflow-x: auto; }
+.ota-bsc-whales-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.ota-bsc-whales-table th { padding: 10px 12px; color: #728aa0; font-size: 10px; text-align: left; text-transform: uppercase; font-weight: 700; }
+.ota-bsc-whales-table th:nth-child(1) { width: 47%; }
+.ota-bsc-whales-table th:nth-child(2) { width: 17%; }
+.ota-bsc-whales-table th:nth-child(3) { width: 8%; }
+.ota-bsc-whales-table th:nth-child(4) { width: 20%; }
+.ota-bsc-whales-table th:nth-child(5) { width: 8%; }
+.ota-bsc-whales-table td { padding: 12px; border-top: 1px solid rgba(82, 116, 151, 0.18); color: #d8e3ec; font-size: 12px; vertical-align: middle; }
+.ota-bsc-whales-table td > span { display: block; margin-top: 3px; color: #748a9c; font-size: 10px; }
+.ota-bsc-whales-route { display: flex; align-items: center; gap: 7px; min-width: 0; }
+.ota-bsc-whales-route a { color: #80c8ff; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ota-bsc-whales-route svg { flex: 0 0 auto; color: #4f6578; }
+.ota-bsc-whales-token { display: inline-flex !important; width: fit-content; margin: 0 !important; padding: 4px 7px; border: 1px solid #275b48; border-radius: 4px; color: #61e8b8 !important; background: #071610; font-weight: 700; }
+.ota-bsc-whales footer { padding: 9px 12px; border-top: 1px solid rgba(82, 116, 151, 0.18); color: #607587; font-size: 10px; }
+
+@media (max-width: 760px) {
+  .ota-bsc-whales-table, .ota-bsc-whales-table tbody, .ota-bsc-whales-table tr, .ota-bsc-whales-table td { display: block; width: 100%; }
+  .ota-bsc-whales-table thead { display: none; }
+  .ota-bsc-whales-table tr { position: relative; padding: 12px 48px 12px 12px; border-top: 1px solid rgba(82, 116, 151, 0.22); box-sizing: border-box; }
+  .ota-bsc-whales-table td { padding: 4px 0; border: 0; }
+  .ota-bsc-whales-table td:last-child { position: absolute; top: 12px; right: 10px; }
+  .ota-bsc-whales-route { flex-wrap: wrap; padding-right: 4px !important; }
+  .ota-bsc-whales-route a { max-width: calc(100% - 22px); white-space: normal; overflow-wrap: anywhere; }
+}

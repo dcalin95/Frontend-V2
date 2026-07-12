@@ -38,6 +38,7 @@ import OTASettingsPanel from '../../ota/OTASettingsPanel';
 import OtaBscAutoStatusBanner from '../components/ai-trading/OtaBscAutoStatusBanner';
 import { isBotAuthorized, getExecutorBotAuth } from '../utils/otaTradingModes';
 import ProfileAvatarDisplay from '../components/profile/ProfileAvatarDisplay';
+import BscLargeTransfersSection from '../components/profile/BscLargeTransfersSection';
 import '../styles/pages.css';
 import '../styles/components/ota-profile-page.css';
 
@@ -1493,6 +1494,7 @@ const OTAProfilePage = () => {
                 </div>
               </div>
             </div>
+            <BscLargeTransfersSection />
             </>
           )}
 
