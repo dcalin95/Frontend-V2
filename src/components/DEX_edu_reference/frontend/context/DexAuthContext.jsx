@@ -23,6 +23,7 @@ import {
   getBiometricErrorMessage
 } from '../utils/biometricAuth';
 import { logWithPrefix, warnWithPrefix } from '../utils/logger';
+import { hasOAuthSuccessMarker } from '../utils/oauthCallbackUrl';
 import { 
   getStoredRefreshToken, 
   storeRefreshToken, 
@@ -451,7 +452,7 @@ export const DexAuthProvider = ({ children }) => {
     const initializeAuth = async () => {
       try {
         // După OAuth (Google): dacă URL are auth=success, sesiunea e în cookie – hidrăm din /api/auth/me
-        if (typeof window !== 'undefined' && window.location.search.includes('auth=success')) {
+        if (typeof window !== 'undefined' && hasOAuthSuccessMarker(window.location)) {
           try {
             const me = await authApiService.getMainAuthMe();
             if (me && me.id) {
