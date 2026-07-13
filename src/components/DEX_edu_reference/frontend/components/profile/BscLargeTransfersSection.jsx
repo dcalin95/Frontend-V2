@@ -21,7 +21,7 @@ const BscLargeTransfersSection = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${getApiBaseUrl()}/bsc/large-transfers?minUsd=1000000&limit=25&blocks=1200`, {
+      const response = await fetch(`${getApiBaseUrl()}/bsc/large-transfers?minUsd=1000000&limit=25&blocks=400`, {
         signal: controller.signal,
         credentials: 'include',
       });
@@ -36,7 +36,11 @@ const BscLargeTransfersSection = () => {
     }
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+    const refresh = setInterval(load, 60_000);
+    return () => clearInterval(refresh);
+  }, [load]);
 
   const rows = payload?.transactions || [];
   return (
