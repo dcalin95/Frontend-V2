@@ -21,7 +21,7 @@ const BscLargeTransfersSection = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${getApiBaseUrl()}/bsc/large-transfers?minUsd=1000000&limit=15&blocks=90`, {
+      const response = await fetch(`${getApiBaseUrl()}/bsc/large-transfers?minUsd=1000000&limit=25&blocks=400`, {
         signal: controller.signal,
         credentials: 'include',
       });
@@ -44,7 +44,7 @@ const BscLargeTransfersSection = () => {
       <header className="ota-bsc-whales-header">
         <div>
           <h2 id="ota-bsc-whales-title"><Waves size={19} aria-hidden /> BSC transfers over $1M</h2>
-          <p>Latest verified transfers across {payload?.trackedTokens?.join(', ') || 'high-liquidity BSC tokens'}.</p>
+          <p>Persistent verified history across {payload?.trackedTokens?.join(', ') || 'high-liquidity BSC tokens'}.</p>
         </div>
         <button type="button" onClick={load} disabled={loading} className="ota-bsc-whales-refresh" title="Refresh BSC transfers" aria-label="Refresh BSC transfers">
           <RefreshCw size={17} className={loading ? 'is-spinning' : ''} />
@@ -53,7 +53,7 @@ const BscLargeTransfersSection = () => {
 
       {error && <div className="ota-bsc-whales-state ota-bsc-whales-error">{error}</div>}
       {!error && loading && !payload && <div className="ota-bsc-whales-state">Scanning recent BSC blocks...</div>}
-      {!error && !loading && rows.length === 0 && <div className="ota-bsc-whales-state">No tracked transfer above $1M in the scanned block window.</div>}
+      {!error && !loading && rows.length === 0 && <div className="ota-bsc-whales-state">No verified transfer above $1M has been recorded yet.</div>}
       {!error && rows.length > 0 && (
         <div className="ota-bsc-whales-table-wrap">
           <table className="ota-bsc-whales-table">
