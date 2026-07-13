@@ -17,10 +17,17 @@ const formatDuration = (seconds) => {
   return `${Math.round(seconds / 60)} min`;
 };
 
+const WalletAddress = ({ address }) => {
+  const value = String(address || '');
+  const prefix = value.length > 4 ? value.slice(0, -4) : '';
+  const suffix = value.length > 4 ? value.slice(-4) : value;
+  return <span className="ota-bsc-wallet-address"><span className="ota-bsc-wallet-prefix">{prefix}</span><strong className="ota-bsc-wallet-suffix">{suffix}</strong></span>;
+};
+
 const WalletInsights = ({ data }) => (
   <div className="ota-bsc-wallet-insights">
     <div className="ota-bsc-wallet-insights-title">
-      <a href={data.explorerUrl} target="_blank" rel="noopener noreferrer">{data.address}</a>
+      <a href={data.explorerUrl} target="_blank" rel="noopener noreferrer"><WalletAddress address={data.address} /></a>
       <span>{data.classification.replaceAll('_', ' ')}</span>
     </div>
     <dl className="ota-bsc-wallet-metrics">
@@ -34,12 +41,12 @@ const WalletInsights = ({ data }) => (
       <div><dt>Largest transfer</dt><dd>{formatUsd(data.largestTransferUsd)}</dd></div>
       <div><dt>Average interval</dt><dd>{formatDuration(data.averageIntervalSeconds)}</dd></div>
       <div><dt>Top-3 concentration</dt><dd>{Number(data.top3ConcentrationPct || 0).toFixed(1)}%</dd></div>
-      <div><dt>Observed funding source</dt><dd>{data.observedFundingSource || 'Not observed'}</dd></div>
+      <div><dt>Observed funding source</dt><dd>{data.observedFundingSource ? <WalletAddress address={data.observedFundingSource} /> : 'Not observed'}</dd></div>
       <div><dt>Price reaction</dt><dd>{data.priceReaction?.samples ? `${data.priceReaction.samples} samples` : 'Insufficient market context'}</dd></div>
     </dl>
     <div className="ota-bsc-wallet-detail-row"><strong>Balances</strong>{data.balances?.filter((item) => item.amount > 0).map((item) => <span key={item.token}>{item.token} {formatAmount(item.amount)}{item.valueUsd != null ? ` (${formatUsd(item.valueUsd)})` : ''}</span>)}</div>
     <div className="ota-bsc-wallet-detail-row"><strong>Tokens by tracked volume</strong>{data.tokenVolumes?.map((item) => <span key={item.token}>{item.token} {formatUsd(item.volumeUsd)}</span>)}</div>
-    <div className="ota-bsc-wallet-detail-row"><strong>Top counterparties</strong>{data.topCounterparties?.slice(0, 3).map((item) => <span key={item.address}>{item.address} x{item.count} ({formatUsd(item.volumeUsd)})</span>)}</div>
+    <div className="ota-bsc-wallet-detail-row"><strong>Top counterparties</strong>{data.topCounterparties?.slice(0, 3).map((item) => <span key={item.address}><WalletAddress address={item.address} /> x{item.count} ({formatUsd(item.volumeUsd)})</span>)}</div>
     <div className="ota-bsc-wallet-detail-row"><strong>Repeated amounts</strong>{data.repeatedAmounts?.length ? data.repeatedAmounts.map((item) => <span key={item.amountUsd}>{formatUsd(item.amountUsd)} x{item.count}</span>) : <span>None yet</span>}</div>
   </div>
 );
@@ -126,9 +133,9 @@ const BscLargeTransfersSection = () => {
                 return <React.Fragment key={rowKey}>
                 <tr>
                   <td className="ota-bsc-whales-route">
-                    <a href={`https://bscscan.com/address/${row.from}`} target="_blank" rel="noopener noreferrer">{row.from}</a>
+                    <a href={`https://bscscan.com/address/${row.from}`} target="_blank" rel="noopener noreferrer"><WalletAddress address={row.from} /></a>
                     <ArrowRight size={14} aria-hidden />
-                    <a href={`https://bscscan.com/address/${row.to}`} target="_blank" rel="noopener noreferrer">{row.to}</a>
+                    <a href={`https://bscscan.com/address/${row.to}`} target="_blank" rel="noopener noreferrer"><WalletAddress address={row.to} /></a>
                     {row.recurrentRoute && <span className="ota-bsc-whales-repeat">Repeated x{row.routeRepeatCount}</span>}
                   </td>
                   <td><strong>{formatUsd(row.amountUsd)}</strong><span>{formatAmount(row.amount)} {row.token}</span></td>
