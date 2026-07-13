@@ -24,6 +24,29 @@ const WalletAddress = ({ address }) => {
   return <span className="ota-bsc-wallet-address"><span className="ota-bsc-wallet-prefix">{prefix}</span><strong className="ota-bsc-wallet-suffix">{suffix}</strong></span>;
 };
 
+const contractTypeLabel = (type) => ({
+  token_proxy: 'Token proxy', token: 'Token contract', proxy: 'Proxy', contract: 'Smart contract',
+}[type] || 'Smart contract');
+
+const ContractDeployments = ({ data }) => {
+  const scan = data.contractDeployments;
+  if (!scan || scan.status !== 'available') {
+    return <div className="ota-bsc-wallet-detail-row ota-bsc-contract-deployments"><strong>Smart contracts deployed</strong><span>Deployment history unavailable</span></div>;
+  }
+  return <div className="ota-bsc-wallet-detail-row ota-bsc-contract-deployments">
+    <strong>Smart contracts deployed</strong>
+    {scan.deployments?.length ? scan.deployments.slice(0, 8).map((contract) => <a key={contract.address} href={contract.explorerUrl} target="_blank" rel="noopener noreferrer">
+      <span className={`ota-bsc-contract-type is-${contract.type}`}>{contractTypeLabel(contract.type)}</span>
+      {contract.tokenSymbol && <b>{contract.tokenSymbol}</b>}
+      <WalletAddress address={contract.address} />
+      <ExternalLink size={13} aria-hidden />
+    </a>) : <span>{scan.complete ? 'No contract deployments found' : 'None found in the scanned transaction window'}</span>}
+    <small>{scan.complete
+      ? `Complete history checked (${scan.scannedTransactions} transactions)`
+      : `Partial history: latest ${scan.scannedTransactions} transactions checked`}</small>
+  </div>;
+};
+
 const WalletInsights = ({ data }) => (
   <div className="ota-bsc-wallet-insights">
     <div className="ota-bsc-wallet-insights-title">
@@ -48,6 +71,7 @@ const WalletInsights = ({ data }) => (
     <div className="ota-bsc-wallet-detail-row"><strong>Tokens by tracked volume</strong>{data.tokenVolumes?.map((item) => <span key={item.token}>{item.token} {formatUsd(item.volumeUsd)}</span>)}</div>
     <div className="ota-bsc-wallet-detail-row"><strong>Top counterparties</strong>{data.topCounterparties?.slice(0, 3).map((item) => <span key={item.address}><WalletAddress address={item.address} /> x{item.count} ({formatUsd(item.volumeUsd)})</span>)}</div>
     <div className="ota-bsc-wallet-detail-row"><strong>Repeated amounts</strong>{data.repeatedAmounts?.length ? data.repeatedAmounts.map((item) => <span key={item.amountUsd}>{formatUsd(item.amountUsd)} x{item.count}</span>) : <span>None yet</span>}</div>
+    <ContractDeployments data={data} />
   </div>
 );
 
