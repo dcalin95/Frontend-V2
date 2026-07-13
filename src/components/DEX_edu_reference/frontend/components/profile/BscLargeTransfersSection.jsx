@@ -33,6 +33,10 @@ const ContractDeployments = ({ data }) => {
   if (!scan || scan.status !== 'available') {
     return <div className="ota-bsc-wallet-detail-row ota-bsc-contract-deployments"><strong>Smart contracts deployed</strong><span>Deployment history unavailable</span></div>;
   }
+  const nonceScan = scan.source === 'deterministic_nonce_scan';
+  const coverage = scan.complete
+    ? `${nonceScan ? 'Complete on-chain nonce range' : 'Complete transaction history'} checked (${scan.scannedTransactions})`
+    : `${nonceScan ? 'Partial on-chain scan: first and latest creation nonces' : 'Partial history: latest transactions'} checked (${scan.scannedTransactions})`;
   return <div className="ota-bsc-wallet-detail-row ota-bsc-contract-deployments">
     <strong>Smart contracts deployed</strong>
     {scan.deployments?.length ? scan.deployments.slice(0, 8).map((contract) => <a key={contract.address} href={contract.explorerUrl} target="_blank" rel="noopener noreferrer">
@@ -41,9 +45,7 @@ const ContractDeployments = ({ data }) => {
       <WalletAddress address={contract.address} />
       <ExternalLink size={13} aria-hidden />
     </a>) : <span>{scan.complete ? 'No contract deployments found' : 'None found in the scanned transaction window'}</span>}
-    <small>{scan.complete
-      ? `Complete history checked (${scan.scannedTransactions} transactions)`
-      : `Partial history: latest ${scan.scannedTransactions} transactions checked`}</small>
+    <small>{coverage}</small>
   </div>;
 };
 
