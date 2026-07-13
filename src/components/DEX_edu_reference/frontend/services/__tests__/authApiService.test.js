@@ -29,6 +29,7 @@ import {
   updatePhoneNumber,
   updateProfile,
   changePassword,
+  getPaymentsHistory,
   loginWithProvider,
   refreshToken
 } from '../authApiService';
@@ -568,6 +569,19 @@ describe('Auth API Service - OAuth', () => {
 
     expect(window.location.href).toContain('/api/auth/google/start');
     expect(window.location.href).toContain('redirect=');
+  });
+});
+
+describe('Auth API Service - Stripe payment history', () => {
+  test('loads payment history through the authenticated API client', async () => {
+    const mockResponse = { ok: true, payments: [{ id: 'cs_paid', amount_total: 1000 }] };
+    fetch.mockResolvedValueOnce({ ok: true, json: async () => mockResponse });
+
+    await expect(getPaymentsHistory()).resolves.toEqual(mockResponse);
+    expect(fetch).toHaveBeenCalledWith(
+      `${BACKEND_URL}/api/auth/payments/history`,
+      expect.objectContaining({ method: 'GET', credentials: 'include' })
+    );
   });
 });
 

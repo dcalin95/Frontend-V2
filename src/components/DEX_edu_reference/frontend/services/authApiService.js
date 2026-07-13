@@ -568,13 +568,10 @@ export const saveProfilePhone = async (phone) => {
  * @returns {Promise<{ ok: boolean, payments: Array }>}
  */
 export const getPaymentsHistory = async () => {
-  const url = `${getBackendUrl()}${API_ENDPOINTS.AUTH_PAYMENTS_HISTORY || '/api/auth/payments/history'}`;
-  const res = await fetch(url, { method: 'GET', credentials: 'include', headers: { Accept: 'application/json' } });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    const msg = data?.message || data?.error || `HTTP ${res.status}`;
-    throw new Error(msg);
-  }
+  const data = await authApiRequest(
+    API_ENDPOINTS.AUTH_PAYMENTS_HISTORY || '/api/auth/payments/history',
+    { method: 'GET', headers: { Accept: 'application/json' } }
+  );
   return { ok: data.ok !== false, payments: data.payments || [] };
 };
 
