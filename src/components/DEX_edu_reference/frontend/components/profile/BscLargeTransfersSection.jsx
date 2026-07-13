@@ -48,7 +48,7 @@ const BscLargeTransfersSection = () => {
       <header className="ota-bsc-whales-header">
         <div>
           <h2 id="ota-bsc-whales-title"><Waves size={19} aria-hidden /> BSC transfers over $1M</h2>
-          <p>Persistent verified history across {payload?.trackedTokens?.join(', ') || 'high-liquidity BSC tokens'}.</p>
+          <p>Unlabeled private wallets only. Official exchange wallets and contracts are excluded; recurrent routes appear first.</p>
         </div>
         <button type="button" onClick={load} disabled={loading} className="ota-bsc-whales-refresh" title="Refresh BSC transfers" aria-label="Refresh BSC transfers">
           <RefreshCw size={17} className={loading ? 'is-spinning' : ''} />
@@ -69,6 +69,7 @@ const BscLargeTransfersSection = () => {
                     <a href={`https://bscscan.com/address/${row.from}`} target="_blank" rel="noopener noreferrer">{row.from}</a>
                     <ArrowRight size={14} aria-hidden />
                     <a href={`https://bscscan.com/address/${row.to}`} target="_blank" rel="noopener noreferrer">{row.to}</a>
+                    {row.recurrentRoute && <span className="ota-bsc-whales-repeat">Repeated x{row.routeRepeatCount}</span>}
                   </td>
                   <td><strong>{formatUsd(row.amountUsd)}</strong><span>{formatAmount(row.amount)} {row.token}</span></td>
                   <td><span className="ota-bsc-whales-token">{row.token}</span></td>
