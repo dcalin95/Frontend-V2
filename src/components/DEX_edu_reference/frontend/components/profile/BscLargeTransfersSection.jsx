@@ -21,7 +21,7 @@ const BscLargeTransfersSection = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${getApiBaseUrl()}/bsc/large-transfers?minUsd=1000000&limit=25&blocks=5000`, {
+      const response = await fetch(`${getApiBaseUrl()}/bsc/large-transfers?minUsd=1000000&limit=25&blocks=1200`, {
         signal: controller.signal,
         credentials: 'include',
       });
