@@ -119,6 +119,30 @@ function formatExecutorAnalyzeLine(e, t) {
   return `${t} · OTA Motor analyze done · OTA Engine${token}${sig}${conf}${source}${ctx}${reason}`;
 }
 
+function formatFuturesLaneEvaluationLine(e, t) {
+  const lane = String(e.lane || '').trim().toUpperCase() || 'FUTURES';
+  const token = e.token ? ` · ${String(e.token).trim().toUpperCase()}` : '';
+  const sourceSignal = e.sourceSignal ? ` · source ${String(e.sourceSignal).trim().toUpperCase()}` : '';
+  const resultingSignal = e.signal && String(e.signal).toLowerCase() !== String(e.sourceSignal).toLowerCase()
+    ? ` → ${String(e.signal).trim().toUpperCase()}`
+    : '';
+  const conf = e.confidence != null && Number.isFinite(Number(e.confidence))
+    ? ` (${Math.round(Number(e.confidence) * 100)}%)`
+    : '';
+  const reasonLabels = {
+    bullish_signal_reserved_for_long: 'bullish signal belongs to LONG',
+    bearish_short_conditions_not_met: 'bearish SHORT conditions not met',
+    short_engine_disabled: 'SHORT engine disabled',
+    short_live_open_path_disabled: 'SHORT live open path unavailable',
+    short_action_ready: 'SHORT action eligible',
+    signal_not_short_actionable: 'signal is not actionable for SHORT',
+  };
+  const rawReason = String(e.reason || '').trim();
+  const reason = rawReason ? ` · ${reasonLabels[rawReason] || rawReason}` : '';
+  const phase = String(e.phase || 'evaluated').trim().toUpperCase();
+  return `${t} · ${lane} gate ${phase}${token}${sourceSignal}${resultingSignal}${conf}${reason}`;
+}
+
 function formatAgentTraceLine(e) {
   if (!e || !e.type) return '';
   const t = e.ts ? new Date(e.ts).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '';
@@ -128,6 +152,8 @@ function formatAgentTraceLine(e) {
       return formatBrowserAnalyzeLine(e, t);
     case 'executor_analyze':
       return formatExecutorAnalyzeLine(e, t);
+    case 'futures_lane_evaluation':
+      return formatFuturesLaneEvaluationLine(e, t);
     case 'run_started':
       return `${t} · START ${e.token || '?'}${e.pair ? ` (${e.pair})` : ''}${modelHint ? ` · ${modelHint}` : ''}`;
     case 'step_begin':

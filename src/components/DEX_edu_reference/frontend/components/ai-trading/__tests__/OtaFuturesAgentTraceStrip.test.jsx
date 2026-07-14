@@ -68,6 +68,44 @@ describe('OtaFuturesAgentTraceStrip', () => {
     expect(screen.getAllByText(/Opposite-lane runs are hidden/i)).toHaveLength(2);
   });
 
+  it('shows why the SHORT gate skipped a bullish shared analysis', async () => {
+    fetchOtaAgentTraceLive.mockResolvedValue({
+      success: true,
+      active: false,
+      currentToken: 'BTC',
+      nextAfter: 2,
+      bufferEpoch: 0,
+      events: [
+        {
+          type: 'run_started',
+          token: 'BTC',
+          pair: 'BTC/USDT',
+          model: 'OTA Short Gate',
+          tradeContext: 'short_live',
+          ts: Date.parse('2026-07-14T19:20:00.000Z'),
+        },
+        {
+          type: 'futures_lane_evaluation',
+          lane: 'short',
+          phase: 'skipped',
+          token: 'BTC',
+          sourceSignal: 'buy',
+          signal: 'buy',
+          confidence: 0.6,
+          reason: 'bullish_signal_reserved_for_long',
+          tradeContext: 'short_live',
+          ts: Date.parse('2026-07-14T19:20:01.000Z'),
+        },
+      ],
+    });
+
+    render(<OtaFuturesAgentTraceStrip userId="0x1234567890123456789012345678901234567890" futuresLane="short" />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/SHORT gate SKIPPED .*BTC .*source BUY \(60%\) .*bullish signal belongs to LONG/i)).toBeInTheDocument();
+    });
+  });
+
   it('renders executor engine-only analyze lines in the Matrix strip', async () => {
     fetchOtaAgentTraceLive.mockReset();
     fetchOtaAgentTraceLive.mockResolvedValue({
