@@ -198,17 +198,14 @@ export default function OtaFuturesAgentTraceStrip({ userId, futuresLane }) {
     return filterAgentTraceEventsForFuturesLane(rawEvents, laneNorm);
   }, [rawEvents, laneNorm]);
 
-  /**
-   * Dacă filtrul pe tab elimină tot dar bufferul are evenimente → afișăm tot fluxul (Matrix rămâne util pentru operatori).
-   */
-  const displayEvents = useMemo(() => {
-    if (!laneNorm) return rawEvents;
-    if (filteredEvents.length > 0) return filteredEvents;
-    return rawEvents.length > 0 ? rawEvents : filteredEvents;
-  }, [laneNorm, rawEvents, filteredEvents]);
+  // A lane-specific panel must never relabel the opposite lane as useful fallback data.
+  const displayEvents = useMemo(
+    () => (laneNorm ? filteredEvents : rawEvents),
+    [laneNorm, rawEvents, filteredEvents]
+  );
 
   const laneFilterDroppedAll =
-    Boolean(laneNorm) && rawEvents.length > 0 && filteredEvents.length === 0 && displayEvents.length > 0;
+    Boolean(laneNorm) && rawEvents.length > 0 && filteredEvents.length === 0;
 
   const lines = useMemo(
     () => displayEvents.map(formatAgentTraceLine).filter(Boolean).slice(-MAX_LINES),
@@ -371,7 +368,10 @@ export default function OtaFuturesAgentTraceStrip({ userId, futuresLane }) {
       return 'Live trace needs a verified OTA session (sign-in flow). Without a session the API returns no events — this is expected, not a network failure.';
     }
     if (!core) {
-      if (laneNorm && !laneFilterDroppedAll) {
+      if (laneNorm) {
+        if (laneFilterDroppedAll) {
+          return `No ${laneLabel} cycle is present in the current executor buffer. Opposite-lane runs are hidden; wait for the next ${laneLabel} analysis.`;
+        }
         return `No trace events yet for the ${laneLabel} lane. SHORT/LONG-tagged runs are filtered per tab; ambiguous runs (e.g. hold) may appear on both once the executor emits them. Provider/model may not be shown on every line.`;
       }
       return 'OTA executor trace for this account (all runs). Shows LLM requests/responses and tools — not full prompts. Provider is shown when the event includes it.';
@@ -422,14 +422,14 @@ export default function OtaFuturesAgentTraceStrip({ userId, futuresLane }) {
       </div>
       {laneFilterDroppedAll && laneLabel ? (
         <div className="futures-ops-header-agent-trace__lane-fallback" role="status">
-          No {laneLabel}-only runs in this buffer — showing all recent lines (same stream as unfiltered).
+          No {laneLabel} cycle in the current buffer. Opposite-lane runs are hidden.
         </div>
       ) : null}
       <div
         ref={terminalRef}
         className="short-ops-toolbar-trace-terminal"
         aria-live="polite"
-        aria-label={laneFilterDroppedAll && laneLabel ? `Executor trace including all lanes; tab is ${laneLabel}` : 'Executor trace output'}
+        aria-label={laneFilterDroppedAll && laneLabel ? `No ${laneLabel} executor trace in the current buffer` : 'Executor trace output'}
       >
         {terminalBody}
       </div>

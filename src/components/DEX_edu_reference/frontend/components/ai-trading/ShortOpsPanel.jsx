@@ -785,11 +785,24 @@ function PositionRow({ p, fundingRate, fundingAcc, onClose, walletAddress, openA
   const openedAt = p.opened_at;
   const [elapsed, setElapsed] = useState(fmtDuration(openedAt));
   const meta = p?.metadata || {};
+  const liveManagement = p?.live_management || p?.liveManagement || null;
+  const liveManageBlocked =
+    liveManagement?.canManage === false ||
+    liveManagement?.credentialStatus?.ok === false;
+  const liveManageBlockedReason =
+    liveManagement?.blockedDetail ||
+    liveManagement?.credentialStatus?.error ||
+    'Binance Futures credentials missing for this wallet';
   const [closing, setClosing] = useState(false);
   const [closeErr, setCloseErr] = useState(null);
   const [lossGuardBusy, setLossGuardBusy] = useState(false);
 
   const handleInlineClose = async () => {
+    if (liveManageBlocked) {
+      setCloseErr(liveManageBlockedReason);
+      toast.error(liveManageBlockedReason);
+      return;
+    }
     const exitMark = livePrice;
     if (!exitMark) { setCloseErr('Unknown price — try again'); return; }
     const symClose = posSym || p.symbol;
@@ -868,6 +881,11 @@ function PositionRow({ p, fundingRate, fundingAcc, onClose, walletAddress, openA
           <CryptoLogo symbol={posSym || p.symbol} size={18} />
           {posSym || p.symbol || '—'}
         </span>
+        {liveManageBlocked && (
+          <div title={liveManageBlockedReason} style={{ maxWidth: 132, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 9, fontWeight: 800, color: '#facc15', marginTop: 3 }}>
+            credentials missing
+          </div>
+        )}
       </td>
       <td className="short-ops-td short-ops-td--right">
         <span style={{ color: '#e2e8f0', fontWeight: 600 }}>${Number(p.notional_usd).toFixed(2)}</span>
@@ -1091,12 +1109,17 @@ function PositionRow({ p, fundingRate, fundingAcc, onClose, walletAddress, openA
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 6 }}>
           <button
             onClick={handleInlineClose}
-            disabled={closing}
-            style={{ padding: '3px 10px', background: closing ? '#7f1d1d' : '#dc2626', color: '#fff', border: 'none', borderRadius: 5, cursor: closing ? 'wait' : 'pointer', fontSize: 10, fontWeight: 800, whiteSpace: 'nowrap', transition: 'background 0.2s' }}
-            title="Manually close this SHORT position now"
+            disabled={closing || liveManageBlocked}
+            style={{ padding: '3px 10px', background: liveManageBlocked ? '#334155' : closing ? '#7f1d1d' : '#dc2626', color: liveManageBlocked ? '#cbd5e1' : '#fff', border: 'none', borderRadius: 5, cursor: liveManageBlocked ? 'not-allowed' : closing ? 'wait' : 'pointer', fontSize: 10, fontWeight: 800, whiteSpace: 'nowrap', transition: 'background 0.2s' }}
+            title={liveManageBlocked ? liveManageBlockedReason : 'Manually close this SHORT position now'}
           >
             {closing ? '⏳ …' : '✕ Close'}
           </button>
+          {liveManageBlocked && (
+            <div style={{ maxWidth: 170, fontSize: 9, lineHeight: 1.25, color: '#facc15' }}>
+              Add Binance Futures credentials or close directly in Binance.
+            </div>
+          )}
           <OtaLlmSuspendControl
             walletAddress={String(p.user_id || '').trim().toLowerCase()}
             token={p.symbol}
@@ -1317,7 +1340,12 @@ export default function ShortOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
     const checkRuntimeSecret = async () => {
       await loadRuntimeConfig();
       if (cancelled) return;
-      const hasSecret = isShortOpsClientSecretConfigured();
+      let hasSecret = isShortOpsClientSecretConfigured();
+      if (!hasSecret) {
+        await loadRuntimeConfig({ force: true });
+        if (cancelled) return;
+        hasSecret = isShortOpsClientSecretConfigured();
+      }
       setShortOpsSecretFromConfig(hasSecret);
       if (!hasSecret) retryTimer = window.setTimeout(checkRuntimeSecret, 5000);
     };
@@ -1843,11 +1871,14 @@ export default function ShortOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
     if (mergedSlice.length === 0 && signalBranchFailures.length > 0) {
       const f = signalBranchFailures[0];
       const is429 = /429|Too Many Requests|rate limit/i.test(String(f.err));
-      toast.error(
-        is429
-          ? 'SHORT analyses: signals endpoint returned HTTP 429 (rate limited). Branches are staggered; if this persists, widen the poll interval or raise the server limit.'
-          : `SHORT analyses: GET /ai-trading/signals (${f.tradeContext}) — ${f.err}. Check session/API and redeploy if tradeContext support is missing.`
-      );
+      const errText = f.err?.message || String(f.err || 'unknown error');
+      if (!is429 && f.fallbackFor) {
+        toast.error(`SHORT analyses: fallback ${f.label || f.tradeContext || 'default'} for ${f.fallbackFor} failed - ${errText}.`);
+      } else if (!is429) {
+        toast.error(`SHORT analyses: GET /ai-trading/signals (${f.tradeContext || 'default'}) failed - ${errText}. Fallback is used when possible.`);
+      } else {
+        toast.error('SHORT analyses: signals endpoint returned HTTP 429 (rate limited). Branches are staggered; if this persists, widen the poll interval or raise the server limit.');
+      }
     }
     return mergedSlice;
   }, []);
@@ -1894,24 +1925,45 @@ export default function ShortOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
     feedSignalsInflightRef.current += 1;
     setFeedSignalsPollBusy(true);
     try {
-      const fetchSignalsBranch = async (tradeContext) => {
+      const shortFocusTimeoutMs = forceReplace ? 45000 : 30000;
+      const fallbackTimeoutMs = 30000;
+      const fetchSignalsBranch = async (tradeContext, branchOpts = {}) => {
         try {
           const data = await getRecentLlmSignals(uid, {
             limit: RECENT_SHORT_ANALYSIS_FETCH_LIMIT,
             tradeContext,
             skipCache: forceReplace,
+            timeoutMs: branchOpts.timeoutMs,
           });
-          return { tradeContext, ok: true, data };
+          return {
+            tradeContext,
+            ok: true,
+            data,
+            fallbackFor: branchOpts.fallbackFor || null,
+            label: branchOpts.label || tradeContext,
+          };
         } catch (err) {
           return {
             tradeContext,
             ok: false,
             data: { signals: [] },
             err: err?.message || String(err),
+            fallbackFor: branchOpts.fallbackFor || null,
+            label: branchOpts.label || tradeContext,
           };
         }
       };
-      const rFocus = await fetchSignalsBranch('short_focus');
+      let rFocus = await fetchSignalsBranch('short_focus', { timeoutMs: shortFocusTimeoutMs });
+      if (!rFocus.ok && /timeout|timed out|aborted|tradeContext/i.test(String(rFocus.err || ''))) {
+        const rFallback = await fetchSignalsBranch(null, {
+          timeoutMs: fallbackTimeoutMs,
+          fallbackFor: 'short_focus',
+          label: 'fallback_default',
+        });
+        if (rFallback.ok) {
+          rFocus = { ...rFallback, tradeContext: 'short_focus', fallbackFrom: 'default' };
+        }
+      }
       const rLive = { tradeContext: 'short_live', ok: true, data: { signals: [] } };
       const rCommon = { tradeContext: 'common', ok: true, data: { signals: [] } };
       shortBranchLastRef.current = {

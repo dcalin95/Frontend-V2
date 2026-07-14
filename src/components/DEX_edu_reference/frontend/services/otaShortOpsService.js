@@ -24,6 +24,15 @@ function throwShortOpsHttp(res, data) {
   if (res.status === 503 && body.code === 'SHORT_OPS_SERVER_UNCONFIGURED') {
     throw new Error(body.error || 'Backend: OTA_SHORT_OPS_SECRET not set — short ops disabled');
   }
+  const rawMessage = String(body.error || body.message || '').trim();
+  if (
+    (res.status === 401 || res.status === 403) &&
+    /X-Ota-Short-Ops-Secret|Short-Ops-Secret|provide .*secret/i.test(rawMessage)
+  ) {
+    throw new Error(
+      'Short Ops authorization missing: add OTA_SHORT_OPS_SECRET to runtime-config.json/S3 deploy env, or open the panel once with ?secret=...'
+    );
+  }
   throw new Error(body.error || `HTTP ${res.status}`);
 }
 
@@ -32,6 +41,21 @@ function getShortOpsHeaders() {
   const headers = { 'Content-Type': 'application/json' };
   if (secret) headers['X-Ota-Short-Ops-Secret'] = secret;
   return headers;
+}
+
+function withShortOpsSecretQuery(input, secret) {
+  const value = String(secret || '').trim();
+  if (!value || typeof input !== 'string') return input;
+  try {
+    const url = new URL(input, typeof window !== 'undefined' ? window.location.origin : undefined);
+    if (!url.searchParams.get('secret')) {
+      url.searchParams.set('secret', value);
+    }
+    return url.toString();
+  } catch (_) {
+    const separator = String(input).includes('?') ? '&' : '?';
+    return `${input}${separator}secret=${encodeURIComponent(value)}`;
+  }
 }
 
 function requireUserId(userId, caller = 'short ops') {
@@ -45,12 +69,19 @@ async function shortOpsFetch(input, init = {}) {
   await loadRuntimeConfig();
   let baseH = getShortOpsHeaders();
   if (!baseH['X-Ota-Short-Ops-Secret']) {
-    await loadRuntimeConfig();
+    await loadRuntimeConfig({ force: true });
     baseH = getShortOpsHeaders();
   }
   const method = String(init.method || 'GET').toUpperCase();
   const headers = { ...baseH, ...(init.headers || {}) };
-  const cacheKey = method === 'GET' ? `${String(input)}|secret:${headers['X-Ota-Short-Ops-Secret'] ? 'set' : 'none'}` : null;
+  const secret = headers['X-Ota-Short-Ops-Secret'] || '';
+  if (!secret) {
+    throw new Error(
+      'Short Ops authorization missing: add OTA_SHORT_OPS_SECRET to runtime-config.json/S3 deploy env, or open the panel once with ?secret=...'
+    );
+  }
+  const requestInput = withShortOpsSecretQuery(input, secret);
+  const cacheKey = method === 'GET' ? `${String(requestInput)}|secret:${secret ? 'set' : 'none'}` : null;
   const now = Date.now();
   if (cacheKey) {
     const cached = shortOpsGetCache.get(cacheKey);
@@ -59,7 +90,7 @@ async function shortOpsFetch(input, init = {}) {
       if (cached.promise) return cached.promise.then((res) => res.clone());
     }
   }
-  const promise = fetch(input, {
+  const promise = fetch(requestInput, {
     ...init,
     credentials: init.credentials ?? 'include',
     headers,
@@ -332,7 +363,7 @@ export async function getShortActivity(userId, limit = 20) {
  */
 export async function getRecentLlmSignals(
   userId,
-  { limit = 4, signal = null, tradeContext = 'short_live', skipCache = false } = {}
+  { limit = 4, signal = null, tradeContext = 'short_live', skipCache = false, timeoutMs = undefined } = {}
 ) {
   const base = getApiBaseUrl();
   if (!base) throw new Error('API base URL not configured');
@@ -356,7 +387,9 @@ export async function getRecentLlmSignals(
   const pathWithQuery = `${API_ENDPOINTS.SIGNALS_LIST}?${params.toString()}`;
   /** `otaApiRequest`: Bearer OTA wallet când enforce pe server; fără asta GET /signals cu userId → 401 și feed gol. */
   recordOtaSignalsListNetworkFetch();
-  const data = await otaApiRequest(pathWithQuery, { method: 'GET' });
+  const requestOptions = { method: 'GET' };
+  if (timeoutMs != null) requestOptions.timeoutMs = timeoutMs;
+  const data = await otaApiRequest(pathWithQuery, requestOptions);
   const signals = coerceSignalsArrayFromApiPayload(data);
   const out = { ...data, signals };
   writeOtaSignalsListCache(userId, queryOpts, out);

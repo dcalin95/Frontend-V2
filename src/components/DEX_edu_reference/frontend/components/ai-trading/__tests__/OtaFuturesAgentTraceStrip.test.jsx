@@ -58,6 +58,16 @@ describe('OtaFuturesAgentTraceStrip', () => {
     ).toBeInTheDocument();
   });
 
+  it('does not show LONG trace lines as fallback in the SHORT panel', async () => {
+    render(<OtaFuturesAgentTraceStrip userId="0x1234567890123456789012345678901234567890" futuresLane="short" />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/No SHORT cycle in the current buffer/i)).toBeInTheDocument();
+    });
+    expect(screen.queryByText(/Browser analyze done/i)).not.toBeInTheDocument();
+    expect(screen.getAllByText(/Opposite-lane runs are hidden/i)).toHaveLength(2);
+  });
+
   it('renders executor engine-only analyze lines in the Matrix strip', async () => {
     fetchOtaAgentTraceLive.mockReset();
     fetchOtaAgentTraceLive.mockResolvedValue({
