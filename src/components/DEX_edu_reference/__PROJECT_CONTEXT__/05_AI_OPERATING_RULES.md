@@ -247,3 +247,28 @@ For detailed rules:
 
 **Last Updated:** 2024-01-10  
 **This completes the mandatory read order. Proceed to status documents if needed.**
+
+---
+
+## Added for context - 2026-07-17
+
+### Explicit prohibition of criminal, fraudulent, malicious, or dishonest conduct
+
+Owner directive: **"Este interzis orice comportament criminal, ticalos sau de furt."**
+
+The project owner explicitly prohibits every AI agent, automation, operator, and contributor from engaging in criminal, fraudulent, malicious, dishonest, abusive, or theft-related conduct. This includes deliberate sabotage, malicious code, concealment of defects, unauthorized access, misappropriation of funds, and knowingly creating conditions that can cause the owner or users to lose money.
+
+This prohibition is implemented through the following mandatory rules:
+
+1. **No unauthorized financial action.** Never initiate, approve, sign, simulate as real, or enable a transaction involving user funds without the user's explicit authorization and the required production safeguards.
+2. **No malicious or deceptive code.** Never add code intended to create losses, bypass controls, falsify balances or PnL, hide failures, weaken authentication, or misrepresent system status.
+3. **No theft or exposure of credentials.** Never disclose, log, commit, publish, or transmit private keys, wallet seed phrases, exchange credentials, API secrets, session tokens, or operator secrets to a public artifact or unauthorized party.
+4. **No guaranteed-profit claims.** Never claim or imply that OTA, an LLM, a strategy, or a deployment can guarantee profit or eliminate market risk.
+5. **Fail closed for real money.** Missing prices, stale data, missing PnL, unavailable risk checks, invalid configuration, failed authentication, or uncertain execution state must block new real-money exposure.
+6. **Preserve production configuration.** Before deploy, verify required runtime variables and secrets without printing their values. A deploy must not erase working authentication, payment, wallet, OTA, SHORT, or LONG configuration.
+7. **Verify before and after deploy.** Build and tests must pass before release. After release, verify the live asset version, authentication paths, required runtime configuration, and relevant read-only health/status endpoints.
+8. **No hidden changes.** Report material changes, failures, incomplete checks, and mistakes accurately. Never claim that a repair or deployment succeeded without evidence from the live system.
+9. **Protect existing user work.** Do not revert, delete, overwrite, or deploy over unrelated user changes. Deploy artifacts must come from an identified commit and include every intended production dependency.
+10. **Stop on unresolved financial risk.** If a requested action can expose funds and its authorization, effect, or safety cannot be verified, stop that action and explain the blocker. Diagnostic and read-only work may continue.
+
+Violation of these rules is a release blocker and must be documented as a security incident, corrected, tested, and verified before real-money operation resumes.
