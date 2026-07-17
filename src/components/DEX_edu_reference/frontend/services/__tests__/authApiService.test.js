@@ -555,6 +555,17 @@ describe('Auth API Service - Profile Management', () => {
     );
     expect(result).toEqual(mockResponse);
   });
+
+  test('changePassword reports a clear error when the server returns HTML instead of JSON', async () => {
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => { throw new SyntaxError('Unexpected token <'); }
+    });
+
+    await expect(changePassword('OldPassword1', 'NewPassword2')).rejects.toThrow(
+      'Authentication server returned an invalid response. Please refresh and try again.'
+    );
+  });
 });
 
 describe('Auth API Service - OAuth', () => {

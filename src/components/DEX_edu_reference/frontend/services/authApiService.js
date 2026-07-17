@@ -140,7 +140,12 @@ async function authApiRequest(endpoint, options = {}) {
       throw new Error(msg || `HTTP ${response.status}: ${response.statusText}`);
     }
 
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    } catch (_) {
+      throw new Error('Authentication server returned an invalid response. Please refresh and try again.');
+    }
     if (!isAuthMeGet) {
       logWithPrefix('DEX AUTH API', '←', {
         id: requestId,

@@ -13,7 +13,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
-import { Plus, Shield, RefreshCw, AlertCircle, Fingerprint, Send, LogOut, Zap, ChevronRight, Landmark, ArrowDownCircle, Circle } from 'lucide-react';
+import { Plus, Shield, RefreshCw, AlertCircle, Fingerprint, Send, LogOut, Zap, ChevronRight, Landmark, ArrowDownCircle, Circle, Eye, EyeOff } from 'lucide-react';
 import {
   IconUser, IconMail, IconPhone, IconTelegram, IconCamera, IconEdit,
   IconCreditCard, IconFileCheck, IconWallet, IconCopy, IconCheckCircle, IconXCircle,
@@ -98,6 +98,7 @@ const OTAProfilePage = () => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordVisibility, setPasswordVisibility] = useState({ current: false, next: false, confirm: false });
   const [securityBusy, setSecurityBusy] = useState(false);
   const [biometricAvailable, setBiometricAvailable] = useState(false);
   const [biometricRegistered, setBiometricRegistered] = useState(false);
@@ -1766,34 +1767,71 @@ const OTAProfilePage = () => {
                 <div className="ota-profile-change-password-form">
                   <div className="ota-profile-form-group">
                     <label className="ota-profile-label">Current Password</label>
-                    <input
-                      type="password"
-                      className="ota-profile-input"
-                      placeholder="Enter current password"
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                    />
+                    <div className="ota-profile-password-input-wrap">
+                      <input
+                        type={passwordVisibility.current ? 'text' : 'password'}
+                        className="ota-profile-input"
+                        placeholder="Enter current password"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        autoComplete="current-password"
+                      />
+                      <button
+                        type="button"
+                        className="ota-profile-password-toggle"
+                        onClick={() => setPasswordVisibility((prev) => ({ ...prev, current: !prev.current }))}
+                        aria-label={passwordVisibility.current ? 'Hide current password' : 'Show current password'}
+                        title={passwordVisibility.current ? 'Hide current password' : 'Show current password'}
+                      >
+                        {passwordVisibility.current ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                    <p className="ota-profile-hint">For security, the saved password cannot be retrieved. The eye shows only what you type here.</p>
                   </div>
                   <div className="ota-profile-form-group">
                     <label className="ota-profile-label">New Password</label>
-                    <input
-                      type="password"
-                      className="ota-profile-input"
-                      placeholder="Enter new password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                    />
+                    <div className="ota-profile-password-input-wrap">
+                      <input
+                        type={passwordVisibility.next ? 'text' : 'password'}
+                        className="ota-profile-input"
+                        placeholder="Enter new password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        autoComplete="new-password"
+                      />
+                      <button
+                        type="button"
+                        className="ota-profile-password-toggle"
+                        onClick={() => setPasswordVisibility((prev) => ({ ...prev, next: !prev.next }))}
+                        aria-label={passwordVisibility.next ? 'Hide new password' : 'Show new password'}
+                        title={passwordVisibility.next ? 'Hide new password' : 'Show new password'}
+                      >
+                        {passwordVisibility.next ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
                     <p className="ota-profile-hint">Min 8 characters, must include uppercase, lowercase, and number</p>
                   </div>
                   <div className="ota-profile-form-group">
                     <label className="ota-profile-label">Confirm New Password</label>
-                    <input
-                      type="password"
-                      className="ota-profile-input"
-                      placeholder="Confirm new password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                    />
+                    <div className="ota-profile-password-input-wrap">
+                      <input
+                        type={passwordVisibility.confirm ? 'text' : 'password'}
+                        className="ota-profile-input"
+                        placeholder="Confirm new password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        autoComplete="new-password"
+                      />
+                      <button
+                        type="button"
+                        className="ota-profile-password-toggle"
+                        onClick={() => setPasswordVisibility((prev) => ({ ...prev, confirm: !prev.confirm }))}
+                        aria-label={passwordVisibility.confirm ? 'Hide password confirmation' : 'Show password confirmation'}
+                        title={passwordVisibility.confirm ? 'Hide password confirmation' : 'Show password confirmation'}
+                      >
+                        {passwordVisibility.confirm ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
                   </div>
                   <div className="ota-profile-form-actions">
                     <button
@@ -1803,6 +1841,7 @@ const OTAProfilePage = () => {
                         setCurrentPassword('');
                         setNewPassword('');
                         setConfirmPassword('');
+                        setPasswordVisibility({ current: false, next: false, confirm: false });
                       }}
                     >
                       Cancel
@@ -1826,6 +1865,7 @@ const OTAProfilePage = () => {
                           setCurrentPassword('');
                           setNewPassword('');
                           setConfirmPassword('');
+                          setPasswordVisibility({ current: false, next: false, confirm: false });
                         } catch (err) {
                           toast.error(err?.message || 'Failed to change password');
                         } finally {
