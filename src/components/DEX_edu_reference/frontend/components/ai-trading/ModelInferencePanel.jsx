@@ -142,7 +142,13 @@ export default function ModelInferencePanel({ className = '', externalBrainTabRe
     outcomesLearned: null,
     winRate: null,
     totalSignals: null,
+    analyses24h: null,
+    buyAnalyses24h: null,
+    sellAnalyses24h: null,
     executions24h: null,
+    shadowEvaluated: null,
+    replayPlanned: null,
+    replayResolved: null,
     workerEnabled: null,
     sessionsCount: null,
     recentSessions: [],
@@ -478,7 +484,13 @@ export default function ModelInferencePanel({ className = '', externalBrainTabRe
         outcomesLearned: null,
         winRate: null,
         totalSignals: null,
+        analyses24h: null,
+        buyAnalyses24h: null,
+        sellAnalyses24h: null,
         executions24h: null,
+        shadowEvaluated: null,
+        replayPlanned: null,
+        replayResolved: null,
         workerEnabled: null,
         sessionsCount: null,
         recentSessions: [],
@@ -514,6 +526,13 @@ export default function ModelInferencePanel({ className = '', externalBrainTabRe
         statsRoot.signalsCount ??
         statsRoot.analysesCount ??
         null;
+      const agent24h = autoStatus?.agent || {};
+      const recommendations24h = agent24h.recommendations24h || {};
+      const shadow = autoStatus?.safety?.decisionIntelligenceShadow || {};
+      const replay = shadow.replayEvaluation || {};
+      const analyses24h = agent24h.sessions24h != null && Number.isFinite(Number(agent24h.sessions24h))
+        ? Number(agent24h.sessions24h)
+        : null;
       setLearningTelemetry({
         loading: false,
         error: null,
@@ -522,8 +541,26 @@ export default function ModelInferencePanel({ className = '', externalBrainTabRe
         maxAnalysesPerDay: quota?.maxAnalysesPerDay ?? null,
         outcomesLearned,
         winRate,
-        totalSignals,
-        executions24h: typeof autoStatus?.executionsCount24h === 'number' ? autoStatus.executionsCount24h : null,
+        totalSignals: totalSignals ?? analyses24h,
+        analyses24h,
+        buyAnalyses24h: recommendations24h.open_buy != null && Number.isFinite(Number(recommendations24h.open_buy))
+          ? Number(recommendations24h.open_buy)
+          : null,
+        sellAnalyses24h: recommendations24h.open_sell != null && Number.isFinite(Number(recommendations24h.open_sell))
+          ? Number(recommendations24h.open_sell)
+          : null,
+        executions24h: agent24h.executionRecords24h != null && Number.isFinite(Number(agent24h.executionRecords24h))
+          ? Number(agent24h.executionRecords24h)
+          : (typeof autoStatus?.executionsCount24h === 'number' ? autoStatus.executionsCount24h : null),
+        shadowEvaluated: shadow.evaluated != null && Number.isFinite(Number(shadow.evaluated))
+          ? Number(shadow.evaluated)
+          : null,
+        replayPlanned: replay.planned != null && Number.isFinite(Number(replay.planned))
+          ? Number(replay.planned)
+          : null,
+        replayResolved: replay.resolved != null && Number.isFinite(Number(replay.resolved))
+          ? Number(replay.resolved)
+          : null,
         workerEnabled: typeof autoStatus?.enabled === 'boolean' ? autoStatus.enabled : null,
         sessionsCount: sessions.length,
         recentSessions: sessions.slice(0, 5),
@@ -1472,12 +1509,32 @@ export default function ModelInferencePanel({ className = '', externalBrainTabRe
                       </div>
                       <div className="mip-learning-telemetry-grid">
                         <div className="mip-learning-telemetry-item">
-                          <span className="mip-learning-telemetry-label">Outcomes learned</span>
+                          <span className="mip-learning-telemetry-label">Resolved trade outcomes</span>
                           <span className="mip-learning-telemetry-value">{outcomesLearnedDisplay ?? '—'}</span>
                         </div>
                         <div className="mip-learning-telemetry-item">
-                          <span className="mip-learning-telemetry-label">Signals</span>
-                          <span className="mip-learning-telemetry-value">{learningTelemetry.totalSignals ?? '—'}</span>
+                          <span className="mip-learning-telemetry-label">Market analyses (24h)</span>
+                          <span className="mip-learning-telemetry-value">{learningTelemetry.analyses24h ?? learningTelemetry.totalSignals ?? '—'}</span>
+                        </div>
+                        <div className="mip-learning-telemetry-item">
+                          <span className="mip-learning-telemetry-label">BUY / SELL analyses (24h)</span>
+                          <span className="mip-learning-telemetry-value">
+                            {learningTelemetry.buyAnalyses24h != null || learningTelemetry.sellAnalyses24h != null
+                              ? `${learningTelemetry.buyAnalyses24h ?? 0} / ${learningTelemetry.sellAnalyses24h ?? 0}`
+                              : '—'}
+                          </span>
+                        </div>
+                        <div className="mip-learning-telemetry-item">
+                          <span className="mip-learning-telemetry-label">Shadow evaluations</span>
+                          <span className="mip-learning-telemetry-value">{learningTelemetry.shadowEvaluated ?? '—'}</span>
+                        </div>
+                        <div className="mip-learning-telemetry-item">
+                          <span className="mip-learning-telemetry-label">Replay planned / resolved</span>
+                          <span className="mip-learning-telemetry-value">
+                            {learningTelemetry.replayPlanned != null || learningTelemetry.replayResolved != null
+                              ? `${learningTelemetry.replayPlanned ?? 0} / ${learningTelemetry.replayResolved ?? 0}`
+                              : '—'}
+                          </span>
                         </div>
                         <div className="mip-learning-telemetry-item">
                           <span className="mip-learning-telemetry-label">Win rate</span>
