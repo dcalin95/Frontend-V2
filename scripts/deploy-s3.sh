@@ -71,6 +71,26 @@ RUNTIME_CONFIG_PATH="build/runtime-config.json"
 SHORT_OPS_SECRET="${REACT_APP_OTA_SHORT_OPS_SECRET:-${OTA_SHORT_OPS_SECRET:-}}"
 LONG_OPS_SECRET="${REACT_APP_OTA_LONG_OPS_SECRET:-${OTA_LONG_OPS_SECRET:-$SHORT_OPS_SECRET}}"
 
+# Preserve deployed secrets when the local/CI shell does not provide them.
+if { [ -z "$SHORT_OPS_SECRET" ] || [ -z "$LONG_OPS_SECRET" ]; } && [ -f "$RUNTIME_CONFIG_PATH" ]; then
+    REMOTE_RUNTIME_CONFIG="$(mktemp)"
+    if aws s3 cp "s3://$S3_BUCKET_NAME/runtime-config.json" "$REMOTE_RUNTIME_CONFIG" --only-show-errors 2>/dev/null; then
+        REMOTE_RUNTIME_CONFIG="$REMOTE_RUNTIME_CONFIG" node <<'NODE'
+const fs = require('fs');
+const buildPath = 'build/runtime-config.json';
+const remotePath = process.env.REMOTE_RUNTIME_CONFIG;
+const build = JSON.parse(fs.readFileSync(buildPath, 'utf8'));
+const remote = JSON.parse(fs.readFileSync(remotePath, 'utf8'));
+const shortFromEnv = String(process.env.REACT_APP_OTA_SHORT_OPS_SECRET || process.env.OTA_SHORT_OPS_SECRET || '').trim();
+const longFromEnv = String(process.env.REACT_APP_OTA_LONG_OPS_SECRET || process.env.OTA_LONG_OPS_SECRET || '').trim();
+if (!shortFromEnv && remote.OTA_SHORT_OPS_SECRET) build.OTA_SHORT_OPS_SECRET = remote.OTA_SHORT_OPS_SECRET;
+if (!longFromEnv && remote.OTA_LONG_OPS_SECRET) build.OTA_LONG_OPS_SECRET = remote.OTA_LONG_OPS_SECRET;
+fs.writeFileSync(buildPath, `${JSON.stringify(build, null, 2)}\n`, 'utf8');
+NODE
+    fi
+    rm -f "$REMOTE_RUNTIME_CONFIG"
+fi
+
 if [ -n "$SHORT_OPS_SECRET" ] || [ -n "$LONG_OPS_SECRET" ]; then
     if [ -f "$RUNTIME_CONFIG_PATH" ]; then
         print_step "Injecting OTA ops secrets into runtime config..."
@@ -108,7 +128,6 @@ print_success "AWS identity, S3 bucket, and CloudFront target are reachable"
 
 # Upload static assets with long cache (1 year)
 aws s3 sync build/static "s3://$S3_BUCKET_NAME/static" \
-    --delete \
     --cache-control "public,max-age=31536000,immutable" \
     --metadata-directive REPLACE
 

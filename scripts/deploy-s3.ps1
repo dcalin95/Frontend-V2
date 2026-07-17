@@ -66,6 +66,28 @@ $LongOpsSecret = if (-not [string]::IsNullOrWhiteSpace($env:REACT_APP_OTA_LONG_O
     $ShortOpsSecret
 }
 
+# Local deploy shells do not always contain the OTA secrets. Preserve the
+# currently deployed values instead of replacing runtime-config.json without them.
+if ([string]::IsNullOrWhiteSpace($ShortOpsSecret) -or [string]::IsNullOrWhiteSpace($LongOpsSecret)) {
+    $RemoteRuntimeConfigPath = [System.IO.Path]::GetTempFileName()
+    try {
+        aws s3 cp "s3://$BucketName/runtime-config.json" $RemoteRuntimeConfigPath --only-show-errors 2>$null
+        if ($LASTEXITCODE -eq 0) {
+            $RemoteRuntimeConfig = Get-Content $RemoteRuntimeConfigPath -Raw | ConvertFrom-Json
+            if ([string]::IsNullOrWhiteSpace($ShortOpsSecret)) {
+                $ShortOpsSecret = [string]$RemoteRuntimeConfig.OTA_SHORT_OPS_SECRET
+            }
+            if ([string]::IsNullOrWhiteSpace($LongOpsSecret)) {
+                $LongOpsSecret = [string]$RemoteRuntimeConfig.OTA_LONG_OPS_SECRET
+            }
+        }
+    } catch {
+        Write-Host "Could not read existing runtime config; env secrets are still required." -ForegroundColor Yellow
+    } finally {
+        Remove-Item -LiteralPath $RemoteRuntimeConfigPath -Force -ErrorAction SilentlyContinue
+    }
+}
+
 if ((-not [string]::IsNullOrWhiteSpace($ShortOpsSecret)) -or (-not [string]::IsNullOrWhiteSpace($LongOpsSecret))) {
     if (Test-Path $RuntimeConfigPath) {
         Write-Host "==> Injecting OTA ops secrets into runtime config..." -ForegroundColor Blue
@@ -95,7 +117,8 @@ Write-Host "==> Uploading to S3 bucket: $BucketName" -ForegroundColor Blue
 
 # Upload static assets with long cache (1 year)
 Write-Host "  Uploading static assets..." -ForegroundColor Cyan
-aws s3 sync build/static "s3://$BucketName/static" --delete --cache-control "public,max-age=31536000,immutable" --metadata-directive REPLACE
+# Keep old hashed assets so already-open browser sessions can still lazy-load them.
+aws s3 sync build/static "s3://$BucketName/static" --cache-control "public,max-age=31536000,immutable" --metadata-directive REPLACE
 
 # Upload index.html WITHOUT cache
 Write-Host "  Uploading index.html..." -ForegroundColor Cyan
