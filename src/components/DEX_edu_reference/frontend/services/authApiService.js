@@ -59,10 +59,10 @@ async function authApiRequest(endpoint, options = {}) {
     if (!base || typeof base !== 'string') {
       throw new Error('Backend URL is not configured. Please refresh the page.');
     }
-    const isMainSiteAuth = typeof window !== 'undefined'
-      && window.location?.origin === 'https://bits-ai.io'
-      && endpoint.startsWith('/api/auth/');
-    const requestBase = isMainSiteAuth ? window.location.origin : base;
+    const isFirstPartyProductionApi = typeof window !== 'undefined'
+      && ['bits-ai.io', 'www.bits-ai.io'].includes(window.location?.hostname)
+      && endpoint.startsWith('/api/');
+    const requestBase = isFirstPartyProductionApi ? window.location.origin : base;
     const url = `${requestBase.replace(/\/$/, '')}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
 
     const defaultOptions = {

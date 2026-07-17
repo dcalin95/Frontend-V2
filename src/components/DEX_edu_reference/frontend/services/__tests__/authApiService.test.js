@@ -147,6 +147,31 @@ describe('Auth API Service - Wallet Authentication', () => {
     expect(result).toEqual(mockResponse);
   });
 
+  test('wallet authentication uses the first-party API on bits-ai.io', async () => {
+    const previousLocation = window.location;
+    window.location = {
+      protocol: 'https:',
+      hostname: 'bits-ai.io',
+      port: '',
+      origin: 'https://bits-ai.io',
+      href: 'https://bits-ai.io/#/dex-edu/profile'
+    };
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ nonce: '12345', message: 'Sign this message' })
+    });
+
+    try {
+      await getNonce('0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb');
+      expect(fetch).toHaveBeenCalledWith(
+        'https://bits-ai.io/api/dex/v1/auth/nonce',
+        expect.objectContaining({ method: 'POST', credentials: 'include' })
+      );
+    } finally {
+      window.location = previousLocation;
+    }
+  });
+
   test('verifySignature should call correct endpoint', async () => {
     const walletAddress = '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb';
     const message = 'Sign this message';
