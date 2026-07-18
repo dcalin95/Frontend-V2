@@ -57,7 +57,7 @@ export function stripOpenAiFailureSegmentsFromReasoningText(text) {
   }
   const out = kept.join('\n').replace(/\n{3,}/g, '\n\n').trim();
   if (!out && normalized.trim()) {
-    return '(Mesaje cota/429 OpenAI eliminate din afisare - rand clasificat ca motor OTA, fara apel LLM in acest ciclu.)';
+    return '(OpenAI quota/429 messages hidden - row classified as OTA Motor, without an LLM call in this cycle.)';
   }
   return out;
 }
@@ -172,13 +172,13 @@ export function formatCostAndSourceForSignalCard(sig, opts = {}) {
     skipReason === 'engine_no_openai_request' ||
     isMotorOtaAnalysisSource(sig)
   ) {
-    sourceLabel = 'Motor OTA (fara apel LLM platit)';
+    sourceLabel = 'OTA Motor (no paid LLM call)';
     sourceColor = '#34d399';
     costLabel = 'free';
     tokensLabelOut = null;
   } else if (looksLikeOpenAiApiFailureText(reasoning)) {
     isOpenAiBillingError = true;
-    sourceLabel = 'OpenAI · eroare cota / billing (fara consum inregistrat)';
+    sourceLabel = 'OpenAI - quota / billing error (no usage recorded)';
     sourceColor = '#fb923c';
     costLabel = 'not billed';
     tokensLabelOut = null;
@@ -207,17 +207,17 @@ export function formatCostAndSourceForSignalCard(sig, opts = {}) {
       isOpenAiStyleAnalysisSource(analysisSource);
     if (cardLooksOpenAiTrack) {
       uiMismatchNote =
-        'Comutator: "Doar OTA BITS" - analizele noi din acest browser trimit fara OpenAI. Acest card poate fi din istoric sau cicluri server (OpenAI posibil).';
+        'Switch: "OTA BITS only" - new analyses from this browser are sent without OpenAI. This card may come from history or server cycles where OpenAI was possible.';
     }
   } else if (uiPreferredMode === OTA_ANALYZE_LLM_WITH_OPENAI) {
     if (isMotorOtaAnalysisSource(sig) || skipReason === 'engine_no_openai_request') {
       uiMismatchNote =
-        'Comutator: "Cu OpenAI" - acest rand e salvat ca rulare fara LLM (engine-only) in acel ciclu.';
+        'Switch: "With OpenAI" - this row was saved as an engine-only run without LLM in that cycle.';
     }
   } else if (uiPreferredMode === OTA_ANALYZE_LLM_ANTHROPIC) {
     if (isMotorOtaAnalysisSource(sig) || skipReason === 'engine_no_openai_request') {
       uiMismatchNote =
-        'Comutator: "Claude" - acest card din feed poate fi din ciclu engine-only sau istoric; analiza noua din browser foloseste /api/claude.';
+        'Switch: "Claude" - this feed card may come from an engine-only cycle or history; new browser analysis uses /api/claude.';
     }
   }
 
@@ -246,20 +246,20 @@ export function getOtaSignalSnapshotFreshnessNote(createdAtRaw, opts = {}) {
   if (!Number.isFinite(t)) {
     return {
       primary:
-        'Rand din istoric: rubrica, reasoning, cost si citarile reflecta ce s-a salvat in DB - nu "piata acum". Liniile "live symbol" / gate folosesc regulile curente.',
+        'History row: section, reasoning, cost, and citations reflect what was saved in DB, not the market right now. The "live symbol" / gate lines use current rules.',
       staleSecondary: null,
     };
   }
-  const abs = new Date(t).toLocaleString('ro-RO', { dateStyle: 'short', timeStyle: 'medium' });
+  const abs = new Date(t).toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'medium' });
   const ageMs = Date.now() - t;
   const staleMinutes = Math.max(1, Math.round(staleAfterMs / 60000));
-  const primary = `Analiza si cost pe card = snapshot la ${abs}; nu inseamna pret sau decizie din acest minut. "live symbol" = allowlist curenta.`;
+  const primary = `Card analysis and cost are a snapshot from ${abs}; they are not the price or decision for this minute. "live symbol" means the current allowlist.`;
   if (ageMs <= staleAfterMs) {
     return { primary, staleSecondary: null };
   }
   return {
     primary,
-    staleSecondary: `Vechime >${staleMinutes} min: pretul si contextul pietei s-au putut schimba - verifica grafice / feed live pentru acum.`,
+    staleSecondary: `Older than ${staleMinutes} min: price and market context may have changed - check charts / live feed for the current state.`,
   };
 }
 

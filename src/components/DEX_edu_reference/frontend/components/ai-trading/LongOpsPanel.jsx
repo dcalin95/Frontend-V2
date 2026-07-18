@@ -4157,7 +4157,7 @@ export default function LongOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
                           bg: g?.winRatePct >= 50 ? '#052e16' : '#1c0a0a',
                         },
                         {
-                          label: 'PnL Total',
+                          label: 'Total PnL',
                           value: g?.totalPnlUsd != null ? `${g.totalPnlUsd >= 0 ? '+' : ''}${Number(g.totalPnlUsd).toFixed(2)}$` : '—',
                           sub: `${totalClosed} trades`,
                           color: g?.totalPnlUsd >= 0 ? '#4ade80' : '#f87171',
@@ -4173,7 +4173,7 @@ export default function LongOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
                         {
                           label: 'Worst Trade',
                           value: g?.worstTradeUsd != null ? `${Number(g.worstTradeUsd).toFixed(2)}$` : '—',
-                          sub: 'maxim pierdere',
+                          sub: 'max loss',
                           color: '#f87171',
                           bg: '#1c0a0a',
                         },
@@ -4260,7 +4260,7 @@ export default function LongOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
           })()}
 
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, marginTop: 14, marginBottom: 10 }}>
-          <span style={{ fontSize: 11, fontWeight: 800, color: '#737373', letterSpacing: 0.8, textTransform: 'uppercase' }}>Zi</span>
+          <span style={{ fontSize: 11, fontWeight: 800, color: '#737373', letterSpacing: 0.8, textTransform: 'uppercase' }}>Day</span>
           <button
             type="button"
             onClick={() => setActivityDayFilter('__ALL__')}
@@ -4275,7 +4275,7 @@ export default function LongOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
               cursor: 'pointer',
             }}
           >
-            Toate
+            All
           </button>
           {activityDayKeys.map((dk) => (
             <button
@@ -4293,7 +4293,7 @@ export default function LongOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
                 cursor: 'pointer',
               }}
             >
-              {dk === new Date().toLocaleDateString('ro-RO', { day: '2-digit', month: '2-digit', year: '2-digit' }) ? 'Azi (' + dk + ')' : dk}
+              {dk === new Date().toLocaleDateString('ro-RO', { day: '2-digit', month: '2-digit', year: '2-digit' }) ? 'Today (' + dk + ')' : dk}
             </button>
           ))}
           <span style={{ flex: '1 1 12px', minWidth: 0 }} />

@@ -560,7 +560,7 @@ const EmailAuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
               )}
             </button>
 
-            <div className="email-auth-oauth-divider">sau</div>
+            <div className="email-auth-oauth-divider">or</div>
             <button
               type="button"
               className="email-auth-oauth-btn"

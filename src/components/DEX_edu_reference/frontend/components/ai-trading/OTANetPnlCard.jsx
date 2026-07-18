@@ -88,7 +88,7 @@ export default function OTANetPnlCard({ walletAddress }) {
             </div>
             {tradesCount > 0 && (
               <div className="grid-trading-panel__pnl-details">
-                <span>{tradesCount} tranzacții</span>
+                <span>{tradesCount} transactions</span>
               </div>
             )}
           </div>

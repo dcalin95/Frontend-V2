@@ -186,7 +186,7 @@ const ProtectedRoute = ({
             </p>
             <p style={{ color: 'var(--ds-text-secondary, #94a3b8)', fontSize: '0.875rem', margin: 0 }}>
               {authVariant === 'email'
-                ? 'Log in below (sau folosește Login / Register în header pentru Google).'
+                ? 'Log in below, or use Login / Register in the header for Google.'
                 : 'Use the login button below or sign in from the sidebar (Profile / OTA).'}
             </p>
             {authVariant === 'email' && (
@@ -211,7 +211,7 @@ const ProtectedRoute = ({
                   </svg>
                   Log in with Google
                 </button>
-                <p style={{ marginTop: '0.5rem', fontSize: '0.8125rem', color: 'var(--ds-text-secondary, #94a3b8)' }}>sau cu email/username și parolă:</p>
+                <p style={{ marginTop: '0.5rem', fontSize: '0.8125rem', color: 'var(--ds-text-secondary, #94a3b8)' }}>or with email/username and password:</p>
                 <form
                   onSubmit={handleInlineSubmit}
                   style={{ width: '100%', maxWidth: '360px', marginTop: '1rem' }}
@@ -283,7 +283,7 @@ const ProtectedRoute = ({
                   {inlineMode === 'login' && (
                     <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.875rem' }}>
                       <Link to="/dex-edu/ota/forgot-password" style={{ color: 'var(--ds-accent, #14f195)', textDecoration: 'none' }}>
-                        Am uitat parola?
+                        Forgot password?
                       </Link>
                     </p>
                   )}

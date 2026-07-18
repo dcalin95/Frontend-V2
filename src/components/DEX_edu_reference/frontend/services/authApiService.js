@@ -119,10 +119,10 @@ async function authApiRequest(endpoint, options = {}) {
               const mins = Number.isFinite(rawMins) && rawMins > 0 ? rawMins : null;
               const retryStr =
                 mins != null
-                  ? `în ${mins} minute`
-                  : `după ${new Date(untilTs).toLocaleString()}`;
-              // După reset parolă, backend șterge lockout — vezi resetPasswordWithToken.
-              fullMsg = `Cont blocat temporar (prea multe încercări). Poți încerca din nou ${retryStr}. Dacă ai primit link de resetare, deschide-l și setează parola nouă — apoi poți intra. Altfel așteaptă expirarea timpului.`;
+                  ? `in ${mins} minutes`
+                  : `after ${new Date(untilTs).toLocaleString()}`;
+              // After password reset, the backend clears the lockout.
+              fullMsg = `Account temporarily locked because of too many attempts. You can try again ${retryStr}. If you received a reset link, open it and set a new password, then sign in again. Otherwise, wait for the lockout to expire.`;
             } catch (_) {
               fullMsg = fallback403;
             }
@@ -642,10 +642,10 @@ const BANK_STATEMENT_PARSE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'im
  * Backend: POST multipart `statement`, necesită OPENAI_API_KEY pe server.
  */
 export const parseProfileBankStatement = async (file) => {
-  if (!file) throw new Error('Selectează un fișier (extras PDF sau poză).');
+  if (!file) throw new Error('Select a file (bank statement PDF or image).');
   const mime = (file.type || '').toLowerCase();
   if (!BANK_STATEMENT_PARSE_TYPES.includes(mime)) {
-    throw new Error('Folosește JPEG, PNG, WebP, GIF sau PDF.');
+    throw new Error('Use JPEG, PNG, WebP, GIF, or PDF.');
   }
   const formData = new FormData();
   formData.append('statement', file);
@@ -657,7 +657,7 @@ export const parseProfileBankStatement = async (file) => {
   });
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));
-    throw new Error(err.error || err.message || `Extragere eșuată (${response.status}).`);
+    throw new Error(err.error || err.message || `Extraction failed (${response.status}).`);
   }
   return response.json();
 };

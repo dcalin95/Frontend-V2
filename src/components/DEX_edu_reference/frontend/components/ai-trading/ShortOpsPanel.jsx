@@ -3445,7 +3445,7 @@ export default function ShortOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
                         <div className="sop-probe-tile">
                           <span
                             className="sop-probe-tile-label"
-                            title="Binance futures account: totalUnrealizedProfit pe tot contul USD‑M (toate contractele), nu doar simbolul din header."
+                            title="Binance futures account: totalUnrealizedProfit across the whole USD-M account, all contracts, not only the header symbol."
                           >
                             Unr. PnL (whole account)
                           </span>
@@ -4075,7 +4075,7 @@ export default function ShortOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
               <div style={{ marginTop: 10, width: '100%' }}>
                 <div style={{ display: 'flex', alignItems: 'stretch', gap: 10, flexWrap: 'wrap', width: '100%' }}>
                   <TotalCard
-                    title="Profit realizat (tabel)"
+                    title="Realized profit (table)"
                     subtitle={activityDayFilter === '__ALL__' ? 'CLOSE sum in displayed rows' : `CLOSE sum · day ${activityDayFilter}`}
                     total={totalPnl}
                     count={closed.length}
@@ -4084,15 +4084,15 @@ export default function ShortOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
                   />
                 </div>
                 <div style={{ fontSize: 9, color: '#64748b', marginTop: 8, lineHeight: 1.35, maxWidth: 720 }}>
-                  <strong>PnL Total</strong> (card verde de sus) = sumă din <code style={{ fontSize: 8 }}>ota.trade_outcomes</code> pentru perioada <strong>{winRateDays}z</strong>.
-                  Acest rând = suma închiderilor din <strong>același filtru ca tabelul</strong> (max 100 evenimente recente{analysisFeedUiUserId ? ` · user conectat` : ''}).
+                  <strong>Total PnL</strong> (green top card) = sum from <code style={{ fontSize: 8 }}>ota.trade_outcomes</code> for the <strong>{winRateDays}d</strong> window.
+                  This row = closed PnL using <strong>the same filter as the table</strong> (max 100 recent events{analysisFeedUiUserId ? ' - connected user' : ''}).
                 </div>
               </div>
             );
           })()}
 
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, marginTop: 14, marginBottom: 10 }}>
-          <span style={{ fontSize: 11, fontWeight: 800, color: '#737373', letterSpacing: 0.8, textTransform: 'uppercase' }}>Zi</span>
+          <span style={{ fontSize: 11, fontWeight: 800, color: '#737373', letterSpacing: 0.8, textTransform: 'uppercase' }}>Day</span>
           <button
             type="button"
             onClick={() => setActivityDayFilter('__ALL__')}
@@ -4107,7 +4107,7 @@ export default function ShortOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
               cursor: 'pointer',
             }}
           >
-            Toate
+            All
           </button>
           {activityDayKeys.map((dk) => (
             <button
@@ -4125,7 +4125,7 @@ export default function ShortOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
                 cursor: 'pointer',
               }}
             >
-              {dk === new Date().toLocaleDateString('ro-RO', { day: '2-digit', month: '2-digit', year: '2-digit' }) ? 'Azi (' + dk + ')' : dk}
+              {dk === new Date().toLocaleDateString('ro-RO', { day: '2-digit', month: '2-digit', year: '2-digit' }) ? 'Today (' + dk + ')' : dk}
             </button>
           ))}
           <span style={{ flex: '1 1 12px', minWidth: 0 }} />

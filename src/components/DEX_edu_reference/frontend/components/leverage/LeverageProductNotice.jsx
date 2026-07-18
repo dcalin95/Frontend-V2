@@ -7,7 +7,7 @@ import { CFD_TP_SL_ONCHAIN_SUPPORTED } from '../../utils/leverageUtils';
 export default function LeverageProductNotice({ isDemoMode }) {
   return (
     <details className="leverage-product-notice-details">
-      <summary className="leverage-product-notice-summary">Informații produs (scope pagină)</summary>
+      <summary className="leverage-product-notice-summary">Product information (page scope)</summary>
       <aside className="leverage-product-notice" role="region" aria-label="Product scope">
       <ul className="leverage-product-notice__list">
         <li>

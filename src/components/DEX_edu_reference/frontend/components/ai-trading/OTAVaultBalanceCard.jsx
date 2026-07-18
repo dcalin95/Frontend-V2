@@ -69,7 +69,7 @@ export default function OTAVaultBalanceCard() {
       </p>
       {isSameWalletAsBot && (
         <p className="ota-vault-balance-card-same-bot-note" role="note">
-          Acest wallet este și wallet-ul botului OTA – fondurile și autorizația sunt pentru același cont.
+          This wallet is also the OTA bot wallet - funds and authorization belong to the same account.
         </p>
       )}
       {loading ? (

@@ -17,7 +17,7 @@ export default function FuturesOpsPeerNav({ active, openLivePositionsCount = 0, 
   const futuresPanelLabel = active === 'long' ? 'LONG' : 'SHORT';
 
   return (
-    <nav className="futures-ops-peer-nav" aria-label="Futures Ops — rută și mod analiză">
+    <nav className="futures-ops-peer-nav" aria-label="Futures Ops route and analysis mode">
       <div className="futures-ops-peer-nav__row futures-ops-peer-nav__row--routes">
         <Link
           to={shortTo}

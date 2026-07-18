@@ -37,17 +37,18 @@ export default function LeverageRecentActivity({ entries = [] }) {
   if (!entries.length) return null;
 
   return (
-    <section className="leverage-activity-section" aria-label="Activitate recentă leverage">
+    <section className="leverage-activity-section" aria-label="Recent leverage activity">
       <header className="leverage-activity-header">
-        <h3 className="leverage-activity-title">Activitate recentă</h3>
-        <span className="leverage-activity-count">{entries.length} evenimente</span>
+        <h3 className="leverage-activity-title">Recent activity</h3>
+        <span className="leverage-activity-count">{entries.length} events</span>
       </header>
 
       <details className="leverage-activity-disclaimer">
-        <summary className="leverage-activity-disclaimer-summary">Limitări jurnal (sesiune browser)</summary>
+        <summary className="leverage-activity-disclaimer-summary">Log limits (browser session)</summary>
         <p className="leverage-activity-disclaimer-body">
-          Stocat doar în această sesiune (nu e audit global). Confirmări on-chain: link BscScan. Demo: simulat. Colateral
-          add/remove: fără evenimente dedicate în contract — apare după tx și refresh.
+          Stored only in this browser session, not a global audit log. On-chain confirmations use BscScan links.
+          Demo entries are simulated. Collateral add/remove has no dedicated contract event, so it appears after the
+          transaction and refresh.
         </p>
       </details>
 
@@ -57,7 +58,7 @@ export default function LeverageRecentActivity({ entries = [] }) {
             <time className="leverage-activity-time" dateTime={row.at} title={row.at}>
               {row.at ? new Date(row.at).toLocaleString() : '—'}
             </time>
-            <div className="leverage-activity-badges" aria-label="Scope și stare">
+            <div className="leverage-activity-badges" aria-label="Scope and status">
               <span className="leverage-activity-badge">{row.scope === 'demo' ? 'Demo' : 'Live'}</span>
               <span className={`leverage-activity-phase phase-${row.phase}`}>{row.phase}</span>
             </div>
