@@ -69,6 +69,8 @@ export default function SiteAdminPage() {
   const [loadingStats, setLoadingStats] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [error, setError] = useState(null);
+  const [adminAccessStatus, setAdminAccessStatus] = useState(null);
+  const [validatingAdminAccess, setValidatingAdminAccess] = useState(false);
 
   const [documents, setDocuments] = useState([]);
   const [documentsStatus, setDocumentsStatus] = useState('pending');
@@ -138,6 +140,26 @@ export default function SiteAdminPage() {
       setStats(null);
     } finally {
       setLoadingStats(false);
+    }
+  }, [effectiveAdminPassword, actorEmail, actorUsername, postAdmin]);
+
+  const validateAdminAccess = useCallback(async () => {
+    setValidatingAdminAccess(true);
+    setAdminAccessStatus(null);
+    setError(null);
+    try {
+      const data = await postAdmin(API_ENDPOINTS.SITE_ADMIN_STATS, {
+        password: effectiveAdminPassword,
+        actorEmail,
+        actorUsername: actorUsername || undefined,
+      });
+      setStats(data.stats || null);
+      setAdminAccessStatus({ ok: true, message: 'Admin access validated. You can now load users and KYC documents.' });
+    } catch (e) {
+      setStats(null);
+      setAdminAccessStatus({ ok: false, message: e.message || 'Admin access validation failed.' });
+    } finally {
+      setValidatingAdminAccess(false);
     }
   }, [effectiveAdminPassword, actorEmail, actorUsername, postAdmin]);
 
@@ -423,6 +445,25 @@ export default function SiteAdminPage() {
           {!actorEmail && !actorUsername ? (
             <span className="site-admin-chip site-admin-chip-warn">No actor email/username</span>
           ) : null}
+        </div>
+        <div className="site-admin-actions">
+          <button
+            type="button"
+            className="site-admin-btn site-admin-btn-primary"
+            disabled={validatingAdminAccess || !effectiveAdminPassword}
+            onClick={validateAdminAccess}
+          >
+            <KeyRound size={16} className={validatingAdminAccess ? 'site-admin-icon-spin' : undefined} aria-hidden />
+            {validatingAdminAccess ? 'Validating...' : 'Validate admin access'}
+          </button>
+          {adminAccessStatus && (
+            <span
+              className={`site-admin-chip ${adminAccessStatus.ok ? 'site-admin-chip-on' : 'site-admin-chip-warn'}`}
+              role={adminAccessStatus.ok ? 'status' : 'alert'}
+            >
+              {adminAccessStatus.message}
+            </span>
+          )}
         </div>
       </section>
 
