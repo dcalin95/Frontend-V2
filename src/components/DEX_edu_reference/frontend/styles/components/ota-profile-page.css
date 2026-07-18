@@ -457,6 +457,23 @@ button.ota-profile-edit-pencil {
   flex-shrink: 0;
   vertical-align: middle;
 }
+
+.ota-profile-documents-view {
+  align-self: flex-start;
+  padding: 6px 10px;
+  border: 1px solid rgba(59, 130, 246, 0.55);
+  border-radius: 6px;
+  color: #bfdbfe;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.ota-profile-documents-view:hover {
+  background: rgba(59, 130, 246, 0.14);
+  color: #ffffff;
+}
 .ota-profile-doc-verified { color: var(--ds-success, #22c55e); }
 .ota-profile-doc-rejected { color: var(--ds-danger, #ef4444); }
 .ota-profile-doc-pending { color: var(--ds-warning, #eab308); }

@@ -32,6 +32,7 @@ import LoadingSpinner from '../components/common/LoadingSpinner';
 import { formatCurrency } from '../utils/formatters';
 import { validateIban, maskIban, normalizeIban } from '../utils/ibanValidation';
 import { getStripeBalance, getStripeHistory } from '../services/stripeWithdrawalService';
+import { getBackendUrl } from '../../config/apiEndpoints.js';
 import { BITS_FIAT_BALANCE_REFRESH } from '../utils/fiatBalanceEvents';
 import { formatFiatWithdrawalStatusLabel, fiatWithdrawalDetailLine } from '../utils/fiatWithdrawalStatusUi';
 import OTASettingsPanel from '../../ota/OTASettingsPanel';
@@ -1487,6 +1488,16 @@ const OTAProfilePage = () => {
                               {' · '}
                               {d.created_at ? new Date(d.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : ''}
                             </span>
+                            {d.download_url && (
+                              <a
+                                className="ota-profile-documents-view"
+                                href={`${getBackendUrl().replace(/\/$/, '')}${d.download_url}`}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                View
+                              </a>
+                            )}
                           </li>
                         ))}
                       </ul>
