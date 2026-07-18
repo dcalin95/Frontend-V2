@@ -240,7 +240,7 @@ export const TOKEN_REGISTRY = {
   AVAX: {
     symbol: 'AVAX',
     name: 'Avalanche (Binance-Peg)',
-    address: '0x1CE0c2827e342e765BfEF1e182FB9F9ceFe2496e',
+    address: '0x1CE0c2827e2eF14D5C4f29a091d735A204794041',
     decimals: 18,
     logoUrl: null,
     isNative: false,
