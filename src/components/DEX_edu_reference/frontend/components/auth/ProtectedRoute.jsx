@@ -25,6 +25,7 @@ import {
 import { getUserFriendlyError } from '../../utils/helpers';
 import { toast } from 'react-toastify';
 import { getBackendUrl } from '../../../config/apiEndpoints.js';
+import { Eye, EyeOff } from 'lucide-react';
 
 /**
  * ProtectedRoute Component
@@ -47,6 +48,7 @@ const ProtectedRoute = ({
   const [hasChecked, setHasChecked] = useState(false);
   const [inlineMode, setInlineMode] = useState('login');
   const [inlineData, setInlineData] = useState({ email: '', username: '', password: '', confirmPassword: '' });
+  const [inlinePasswordVisible, setInlinePasswordVisible] = useState({ password: false, confirm: false });
   const [inlineError, setInlineError] = useState(null);
   const [inlineProcessing, setInlineProcessing] = useState(false);
 
@@ -234,25 +236,49 @@ const ProtectedRoute = ({
                     autoComplete={inlineMode === 'login' ? 'username' : 'email'}
                     disabled={inlineProcessing}
                   />
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    value={inlineData.password}
-                    onChange={(e) => { setInlineData(prev => ({ ...prev, password: e.target.value })); setInlineError(null); }}
-                    style={{ width: '100%', padding: '10px 12px', marginBottom: '0.75rem', borderRadius: '8px', border: '1px solid var(--ds-border-color, rgba(255,255,255,0.2))', background: 'var(--ds-bg-input, rgba(0,0,0,0.3))', color: 'var(--ds-text-primary, #e2e8f0)', fontSize: '0.9375rem' }}
-                    autoComplete={inlineMode === 'login' ? 'current-password' : 'new-password'}
-                    disabled={inlineProcessing}
-                  />
-                  {inlineMode === 'register' && (
+                  <div style={{ position: 'relative', marginBottom: '0.75rem' }}>
                     <input
-                      type="password"
-                      placeholder="Confirm password"
-                      value={inlineData.confirmPassword}
-                      onChange={(e) => { setInlineData(prev => ({ ...prev, confirmPassword: e.target.value })); setInlineError(null); }}
-                      style={{ width: '100%', padding: '10px 12px', marginBottom: '0.75rem', borderRadius: '8px', border: '1px solid var(--ds-border-color, rgba(255,255,255,0.2))', background: 'var(--ds-bg-input, rgba(0,0,0,0.3))', color: 'var(--ds-text-primary, #e2e8f0)', fontSize: '0.9375rem' }}
-                      autoComplete="new-password"
+                      type={inlinePasswordVisible.password ? 'text' : 'password'}
+                      placeholder="Password"
+                      value={inlineData.password}
+                      onChange={(e) => { setInlineData(prev => ({ ...prev, password: e.target.value })); setInlineError(null); }}
+                      style={{ width: '100%', padding: '10px 44px 10px 12px', borderRadius: '8px', border: '1px solid var(--ds-border-color, rgba(255,255,255,0.2))', background: 'var(--ds-bg-input, rgba(0,0,0,0.3))', color: 'var(--ds-text-primary, #e2e8f0)', fontSize: '0.9375rem' }}
+                      autoComplete={inlineMode === 'login' ? 'current-password' : 'new-password'}
                       disabled={inlineProcessing}
                     />
+                    <button
+                      type="button"
+                      onClick={() => setInlinePasswordVisible((prev) => ({ ...prev, password: !prev.password }))}
+                      aria-label={inlinePasswordVisible.password ? 'Hide password' : 'Show password'}
+                      title={inlinePasswordVisible.password ? 'Hide password' : 'Show password'}
+                      style={{ position: 'absolute', top: '50%', right: '8px', transform: 'translateY(-50%)', width: '30px', height: '30px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', border: '0', background: 'transparent', color: 'var(--ds-text-secondary, #94a3b8)', cursor: 'pointer' }}
+                      disabled={inlineProcessing}
+                    >
+                      {inlinePasswordVisible.password ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                  {inlineMode === 'register' && (
+                    <div style={{ position: 'relative', marginBottom: '0.75rem' }}>
+                      <input
+                        type={inlinePasswordVisible.confirm ? 'text' : 'password'}
+                        placeholder="Confirm password"
+                        value={inlineData.confirmPassword}
+                        onChange={(e) => { setInlineData(prev => ({ ...prev, confirmPassword: e.target.value })); setInlineError(null); }}
+                        style={{ width: '100%', padding: '10px 44px 10px 12px', borderRadius: '8px', border: '1px solid var(--ds-border-color, rgba(255,255,255,0.2))', background: 'var(--ds-bg-input, rgba(0,0,0,0.3))', color: 'var(--ds-text-primary, #e2e8f0)', fontSize: '0.9375rem' }}
+                        autoComplete="new-password"
+                        disabled={inlineProcessing}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setInlinePasswordVisible((prev) => ({ ...prev, confirm: !prev.confirm }))}
+                        aria-label={inlinePasswordVisible.confirm ? 'Hide password confirmation' : 'Show password confirmation'}
+                        title={inlinePasswordVisible.confirm ? 'Hide password confirmation' : 'Show password confirmation'}
+                        style={{ position: 'absolute', top: '50%', right: '8px', transform: 'translateY(-50%)', width: '30px', height: '30px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', border: '0', background: 'transparent', color: 'var(--ds-text-secondary, #94a3b8)', cursor: 'pointer' }}
+                        disabled={inlineProcessing}
+                      >
+                        {inlinePasswordVisible.confirm ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
                   )}
                   {inlineMode === 'login' && (
                     <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.875rem' }}>

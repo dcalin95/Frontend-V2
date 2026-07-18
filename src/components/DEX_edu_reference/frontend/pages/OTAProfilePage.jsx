@@ -1429,6 +1429,9 @@ const OTAProfilePage = () => {
                     <p className="ota-profile-detail-desc ota-profile-detail-desc--muted" style={{ fontSize: 13, marginBottom: 12 }}>
                       Face-to-ID matching needs a certified KYC provider (e.g. Sumsub, Onfido) and backend integration — it is not wired here yet; compliance may rely on manual review.
                     </p>
+                    <p className="ota-profile-detail-desc ota-profile-detail-desc--muted" style={{ fontSize: 13, marginBottom: 12 }}>
+                      Uploaded files are stored in the backend database and can be opened here by the user or reviewed in <Link to="/dex-edu/site-admin">Site Admin</Link>. Old metadata-only rows cannot be recovered and must be uploaded again.
+                    </p>
                     {fiatLegalDocumentsComplete && (
                       <p className="ota-profile-kyc-ready" role="status">
                         ID and bank statement are on file — minimum document set for fiat payout review.

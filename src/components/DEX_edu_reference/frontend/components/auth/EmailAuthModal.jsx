@@ -25,7 +25,7 @@ import {
 import { toast } from 'react-toastify';
 import LoadingSpinner from '../common/LoadingSpinner';
 import authApiService from '../../services/authApiService';
-import { Mail, Lock, LogIn, AlertCircle, User, UserPlus, Fingerprint, Smartphone, Send } from 'lucide-react';
+import { Mail, Lock, LogIn, AlertCircle, User, UserPlus, Fingerprint, Smartphone, Send, Eye, EyeOff } from 'lucide-react';
 import bitsLogo from '../../../../../assets/logo.png';
 import './EmailAuthModal.css';
 
@@ -53,6 +53,7 @@ const EmailAuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
   const [authMethod, setAuthMethod] = useState('email'); // 'email' | 'phone'
   const [mode, setMode] = useState(initialMode); // 'login' | 'register'
   const [formData, setFormData] = useState({ email: '', username: '', password: '', confirmPassword: '' });
+  const [passwordVisible, setPasswordVisible] = useState({ password: false, confirm: false });
   const [phoneData, setPhoneData] = useState({ phone: '', code: '' });
   const [phoneStep, setPhoneStep] = useState('send'); // 'send' | 'verify'
   const [phoneSending, setPhoneSending] = useState(false);
@@ -468,7 +469,7 @@ const EmailAuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
               <div className="email-auth-input-wrap-sonnet">
                 <Lock size={16} className="email-auth-input-icon-sonnet" />
                 <input
-                  type="password"
+                  type={passwordVisible.password ? 'text' : 'password'}
                   id="password-modal-sonnet"
                   name="password"
                   value={formData.password}
@@ -477,8 +478,18 @@ const EmailAuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   required
                   disabled={isProcessing}
                   autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
-                  className="email-auth-input-sonnet"
+                  className="email-auth-input-sonnet email-auth-input-sonnet--with-toggle"
                 />
+                <button
+                  type="button"
+                  className="email-auth-password-toggle-sonnet"
+                  onClick={() => setPasswordVisible((prev) => ({ ...prev, password: !prev.password }))}
+                  aria-label={passwordVisible.password ? 'Hide password' : 'Show password'}
+                  title={passwordVisible.password ? 'Hide password' : 'Show password'}
+                  disabled={isProcessing}
+                >
+                  {passwordVisible.password ? <EyeOff size={17} /> : <Eye size={17} />}
+                </button>
               </div>
             </div>
 
@@ -488,7 +499,7 @@ const EmailAuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 <div className="email-auth-input-wrap-sonnet">
                   <Lock size={16} className="email-auth-input-icon-sonnet" />
                   <input
-                    type="password"
+                    type={passwordVisible.confirm ? 'text' : 'password'}
                     id="confirm-password-modal-sonnet"
                     name="confirmPassword"
                     value={formData.confirmPassword}
@@ -497,8 +508,18 @@ const EmailAuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                     required
                     disabled={isProcessing}
                     autoComplete="new-password"
-                    className="email-auth-input-sonnet"
+                    className="email-auth-input-sonnet email-auth-input-sonnet--with-toggle"
                   />
+                  <button
+                    type="button"
+                    className="email-auth-password-toggle-sonnet"
+                    onClick={() => setPasswordVisible((prev) => ({ ...prev, confirm: !prev.confirm }))}
+                    aria-label={passwordVisible.confirm ? 'Hide password confirmation' : 'Show password confirmation'}
+                    title={passwordVisible.confirm ? 'Hide password confirmation' : 'Show password confirmation'}
+                    disabled={isProcessing}
+                  >
+                    {passwordVisible.confirm ? <EyeOff size={17} /> : <Eye size={17} />}
+                  </button>
                 </div>
               </div>
             )}
