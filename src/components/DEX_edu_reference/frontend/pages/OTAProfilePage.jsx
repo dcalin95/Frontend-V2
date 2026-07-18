@@ -38,6 +38,7 @@ import { formatFiatWithdrawalStatusLabel, fiatWithdrawalDetailLine } from '../ut
 import OTASettingsPanel from '../../ota/OTASettingsPanel';
 import OtaBscAutoStatusBanner from '../components/ai-trading/OtaBscAutoStatusBanner';
 import { isBotAuthorized, getExecutorBotAuth } from '../utils/otaTradingModes';
+import { shouldShowSiteAdminEntry } from '../utils/siteAdminAccess';
 import ProfileAvatarDisplay from '../components/profile/ProfileAvatarDisplay';
 import BscLargeTransfersSection from '../components/profile/BscLargeTransfersSection';
 import '../styles/pages.css';
@@ -90,6 +91,7 @@ const OTAProfilePage = () => {
   } = useOTARegistrationContext();
 
   const executorBotAuth = useMemo(() => getExecutorBotAuth(botAuthorizations, executorBotAddress), [botAuthorizations, executorBotAddress]);
+  const showSiteAdminEntry = useMemo(() => shouldShowSiteAdminEntry(user), [user]);
 
   const [activeTab, setActiveTab] = useState('profile');
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -1430,7 +1432,7 @@ const OTAProfilePage = () => {
                       Face-to-ID matching needs a certified KYC provider (e.g. Sumsub, Onfido) and backend integration — it is not wired here yet; compliance may rely on manual review.
                     </p>
                     <p className="ota-profile-detail-desc ota-profile-detail-desc--muted" style={{ fontSize: 13, marginBottom: 12 }}>
-                      Uploaded files are stored in the backend database and can be opened here by the user or reviewed in <Link to="/dex-edu/site-admin">Site Admin</Link>. Old metadata-only rows cannot be recovered and must be uploaded again.
+                      Uploaded files are stored in the backend database and can be opened here by the user or reviewed by site operators{showSiteAdminEntry ? <> in <Link to="/dex-edu/site-admin">Site Admin</Link></> : null}. Old metadata-only rows cannot be recovered and must be uploaded again.
                     </p>
                     {fiatLegalDocumentsComplete && (
                       <p className="ota-profile-kyc-ready" role="status">

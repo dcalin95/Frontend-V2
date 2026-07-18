@@ -6,6 +6,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
+import { useDexAuth } from '../../context/DexAuthContext';
+import { shouldShowSiteAdminEntry } from '../../utils/siteAdminAccess';
 import {
   DASHBOARD_FEATURE_GRID_ITEMS,
   DASHBOARD_SECONDARY_LINK_GROUPS,
@@ -13,6 +15,12 @@ import {
 } from '../../constants/dashboardProductNavData';
 
 export default function DashboardBentoNav() {
+  const { user } = useDexAuth();
+  const showSiteAdminEntry = shouldShowSiteAdminEntry(user);
+  const secondaryLinkGroups = DASHBOARD_SECONDARY_LINK_GROUPS.filter(
+    (group) => group.id !== 'admin' || showSiteAdminEntry
+  );
+
   return (
     <>
       <section
@@ -65,7 +73,7 @@ export default function DashboardBentoNav() {
         <summary className="dash-ops__summary">More links</summary>
         <div className="dash-ops__inner">
           <div className="dash-ops__cols">
-            {DASHBOARD_SECONDARY_LINK_GROUPS.map((group) => (
+            {secondaryLinkGroups.map((group) => (
               <div key={group.id} className="dash-ops__col">
                 <h3>{group.label}</h3>
                 <ul className="dash-ops__list">

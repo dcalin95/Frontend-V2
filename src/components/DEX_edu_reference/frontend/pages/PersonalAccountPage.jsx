@@ -24,6 +24,7 @@ import {
 import { useVaultDeposit } from '../hooks/useVaultDeposit';
 import { useClosedPositionsProfitUsd } from '../hooks/useClosedPositionsProfitUsd';
 import { useVaultTransactionHistory } from '../hooks/useVaultTransactionHistory';
+import { useDexAuth } from '../context/DexAuthContext';
 import { getStripeBalance, getStripeHistory } from '../services/stripeWithdrawalService';
 import tokenPriceService from '../services/tokenPriceService';
 import FiatConvertPanel from '../components/personal-account/FiatConvertPanel';
@@ -36,6 +37,7 @@ import { BITS_FIAT_BALANCE_REFRESH } from '../utils/fiatBalanceEvents';
 import { formatFiatWithdrawalStatusLabel, fiatWithdrawalDetailLine } from '../utils/fiatWithdrawalStatusUi';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { CONTRACT_MAP } from '../../../../contract/contractMap';
+import { shouldShowSiteAdminEntry } from '../utils/siteAdminAccess';
 import '../styles/components/personal-account-page.css';
 
 /** Format history amount (BigNumber or string) with decimals. */
@@ -51,6 +53,7 @@ function formatAmountFromHistory(amount, decimals) {
 
 export default function PersonalAccountPage() {
   const navigate = useNavigate();
+  const { user } = useDexAuth();
   const {
     tokenOptions,
     balances,
@@ -106,6 +109,7 @@ export default function PersonalAccountPage() {
   const lastVisibilityRefetchRef = useRef(0);
   const lastFiatVisibilityRefetchRef = useRef(0);
   const VISIBILITY_REFETCH_MS = 15000;
+  const showSiteAdminEntry = shouldShowSiteAdminEntry(user);
 
   const loadStripe = useCallback(async () => {
     setStripeLoading(true);
@@ -328,7 +332,7 @@ export default function PersonalAccountPage() {
             <Landmark size={28} aria-hidden />
             Personal Account
           </h1>
-          {isConnected && walletAddress ? (
+          {showSiteAdminEntry ? (
             <Link
               to="/dex-edu/site-admin"
               className="personal-account-site-admin-link"

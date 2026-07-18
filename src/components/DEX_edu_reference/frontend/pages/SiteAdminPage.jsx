@@ -24,6 +24,12 @@ import {
 } from 'lucide-react';
 import { useDexAuth } from '../context/DexAuthContext';
 import { getApiBaseUrl, API_ENDPOINTS } from '../../config/apiEndpoints.js';
+import {
+  clearValidatedSiteAdminSession,
+  isSiteAdminAllowlisted,
+  rememberValidatedSiteAdminSession,
+  shouldShowSiteAdminEntry,
+} from '../utils/siteAdminAccess';
 import '../styles/components/site-admin-page.css';
 
 /** Inlined at build; same pattern as frontend/src/Presale/Timer/logic/AdminPanel.js */
@@ -35,14 +41,6 @@ if (process.env.NODE_ENV === 'production' && !REACT_APP_ADMIN_PASS) {
   console.error(
     '[SECURITY] REACT_APP_ADMIN_PASS is required in production for /dex-edu/site-admin (or type password manually). Same as legacy REACT_APP_ADMIN_PASS for /admin-test.'
   );
-}
-
-function parseAllowedEmailsFromEnv() {
-  const raw = typeof process !== 'undefined' && process.env && process.env.REACT_APP_SITE_ADMIN_EMAILS
-    ? String(process.env.REACT_APP_SITE_ADMIN_EMAILS).trim()
-    : '';
-  if (!raw) return [];
-  return raw.split(',').map((s) => s.trim().toLowerCase()).filter(Boolean);
 }
 
 function YesNoBadge({ ok }) {
@@ -86,17 +84,9 @@ export default function SiteAdminPage() {
   const [emailMsg, setEmailMsg] = useState(null);
 
   const uiAllowed = useMemo(() => {
-    const allowed = parseAllowedEmailsFromEnv();
-    if (allowed.length === 0) return true;
-    const e = (actorEmail || '').trim().toLowerCase();
-    const u = (actorUsername || '').trim().toLowerCase();
-    return allowed.some((token) => {
-      if (token.includes('@')) {
-        return !!e && e === token;
-      }
-      return !!u && u === token;
-    });
-  }, [actorEmail, actorUsername]);
+    return shouldShowSiteAdminEntry(user);
+  }, [user]);
+  const buildAllowlisted = useMemo(() => isSiteAdminAllowlisted(user), [user]);
 
   /** Typed password overrides build-time REACT_APP_ADMIN_PASS (same logic as legacy AdminPanel default). */
   const effectiveAdminPassword = useMemo(
@@ -155,13 +145,15 @@ export default function SiteAdminPage() {
       });
       setStats(data.stats || null);
       setAdminAccessStatus({ ok: true, message: 'Admin access validated. You can now load users and KYC documents.' });
+      rememberValidatedSiteAdminSession(user);
     } catch (e) {
       setStats(null);
+      clearValidatedSiteAdminSession();
       setAdminAccessStatus({ ok: false, message: e.message || 'Admin access validation failed.' });
     } finally {
       setValidatingAdminAccess(false);
     }
-  }, [effectiveAdminPassword, actorEmail, actorUsername, postAdmin]);
+  }, [effectiveAdminPassword, actorEmail, actorUsername, postAdmin, user]);
 
   /**
    * @param {number} off
@@ -431,6 +423,9 @@ export default function SiteAdminPage() {
         <div className="site-admin-meta-row">
           <span className={`site-admin-chip ${REACT_APP_ADMIN_PASS ? 'site-admin-chip-on' : 'site-admin-chip-off'}`}>
             Build secret {REACT_APP_ADMIN_PASS ? 'on' : 'off'}
+          </span>
+          <span className={`site-admin-chip ${buildAllowlisted ? 'site-admin-chip-on' : 'site-admin-chip-warn'}`}>
+            Admin identity {buildAllowlisted ? 'recognized' : 'session only'}
           </span>
           {actorEmail ? (
             <span className="site-admin-chip site-admin-chip-neutral" title="Actor email sent to API">
