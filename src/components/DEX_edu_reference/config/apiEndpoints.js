@@ -175,6 +175,12 @@ export const API_ENDPOINTS = {
   SITE_ADMIN_STATS: '/site-admin/stats',
   /** Owner paginated user list (POST body: password, actorEmail, limit?, offset?, q?). */
   SITE_ADMIN_USERS: '/site-admin/users',
+  /** Owner KYC document queue (POST body: password, actorEmail, userId?, status?, limit?, offset?). */
+  SITE_ADMIN_DOCUMENTS: '/site-admin/documents',
+  /** Owner KYC document file (POST body: password, actorEmail, documentId). */
+  SITE_ADMIN_DOCUMENT_FILE: '/site-admin/documents/file',
+  /** Owner KYC document review (POST body: password, actorEmail, documentId, verificationStatus, verificationResult?). */
+  SITE_ADMIN_DOCUMENT_REVIEW: '/site-admin/documents/review',
   OTA_CIRCUIT_BREAKER_RESET: '/ai-trading/circuit-breaker/reset',
   // OTA Direct Entry – user-initiated open/close, LLM may close
   OTA_DIRECT_ENTRY_OPEN: '/ai-trading/direct-entry/open',

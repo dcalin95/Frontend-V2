@@ -474,6 +474,20 @@ button.ota-profile-edit-pencil {
   background: rgba(59, 130, 246, 0.14);
   color: #ffffff;
 }
+
+.ota-profile-documents-missing {
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  padding: 6px 10px;
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  border-radius: 6px;
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.1);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
 .ota-profile-doc-verified { color: var(--ds-success, #22c55e); }
 .ota-profile-doc-rejected { color: var(--ds-danger, #ef4444); }
 .ota-profile-doc-pending { color: var(--ds-warning, #eab308); }

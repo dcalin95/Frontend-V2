@@ -18,6 +18,9 @@ import {
   EyeOff,
   KeyRound,
   ArrowLeft,
+  FileCheck,
+  CheckCircle,
+  XCircle,
 } from 'lucide-react';
 import { useDexAuth } from '../context/DexAuthContext';
 import { getApiBaseUrl, API_ENDPOINTS } from '../../config/apiEndpoints.js';
@@ -66,6 +69,13 @@ export default function SiteAdminPage() {
   const [loadingStats, setLoadingStats] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [error, setError] = useState(null);
+
+  const [documents, setDocuments] = useState([]);
+  const [documentsStatus, setDocumentsStatus] = useState('pending');
+  const [documentsUserId, setDocumentsUserId] = useState('');
+  const [loadingDocuments, setLoadingDocuments] = useState(false);
+  const [documentsMsg, setDocumentsMsg] = useState(null);
+  const [reviewBusyId, setReviewBusyId] = useState(null);
 
   const [emailSubject, setEmailSubject] = useState('Bits AI — update');
   const [emailHtml, setEmailHtml] = useState('<p>Hello,</p><p>Your message here.</p>');
@@ -168,6 +178,96 @@ export default function SiteAdminPage() {
     setSearchQ('');
     await loadUsersAt(0, { qOverride: '' });
   }, [loadUsersAt]);
+
+  const loadDocuments = useCallback(async () => {
+    setLoadingDocuments(true);
+    setDocumentsMsg(null);
+    setError(null);
+    try {
+      const data = await postAdmin(API_ENDPOINTS.SITE_ADMIN_DOCUMENTS, {
+        password: effectiveAdminPassword,
+        actorEmail,
+        actorUsername: actorUsername || undefined,
+        status: documentsStatus === 'all' ? undefined : documentsStatus,
+        userId: documentsUserId.trim() || undefined,
+        limit: 100,
+        offset: 0,
+      });
+      setDocuments(data.documents || []);
+      setDocumentsMsg(`Loaded ${(data.documents || []).length} document(s).`);
+    } catch (e) {
+      setDocuments([]);
+      setDocumentsMsg(`Error: ${e.message}`);
+    } finally {
+      setLoadingDocuments(false);
+    }
+  }, [actorEmail, actorUsername, documentsStatus, documentsUserId, effectiveAdminPassword, postAdmin]);
+
+  const openAdminDocument = useCallback(
+    async (documentId) => {
+      setDocumentsMsg(null);
+      try {
+        const res = await fetch(`${base}${API_ENDPOINTS.SITE_ADMIN_DOCUMENT_FILE}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            password: effectiveAdminPassword,
+            actorEmail,
+            actorUsername: actorUsername || undefined,
+            documentId,
+          }),
+        });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || data.message || `HTTP ${res.status}`);
+        }
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank', 'noopener,noreferrer');
+        setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      } catch (e) {
+        setDocumentsMsg(`Open failed: ${e.message}`);
+      }
+    },
+    [actorEmail, actorUsername, base, effectiveAdminPassword]
+  );
+
+  const reviewDocument = useCallback(
+    async (documentId, verificationStatus) => {
+      setReviewBusyId(documentId);
+      setDocumentsMsg(null);
+      try {
+        await postAdmin(API_ENDPOINTS.SITE_ADMIN_DOCUMENT_REVIEW, {
+          password: effectiveAdminPassword,
+          actorEmail,
+          actorUsername: actorUsername || undefined,
+          documentId,
+          verificationStatus,
+          verificationResult: verificationStatus === 'verified' ? 'MANUAL_ADMIN_REVIEW' : 'MANUAL_ADMIN_REJECTED',
+        });
+        setDocuments((rows) =>
+          rows.map((d) =>
+            d.id === documentId
+              ? {
+                  ...d,
+                  verification_status: verificationStatus,
+                  verification_result: verificationStatus === 'verified' ? 'MANUAL_ADMIN_REVIEW' : 'MANUAL_ADMIN_REJECTED',
+                  reviewed_by: actorEmail || actorUsername || 'admin',
+                  reviewed_at: new Date().toISOString(),
+                }
+              : d
+          )
+        );
+        setDocumentsMsg(`Document #${documentId} marked ${verificationStatus}.`);
+      } catch (e) {
+        setDocumentsMsg(`Review failed: ${e.message}`);
+      } finally {
+        setReviewBusyId(null);
+      }
+    },
+    [actorEmail, actorUsername, effectiveAdminPassword, postAdmin]
+  );
 
   const sendBroadcast = async (dryRun) => {
     setEmailBusy(true);
@@ -488,6 +588,121 @@ export default function SiteAdminPage() {
           >
             Next
           </button>
+        </div>
+      </section>
+
+      <section className="site-admin-card">
+        <div className="site-admin-card-head">
+          <h2>
+            <FileCheck size={18} aria-hidden /> KYC documents
+          </h2>
+          <p className="site-admin-section-lead">
+            Manual review queue for uploaded ID/passport and bank statement files. User uploads are stored in the backend database; old metadata-only rows cannot be opened and must be re-uploaded.
+          </p>
+        </div>
+        <div className="site-admin-row">
+          <select
+            className="site-admin-input site-admin-select"
+            value={documentsStatus}
+            onChange={(e) => setDocumentsStatus(e.target.value)}
+            aria-label="Document status filter"
+          >
+            <option value="pending">Pending</option>
+            <option value="verified">Verified</option>
+            <option value="rejected">Rejected</option>
+            <option value="all">All</option>
+          </select>
+          <input
+            className="site-admin-input"
+            value={documentsUserId}
+            onChange={(e) => setDocumentsUserId(e.target.value)}
+            placeholder="Optional user ID"
+            aria-label="Filter documents by user ID"
+          />
+          <button
+            type="button"
+            className="site-admin-btn"
+            disabled={loadingDocuments || !effectiveAdminPassword}
+            onClick={loadDocuments}
+          >
+            <RefreshCw size={16} className={loadingDocuments ? 'site-admin-icon-spin' : undefined} aria-hidden />
+            {loadingDocuments ? 'Loading...' : 'Load documents'}
+          </button>
+        </div>
+        {documentsMsg && <p className="site-admin-msg">{documentsMsg}</p>}
+        <div className="site-admin-table-wrap">
+          <table className="site-admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Type</th>
+                <th>File</th>
+                <th>Status</th>
+                <th>Result</th>
+                <th>Uploaded</th>
+                <th>Review</th>
+              </tr>
+            </thead>
+            <tbody>
+              {documents.length === 0 && !loadingDocuments ? (
+                <tr>
+                  <td colSpan={8} className="site-admin-table-empty">
+                    No documents loaded. Choose a status and click <strong>Load documents</strong>.
+                  </td>
+                </tr>
+              ) : (
+                documents.map((doc) => (
+                  <tr key={doc.id}>
+                    <td className="site-admin-td-id">{doc.id}</td>
+                    <td className="site-admin-td-id">{doc.user_id}</td>
+                    <td>{doc.document_type === 'bank_statement' ? 'Bank statement' : 'ID / passport'}</td>
+                    <td>
+                      <div className="site-admin-doc-file">
+                        <span title={doc.file_name || undefined}>{doc.file_name || 'document'}</span>
+                        {doc.has_file ? (
+                          <button type="button" className="site-admin-btn site-admin-btn-ghost site-admin-btn-compact" onClick={() => openAdminDocument(doc.id)}>
+                            <Eye size={14} aria-hidden /> Open
+                          </button>
+                        ) : (
+                          <span className="site-admin-chip site-admin-chip-warn">metadata only</span>
+                        )}
+                      </div>
+                    </td>
+                    <td>
+                      <span className={`site-admin-badge site-admin-doc-status-${doc.verification_status || 'pending'}`}>
+                        {doc.verification_status || 'pending'}
+                      </span>
+                    </td>
+                    <td>{doc.verification_result || '-'}</td>
+                    <td className="site-admin-td-date">
+                      {doc.created_at ? new Date(doc.created_at).toLocaleString() : '-'}
+                    </td>
+                    <td>
+                      <div className="site-admin-actions site-admin-actions-tight">
+                        <button
+                          type="button"
+                          className="site-admin-btn site-admin-btn-compact"
+                          disabled={reviewBusyId === doc.id || !doc.has_file}
+                          onClick={() => reviewDocument(doc.id, 'verified')}
+                        >
+                          <CheckCircle size={14} aria-hidden /> Verify
+                        </button>
+                        <button
+                          type="button"
+                          className="site-admin-btn site-admin-btn-warn site-admin-btn-compact"
+                          disabled={reviewBusyId === doc.id}
+                          onClick={() => reviewDocument(doc.id, 'rejected')}
+                        >
+                          <XCircle size={14} aria-hidden /> Reject
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </section>
 

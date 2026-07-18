@@ -650,12 +650,12 @@ const OTAProfilePage = () => {
 
   /** Extras(e) de cont depuse ca dovadă (aceeași listă ca la „Legal trading documents”). */
   const bankStatementProofDocs = useMemo(
-    () => (documents || []).filter((d) => d.document_type === 'bank_statement'),
+    () => (documents || []).filter((d) => d.document_type === 'bank_statement' && d.has_file),
     [documents]
   );
 
   const idProofDocs = useMemo(
-    () => (documents || []).filter((d) => d.document_type === 'id'),
+    () => (documents || []).filter((d) => d.document_type === 'id' && d.has_file),
     [documents]
   );
 
@@ -1488,7 +1488,7 @@ const OTAProfilePage = () => {
                               {' · '}
                               {d.created_at ? new Date(d.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : ''}
                             </span>
-                            {d.download_url && (
+                            {d.download_url ? (
                               <a
                                 className="ota-profile-documents-view"
                                 href={`${getBackendUrl().replace(/\/$/, '')}${d.download_url}`}
@@ -1497,6 +1497,10 @@ const OTAProfilePage = () => {
                               >
                                 View
                               </a>
+                            ) : (
+                              <span className="ota-profile-documents-missing" title="This record has metadata only; upload it again to store the file permanently.">
+                                File missing - re-upload
+                              </span>
                             )}
                           </li>
                         ))}
