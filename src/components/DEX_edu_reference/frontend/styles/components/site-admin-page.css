@@ -84,6 +84,31 @@
   font-size: 1.5rem;
 }
 
+.site-admin-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.site-admin-title-row h1 {
+  margin: 0;
+}
+
+.site-admin-owner-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid rgba(34, 197, 94, 0.45);
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.14);
+  color: #86efac;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
 .site-admin-sub {
   margin: 0;
   color: var(--ds-text-secondary, #a1a1aa);
@@ -556,6 +581,11 @@
 
 .site-admin-deny h1 {
   margin: 16px 0 8px;
+}
+
+.site-admin-deny-identity {
+  margin: 0 0 14px;
+  color: var(--ds-text-secondary, #a1a1aa);
 }
 
 .site-admin-deny a {

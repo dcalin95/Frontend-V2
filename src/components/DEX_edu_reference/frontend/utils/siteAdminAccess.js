@@ -1,16 +1,22 @@
 const SITE_ADMIN_SESSION_KEY = 'bits_site_admin_validated_v1';
 const SITE_ADMIN_SESSION_TTL_MS = 12 * 60 * 60 * 1000;
+const DEFAULT_SITE_ADMIN_IDENTITIES = [
+  'cezarp',
+  'dcalin95',
+  'cezarp@hotmail.com',
+  'dcalin95@gmail.com',
+];
 
 export function parseSiteAdminAllowedIdentities() {
   const raw =
     typeof process !== 'undefined' && process.env && process.env.REACT_APP_SITE_ADMIN_EMAILS
       ? String(process.env.REACT_APP_SITE_ADMIN_EMAILS).trim()
       : '';
-  if (!raw) return [];
-  return raw
+  const envTokens = raw
     .split(',')
     .map((value) => value.trim().toLowerCase())
     .filter(Boolean);
+  return Array.from(new Set([...DEFAULT_SITE_ADMIN_IDENTITIES, ...envTokens]));
 }
 
 export function getSiteAdminActorKey(user) {
@@ -28,6 +34,30 @@ export function isSiteAdminAllowlisted(user) {
     if (token.includes('@')) return !!email && email === token;
     return !!username && username === token;
   });
+}
+
+export function getSiteAdminIdentityStatus(user) {
+  const email = String(user?.email || '').trim().toLowerCase();
+  const username = String(user?.username || '').trim().toLowerCase();
+  const allowed = parseSiteAdminAllowedIdentities();
+  const matched = allowed.find((token) => {
+    if (token.includes('@')) return !!email && email === token;
+    return !!username && username === token;
+  });
+  if (matched) {
+    return {
+      isAdmin: true,
+      actorLabel: matched.includes('@') ? matched : `@${matched}`,
+      matched,
+      missingIdentity: false,
+    };
+  }
+  return {
+    isAdmin: false,
+    actorLabel: email || (username ? `@${username}` : ''),
+    matched: '',
+    missingIdentity: !email && !username,
+  };
 }
 
 export function hasValidatedSiteAdminSession(user) {
@@ -69,5 +99,5 @@ export function clearValidatedSiteAdminSession() {
 }
 
 export function shouldShowSiteAdminEntry(user) {
-  return isSiteAdminAllowlisted(user) || hasValidatedSiteAdminSession(user);
+  return isSiteAdminAllowlisted(user);
 }

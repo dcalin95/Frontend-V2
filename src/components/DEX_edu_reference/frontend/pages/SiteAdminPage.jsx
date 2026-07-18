@@ -26,6 +26,7 @@ import { useDexAuth } from '../context/DexAuthContext';
 import { getApiBaseUrl, API_ENDPOINTS } from '../../config/apiEndpoints.js';
 import {
   clearValidatedSiteAdminSession,
+  getSiteAdminIdentityStatus,
   isSiteAdminAllowlisted,
   rememberValidatedSiteAdminSession,
   shouldShowSiteAdminEntry,
@@ -87,6 +88,7 @@ export default function SiteAdminPage() {
     return shouldShowSiteAdminEntry(user);
   }, [user]);
   const buildAllowlisted = useMemo(() => isSiteAdminAllowlisted(user), [user]);
+  const adminIdentity = useMemo(() => getSiteAdminIdentityStatus(user), [user]);
 
   /** Typed password overrides build-time REACT_APP_ADMIN_PASS (same logic as legacy AdminPanel default). */
   const effectiveAdminPassword = useMemo(
@@ -334,10 +336,15 @@ export default function SiteAdminPage() {
           <Shield size={32} aria-hidden />
           <h1>Access restricted</h1>
           <p>
-            This URL is for site operators only. Your account is not listed in{' '}
-            <code>REACT_APP_SITE_ADMIN_EMAILS</code> (email or username tokens, same as backend{' '}
-            <code>SITE_ADMIN_ALLOWED_EMAILS</code>), or you are not logged in.
+            This URL is for site operators only. Sign in with an approved admin email or username to open this area.
           </p>
+          {adminIdentity.actorLabel ? (
+            <p className="site-admin-deny-identity">
+              Current identity: <code>{adminIdentity.actorLabel}</code>
+            </p>
+          ) : (
+            <p className="site-admin-deny-identity">No signed-in account identity was found.</p>
+          )}
           <Link to="/dex-edu/dashboard">Back to dashboard</Link>
         </div>
       </div>
@@ -350,7 +357,13 @@ export default function SiteAdminPage() {
         <div className="site-admin-header-brand">
           <Shield className="site-admin-icon" size={28} aria-hidden />
           <div>
-            <h1>Site admin</h1>
+            <div className="site-admin-title-row">
+              <h1>Site admin</h1>
+              <span className="site-admin-owner-badge">
+                <CheckCircle size={14} aria-hidden />
+                Admin recognized: {adminIdentity.actorLabel || actorEmail || actorUsername}
+              </span>
+            </div>
             <p className="site-admin-sub">
               Owner tools for <code>site_users</code>, stats, and newsletter. Do not record or share this screen.
             </p>
@@ -425,7 +438,7 @@ export default function SiteAdminPage() {
             Build secret {REACT_APP_ADMIN_PASS ? 'on' : 'off'}
           </span>
           <span className={`site-admin-chip ${buildAllowlisted ? 'site-admin-chip-on' : 'site-admin-chip-warn'}`}>
-            Admin identity {buildAllowlisted ? 'recognized' : 'session only'}
+            Admin identity {buildAllowlisted ? `recognized (${adminIdentity.actorLabel})` : 'not recognized'}
           </span>
           {actorEmail ? (
             <span className="site-admin-chip site-admin-chip-neutral" title="Actor email sent to API">
