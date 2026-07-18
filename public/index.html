@@ -284,12 +284,10 @@
     <!-- 🚫 TikTok Pixel Code REMOVED - Now handled by src/lib/tiktok.js (engagement-focused implementation) -->
     <!-- Pixel initialization is done in App.js via initTikTokPixel() for better control and consent management -->
 
-    <!-- TEMPORARILY DISABLED - Error handling script (may cause page freeze) -->
-    <!--
     <script>
       // Guard împotriva erorilor de tip ChunkLoadError (mismatch bundle după deploy)
       (function () {
-        var RETRY_KEY = '__chunk_retry_once__';
+        var RETRY_KEY = '__bits_asset_recover_once__';
         function shouldRetry() {
           try { return !sessionStorage.getItem(RETRY_KEY); } catch (_) { return true; }
         }
@@ -298,17 +296,47 @@
         }
         function clearCachesAndReload() {
           markRetried();
-          if ('caches' in window) {
-            caches.keys().then(function(keys){ keys.forEach(function(k){ caches.delete(k); }); });
+          var done = false;
+          function reload() {
+            if (done) return;
+            done = true;
+            var url = new URL(window.location.href);
+            url.searchParams.set('__bits_cache_bust', String(Date.now()));
+            window.location.replace(url.toString());
           }
-          setTimeout(function(){ location.reload(true); }, 30);
+          try {
+            var jobs = [];
+            if ('serviceWorker' in navigator && navigator.serviceWorker.getRegistrations) {
+              jobs.push(navigator.serviceWorker.getRegistrations().then(function(regs) {
+                return Promise.all(regs.map(function(reg) { return reg.unregister(); }));
+              }));
+            }
+            if ('caches' in window && caches.keys) {
+              jobs.push(caches.keys().then(function(keys) {
+                return Promise.all(keys.map(function(key) { return caches.delete(key); }));
+              }));
+            }
+            Promise.all(jobs).then(reload).catch(reload);
+            setTimeout(reload, 1200);
+          } catch (_) {
+            reload();
+          }
         }
         function maybeHandle(msg){
-          if (/ChunkLoadError|Loading chunk|chunk .* failed/i.test(String(msg)) && shouldRetry()) {
+          if (/ChunkLoadError|Loading chunk|Loading CSS chunk|chunk .* failed|stylesheet .* failed|script chunk failed|Failed to fetch dynamically imported module/i.test(String(msg)) && shouldRetry()) {
             clearCachesAndReload();
           }
         }
         window.addEventListener('error', function (e) {
+          var target = e && e.target;
+          if (target && target.tagName === 'LINK' && target.rel === 'stylesheet') {
+            maybeHandle('stylesheet failed ' + (target.href || ''));
+            return;
+          }
+          if (target && target.tagName === 'SCRIPT') {
+            maybeHandle('script chunk failed ' + (target.src || ''));
+            return;
+          }
           maybeHandle((e && e.message) || '');
         }, true);
         window.addEventListener('unhandledrejection', function (e) {
@@ -316,7 +344,6 @@
         });
       })();
     </script>
-    -->
   </head>
   <body>
     <!-- 📊 GOOGLE TAG MANAGER (noscript) -->

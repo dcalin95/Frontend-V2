@@ -31,6 +31,21 @@ if ([string]::IsNullOrWhiteSpace($env:NODE_OPTIONS)) {
 
 Write-Host "==> Starting BitSwapDEX deployment to S3..." -ForegroundColor Blue
 
+function Invoke-AwsChecked {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string[]]$Arguments,
+        [Parameter(Mandatory = $true)]
+        [string]$Step
+    )
+
+    & aws @Arguments
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "$Step failed!" -ForegroundColor Red
+        exit $LASTEXITCODE
+    }
+}
+
 # 1. Clean previous build
 Write-Host "==> Cleaning previous build..." -ForegroundColor Blue
 if (Test-Path "build") {
@@ -71,7 +86,7 @@ $LongOpsSecret = if (-not [string]::IsNullOrWhiteSpace($env:REACT_APP_OTA_LONG_O
 if ([string]::IsNullOrWhiteSpace($ShortOpsSecret) -or [string]::IsNullOrWhiteSpace($LongOpsSecret)) {
     $RemoteRuntimeConfigPath = [System.IO.Path]::GetTempFileName()
     try {
-        aws s3 cp "s3://$BucketName/runtime-config.json" $RemoteRuntimeConfigPath --only-show-errors 2>$null
+        & aws s3 cp "s3://$BucketName/runtime-config.json" $RemoteRuntimeConfigPath --only-show-errors 2>$null
         if ($LASTEXITCODE -eq 0) {
             $RemoteRuntimeConfig = Get-Content $RemoteRuntimeConfigPath -Raw | ConvertFrom-Json
             if ([string]::IsNullOrWhiteSpace($ShortOpsSecret)) {
@@ -118,32 +133,62 @@ Write-Host "==> Uploading to S3 bucket: $BucketName" -ForegroundColor Blue
 # Upload static assets with long cache (1 year)
 Write-Host "  Uploading static assets..." -ForegroundColor Cyan
 # Keep old hashed assets so already-open browser sessions can still lazy-load them.
-aws s3 sync build/static "s3://$BucketName/static" --cache-control "public,max-age=31536000,immutable" --metadata-directive REPLACE
+Invoke-AwsChecked -Step "Uploading static assets" -Arguments @(
+    "s3", "sync", "build/static", "s3://$BucketName/static",
+    "--cache-control", "public,max-age=31536000,immutable",
+    "--metadata-directive", "REPLACE"
+)
 
 # Upload index.html WITHOUT cache
 Write-Host "  Uploading index.html..." -ForegroundColor Cyan
-aws s3 cp build/index.html "s3://$BucketName/" --cache-control "no-cache,no-store,must-revalidate" --metadata-directive REPLACE
+Invoke-AwsChecked -Step "Uploading index.html" -Arguments @(
+    "s3", "cp", "build/index.html", "s3://$BucketName/",
+    "--cache-control", "no-cache,no-store,must-revalidate",
+    "--metadata-directive", "REPLACE"
+)
 
 # Upload error pages WITHOUT cache (if they exist)
 if (Test-Path "build/404.html") {
     Write-Host "  Uploading 404.html..." -ForegroundColor Cyan
-    aws s3 cp build/404.html "s3://$BucketName/" --cache-control "no-cache,no-store,must-revalidate" --metadata-directive REPLACE
+    Invoke-AwsChecked -Step "Uploading 404.html" -Arguments @(
+        "s3", "cp", "build/404.html", "s3://$BucketName/",
+        "--cache-control", "no-cache,no-store,must-revalidate",
+        "--metadata-directive", "REPLACE"
+    )
 }
 
 if (Test-Path "build/_error.html") {
     Write-Host "  Uploading _error.html..." -ForegroundColor Cyan
-    aws s3 cp build/_error.html "s3://$BucketName/" --cache-control "no-cache,no-store,must-revalidate" --metadata-directive REPLACE
+    Invoke-AwsChecked -Step "Uploading _error.html" -Arguments @(
+        "s3", "cp", "build/_error.html", "s3://$BucketName/",
+        "--cache-control", "no-cache,no-store,must-revalidate",
+        "--metadata-directive", "REPLACE"
+    )
 }
 
 # Upload runtime config WITHOUT cache (if it exists)
 if (Test-Path "build/runtime-config.json") {
     Write-Host "  Uploading runtime-config.json..." -ForegroundColor Cyan
-    aws s3 cp build/runtime-config.json "s3://$BucketName/" --cache-control "no-cache,no-store,must-revalidate" --metadata-directive REPLACE --content-type "application/json"
+    Invoke-AwsChecked -Step "Uploading runtime-config.json" -Arguments @(
+        "s3", "cp", "build/runtime-config.json", "s3://$BucketName/",
+        "--cache-control", "no-cache,no-store,must-revalidate",
+        "--metadata-directive", "REPLACE",
+        "--content-type", "application/json"
+    )
 }
 
 # Upload all other files
 Write-Host "  Uploading remaining files..." -ForegroundColor Cyan
-aws s3 sync build/ "s3://$BucketName/" --delete --exclude "index.html" --exclude "404.html" --exclude "_error.html" --exclude "runtime-config.json" --exclude "static/*" --cache-control "public,max-age=3600"
+Invoke-AwsChecked -Step "Uploading remaining files" -Arguments @(
+    "s3", "sync", "build/", "s3://$BucketName/",
+    "--delete",
+    "--exclude", "index.html",
+    "--exclude", "404.html",
+    "--exclude", "_error.html",
+    "--exclude", "runtime-config.json",
+    "--exclude", "static/*",
+    "--cache-control", "public,max-age=3600"
+)
 
 Write-Host "Files uploaded to S3" -ForegroundColor Green
 
@@ -151,7 +196,11 @@ Write-Host "Files uploaded to S3" -ForegroundColor Green
 if (-not [string]::IsNullOrEmpty($CloudFrontId)) {
     Write-Host "==> Invalidating CloudFront cache..." -ForegroundColor Blue
     $pathsArg = "/*"
-    aws cloudfront create-invalidation --distribution-id $CloudFrontId --paths $pathsArg | Out-Null
+    Invoke-AwsChecked -Step "CloudFront invalidation" -Arguments @(
+        "cloudfront", "create-invalidation",
+        "--distribution-id", $CloudFrontId,
+        "--paths", $pathsArg
+    )
     Write-Host "CloudFront cache invalidated" -ForegroundColor Green
 } else {
     Write-Host "CLOUDFRONT_DISTRIBUTION_ID not set. Skipping cache invalidation." -ForegroundColor Yellow
