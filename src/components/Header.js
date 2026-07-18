@@ -41,7 +41,6 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
   };
   const [internalIsMenuOpen, setInternalIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isDexDropdownOpen, setIsDexDropdownOpen] = useState(false);
   const activeThemeLabel = GLOBAL_THEME_OPTIONS.find((item) => item.value === theme)?.label || "Sonnet (UI theme)";
 
   useEffect(() => {
@@ -110,7 +109,6 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
   }, [isMenuOpen, externalToggleMenu]);
 
   const closeMenu = () => {
-    setIsDexDropdownOpen(false);
     setThemePopoverOpen(false);
     if (externalToggleMenu && isMenuOpen) externalToggleMenu();
     else setInternalIsMenuOpen(false);
@@ -342,34 +340,13 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
             </Link>
           </SmartTooltip>
           
-          <div className="dex-swap-dropdown">
-            <SmartTooltip content={`DEX Swap\nSwap tokens on the BitSwapDEX exchange.\nThis is the path to recurring fee revenue.`}>
-              <button className="btn-go-main" onClick={() => { setIsDexDropdownOpen(false); navigate("/dex"); }}>
-                <i className="fas fa-exchange-alt"></i> DEX Swap
-              </button>
-            </SmartTooltip>
-            <button
-              className="dex-dropdown-toggle"
-              type="button"
-              aria-label="Open DEX versions"
-              aria-expanded={isDexDropdownOpen}
-              onClick={() => setIsDexDropdownOpen((open) => !open)}
-            >
-              <i className="fas fa-chevron-down"></i>
-            </button>
-            {isDexDropdownOpen && (
-              <div className="dex-swap-menu">
-                <Link to="/dex" onClick={() => setIsDexDropdownOpen(false)}>
-                  <i className="fas fa-exchange-alt"></i>
-                  Current DEX
-                </Link>
-                <Link to="/dex-edu" onClick={() => setIsDexDropdownOpen(false)}>
-                  <i className="fas fa-layer-group"></i>
-                  DEX Edu Copy
-                </Link>
-              </div>
-            )}
-          </div>
+          <SmartTooltip content={`BITS DEX\nMain BitSwapDEX command app: swap, OTA, account, analytics, and Binance futures tools.`}>
+            <Link to="/dex-edu" className="btn-go-main bits-dex-main-cta">
+              <i className="fas fa-exchange-alt"></i>
+              <span className="bits-dex-main-label">BITS DEX</span>
+              <span className="bits-dex-main-badge">MAIN</span>
+            </Link>
+          </SmartTooltip>
           
           <SmartTooltip content={`AI Utility Hub\nAccess AI-powered tools: Market Oracle, Stress Test, Lie Detector & more.`}>
             <Link to="/ai-hub" className="btn-ai-hub laser-sharp" style={{background: 'linear-gradient(135deg, #00FFA3 0%, #DC1FFF 100%)', color: '#000'}}>
@@ -503,12 +480,9 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
             <Link to="/ai-portfolio-claude4" className="mobile-btn-ai laser-sharp" onClick={closeMenu}>
               <i className="fas fa-brain"></i> <span className="mobile-text">Neural Investment Optimizer</span>
             </Link>
-            <button className="mobile-btn-ai" onClick={() => { closeMenu(); navigate("/dex"); }}>
-              <i className="fas fa-exchange-alt"></i> <span className="mobile-text">DEX Swap</span>
+            <button className="mobile-btn-ai mobile-btn-bits-dex" onClick={() => { closeMenu(); navigate("/dex-edu"); }}>
+              <i className="fas fa-exchange-alt"></i> <span className="mobile-text">BITS DEX</span>
             </button>
-            <Link to="/dex-edu" className="mobile-btn-ai" onClick={closeMenu}>
-              <i className="fas fa-layer-group"></i> <span className="mobile-text">DEX Edu Copy</span>
-            </Link>
             <Link to="/ai-hub" className="mobile-btn-ai-hub laser-sharp" onClick={closeMenu} style={{background: 'linear-gradient(135deg, #00FFA3 0%, #DC1FFF 100%)', color: '#000'}}>
               <i className="fas fa-brain"></i> <span className="mobile-text">AI Hub</span>
             </Link>

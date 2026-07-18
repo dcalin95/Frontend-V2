@@ -19,13 +19,15 @@
 }
 
 /* === Titlu === AI SOLANA STYLE REFACTORED (Unified with AI Hub & Mind Mirror) */
-.token-selector h2 {
+.token-selector h2,
+.token-selector .payment-method-title {
   font-family: 'Orbitron', 'Space Grotesk', sans-serif;
-  font-weight: 900;
-  margin-bottom: clamp(0.53rem, 0.704vw, 0.88rem); /* Reduced by 12% */
-  margin-top: clamp(0.35rem, 0.528vw, 0.66rem); /* Reduced by 12% */
-  font-size: clamp(0.97rem, 1.584vw, 1.32rem); /* Reduced by 12% */
-  letter-spacing: 0.5px;
+  font-weight: 800;
+  width: min(100%, 250px);
+  margin: clamp(0.18rem, 0.35vw, 0.38rem) auto clamp(0.45rem, 0.65vw, 0.68rem);
+  font-size: clamp(1rem, 1.18vw, 1.22rem);
+  line-height: 1.12;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   
   /* AI SOLANA GRADIENT */
@@ -33,7 +35,7 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 12px rgba(0, 255, 163, 0.35));
+  filter: drop-shadow(0 0 7px rgba(0, 255, 163, 0.26));
   position: relative;
   z-index: 1;
 }
@@ -219,9 +221,12 @@
 
 /* === Mobile Responsive === */
 @media (max-width: 768px) {
-  .token-selector h2 {
-    font-size: 1.3rem;
-    margin-bottom: 16px;
+  .token-selector h2,
+  .token-selector .payment-method-title {
+    width: min(100%, 230px);
+    font-size: 1.05rem;
+    line-height: 1.12;
+    margin-bottom: 12px;
   }
 
   .chain-toggle {
@@ -259,4 +264,11 @@
   .token-live-price {
     font-size: 0.65rem !important;
   }
+}
+
+body[class*="dex-theme-"] .presale-page .presale-grid .grid-select .token-selector h2.payment-method-title {
+  font-size: clamp(1rem, 1.18vw, 1.22rem) !important;
+  line-height: 1.12 !important;
+  letter-spacing: 0.04em !important;
+  filter: drop-shadow(0 0 7px rgba(var(--presale-theme-accent-rgb), 0.24)) !important;
 }

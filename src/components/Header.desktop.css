@@ -383,6 +383,119 @@ body[class*="dex-theme-"] .navigation button:hover i {
 .btn-go-main     { border-color: #f3722c; color: #00ffff; }
 .btn-claude4-ai  { border-color: #00D4FF; color: #00D4FF; }
 
+/* Header presale CTA: keep it compact so it does not dominate the nav. */
+.navigation .btn-buy,
+body.opera .navigation .btn-buy {
+  min-height: 32px !important;
+  height: 32px !important;
+  padding: 6px 10px !important;
+  gap: 5px !important;
+  border-radius: 8px !important;
+  border-width: 1px !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  color: #ffe066 !important;
+  -webkit-text-fill-color: #ffe066 !important;
+  background-image: none !important;
+  background-clip: border-box !important;
+  -webkit-background-clip: border-box !important;
+  animation: none !important;
+  box-shadow: 0 0 10px rgba(255, 212, 59, 0.12) !important;
+  flex: 0 0 auto !important;
+}
+
+.navigation .btn-buy i,
+body.opera .navigation .btn-buy i {
+  font-size: 0.82rem !important;
+  line-height: 1 !important;
+  color: #ffd43b !important;
+  transform: none !important;
+}
+
+.navigation .btn-buy::before,
+body.opera .navigation .btn-buy::before {
+  border-radius: 8px !important;
+  background: rgba(255, 212, 59, 0.7) !important;
+  opacity: 0.75 !important;
+}
+
+.navigation .btn-buy:hover,
+body.opera .navigation .btn-buy:hover {
+  transform: translateY(-1px) !important;
+  color: #fff6bf !important;
+  -webkit-text-fill-color: #fff6bf !important;
+  background: rgba(255, 212, 59, 0.08) !important;
+  border-color: #ffd43b !important;
+  box-shadow: 0 0 14px rgba(255, 212, 59, 0.24) !important;
+}
+
+@media (max-width: 1500px) {
+  .navigation .btn-buy,
+  body.opera .navigation .btn-buy {
+    min-height: 30px !important;
+    height: 30px !important;
+    padding: 5px 8px !important;
+    font-size: 0.78rem !important;
+  }
+}
+
+.navigation .bits-dex-main-cta {
+  border-color: #14f195 !important;
+  color: #f8fffb !important;
+  -webkit-text-fill-color: #f8fffb !important;
+  background:
+    linear-gradient(135deg, rgba(20, 241, 149, 0.22), rgba(153, 69, 255, 0.16) 58%, rgba(0, 212, 255, 0.14)) !important;
+  background-clip: border-box !important;
+  -webkit-background-clip: border-box !important;
+  box-shadow: 0 0 18px rgba(20, 241, 149, 0.32), inset 0 0 14px rgba(153, 69, 255, 0.16) !important;
+  font-weight: 800 !important;
+  animation: none !important;
+}
+
+.navigation .bits-dex-main-cta::before {
+  background: linear-gradient(135deg, #14f195, #00d4ff, #9945ff) !important;
+  opacity: 0.95 !important;
+}
+
+.navigation .bits-dex-main-cta i {
+  color: #14f195 !important;
+  filter: drop-shadow(0 0 5px rgba(20, 241, 149, 0.75));
+}
+
+.bits-dex-main-label {
+  white-space: nowrap;
+}
+
+.bits-dex-main-badge {
+  margin-left: 4px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: #14f195;
+  color: #04110b;
+  -webkit-text-fill-color: #04110b;
+  box-shadow: 0 0 10px rgba(20, 241, 149, 0.45);
+  font-size: 0.62em;
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.navigation .bits-dex-main-cta:hover {
+  border-color: #00d4ff !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: 0 0 24px rgba(0, 212, 255, 0.38), 0 0 18px rgba(20, 241, 149, 0.28) !important;
+}
+
+@media (max-width: 1720px) {
+  .bits-dex-main-badge {
+    display: none;
+  }
+}
+
 .dex-swap-dropdown {
   position: relative;
   display: inline-flex;
@@ -802,6 +915,25 @@ body.opera[class*="dex-theme-"] .navigation button:hover {
   color: var(--ds-text-primary) !important;
   border-color: var(--ds-accent) !important;
   box-shadow: var(--ds-focus-ring-box-shadow) !important;
+}
+
+body[class*="dex-theme-"] .navigation .bits-dex-main-cta,
+body.opera[class*="dex-theme-"] .navigation .bits-dex-main-cta {
+  background:
+    linear-gradient(135deg, rgba(20, 241, 149, 0.18), rgba(153, 69, 255, 0.14) 58%, rgba(0, 212, 255, 0.12)) !important;
+  border-color: #14f195 !important;
+  color: #f8fffb !important;
+  -webkit-text-fill-color: #f8fffb !important;
+  box-shadow: 0 0 14px rgba(20, 241, 149, 0.28), inset 0 0 12px rgba(153, 69, 255, 0.12) !important;
+  font-weight: 800 !important;
+}
+
+body[class*="dex-theme-"] .navigation .bits-dex-main-cta:hover,
+body.opera[class*="dex-theme-"] .navigation .bits-dex-main-cta:hover {
+  border-color: #00d4ff !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: 0 0 18px rgba(0, 212, 255, 0.34), 0 0 16px rgba(20, 241, 149, 0.24) !important;
 }
 
 body[class*="dex-theme-"] .header-mini-timer > div:last-child span,

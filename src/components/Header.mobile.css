@@ -304,6 +304,24 @@
     min-height: 44px !important;
     padding: 6px 4px !important;
   }
+
+  .mobile-nav-menu button.mobile-btn-bits-dex,
+  .mobile-nav-menu a.mobile-btn-bits-dex {
+    border-color: #14f195 !important;
+    color: #14f195 !important;
+    background: rgba(20, 241, 149, 0.08) !important;
+    box-shadow: 0 0 14px rgba(20, 241, 149, 0.55), inset 0 0 10px rgba(153, 69, 255, 0.18) !important;
+    text-shadow: 0 0 8px rgba(20, 241, 149, 0.82) !important;
+  }
+
+  .mobile-nav-menu button.mobile-btn-bits-dex .mobile-text,
+  .mobile-nav-menu a.mobile-btn-bits-dex .mobile-text {
+    display: inline-block;
+    max-width: 100%;
+    white-space: nowrap !important;
+    font-size: 0.81rem !important;
+    line-height: 1 !important;
+  }
   
   /* FIX SPECIFIC PENTRU TEXT LUNG (Neural Investment...) */
   .mobile-nav-menu a.mobile-btn-ai .mobile-text {
@@ -717,6 +735,15 @@ body.in-app-browser .social {
     background: var(--ds-bg-hover) !important;
     border-color: var(--ds-accent) !important;
     box-shadow: var(--ds-focus-ring-box-shadow) !important;
+  }
+
+  body[class*="dex-theme-"] .mobile-nav-menu button.mobile-btn-bits-dex,
+  body[class*="dex-theme-"] .mobile-nav-menu a.mobile-btn-bits-dex {
+    background: rgba(20, 241, 149, 0.08) !important;
+    border-color: #14f195 !important;
+    color: #14f195 !important;
+    -webkit-text-fill-color: #14f195 !important;
+    box-shadow: 0 0 12px rgba(20, 241, 149, 0.35) !important;
   }
 
   body[class*="dex-theme-"] .mobile-text,

@@ -68,7 +68,7 @@ const SelectPaymentMethod = ({
 
   return (
     <div className="token-selector">
-      <h2>With What Do You Want to Pay</h2>
+      <h2 className="payment-method-title">With What Do You Want to Pay</h2>
 
       {/* === Tab-uri EVM / Solana / Fiat === */}
       <div className="chain-toggle">

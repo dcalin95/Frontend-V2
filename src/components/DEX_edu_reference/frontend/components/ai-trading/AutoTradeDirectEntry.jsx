@@ -87,6 +87,7 @@ function AutoTradeDirectEntry({
   onGoToAllowlist,
   bnbPriceUsd = null,
   walletAddress = null,
+  newTradesDisabled = false,
 }) {
   const navigate = useNavigate();
   const [llmSuspendSymbols, setLlmSuspendSymbols] = useState(() => new Set());
@@ -300,7 +301,7 @@ function AutoTradeDirectEntry({
           type="button"
           className="auto-trade-panel-btn-direct-entry"
           onClick={() => { if (DE_DEBUG && isDev) console.log('[DE] Direct Entry button clicked', { token: advisoryToken, amount: directEntryAmount, quote: directEntryQuoteToken }); handleDirectEntryOpen(); }}
-          disabled={directEntryLoading || (hasOpenPosition && positionCount >= 3) || policyLoading || !(advisoryToken || 'BNB') || !directEntryAmount?.trim() || (advisoryToken || 'BNB') === directEntryQuoteToken}
+          disabled={newTradesDisabled || directEntryLoading || (hasOpenPosition && positionCount >= 3) || policyLoading || !(advisoryToken || 'BNB') || !directEntryAmount?.trim() || (advisoryToken || 'BNB') === directEntryQuoteToken}
           aria-label="Direct Entry – open position with selected token"
           title={`Open position: ${advisoryToken || 'BNB'}/${directEntryQuoteToken}${directEntryAmount ? ` (${directEntryAmount} ${directEntryQuoteToken})` : ''}`}
         >
@@ -310,7 +311,7 @@ function AutoTradeDirectEntry({
             <span className="auto-trade-panel-btn-direct-entry-inner">
               <span className="auto-trade-panel-btn-direct-entry-row1">
                 <ArrowRightLeft size={18} aria-hidden className="auto-trade-panel-btn-direct-entry-icon" />
-                <span className="auto-trade-panel-btn-direct-entry-label">Direct Entry</span>
+                <span className="auto-trade-panel-btn-direct-entry-label">{newTradesDisabled ? 'Direct Entry Disabled' : 'Direct Entry'}</span>
               </span>
               <span className="auto-trade-panel-btn-direct-entry-row2">
                 <TokenLogo symbol={advisoryToken || 'BNB'} size="sm" showBorder className="auto-trade-panel-btn-direct-entry-logo" aria-hidden />

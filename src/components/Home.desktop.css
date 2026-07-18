@@ -35,7 +35,8 @@
   scroll-behavior: smooth;
   
   /* 🎯 PADDING TOP pentru a evita suprapunerea cu header-ul */
-  padding-top: 100px; /* Spațiu pentru header */
+  padding-top: clamp(165px, 15vh, 210px); /* Space for fixed header + desktop nav/presale strip */
+  scroll-padding-top: clamp(165px, 15vh, 210px);
   
   /* 🎯 PADDING RIGHT - 13% pentru a evita suprapunerea cu butoanele floating */
   padding-right: 13% !important;
@@ -147,7 +148,7 @@
 }
 
 /* Mobile layout spacing tweaks */
-.home-section.hero { padding-top: 3rem; padding-bottom: 2rem; }
+.home-section.hero { padding-top: clamp(4.75rem, 8vh, 6.5rem) !important; padding-bottom: 2rem; }
 .home-section tokenomics-section { padding-top: 2rem; }
 
 /* Ensure Home orbit centers and scales on mobile */
@@ -216,7 +217,7 @@ p, a, button, input, label, span {
 
 /* ===== Section: Hero ===== */
 .hero {
-  padding: 1.5rem 1rem !important; /* ✅ Reduced padding */
+  padding: clamp(4.75rem, 8vh, 6.5rem) 1rem 1.5rem !important;
   text-align: center;
   margin-top: 30px !important; /* ✅ Small margin, not at top */
   min-height: auto !important; /* ✅ No forced height */

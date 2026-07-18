@@ -22,6 +22,15 @@ function throwLongOpsHttp(res, data) {
   if (res.status === 503 && body.code === 'LONG_OPS_SERVER_UNCONFIGURED') {
     throw new Error(body.error || 'Backend: OTA_LONG_OPS_SECRET not set — long ops disabled');
   }
+  const rawMessage = String(body.error || body.message || '').trim();
+  if (
+    (res.status === 401 || res.status === 403) &&
+    /X-Ota-Long-Ops-Secret|Long-Ops-Secret|provide .*secret/i.test(rawMessage)
+  ) {
+    throw new Error(
+      'Long Ops authorization missing: add OTA_LONG_OPS_SECRET to runtime-config.json/S3 deploy env, or open the panel once with ?secret=...'
+    );
+  }
   throw new Error(body.error || `HTTP ${res.status}`);
 }
 
@@ -58,12 +67,17 @@ async function longOpsFetch(input, init = {}) {
   await loadRuntimeConfig();
   let baseH = getLongOpsHeaders();
   if (!baseH['X-Ota-Long-Ops-Secret']) {
-    await loadRuntimeConfig();
+    await loadRuntimeConfig({ force: true });
     baseH = getLongOpsHeaders();
   }
   const method = String(init.method || 'GET').toUpperCase();
   const headers = { ...baseH, ...(init.headers || {}) };
   const secret = headers['X-Ota-Long-Ops-Secret'] || '';
+  if (!secret) {
+    throw new Error(
+      'Long Ops authorization missing: add OTA_LONG_OPS_SECRET to runtime-config.json/S3 deploy env, or open the panel once with ?secret=...'
+    );
+  }
   const requestInput = withLongOpsSecretQuery(input, secret);
   const cacheKey = method === 'GET' ? `${String(requestInput)}|secret:${secret ? 'set' : 'none'}` : null;
   const now = Date.now();

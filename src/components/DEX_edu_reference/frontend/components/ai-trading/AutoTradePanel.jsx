@@ -23,7 +23,7 @@ import TokenLogo from '../common/TokenLogo';
 import { formatNumber, formatPercentage } from '../../utils/formatters';
 import { getApiBaseUrl } from '../../../config/apiEndpoints.js';
 import { setPolicy as setPolicyOnChain, getPolicy, getPolicyFromBackendOnly, setTokenLimits as setTokenLimitsOnChain, getTokenLimits as getTokenLimitsOnChain, setTokenAllowed, setPairAllowed, ensurePolicyConfigured, isTokenAllowedOnChain, isPairAllowedOnChain, getOTAPolicyManagerAddress } from '../../services/otaPolicyService';
-import { getAutoExecutionStatus, setAutoSession, clearSafetyStopForBsc, getAgentSessions, setAgentMode, directEntryOpen, directEntryClose, getDirectEntryPosition, getDirectEntryClosedPositions, getOTAMarketData } from '../../services/aiTradingApiService';
+import { getAutoExecutionStatus, setAutoSession, clearSafetyStopForBsc, getAgentSessions, setAgentMode, directEntryOpen, directEntryClose, getDirectEntryPosition, getDirectEntryClosedPositions, getOTAMarketData, OTA_EMERGENCY_NEW_TRADES_DISABLED } from '../../services/aiTradingApiService';
 import { analyzeMarketWithLlmProvider } from '../../services/otaAnalyzeFacade';
 import { getMetrics, getRiskMetrics } from '../../services/performanceApiService';
 import { getModelInferenceStatus } from '../../services/otaModelInferenceService';
@@ -100,6 +100,67 @@ function toInt(value, fallback = 0) {
   return Number.isFinite(n) ? Math.trunc(n) : fallback;
 }
 
+const OTA_AUTO_DEFAULT_MAX_SLIPPAGE_BPS = 300; // 3% default for spot/direct AutoTrade.
+const OTA_AUTO_FORCE_MAX_SLIPPAGE_BPS = 500; // Force-open should not silently allow 10% slippage.
+const OTA_AUTO_DEFAULT_PROFIT_TIER = 100;
+const OTA_AUTO_DEFAULT_LOSS_LIMIT = 0; // 0 = no percent-loss auto-close by default.
+const OTA_AUTO_DEFAULT_MAX_TRADES_PER_12H = '6';
+const OTA_AUTO_MIN_REQUIRED_DAILY_CAP_USD = 1;
+
+function clampAutoSlippageBps(value, fallback = OTA_AUTO_DEFAULT_MAX_SLIPPAGE_BPS) {
+  return Math.max(1, Math.min(3000, toInt(value, fallback)));
+}
+
+function parsePositiveNumber(value) {
+  const raw = String(value ?? '').trim();
+  if (!raw) return null;
+  const n = Number(raw);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+function getRequiredUsdRiskLimits(usdTradeLimits) {
+  const maxUsd = parsePositiveNumber(usdTradeLimits?.maxUsd);
+  const dailyCapUsd = parsePositiveNumber(usdTradeLimits?.dailyCapUsd);
+  const maxTradesPer12h = parseInt(String(usdTradeLimits?.maxTradesPer12h || OTA_AUTO_DEFAULT_MAX_TRADES_PER_12H), 10);
+  const errors = [];
+  if (maxUsd == null) errors.push('Set Max Trade USD above 0. Empty or 0 means no per-trade cap.');
+  if (dailyCapUsd == null || dailyCapUsd < OTA_AUTO_MIN_REQUIRED_DAILY_CAP_USD) {
+    errors.push('Set Daily USD Cap above 0. Empty or 0 means no daily cap.');
+  }
+  if (maxUsd != null && dailyCapUsd != null && maxUsd > dailyCapUsd) {
+    errors.push('Max Trade USD cannot be greater than Daily USD Cap.');
+  }
+  if (!Number.isInteger(maxTradesPer12h) || maxTradesPer12h < 1 || maxTradesPer12h > 12) {
+    errors.push('Max trades per 12h must be between 1 and 12 for Auto safety.');
+  }
+  return { ok: errors.length === 0, errors, maxUsd, dailyCapUsd, maxTradesPer12h };
+}
+
+function quoteAmountToUsd(amount, quoteToken, prices = {}) {
+  const n = Number(amount);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  const quote = String(quoteToken || '').toUpperCase();
+  if (quote === 'USDT' || quote === 'USDC') return n;
+  if (quote === 'BNB') return prices?.bnb ? n * Number(prices.bnb) : null;
+  if (quote === 'ETH') return prices?.eth ? n * Number(prices.eth) : null;
+  return null;
+}
+
+function usdToQuoteAmount(usdAmount, quoteToken, prices = {}) {
+  const usd = Number(usdAmount);
+  if (!Number.isFinite(usd) || usd <= 0) return null;
+  const quote = String(quoteToken || '').toUpperCase();
+  if (quote === 'USDT' || quote === 'USDC') return usd;
+  if (quote === 'BNB') return prices?.bnb ? usd / Number(prices.bnb) : null;
+  if (quote === 'ETH') return prices?.eth ? usd / Number(prices.eth) : null;
+  return null;
+}
+
+function normalizeAutoLossLimit(value) {
+  const n = Number(value);
+  return Number.isFinite(n) ? Math.max(0, Math.min(100, n)) : OTA_AUTO_DEFAULT_LOSS_LIMIT;
+}
+
 function normalizePolicyFromChainForUi(policyData) {
   const enabled = Boolean(policyData?.enabled);
   const expiresAt = toInt(policyData?.expiresAt, 0);
@@ -120,7 +181,7 @@ function normalizePolicyFromChainForUi(policyData) {
   return {
     enabled,
     expiresAt: expiresAt > 0 ? new Date(expiresAt * 1000) : null,
-    maxSlippageBps: looksUninitialized ? 1000 : Math.max(1, Math.min(3000, maxSlippageRaw || 1000)),
+    maxSlippageBps: looksUninitialized ? OTA_AUTO_DEFAULT_MAX_SLIPPAGE_BPS : clampAutoSlippageBps(maxSlippageRaw),
     minDelaySeconds: looksUninitialized ? 60 : Math.max(0, Math.min(300, minDelayRaw)),
     enforceTokenAllowlist,
     enforcePairAllowlist
@@ -131,7 +192,7 @@ function buildPolicyPayloadForChain(policyState) {
   return {
     enabled: Boolean(policyState?.enabled),
     expiresAt: policyState?.expiresAt ? Math.floor(new Date(policyState.expiresAt).getTime() / 1000) : 0,
-    maxSlippageBps: Math.max(1, Math.min(3000, toInt(policyState?.maxSlippageBps, 1000))),
+    maxSlippageBps: clampAutoSlippageBps(policyState?.maxSlippageBps),
     minDelaySeconds: Math.max(0, Math.min(300, toInt(policyState?.minDelaySeconds, 60))),
     enforceTokenAllowlist: Boolean(policyState?.enforceTokenAllowlist),
     enforcePairAllowlist: Boolean(policyState?.enforcePairAllowlist)
@@ -142,7 +203,7 @@ function buildPolicyPayloadFromChain(policyData) {
   return {
     enabled: Boolean(policyData?.enabled),
     expiresAt: toInt(policyData?.expiresAt, 0),
-    maxSlippageBps: Math.max(1, Math.min(3000, toInt(policyData?.maxSlippageBps, 1000))),
+    maxSlippageBps: clampAutoSlippageBps(policyData?.maxSlippageBps),
     minDelaySeconds: Math.max(0, Math.min(300, toInt(policyData?.minDelaySeconds, 60))),
     enforceTokenAllowlist: Boolean(policyData?.enforceTokenAllowlist),
     enforcePairAllowlist: Boolean(policyData?.enforcePairAllowlist)
@@ -163,7 +224,7 @@ function arePoliciesEqual(a, b) {
 
 function buildSummaryFromPayload(payload, txHash = null) {
   if (!payload) return null;
-  const bps = toInt(payload.maxSlippageBps, 1000);
+  const bps = clampAutoSlippageBps(payload.maxSlippageBps);
   const exp = toInt(payload.expiresAt, 0);
   return {
     txHash: txHash || null,
@@ -197,13 +258,13 @@ const AutoTradePanel = React.memo(() => {
   const [policy, setPolicy] = useState({
     enabled: false,
     expiresAt: null, // 0 = never expires
-    maxSlippageBps: 1000, // 10% default (1000 basis points)
+    maxSlippageBps: OTA_AUTO_DEFAULT_MAX_SLIPPAGE_BPS, // 3% default (300 basis points)
     minDelaySeconds: 60, // 1 minute default
     enforceTokenAllowlist: false,
     enforcePairAllowlist: false,
     riskLevel: 'moderate', // conservative | moderate | aggressive | high: OpenAI and executor use the confidence threshold.
-    profitTier: 100, // minProfitOverGasPercent: 5 | 50 | 100 | 1000: when it executes (profit > threshold).
-    lossLimit: 5 // maxLossPercent: 0 | 3 | 5 | 10: closes loss when loss >= threshold (0 = only OpenAI stopLoss).
+    profitTier: OTA_AUTO_DEFAULT_PROFIT_TIER, // minProfitOverGasPercent: 5 | 50 | 100 | 1000: when it executes (profit > threshold).
+    lossLimit: OTA_AUTO_DEFAULT_LOSS_LIMIT // maxLossPercent: 0 | 3 | 5 | 10: 0 disables percent-loss auto-close.
   });
   
   // Token limits state
@@ -216,7 +277,7 @@ const AutoTradePanel = React.memo(() => {
     minUsd: '',
     maxUsd: '',
     dailyCapUsd: '',
-    maxTradesPer12h: '20'
+    maxTradesPer12h: OTA_AUTO_DEFAULT_MAX_TRADES_PER_12H
   });
   const [forceOpenMaxLossPct, setForceOpenMaxLossPct] = useState(''); // '' = use Policy Loss limit; 3|5|10 = per-position %
   const [forceOpenOnNextRun, setForceOpenOnNextRun] = useState(false); // On Start Auto: force 1 BUY on the next analysis, one-time test.
@@ -364,7 +425,7 @@ const AutoTradePanel = React.memo(() => {
   /** Latest LIVE prices per token (OTA), used for persistent toast until the next analysis. */
   const lastLivePricesByTokenRef = useRef({});
   const [directEntryAmount, setDirectEntryAmount] = useState('');
-  const [directEntrySlippagePercent, setDirectEntrySlippagePercent] = useState(15);
+  const [directEntrySlippagePercent, setDirectEntrySlippagePercent] = useState(3);
   /** Direct Entry error modal: consistent popup instead of only toast. */
   const [directEntryErrorModal, setDirectEntryErrorModal] = useState(null); // { title, message, openAllowlist: boolean }
   /** Unified popup for OTA access / position-open requirements. */
@@ -799,9 +860,43 @@ const AutoTradePanel = React.memo(() => {
         : `Enter amount between 0.001 and 10000 (in ${quote})`);
       return;
     }
+    const riskLimits = getRequiredUsdRiskLimits(usdTradeLimits);
+    const amountUsd = quoteAmountToUsd(amountNum, quote, authDisplayPrices);
+    if (!riskLimits.ok) {
+      setDirectEntryConfirmOpen(false);
+      openAccessRequirementsModal({
+        title: 'Direct Entry blocked by safety limits',
+        checks: [
+          { ok: true, label: 'Wallet connected' },
+          { ok: false, label: 'USD risk limits required', fix: riskLimits.errors.join(' ') }
+        ],
+        hint: 'Open the Limits tab, set Max Trade USD and Daily USD Cap, then save them before opening a real position.'
+      });
+      return;
+    }
+    if (amountUsd == null) {
+      setDirectEntryConfirmOpen(false);
+      openAccessRequirementsModal({
+        title: 'Direct Entry blocked',
+        checks: [
+          { ok: false, label: `${quote} USD price unavailable`, fix: `Wait for the ${quote} price to load, or use USDT as quote.` }
+        ]
+      });
+      return;
+    }
+    if (amountUsd > riskLimits.maxUsd) {
+      setDirectEntryConfirmOpen(false);
+      openAccessRequirementsModal({
+        title: 'Direct Entry above Max Trade USD',
+        checks: [
+          { ok: false, label: `Trade value ~$${amountUsd.toFixed(2)}`, fix: `Reduce amount to $${riskLimits.maxUsd.toFixed(2)} or less, or intentionally raise Max Trade USD in Limits.` }
+        ]
+      });
+      return;
+    }
     if (DE_DEBUG && isDev) console.log('[DE] handleDirectEntryConfirm: setting loading');
     setDirectEntryLoading(true);
-    const slippageBps = Math.round((directEntrySlippagePercent || 15) * 100);
+    const slippageBps = Math.round((directEntrySlippagePercent || 3) * 100);
     const ADDRESS_ZERO = ethers.constants?.AddressZero || '0x0000000000000000000000000000000000000000';
     const USDT_ADDR = TOKEN_REGISTRY.USDT?.address;
     /** Save allowlist directly to localStorage – independent of persistAllowlistRef which may lag */
@@ -1058,7 +1153,7 @@ const AutoTradePanel = React.memo(() => {
       if (DE_DEBUG && isDev) console.log('[DE] handleDirectEntryConfirm FINALLY: setDirectEntryLoading(false)');
       setDirectEntryLoading(false);
     }
-  }, [walletAddress, advisoryToken, directEntryAmount, directEntryQuoteToken, directEntrySlippagePercent, refetchVault, tokenAllowlist, pairAllowlist]);
+  }, [walletAddress, advisoryToken, directEntryAmount, directEntryQuoteToken, directEntrySlippagePercent, refetchVault, tokenAllowlist, pairAllowlist, usdTradeLimits, authDisplayPrices, openAccessRequirementsModal]);
 
   const handleDirectEntryClose = useCallback(async () => {
     if (!walletAddress) return;
@@ -1643,7 +1738,7 @@ const AutoTradePanel = React.memo(() => {
             ...(policyData.usdMinPerTrade != null && { minUsd: String(policyData.usdMinPerTrade) }),
             ...(policyData.usdMaxPerTrade != null && { maxUsd: String(policyData.usdMaxPerTrade) }),
             ...(policyData.usdDailyCap != null && { dailyCapUsd: String(policyData.usdDailyCap) }),
-            maxTradesPer12h: policyData.maxTradesPer12h != null ? String(policyData.maxTradesPer12h) : '20'
+            maxTradesPer12h: policyData.maxTradesPer12h != null ? String(policyData.maxTradesPer12h) : OTA_AUTO_DEFAULT_MAX_TRADES_PER_12H
           }));
         }
       }
@@ -1693,7 +1788,7 @@ const AutoTradePanel = React.memo(() => {
               ...(policyData.usdMinPerTrade != null && { minUsd: String(policyData.usdMinPerTrade) }),
               ...(policyData.usdMaxPerTrade != null && { maxUsd: String(policyData.usdMaxPerTrade) }),
               ...(policyData.usdDailyCap != null && { dailyCapUsd: String(policyData.usdDailyCap) }),
-              maxTradesPer12h: policyData.maxTradesPer12h != null ? String(policyData.maxTradesPer12h) : '20'
+              maxTradesPer12h: policyData.maxTradesPer12h != null ? String(policyData.maxTradesPer12h) : OTA_AUTO_DEFAULT_MAX_TRADES_PER_12H
             }));
           }
         }
@@ -1762,6 +1857,20 @@ const AutoTradePanel = React.memo(() => {
       });
       return;
     }
+    const riskLimits = getRequiredUsdRiskLimits(usdTradeLimits);
+    if (!riskLimits.ok) {
+      openAccessRequirementsModal({
+        title: 'Auto Mode blocked by safety limits',
+        checks: [
+          { ok: true, label: 'Wallet connected' },
+          { ok: true, label: 'OTA registration' },
+          { ok: true, label: 'Bot authorization' },
+          { ok: false, label: 'USD risk limits', fix: riskLimits.errors.join(' ') }
+        ],
+        hint: 'Go to Limits, set Max Trade USD and Daily USD Cap, save them, then start Auto. This prevents Auto from running without a hard money cap.'
+      });
+      return;
+    }
     setSaving(true);
     try {
       const nextPolicy = { ...policy, enabled: true };
@@ -1774,11 +1883,12 @@ const AutoTradePanel = React.memo(() => {
       const forceNow = forceOpenOnNextRunRef.current === true;
       await clearSafetyStopForBsc(walletAddress).catch(() => {}); // Reset safety before session so backend does not return 423.
       await setAutoSession(walletAddress, true, {
-        minProfitOverGasPercent: policy.profitTier ?? 100,
-        maxLossPercent: policy.lossLimit ?? 5,
+        minProfitOverGasPercent: policy.profitTier ?? OTA_AUTO_DEFAULT_PROFIT_TIER,
+        maxLossPercent: normalizeAutoLossLimit(policy.lossLimit),
         usdMinPerTrade: usdTradeLimits.minUsd ? Number(usdTradeLimits.minUsd) : null,
-        usdMaxPerTrade: usdTradeLimits.maxUsd ? Number(usdTradeLimits.maxUsd) : null,
-        usdDailyCap: usdTradeLimits.dailyCapUsd ? Number(usdTradeLimits.dailyCapUsd) : null,
+        usdMaxPerTrade: riskLimits.maxUsd,
+        usdDailyCap: riskLimits.dailyCapUsd,
+        maxTradesPer12h: riskLimits.maxTradesPer12h,
         forceOpenNow: forceNow
       }).catch((e) => { throw e; }); // Persist session; if it fails (for example 423), propagate for toast.
       if (forceOpenOnNextRun || forceNow) setForceOpenOnNextRun(false);
@@ -2035,7 +2145,7 @@ const AutoTradePanel = React.memo(() => {
         minUsd: policyData.usdMinPerTrade !== undefined && policyData.usdMinPerTrade !== null ? String(policyData.usdMinPerTrade) : null,
         maxUsd: policyData.usdMaxPerTrade !== undefined && policyData.usdMaxPerTrade !== null ? String(policyData.usdMaxPerTrade) : null,
         dailyCapUsd: policyData.usdDailyCap !== undefined && policyData.usdDailyCap !== null ? String(policyData.usdDailyCap) : null,
-        maxTradesPer12h: policyData.maxTradesPer12h !== undefined && policyData.maxTradesPer12h !== null ? String(policyData.maxTradesPer12h) : '20'
+        maxTradesPer12h: policyData.maxTradesPer12h !== undefined && policyData.maxTradesPer12h !== null ? String(policyData.maxTradesPer12h) : OTA_AUTO_DEFAULT_MAX_TRADES_PER_12H
       } : null);
     } catch (_) {
       setSavedTokenLimitsFromBackend([]);
@@ -2118,11 +2228,11 @@ const AutoTradePanel = React.memo(() => {
       return;
     }
     if (maxUsd != null && (!Number.isFinite(maxUsd) || maxUsd < 0)) {
-      toast.error('Max Trade USD must be a non-negative number (0 = unlimited)');
+      toast.error('Max Trade USD must be a positive number. 0 or empty disables the cap and is blocked for safety.');
       return;
     }
     if (dailyCapUsd != null && (!Number.isFinite(dailyCapUsd) || dailyCapUsd < 0)) {
-      toast.error('Daily USD Cap must be a non-negative number (0 = unlimited)');
+      toast.error('Daily USD Cap must be a positive number. 0 or empty disables the cap and is blocked for safety.');
       return;
     }
     if (minUsd != null && maxUsd != null && minUsd > 0 && maxUsd > 0 && minUsd > maxUsd) {
@@ -2131,8 +2241,14 @@ const AutoTradePanel = React.memo(() => {
     }
 
     const maxTradesPer12hVal = usdTradeLimits.maxTradesPer12h ? (parseInt(usdTradeLimits.maxTradesPer12h, 10) || null) : null;
-    if (maxTradesPer12hVal != null && (maxTradesPer12hVal < 1 || maxTradesPer12hVal > 100)) {
-      toast.error('Max trades per 12h must be between 1 and 100');
+    if (maxTradesPer12hVal != null && (maxTradesPer12hVal < 1 || maxTradesPer12hVal > 12)) {
+      toast.error('Max trades per 12h must be between 1 and 12');
+      return;
+    }
+
+    const riskLimits = getRequiredUsdRiskLimits(usdTradeLimits);
+    if (!riskLimits.ok) {
+      toast.error(riskLimits.errors.join(' '));
       return;
     }
 
@@ -2156,12 +2272,12 @@ const AutoTradePanel = React.memo(() => {
       setSaving(true);
       try {
         const sessionRes = await setAutoSession(walletAddress, !!policy.enabled, {
-          minProfitOverGasPercent: policy.profitTier ?? 100,
-          maxLossPercent: policy.lossLimit ?? 5,
+          minProfitOverGasPercent: policy.profitTier ?? OTA_AUTO_DEFAULT_PROFIT_TIER,
+          maxLossPercent: normalizeAutoLossLimit(policy.lossLimit),
           usdMinPerTrade: minUsd,
-          usdMaxPerTrade: maxUsd,
-          usdDailyCap: dailyCapUsd,
-          maxTradesPer12h: maxTradesPer12hVal
+          usdMaxPerTrade: riskLimits.maxUsd,
+          usdDailyCap: riskLimits.dailyCapUsd,
+          maxTradesPer12h: riskLimits.maxTradesPer12h
         });
         cacheUsdLimits();
         toast.success('USD limits au fost trimise la backend (Render).', { autoClose: 4000 });
@@ -2238,24 +2354,44 @@ const AutoTradePanel = React.memo(() => {
     const quote = directEntryQuoteToken || 'USDT';
     const vaultBal = getVaultBalanceNumber(quote);
 
-    const minUsd = usdTradeLimits.minUsd ? Number(usdTradeLimits.minUsd) : null;
-    let amount;
-    if (minUsd && Number.isFinite(minUsd) && minUsd > 0) {
-      amount = minUsd;
-    } else if (vaultBal > 0) {
-      amount = parseFloat((vaultBal * 0.1).toFixed(6));
-    } else {
+    const riskLimits = getRequiredUsdRiskLimits(usdTradeLimits);
+    if (!riskLimits.ok) {
+      openAccessRequirementsModal({
+        title: 'Force Open blocked by safety limits',
+        checks: [
+          { ok: true, label: 'Wallet connected' },
+          { ok: false, label: 'USD risk limits required', fix: riskLimits.errors.join(' ') }
+        ],
+        hint: 'Force Open is a real position. Set and save Max Trade USD + Daily USD Cap before using it.'
+      });
+      return;
+    }
+
+    const minUsd = parsePositiveNumber(usdTradeLimits.minUsd);
+    const targetUsd = Math.min(minUsd || riskLimits.maxUsd, riskLimits.maxUsd);
+    let amount = usdToQuoteAmount(targetUsd, quote, authDisplayPrices);
+    if (amount == null) {
+      openAccessRequirementsModal({
+        title: 'Force Open blocked',
+        checks: [
+          { ok: false, label: `${quote} USD price unavailable`, fix: `Wait for the ${quote} price to load, or switch quote to USDT.` }
+        ]
+      });
+      return;
+    }
+    amount = parseFloat(amount.toFixed(amount >= 1 ? 4 : 6));
+    if (vaultBal <= 0 || amount > vaultBal) {
       openAccessRequirementsModal({
         title: 'Force Open blocked',
         checks: [
           { ok: true, label: 'Wallet connected' },
-          { ok: false, label: `Vault balance (${quote})`, fix: `Deposit ${quote} into your vault before opening a position.` }
+          { ok: false, label: `Vault balance (${quote})`, fix: `Need about ${amount} ${quote} for the $${targetUsd.toFixed(2)} capped test trade. Deposit ${quote} or lower Max Trade USD.` }
         ]
       });
       return;
     }
 
-    const slippageBps = Math.max(100, policy.maxSlippageBps || 1000);
+    const slippageBps = Math.max(100, Math.min(OTA_AUTO_FORCE_MAX_SLIPPAGE_BPS, clampAutoSlippageBps(policy.maxSlippageBps)));
     const ADDRESS_ZERO = ethers.constants?.AddressZero || '0x0000000000000000000000000000000000000000';
     const USDT_ADDR = TOKEN_REGISTRY.USDT?.address;
 
@@ -2529,7 +2665,7 @@ const AutoTradePanel = React.memo(() => {
       setSaving(false);
     }
   }, [walletAddress, isAuthenticated, openPositionData, advisoryToken, directEntryQuoteToken, forceOpenMaxLossPct,
-      usdTradeLimits, getVaultBalanceNumber, policy, refetchVault, openAccessRequirementsModal,
+      usdTradeLimits, getVaultBalanceNumber, policy, refetchVault, openAccessRequirementsModal, authDisplayPrices,
       tokenAllowlist, pairAllowlist, executorBotAddress, executorAuth]);
 
   useEffect(() => {
@@ -3322,6 +3458,12 @@ const AutoTradePanel = React.memo(() => {
 
   return (
     <div className="auto-trade-panel">
+      {OTA_EMERGENCY_NEW_TRADES_DISABLED && (
+        <div className="auto-trade-panel-banner auto-trade-panel-banner--warning" role="alert">
+          <AlertCircle size={18} className="auto-trade-panel-banner-icon--warning" aria-hidden />
+          <p><strong>Emergency safety lock active:</strong> new real trades are disabled from this site. Closing existing positions remains available.</p>
+        </div>
+      )}
       {/* Clear alert: expired/missing authorization; user must know automatic execution is stopped. */}
       {showAuthExpiredAlert && (
         <div className="auto-trade-panel-auth-expired-alert" role="alert" aria-live="polite">
@@ -3784,6 +3926,7 @@ const AutoTradePanel = React.memo(() => {
           saving={saving}
           handleStopBot={handleStopBot}
           handleStartBot={handleStartBot}
+          newTradesDisabled={OTA_EMERGENCY_NEW_TRADES_DISABLED}
           llmPauseSlot={
             walletAddress && isAuthenticated ? (
               <OtaAutotradeLlmPauseCard variant="inline" walletAddress={walletAddress} />
@@ -3827,6 +3970,7 @@ const AutoTradePanel = React.memo(() => {
             }}
             bnbPriceUsd={authDisplayPrices?.bnb ?? null}
             walletAddress={walletAddress}
+            newTradesDisabled={OTA_EMERGENCY_NEW_TRADES_DISABLED}
           />
           {advisoryToken && advisoryToken !== 'BTC' && (
             <p className="auto-trade-panel-direct-entry-btc-context" title="LIVE BTC price is used by OTA during analysis as a leading indicator. Other tokens follow BTC movement.">
@@ -4011,6 +4155,7 @@ const AutoTradePanel = React.memo(() => {
             onRefreshLimitsFromBackend={handleRefreshLimitsFromBackend}
             otapolicyManagerAddress={getOTAPolicyManagerAddress()}
             tokenLimitPresets={tokenLimitPresetsFromBackend}
+            newTradesDisabled={OTA_EMERGENCY_NEW_TRADES_DISABLED}
           />
         )}
 

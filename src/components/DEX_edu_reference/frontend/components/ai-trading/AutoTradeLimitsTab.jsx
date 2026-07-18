@@ -26,7 +26,8 @@ function AutoTradeLimitsTab({
   limitsFromBackendLoading = false,
   onRefreshLimitsFromBackend,
   otapolicyManagerAddress = '',
-  tokenLimitPresets = []
+  tokenLimitPresets = [],
+  newTradesDisabled = false
 }) {
   const shortAddr = otapolicyManagerAddress ? `${otapolicyManagerAddress.slice(0, 6)}…${otapolicyManagerAddress.slice(-4)}` : '';
   const tokenConfiguredCount = savedTokenLimitsFromBackend.filter((t) => t.configured).length;
@@ -175,7 +176,7 @@ function AutoTradeLimitsTab({
         <div style={{ marginTop: 16, borderTop: '1px solid rgba(148, 163, 184, 0.2)', paddingTop: 14 }}>
           <h5 style={{ margin: '0 0 10px 0', color: '#e2e8f0' }}>USD Safety Limits (Auto Mode)</h5>
           <p style={{ margin: '0 0 10px 0', color: '#94a3b8', fontSize: 12 }}>
-            Saved in <strong>backend-server (Render)</strong>. Leave Min/Max/Daily empty = no USD limits. These are per-trade risk caps, separate from the bot authorization amount.
+            Saved in <strong>backend-server (Render)</strong>. <strong>Max Trade USD</strong> and <strong>Daily USD Cap</strong> are required before real Auto/Force Open can run. These are per-trade risk caps, separate from the bot authorization amount.
           </p>
 
           <div className="auto-trade-panel-form-group">
@@ -187,31 +188,31 @@ function AutoTradeLimitsTab({
               value={usdTradeLimits.minUsd}
               onChange={(e) => setUsdTradeLimits((prev) => ({ ...prev, minUsd: e.target.value }))}
               className="auto-trade-panel-input"
-              placeholder="empty = no min"
+              placeholder="optional"
             />
           </div>
 
           <div className="auto-trade-panel-form-group">
             <label className="auto-trade-panel-label">Max trades / positions in 12h (optional)</label>
             <p style={{ margin: '0 0 6px 0', color: '#94a3b8', fontSize: 11 }}>
-              Max trades per 12h (default 20). Ex: 20 = up to 20 auto trades in 12 hours.
+              Max trades per 12h (default 6, safety max 12). Ex: 6 = up to 6 auto trades in 12 hours.
             </p>
             <input
               type="number"
               min="1"
-              max="100"
+              max="12"
               step="1"
               value={usdTradeLimits.maxTradesPer12h}
               onChange={(e) => setUsdTradeLimits((prev) => ({ ...prev, maxTradesPer12h: e.target.value }))}
               className="auto-trade-panel-input"
-              placeholder="20"
+              placeholder="6"
             />
           </div>
 
           <div className="auto-trade-panel-form-group">
-            <label className="auto-trade-panel-label">Max Trade USD (optional)</label>
+            <label className="auto-trade-panel-label">Max Trade USD (required)</label>
             <p style={{ margin: '0 0 6px 0', color: '#94a3b8', fontSize: 11 }}>
-              Per-trade cap from backend policy. This is not the on-chain bot authorization limit.
+              Required per-trade cap from backend policy. This is not the on-chain bot authorization limit.
             </p>
             <input
               type="number"
@@ -220,12 +221,12 @@ function AutoTradeLimitsTab({
               value={usdTradeLimits.maxUsd}
               onChange={(e) => setUsdTradeLimits((prev) => ({ ...prev, maxUsd: e.target.value }))}
               className="auto-trade-panel-input"
-              placeholder="empty = no per-trade cap"
+              placeholder="required, e.g. 10"
             />
           </div>
 
           <div className="auto-trade-panel-form-group">
-            <label className="auto-trade-panel-label">Daily USD Cap (optional)</label>
+            <label className="auto-trade-panel-label">Daily USD Cap (required)</label>
             <input
               type="number"
               min="0"
@@ -233,7 +234,7 @@ function AutoTradeLimitsTab({
               value={usdTradeLimits.dailyCapUsd}
               onChange={(e) => setUsdTradeLimits((prev) => ({ ...prev, dailyCapUsd: e.target.value }))}
               className="auto-trade-panel-input"
-              placeholder="empty = no daily cap"
+              placeholder="required, e.g. 30"
             />
           </div>
 
@@ -248,11 +249,11 @@ function AutoTradeLimitsTab({
           <div className="auto-trade-panel-form-group" style={{ marginTop: 12 }}>
             <label className="auto-trade-panel-label">Close at % loss (this position)</label>
             <p style={{ margin: '0 0 8px 0', color: '#94a3b8', fontSize: 11 }}>
-              Optional. Only for the next Force Open. Default = use Loss limit from Policy tab. Choose a value and it saves automatically.
+              Optional. Only for the next Force Open. Default = no percent-loss auto-close unless Policy tab has a loss limit. Choose a value and it saves automatically.
             </p>
             <div className="auto-trade-panel-preset-buttons" style={{ flexWrap: 'wrap', gap: 6 }}>
               {[
-                { value: '', label: 'Default (Policy)' },
+                { value: '', label: 'Default (Policy / off)' },
                 { value: '3', label: '3%' },
                 { value: '5', label: '5%' },
                 { value: '10', label: '10%' }
@@ -283,12 +284,17 @@ function AutoTradeLimitsTab({
 
           <button
             onClick={handleForceOpenNow}
-            disabled={saving}
+            disabled={saving || newTradesDisabled}
             className="auto-trade-panel-button secondary"
             style={{ marginTop: 8 }}
           >
-            {saving ? <LoadingSpinner size={16} /> : 'Force Open Test Trade Now (One-Shot)'}
+            {saving ? <LoadingSpinner size={16} /> : newTradesDisabled ? 'Force Open Disabled' : 'Force Open Test Trade Now (One-Shot)'}
           </button>
+          {newTradesDisabled && (
+            <p className="auto-trade-panel-hint" style={{ marginTop: 8, fontSize: 11, color: '#fca5a5' }}>
+              Emergency safety lock is active: new real trades are disabled.
+            </p>
+          )}
         </div>
       </div>
     </div>

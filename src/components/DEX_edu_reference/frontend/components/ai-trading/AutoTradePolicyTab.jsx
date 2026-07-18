@@ -529,17 +529,17 @@ function AutoTradePolicyTab({
               </label>
               <select
                 id="policy-loss-limit"
-                value={String(policy.lossLimit ?? 5)}
+                value={String(policy.lossLimit ?? 0)}
                 disabled={locked}
                 onChange={(e) => setPolicy((prev) => ({ ...prev, lossLimit: parseInt(e.target.value, 10) }))}
                 className="auto-trade-panel-input auto-trade-panel-select"
               >
-                <option value="0">Off (use OpenAI stopLoss only)</option>
+                <option value="0">Off (no percent-loss auto-close)</option>
                 <option value="3">Tight (close at 3% loss)</option>
                 <option value="5">Moderate (close at 5% loss)</option>
                 <option value="10">Loose (close at 10% loss)</option>
               </select>
-              <span className="auto-trade-panel-hint">Close position when loss exceeds this % of entry. Safety net if OpenAI stopLoss is missing.</span>
+              <span className="auto-trade-panel-hint">0 disables this percent-loss auto-close. Choose 3/5/10 only when you explicitly want executor loss exits.</span>
             </div>
           </div>
 
@@ -551,11 +551,11 @@ function AutoTradePolicyTab({
                 type="number"
                 min="1"
                 max="1000"
-                value={policy.maxSlippageBps ?? 1000}
+                value={policy.maxSlippageBps ?? 300}
                 disabled={locked}
-                onChange={(e) => setPolicy((prev) => ({ ...prev, maxSlippageBps: Math.max(1, Math.min(1000, parseInt(e.target.value, 10) || 1000)) }))}
+                onChange={(e) => setPolicy((prev) => ({ ...prev, maxSlippageBps: Math.max(1, Math.min(1000, parseInt(e.target.value, 10) || 300)) }))}
                 className="auto-trade-panel-input"
-                title="100 = 1%, 1000 = 10% (contract max)"
+                title="100 = 1%, 300 = 3%, 1000 = 10% (contract max)"
               />
             </div>
             <div className="auto-trade-panel-input-group">

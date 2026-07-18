@@ -19,14 +19,16 @@ let configLoadPromise = null;
  * Loads runtime configuration from runtime-config.json
  * Returns cached config if already loaded
  */
-async function loadRuntimeConfig() {
+async function loadRuntimeConfig(options = {}) {
+  const force = options === true || options?.force === true;
+
   // Return cached config if available
-  if (cachedConfig) {
+  if (cachedConfig && !force) {
     return cachedConfig;
   }
 
   // Return existing promise if already loading
-  if (configLoadPromise) {
+  if (configLoadPromise && !force) {
     return configLoadPromise;
   }
 
@@ -35,7 +37,7 @@ async function loadRuntimeConfig() {
     try {
       // Always use runtime-config.json (no localhost config needed)
       // Frontend local connects to Render backend, but stays on localhost after login
-      const configFile = '/runtime-config.json';
+      const configFile = force ? `/runtime-config.json?ts=${Date.now()}` : '/runtime-config.json';
       
       // Fetch runtime-config.json from public directory
       // Use no-store to bypass cache and always fetch fresh
