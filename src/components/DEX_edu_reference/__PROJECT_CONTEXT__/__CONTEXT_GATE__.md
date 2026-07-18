@@ -121,3 +121,26 @@
 
 **Last Updated:** 2024-01-10  
 **Next:** Read `00A_CONTEXT_MANIFEST.md` if you haven't already
+
+---
+
+## Added for context - 2026-07-04
+
+Before making current DEX/OTA claims, also read:
+
+- `src/components/DEX_edu_reference/ota/docs/CURRENT_PROJECT_STATUS_2026-07-04.md`
+- `C:\Users\bits\Desktop\backend-server\docs\CURRENT_PROJECT_STATUS_2026-07-04.md`
+
+These are the current cross-repo snapshots for `/dex-edu`, OTA, analytics, backend route mounts, and Futures Ops SHORT/LONG live behavior.
+
+---
+
+## Gate update - 2026-07-17
+
+Before changing DEX/OTA code or documentation, also read:
+
+- `src/components/DEX_edu_reference/ota/docs/CURRENT_PROJECT_STATUS_2026-07-17.md`
+- `C:\Users\bits\Desktop\backend-server\docs\CURRENT_PROJECT_STATUS_2026-07-17.md`
+- both `DOCUMENTATION_AUDIT_2026-07-17.md` files
+
+Do not use a historical completion report as current deployment proof.

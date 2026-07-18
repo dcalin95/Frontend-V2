@@ -155,3 +155,26 @@
 
 **Last Updated:** 2024-01-10  
 **Next File to Read:** `00A_CONTEXT_MANIFEST.md`
+
+---
+
+## Added for context - 2026-07-04
+
+After the mandatory read order, read the current cross-repo snapshot:
+
+- `src/components/DEX_edu_reference/ota/docs/CURRENT_PROJECT_STATUS_2026-07-04.md`
+- `C:\Users\bits\Desktop\backend-server\docs\CURRENT_PROJECT_STATUS_2026-07-04.md`
+
+These files supersede older phase/status claims that describe `/dex` as the main DEX surface, backend as undeployed, or futures as paper-only. The active richer DEX/OTA app is mounted at `/dex-edu/*`.
+
+---
+
+## Current snapshot - 2026-07-17
+
+The 2026-07-04 snapshots are now historical. For current work read:
+
+- `src/components/DEX_edu_reference/ota/docs/CURRENT_PROJECT_STATUS_2026-07-17.md`
+- `C:\Users\bits\Desktop\backend-server\docs\CURRENT_PROJECT_STATUS_2026-07-17.md`
+- `docs/DOCUMENTATION_AUDIT_2026-07-17.md`
+
+These documents classify old status reports instead of deleting them. Live code and verified runtime probes still take precedence.

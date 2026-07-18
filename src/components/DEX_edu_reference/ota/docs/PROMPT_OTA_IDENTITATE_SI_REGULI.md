@@ -12,6 +12,8 @@ Acest fișier descrie promptul de sistem pe care chat-ul OTA îl folosește **me
 
 ---
 
+> Current-path correction (2026-07-17): the active repositories are `C:\Users\bits\Desktop\frontend` and `C:\Users\bits\Desktop\backend-server`; the richer UI is `/dex-edu/*` and the first-party API is `/api/*`. Older `frontend-edu`, `backend-server-repo` and `/dex/ota` references below are historical and must not be used for current file or route decisions. Read `CURRENT_PROJECT_STATUS_2026-07-17.md` first.
+
 ## Acces la proiect (cele două directoare rădăcină)
 
 OTA știe că proiectul proprietarului este în două directoare, ca să poată indica fișiere și structură corect:

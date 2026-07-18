@@ -266,3 +266,49 @@ Updates MUST be:
 
 **Last Updated:** 2024-01-10  
 **Authority:** Based on confirmed project scope and intentions from `SCOP_URI_INTENTII_DEX.md`
+
+---
+
+## Added for context - 2026-07-04
+
+### Current Product Truth Update
+
+The active, richer DEX/OTA product surface is now the `DEX_edu_reference` app mounted at **`/dex-edu/*`**.
+
+The legacy `/dex` route still exists in the main frontend, but it should not be treated as the full current OTA product surface. For current work, use:
+
+- `/dex-edu/dashboard`
+- `/dex-edu/ota`
+- `/dex-edu/ota/chat`
+- `/dex-edu/ota/short-ops`
+- `/dex-edu/account/analytics`
+- `/dex-edu/trade`
+- `/dex-edu/swap`
+- `/dex-edu/sei/*`, `/dex-edu/stx/*`, `/dex-edu/sol/*`, `/dex-edu/clob-sei`
+
+Futures product truth:
+
+- `/dex-edu/ota/short-ops` is **Futures Ops**.
+- It has SHORT and LONG operator tabs.
+- Current frontend text states SHORT and LONG run live on Binance Futures and positions are real.
+- Backend routes are under `/api/ai-trading/short/*` and `/api/ai-trading/long/*`.
+- Runtime capability still depends on env, secrets, live gates, credentials, allowlists and status endpoints.
+
+For the current full snapshot, read:
+
+- `src/components/DEX_edu_reference/ota/docs/CURRENT_PROJECT_STATUS_2026-07-04.md`
+- `C:\Users\bits\Desktop\backend-server\docs\CURRENT_PROJECT_STATUS_2026-07-04.md`
+
+---
+
+## Product truth update - 2026-07-17
+
+Use `src/components/DEX_edu_reference/ota/docs/CURRENT_PROJECT_STATUS_2026-07-17.md` and the matching backend snapshot for current claims. The 2026-07-04 files are historical.
+
+Additional non-negotiable truth:
+
+- AI signals and fine-tuning do not guarantee fills or profit.
+- Profit claims require resolved real PnL after all relevant costs.
+- A product payment recorded by Stripe is not automatically a Vault deposit.
+- Password hashes cannot be converted back into a user's current plaintext password.
+- Public runtime operator secrets are a compatibility debt that must be migrated to authenticated server-side authorization.

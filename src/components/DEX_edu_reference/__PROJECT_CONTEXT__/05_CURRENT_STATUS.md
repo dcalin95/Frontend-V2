@@ -196,3 +196,43 @@ The backend URL is resolved via:
 - All API requests go to `https://backend-server-f82y.onrender.com`
 - The backend URL is resolved in `src/config/runtimeConfig.js` and `src/config/apiEndpoints.js`
 - Nu există server backend în frontend-edu (backend-local șters; backend real = backend-server-repo pe Render)
+
+---
+
+## Added for context - 2026-07-04
+
+### Current Active App and Backend Truth
+
+The current richer DEX/OTA app in this repository is mounted at **`/dex-edu/*`**, not the legacy `/dex` route.
+
+Source files:
+
+- `src/App.js` mounts `/dex-edu/*` to `DexEduReferencePage`
+- `src/components/DEX_edu_reference/DEXApp.jsx` owns the active DEX/OTA route tree
+- `src/components/DEX_edu_reference/config/apiEndpoints.js` is the frontend endpoint SSOT
+- backend repo: `C:\Users\bits\Desktop\backend-server`
+- backend entry: `server.js`
+
+Current high-confidence status from code inspection:
+
+- Backend is a separate Express app and exposes `/api/ai-trading/*`, `/api/dex/v1/*`, `/api/clob-sei/*`, auth/payment/admin routes, and DEX complaints.
+- `/dex-edu/ota/short-ops` is now **Futures Ops**, with SHORT and LONG tabs.
+- Futures Ops uses real Binance Futures live/operator routes when the lane gates and secrets are configured.
+- Trade Cost Analytics (`/dex-edu/account/analytics`) now includes OTA futures open positions from `/ai-trading/short/open-shorts` and `/ai-trading/long/open-longs`.
+- Older statements such as "backend not deployed", "DEX skeleton only", or "short futures paper only" are historical unless they explicitly refer to an old phase or the legacy `/dex` route.
+
+Current SSOT snapshot:
+
+- `src/components/DEX_edu_reference/ota/docs/CURRENT_PROJECT_STATUS_2026-07-04.md`
+- `C:\Users\bits\Desktop\backend-server\docs\CURRENT_PROJECT_STATUS_2026-07-04.md`
+
+---
+
+## Current status update - 2026-07-17
+
+The authoritative current snapshot is now:
+
+- `src/components/DEX_edu_reference/ota/docs/CURRENT_PROJECT_STATUS_2026-07-17.md`
+- `C:\Users\bits\Desktop\backend-server\docs\CURRENT_PROJECT_STATUS_2026-07-17.md`
+
+Important current clarifications: wallet auth stays first-party, authenticated password change exists, Stripe purchase history is not Vault balance, learning promotion requires resolved net outcomes, and no OTA component can guarantee profit.

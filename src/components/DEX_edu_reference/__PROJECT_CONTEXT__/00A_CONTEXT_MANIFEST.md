@@ -157,3 +157,29 @@ Before any AI session proceeds:
 2. Follow append-only rules
 3. Mark new content with date
 4. Do NOT remove existing content
+
+---
+
+## Added for context - 2026-07-04
+
+### Current Snapshot Documents
+
+After the mandatory read order, use these files as the current cross-repo status snapshot:
+
+1. `src/components/DEX_edu_reference/ota/docs/CURRENT_PROJECT_STATUS_2026-07-04.md`
+2. `C:\Users\bits\Desktop\backend-server\docs\CURRENT_PROJECT_STATUS_2026-07-04.md`
+
+Why: several older docs are still preserved for history and may say "backend not deployed", "skeleton only", "`/dex` routes", or "short futures paper-only". Those statements are historical unless confirmed by current code. Current code uses `/dex-edu/*` for the richer DEX/OTA app and has SHORT/LONG Futures Ops routes under backend `/api/ai-trading/short/*` and `/api/ai-trading/long/*`.
+
+---
+
+## Manifest update - 2026-07-17
+
+Current cross-repository status documents:
+
+1. `src/components/DEX_edu_reference/ota/docs/CURRENT_PROJECT_STATUS_2026-07-17.md`
+2. `C:\Users\bits\Desktop\backend-server\docs\CURRENT_PROJECT_STATUS_2026-07-17.md`
+3. `docs/DOCUMENTATION_AUDIT_2026-07-17.md`
+4. `C:\Users\bits\Desktop\backend-server\docs\DOCUMENTATION_AUDIT_2026-07-17.md`
+
+The 2026-07-04 snapshots are retained as historical evidence and are superseded for current-state claims.
