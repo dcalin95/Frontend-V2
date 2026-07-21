@@ -353,11 +353,6 @@ export const API_ENDPOINTS = {
   /** GET /api/ai-trading/long/win-rate-stats?userId=&days= - mirrors short; auth: X-Ota-Long-Ops-Secret. */
   OTA_LONG_WIN_RATE_STATS: '/ai-trading/long/win-rate-stats',
 
-  // Per-user Binance Futures credentials. The backend derives the user from the
-  // authenticated wallet session and never returns API keys or secrets.
-  OTA_BINANCE_FUTURES_CREDENTIALS: '/ai-trading/binance-futures/credentials',
-  OTA_BINANCE_FUTURES_CREDENTIALS_STATUS: '/ai-trading/binance-futures/credentials/status',
-
   // Performance endpoints
   PERFORMANCE_METRICS: '/ai-trading/performance/metrics',
   PERFORMANCE_PROFIT: '/ai-trading/performance/profit',

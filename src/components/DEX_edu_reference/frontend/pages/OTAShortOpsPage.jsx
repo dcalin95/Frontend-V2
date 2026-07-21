@@ -19,7 +19,6 @@ import OtaBtcMoveAlertSettings from '../components/ai-trading/OtaBtcMoveAlertSet
 import FuturesOpsModeSwitcher from '../components/ai-trading/FuturesOpsModeSwitcher';
 import FuturesOpsBinanceContextStrip from '../components/ai-trading/FuturesOpsBinanceContextStrip';
 import FuturesOpsOperatorQuickNav from '../components/ai-trading/FuturesOpsOperatorQuickNav';
-import BinanceFuturesConnectionCard from '../components/ai-trading/BinanceFuturesConnectionCard';
 import { useWallet } from '../hooks/useWallet';
 import '../styles/components/trade-cost-analytics.css';
 
@@ -124,7 +123,6 @@ export default function OTAShortOpsPage() {
 
       <div style={{ padding: '0 16px 12px' }}>
         <OtaBscAutoStatusBanner />
-        <BinanceFuturesConnectionCard />
       </div>
 
       {/* ── Info box ── */}
