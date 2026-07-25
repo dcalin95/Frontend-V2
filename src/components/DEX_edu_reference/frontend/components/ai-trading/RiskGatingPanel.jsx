@@ -35,6 +35,7 @@ const RiskGatingPanel = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editedLimits, setEditedLimits] = useState({});
   const [saving, setSaving] = useState(false);
+  const [savedLimits, setSavedLimits] = useState(null);
 
   // Load risk metrics from performance API
   const { 
@@ -45,14 +46,15 @@ const RiskGatingPanel = ({
 
   // Use risk metrics or default values
   const riskLimits = useMemo(() => {
-    if (riskMetrics) {
+    const persisted = savedLimits || (riskMetrics?.persisted || riskMetrics?.enforced ? riskMetrics : null);
+    if (persisted) {
       return {
-        maxPercentPerTrade: riskMetrics.maxPercentPerTrade || DEFAULT_VALUES.RISK_LIMITS.MAX_PERCENT_PER_TRADE,
-        maxPercentPerDay: riskMetrics.maxPercentPerDay || 10.0,
-        dailyLossLimit: riskMetrics.dailyLossLimit || 1000,
-        maxDrawdown: riskMetrics.maxDrawdown || 20.0,
-        requireStopLoss: riskMetrics.requireStopLoss !== undefined ? riskMetrics.requireStopLoss : true,
-        requireTakeProfit: riskMetrics.requireTakeProfit !== undefined ? riskMetrics.requireTakeProfit : true
+        maxPercentPerTrade: persisted.maxPercentPerTrade ?? DEFAULT_VALUES.RISK_LIMITS.MAX_PERCENT_PER_TRADE,
+        maxPercentPerDay: persisted.maxPercentPerDay ?? 10.0,
+        dailyLossLimit: persisted.dailyLossLimit ?? 1000,
+        maxDrawdown: persisted.maxDrawdown ?? 20.0,
+        requireStopLoss: persisted.requireStopLoss !== undefined ? persisted.requireStopLoss : true,
+        requireTakeProfit: persisted.requireTakeProfit !== undefined ? persisted.requireTakeProfit : true
       };
     }
     
@@ -65,7 +67,12 @@ const RiskGatingPanel = ({
       requireStopLoss: true,
       requireTakeProfit: true
     };
-  }, [riskMetrics]);
+  }, [riskMetrics, savedLimits]);
+
+  useEffect(() => {
+    setSavedLimits(null);
+    setEditedLimits({});
+  }, [userId]);
 
   // Initialize edited limits when entering edit mode
   useEffect(() => {
@@ -94,7 +101,10 @@ const RiskGatingPanel = ({
       const response = await saveRiskLimits(userId, editedLimits);
       
       if (response.success) {
-        toast.success('Risk limits saved successfully');
+        const persisted = response.riskLimits || editedLimits;
+        setSavedLimits(persisted);
+        setEditedLimits(persisted);
+        toast.success(response.enforced ? 'Risk limits saved and enforced' : 'Risk limits saved');
         
         // Update local state
         if (onRiskLimitsChange) {
@@ -167,6 +177,11 @@ const RiskGatingPanel = ({
 
       <div className="ai-risk-gating-panel-description">
         <p>Configure risk limits for {OPENAI_TRADING_AGENT_NAME}. These settings apply only to AI-generated trades and are separate from manual trading limits.</p>
+        <p>
+          {savedLimits || riskMetrics?.enforced
+            ? 'Status: persisted and enforced for new OTA positions. Protective closes remain available.'
+            : 'Status: defaults shown for editing; no per-wallet limits are enforced until you save them.'}
+        </p>
       </div>
 
       <div className="ai-risk-gating-panel-content">
