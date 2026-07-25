@@ -1,202 +1,66 @@
-# 🎁 FF Project - AI Rewards Hub & Portfolio Analytics
+# BitSwapDEX AI (`bits-ai.io`)
 
-Advanced Web3 application with AI-powered portfolio analytics and enhanced rewards system.
+Aplicația principală BitSwapDEX AI combină experiența publică BITS (presale,
+staking, rewards și educație) cu portofoliu, wallet, DEX și sistemul OTA de
+analiză și operare trading.
 
-## Environment variables (required)
+## Arhitectura curentă
 
-Create a `.env.local` file in the project root before running:
+- Frontend local: `C:\Users\bits\Desktop\frontend`
+- Backend local: `C:\Users\bits\Desktop\backend-server`
+- Producție frontend: `https://bits-ai.io`
+- DEX/OTA: `https://bits-ai.io/#/dex-edu/*`
+- API producție: `https://backend-server-eu.onrender.com/api`
 
-```
-REACT_APP_BACKEND_URL=https://backend-server-f82y.onrender.com
-REACT_APP_ADMIN_PASS=your_strong_password
-```
+Frontendul este construit din branch-ul `main` prin GitHub Actions, publicat în
+bucketul AWS S3 `bits-ai.io` și servit prin CloudFront. Backendul Express este
+deployat separat pe Render din repository-ul `backend-server`.
 
-The dev/build scripts run a preflight check and will fail fast if these vars are missing.
+## Documentație canonică
 
-## Available Scripts
+Începe cu:
 
-In the project directory, you can run:
+1. `DOCUMENTATION_INDEX.md`
+2. `docs/DOCUMENTATION_AUDIT_2026-07-18.md`
+3. `src/components/DEX_edu_reference/ota/docs/CURRENT_OPERATIONAL_TRUTH.md`
+4. `src/components/DEX_edu_reference/ota/docs/CURRENT_PROJECT_STATUS_2026-07-18.md`
+5. backend: `docs/OTA_PRODUCTION_CONTRACT.md`
 
-### `npm start`
+Documentele mai vechi sunt păstrate pentru trasabilitate. Afirmațiile istorice
+despre `frontend-edu`, `/dex/*`, un backend nedeployat sau hostname-ul
+`backend-server-f82y.onrender.com` nu sunt instrucțiuni operaționale curente.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Rulare locală
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Creează `.env.local` fără a-l comite:
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-=======
-# 🤖 Unified Telegram Bots Service
-
-**BitSwapDEX Telegram Bots** - Unified service running both Simple Bot and AI Bot in a single Render worker service.
-
-## 🚀 Features
-
-### 🤖 Simple Bot
-- **User Tracking**: Monitor user activity and engagement
-- **Commands**: `/help`, `/price`, `/cell`, `/stats`, `/activity`, `/myreward`, `/register`
-- **Automated Messages**: Real-time updates every 5 minutes
-- **Live Data**: Fetches data from backend API with price correction
-- **Database**: PostgreSQL integration for user activity
-
-### 🧠 AI Bot
-- **OpenAI Integration**: Powered by GPT for intelligent responses
-- **BITS Documentation**: Comprehensive knowledge about BitSwapDEX
-- **Natural Language**: Responds to questions about BITS project
-- **Context Awareness**: Understands crypto and blockchain queries
-
-## 💰 Cost
-- **$7/month** - Single Render worker service
-- **Both bots** running in one service
-- **24/7 availability**
-
-## 🔧 Configuration
-
-### Environment Variables
 ```env
-# Telegram Bot Tokens
-TELEGRAM_BOT_TOKEN=7094285105:AAHLMP_ITMBNgug1xvYtp45B0aYw6aRzvDM
-TELEGRAM_AI_BOT_TOKEN=7738929253:AAFnr7Y-WvQUOpVn7ikKfPPYNbR8RFEFnG8
-
-# Telegram Group ID
-TELEGRAM_GROUP_ID=-1002179349195
-
-# OpenAI API Key
-OPENAI_API_KEY=your_openai_api_key
-
-# Database Configuration
-DATABASE_PASSWORD=your_database_password
-
-# API URLs
-BACKEND_API_URL=https://backend-server-f82y.onrender.com
-FRONTEND_API_URL=https://bits-ai.io
+REACT_APP_BACKEND_URL=https://backend-server-eu.onrender.com
 ```
 
-## 📦 Files Structure
-```
-telegram-bots-deploy/
-├── unified-bots.js          # Main service file
-├── simple-bot.js            # Simple bot implementation
-├── bot.js                   # AI bot implementation
-├── ask-gpt.js              # OpenAI integration
-├── docs.md                 # BITS documentation
-├── package.json            # Dependencies
-├── render.yaml             # Render deployment config
-└── README.md               # This file
-```
+Administrator passwords must never use a `REACT_APP_*` variable. The legacy
+admin panel accepts the password interactively and the backend validates it.
 
-## 🚀 Deployment
+Apoi:
 
-### Render Deployment
-1. Create new repository on GitHub
-2. Push this code to the repository
-3. Connect to Render
-4. Deploy using `render.yaml` configuration
-5. Set environment variables in Render dashboard
-
-### Local Testing
 ```bash
 npm install
 npm start
 ```
 
-## 📊 Data Sources
-- **Primary**: Backend API (https://backend-server-f82y.onrender.com)
-- **Fallback**: Frontend API (https://bits-ai.io)
-- **Simulation**: Local data (if APIs unavailable)
+Verificări:
 
-## 🔄 Automated Features
-- **Price Updates**: Every 5 minutes
-- **User Activity Tracking**: Real-time
-- **Database Sync**: PostgreSQL integration
-- **Error Handling**: Graceful fallbacks
+```bash
+npm test -- --watchAll=false --runInBand
+npm run build
+```
 
-## 🛠️ Commands
+## Reguli de securitate
 
-### Simple Bot Commands
-- `/help` - Show available commands
-- `/price` - Get current BITS price
-- `/cell` - Get cell status and statistics
-- `/stats` - Advanced statistics
-- `/activity` - Check your activity
-- `/myreward` - Check your rewards
-- `/register` - Register for tracking
-
-### AI Bot Interactions
-- Ask questions about BITS
-- Get information about BitSwapDEX
-- Crypto and blockchain queries
-- Natural language responses
-
-## 📈 Monitoring
-- **Heartbeat**: Every minute
-- **Error Logging**: Comprehensive error handling
-- **Database Connection**: Automatic fallback
-- **API Health**: Multiple fallback sources
-
-## 🔒 Security
-- **Environment Variables**: Secure token storage
-- **Database SSL**: Encrypted connections
-- **API Keys**: Protected configuration
-- **Error Handling**: No sensitive data exposure
-
-## 📞 Support
-For issues or questions, contact the BitSwapDEX development team.
-
----
-**BitSwapDEX Team** | **Version 1.0.0** | **MIT License**
->>>>>>> d57d2cbc012c01e57d4e4dc15346c51c7becdd77
+- Nu adăuga tokenuri, chei private, parole sau fișiere `.env` în Git.
+- Orice variabilă `REACT_APP_*` este publică în bundle-ul browserului.
+- Secretele LONG/SHORT OTA rămân exclusiv pe server; browserul folosește
+  sesiunea autentificată a walletului.
+- UI-ul nu acordă autoritate administrativă; backendul validează fiecare
+  operație privilegiată.
+- OTA nu garantează profit, randament sau acuratețe fixă.

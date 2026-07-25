@@ -3,7 +3,7 @@
  * Sends transaction notifications to backend webhook
  */
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://backend-server-f82y.onrender.com';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://backend-server-eu.onrender.com';
 const WEBHOOK_ENDPOINT = `${BACKEND_URL}/bits/webhook`;
 const TG_WEBHOOK_SECRET = process.env.REACT_APP_TG_WEBHOOK_SECRET || '';
 

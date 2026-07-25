@@ -123,7 +123,7 @@ export function usePerformance(userId, options = {}) {
    * Load charts data
    * 
    * DEVELOPMENT MODE: Folosește Binance API public pentru date reale
-   * Backend-server is deployed on Render: https://backend-server-f82y.onrender.com
+   * Backend-server is deployed on Render: https://backend-server-eu.onrender.com
    */
   const loadChartsData = useCallback(async (params = {}) => {
     if (!userId) return;

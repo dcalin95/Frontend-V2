@@ -91,18 +91,6 @@ async function loadRuntimeConfig(options = {}) {
           
           const wrapEnabled = config.USE_BITSWAP_WRAPPER === true || config.USE_BITSWAP_WRAPPER === 'true';
           const wrapAddr = (config.BITSWAP_WRAPPER_ADDRESS && String(config.BITSWAP_WRAPPER_ADDRESS).trim()) || '';
-          const shortOpsSecretRaw =
-            config.OTA_SHORT_OPS_SECRET != null
-              ? String(config.OTA_SHORT_OPS_SECRET).trim()
-              : config.REACT_APP_OTA_SHORT_OPS_SECRET != null
-                ? String(config.REACT_APP_OTA_SHORT_OPS_SECRET).trim()
-                : '';
-          const longOpsSecretRaw =
-            config.OTA_LONG_OPS_SECRET != null
-              ? String(config.OTA_LONG_OPS_SECRET).trim()
-              : config.REACT_APP_OTA_LONG_OPS_SECRET != null
-                ? String(config.REACT_APP_OTA_LONG_OPS_SECRET).trim()
-                : '';
           /** Baza doar pentru redirect OAuth (Google etc.): domeniu first-party (ex. api.bits-ai.io), fără *.onrender.com în URL-ul vizibil userului. */
           let authBackendUrl = '';
           if (config.AUTH_BACKEND_URL != null && String(config.AUTH_BACKEND_URL).trim()) {
@@ -119,8 +107,6 @@ async function loadRuntimeConfig(options = {}) {
             LEVERAGE_TRADING_ADDRESS: (config.LEVERAGE_TRADING_ADDRESS && String(config.LEVERAGE_TRADING_ADDRESS).trim()) || '',
             ...(config.USE_BITSWAP_WRAPPER !== undefined && { USE_BITSWAP_WRAPPER: wrapEnabled }),
             ...(wrapAddr && { BITSWAP_WRAPPER_ADDRESS: wrapAddr }),
-            ...(shortOpsSecretRaw ? { OTA_SHORT_OPS_SECRET: shortOpsSecretRaw } : {}),
-            ...(longOpsSecretRaw ? { OTA_LONG_OPS_SECRET: longOpsSecretRaw } : {}),
             ...(authBackendUrl ? { AUTH_BACKEND_URL: authBackendUrl } : {}),
             source: 'runtime-config.json'
           };
@@ -301,73 +287,20 @@ function rememberOtaOpsSecret(secret, ...storageKeys) {
 }
 
 /**
- * Secret pentru header X-Ota-Short-Ops-Secret: runtime-config.json (OTA_SHORT_OPS_SECRET),
- * URL-ul paginii (?otaShortOpsSecret=, ?shortOpsSecret= sau ?secret=), apoi REACT_APP_* la build.
- * Aliniat cu OTA_SHORT_OPS_SECRET pe backend.
+ * Compatibility getter only. Browser-delivered secrets cannot authorize OTA operations.
  */
 export function getOtaShortOpsSecret() {
-  const fromRc =
-    typeof window !== 'undefined' && cachedConfig?.OTA_SHORT_OPS_SECRET
-      ? String(cachedConfig.OTA_SHORT_OPS_SECRET).trim()
-      : '';
-  if (fromRc) return fromRc;
-  const fromUrl = getOtaOpsSecretFromUrl('otaShortOpsSecret', 'shortOpsSecret', 'secret');
-  if (fromUrl) {
-    return rememberOtaOpsSecret(
-      fromUrl,
-      OTA_OPS_SECRET_STORAGE_KEYS.short,
-      OTA_OPS_SECRET_STORAGE_KEYS.generic
-    );
-  }
-  const fromStorage = readStoredOtaOpsSecret(
-    OTA_OPS_SECRET_STORAGE_KEYS.short,
-    OTA_OPS_SECRET_STORAGE_KEYS.generic
-  );
-  if (fromStorage) return fromStorage;
-  const fromEnv = (process.env.REACT_APP_OTA_SHORT_OPS_SECRET || '').trim();
-  if (fromEnv) {
-    return rememberOtaOpsSecret(
-      fromEnv,
-      OTA_OPS_SECRET_STORAGE_KEYS.short,
-      OTA_OPS_SECRET_STORAGE_KEYS.generic
-    );
-  }
+  // Browser-delivered shared secrets are public and must never authorize OTA ops.
   return '';
 }
 
 /**
- * Secret pentru header X-Ota-Long-Ops-Secret: runtime-config.json (OTA_LONG_OPS_SECRET),
- * URL-ul paginii (?otaLongOpsSecret=, ?longOpsSecret= sau ?secret=), apoi REACT_APP_* la build.
+ * Compatibility getter only. Browser-delivered secrets cannot authorize OTA operations.
  * Dacă lipsește explicit, folosește același secret ca SHORT (deploy-uri cu un singur secret în RC / același string pe Render).
  */
 export function getOtaLongOpsSecret() {
-  const fromRc =
-    typeof window !== 'undefined' && cachedConfig?.OTA_LONG_OPS_SECRET
-      ? String(cachedConfig.OTA_LONG_OPS_SECRET).trim()
-      : '';
-  if (fromRc) return fromRc;
-  const fromUrl = getOtaOpsSecretFromUrl('otaLongOpsSecret', 'longOpsSecret', 'secret');
-  if (fromUrl) {
-    return rememberOtaOpsSecret(
-      fromUrl,
-      OTA_OPS_SECRET_STORAGE_KEYS.long,
-      OTA_OPS_SECRET_STORAGE_KEYS.generic
-    );
-  }
-  const fromStorage = readStoredOtaOpsSecret(
-    OTA_OPS_SECRET_STORAGE_KEYS.long,
-    OTA_OPS_SECRET_STORAGE_KEYS.generic
-  );
-  if (fromStorage) return fromStorage;
-  const fromEnv = (process.env.REACT_APP_OTA_LONG_OPS_SECRET || '').trim();
-  if (fromEnv) {
-    return rememberOtaOpsSecret(
-      fromEnv,
-      OTA_OPS_SECRET_STORAGE_KEYS.long,
-      OTA_OPS_SECRET_STORAGE_KEYS.generic
-    );
-  }
-  return getOtaShortOpsSecret();
+  // Browser-delivered shared secrets are public and must never authorize OTA ops.
+  return '';
 }
 
 /**

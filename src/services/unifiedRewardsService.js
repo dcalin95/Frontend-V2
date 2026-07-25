@@ -6,7 +6,7 @@
  * Cu claim manual prin smart contract
  */
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-eu.onrender.com";
 
 class UnifiedRewardsService {
   constructor() {
@@ -277,5 +277,4 @@ export const {
   formatAmount,
   formatDate
 } = unifiedRewardsService;
-
 

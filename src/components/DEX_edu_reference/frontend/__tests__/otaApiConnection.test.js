@@ -17,6 +17,13 @@ jest.mock('../../config/apiEndpoints.js', () => ({
   }
 }));
 
+jest.mock('../../config/runtimeConfig.js', () => ({
+  loadRuntimeConfig: jest.fn(() => Promise.resolve({
+    BACKEND_URL: 'https://api.test',
+    API_BASE_URL: 'https://api.test/api',
+  })),
+}));
+
 const mockFetch = jest.fn();
 global.fetch = mockFetch;
 
@@ -25,6 +32,7 @@ describe('OTA API Connection', () => {
     mockFetch.mockReset();
     mockGetApiBaseUrl.mockReturnValue('https://api.test/api');
     mockGetBackendUrl.mockReturnValue('https://api.test');
+    require('../utils/otaApiClient').__resetOtaApiClientCachesForTests();
   });
 
   describe('getOTAHealth', () => {

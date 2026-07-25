@@ -7,7 +7,7 @@ import useBlockchainPortfolioData from "./hooks/useBlockchainPortfolioData";
 import { getNodeContract, getCellManagerContract, getAdditionalRewardContract, getTelegramRewardContract } from "../contract/contractMap";
 import './Claude4QuantumStyles.css';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-eu.onrender.com";
 const QUANTUM_COLORS = ["#00D4FF", "#7B68EE", "#FF6B9D", "#FFD700", "#00FF88", "#FF4757", "#3742FA", "#9C88FF", "#FF6B35"];
 
 // Enhanced debounce hook with quantum-like delay variations

@@ -24,11 +24,9 @@ import {
 } from "../../../utils/adminSecurity"; // 🔒 SECURITY: Session management
 
 const API_URL = getBackendUrl();
-// SECURITY: Require ADMIN_PASS in production, no fallback
-const ADMIN_PASS = process.env.REACT_APP_ADMIN_PASS;
-if (!ADMIN_PASS && process.env.NODE_ENV === 'production') {
-  console.error('[SECURITY] REACT_APP_ADMIN_PASS is required in production!');
-}
+// Never embed an administrator password in a browser build. The legacy panel
+// keeps the typed value in memory only for the current page session.
+let ADMIN_PASS = '';
 
 // AdditionalReward tiers (aligned with RewardsHub + backend SOL loyalty tiers)
 const SOL_BONUS_TIERS = [
@@ -375,9 +373,6 @@ const AdminPanel = () => {
       // IMPORTANT: Use the same password that works for other AdminPanel requests
       const urlWithPassword = `${API_URL}/api/tiktok-ads/import-csv?password=${encodeURIComponent(adminPassword)}`;
       console.log('[CSV Import] ========== PASSWORD CHECK ==========');
-      console.log('[CSV Import] ADMIN_PASS configured:', adminPassword ? 'YES' : 'NO');
-      console.log('[CSV Import] ADMIN_PASS length:', adminPassword?.length || 0);
-      console.log('[CSV Import] ADMIN_PASS first 3 chars:', adminPassword ? adminPassword.substring(0, 3) + '...' : 'N/A');
       console.log('[CSV Import] Request URL (without password value):', `${API_URL}/api/tiktok-ads/import-csv?password=***`);
       console.log('[CSV Import] Password encoded in URL length:', encodeURIComponent(adminPassword).length);
       
@@ -874,11 +869,6 @@ const AdminPanel = () => {
 
   // 🔒 SECURITY: Enhanced login with session management
   const handleLogin = () => {
-    if (!ADMIN_PASS) {
-      toast.error("❌ Admin password not configured!");
-      return;
-    }
-    
     const input = prompt("🔐 Enter Admin Password:");
     if (!input) {
       // User cancelled
@@ -892,11 +882,7 @@ const AdminPanel = () => {
       return;
     }
     
-    // ⚠️ SECURITY: Basic constant-time comparison (length check first)
-    if (normalized.length !== ADMIN_PASS.length || normalized !== ADMIN_PASS) {
-      toast.error("❌ Wrong password!");
-      return;
-    }
+    ADMIN_PASS = normalized;
     
     // 🔒 SECURITY: Store encrypted session instead of plain password
     if (storeAdminSession(normalized)) {

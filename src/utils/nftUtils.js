@@ -13,6 +13,10 @@ import { getRobustProvider } from './rpcFallback';
  * @returns {Promise<string>} IPFS URI for the metadata
  */
 export const uploadNFTToIPFS = async (imageDataUrl, metadata) => {
+  // Pinata credentials cannot be protected in a browser bundle. Keep minting
+  // disabled until the upload is proxied through an authenticated backend route.
+  throw new Error('NFT IPFS upload requires the authenticated backend upload service.');
+  /*
   try {
     console.log('📤 Uploading NFT to IPFS...');
     
@@ -105,7 +109,7 @@ export const uploadNFTToIPFS = async (imageDataUrl, metadata) => {
   } catch (error) {
     console.error('❌ IPFS upload failed:', error);
     throw error;
-  }
+  } */
 };
 
 /**
@@ -320,4 +324,3 @@ const nftUtils = {
 };
 
 export default nftUtils;
-

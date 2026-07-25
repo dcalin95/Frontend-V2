@@ -44,31 +44,7 @@ jobs:
       - name: Run build
         env:
           REACT_APP_TIKTOK_PIXEL_ID: ${{ secrets.REACT_APP_TIKTOK_PIXEL_ID }}
-          REACT_APP_OTA_SHORT_OPS_SECRET: ${{ secrets.REACT_APP_OTA_SHORT_OPS_SECRET }}
-          OTA_SHORT_OPS_SECRET: ${{ secrets.OTA_SHORT_OPS_SECRET }}
-          REACT_APP_OTA_LONG_OPS_SECRET: ${{ secrets.REACT_APP_OTA_LONG_OPS_SECRET }}
-          OTA_LONG_OPS_SECRET: ${{ secrets.OTA_LONG_OPS_SECRET }}
-        run: |
-          npm run build
-          node <<'NODE'
-          const fs = require('fs');
-          const path = 'build/runtime-config.json';
-          const shortSecret = String(process.env.REACT_APP_OTA_SHORT_OPS_SECRET || process.env.OTA_SHORT_OPS_SECRET || '').trim();
-          const longSecret = String(process.env.REACT_APP_OTA_LONG_OPS_SECRET || process.env.OTA_LONG_OPS_SECRET || shortSecret || '').trim();
-          if (!shortSecret && !longSecret) {
-            console.warn('[deploy] No OTA ops secrets in GitHub secrets; runtime-config.json not modified.');
-            process.exit(0);
-          }
-          if (!fs.existsSync(path)) {
-            console.warn('[deploy] build/runtime-config.json missing; skip OTA ops secret injection.');
-            process.exit(0);
-          }
-          const data = JSON.parse(fs.readFileSync(path, 'utf8'));
-          if (shortSecret) data.OTA_SHORT_OPS_SECRET = shortSecret;
-          if (longSecret) data.OTA_LONG_OPS_SECRET = longSecret;
-          fs.writeFileSync(path, `${JSON.stringify(data, null, 2)}\n`, 'utf8');
-          console.log(`[deploy] Injected OTA ops secrets into build/runtime-config.json (short=${shortSecret ? shortSecret.length : 0}, long=${longSecret ? longSecret.length : 0}; values hidden).`);
-          NODE
+        run: npm run build
 
       - name: Verify build artifacts
         run: |

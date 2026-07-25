@@ -66,51 +66,8 @@ if [ ! -f build/index.html ] || [ ! -d build/static ]; then
     exit 1
 fi
 
-# 2b. Inject OTA ops secrets into runtime config when provided.
-RUNTIME_CONFIG_PATH="build/runtime-config.json"
-SHORT_OPS_SECRET="${REACT_APP_OTA_SHORT_OPS_SECRET:-${OTA_SHORT_OPS_SECRET:-}}"
-LONG_OPS_SECRET="${REACT_APP_OTA_LONG_OPS_SECRET:-${OTA_LONG_OPS_SECRET:-$SHORT_OPS_SECRET}}"
-
-# Preserve deployed secrets when the local/CI shell does not provide them.
-if { [ -z "$SHORT_OPS_SECRET" ] || [ -z "$LONG_OPS_SECRET" ]; } && [ -f "$RUNTIME_CONFIG_PATH" ]; then
-    REMOTE_RUNTIME_CONFIG="$(mktemp)"
-    if aws s3 cp "s3://$S3_BUCKET_NAME/runtime-config.json" "$REMOTE_RUNTIME_CONFIG" --only-show-errors 2>/dev/null; then
-        REMOTE_RUNTIME_CONFIG="$REMOTE_RUNTIME_CONFIG" node <<'NODE'
-const fs = require('fs');
-const buildPath = 'build/runtime-config.json';
-const remotePath = process.env.REMOTE_RUNTIME_CONFIG;
-const build = JSON.parse(fs.readFileSync(buildPath, 'utf8'));
-const remote = JSON.parse(fs.readFileSync(remotePath, 'utf8'));
-const shortFromEnv = String(process.env.REACT_APP_OTA_SHORT_OPS_SECRET || process.env.OTA_SHORT_OPS_SECRET || '').trim();
-const longFromEnv = String(process.env.REACT_APP_OTA_LONG_OPS_SECRET || process.env.OTA_LONG_OPS_SECRET || '').trim();
-if (!shortFromEnv && remote.OTA_SHORT_OPS_SECRET) build.OTA_SHORT_OPS_SECRET = remote.OTA_SHORT_OPS_SECRET;
-if (!longFromEnv && remote.OTA_LONG_OPS_SECRET) build.OTA_LONG_OPS_SECRET = remote.OTA_LONG_OPS_SECRET;
-fs.writeFileSync(buildPath, `${JSON.stringify(build, null, 2)}\n`, 'utf8');
-NODE
-    fi
-    rm -f "$REMOTE_RUNTIME_CONFIG"
-fi
-
-if [ -n "$SHORT_OPS_SECRET" ] || [ -n "$LONG_OPS_SECRET" ]; then
-    if [ -f "$RUNTIME_CONFIG_PATH" ]; then
-        print_step "Injecting OTA ops secrets into runtime config..."
-        node <<'NODE'
-const fs = require('fs');
-const path = 'build/runtime-config.json';
-const data = JSON.parse(fs.readFileSync(path, 'utf8'));
-const shortSecret = String(process.env.REACT_APP_OTA_SHORT_OPS_SECRET || process.env.OTA_SHORT_OPS_SECRET || '').trim();
-const longSecret = String(process.env.REACT_APP_OTA_LONG_OPS_SECRET || process.env.OTA_LONG_OPS_SECRET || shortSecret || '').trim();
-if (shortSecret) data.OTA_SHORT_OPS_SECRET = shortSecret;
-if (longSecret) data.OTA_LONG_OPS_SECRET = longSecret;
-fs.writeFileSync(path, `${JSON.stringify(data, null, 2)}\n`, 'utf8');
-console.log('OTA ops secrets injected into runtime-config.json (values hidden).');
-NODE
-    else
-        print_warning "runtime-config.json missing in build; skipping OTA ops secret injection."
-    fi
-else
-    print_warning "No OTA ops secrets found in env; runtime-config.json not modified."
-fi
+# Browser builds must never contain OTA operator secrets. SHORT/LONG browser
+# requests are authorized with the authenticated wallet/user session instead.
 
 # 3. Sync to S3
 print_step "Uploading to S3 bucket: $S3_BUCKET_NAME"

@@ -6,12 +6,23 @@
 
 import { getOpenPositionsAnalytics, getOpenPositionsCostBasis } from '../analyticsApiService';
 import { postOtaPositionsClose } from '../aiTradingApiService';
+import { __resetOtaApiClientCachesForTests } from '../../utils/otaApiClient';
+
+jest.mock('../../../config/runtimeConfig.js', () => ({
+  loadRuntimeConfig: () => Promise.resolve({}),
+  getBackendUrl: () => 'https://backend-server-eu.onrender.com',
+  getAuthBackendUrl: () => 'https://backend-server-eu.onrender.com',
+  getApiBaseUrl: () => 'https://backend-server-eu.onrender.com/api',
+  getConfigSource: () => 'test',
+  initRuntimeConfig: () => {},
+}));
 
 const fetchMock = jest.fn();
 
 beforeEach(() => {
   global.fetch = fetchMock;
   fetchMock.mockReset();
+  __resetOtaApiClientCachesForTests();
 });
 
 describe('getOpenPositionsAnalytics', () => {

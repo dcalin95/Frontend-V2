@@ -2,8 +2,7 @@
  * Private owner area: site-wide user list, stats, newsletter send (manual).
  * English UI (DEX policy). Auth: logged-in user + admin password (+ optional email allowlist).
  *
- * Legacy alignment with bits-ai.io /admin-test: same build-time env REACT_APP_ADMIN_PASS
- * (must match backend ADMIN_PASSWORD / ADMIN_PASS when calling APIs).
+ * The administrator password is typed per browser session and verified by the backend.
  */
 import React, { useState, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
@@ -32,17 +31,6 @@ import {
   shouldShowSiteAdminEntry,
 } from '../utils/siteAdminAccess';
 import '../styles/components/site-admin-page.css';
-
-/** Inlined at build; same pattern as frontend/src/Presale/Timer/logic/AdminPanel.js */
-const REACT_APP_ADMIN_PASS =
-  typeof process !== 'undefined' && process.env && process.env.REACT_APP_ADMIN_PASS
-    ? String(process.env.REACT_APP_ADMIN_PASS).trim()
-    : '';
-if (process.env.NODE_ENV === 'production' && !REACT_APP_ADMIN_PASS) {
-  console.error(
-    '[SECURITY] REACT_APP_ADMIN_PASS is required in production for /dex-edu/site-admin (or type password manually). Same as legacy REACT_APP_ADMIN_PASS for /admin-test.'
-  );
-}
 
 function YesNoBadge({ ok }) {
   return (
@@ -90,11 +78,7 @@ export default function SiteAdminPage() {
   const buildAllowlisted = useMemo(() => isSiteAdminAllowlisted(user), [user]);
   const adminIdentity = useMemo(() => getSiteAdminIdentityStatus(user), [user]);
 
-  /** Typed password overrides build-time REACT_APP_ADMIN_PASS (same logic as legacy AdminPanel default). */
-  const effectiveAdminPassword = useMemo(
-    () => adminPassword.trim() || REACT_APP_ADMIN_PASS || '',
-    [adminPassword]
-  );
+  const effectiveAdminPassword = useMemo(() => adminPassword.trim(), [adminPassword]);
 
   const base = getApiBaseUrl();
 
@@ -385,13 +369,11 @@ export default function SiteAdminPage() {
           </li>
           <li>
             <strong>This page</strong> — field below must match <code>ADMIN_PASSWORD</code> / <code>ADMIN_PASS</code> on
-            the backend (Render). Build-time <code>REACT_APP_ADMIN_PASS</code> only applies after <code>npm run build</code>{' '}
-            + deploy; otherwise type the secret here.
+            the backend (Render). The value is entered for this browser session and is never embedded in the build.
           </li>
         </ol>
         <p className="site-admin-hint">
-          If <strong>Build secret</strong> shows <strong>off</strong>, type the admin password manually or rebuild with{' '}
-          <code>REACT_APP_ADMIN_PASS</code>.
+          Type the backend administrator password and validate access before loading private data.
         </p>
       </details>
 
@@ -417,11 +399,7 @@ export default function SiteAdminPage() {
               value={adminPassword}
               onChange={(e) => setAdminPassword(e.target.value)}
               autoComplete="off"
-              placeholder={
-                REACT_APP_ADMIN_PASS
-                  ? 'Leave empty to use build-time REACT_APP_ADMIN_PASS'
-                  : 'Type backend ADMIN_PASSWORD (or set REACT_APP_ADMIN_PASS at build)'
-              }
+              placeholder="Type the backend administrator password"
             />
             <button
               type="button"
@@ -434,9 +412,7 @@ export default function SiteAdminPage() {
           </div>
         </label>
         <div className="site-admin-meta-row">
-          <span className={`site-admin-chip ${REACT_APP_ADMIN_PASS ? 'site-admin-chip-on' : 'site-admin-chip-off'}`}>
-            Build secret {REACT_APP_ADMIN_PASS ? 'on' : 'off'}
-          </span>
+          <span className="site-admin-chip site-admin-chip-off">Browser build contains no admin secret</span>
           <span className={`site-admin-chip ${buildAllowlisted ? 'site-admin-chip-on' : 'site-admin-chip-warn'}`}>
             Admin identity {buildAllowlisted ? `recognized (${adminIdentity.actorLabel})` : 'not recognized'}
           </span>

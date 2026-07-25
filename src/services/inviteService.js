@@ -1,5 +1,5 @@
 // === Importuri necesare ===
-const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com"; // Preluăm URL-ul din variabilele de mediu
+const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-eu.onrender.com"; // Preluăm URL-ul din variabilele de mediu
 console.log(`ℹ️ API_URL set to: ${API_URL}`); // Log pentru debugging
 
 // === Rutele API centralizate ===
@@ -199,4 +199,3 @@ export const getOrGenerateCode = async (walletAddress) => {
     return data.verificationCode;
   });
 };
-

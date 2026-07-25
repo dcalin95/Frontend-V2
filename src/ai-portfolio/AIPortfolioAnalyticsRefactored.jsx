@@ -6,7 +6,7 @@ import WalletContext from "../context/WalletContext";
 import useBlockchainPortfolioData from "./hooks/useBlockchainPortfolioData";
 import './EnhancedAIStyles.css';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-eu.onrender.com";
 const AI_COLORS = ["#00D4FF", "#7B68EE", "#FF6B9D", "#FFD700", "#00FF88", "#FF4757", "#3742FA"];
 
 // Enhanced debounce hook

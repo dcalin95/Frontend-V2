@@ -4,7 +4,7 @@ import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recha
 import { GA4_HELPERS } from "../config/googleAnalytics";
 import './styles.css';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-eu.onrender.com";
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#845EC2"]; 
 
 export default function AIPortfolioBuilder() {
@@ -230,5 +230,4 @@ export default function AIPortfolioBuilder() {
     </div>
   );
 }
-
 

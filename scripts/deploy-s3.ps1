@@ -62,70 +62,8 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Host "Build completed successfully" -ForegroundColor Green
 
-# 2b. Inject OTA ops secrets into runtime config when provided.
-# Keep these values out of public/runtime-config.json in git; only the generated build artifact is updated.
-$RuntimeConfigPath = "build/runtime-config.json"
-$ShortOpsSecret = if (-not [string]::IsNullOrWhiteSpace($env:REACT_APP_OTA_SHORT_OPS_SECRET)) {
-    $env:REACT_APP_OTA_SHORT_OPS_SECRET.Trim()
-} elseif (-not [string]::IsNullOrWhiteSpace($env:OTA_SHORT_OPS_SECRET)) {
-    $env:OTA_SHORT_OPS_SECRET.Trim()
-} else {
-    ""
-}
-
-$LongOpsSecret = if (-not [string]::IsNullOrWhiteSpace($env:REACT_APP_OTA_LONG_OPS_SECRET)) {
-    $env:REACT_APP_OTA_LONG_OPS_SECRET.Trim()
-} elseif (-not [string]::IsNullOrWhiteSpace($env:OTA_LONG_OPS_SECRET)) {
-    $env:OTA_LONG_OPS_SECRET.Trim()
-} else {
-    $ShortOpsSecret
-}
-
-# Local deploy shells do not always contain the OTA secrets. Preserve the
-# currently deployed values instead of replacing runtime-config.json without them.
-if ([string]::IsNullOrWhiteSpace($ShortOpsSecret) -or [string]::IsNullOrWhiteSpace($LongOpsSecret)) {
-    $RemoteRuntimeConfigPath = [System.IO.Path]::GetTempFileName()
-    try {
-        & aws s3 cp "s3://$BucketName/runtime-config.json" $RemoteRuntimeConfigPath --only-show-errors 2>$null
-        if ($LASTEXITCODE -eq 0) {
-            $RemoteRuntimeConfig = Get-Content $RemoteRuntimeConfigPath -Raw | ConvertFrom-Json
-            if ([string]::IsNullOrWhiteSpace($ShortOpsSecret)) {
-                $ShortOpsSecret = [string]$RemoteRuntimeConfig.OTA_SHORT_OPS_SECRET
-            }
-            if ([string]::IsNullOrWhiteSpace($LongOpsSecret)) {
-                $LongOpsSecret = [string]$RemoteRuntimeConfig.OTA_LONG_OPS_SECRET
-            }
-        }
-    } catch {
-        Write-Host "Could not read existing runtime config; env secrets are still required." -ForegroundColor Yellow
-    } finally {
-        Remove-Item -LiteralPath $RemoteRuntimeConfigPath -Force -ErrorAction SilentlyContinue
-    }
-}
-
-if ((-not [string]::IsNullOrWhiteSpace($ShortOpsSecret)) -or (-not [string]::IsNullOrWhiteSpace($LongOpsSecret))) {
-    if (Test-Path $RuntimeConfigPath) {
-        Write-Host "==> Injecting OTA ops secrets into runtime config..." -ForegroundColor Blue
-        $RuntimeConfig = Get-Content $RuntimeConfigPath -Raw | ConvertFrom-Json
-        if (-not [string]::IsNullOrWhiteSpace($ShortOpsSecret)) {
-            $RuntimeConfig | Add-Member -NotePropertyName "OTA_SHORT_OPS_SECRET" -NotePropertyValue $ShortOpsSecret -Force
-        }
-        if (-not [string]::IsNullOrWhiteSpace($LongOpsSecret)) {
-            $RuntimeConfig | Add-Member -NotePropertyName "OTA_LONG_OPS_SECRET" -NotePropertyValue $LongOpsSecret -Force
-        }
-        $RuntimeConfigJson = $RuntimeConfig | ConvertTo-Json -Depth 10
-        [System.IO.File]::WriteAllText(
-            (Resolve-Path $RuntimeConfigPath),
-            $RuntimeConfigJson,
-            [System.Text.UTF8Encoding]::new($false)
-        )
-        Write-Host "OTA ops secrets injected (values hidden)" -ForegroundColor Green
-    } else {
-        Write-Host "runtime-config.json missing in build; skipping OTA ops secret injection." -ForegroundColor Yellow
-    }
-} else {
-    Write-Host "No OTA ops secrets found in env; runtime-config.json not modified." -ForegroundColor Yellow
-}
+# Browser builds must never contain OTA operator secrets. SHORT/LONG browser
+# requests are authorized with the authenticated wallet/user session instead.
 
 # 3. Sync to S3
 Write-Host "==> Uploading to S3 bucket: $BucketName" -ForegroundColor Blue

@@ -15,7 +15,7 @@ import bitsIcon from "../assets/logo.png";
 import phantomLogo from "../assets/icons/phantom-logo.png"; 
 import walletLogo from "../assets/icons/wallet.png"; 
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-eu.onrender.com";
 const CURRENT_STAGE_PRICE = 0.00065; 
 
 const SolanaIcon = () => (

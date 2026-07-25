@@ -76,7 +76,7 @@ const MindNFTGenerator = ({ results }) => {
         };
         
         // Use backend proxy to fix CORS issues
-        const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+        const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-eu.onrender.com";
         const proxyUrl = `${BACKEND_URL}/api/dalle-nft/proxy-image?url=${encodeURIComponent(imageUrl)}`;
         
         console.log('🔗 Using proxy URL for CORS fix:', proxyUrl.substring(0, 100) + '...');
@@ -215,7 +215,7 @@ const MindNFTGenerator = ({ results }) => {
 
       console.log('📡 Fetching word analysis from backend...');
       
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL || 'https://backend-server-f82y.onrender.com'}/api/word-analysis/analyze-user-words`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL || 'https://backend-server-eu.onrender.com'}/api/word-analysis/analyze-user-words`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -331,7 +331,7 @@ const MindNFTGenerator = ({ results }) => {
       }
 
       // Call backend DALL-E API with word analysis
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL || 'https://backend-server-f82y.onrender.com'}/api/dalle-nft/generate`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL || 'https://backend-server-eu.onrender.com'}/api/dalle-nft/generate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -428,7 +428,7 @@ const MindNFTGenerator = ({ results }) => {
     setIsSendingTelegram(true);
     
     try {
-      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-eu.onrender.com";
       
       // Get telegram info from stored data
       const telegramUsername = window.telegramUsername || 'BitSwapDEX';

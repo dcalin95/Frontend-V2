@@ -1,5 +1,5 @@
 // Configurare pentru URL-ul backend-ului
-const API_URL = "https://backend-server-f82y.onrender.com"; // Backend Render URL
+const API_URL = "https://backend-server-eu.onrender.com"; // Backend Render URL
 
 /**
  * Funcție generică pentru cereri API
@@ -36,4 +36,3 @@ const fetchApi = async (url, method, body = null) => {
 };
 
 export default fetchApi;
-

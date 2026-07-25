@@ -2,7 +2,7 @@
 
 class EmailService {
   constructor() {
-    this.backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://backend-server-f82y.onrender.com';
+    this.backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://backend-server-eu.onrender.com';
   }
 
   // Send NFT via email
@@ -124,7 +124,6 @@ class EmailService {
 // Export singleton instance
 const emailService = new EmailService();
 export default emailService;
-
 
 
 

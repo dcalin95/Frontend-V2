@@ -20,7 +20,7 @@ const WordCollectionProgress = ({
   const fetchUserWords = useCallback(async () => {
     setIsLoadingWords(true);
     try {
-      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-eu.onrender.com";
       const response = await fetch(`${BACKEND_URL}/api/word-analysis/get-user-words`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

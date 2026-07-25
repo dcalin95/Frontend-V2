@@ -60,7 +60,7 @@ const checkInviteCode = async (walletAddress) => {
   setInviteCodeChecking(true);
   try {
     console.log(`🔍 [INVITE] Auto-checking invite code for wallet: ${walletAddress}`);
-    const response = await mockFetch(`https://backend-server-f82y.onrender.com/api/invite/check-code/${walletAddress}`);
+    const response = await mockFetch(`https://backend-server-eu.onrender.com/api/invite/check-code/${walletAddress}`);
     
     if (response.ok) {
       const data = await response.json();
@@ -148,6 +148,5 @@ checkInviteCode('0x4CCA7bf2aeF7A432d06513f7b02c2F316E21f408').then(() => {
   console.log('\n🎉 All tests completed successfully!');
   console.log('='.repeat(80));
 });
-
 
 

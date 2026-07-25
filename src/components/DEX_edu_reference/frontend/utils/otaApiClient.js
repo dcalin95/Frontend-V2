@@ -7,11 +7,7 @@
  */
 
 import * as apiEndpoints from '../../config/apiEndpoints.js';
-import {
-  getOtaLongOpsSecret,
-  getOtaShortOpsSecret,
-  loadRuntimeConfig,
-} from '../../config/runtimeConfig.js';
+import { loadRuntimeConfig } from '../../config/runtimeConfig.js';
 import {
   getOtaWalletAuthToken,
   clearOtaWalletSession,
@@ -43,6 +39,11 @@ export function __resetOtaWalletClearNotifyThrottleForTests() {
   lastOtaWalletClearNotifyAt = 0;
 }
 
+/** Tests only: avoid cross-test reuse of a recently completed deduplicated GET. */
+export function __resetOtaApiClientCachesForTests() {
+  inFlightGetRequests.clear();
+}
+
 function isNetworkError(error) {
   if (!error || typeof error !== 'object') return false;
   if (error.name === 'TypeError' && (error.message === 'Failed to fetch' || error.message?.includes('fetch'))) return true;
@@ -52,9 +53,7 @@ function isNetworkError(error) {
 function makeInFlightGetKey(url, defaultOptions) {
   const headers = defaultOptions?.headers || {};
   const auth = headers.Authorization || headers.authorization || '';
-  const shortSecret = headers['X-Ota-Short-Ops-Secret'] ? 'short' : '';
-  const longSecret = headers['X-Ota-Long-Ops-Secret'] ? 'long' : '';
-  return `${url}|auth:${auth}|ops:${shortSecret}:${longSecret}`;
+  return `${url}|auth:${auth}`;
 }
 
 function cloneJsonPayload(value) {
@@ -134,14 +133,6 @@ export async function otaApiRequest(endpoint, options = {}, retryCount = 0) {
   const otaTok =
     typeof window !== 'undefined' && !omitOtaWalletBearer ? getOtaWalletAuthToken() : null;
   const epNorm = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-  if (epNorm.includes('/ai-trading/short/') && !mergedHeaders['X-Ota-Short-Ops-Secret']) {
-    const shortOpsSecret = getOtaShortOpsSecret();
-    if (shortOpsSecret) mergedHeaders['X-Ota-Short-Ops-Secret'] = shortOpsSecret;
-  }
-  if (epNorm.includes('/ai-trading/long/') && !mergedHeaders['X-Ota-Long-Ops-Secret']) {
-    const longOpsSecret = getOtaLongOpsSecret();
-    if (longOpsSecret) mergedHeaders['X-Ota-Long-Ops-Secret'] = longOpsSecret;
-  }
   if (
     otaTok &&
     epNorm.includes('/ai-trading') &&

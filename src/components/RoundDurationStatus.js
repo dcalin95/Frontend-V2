@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './RoundDurationStatus.css';
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-eu.onrender.com";
 
 const RoundDurationStatus = ({ presaleState }) => {
 
@@ -279,4 +279,4 @@ Remaining: ${parseInt(contractData.cell.remaining).toLocaleString()}
   );
 };
 
-export default RoundDurationStatus; 
+export default RoundDurationStatus;

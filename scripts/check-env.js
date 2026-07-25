@@ -18,7 +18,6 @@ const REQUIRED_VARS = [];
 // while still allowing emergency deploys. Production should always set these.
 const WARN_VARS = [
   'REACT_APP_BACKEND_URL',
-  'REACT_APP_ADMIN_PASS',
   'REACT_APP_WALLETCONNECT_PROJECT_ID',
   'REACT_APP_SOL_RPC_HTTP',
   'REACT_APP_SOL_RPC_HTTP_FALLBACK'
@@ -64,8 +63,7 @@ if (missing.length > 0) {
   console.error('\n\x1b[31m[ENV CHECK] Missing required variables:\x1b[0m');
   missing.forEach((k) => console.error(` - ${k}`));
   console.error('\nCreate .env.local with entries like:');
-  console.error('  REACT_APP_BACKEND_URL=https://backend-server-f82y.onrender.com');
-  console.error('  REACT_APP_ADMIN_PASS=your_strong_password');
+  console.error('  REACT_APP_BACKEND_URL=https://backend-server-eu.onrender.com');
   console.error('\nAlternatively, copy from .env.example');
   process.exit(1);
 }

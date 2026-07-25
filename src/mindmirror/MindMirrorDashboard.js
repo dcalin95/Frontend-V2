@@ -42,7 +42,7 @@ const MindMirrorDashboard = () => {
   // Check if user has already used the analysis
   const checkAnalysisUsage = useCallback(async () => {
     try {
-      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-eu.onrender.com";
       if (!walletAddress) return;
       const response = await fetch(`${BACKEND_URL}/api/word-analysis/check-usage`, {
         method: 'POST',
@@ -58,7 +58,7 @@ const MindMirrorDashboard = () => {
 
   const checkWordMilestone = useCallback(async () => {
     try {
-      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-eu.onrender.com";
       
       if (!walletAddress) {
         console.log('❌ [Word Check] No wallet address provided');
@@ -344,7 +344,7 @@ const MindMirrorDashboard = () => {
     setIsAnalyzing(true);
     
     try {
-      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-eu.onrender.com";
       
       if (!walletAddress) throw new Error('Please connect your wallet first');
 
@@ -521,7 +521,7 @@ const MindMirrorDashboard = () => {
         onRefresh={checkWordMilestone}
         isLoading={wordMilestone.isLoading}
         onDebugTest={async () => {
-          const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+          const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-eu.onrender.com";
           console.log('🧪 [API TEST] Starting comprehensive API test...');
           console.log('🧪 [API TEST] Wallet:', walletAddress);
           console.log('🧪 [API TEST] Backend:', BACKEND_URL);

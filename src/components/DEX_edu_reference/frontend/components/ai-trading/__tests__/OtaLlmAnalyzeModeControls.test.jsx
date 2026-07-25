@@ -3,7 +3,17 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import OtaLlmAnalyzeModeControls from '../OtaLlmAnalyzeModeControls';
 import { setOtaFuturesAnalyzeLlmMode, OTA_ANALYZE_LLM_WITH_OPENAI } from '../../../utils/otaAnalysisModePreference';
+import { __resetOtaApiClientCachesForTests } from '../../../utils/otaApiClient';
 import { toast } from 'react-toastify';
+
+jest.mock('../../../../config/runtimeConfig.js', () => ({
+  loadRuntimeConfig: () => Promise.resolve({}),
+  getBackendUrl: () => 'https://backend-server-eu.onrender.com',
+  getAuthBackendUrl: () => 'https://backend-server-eu.onrender.com',
+  getApiBaseUrl: () => 'https://backend-server-eu.onrender.com/api',
+  getConfigSource: () => 'test',
+  initRuntimeConfig: () => {},
+}));
 
 jest.mock('react-toastify', () => ({
   toast: {
@@ -29,6 +39,7 @@ describe('OtaLlmAnalyzeModeControls', () => {
   });
 
   beforeEach(() => {
+    __resetOtaApiClientCachesForTests();
     window.localStorage.clear();
     window.location.href = 'https://edu.bits-ai.io/dex-edu/ota/short-ops?tab=long';
     window.location.assign.mockClear();

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './PresaleHistoryMobileBanner.css';
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-eu.onrender.com";
 
 /**
  * 📱 PresaleHistory Mobile Banner

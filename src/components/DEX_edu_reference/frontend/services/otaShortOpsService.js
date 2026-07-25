@@ -1,13 +1,14 @@
 /**
  * OTA Short ops API client (staging / internal).
  * Endpoint-uri: GET open-shorts, POST manual-close, POST reset-kill.
- * Auth: header X-Ota-Short-Ops-Secret din getOtaShortOpsSecret() (runtime-config.json sau REACT_APP_OTA_SHORT_OPS_SECRET la build).
+ * Auth: authenticated wallet session (Bearer token or aligned DEX session cookie).
  * Notă: Secretul expus în browser e aceeași clasă de risc ca orice valoare înglobată în bundle; pentru prod ideal e BFF.
  */
 
 import { getApiBaseUrl, API_ENDPOINTS } from '../../config/apiEndpoints.js';
-import { loadRuntimeConfig, getOtaShortOpsSecret } from '../../config/runtimeConfig.js';
+import { loadRuntimeConfig } from '../../config/runtimeConfig.js';
 import { otaApiRequest } from '../utils/otaApiClient';
+import { getOtaWalletAuthToken } from '../utils/otaWalletSession';
 import {
   readOtaSignalsListCache,
   writeOtaSignalsListCache,
@@ -30,32 +31,17 @@ function throwShortOpsHttp(res, data) {
     /X-Ota-Short-Ops-Secret|Short-Ops-Secret|provide .*secret/i.test(rawMessage)
   ) {
     throw new Error(
-      'Short Ops authorization missing: add OTA_SHORT_OPS_SECRET to runtime-config.json/S3 deploy env, or open the panel once with ?secret=...'
+      'SHORT Ops requires an authenticated wallet session for this user.'
     );
   }
   throw new Error(body.error || `HTTP ${res.status}`);
 }
 
 function getShortOpsHeaders() {
-  const secret = getOtaShortOpsSecret();
   const headers = { 'Content-Type': 'application/json' };
-  if (secret) headers['X-Ota-Short-Ops-Secret'] = secret;
+  const token = typeof window !== 'undefined' ? getOtaWalletAuthToken() : null;
+  if (token) headers.Authorization = `Bearer ${token}`;
   return headers;
-}
-
-function withShortOpsSecretQuery(input, secret) {
-  const value = String(secret || '').trim();
-  if (!value || typeof input !== 'string') return input;
-  try {
-    const url = new URL(input, typeof window !== 'undefined' ? window.location.origin : undefined);
-    if (!url.searchParams.get('secret')) {
-      url.searchParams.set('secret', value);
-    }
-    return url.toString();
-  } catch (_) {
-    const separator = String(input).includes('?') ? '&' : '?';
-    return `${input}${separator}secret=${encodeURIComponent(value)}`;
-  }
 }
 
 function requireUserId(userId, caller = 'short ops') {
@@ -67,21 +53,10 @@ function requireUserId(userId, caller = 'short ops') {
 /** @param {RequestInfo|URL} input @param {RequestInit} [init] */
 async function shortOpsFetch(input, init = {}) {
   await loadRuntimeConfig();
-  let baseH = getShortOpsHeaders();
-  if (!baseH['X-Ota-Short-Ops-Secret']) {
-    await loadRuntimeConfig({ force: true });
-    baseH = getShortOpsHeaders();
-  }
   const method = String(init.method || 'GET').toUpperCase();
-  const headers = { ...baseH, ...(init.headers || {}) };
-  const secret = headers['X-Ota-Short-Ops-Secret'] || '';
-  if (!secret) {
-    throw new Error(
-      'Short Ops authorization missing: add OTA_SHORT_OPS_SECRET to runtime-config.json/S3 deploy env, or open the panel once with ?secret=...'
-    );
-  }
-  const requestInput = withShortOpsSecretQuery(input, secret);
-  const cacheKey = method === 'GET' ? `${String(requestInput)}|secret:${secret ? 'set' : 'none'}` : null;
+  const headers = { ...getShortOpsHeaders(), ...(init.headers || {}) };
+  const requestInput = input;
+  const cacheKey = method === 'GET' ? `${String(requestInput)}|auth:${headers.Authorization ? 'wallet' : 'cookie'}` : null;
   const now = Date.now();
   if (cacheKey) {
     const cached = shortOpsGetCache.get(cacheKey);
@@ -112,9 +87,9 @@ async function shortOpsFetch(input, init = {}) {
   return promise;
 }
 
-/** True dacă există secret în runtime-config sau în bundle (REACT_APP_*). */
+/** Compatibility name: operational controls use authenticated wallet sessions. */
 export function isShortOpsClientSecretConfigured() {
-  return getOtaShortOpsSecret().length > 0;
+  return true;
 }
 
 /**

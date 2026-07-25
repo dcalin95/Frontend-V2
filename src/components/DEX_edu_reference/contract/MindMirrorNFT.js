@@ -219,10 +219,7 @@ export const MIND_MIRROR_NFT_CONFIG = {
 
 // IPFS Configuration for metadata storage
 export const IPFS_CONFIG = {
-  gateway: "https://gateway.pinata.cloud/ipfs/",
-  pinataApiUrl: "https://api.pinata.cloud/pinning/pinJSONToIPFS",
-  pinataApiKey: process.env.REACT_APP_PINATA_API_KEY,
-  pinataSecretKey: process.env.REACT_APP_PINATA_SECRET_KEY
+  gateway: "https://gateway.pinata.cloud/ipfs/"
 };
 
 export default {

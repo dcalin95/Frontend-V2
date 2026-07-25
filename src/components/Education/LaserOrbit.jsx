@@ -212,7 +212,7 @@ export default function LaserOrbit({
   const tooltipHideTimerRef = useRef(null);
   const cacheRef = useRef(new Map()); // symbol -> { data, ts }
   const [presaleData, setPresaleData] = useState(null);
-  const API_URL = process.env.REACT_APP_BACKEND_URL || 'https://backend-server-f82y.onrender.com';
+  const API_URL = process.env.REACT_APP_BACKEND_URL || 'https://backend-server-eu.onrender.com';
 
   // Dynamic hide delay based on orbit speed
   const INNER_REV_SECONDS = 32; // must match CSS --rev-duration for .revolve-layer.inner
@@ -1246,6 +1246,5 @@ export default function LaserOrbit({
     </div>
   );
 }
-
 
 

@@ -51,8 +51,8 @@ describe('otaSignalCardSourceFormat', () => {
       reasoning: 'skipped',
       costUsd: 0,
     });
-    expect(r.sourceLabel).toMatch(/motor ota/i);
-    expect(r.sourceLabel).toMatch(/fara apel llm platit/i);
+    expect(r.sourceLabel).toMatch(/ota motor/i);
+    expect(r.sourceLabel).toMatch(/no paid llm call/i);
     expect(r.isOpenAiBillingError).toBe(false);
     expect(r.isOpenAi).toBe(false);
   });
@@ -62,7 +62,7 @@ describe('otaSignalCardSourceFormat', () => {
       analysisSource: 'motor_ota',
       skipOpenAIReason: 'engine_no_openai_request',
     });
-    expect(r.sourceLabel).toMatch(/motor ota/i);
+    expect(r.sourceLabel).toMatch(/ota motor/i);
   });
 
   it('formatCostAndSource: motor_ota + 429 in reasoning is not billing error', () => {
@@ -72,7 +72,7 @@ describe('otaSignalCardSourceFormat', () => {
       costUsd: null,
     });
     expect(r.isOpenAiBillingError).toBe(false);
-    expect(r.sourceLabel).toMatch(/motor ota/i);
+    expect(r.sourceLabel).toMatch(/ota motor/i);
     expect(r.costLabel).toBe('free');
   });
 
@@ -82,7 +82,7 @@ describe('otaSignalCardSourceFormat', () => {
       reasoning: 'hold',
       costUsd: null,
     });
-    expect(r.sourceLabel).toMatch(/motor ota/i);
+    expect(r.sourceLabel).toMatch(/ota motor/i);
     expect(r.costLabel).toBe('free');
     expect(r.isOpenAi).toBe(false);
   });
@@ -277,7 +277,7 @@ describe('getOtaSignalSnapshotFreshnessNote', () => {
 
   it('without valid createdAt => historical message, no stale line', () => {
     const r = getOtaSignalSnapshotFreshnessNote(null);
-    expect(r.primary).toMatch(/istoric/i);
+    expect(r.primary).toMatch(/history row/i);
     expect(r.staleSecondary).toBeNull();
   });
 

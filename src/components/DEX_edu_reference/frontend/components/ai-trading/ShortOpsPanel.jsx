@@ -170,7 +170,6 @@ import {
   subscribeOtaSignalsListStream,
 } from '../../services/otaShortOpsService';
 import { getVenuePosition as getLongVenuePosition } from '../../services/otaLongOpsService';
-import { loadRuntimeConfig } from '../../../config/runtimeConfig.js';
 import { getOtaPositionOpenAiSuspendList } from '../../services/aiTradingApiService';
 import { analyzeMarketWithLlmProvider } from '../../services/otaAnalyzeFacade';
 import { loadOutcomesForAnalyze, buildAnalyzeOptions } from '../../utils/otaOutcomesHelper';
@@ -1323,38 +1322,6 @@ export default function ShortOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
   const [winRateLoading, setWinRateLoading] = useState(false);
   const [winRateDays, setWinRateDays] = useState(1);
   const [analysisClock, setAnalysisClock] = useState(() => Date.now());
-  const envBakedShortOpsSecret = useMemo(
-    () => String(process.env.REACT_APP_OTA_SHORT_OPS_SECRET || '').trim().length > 0,
-    []
-  );
-  const [shortOpsSecretFromConfig, setShortOpsSecretFromConfig] = useState(() =>
-    isShortOpsClientSecretConfigured() ? true : null
-  );
-  useEffect(() => {
-    if (envBakedShortOpsSecret) {
-      setShortOpsSecretFromConfig(true);
-      return undefined;
-    }
-    let cancelled = false;
-    let retryTimer = null;
-    const checkRuntimeSecret = async () => {
-      await loadRuntimeConfig();
-      if (cancelled) return;
-      let hasSecret = isShortOpsClientSecretConfigured();
-      if (!hasSecret) {
-        await loadRuntimeConfig({ force: true });
-        if (cancelled) return;
-        hasSecret = isShortOpsClientSecretConfigured();
-      }
-      setShortOpsSecretFromConfig(hasSecret);
-      if (!hasSecret) retryTimer = window.setTimeout(checkRuntimeSecret, 5000);
-    };
-    checkRuntimeSecret();
-    return () => {
-      cancelled = true;
-      if (retryTimer) window.clearTimeout(retryTimer);
-    };
-  }, [envBakedShortOpsSecret]);
   useEffect(() => {
     const id = window.setInterval(() => setAnalysisClock(Date.now()), 5000);
     return () => window.clearInterval(id);
@@ -2580,33 +2547,6 @@ export default function ShortOpsPanel({ onHoldBlockAvailabilityChange } = {}) {
           {syncAnimating ? 'Updating…' : 'Refresh all'}
         </button>
       </div>
-
-      {shortOpsSecretFromConfig === false && (
-        <div
-          role="alert"
-          style={{
-            marginBottom: 12,
-            padding: '10px 12px',
-            background: 'rgba(127, 29, 29, 0.28)',
-            border: '1px solid rgba(248, 113, 113, 0.5)',
-            borderRadius: 8,
-            fontSize: 12,
-            color: '#fecaca',
-            lineHeight: 1.45,
-          }}
-        >
-          <strong>Short ops panel cannot call the protected API:</strong> you need the same string as{' '}
-          <code style={{ fontSize: 11 }}>OTA_SHORT_OPS_SECRET</code> on the server — at{' '}
-          <strong>build</strong> (<code style={{ fontSize: 11 }}>REACT_APP_OTA_SHORT_OPS_SECRET</code>) or in{' '}
-          <code style={{ fontSize: 11 }}>/runtime-config.json</code> (key <code style={{ fontSize: 11 }}>OTA_SHORT_OPS_SECRET</code>), then
-          reload the page (no rebuild if you only update JSON on S3). Otherwise{' '}
-          <code style={{ fontSize: 11 }}>X-Ota-Short-Ops-Secret</code> is missing →{' '}
-          <em>protected Short Ops requests will fail until the secret is available</em>. CI:{' '}
-          <code style={{ fontSize: 11 }}>REACT_APP_OTA_SHORT_OPS_SECRET</code>,{' '}
-          <code style={{ fontSize: 11 }}>PRODUCTION_DOTENV</code> or the key in JSON —{' '}
-          <code style={{ fontSize: 11 }}>.github/workflows/deploy-s3-main.yml</code>.
-        </div>
-      )}
 
       <div className="short-ops-live">
         {!liveStatus && (

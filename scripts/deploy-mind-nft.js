@@ -58,9 +58,8 @@ async function main() {
   console.log("   📁 src/contract/MindMirrorNFT.js");
   console.log(`   testnet: { address: "${mindNFT.address}" }`);
   console.log("");
-  console.log("2. Setup IPFS keys in .env:");
-  console.log("   REACT_APP_PINATA_API_KEY=your_key");
-  console.log("   REACT_APP_PINATA_SECRET_KEY=your_secret");
+  console.log("2. Configure an authenticated backend IPFS upload service.");
+  console.log("   Never put Pinata credentials in REACT_APP_* variables or a browser bundle.");
   console.log("");
   console.log("3. Test minting at: http://localhost:3000/mind-mirror");
   console.log("");
@@ -73,4 +72,3 @@ main()
     console.error("❌ Deployment failed:", error);
     process.exit(1);
   });
-

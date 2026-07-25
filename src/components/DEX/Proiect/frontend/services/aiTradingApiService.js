@@ -20,7 +20,7 @@ import { handleApiError } from '../utils/helpers';
 async function apiRequest(endpoint, options = {}) {
   try {
     // ✅ FIX: Ensure API_BASE_URL is valid
-    const baseUrl = API_BASE_URL || 'https://backend-server-f82y.onrender.com/api';
+    const baseUrl = API_BASE_URL || 'https://backend-server-eu.onrender.com/api';
     if (!baseUrl || baseUrl.startsWith(':')) {
       console.error('❌ [aiTradingApiService] Invalid API_BASE_URL:', baseUrl);
       throw new Error('API_BASE_URL is not configured correctly');

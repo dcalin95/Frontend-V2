@@ -6,7 +6,7 @@ import { CONTRACT_MAP as CONTRACTS } from "../../contract/contractMap";
 import { toBitsInteger, formatBITS, calculateBonusBITSInteger, logBITSConversion, bitsToWei } from "../../utils/bitsUtils";
 import "./SolanaRewardsManager.css";
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-eu.onrender.com";
 
 const SolanaRewardsManager = ({ onBack }) => {
   const { signer, walletAddress } = useContext(WalletContext);

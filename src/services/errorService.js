@@ -1,7 +1,7 @@
 class ErrorService {
   constructor(config = {}) {
     this.config = {
-      apiUrl: process.env.REACT_APP_BACKEND_URL || 'https://backend-server-f82y.onrender.com',
+      apiUrl: process.env.REACT_APP_BACKEND_URL || 'https://backend-server-eu.onrender.com',
       enableLogging: process.env.NODE_ENV === 'production',
       enableAnalytics: process.env.NODE_ENV === 'production',
       ...config
@@ -135,4 +135,4 @@ class ErrorService {
 // Create default instance
 export const errorService = new ErrorService();
 
-export default errorService; 
+export default errorService;

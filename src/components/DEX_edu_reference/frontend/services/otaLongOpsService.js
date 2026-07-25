@@ -1,12 +1,13 @@
 /**
  * OTA Long Futures ops API client (staging / internal).
  * Mirror al otaShortOpsService.js, direcție LONG.
- * Auth: header X-Ota-Long-Ops-Secret din getOtaLongOpsSecret() (runtime-config.json sau REACT_APP_OTA_LONG_OPS_SECRET la build).
+ * Auth: authenticated wallet session (Bearer token or aligned DEX session cookie).
  */
 
 import { getApiBaseUrl, API_ENDPOINTS } from '../../config/apiEndpoints.js';
-import { loadRuntimeConfig, getOtaLongOpsSecret } from '../../config/runtimeConfig.js';
+import { loadRuntimeConfig } from '../../config/runtimeConfig.js';
 import { otaApiRequest } from '../utils/otaApiClient';
+import { getOtaWalletAuthToken } from '../utils/otaWalletSession';
 import {
   readOtaSignalsListCache,
   writeOtaSignalsListCache,
@@ -28,32 +29,17 @@ function throwLongOpsHttp(res, data) {
     /X-Ota-Long-Ops-Secret|Long-Ops-Secret|provide .*secret/i.test(rawMessage)
   ) {
     throw new Error(
-      'Long Ops authorization missing: add OTA_LONG_OPS_SECRET to runtime-config.json/S3 deploy env, or open the panel once with ?secret=...'
+      'LONG Ops requires an authenticated wallet session for this user.'
     );
   }
   throw new Error(body.error || `HTTP ${res.status}`);
 }
 
 function getLongOpsHeaders() {
-  const secret = getOtaLongOpsSecret();
   const headers = { 'Content-Type': 'application/json' };
-  if (secret) headers['X-Ota-Long-Ops-Secret'] = secret;
+  const token = typeof window !== 'undefined' ? getOtaWalletAuthToken() : null;
+  if (token) headers.Authorization = `Bearer ${token}`;
   return headers;
-}
-
-function withLongOpsSecretQuery(input, secret) {
-  const value = String(secret || '').trim();
-  if (!value || typeof input !== 'string') return input;
-  try {
-    const url = new URL(input, typeof window !== 'undefined' ? window.location.origin : undefined);
-    if (!url.searchParams.get('secret')) {
-      url.searchParams.set('secret', value);
-    }
-    return url.toString();
-  } catch (_) {
-    const separator = String(input).includes('?') ? '&' : '?';
-    return `${input}${separator}secret=${encodeURIComponent(value)}`;
-  }
 }
 
 function requireUserId(userId, caller = 'long ops') {
@@ -65,21 +51,10 @@ function requireUserId(userId, caller = 'long ops') {
 /** @param {RequestInfo|URL} input @param {RequestInit} [init] */
 async function longOpsFetch(input, init = {}) {
   await loadRuntimeConfig();
-  let baseH = getLongOpsHeaders();
-  if (!baseH['X-Ota-Long-Ops-Secret']) {
-    await loadRuntimeConfig({ force: true });
-    baseH = getLongOpsHeaders();
-  }
   const method = String(init.method || 'GET').toUpperCase();
-  const headers = { ...baseH, ...(init.headers || {}) };
-  const secret = headers['X-Ota-Long-Ops-Secret'] || '';
-  if (!secret) {
-    throw new Error(
-      'Long Ops authorization missing: add OTA_LONG_OPS_SECRET to runtime-config.json/S3 deploy env, or open the panel once with ?secret=...'
-    );
-  }
-  const requestInput = withLongOpsSecretQuery(input, secret);
-  const cacheKey = method === 'GET' ? `${String(requestInput)}|secret:${secret ? 'set' : 'none'}` : null;
+  const headers = { ...getLongOpsHeaders(), ...(init.headers || {}) };
+  const requestInput = input;
+  const cacheKey = method === 'GET' ? `${String(requestInput)}|auth:${headers.Authorization ? 'wallet' : 'cookie'}` : null;
   const now = Date.now();
   if (cacheKey) {
     const cached = longOpsGetCache.get(cacheKey);
@@ -110,9 +85,9 @@ async function longOpsFetch(input, init = {}) {
   return promise;
 }
 
-/** True dacă există secret în runtime-config, bundle (REACT_APP_*) sau fallback la secret SHORT. */
+/** Compatibility name: operational controls use authenticated wallet sessions. */
 export function isLongOpsConfigured() {
-  return getOtaLongOpsSecret().length > 0;
+  return true;
 }
 
 export async function getOpenLongs(userId) {

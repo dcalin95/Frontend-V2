@@ -249,7 +249,10 @@ export async function validateCachedOtaWalletSession(expectedWalletAddress = nul
           touchSessionProbeOkCache(tok, expectedWalletAddress);
           return true;
         }
-        const j = await r.json().catch(() => ({}));
+        const j =
+          typeof r?.json === 'function'
+            ? await r.json().catch(() => ({}))
+            : {};
         const wan = j.walletAddress != null ? String(j.walletAddress).toLowerCase() : '';
         const exp = String(expectedWalletAddress).toLowerCase();
         if (!wan || !exp) {

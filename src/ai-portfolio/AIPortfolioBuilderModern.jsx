@@ -5,7 +5,7 @@ import { GA4_HELPERS } from "../config/googleAnalytics";
 // import walletOptimizer, { useWalletOptimization } from "../utils/walletBrowserDetection"; // File removed
 import './ModernAIStyles.css';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-eu.onrender.com";
 const AI_COLORS = ["#00D4FF", "#7B68EE", "#FF6B9D", "#FFD700", "#00FF88", "#FF4757", "#3742FA"];
 
 export default function AIPortfolioBuilderModern() {

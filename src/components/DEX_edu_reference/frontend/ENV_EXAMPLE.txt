@@ -2,15 +2,15 @@
 # Copy this file to .env and fill in your values
 
 # ===== API Configuration =====
-# Backend-server is deployed on Render: https://backend-server-f82y.onrender.com
+# Backend-server is deployed on Render: https://backend-server-eu.onrender.com
 # Runtime config (runtime-config.json) takes precedence over these env vars
-REACT_APP_API_BASE_URL=https://backend-server-f82y.onrender.com/api
+REACT_APP_API_BASE_URL=https://backend-server-eu.onrender.com/api
 REACT_APP_ENVIRONMENT=production
 
 # ===== Backend Configuration =====
 # Backend URL pentru API requests
-# Backend-server is deployed on Render: https://backend-server-f82y.onrender.com
-REACT_APP_BACKEND_URL=https://backend-server-f82y.onrender.com
+# Backend-server is deployed on Render: https://backend-server-eu.onrender.com
+REACT_APP_BACKEND_URL=https://backend-server-eu.onrender.com
 
 # ===== Feature Flags =====
 REACT_APP_ENABLE_AI_TRADING=true
@@ -37,7 +37,7 @@ REACT_APP_USE_BITSWAP_WRAPPER=true
 
 # ===== OTA API (backend) – optional, pentru OTA pe SEI / micro-profit =====
 # Same as REACT_APP_BACKEND_URL or Render URL if OTA routes live there
-# REACT_APP_OTA_API_URL=https://backend-server-f82y.onrender.com
+# REACT_APP_OTA_API_URL=https://backend-server-eu.onrender.com
 
 # ===== SEI (CosmWasm) – for swap on /dex/sei/trade and /dex/sei/swap =====
 # These are FRONTEND vars (Render backend has its own SEI_*). Set in frontend .env or build env.

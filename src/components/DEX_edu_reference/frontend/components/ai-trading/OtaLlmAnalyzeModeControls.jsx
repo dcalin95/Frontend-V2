@@ -321,7 +321,7 @@ export default function OtaLlmAnalyzeModeControls({
     }
   }, []);
 
-  const refreshLlmBilling = useCallback(async () => {
+  const refreshLlmBilling = useCallback(async ({ force = false } = {}) => {
     const w = String(walletAddress || '').trim();
     if (!w) {
       setLlmBilling({ status: 'idle', billing: null, error: null });
@@ -332,6 +332,7 @@ export default function OtaLlmAnalyzeModeControls({
       const qs = new URLSearchParams({ userId: w });
       const data = await otaApiRequest(`${API_ENDPOINTS.OTA_LLM_BILLING_STATUS}?${qs.toString()}`, {
         method: 'GET',
+        dedupeInFlight: !force,
       });
       if (data.success === false || !data.billing || typeof data.billing !== 'object') {
         setLlmBilling({
@@ -360,7 +361,7 @@ export default function OtaLlmAnalyzeModeControls({
     }
   }, [walletAddress]);
 
-  const refreshLlmBillingHistory = useCallback(async () => {
+  const refreshLlmBillingHistory = useCallback(async ({ force = false } = {}) => {
     const w = String(walletAddress || '').trim();
     if (!w) {
       setLlmBillingHistory({ status: 'idle', events: [], error: null });
@@ -377,6 +378,7 @@ export default function OtaLlmAnalyzeModeControls({
       }
       const data = await otaApiRequest(`${API_ENDPOINTS.OTA_LLM_BILLING_HISTORY}?${params.toString()}`, {
         method: 'GET',
+        dedupeInFlight: !force,
       });
       if (data.success === false || !Array.isArray(data.events)) {
         setLlmBillingHistory({
@@ -452,8 +454,8 @@ export default function OtaLlmAnalyzeModeControls({
     setBillingRefreshStatus('loading');
     try {
       await Promise.all([
-        refreshLlmBilling(),
-        refreshLlmBillingHistory(),
+        refreshLlmBilling({ force: true }),
+        refreshLlmBillingHistory({ force: true }),
         refreshOpenAiBudget(),
         refreshAnthropicBudget(),
       ]);

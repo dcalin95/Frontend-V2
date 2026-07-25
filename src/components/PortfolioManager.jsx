@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import BrandLogo from './BrandLogo';
 import './PortfolioManager.css';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://backend-server-f82y.onrender.com';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://backend-server-eu.onrender.com';
 
 const DEFAULT_PROFILES = {
   moderate: {
@@ -325,4 +325,3 @@ const PortfolioManager = () => {
 };
 
 export default PortfolioManager;
-

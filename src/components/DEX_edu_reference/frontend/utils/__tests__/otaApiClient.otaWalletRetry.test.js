@@ -1,6 +1,11 @@
 /**
  * @jest-environment jsdom
  */
+jest.mock('../../../config/runtimeConfig.js', () => ({
+  ...jest.requireActual('../../../config/runtimeConfig.js'),
+  loadRuntimeConfig: jest.fn(async () => ({})),
+}));
+
 import * as apiEndpoints from '../../../config/apiEndpoints.js';
 import * as otaWalletSession from '../otaWalletSession';
 import { otaApiRequest, __resetOtaWalletClearNotifyThrottleForTests } from '../otaApiClient';
