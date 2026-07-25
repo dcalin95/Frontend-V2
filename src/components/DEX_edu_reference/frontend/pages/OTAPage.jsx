@@ -44,6 +44,7 @@ import { getApiBaseUrl } from '../../config/apiEndpoints.js';
 import { useOtaEvmWalletAuthSync } from '../hooks/useOtaEvmWalletAuthSync';
 import OtaBscAutoStatusBanner from '../components/ai-trading/OtaBscAutoStatusBanner';
 import OtaLlmAnalyzeModeControls from '../components/ai-trading/OtaLlmAnalyzeModeControls';
+import RiskGatingPanel from '../components/ai-trading/RiskGatingPanel';
 import { OtaAutoDashboardProvider, useOtaAutoDashboard } from '../context/OtaAutoDashboardContext.jsx';
 import '../styles/pages.css';
 import '../styles/components/dashboard-page.css';
@@ -573,6 +574,7 @@ const OTAPageInner = memo(() => {
               </div>
               <OTAVaultBalanceCard />
               <OTANetPnlCard walletAddress={walletAddress} />
+              <RiskGatingPanel userId={userId} />
               <OTAAccessControl />
               <OTASettingsPanel />
               <ErrorBoundary>

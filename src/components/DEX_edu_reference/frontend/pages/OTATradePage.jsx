@@ -29,6 +29,7 @@ import { loadOutcomesForAnalyze, buildAnalyzeOptions } from '../utils/otaOutcome
 import { useDEXSettings } from '../../hooks/DEX/useDEXSettings';
 import { toast } from 'react-toastify';
 import OtaBscAutoStatusBanner from '../components/ai-trading/OtaBscAutoStatusBanner';
+import RiskGatingPanel from '../components/ai-trading/RiskGatingPanel';
 import '../styles/pages.css';
 import '../styles/components/ota-trade-page.css';
 
@@ -245,6 +246,9 @@ const OTATradePage = memo(() => {
                 <Suspense fallback={<Skeleton variant="card" height={400} />}>
                   <AutoTradePanel />
                 </Suspense>
+              </ErrorBoundary>
+              <ErrorBoundary>
+                <RiskGatingPanel userId={userId} />
               </ErrorBoundary>
             </div>
           )}
