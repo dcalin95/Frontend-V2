@@ -1,66 +1,68 @@
-# BitSwapDEX AI (`bits-ai.io`)
+# BitSwapDEX AI frontend
 
-Aplicația principală BitSwapDEX AI combină experiența publică BITS (presale,
-staking, rewards și educație) cu portofoliu, wallet, DEX și sistemul OTA de
-analiză și operare trading.
+This repository contains the browser application served at
+[`https://bits-ai.io`](https://bits-ai.io).
 
-## Arhitectura curentă
+## Repository boundaries
 
-- Frontend local: `C:\Users\bits\Desktop\frontend`
-- Backend local: `C:\Users\bits\Desktop\backend-server`
-- Producție frontend: `https://bits-ai.io`
-- DEX/OTA: `https://bits-ai.io/#/dex-edu/*`
-- API producție: `https://backend-server-eu.onrender.com/api`
+- Frontend source: `C:\Users\bits\Desktop\frontend`
+- Backend source: `C:\Users\bits\Desktop\backend-server`
+- Frontend production: `https://bits-ai.io`
+- Backend production: `https://backend-server-eu.onrender.com`
+- Backend API root: `https://backend-server-eu.onrender.com/api`
 
-Frontendul este construit din branch-ul `main` prin GitHub Actions, publicat în
-bucketul AWS S3 `bits-ai.io` și servit prin CloudFront. Backendul Express este
-deployat separat pe Render din repository-ul `backend-server`.
+Backend code, Render secrets, database migrations, and private trading credentials
+do not belong in this repository. Unrelated applications must live beside this
+repository, never inside it.
 
-## Documentație canonică
+## Start here
 
-Începe cu:
+1. [`DOCUMENTATION_INDEX.md`](DOCUMENTATION_INDEX.md)
+2. [`docs/REPOSITORY_MAP.md`](docs/REPOSITORY_MAP.md)
+3. [`src/components/DEX_edu_reference/ota/docs/CURRENT_OPERATIONAL_TRUTH.md`](src/components/DEX_edu_reference/ota/docs/CURRENT_OPERATIONAL_TRUTH.md)
 
-1. `DOCUMENTATION_INDEX.md`
-2. `docs/DOCUMENTATION_AUDIT_2026-07-18.md`
-3. `src/components/DEX_edu_reference/ota/docs/CURRENT_OPERATIONAL_TRUTH.md`
-4. `src/components/DEX_edu_reference/ota/docs/CURRENT_PROJECT_STATUS_2026-07-18.md`
-5. backend: `docs/OTA_PRODUCTION_CONTRACT.md`
+Documents named `FINAL`, `COMPLETE`, old incident reports, and dated rollout
+notes are historical evidence unless the documentation index explicitly marks
+them as current.
 
-Documentele mai vechi sunt păstrate pentru trasabilitate. Afirmațiile istorice
-despre `frontend-edu`, `/dex/*`, un backend nedeployat sau hostname-ul
-`backend-server-f82y.onrender.com` nu sunt instrucțiuni operaționale curente.
+## Local development
 
-## Rulare locală
-
-Creează `.env.local` fără a-l comite:
+Create an untracked `.env.local`:
 
 ```env
 REACT_APP_BACKEND_URL=https://backend-server-eu.onrender.com
 ```
 
-Administrator passwords must never use a `REACT_APP_*` variable. The legacy
-admin panel accepts the password interactively and the backend validates it.
-
-Apoi:
+Then run:
 
 ```bash
-npm install
+npm ci --ignore-scripts
 npm start
 ```
 
-Verificări:
+Verification:
 
 ```bash
 npm test -- --watchAll=false --runInBand
 npm run build
 ```
 
-## Reguli de securitate
+## Deployment
 
-- Nu adăuga tokenuri, chei private, parole sau fișiere `.env` în Git.
-- Orice variabilă `REACT_APP_*` este publică în bundle-ul browserului.
-- Secretele LONG/SHORT OTA rămân exclusiv pe server; browserul folosește
-  sesiunea autentificată a walletului.
-- UI-ul nu acordă autoritate administrativă; backendul validează fiecare
-  operație privilegiată.
-- OTA nu garantează profit, randament sau acuratețe fixă.
+The production build is uploaded to the S3 bucket `bits-ai.io` and served
+through CloudFront. The supported manual command is:
+
+```bash
+npm run deploy:s3
+```
+
+Never upload source files, `.env` files, or backend configuration to S3.
+
+## Security and product truth
+
+- Every `REACT_APP_*` value is public in the browser bundle.
+- Render environment values are managed in Render. Documentation contains names
+  and contracts only, never secret values.
+- The frontend cannot grant administrative or trading authority; the backend
+  must authenticate and authorize every privileged request.
+- OTA cannot guarantee profit or eliminate trading losses.

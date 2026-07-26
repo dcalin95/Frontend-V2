@@ -1,128 +1,73 @@
-﻿# =====================
-# đź”§ General
-# =====================
+# Dependencies and generated builds
 node_modules/
-dist/
 build/
-.cache/
-.temp/
-logs/
-*.log
-.DS_Store
-*.sqlite
-*.sqlite3
-coverage/
-.env
-.env.*
-.vscode/
-.idea/
+dist/
 .next/
 out/
-Thumbs.db
+.cache/
+.temp/
+coverage/
+.nyc_output/
+.coverage/
+*.lcov
 
-# =====================
-# đźŚ Frontend (React/Next.js)
-# =====================
-frontend/.next/
-frontend/out/
-frontend/build/
-frontend/node_modules/
-frontend/.env
-frontend/.env.local
-frontend/.env.development.local
-frontend/.env.test.local
-frontend/.env.production.local
-
-# =====================
-# âš™ď¸Ź Backend
-# =====================
-backend/node_modules/
-backend/.env
-backend/.env.*.local
-backend/backend-server/.env
-backend/backend-server/node_modules/
-backend/telegram-bot-repo/.env
-backend/telegram-bot-repo/node_modules/
-
-# =====================
-# âš ď¸Ź Secrets & Environment Variables
-# =====================
+# Environment and secrets
+.env
+.env.*
 *.env
 *.env.*
 !.env.example
 !.env.template
-
-# Private keys and sensitive data
 **/private-keys/
 **/*private-key*
 **/*secret*
 **/*password*
+
+# Legitimate application filenames containing "password"
 !src/components/DEX_edu_reference/frontend/pages/OTAResetPasswordPage.jsx
 !src/components/DEX_edu_reference/frontend/styles/components/ota-reset-password-page.css
 !src/components/DEX_edu_reference/frontend/pages/OTAForgotPasswordPage.jsx
 !src/components/DEX_edu_reference/frontend/styles/components/ota-forgot-password-page.css
 
-# =====================
-# đź¤– Telegram Bot Specific
-# =====================
-backend/telegram-bot-repo/docs.md
-backend/telegram-bot-repo/logs/
-backend/telegram-bot-repo/*.log
-
-# =====================
-# âś… IDE & Development
-# =====================
-*.swp
-*.swo
-*~
-.pnp
-.pnp.js
-
-# =====================
-# đź“¦ Package Manager
-# =====================
+# Logs and local databases
+logs/
+*.log
+*.sqlite
+*.sqlite3
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.npm
+
+# Package-manager and editor state
+.npm/
+.pnp
+.pnp.js
 .yarn-integrity
 .yarn-error.log
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.aider*
 
-# =====================
-# đź§Ş Testing & Coverage
-# =====================
-.nyc_output
-.coverage/
-*.lcov
+# Deployment tooling
+.vercel/
+.netlify/
+.render/
 
-# =====================
-# đź“Š Deployment & Build
-# =====================
-.vercel
-.netlify
-.render
-
-# =====================
-# đź—‚ď¸Ź OS Generated
-# =====================
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-.Trash-*
-
-# =====================
-# đź”Ť Miscellaneous
-# =====================
+# Local archives and temporary deploy material
+.local-archive/
+FF.zip
 *.tgz
 *.tar.gz
 *.zip
 *.rar
-node_modules/
-.env
-build/
-dist/
-node_modules/
-.env
-build/
-dist/
-FF.zip
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.Trash-*

@@ -1,19 +1,30 @@
-# Documentation Index
+# Frontend documentation index
 
-## Start here
+**Status:** canonical
+**Updated:** 2026-07-26
 
-1. `docs/DOCUMENTATION_AUDIT_2026-07-25.md`
-2. `docs/DOCUMENTATION_AUDIT_2026-07-18.md` (historical baseline)
-3. `src/components/DEX_edu_reference/ota/docs/CURRENT_PROJECT_STATUS_2026-07-18.md`
-4. `src/components/DEX_edu_reference/ota/docs/CURRENT_OPERATIONAL_TRUTH.md`
-5. `src/components/DEX_edu_reference/__PROJECT_CONTEXT__/__CONTEXT_GATE__.md`
+## Read in this order
 
-## OTA documentation
+1. [`README.md`](README.md) — repository boundary and basic commands.
+2. [`docs/REPOSITORY_MAP.md`](docs/REPOSITORY_MAP.md) — frontend/backend,
+   deployment, and environment ownership.
+3. [`src/components/DEX_edu_reference/ota/docs/CURRENT_OPERATIONAL_TRUTH.md`](src/components/DEX_edu_reference/ota/docs/CURRENT_OPERATIONAL_TRUTH.md)
+   — current OTA product and safety rules.
+4. [`src/components/DEX_edu_reference/ota/docs/CURRENT_PROJECT_STATUS_2026-07-18.md`](src/components/DEX_edu_reference/ota/docs/CURRENT_PROJECT_STATUS_2026-07-18.md)
+   — latest committed frontend audit snapshot.
+5. Backend:
+   `C:\Users\bits\Desktop\backend-server\docs\DOCUMENTATION_INDEX.md`.
 
-- `src/components/DEX_edu_reference/ota/README.md`
-- `src/components/DEX_edu_reference/ota/docs/OTA_08_INDEX_DOCUMENTATIE.md`
-- Backend contract: `C:\Users\bits\Desktop\backend-server\docs\OTA_PRODUCTION_CONTRACT.md`
+## Current supporting evidence
 
-## Rule
+- [`docs/DOCUMENTATION_AUDIT_2026-07-18.md`](docs/DOCUMENTATION_AUDIT_2026-07-18.md)
+- [`docs/OTA_POSITION_RECONCILIATION_AUDIT_2026-07-18.md`](docs/OTA_POSITION_RECONCILIATION_AUDIT_2026-07-18.md)
 
-Use the newest dated audit and `CURRENT_OPERATIONAL_TRUTH.md` for current routes, repositories, deployments, and security decisions. Historical documents remain available for traceability only and must not be used as operational instructions.
+## Precedence
+
+Runtime code, tests, production health probes, and the newest canonical document
+take precedence over older reports. A document being present in the repository
+does not make it current configuration.
+
+Do not create new root-level status files. Put dated audits under `docs/` and
+link them here only while they remain operationally relevant.
