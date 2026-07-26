@@ -180,7 +180,7 @@ const RiskGatingPanel = ({
         <p>
           {savedLimits || riskMetrics?.enforced
             ? 'Status: persisted and enforced for new OTA positions. Protective closes remain available.'
-            : 'Status: defaults shown for editing; no per-wallet limits are enforced until you save them.'}
+            : 'Action required: these are only suggested defaults. Click Edit, choose your limits, then Save once to activate per-wallet protection for new OTA positions.'}
         </p>
       </div>
 
