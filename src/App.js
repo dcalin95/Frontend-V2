@@ -182,6 +182,7 @@ const AIPortfolioAnalyticsRefactored = lazyWithRetry(() => import("./ai-portfoli
 const PaperTradingPage = lazyWithRetry(() => import("./papertrade/PaperTradingPage"));
 const STXPaperTrade = lazyWithRetry(() => import("./papertrade/STXPaperTrade"));
 const TokenPaperTrade = lazyWithRetry(() => import("./papertrade/TokenPaperTrade"));
+const CryptoInvestigator = lazyWithRetry(() => import("./components/CryptoInvestigator"));
 
 const TermsPart1 = lazyWithRetry(() => import("./Legal/TermsPart1"));
 const TermsPart2 = lazyWithRetry(() => import("./Legal/TermsPart2"));
@@ -590,6 +591,7 @@ const App = () => {
                       <Route path="/paper-trading" element={<PaperTradingPage />} />
                       <Route path="/paper-trade/stx" element={<STXPaperTrade />} />
                       <Route path="/paper-trade/:symbol" element={<TokenPaperTrade />} />
+                      <Route path="/investigator" element={<CryptoInvestigator />} />
                       <Route path="/ai-assistant" element={<Navigate to="/presale" replace />} />
                       <Route path="/presale" element={isMobile ? <PresaleMobile /> : <PresalePage />} />
                       <Route path="/staking" element={isMobile ? <StakingPageMobile /> : <StakingPage />} />

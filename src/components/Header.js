@@ -26,11 +26,6 @@ const GLOBAL_THEME_OPTIONS = [
   { value: "gemini", label: "Gemini", color: "#8b5cf6" },
 ];
 
-// The investigator is a separate FastAPI service: keep its host configurable
-// and never expose provider credentials in this React bundle.
-const CRYPTO_INVESTIGATOR_URL =
-  process.env.REACT_APP_CRYPTO_INVESTIGATOR_URL || "https://investigator.bits-ai.io";
-
 const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu }) => {
   const { user, isAuthenticated, signOut: contextSignOut } = useAuth(); // Auth state
   const navigate = useNavigate();
@@ -360,14 +355,12 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
           </SmartTooltip>
 
           <SmartTooltip content={`Crypto Investigator\nAnalyse EVM addresses and download a preliminary risk report.`}>
-            <a
-              href={CRYPTO_INVESTIGATOR_URL}
+            <Link
+              to="/investigator"
               className="btn-investigator laser-sharp"
-              target="_blank"
-              rel="noopener noreferrer"
             >
               <i className="fas fa-magnifying-glass-chart"></i> Investigator
-            </a>
+            </Link>
           </SmartTooltip>
           
           {isAuthenticated ? (
@@ -502,15 +495,13 @@ const Header = ({ isMenuOpen: externalIsMenuOpen, toggleMenu: externalToggleMenu
             <Link to="/ai-hub" className="mobile-btn-ai-hub laser-sharp" onClick={closeMenu} style={{background: 'linear-gradient(135deg, #00FFA3 0%, #DC1FFF 100%)', color: '#000'}}>
               <i className="fas fa-brain"></i> <span className="mobile-text">AI Hub</span>
             </Link>
-            <a
-              href={CRYPTO_INVESTIGATOR_URL}
+            <Link
+              to="/investigator"
               className="mobile-btn-investigator laser-sharp"
-              target="_blank"
-              rel="noopener noreferrer"
               onClick={closeMenu}
             >
               <i className="fas fa-magnifying-glass-chart"></i> <span className="mobile-text">Investigator</span>
-            </a>
+            </Link>
             {isAuthenticated ? (
               <button className="mobile-btn-logout" onClick={() => { closeMenu(); handleSignOut(); }} style={{background: 'rgba(255, 50, 50, 0.2)', border: '1px solid rgba(255, 50, 50, 0.5)'}}>
                 <i className="fas fa-sign-out-alt"></i> <span className="mobile-text">Logout</span>
