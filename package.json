@@ -3,6 +3,10 @@
   "homepage": "/",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.19 <25",
+    "npm": ">=9"
+  },
   "dependencies": {
     "@base-org/account": "^2.5.0",
     "@coinbase/wallet-sdk": "^4.3.7",

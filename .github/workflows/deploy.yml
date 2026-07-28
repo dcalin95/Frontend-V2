@@ -24,7 +24,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          # Current wallet, Web3 and Workbox dependencies require Node 20+.
+          # Keep the production build on the same supported runtime as local CI.
+          node-version: '24'
           cache: 'npm'
 
       - name: Write .env from PRODUCTION_DOTENV
@@ -39,7 +41,7 @@ jobs:
           fi
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm ci --legacy-peer-deps --no-audit --no-fund
 
       - name: Run build
         env:
