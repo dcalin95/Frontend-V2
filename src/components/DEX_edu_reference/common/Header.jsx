@@ -13,7 +13,7 @@
 
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { Wallet, Settings, Coins, Loader2, Palette, Send, X, BookOpen, LogOut, Activity, Layers, TrendingUp, User, Mail, Fingerprint, ChevronDown, Copy, Check, Menu } from 'lucide-react';
+import { Wallet, Settings, Coins, Loader2, Palette, Send, X, BookOpen, LogOut, Activity, Layers, TrendingUp, User, Mail, Fingerprint, ChevronDown, Copy, Check, Menu, Search } from 'lucide-react';
 import PersonalAccountHeaderBadge from '../frontend/components/ai-trading/PersonalAccountHeaderBadge';
 import ChainToggle from './ChainToggle';
 import { useDexAuth } from '../frontend/context/DexAuthContext';
@@ -747,6 +747,15 @@ const Header = ({
       </div>
       
       <div className="ai-trading-header-right">
+        <Link
+          to="/investigator"
+          className="dex-header-investigator-link"
+          aria-label="Open Crypto Investigator"
+          title="Crypto Investigator — analyze an EVM address"
+        >
+          <Search size={15} aria-hidden />
+          <span>Investigator</span>
+        </Link>
         {/* OTA tools slot (Signals Only, BNB, Analyze): portal from OTAPage, next to Social. */}
         <div id="dex-header-ota-tools-slot" className="dex-header-ota-tools-slot" />
         {/* Social / Docs: compact top-right links. */}
@@ -1004,4 +1013,3 @@ const Header = ({
 };
 
 export default Header;
-
