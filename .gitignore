@@ -2,6 +2,10 @@
 node_modules/
 build/
 dist/
+.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
 .next/
 out/
 .cache/

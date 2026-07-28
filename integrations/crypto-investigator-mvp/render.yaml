@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: crypto-investigator
+    runtime: docker
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      - key: ETHERSCAN_API_KEY
+        sync: false
+      - key: DEFAULT_CHAIN_ID
+        value: "1"
+      - key: MAX_TRANSFERS
+        value: "250"
