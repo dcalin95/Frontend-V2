@@ -397,6 +397,13 @@
     box-shadow: 0 0 12px rgba(153, 69, 255, 0.5) !important;
     text-shadow: 0 0 8px rgba(0, 255, 163, 0.8) !important;
   }
+
+  .mobile-nav-menu a.mobile-btn-investigator {
+    border-color: #38bdf8 !important;
+    color: #7dd3fc !important;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.45) !important;
+    text-shadow: 0 0 8px rgba(125, 211, 252, 0.75) !important;
+  }
   
   /* Neural - Blue/Purple */
   .mobile-nav-menu a.mobile-btn-neural {

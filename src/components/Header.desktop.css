@@ -284,6 +284,19 @@ body[class*="dex-theme-"] .global-site-theme-switcher .ai-trading-theme-popover 
   background-image: none !important;
 }
 
+.navigation .btn-investigator {
+  color: #7dd3fc !important;
+  border-color: #38bdf8 !important;
+  text-shadow: 0 0 14px rgba(56, 189, 248, 0.45) !important;
+}
+
+.navigation .btn-investigator:hover {
+  color: #e0f2fe !important;
+  -webkit-text-fill-color: #e0f2fe !important;
+  background-image: none !important;
+  border-color: #7dd3fc !important;
+}
+
 .navigation .btn-login:hover {
   color: #00FFA3 !important;
   -webkit-text-fill-color: #00FFA3 !important;
