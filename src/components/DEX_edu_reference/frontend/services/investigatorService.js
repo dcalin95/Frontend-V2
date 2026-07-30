@@ -721,6 +721,15 @@ export async function runPersistedInvestigationCase(caseId, { signal } = {}) {
   });
 }
 
+export async function createInvestigationLossClaim(caseId, claim, { signal } = {}) {
+  return requestJson(buildBackendUrl(`/api/investigator/cases/${encodeURIComponent(caseId)}/loss-claims`), {
+    method: 'POST',
+    body: claim,
+    signal,
+    timeoutMs: 20_000,
+  });
+}
+
 export async function fetchTransactionInvestigation({ txHash, chainId, signal }) {
   const chain = resolveChain(chainId);
   if (!chain) throw new Error('Unsupported chain selected.');

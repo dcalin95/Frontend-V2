@@ -39,6 +39,7 @@ import {
   upsertInvestigationHistory,
   buildExplorerUrl,
   createInvestigationCase,
+  createInvestigationLossClaim,
 } from '../../services/investigatorService';
 import { getBackendUrl } from '../../../../../config/apiEndpoints';
 import { useWallet } from '../../hooks/useWallet';
@@ -299,6 +300,7 @@ export default function InvestigatorWorkspace({
   const initialDraft = useMemo(() => loadInvestigatorDraft(scopeKey), [scopeKey]);
   const [caseTitle, setCaseTitle] = useState(initialDraft?.caseTitle || '');
   const [query, setQuery] = useState(initialDraft?.query || '');
+  const [subjectType, setSubjectType] = useState(initialDraft?.subjectType || 'auto');
   const [chainId, setChainId] = useState(initialDraft?.chainId || initialChainId || DEFAULT_CHAIN_ID);
   const [objective, setObjective] = useState(initialDraft?.objective || '');
   const [depth, setDepth] = useState(initialDraft?.depth || DEFAULT_DEPTH);
@@ -318,6 +320,21 @@ export default function InvestigatorWorkspace({
   const [assistantLoading, setAssistantLoading] = useState(false);
   const [assistantAnswer, setAssistantAnswer] = useState(null);
   const [assistantError, setAssistantError] = useState('');
+  const [lossClaim, setLossClaim] = useState({
+    reportedAmount: '',
+    reportedCurrency: 'EUR',
+    victimWallet: '',
+    purchaseTransactions: '',
+    saleAttempts: '',
+    tokenAmount: '',
+    acquisitionCost: '',
+    recoveredAmount: '',
+    remainingTokenBalance: '',
+    investigatorStatement: '',
+  });
+  const [lossClaims, setLossClaims] = useState([]);
+  const [lossClaimSaving, setLossClaimSaving] = useState(false);
+  const [lossClaimError, setLossClaimError] = useState('');
   const abortRef = useRef(null);
   const firstRenderRef = useRef(true);
 
@@ -327,17 +344,19 @@ export default function InvestigatorWorkspace({
   const timeline = activeInvestigation?.result?.timeline || [];
   const flow = activeInvestigation?.result?.flow || [];
   const overview = activeInvestigation?.result?.overview || null;
+  const tokenForensics = activeInvestigation?.result?.tokenForensics || null;
 
   useEffect(() => {
     saveInvestigatorDraft(scopeKey, {
       caseTitle,
       query,
+      subjectType,
       chainId,
       objective,
       depth,
       notes,
     });
-  }, [scopeKey, caseTitle, query, chainId, objective, depth, notes]);
+  }, [scopeKey, caseTitle, query, subjectType, chainId, objective, depth, notes]);
 
   useEffect(() => {
     if (!firstRenderRef.current) return;
@@ -466,6 +485,7 @@ export default function InvestigatorWorkspace({
         subjects: subjectInputs.map((identifier, index) => ({
           identifier,
           chainId,
+          ...(index === 0 && subjectType !== 'auto' ? { subjectType } : {}),
           role: index === 0 ? 'primary_subject' : 'unknown',
         })),
         scope: { depth, subjectCount: subjectInputs.length },
@@ -493,6 +513,10 @@ export default function InvestigatorWorkspace({
         serverCaseId: persistedCase?.investigation?.id || null,
         serverAnalysis: persistedRun || null,
         subjects: persistedCase?.investigation?.subjects || [],
+        result: {
+          ...investigation.result,
+          tokenForensics: persistedRun?.tokenForensics || null,
+        },
         limitations: [
           ...(investigation.limitations || []),
           ...(subjectInputs.length > 1
@@ -529,7 +553,48 @@ export default function InvestigatorWorkspace({
       setLoading(false);
       abortRef.current = null;
     }
-  }, [caseTitle, chainId, depth, loading, notes, objective, persistCurrent, query, scopeKey]);
+  }, [caseTitle, chainId, depth, loading, notes, objective, persistCurrent, query, scopeKey, subjectType]);
+
+  const updateLossClaim = useCallback((field, value) => {
+    setLossClaim((currentClaim) => ({ ...currentClaim, [field]: value }));
+  }, []);
+
+  const saveLossClaim = useCallback(async () => {
+    if (!activeInvestigation?.serverCaseId) {
+      setLossClaimError('Run and persist an investigation before adding a loss claim.');
+      return;
+    }
+    setLossClaimSaving(true);
+    setLossClaimError('');
+    try {
+      const parseHashes = (value) => String(value || '')
+        .split(/\r?\n|,/)
+        .map((item) => item.trim())
+        .filter(Boolean);
+      const response = await createInvestigationLossClaim(activeInvestigation.serverCaseId, {
+        ...lossClaim,
+        purchaseTransactions: parseHashes(lossClaim.purchaseTransactions),
+        saleAttempts: parseHashes(lossClaim.saleAttempts),
+      });
+      setLossClaims((currentClaims) => [response.lossClaim, ...currentClaims]);
+      setLossClaim((currentClaim) => ({
+        ...currentClaim,
+        reportedAmount: '',
+        victimWallet: '',
+        purchaseTransactions: '',
+        saleAttempts: '',
+        tokenAmount: '',
+        acquisitionCost: '',
+        recoveredAmount: '',
+        remainingTokenBalance: '',
+        investigatorStatement: '',
+      }));
+    } catch (claimError) {
+      setLossClaimError(claimError?.message || 'Loss claim could not be saved.');
+    } finally {
+      setLossClaimSaving(false);
+    }
+  }, [activeInvestigation, lossClaim]);
 
   const handleCancel = useCallback(() => {
     if (abortRef.current) abortRef.current.abort();
@@ -833,6 +898,14 @@ export default function InvestigatorWorkspace({
                 ))}
               </select>
             </label>
+            <label>
+              <span>Primary subject type</span>
+              <select value={subjectType} onChange={(e) => setSubjectType(e.target.value)} aria-label="Primary subject type">
+                <option value="auto">Auto / wallet</option>
+                <option value="token">Token contract</option>
+                <option value="contract">Contract</option>
+              </select>
+            </label>
             <label className="investigator-form__field investigator-form__field--wide">
               <span>Addresses or transaction hashes</span>
               <textarea
@@ -1001,6 +1074,111 @@ export default function InvestigatorWorkspace({
           </Panel>
         )}
 
+        {tokenForensics ? (
+          <>
+            <Panel
+              id="investigator-token-lifecycle"
+              title="Token lifecycle reconstruction"
+              subtitle="Provider-backed lifecycle stages. A gap means the stage was not established, not that the event did not occur."
+              actions={<Pill tone="warn">{safeLabel(tokenForensics.status)}</Pill>}
+            >
+              <div className="investigator-forensic-stage-grid">
+                {Object.entries(tokenForensics.lifecycle || {}).map(([stage, details]) => (
+                  <article key={stage} className="investigator-forensic-stage">
+                    <div>
+                      <strong>{formatRisk(stage)}</strong>
+                      <Pill tone={details?.status === 'observed' ? 'ok' : details?.status === 'partial' ? 'warn' : 'muted'}>
+                        {safeLabel(details?.status)}
+                      </Pill>
+                    </div>
+                    <dl>
+                      {Object.entries(details || {})
+                        .filter(([key, value]) => key !== 'status' && value != null && !Array.isArray(value))
+                        .slice(0, 5)
+                        .map(([key, value]) => (
+                          <div key={key}><dt>{formatRisk(key)}</dt><dd>{typeof value === 'boolean' ? String(value) : shortHash(value)}</dd></div>
+                        ))}
+                    </dl>
+                  </article>
+                ))}
+              </div>
+            </Panel>
+
+            <Panel
+              id="investigator-automatic-views"
+              title="Automatic token investigation views"
+              subtitle="All required views are created immediately, including unavailable stages and their reason."
+              actions={<Pill tone="muted">{tokenForensics.automaticViews?.length || 0} views</Pill>}
+            >
+              <div className="investigator-view-grid">
+                {(tokenForensics.automaticViews || []).map((view) => (
+                  <article key={view.id} className={`investigator-view-card investigator-view-card--${view.status}`}>
+                    <div>
+                      <strong>{view.title}</strong>
+                      <Pill tone={view.status === 'available' ? 'ok' : 'warn'}>{view.status}</Pill>
+                    </div>
+                    <p>{view.note}</p>
+                    <small>{view.evidenceCount || 0} evidence references</small>
+                  </article>
+                ))}
+              </div>
+            </Panel>
+
+            <div className="investigator-duo">
+              <Panel title="Contract creator and control map" subtitle="Relationships are labelled by evidence strength, never by assumed identity.">
+                <div className="investigator-table-wrap">
+                  <table className="investigator-table">
+                    <thead><tr><th>Entity</th><th>Relationship</th><th>Confidence</th><th>Evidence</th></tr></thead>
+                    <tbody>
+                      {(tokenForensics.controlMap || []).length ? tokenForensics.controlMap.map((relation) => (
+                        <tr key={`${relation.entity}-${relation.relationshipType}`}>
+                          <td title={relation.entity}>{shortHash(relation.entity)}</td>
+                          <td>{formatRisk(relation.relationshipType)}</td>
+                          <td>{relation.confidence}</td>
+                          <td>{(relation.evidenceIds || []).join(', ') || '—'}</td>
+                        </tr>
+                      )) : <tr><td colSpan="4" className="investigator-table__empty">No control relationship established.</td></tr>}
+                    </tbody>
+                  </table>
+                </div>
+              </Panel>
+
+              <Panel title="Missing evidence and investigation gaps" subtitle="Unsupported provider capabilities and stop conditions remain visible.">
+                <ul className="investigator-gap-list">
+                  {(tokenForensics.gaps || []).map((gap) => <li key={gap}><AlertTriangle size={15} />{gap}</li>)}
+                </ul>
+              </Panel>
+            </div>
+
+            <Panel
+              id="investigator-proceeds"
+              title="Proceeds Ledger"
+              subtitle="Only classified extraction events are included. Ordinary transfers never enter extracted-value totals."
+              actions={<Pill tone={(tokenForensics.proceedsLedger || []).length ? 'warn' : 'muted'}>{tokenForensics.proceedsLedger?.length || 0} classified events</Pill>}
+            >
+              <div className="investigator-table-wrap">
+                <table className="investigator-table">
+                  <thead>
+                    <tr><th>Event</th><th>Source</th><th>Destination</th><th>Asset</th><th>Amount</th><th>Mechanism</th><th>Trace status</th><th>Evidence</th></tr>
+                  </thead>
+                  <tbody>
+                    {(tokenForensics.proceedsLedger || []).length ? tokenForensics.proceedsLedger.map((row) => (
+                      <tr key={row.id || `${row.transactionHash}-${row.eventType}`}>
+                        <td>{safeLabel(row.eventType)}</td><td>{shortHash(row.sourceWallet)}</td><td>{shortHash(row.destinationWallet)}</td>
+                        <td>{safeLabel(row.asset)}</td><td>{safeLabel(row.normalizedAmount || row.rawAmount)}</td>
+                        <td>{formatRisk(row.extractionMechanism)}</td><td>{safeLabel(row.traceStatus)}</td>
+                        <td>{(row.evidenceIds || []).join(', ') || '—'}</td>
+                      </tr>
+                    )) : (
+                      <tr><td colSpan="8" className="investigator-table__empty">No extraction event has been classified from the available evidence.</td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </Panel>
+          </>
+        ) : null}
+
         <div className="investigator-duo">
           <Panel
             id="investigator-findings"
@@ -1123,6 +1301,39 @@ export default function InvestigatorWorkspace({
             </div>
           </Panel>
         </div>
+
+        <Panel
+          id="investigator-loss-claims"
+          title="Reported victim losses"
+          subtitle="Saved as Investigator-provided loss claim until transaction evidence supports or contradicts it."
+          actions={<Pill tone="manual">{lossClaims.length} claims</Pill>}
+        >
+          <div className="investigator-loss-form">
+            <label><span>Reported amount</span><input type="number" min="0" step="any" value={lossClaim.reportedAmount} onChange={(e) => updateLossClaim('reportedAmount', e.target.value)} /></label>
+            <label><span>Currency</span><input maxLength={12} value={lossClaim.reportedCurrency} onChange={(e) => updateLossClaim('reportedCurrency', e.target.value.toUpperCase())} /></label>
+            <label><span>Victim wallet</span><input placeholder="Victim wallet 0x..." value={lossClaim.victimWallet} onChange={(e) => updateLossClaim('victimWallet', e.target.value)} /></label>
+            <label><span>Token amount acquired</span><input value={lossClaim.tokenAmount} onChange={(e) => updateLossClaim('tokenAmount', e.target.value)} /></label>
+            <label><span>Acquisition cost</span><input type="number" min="0" step="any" value={lossClaim.acquisitionCost} onChange={(e) => updateLossClaim('acquisitionCost', e.target.value)} /></label>
+            <label><span>Recovered amount</span><input type="number" min="0" step="any" value={lossClaim.recoveredAmount} onChange={(e) => updateLossClaim('recoveredAmount', e.target.value)} /></label>
+            <label className="investigator-loss-form__wide"><span>Purchase transaction hashes</span><textarea rows={2} value={lossClaim.purchaseTransactions} onChange={(e) => updateLossClaim('purchaseTransactions', e.target.value)} /></label>
+            <label className="investigator-loss-form__wide"><span>Sale attempts</span><textarea rows={2} value={lossClaim.saleAttempts} onChange={(e) => updateLossClaim('saleAttempts', e.target.value)} /></label>
+            <label className="investigator-loss-form__wide"><span>Investigator statement</span><textarea rows={3} value={lossClaim.investigatorStatement} onChange={(e) => updateLossClaim('investigatorStatement', e.target.value)} /></label>
+          </div>
+          {lossClaimError ? <div className="investigator-alert investigator-alert--danger" role="alert"><AlertTriangle size={16} />{lossClaimError}</div> : null}
+          <button type="button" className="investigator-btn investigator-btn--primary" onClick={saveLossClaim} disabled={lossClaimSaving || !lossClaim.reportedAmount}>
+            {lossClaimSaving ? <Loader2 size={16} className="is-spinning" /> : <Save size={16} />}
+            Save investigator-provided claim
+          </button>
+          <div className="investigator-claim-list">
+            {lossClaims.map((claim) => (
+              <article key={claim.id}>
+                <div><strong>{claim.reported_amount} {claim.reported_currency}</strong><Pill tone="manual">Investigator-provided</Pill></div>
+                <p>{claim.investigator_statement || 'No statement supplied.'}</p>
+                <small>{claim.victim_wallet ? shortHash(claim.victim_wallet) : 'No victim wallet'} · {formatDateTime(claim.created_at)}</small>
+              </article>
+            ))}
+          </div>
+        </Panel>
 
         <div className="investigator-duo investigator-duo--support">
           <Panel id="investigator-notebook" title="Notebook" subtitle="Manual notes are clearly marked as investigator-provided.">

@@ -9,6 +9,7 @@ const mockSaveInvestigationRecord = jest.fn();
 const mockUpsertInvestigationHistory = jest.fn();
 const mockClearInvestigatorDraftState = jest.fn();
 const mockCreateInvestigationCase = jest.fn();
+const mockCreateInvestigationLossClaim = jest.fn();
 const mockRunPersistedInvestigationCase = jest.fn();
 const mockSaveInvestigatorDraft = jest.fn();
 const mockStoreInvestigatorDraftState = jest.fn();
@@ -39,6 +40,7 @@ jest.mock('../../../services/investigatorService', () => ({
   buildExplorerUrl: jest.fn(),
   clearInvestigatorDraftState: (...args) => mockClearInvestigatorDraftState(...args),
   createInvestigationCase: (...args) => mockCreateInvestigationCase(...args),
+  createInvestigationLossClaim: (...args) => mockCreateInvestigationLossClaim(...args),
   deleteInvestigationRecord: jest.fn(),
   exportInvestigationJson: (...args) => mockExportInvestigationJson(...args),
   fetchAddressInvestigation: jest.fn(),
@@ -67,6 +69,15 @@ describe('InvestigatorWorkspace', () => {
     mockRunPersistedInvestigationCase.mockReset().mockResolvedValue({
       evidenceCount: 1,
       analysisVersion: 'investigator-1',
+    });
+    mockCreateInvestigationLossClaim.mockReset().mockResolvedValue({
+      lossClaim: {
+        id: 'claim-1',
+        reported_amount: 5000,
+        reported_currency: 'EUR',
+        claim_status: 'investigator_provided',
+        created_at: '2026-07-30T00:00:00.000Z',
+      },
     });
     mockRunInvestigation.mockReset().mockResolvedValue({
       id: 'inv-1',
@@ -203,5 +214,47 @@ describe('InvestigatorWorkspace', () => {
 
     await waitFor(() => expect(mockPostChat).toHaveBeenCalledTimes(1));
     expect(await screen.findByText('Grounded answer.')).toBeInTheDocument();
+  });
+
+  it('runs an explicit token case and renders forensic gaps without fabricated proceeds', async () => {
+    mockRunPersistedInvestigationCase.mockResolvedValueOnce({
+      tokenForensics: {
+        status: 'partial',
+        lifecycle: {
+          deployment: {
+            status: 'observed',
+            deployer: '0x2222222222222222222222222222222222222222',
+          },
+          extraction: { status: 'gap', confirmedEvents: 0 },
+        },
+        controlMap: [{
+          entity: '0x2222222222222222222222222222222222222222',
+          relationshipType: 'confirmed_contract_deployer',
+          confidence: 'high',
+          evidenceIds: ['EV-DEPLOYMENT'],
+        }],
+        proceedsLedger: [],
+        automaticViews: [
+          { id: 'control-map', title: 'Contract Creator and Control Map', status: 'available', evidenceCount: 1, note: 'Confirmed deployment.' },
+          { id: 'proceeds-ledger', title: 'Proceeds Ledger', status: 'gap', evidenceCount: 0, note: 'No classified extraction.' },
+        ],
+        gaps: ['DEX pair decoding is not enabled.'],
+      },
+    });
+
+    render(<InvestigatorWorkspace mode="embedded" scopeKey="test-scope" />);
+    fireEvent.change(screen.getByLabelText('Primary subject type'), { target: { value: 'token' } });
+    fireEvent.change(screen.getByPlaceholderText('0x...'), {
+      target: { value: '0x1111111111111111111111111111111111111111' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /start investigation/i }));
+
+    await waitFor(() => expect(mockCreateInvestigationCase).toHaveBeenCalledWith(expect.objectContaining({
+      subjects: [expect.objectContaining({ subjectType: 'token' })],
+    })));
+    expect(await screen.findByText('Token lifecycle reconstruction')).toBeInTheDocument();
+    expect(screen.getAllByText('Proceeds Ledger').length).toBeGreaterThan(0);
+    expect(screen.getByText('No extraction event has been classified from the available evidence.')).toBeInTheDocument();
+    expect(screen.getByText('DEX pair decoding is not enabled.')).toBeInTheDocument();
   });
 });

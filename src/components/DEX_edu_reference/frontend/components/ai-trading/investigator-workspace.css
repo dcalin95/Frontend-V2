@@ -1212,6 +1212,123 @@
   text-align: right;
 }
 
+.investigator-forensic-stage-grid,
+.investigator-view-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.investigator-forensic-stage,
+.investigator-view-card,
+.investigator-claim-list article {
+  padding: 15px;
+  border: 1px solid rgba(94, 133, 184, 0.2);
+  border-radius: 14px;
+  background: rgba(5, 11, 21, 0.82);
+}
+
+.investigator-forensic-stage > div,
+.investigator-view-card > div,
+.investigator-claim-list article > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.investigator-forensic-stage dl {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0 0;
+}
+
+.investigator-forensic-stage dl div {
+  display: grid;
+  grid-template-columns: minmax(100px, 0.7fr) minmax(0, 1.3fr);
+  gap: 10px;
+}
+
+.investigator-forensic-stage dt,
+.investigator-view-card p,
+.investigator-view-card small,
+.investigator-claim-list p,
+.investigator-claim-list small {
+  color: var(--inv-muted);
+}
+
+.investigator-forensic-stage dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+.investigator-view-card--available {
+  border-color: rgba(39, 215, 151, 0.28);
+}
+
+.investigator-view-card--gap {
+  border-color: rgba(255, 184, 77, 0.25);
+}
+
+.investigator-gap-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.investigator-gap-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 11px 12px;
+  border-radius: 11px;
+  background: rgba(255, 184, 77, 0.07);
+  color: var(--inv-muted);
+}
+
+.investigator-gap-list svg {
+  flex: 0 0 auto;
+  color: #ffbd59;
+}
+
+.investigator-loss-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.investigator-loss-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--inv-muted);
+  font-size: 0.82rem;
+}
+
+.investigator-loss-form__wide {
+  grid-column: span 3;
+}
+
+.investigator-loss-form input,
+.investigator-loss-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(94, 133, 184, 0.36);
+  border-radius: 11px;
+  background: rgba(3, 9, 18, 0.92);
+  color: var(--inv-text);
+  padding: 11px 12px;
+}
+
+.investigator-claim-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
 @media (max-width: 1180px) {
   .investigator-form,
   .investigator-overview {
@@ -1224,6 +1341,16 @@
   .investigator-overview__deck,
   .investigator-duo {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .investigator-forensic-stage-grid,
+  .investigator-view-grid,
+  .investigator-loss-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .investigator-loss-form__wide {
+    grid-column: span 2;
   }
 }
 
@@ -1261,8 +1388,15 @@
   .investigator-hero__deck,
   .investigator-hero__signals,
   .investigator-duo,
+  .investigator-forensic-stage-grid,
+  .investigator-view-grid,
+  .investigator-loss-form,
   .investigator-finding__body dl {
     grid-template-columns: 1fr;
+  }
+
+  .investigator-loss-form__wide {
+    grid-column: auto;
   }
 
   .investigator-hero__signal-card--lead {
