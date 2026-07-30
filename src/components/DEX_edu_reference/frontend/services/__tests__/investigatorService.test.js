@@ -1,4 +1,5 @@
 import {
+  assertNonSyntheticInvestigatorPayload,
   deleteInvestigationRecord,
   exportInvestigationJson,
   loadInvestigationRecord,
@@ -9,6 +10,29 @@ import {
   supportedChainsList,
   upsertInvestigationHistory,
 } from '../investigatorService';
+
+describe('investigatorService provider integrity', () => {
+  it('rejects synthetic backend payloads and identifies the missing credential', () => {
+    expect(() => assertNonSyntheticInvestigatorPayload({
+      demoMode: true,
+      transfers: [{ txHash: 'synthetic' }],
+    })).toThrow('Configure ETHERSCAN_API_KEY');
+
+    try {
+      assertNonSyntheticInvestigatorPayload({ demoMode: true });
+    } catch (error) {
+      expect(error).toMatchObject({
+        code: 'INVESTIGATOR_PROVIDER_NOT_CONFIGURED',
+        missingEnvironmentVariable: 'ETHERSCAN_API_KEY',
+      });
+    }
+  });
+
+  it('accepts live and empty provider payloads', () => {
+    expect(assertNonSyntheticInvestigatorPayload({ demoMode: false, transfers: [] }))
+      .toEqual({ demoMode: false, transfers: [] });
+  });
+});
 
 describe('investigatorService persistence helpers', () => {
   beforeEach(() => {

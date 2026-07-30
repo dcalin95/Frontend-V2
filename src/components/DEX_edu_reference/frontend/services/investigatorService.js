@@ -106,6 +106,14 @@ function buildBackendUrl(path) {
   return `${base}${path}`;
 }
 
+export function assertNonSyntheticInvestigatorPayload(payload) {
+  if (!payload?.demoMode) return payload;
+  const error = new Error('Live blockchain data is unavailable. Configure ETHERSCAN_API_KEY on the backend.');
+  error.code = 'INVESTIGATOR_PROVIDER_NOT_CONFIGURED';
+  error.missingEnvironmentVariable = 'ETHERSCAN_API_KEY';
+  throw error;
+}
+
 async function requestJson(url, { signal, method = 'GET', body = undefined, timeoutMs = 30_000 } = {}) {
   await loadRuntimeConfig();
   const controller = new AbortController();
@@ -568,6 +576,7 @@ export async function fetchAddressInvestigation({ address, chainId, signal }) {
       : Promise.resolve(null),
     getWorkingProvider(chainId),
   ]);
+  assertNonSyntheticInvestigatorPayload(backendResult);
 
   const providerSnapshot = await fetchAddressChainSnapshot(normalized, chainId, provider, signal).catch((error) => ({
     error: error.message,
@@ -663,14 +672,13 @@ export async function fetchAddressInvestigation({ address, chainId, signal }) {
         backend: backendResult,
       }),
     },
-    partial: Boolean(backendResult?.demoMode || backendResult?.error || providerSnapshot?.error || bscWalletResult?.error),
+    partial: Boolean(backendResult?.error || providerSnapshot?.error || bscWalletResult?.error),
     limitations: [
-      backendResult?.demoMode ? 'Backend investigator route is running in demo mode because Etherscan credentials are unavailable.' : null,
       providerSnapshot?.error ? `Provider snapshot unavailable: ${providerSnapshot.error}` : null,
       chainId === 56 && !bscWalletResult ? 'BSC wallet intelligence not requested.' : null,
     ].filter(Boolean),
     sources: {
-      backend: backendResult?.demoMode ? 'demo' : 'backend',
+      backend: 'backend',
       provider: providerSnapshot?.source || 'provider',
       walletIntel: chainId === 56 ? 'bsc-large-transfers' : null,
     },
@@ -678,6 +686,39 @@ export async function fetchAddressInvestigation({ address, chainId, signal }) {
   };
 
   return result;
+}
+
+export async function createInvestigationCase({ title, objective, subjects, scope = {}, signal }) {
+  return requestJson(buildBackendUrl('/api/investigator/cases'), {
+    method: 'POST',
+    body: { title, objective, subjects, scope },
+    signal,
+    timeoutMs: 20_000,
+  });
+}
+
+export async function listInvestigationCases({ limit = 25, offset = 0, signal } = {}) {
+  const params = new URLSearchParams({ limit: String(limit), offset: String(offset) });
+  return requestJson(buildBackendUrl(`/api/investigator/cases?${params}`), {
+    signal,
+    timeoutMs: 20_000,
+  });
+}
+
+export async function getInvestigationCase(caseId, { signal } = {}) {
+  return requestJson(buildBackendUrl(`/api/investigator/cases/${encodeURIComponent(caseId)}`), {
+    signal,
+    timeoutMs: 20_000,
+  });
+}
+
+export async function runPersistedInvestigationCase(caseId, { signal } = {}) {
+  return requestJson(buildBackendUrl(`/api/investigator/cases/${encodeURIComponent(caseId)}/run`), {
+    method: 'POST',
+    body: {},
+    signal,
+    timeoutMs: 60_000,
+  });
 }
 
 export async function fetchTransactionInvestigation({ txHash, chainId, signal }) {

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   AlertTriangle,
   Archive,
+  ArrowLeft,
   ArrowRight,
   Brain,
   Copy,
@@ -30,12 +31,14 @@ import {
   loadInvestigatorDraft,
   loadInvestigatorHistory,
   runInvestigation,
+  runPersistedInvestigationCase,
   saveInvestigationRecord,
   saveInvestigatorDraft,
   storeInvestigatorDraftState,
   supportedChainsList,
   upsertInvestigationHistory,
   buildExplorerUrl,
+  createInvestigationCase,
 } from '../../services/investigatorService';
 import { getBackendUrl } from '../../../../../config/apiEndpoints';
 import { useWallet } from '../../hooks/useWallet';
@@ -286,6 +289,7 @@ export default function InvestigatorWorkspace({
   mode = 'embedded',
   scopeKey: scopeKeyProp = 'anon',
   initialChainId = DEFAULT_CHAIN_ID,
+  onBack,
 }) {
   const { postChat, provider: aiProvider } = useAIChat();
   const { walletAddress } = useWallet() || {};
@@ -293,6 +297,7 @@ export default function InvestigatorWorkspace({
   const scopeKey = scopeKeyProp || walletAddress || dexAuth?.user?.walletAddress || 'anon';
   const chains = useMemo(() => supportedChainsList(), []);
   const initialDraft = useMemo(() => loadInvestigatorDraft(scopeKey), [scopeKey]);
+  const [caseTitle, setCaseTitle] = useState(initialDraft?.caseTitle || '');
   const [query, setQuery] = useState(initialDraft?.query || '');
   const [chainId, setChainId] = useState(initialDraft?.chainId || initialChainId || DEFAULT_CHAIN_ID);
   const [objective, setObjective] = useState(initialDraft?.objective || '');
@@ -325,13 +330,14 @@ export default function InvestigatorWorkspace({
 
   useEffect(() => {
     saveInvestigatorDraft(scopeKey, {
+      caseTitle,
       query,
       chainId,
       objective,
       depth,
       notes,
     });
-  }, [scopeKey, query, chainId, objective, depth, notes]);
+  }, [scopeKey, caseTitle, query, chainId, objective, depth, notes]);
 
   useEffect(() => {
     if (!firstRenderRef.current) return;
@@ -434,6 +440,11 @@ export default function InvestigatorWorkspace({
       setError('Enter a wallet address or transaction hash.');
       return;
     }
+    const subjectInputs = trimmed.split(/\r?\n|,/).map((value) => value.trim()).filter(Boolean);
+    if (subjectInputs.length > 20) {
+      setError('A case can contain at most 20 subjects.');
+      return;
+    }
 
     if (abortRef.current) abortRef.current.abort();
     const controller = new AbortController();
@@ -448,8 +459,28 @@ export default function InvestigatorWorkspace({
     setProgress({ stage: 'Starting', percent: 2 });
 
     try {
+      setProgress({ stage: 'Saving case', percent: 5 });
+      const persistedCase = await createInvestigationCase({
+        title: caseTitle.trim() || `Investigation ${subjectInputs[0].slice(0, 12)}`,
+        objective,
+        subjects: subjectInputs.map((identifier, index) => ({
+          identifier,
+          chainId,
+          role: index === 0 ? 'primary_subject' : 'unknown',
+        })),
+        scope: { depth, subjectCount: subjectInputs.length },
+        signal: controller.signal,
+      });
+      setProgress({ stage: 'Collecting evidence', percent: 15 });
+      const isTransactionPrimary = /^0x[a-fA-F0-9]{64}$/.test(subjectInputs[0]);
+      const persistedRun = isTransactionPrimary
+        ? { status: 'not_run', limitation: 'Persistent transaction analysis is not available in the bounded backend run.' }
+        : await runPersistedInvestigationCase(
+          persistedCase?.investigation?.id,
+          { signal: controller.signal },
+        );
       const investigation = await runInvestigation({
-        input: trimmed,
+        input: subjectInputs[0],
         chainId,
         objective,
         depth,
@@ -459,6 +490,15 @@ export default function InvestigatorWorkspace({
       });
       const finalized = {
         ...investigation,
+        serverCaseId: persistedCase?.investigation?.id || null,
+        serverAnalysis: persistedRun || null,
+        subjects: persistedCase?.investigation?.subjects || [],
+        limitations: [
+          ...(investigation.limitations || []),
+          ...(subjectInputs.length > 1
+            ? ['This run analyzes the primary subject; additional subjects are persisted for subsequent bounded runs.']
+            : []),
+        ],
         notes,
       };
       setCurrent(finalized);
@@ -466,6 +506,7 @@ export default function InvestigatorWorkspace({
       setProgress({ stage: 'Completed', percent: 100 });
       persistCurrent(finalized);
       storeInvestigatorDraftState(scopeKey, {
+        caseTitle,
         query: trimmed,
         chainId,
         objective,
@@ -488,7 +529,7 @@ export default function InvestigatorWorkspace({
       setLoading(false);
       abortRef.current = null;
     }
-  }, [chainId, depth, loading, notes, objective, persistCurrent, query, scopeKey]);
+  }, [caseTitle, chainId, depth, loading, notes, objective, persistCurrent, query, scopeKey]);
 
   const handleCancel = useCallback(() => {
     if (abortRef.current) abortRef.current.abort();
@@ -636,6 +677,30 @@ export default function InvestigatorWorkspace({
   return (
     <main className={`investigator-workspace investigator-workspace--${mode}`}>
       <header className="investigator-hero">
+        {mode === 'standalone' ? (
+          <div className="investigator-hero__standalone-title">
+            <div className="investigator-hero__topbar">
+              {onBack ? (
+                <button type="button" className="investigator-back" onClick={onBack}>
+                  <ArrowLeft size={17} />
+                  Back to Futures Ops
+                </button>
+              ) : <span />}
+              <div className="investigator-hero__save-state">
+                <Pill tone={statusTone[status] || 'muted'}>{status}</Pill>
+                <span>{storageStatus.saved ? `Saved ${formatDateTime(storageStatus.updatedAt)}` : 'Local draft'}</span>
+              </div>
+            </div>
+            <div className="investigator-hero__eyebrow">BITS AI / ON-CHAIN INVESTIGATION</div>
+            <h1>Bits Investigator</h1>
+            <p className="investigator-hero__intro">Investigate wallets, contracts, transactions and fund flows with explicit evidence and bounded analysis.</p>
+            <div className="investigator-hero__meta-line">
+              <span>{activeInvestigation?.chainName || chains.find((chain) => chain.id === chainId)?.name || 'Select a chain'}</span>
+              <span>{subjectDisplay(activeInvestigation?.subject) !== '—' ? subjectDisplay(activeInvestigation?.subject) : 'No subject loaded'}</span>
+              <span>{activeInvestigation?.partial ? 'Partial provider data' : 'Evidence-backed workspace'}</span>
+            </div>
+          </div>
+        ) : null}
         <div className="investigator-hero__eyebrow">BITS AI · ON-CHAIN INVESTIGATION WORKSPACE</div>
         <div className="investigator-hero__spotlight">
           <span>Live case board</span>
@@ -749,6 +814,15 @@ export default function InvestigatorWorkspace({
           actions={<Pill tone="muted">{chains.length} chains supported</Pill>}
           >
           <form className="investigator-form" onSubmit={handleRun}>
+            <label className="investigator-form__field investigator-form__field--wide">
+              <span>Case title</span>
+              <input
+                value={caseTitle}
+                onChange={(e) => setCaseTitle(e.target.value)}
+                placeholder="Investigation title"
+                maxLength={160}
+              />
+            </label>
             <label>
               <span>Chain</span>
               <select value={chainId} onChange={(e) => setChainId(Number(e.target.value))} aria-label="Chain selector">
@@ -760,13 +834,14 @@ export default function InvestigatorWorkspace({
               </select>
             </label>
             <label className="investigator-form__field investigator-form__field--wide">
-              <span>Address or transaction hash</span>
-              <input
+              <span>Addresses or transaction hashes</span>
+              <textarea
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="0x..."
                 spellCheck="false"
                 autoComplete="off"
+                rows={3}
               />
             </label>
             <label className="investigator-form__field investigator-form__field--wide">

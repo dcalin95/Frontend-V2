@@ -21,6 +21,9 @@
 .investigator-workspace--standalone {
   min-height: 100vh;
   padding: 24px 24px 56px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1320px;
   background:
     radial-gradient(circle at top left, rgba(99, 181, 255, 0.14), transparent 28%),
     radial-gradient(circle at top right, rgba(106, 255, 212, 0.10), transparent 24%),
@@ -29,6 +32,68 @@
 
 .investigator-workspace--embedded {
   padding: 4px 0 8px;
+}
+
+/* The standalone route is a focused workspace, not an embedded dashboard. */
+.investigator-workspace--standalone .investigator-hero > .investigator-hero__eyebrow,
+.investigator-workspace--standalone .investigator-hero > .investigator-hero__spotlight,
+.investigator-workspace--standalone .investigator-hero > .investigator-hero__deck,
+.investigator-workspace--standalone .investigator-hero > .investigator-hero__signals {
+  display: none;
+}
+
+.investigator-hero__standalone-title {
+  display: grid;
+  gap: 14px;
+  max-width: 820px;
+}
+
+.investigator-hero__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.investigator-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--inv-border);
+  border-radius: 10px;
+  background: rgba(8, 13, 24, 0.82);
+  color: var(--inv-text);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.investigator-back:hover {
+  border-color: var(--inv-border-strong);
+  background: rgba(18, 26, 48, 0.96);
+}
+
+.investigator-hero__save-state {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--inv-muted);
+  font-size: 0.82rem;
+}
+
+.investigator-hero__intro {
+  margin: 0 !important;
+  max-width: 68ch !important;
+}
+
+.investigator-workspace--standalone .investigator-hero__actions {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(101, 163, 255, 0.14);
 }
 
 .investigator-hero,
@@ -616,6 +681,7 @@
 }
 
 .investigator-form input,
+.investigator-form textarea,
 .investigator-form select,
 .investigator-notebook__composer textarea {
   width: 100%;
@@ -628,10 +694,16 @@
 }
 
 .investigator-form input:focus,
+.investigator-form textarea:focus,
 .investigator-form select:focus,
 .investigator-notebook__composer textarea:focus {
   border-color: var(--inv-accent);
   box-shadow: 0 0 0 3px rgba(102, 184, 255, 0.12);
+}
+
+.investigator-form textarea {
+  min-height: 88px;
+  resize: vertical;
 }
 
 .investigator-form__field--wide {

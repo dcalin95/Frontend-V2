@@ -28,6 +28,7 @@ const INFO_STORAGE_KEY = 'ota_short_ops_info_open';
 export default function OTAShortOpsPage() {
   const { walletAddress } = useWallet();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [isInvestigatorRoute, setIsInvestigatorRoute] = useState(() => window.location.hash === '#/investigator');
   /** Active tab from URL: ?tab=long or default SHORT without param. */
   const activeTab = useMemo(
     () => (searchParams.get('tab') === 'long' ? 'long' : 'short'),
@@ -71,8 +72,20 @@ export default function OTAShortOpsPage() {
   useEffect(() => () => clearTimeout(autoCloseRef.current), []);
 
   useEffect(() => {
+    const syncHashRoute = () => setIsInvestigatorRoute(window.location.hash === '#/investigator');
+    window.addEventListener('hashchange', syncHashRoute);
+    return () => window.removeEventListener('hashchange', syncHashRoute);
+  }, []);
+
+  useEffect(() => {
     setHoldBlockAvailable(false);
   }, [activeTab]);
+
+  const leaveInvestigator = useCallback(() => {
+    window.history.pushState(null, '', `${window.location.pathname}${window.location.search}`);
+    setIsInvestigatorRoute(false);
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, []);
 
   /** Deep link: ?tab=...#anchor after the active panel mounts. */
   useLayoutEffect(() => {
@@ -83,6 +96,10 @@ export default function OTAShortOpsPage() {
       el.scrollIntoView({ block: 'start', behavior: 'auto' });
     }
   }, [activeTab]);
+
+  if (isInvestigatorRoute) {
+    return <InvestigatorWorkspace mode="standalone" scopeKey={walletAddress || 'anon'} onBack={leaveInvestigator} />;
+  }
 
   return (
     <div className="ota-short-ops-page">
@@ -195,10 +212,6 @@ export default function OTAShortOpsPage() {
       {/* Active tab content */}
       {activeTab === 'short' && <ShortOpsPanel onHoldBlockAvailabilityChange={reportHoldAvailability} />}
       {activeTab === 'long' && <LongOpsPanel onHoldBlockAvailabilityChange={reportHoldAvailability} />}
-
-      <div style={{ padding: '18px 16px 0' }}>
-        <InvestigatorWorkspace mode="embedded" scopeKey={walletAddress || 'anon'} />
-      </div>
 
     </div>
   );

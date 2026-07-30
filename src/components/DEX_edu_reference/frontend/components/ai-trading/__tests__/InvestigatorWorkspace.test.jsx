@@ -8,6 +8,8 @@ const mockRunInvestigation = jest.fn();
 const mockSaveInvestigationRecord = jest.fn();
 const mockUpsertInvestigationHistory = jest.fn();
 const mockClearInvestigatorDraftState = jest.fn();
+const mockCreateInvestigationCase = jest.fn();
+const mockRunPersistedInvestigationCase = jest.fn();
 const mockSaveInvestigatorDraft = jest.fn();
 const mockStoreInvestigatorDraftState = jest.fn();
 const mockExportInvestigationJson = jest.fn();
@@ -36,6 +38,7 @@ jest.mock('../../../../config/apiEndpoints', () => ({
 jest.mock('../../../services/investigatorService', () => ({
   buildExplorerUrl: jest.fn(),
   clearInvestigatorDraftState: (...args) => mockClearInvestigatorDraftState(...args),
+  createInvestigationCase: (...args) => mockCreateInvestigationCase(...args),
   deleteInvestigationRecord: jest.fn(),
   exportInvestigationJson: (...args) => mockExportInvestigationJson(...args),
   fetchAddressInvestigation: jest.fn(),
@@ -43,6 +46,7 @@ jest.mock('../../../services/investigatorService', () => ({
   loadInvestigatorDraft: jest.fn(),
   loadInvestigatorHistory: jest.fn(),
   runInvestigation: (...args) => mockRunInvestigation(...args),
+  runPersistedInvestigationCase: (...args) => mockRunPersistedInvestigationCase(...args),
   saveInvestigationRecord: (...args) => mockSaveInvestigationRecord(...args),
   saveInvestigatorDraft: (...args) => mockSaveInvestigatorDraft(...args),
   storeInvestigatorDraftState: (...args) => mockStoreInvestigatorDraftState(...args),
@@ -57,6 +61,13 @@ jest.mock('../../../services/investigatorService', () => ({
 describe('InvestigatorWorkspace', () => {
   beforeEach(() => {
     mockPostChat.mockReset().mockResolvedValue({ content: 'Grounded answer.' });
+    mockCreateInvestigationCase.mockReset().mockResolvedValue({
+      investigation: { id: 'server-case-1', subjects: [{ id: 1 }] },
+    });
+    mockRunPersistedInvestigationCase.mockReset().mockResolvedValue({
+      evidenceCount: 1,
+      analysisVersion: 'investigator-1',
+    });
     mockRunInvestigation.mockReset().mockResolvedValue({
       id: 'inv-1',
       title: 'Investigation 1',
@@ -163,6 +174,15 @@ describe('InvestigatorWorkspace', () => {
     fireEvent.click(screen.getByRole('button', { name: /start investigation/i }));
 
     await waitFor(() => expect(mockRunInvestigation).toHaveBeenCalledTimes(1));
+    expect(mockCreateInvestigationCase).toHaveBeenCalledWith(expect.objectContaining({
+      subjects: [expect.objectContaining({
+        identifier: '0x1111111111111111111111111111111111111111',
+      })],
+    }));
+    expect(mockRunPersistedInvestigationCase).toHaveBeenCalledWith(
+      'server-case-1',
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
     expect(mockRunInvestigation).toHaveBeenCalledWith(expect.objectContaining({
       input: '0x1111111111111111111111111111111111111111',
       chainId: 56,
