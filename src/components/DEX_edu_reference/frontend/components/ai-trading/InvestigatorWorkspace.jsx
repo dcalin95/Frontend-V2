@@ -637,7 +637,7 @@ export default function InvestigatorWorkspace({
     <main className={`investigator-workspace investigator-workspace--${mode}`}>
       <header className="investigator-hero">
         <div className="investigator-hero__eyebrow">BITS AI · ON-CHAIN INVESTIGATION WORKSPACE</div>
-        <div className="investigator-hero__title-row">
+        <div className="investigator-hero__grid">
           <div className="investigator-hero__title-copy">
             <h1>Bits Investigator</h1>
             <p>
@@ -649,15 +649,35 @@ export default function InvestigatorWorkspace({
               <span>{activeInvestigation?.limitations?.length ? `${activeInvestigation.limitations.length} limits flagged` : 'Evidence-only workspace'}</span>
             </div>
           </div>
-          <div className="investigator-hero__badges">
-            <Pill tone={statusTone[status] || 'muted'}>{status}</Pill>
-            <Pill tone="muted">{storageStatus.saved ? `Saved ${formatDateTime(storageStatus.updatedAt)}` : 'Not saved yet'}</Pill>
-            <Pill tone={activeInvestigation?.partial ? 'warn' : 'ok'}>{activeInvestigation?.partial ? 'Partial' : 'Full'}</Pill>
-          </div>
+          <aside className="investigator-hero__status-panel" aria-label="Investigation status">
+            <span className="investigator-hero__status-kicker">Case file</span>
+            <strong>{subjectDisplay(activeInvestigation?.subject) !== '—' ? subjectDisplay(activeInvestigation?.subject) : 'Awaiting subject'}</strong>
+            <p>
+              <Pill tone={statusTone[status] || 'muted'}>{status}</Pill>
+              <Pill tone={activeInvestigation?.partial ? 'warn' : 'ok'}>{activeInvestigation?.partial ? 'Partial' : 'Full'}</Pill>
+            </p>
+            <div className="investigator-hero__status-stack">
+              <div>
+                <span>Chain</span>
+                <strong>{activeInvestigation?.chainName || chains.find((chain) => chain.id === chainId)?.name || 'Select a chain'}</strong>
+              </div>
+              <div>
+                <span>Storage</span>
+                <strong>{storageStatus.saved ? `Saved ${formatDateTime(storageStatus.updatedAt)}` : 'Not saved yet'}</strong>
+              </div>
+              <div>
+                <span>Mode</span>
+                <strong>{activeInvestigation?.limitations?.length ? `${activeInvestigation.limitations.length} limits` : 'Evidence-only'}</strong>
+              </div>
+            </div>
+          </aside>
         </div>
         <div className="investigator-hero__signals">
-          {heroStats.map((card) => (
-            <article key={card.label} className="investigator-hero__signal-card">
+          {heroStats.map((card, index) => (
+            <article
+              key={card.label}
+              className={`investigator-hero__signal-card ${index === 0 ? 'investigator-hero__signal-card--lead' : ''}`}
+            >
               <span>{card.label}</span>
               <strong className={`investigator-hero__signal-value investigator-hero__signal-value--${card.tone}`}>{card.value}</strong>
               <small>{card.hint}</small>
