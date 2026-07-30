@@ -124,9 +124,9 @@ function Pill({ tone = 'muted', children, title }) {
   );
 }
 
-function Panel({ title, subtitle, actions, children, className = '' }) {
+function Panel({ title, subtitle, actions, children, className = '', ...rest }) {
   return (
-    <section className={`investigator-panel ${className}`.trim()}>
+    <section className={`investigator-panel ${className}`.trim()} {...rest}>
       <header className="investigator-panel__header">
         <div>
           <h3>{title}</h3>
@@ -568,23 +568,101 @@ export default function InvestigatorWorkspace({
 
   const historyItems = history || [];
   const backendReportAvailable = Boolean(activeInvestigation && activeInvestigation.subject?.kind !== 'transaction');
+  const subjectValue = activeInvestigation?.subjectValue || activeInvestigation?.subject?.normalized || '';
+  const subjectExplorerUrl = useMemo(() => {
+    if (!activeInvestigation?.subject || !subjectValue) return '';
+    const kind = activeInvestigation.subject.kind === 'transaction' ? 'tx' : 'address';
+    return buildExplorerUrl(activeInvestigation.chainId || chainId, kind, subjectValue);
+  }, [activeInvestigation, chainId, subjectValue]);
+
+  const riskTone = activeInvestigation?.overallRisk === 'critical'
+    ? 'danger'
+    : activeInvestigation?.overallRisk === 'high'
+      ? 'danger'
+      : activeInvestigation?.overallRisk === 'moderate'
+        ? 'warn'
+        : 'ok';
+
+  const heroStats = useMemo(() => [
+    {
+      label: 'Risk posture',
+      value: formatRisk(activeInvestigation?.overallRisk || 'draft'),
+      hint: activeInvestigation ? `${findings.length} findings` : 'No analysis yet',
+      tone: riskTone,
+    },
+    {
+      label: 'Evidence rows',
+      value: safeLabel(evidence.length),
+      hint: `${timeline.length} timeline items`,
+      tone: evidence.length ? 'ok' : 'muted',
+    },
+    {
+      label: 'Flow edges',
+      value: safeLabel(flow.length),
+      hint: `${notes.length} notes`,
+      tone: flow.length ? 'warn' : 'muted',
+    },
+    {
+      label: 'Source mode',
+      value: activeInvestigation?.sources?.backend === 'demo' ? 'Demo backend' : 'Live backend',
+      hint: activeInvestigation?.partial ? 'Partial data' : 'Full workspace',
+      tone: activeInvestigation?.partial ? 'warn' : 'ok',
+    },
+  ], [activeInvestigation, evidence.length, findings.length, flow.length, notes.length, riskTone, timeline.length]);
+
+  const quickFillFromWallet = useCallback(() => {
+    if (!walletAddress) return;
+    setQuery(walletAddress);
+    setObjective((currentValue) => currentValue || 'Inspect connected wallet');
+  }, [walletAddress]);
+
+  const quickFillFromHistory = useCallback(() => {
+    const latestHistorySubject = historyItems?.[0]?.primarySubject || '';
+    if (latestHistorySubject) {
+      setQuery(latestHistorySubject);
+      setObjective((currentValue) => currentValue || 'Continue previous investigation');
+    }
+  }, [historyItems]);
+
+  const clearQueryInput = useCallback(() => {
+    setQuery('');
+  }, []);
+
+  const scrollToSection = useCallback((sectionId) => {
+    const el = document.getElementById(sectionId);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
 
   return (
     <main className={`investigator-workspace investigator-workspace--${mode}`}>
       <header className="investigator-hero">
         <div className="investigator-hero__eyebrow">BITS AI · ON-CHAIN INVESTIGATION WORKSPACE</div>
         <div className="investigator-hero__title-row">
-          <div>
+          <div className="investigator-hero__title-copy">
             <h1>Bits Investigator</h1>
             <p>
               Analyze wallets, contracts, transactions, fund flows, counterparties, and suspicious patterns in a bounded and auditable way.
             </p>
+            <div className="investigator-hero__meta-line">
+              <span>{activeInvestigation?.chainName || chains.find((chain) => chain.id === chainId)?.name || 'Select a chain'}</span>
+              <span>{subjectDisplay(activeInvestigation?.subject) !== '—' ? subjectDisplay(activeInvestigation?.subject) : 'No subject loaded'}</span>
+              <span>{activeInvestigation?.limitations?.length ? `${activeInvestigation.limitations.length} limits flagged` : 'Evidence-only workspace'}</span>
+            </div>
           </div>
           <div className="investigator-hero__badges">
             <Pill tone={statusTone[status] || 'muted'}>{status}</Pill>
             <Pill tone="muted">{storageStatus.saved ? `Saved ${formatDateTime(storageStatus.updatedAt)}` : 'Not saved yet'}</Pill>
             <Pill tone={activeInvestigation?.partial ? 'warn' : 'ok'}>{activeInvestigation?.partial ? 'Partial' : 'Full'}</Pill>
           </div>
+        </div>
+        <div className="investigator-hero__signals">
+          {heroStats.map((card) => (
+            <article key={card.label} className="investigator-hero__signal-card">
+              <span>{card.label}</span>
+              <strong className={`investigator-hero__signal-value investigator-hero__signal-value--${card.tone}`}>{card.value}</strong>
+              <small>{card.hint}</small>
+            </article>
+          ))}
         </div>
         <div className="investigator-hero__actions">
           <button type="button" className="investigator-btn investigator-btn--ghost" onClick={() => setHistoryOpen(true)}>
@@ -609,6 +687,24 @@ export default function InvestigatorWorkspace({
             <Archive size={16} />
             {activeInvestigation ? 'Archive' : 'Clear'}
           </button>
+          <button type="button" className="investigator-btn investigator-btn--ghost" onClick={() => copyToClipboard(subjectValue)} disabled={!subjectValue}>
+            <Copy size={16} />
+            Copy subject
+          </button>
+          <button type="button" className="investigator-btn investigator-btn--ghost" onClick={() => scrollToSection('investigator-overview')} disabled={!activeInvestigation}>
+            <Sparkles size={16} />
+            Jump overview
+          </button>
+          <button type="button" className="investigator-btn investigator-btn--ghost" onClick={() => scrollToSection('investigator-findings')} disabled={!activeInvestigation}>
+            <ArrowRight size={16} />
+            Jump findings
+          </button>
+          {subjectExplorerUrl ? (
+            <a href={subjectExplorerUrl} target="_blank" rel="noreferrer noopener" className="investigator-btn investigator-btn--ghost">
+              <ExternalLink size={16} />
+              Explorer
+            </a>
+          ) : null}
         </div>
       </header>
 
@@ -617,7 +713,7 @@ export default function InvestigatorWorkspace({
           title="Start a new investigation"
           subtitle="Enter a wallet address, contract address, or transaction hash. The workspace keeps the analysis bounded and clearly marks source quality."
           actions={<Pill tone="muted">{chains.length} chains supported</Pill>}
-        >
+          >
           <form className="investigator-form" onSubmit={handleRun}>
             <label>
               <span>Chain</span>
@@ -666,6 +762,17 @@ export default function InvestigatorWorkspace({
               ) : null}
             </div>
           </form>
+          <div className="investigator-form__assist">
+            <button type="button" className="investigator-chip investigator-chip--button" onClick={quickFillFromWallet} disabled={!walletAddress}>
+              Use connected wallet
+            </button>
+            <button type="button" className="investigator-chip investigator-chip--button" onClick={quickFillFromHistory} disabled={!historyItems.length}>
+              Load recent case
+            </button>
+            <button type="button" className="investigator-chip investigator-chip--button" onClick={clearQueryInput} disabled={!query.trim()}>
+              Clear input
+            </button>
+          </div>
           <div className="investigator-form__progress" role="status" aria-live="polite">
             <div className="investigator-form__progress-bar">
               <span style={{ width: `${Math.min(100, Math.max(0, progress.percent || 0))}%` }} />
@@ -692,224 +799,301 @@ export default function InvestigatorWorkspace({
         </Panel>
 
         {overview ? (
-          <Panel title="Investigation overview" subtitle={activeInvestigation?.summary || 'Current evidence summary.'}>
-            <div className="investigator-overview">
-              <MetricCard label="Entity type" value={overview.entityType} source="Observed / calculated" tone="ok" />
-              <MetricCard label="Normalized subject" value={subjectDisplay(activeInvestigation?.subject)} source="Observed identifier" />
-              <MetricCard label="Chain" value={overview.chain} source="Selected chain" />
-              <MetricCard label="Native balance" value={`${formatNumber(overview.nativeBalance, 6)} ${activeInvestigation?.chain?.symbol || ''}`} source={overview.nativeBalanceSource} />
-              <MetricCard label="Token holdings" value={Array.isArray(overview.tokenHoldings) && overview.tokenHoldings.length ? `${overview.tokenHoldings.length} tracked assets` : 'Unavailable'} source="Provider" />
-              <MetricCard label="First seen" value={formatDateTime(overview.firstSeen)} source="Observed transfer sample" />
-              <MetricCard label="Last seen" value={formatDateTime(overview.lastSeen)} source="Observed transfer sample" />
-              <MetricCard label="Transaction count" value={safeLabel(overview.transactionCount)} source="Backend count" />
-              <MetricCard label="Current labels" value={Array.isArray(overview.labels) && overview.labels.length ? overview.labels.join(', ') : 'None'} source="External label" />
-              <MetricCard label="Verified contract" value={overview.verifiedContractStatus} source="Provider code check" />
-              <MetricCard label="Deployer / creator" value={overview.deployer || 'Unavailable'} source="External / provider" />
-              <MetricCard label="Risk assessment" value={formatRisk(overview.currentRiskAssessment)} source="Heuristic" tone={activeInvestigation?.overallRisk === 'critical' ? 'danger' : activeInvestigation?.overallRisk === 'high' ? 'danger' : activeInvestigation?.overallRisk === 'moderate' ? 'warn' : 'ok'} />
-            </div>
-            <div className="investigator-overview__summary">
-              <h4>Executive summary</h4>
-              <p>{overview.executiveSummary}</p>
+          <Panel
+            id="investigator-overview"
+            title="Investigation overview"
+            subtitle={activeInvestigation?.summary || 'Current evidence summary.'}
+          >
+            <div className="investigator-overview__deck">
+              <div className="investigator-overview__primary">
+                <div className="investigator-overview__summary investigator-overview__summary--hero">
+                  <div className="investigator-overview__summary-head">
+                    <div>
+                      <span className="investigator-overview__kicker">Executive summary</span>
+                      <h4>{subjectDisplay(activeInvestigation?.subject)}</h4>
+                    </div>
+                    <Pill tone={riskTone}>{formatRisk(activeInvestigation?.overallRisk || 'draft')}</Pill>
+                  </div>
+                  <p>{overview.executiveSummary}</p>
+                  <div className="investigator-overview__summary-meta">
+                    <span><strong>{safeLabel(overview.transactionCount)}</strong> backend transfers</span>
+                    <span><strong>{formatDateTime(overview.firstSeen)}</strong> first seen</span>
+                    <span><strong>{formatDateTime(overview.lastSeen)}</strong> last seen</span>
+                  </div>
+                </div>
+
+                <div className="investigator-overview__metric-grid">
+                  <MetricCard label="Entity type" value={overview.entityType} source="Observed / calculated" tone="ok" />
+                  <MetricCard label="Chain" value={overview.chain} source="Selected chain" />
+                  <MetricCard label="Native balance" value={`${formatNumber(overview.nativeBalance, 6)} ${activeInvestigation?.chain?.symbol || ''}`} source={overview.nativeBalanceSource} />
+                  <MetricCard label="Token holdings" value={Array.isArray(overview.tokenHoldings) && overview.tokenHoldings.length ? `${overview.tokenHoldings.length} tracked assets` : 'Unavailable'} source="Provider" />
+                  <MetricCard label="Current labels" value={Array.isArray(overview.labels) && overview.labels.length ? overview.labels.join(', ') : 'None'} source="External label" />
+                  <MetricCard label="Verified contract" value={overview.verifiedContractStatus} source="Provider code check" />
+                  <MetricCard label="Deployer / creator" value={overview.deployer || 'Unavailable'} source="External / provider" />
+                  <MetricCard label="Risk assessment" value={formatRisk(overview.currentRiskAssessment)} source="Heuristic" tone={riskTone} />
+                </div>
+              </div>
+
+              <aside className="investigator-overview__aside">
+                <article className="investigator-overview__side-card">
+                  <div className="investigator-overview__side-card-head">
+                    <h4>Source integrity</h4>
+                    <Pill tone={activeInvestigation?.partial ? 'warn' : 'ok'}>{activeInvestigation?.partial ? 'Partial' : 'Complete'}</Pill>
+                  </div>
+                  <ul className="investigator-overview__source-list">
+                    <li><span>Backend</span><strong>{activeInvestigation?.sources?.backend || 'backend'}</strong></li>
+                    <li><span>Provider</span><strong>{activeInvestigation?.sources?.provider || 'provider'}</strong></li>
+                    <li><span>Wallet intel</span><strong>{activeInvestigation?.sources?.walletIntel || 'n/a'}</strong></li>
+                  </ul>
+                  {activeInvestigation?.limitations?.length ? (
+                    <div className="investigator-overview__limits">
+                      <strong>Limitations</strong>
+                      <ul>
+                        {activeInvestigation.limitations.map((limitation) => (
+                          <li key={limitation}>{limitation}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : (
+                    <p className="investigator-overview__muted">No explicit limitations recorded for this case.</p>
+                  )}
+                </article>
+
+                <article className="investigator-overview__side-card">
+                  <div className="investigator-overview__side-card-head">
+                    <h4>Top counterparties</h4>
+                    <Pill tone="muted">{overview.majorCounterparties?.length || 0}</Pill>
+                  </div>
+                  <div className="investigator-counterparty-list">
+                    {overview.majorCounterparties?.length ? overview.majorCounterparties.map((counterparty) => (
+                      <div key={counterparty.address} className="investigator-counterparty">
+                        <strong>{shortHash(counterparty.address)}</strong>
+                        <span>{counterparty.count} interactions</span>
+                        <small>{counterparty.inbound} inbound · {counterparty.outbound} outbound</small>
+                      </div>
+                    )) : (
+                      <div className="investigator-empty investigator-empty--compact">
+                        <Sparkles size={16} />
+                        <p>No counterparties observed yet.</p>
+                      </div>
+                    )}
+                  </div>
+                </article>
+              </aside>
             </div>
           </Panel>
         ) : (
           <Panel title="Investigation overview" subtitle="Run an investigation to populate the evidence-backed summary." className="investigator-panel--empty">
-            <div className="investigator-empty">
+            <div className="investigator-empty investigator-empty--hero">
               <FileSearch size={18} />
               <p>No investigation loaded yet.</p>
+              <small>Use a wallet address or transaction hash to unlock the case file.</small>
             </div>
           </Panel>
         )}
 
-        <Panel title="Findings" subtitle="Each finding is structured, severity-tagged, and linked to evidence.">
-          <div className="investigator-finding-list">
-            {findings.length ? findings.map((finding) => (
-              <FindingCard
-                key={finding.id}
-                finding={finding}
-                expanded={selectedFinding === finding.id}
-                onToggle={() => setSelectedFinding((currentId) => (currentId === finding.id ? null : finding.id))}
-              />
-            )) : (
-              <div className="investigator-empty">
-                <Sparkles size={18} />
-                <p>No findings yet. Start an investigation or load a saved one.</p>
-              </div>
-            )}
-          </div>
-        </Panel>
-
-        <Panel
-          title="Fund flow"
-          subtitle="Bounded list of transfer edges and transaction links."
-          actions={
-            <select value={selectedTimelineType} onChange={(e) => setSelectedTimelineType(e.target.value)}>
-              <option value="all">All events</option>
-              <option value="transfer">Transfer</option>
-              <option value="finding">Finding</option>
-            </select>
-          }
-        >
-          <div className="investigator-table-wrap">
-            <table className="investigator-table">
-              <thead>
-                <tr>
-                  <th>Source</th>
-                  <th>Destination</th>
-                  <th>Asset</th>
-                  <th>Amount</th>
-                  <th>Timestamp</th>
-                  <th>Tx hash</th>
-                  <th>Chain</th>
-                  <th>Label</th>
-                </tr>
-              </thead>
-              <tbody>
-                {flow.length ? flow.map((row) => (
-                  <tr key={row.id}>
-                    <td className="investigator-table__clip" title={row.sourceEntity}>{shortHash(row.sourceEntity)}</td>
-                    <td className="investigator-table__clip" title={row.destinationEntity}>{shortHash(row.destinationEntity)}</td>
-                    <td>{row.asset}</td>
-                    <td>{formatNumber(row.amount)}</td>
-                    <td>{formatDateTime(row.timestamp)}</td>
-                    <td className="investigator-table__clip" title={row.transactionHash}>{shortHash(row.transactionHash)}</td>
-                    <td>{safeLabel(row.chainId)}</td>
-                    <td>{safeLabel(row.knownLabel)}</td>
-                  </tr>
-                )) : (
-                  <tr>
-                    <td colSpan="8" className="investigator-table__empty">No transfer flow available yet.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </Panel>
-
-        <Panel title="Timeline" subtitle="A chronological record of observed activity and generated findings.">
-          <div className="investigator-timeline__filters">
-            {['all', 'Transfer', 'Finding'].map((item) => (
-              <button
-                key={item}
-                type="button"
-                className={`investigator-chip ${selectedTimelineType === item.toLowerCase() ? 'investigator-chip--active' : ''}`}
-                onClick={() => setSelectedTimelineType(item.toLowerCase())}
-              >
-                {item}
-              </button>
-            ))}
-          </div>
-          <ul className="investigator-timeline">
-            {filteredTimeline.length ? filteredTimeline.map((row) => <TimelineRow key={row.id} row={row} />) : (
-              <li className="investigator-empty">
-                <Clock3 />
-                <p>No timeline entries yet.</p>
-              </li>
-            )}
-          </ul>
-        </Panel>
-
-        <Panel title="Evidence" subtitle="Evidence rows are explicit and never treated as LLM output.">
-          <div className="investigator-table-wrap">
-            <table className="investigator-table">
-              <thead>
-                <tr>
-                  <th>Type</th>
-                  <th>Chain</th>
-                  <th>Transaction / subject</th>
-                  <th>Block</th>
-                  <th>Log</th>
-                  <th>Source</th>
-                  <th>Link</th>
-                </tr>
-              </thead>
-              <tbody>
-                {evidence.length ? evidence.map((row) => <EvidenceRow key={row.id} row={row} />) : (
-                  <tr>
-                    <td colSpan="7" className="investigator-table__empty">No evidence rows available.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </Panel>
-
-        <Panel title="Notebook" subtitle="Manual notes are clearly marked as investigator-provided.">
-          <div className="investigator-notebook">
-            <label className="investigator-notebook__composer">
-              <span>Add note, hypothesis, bookmark, or finding decision</span>
-              <textarea
-                value={noteInput}
-                onChange={(e) => setNoteInput(e.target.value)}
-                placeholder="Manual note..."
-                rows={4}
-              />
-            </label>
-            <button type="button" className="investigator-btn investigator-btn--primary" onClick={addNote} disabled={!activeInvestigation || !noteInput.trim()}>
-              <Save size={16} />
-              Save note
-            </button>
-          </div>
-          <div className="investigator-note-list">
-            {notes.length ? notes.map((note) => (
-              <article key={note.id} className="investigator-note">
-                <div className="investigator-note__head">
-                  <strong>{note.noteType === 'manual' ? 'Manual note' : safeLabel(note.noteType)}</strong>
-                  <SourceTag sourceType={note.sourceType || 'manual'} />
+        <div className="investigator-duo">
+          <Panel
+            id="investigator-findings"
+            title="Findings"
+            subtitle="Each finding is structured, severity-tagged, and linked to evidence."
+            actions={<Pill tone="muted">{findings.length} findings</Pill>}
+          >
+            <div className="investigator-finding-list">
+              {findings.length ? findings.map((finding) => (
+                <FindingCard
+                  key={finding.id}
+                  finding={finding}
+                  expanded={selectedFinding === finding.id}
+                  onToggle={() => setSelectedFinding((currentId) => (currentId === finding.id ? null : finding.id))}
+                />
+              )) : (
+                <div className="investigator-empty">
+                  <Sparkles size={18} />
+                  <p>No findings yet. Start an investigation or load a saved one.</p>
                 </div>
-                <p>{note.content}</p>
-                <small>{formatDateTime(note.createdAt)}</small>
+              )}
+            </div>
+          </Panel>
+
+          <Panel
+            id="investigator-flow"
+            title="Fund flow"
+            subtitle="Bounded list of transfer edges and transaction links."
+            actions={
+              <select value={selectedTimelineType} onChange={(e) => setSelectedTimelineType(e.target.value)}>
+                <option value="all">All events</option>
+                <option value="transfer">Transfer</option>
+                <option value="finding">Finding</option>
+              </select>
+            }
+          >
+            <div className="investigator-table-wrap">
+              <table className="investigator-table">
+                <thead>
+                  <tr>
+                    <th>Source</th>
+                    <th>Destination</th>
+                    <th>Asset</th>
+                    <th>Amount</th>
+                    <th>Timestamp</th>
+                    <th>Tx hash</th>
+                    <th>Chain</th>
+                    <th>Label</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {flow.length ? flow.map((row) => (
+                    <tr key={row.id}>
+                      <td className="investigator-table__clip" title={row.sourceEntity}>{shortHash(row.sourceEntity)}</td>
+                      <td className="investigator-table__clip" title={row.destinationEntity}>{shortHash(row.destinationEntity)}</td>
+                      <td>{row.asset}</td>
+                      <td>{formatNumber(row.amount)}</td>
+                      <td>{formatDateTime(row.timestamp)}</td>
+                      <td className="investigator-table__clip" title={row.transactionHash}>{shortHash(row.transactionHash)}</td>
+                      <td>{safeLabel(row.chainId)}</td>
+                      <td>{safeLabel(row.knownLabel)}</td>
+                    </tr>
+                  )) : (
+                    <tr>
+                      <td colSpan="8" className="investigator-table__empty">No transfer flow available yet.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </Panel>
+        </div>
+
+        <div className="investigator-duo">
+          <Panel id="investigator-timeline" title="Timeline" subtitle="A chronological record of observed activity and generated findings.">
+            <div className="investigator-timeline__filters">
+              {['all', 'Transfer', 'Finding'].map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  className={`investigator-chip ${selectedTimelineType === item.toLowerCase() ? 'investigator-chip--active' : ''}`}
+                  onClick={() => setSelectedTimelineType(item.toLowerCase())}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+            <ul className="investigator-timeline">
+              {filteredTimeline.length ? filteredTimeline.map((row) => <TimelineRow key={row.id} row={row} />) : (
+                <li className="investigator-empty">
+                  <Clock3 />
+                  <p>No timeline entries yet.</p>
+                </li>
+              )}
+            </ul>
+          </Panel>
+
+          <Panel id="investigator-evidence" title="Evidence" subtitle="Evidence rows are explicit and never treated as LLM output.">
+            <div className="investigator-table-wrap">
+              <table className="investigator-table">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Chain</th>
+                    <th>Transaction / subject</th>
+                    <th>Block</th>
+                    <th>Log</th>
+                    <th>Source</th>
+                    <th>Link</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {evidence.length ? evidence.map((row) => <EvidenceRow key={row.id} row={row} />) : (
+                    <tr>
+                      <td colSpan="7" className="investigator-table__empty">No evidence rows available.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </Panel>
+        </div>
+
+        <div className="investigator-duo investigator-duo--support">
+          <Panel id="investigator-notebook" title="Notebook" subtitle="Manual notes are clearly marked as investigator-provided.">
+            <div className="investigator-notebook">
+              <label className="investigator-notebook__composer">
+                <span>Add note, hypothesis, bookmark, or finding decision</span>
+                <textarea
+                  value={noteInput}
+                  onChange={(e) => setNoteInput(e.target.value)}
+                  placeholder="Manual note..."
+                  rows={4}
+                />
+              </label>
+              <button type="button" className="investigator-btn investigator-btn--primary" onClick={addNote} disabled={!activeInvestigation || !noteInput.trim()}>
+                <Save size={16} />
+                Save note
+              </button>
+            </div>
+            <div className="investigator-note-list">
+              {notes.length ? notes.map((note) => (
+                <article key={note.id} className="investigator-note">
+                  <div className="investigator-note__head">
+                    <strong>{note.noteType === 'manual' ? 'Manual note' : safeLabel(note.noteType)}</strong>
+                    <SourceTag sourceType={note.sourceType || 'manual'} />
+                  </div>
+                  <p>{note.content}</p>
+                  <small>{formatDateTime(note.createdAt)}</small>
+                </article>
+              )) : (
+                <div className="investigator-empty">
+                  <Lock size={18} />
+                  <p>No manual notes saved yet.</p>
+                </div>
+              )}
+            </div>
+          </Panel>
+
+          <Panel
+            id="investigator-assistant"
+            title="AI assistant"
+            subtitle="Grounded responses only. The assistant sees structured evidence and cannot mutate the investigation without an explicit user action."
+            actions={<Pill tone={aiProvider === 'ota' ? 'warn' : 'ok'}>{aiProvider || 'AI not selected'}</Pill>}
+          >
+            <div className="investigator-assistant">
+              <label className="investigator-notebook__composer">
+                <span>Question</span>
+                <textarea
+                  value={assistantQuestion}
+                  onChange={(e) => setAssistantQuestion(e.target.value)}
+                  placeholder="What should I look at next?"
+                  rows={3}
+                />
+              </label>
+              <button type="button" className="investigator-btn investigator-btn--primary" onClick={runAssistant} disabled={!activeInvestigation || assistantLoading}>
+                {assistantLoading ? <Loader2 size={16} className="is-spinning" /> : <Brain size={16} />}
+                {assistantLoading ? 'Thinking…' : 'Ask assistant'}
+              </button>
+            </div>
+            {assistantError ? (
+              <div className="investigator-alert investigator-alert--danger" role="alert">
+                <AlertTriangle size={16} />
+                <span>{assistantError}</span>
+              </div>
+            ) : null}
+            {assistantAnswer ? (
+              <article className="investigator-assistant__answer">
+                <div className="investigator-assistant__answer-head">
+                  <strong>{assistantAnswer.question}</strong>
+                  <small>{formatDateTime(assistantAnswer.createdAt)}</small>
+                </div>
+                <pre>{assistantAnswer.content || 'No response.'}</pre>
               </article>
-            )) : (
+            ) : (
               <div className="investigator-empty">
-                <Lock size={18} />
-                <p>No manual notes saved yet.</p>
+                <Brain size={18} />
+                <p>Ask a question to get an evidence-grounded interpretation.</p>
               </div>
             )}
-          </div>
-        </Panel>
-
-        <Panel
-          title="AI assistant"
-          subtitle="Grounded responses only. The assistant sees structured evidence and cannot mutate the investigation without an explicit user action."
-          actions={<Pill tone={aiProvider === 'ota' ? 'warn' : 'ok'}>{aiProvider || 'AI not selected'}</Pill>}
-        >
-          <div className="investigator-assistant">
-            <label className="investigator-notebook__composer">
-              <span>Question</span>
-              <textarea
-                value={assistantQuestion}
-                onChange={(e) => setAssistantQuestion(e.target.value)}
-                placeholder="What should I look at next?"
-                rows={3}
-              />
-            </label>
-            <button type="button" className="investigator-btn investigator-btn--primary" onClick={runAssistant} disabled={!activeInvestigation || assistantLoading}>
-              {assistantLoading ? <Loader2 size={16} className="is-spinning" /> : <Brain size={16} />}
-              {assistantLoading ? 'Thinking…' : 'Ask assistant'}
-            </button>
-          </div>
-          {assistantError ? (
-            <div className="investigator-alert investigator-alert--danger" role="alert">
-              <AlertTriangle size={16} />
-              <span>{assistantError}</span>
-            </div>
-          ) : null}
-          {assistantAnswer ? (
-            <article className="investigator-assistant__answer">
-              <div className="investigator-assistant__answer-head">
-                <strong>{assistantAnswer.question}</strong>
-                <small>{formatDateTime(assistantAnswer.createdAt)}</small>
-              </div>
-              <pre>{assistantAnswer.content || 'No response.'}</pre>
-            </article>
-          ) : (
-            <div className="investigator-empty">
-              <Brain size={18} />
-              <p>Ask a question to get an evidence-grounded interpretation.</p>
-            </div>
-          )}
-        </Panel>
+          </Panel>
+        </div>
       </section>
 
       {historyOpen && (
