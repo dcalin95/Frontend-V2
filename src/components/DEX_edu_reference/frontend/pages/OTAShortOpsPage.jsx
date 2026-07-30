@@ -19,6 +19,7 @@ import OtaBtcMoveAlertSettings from '../components/ai-trading/OtaBtcMoveAlertSet
 import FuturesOpsModeSwitcher from '../components/ai-trading/FuturesOpsModeSwitcher';
 import FuturesOpsBinanceContextStrip from '../components/ai-trading/FuturesOpsBinanceContextStrip';
 import FuturesOpsOperatorQuickNav from '../components/ai-trading/FuturesOpsOperatorQuickNav';
+import InvestigatorWorkspace from '../components/ai-trading/InvestigatorWorkspace';
 import { useWallet } from '../hooks/useWallet';
 import '../styles/components/trade-cost-analytics.css';
 
@@ -194,6 +195,10 @@ export default function OTAShortOpsPage() {
       {/* Active tab content */}
       {activeTab === 'short' && <ShortOpsPanel onHoldBlockAvailabilityChange={reportHoldAvailability} />}
       {activeTab === 'long' && <LongOpsPanel onHoldBlockAvailabilityChange={reportHoldAvailability} />}
+
+      <div style={{ padding: '18px 16px 0' }}>
+        <InvestigatorWorkspace mode="embedded" scopeKey={walletAddress || 'anon'} />
+      </div>
 
     </div>
   );

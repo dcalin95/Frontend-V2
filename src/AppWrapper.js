@@ -10,6 +10,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { GeoLocationProvider } from "./context/GeoLocationContext"; // 🌍 GeoSystem
 import { AuthProvider } from "./context/AuthContext"; // 🔐 Auth System
 import { CellManagerProvider } from "./context/CellManagerContext"; // 📊 CellManager - Single source of truth
+import { AIProviderProvider } from "./context/AIProviderContext";
 import { DEXThemeProvider, useDEXTheme } from "./components/DEX_edu_reference/frontend/context/DEXThemeContext";
 
 const DexGlobalThemeMount = () => {
@@ -49,7 +50,9 @@ const AppWrapper = () => {
             <CellManagerProvider>
               <ThemeProvider>
                 <DEXThemeProvider>
-                  <DexGlobalThemeMount />
+                  <AIProviderProvider>
+                    <DexGlobalThemeMount />
+                  </AIProviderProvider>
                 </DEXThemeProvider>
               </ThemeProvider>
             </CellManagerProvider>
