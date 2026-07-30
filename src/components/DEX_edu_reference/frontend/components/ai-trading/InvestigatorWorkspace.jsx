@@ -637,18 +637,12 @@ export default function InvestigatorWorkspace({
     <main className={`investigator-workspace investigator-workspace--${mode}`}>
       <header className="investigator-hero">
         <div className="investigator-hero__eyebrow">BITS AI · ON-CHAIN INVESTIGATION WORKSPACE</div>
+        <div className="investigator-hero__spotlight">
+          <span>Live case board</span>
+          <strong>Bounded analysis, explicit sources, auditor-readable outputs.</strong>
+          <small>Top-of-page layout has been reorganized to make the investigation state obvious at a glance.</small>
+        </div>
         <div className="investigator-hero__grid">
-          <div className="investigator-hero__title-copy">
-            <h1>Bits Investigator</h1>
-            <p>
-              Analyze wallets, contracts, transactions, fund flows, counterparties, and suspicious patterns in a bounded and auditable way.
-            </p>
-            <div className="investigator-hero__meta-line">
-              <span>{activeInvestigation?.chainName || chains.find((chain) => chain.id === chainId)?.name || 'Select a chain'}</span>
-              <span>{subjectDisplay(activeInvestigation?.subject) !== '—' ? subjectDisplay(activeInvestigation?.subject) : 'No subject loaded'}</span>
-              <span>{activeInvestigation?.limitations?.length ? `${activeInvestigation.limitations.length} limits flagged` : 'Evidence-only workspace'}</span>
-            </div>
-          </div>
           <aside className="investigator-hero__status-panel" aria-label="Investigation status">
             <span className="investigator-hero__status-kicker">Case file</span>
             <strong>{subjectDisplay(activeInvestigation?.subject) !== '—' ? subjectDisplay(activeInvestigation?.subject) : 'Awaiting subject'}</strong>
@@ -671,6 +665,17 @@ export default function InvestigatorWorkspace({
               </div>
             </div>
           </aside>
+          <div className="investigator-hero__title-copy">
+            <h1>Bits Investigator</h1>
+            <p>
+              Analyze wallets, contracts, transactions, fund flows, counterparties, and suspicious patterns in a bounded and auditable way.
+            </p>
+            <div className="investigator-hero__meta-line">
+              <span>{activeInvestigation?.chainName || chains.find((chain) => chain.id === chainId)?.name || 'Select a chain'}</span>
+              <span>{subjectDisplay(activeInvestigation?.subject) !== '—' ? subjectDisplay(activeInvestigation?.subject) : 'No subject loaded'}</span>
+              <span>{activeInvestigation?.limitations?.length ? `${activeInvestigation.limitations.length} limits flagged` : 'Evidence-only workspace'}</span>
+            </div>
+          </div>
         </div>
         <div className="investigator-hero__signals">
           {heroStats.map((card, index) => (
