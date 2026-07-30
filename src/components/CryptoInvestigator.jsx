@@ -1,12 +1,13 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import InvestigatorWorkspace from './DEX_edu_reference/frontend/components/ai-trading/InvestigatorWorkspace';
 
-export default function CryptoInvestigator() {
-  const navigate = useNavigate();
-
+export default function CryptoInvestigator({ onNavigateBack }) {
   const handleBack = () => {
-    navigate('/dex-edu/ota/short-ops?tab=long');
+    if (onNavigateBack) {
+      onNavigateBack('/dex-edu/ota/short-ops?tab=long');
+      return;
+    }
+    window.location.assign('/dex-edu/ota/short-ops?tab=long');
   };
 
   return (

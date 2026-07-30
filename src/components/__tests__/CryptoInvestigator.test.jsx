@@ -4,10 +4,6 @@ import CryptoInvestigator from '../CryptoInvestigator';
 
 const mockNavigate = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-  useNavigate: () => mockNavigate,
-}));
-
 jest.mock('../DEX_edu_reference/frontend/components/ai-trading/InvestigatorWorkspace', () => ({
   __esModule: true,
   default: ({ mode, scopeKey, onBack }) => (
@@ -23,7 +19,7 @@ describe('CryptoInvestigator', () => {
   });
 
   it('renders the standalone workspace and returns to Futures Ops', () => {
-    render(<CryptoInvestigator />);
+    render(<CryptoInvestigator onNavigateBack={mockNavigate} />);
 
     fireEvent.click(screen.getByRole('button', { name: /Back to Futures Ops/i }));
 
