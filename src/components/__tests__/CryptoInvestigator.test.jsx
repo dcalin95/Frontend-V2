@@ -23,6 +23,6 @@ describe('CryptoInvestigator', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /Back to Futures Ops/i }));
 
-    expect(mockNavigate).toHaveBeenCalledWith('/dex-edu/ota/short-ops?tab=long');
+    expect(mockNavigate).toHaveBeenCalledWith('/#/dex-edu/ota/short-ops?tab=long');
   });
 });
