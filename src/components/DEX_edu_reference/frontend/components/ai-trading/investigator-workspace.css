@@ -74,9 +74,9 @@
   background: radial-gradient(circle, rgba(134, 247, 208, 0.12), transparent 60%);
 }
 
-.investigator-hero__grid {
+.investigator-hero__deck {
   display: grid;
-  grid-template-columns: minmax(280px, 0.78fr) minmax(0, 1.35fr);
+  grid-template-columns: minmax(260px, 0.88fr) minmax(0, 1.22fr) minmax(290px, 0.82fr);
   gap: 18px;
   align-items: stretch;
   margin-top: 12px;
@@ -115,6 +115,21 @@
   line-height: 1.5;
 }
 
+.investigator-hero__chapter {
+  display: inline-flex;
+  align-self: start;
+  width: fit-content;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(104, 184, 255, 0.24);
+  background: rgba(8, 13, 24, 0.84);
+  color: var(--inv-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
 .investigator-hero__eyebrow {
   color: var(--inv-accent);
   font-size: 0.74rem;
@@ -127,6 +142,42 @@
   display: grid;
   gap: 10px;
   max-width: 72ch;
+}
+
+.investigator-hero__telemetry {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(104, 184, 255, 0.22);
+  background:
+    linear-gradient(180deg, rgba(8, 14, 28, 0.98), rgba(4, 8, 16, 0.98));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 16px 36px rgba(0, 0, 0, 0.22);
+}
+
+.investigator-hero__telemetry-head {
+  display: grid;
+  gap: 8px;
+}
+
+.investigator-hero__telemetry-head span {
+  color: var(--inv-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.investigator-hero__telemetry-head strong {
+  font-size: 1.08rem;
+  line-height: 1.35;
+}
+
+.investigator-hero__telemetry-head small {
+  color: var(--inv-muted);
+  line-height: 1.5;
 }
 
 .investigator-hero h1 {
@@ -224,7 +275,7 @@
 
 .investigator-hero__signals {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   margin-top: 20px;
 }
@@ -242,7 +293,7 @@
 .investigator-hero__signal-card--lead {
   min-height: 154px;
   padding: 18px;
-  grid-column: span 2;
+  grid-column: 1 / -1;
   background:
     linear-gradient(180deg, rgba(10, 18, 34, 0.98), rgba(5, 9, 16, 0.98));
   border-color: rgba(104, 184, 255, 0.26);
@@ -1095,7 +1146,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .investigator-hero__grid,
+  .investigator-hero__deck,
   .investigator-hero__signals,
   .investigator-overview__metric-grid,
   .investigator-overview__deck,
@@ -1113,7 +1164,7 @@
     padding: 18px;
   }
 
-  .investigator-hero__grid,
+  .investigator-hero__deck,
   .investigator-panel__header,
   .investigator-note__head,
   .investigator-history-card,
@@ -1135,7 +1186,7 @@
   .investigator-overview,
   .investigator-overview__deck,
   .investigator-overview__metric-grid,
-  .investigator-hero__grid,
+  .investigator-hero__deck,
   .investigator-hero__signals,
   .investigator-duo,
   .investigator-finding__body dl {

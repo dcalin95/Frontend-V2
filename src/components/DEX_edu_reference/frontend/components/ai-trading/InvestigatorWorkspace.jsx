@@ -642,7 +642,7 @@ export default function InvestigatorWorkspace({
           <strong>Bounded analysis, explicit sources, auditor-readable outputs.</strong>
           <small>Top-of-page layout has been reorganized to make the investigation state obvious at a glance.</small>
         </div>
-        <div className="investigator-hero__grid">
+        <div className="investigator-hero__deck">
           <aside className="investigator-hero__status-panel" aria-label="Investigation status">
             <span className="investigator-hero__status-kicker">Case file</span>
             <strong>{subjectDisplay(activeInvestigation?.subject) !== '—' ? subjectDisplay(activeInvestigation?.subject) : 'Awaiting subject'}</strong>
@@ -666,6 +666,7 @@ export default function InvestigatorWorkspace({
             </div>
           </aside>
           <div className="investigator-hero__title-copy">
+            <span className="investigator-hero__chapter">Command center</span>
             <h1>Bits Investigator</h1>
             <p>
               Analyze wallets, contracts, transactions, fund flows, counterparties, and suspicious patterns in a bounded and auditable way.
@@ -674,8 +675,16 @@ export default function InvestigatorWorkspace({
               <span>{activeInvestigation?.chainName || chains.find((chain) => chain.id === chainId)?.name || 'Select a chain'}</span>
               <span>{subjectDisplay(activeInvestigation?.subject) !== '—' ? subjectDisplay(activeInvestigation?.subject) : 'No subject loaded'}</span>
               <span>{activeInvestigation?.limitations?.length ? `${activeInvestigation.limitations.length} limits flagged` : 'Evidence-only workspace'}</span>
+              <span>{storageStatus.saved ? 'Workspace synced' : 'Local draft active'}</span>
             </div>
           </div>
+          <aside className="investigator-hero__telemetry" aria-label="Investigation telemetry">
+            <div className="investigator-hero__telemetry-head">
+              <span>Live telemetry</span>
+              <strong>{activeInvestigation?.partial ? 'Provider gap detected' : 'Case file healthy'}</strong>
+              <small>{storageStatus.saved ? `Synced ${formatDateTime(storageStatus.updatedAt)}` : 'Draft state only'}</small>
+            </div>
+          </aside>
         </div>
         <div className="investigator-hero__signals">
           {heroStats.map((card, index) => (
