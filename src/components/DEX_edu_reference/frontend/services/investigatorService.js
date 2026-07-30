@@ -94,7 +94,7 @@ function resolveChain(chainId) {
   return SUPPORTED_CHAINS[id] || null;
 }
 
-function buildExplorerUrl(chainId, kind, value) {
+export function buildExplorerUrl(chainId, kind, value) {
   const chain = resolveChain(chainId);
   if (!chain) return '';
   const slug = kind === 'tx' ? 'tx' : kind === 'address' ? 'address' : 'token';
