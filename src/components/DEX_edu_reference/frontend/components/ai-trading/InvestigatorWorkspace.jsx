@@ -44,6 +44,7 @@ import {
 import { getBackendUrl } from '../../../../../config/apiEndpoints';
 import { useWallet } from '../../hooks/useWallet';
 import { useDexAuth } from '../../context/DexAuthContext';
+import { ensureOtaWalletForApiIfNeeded } from '../../utils/otaWalletSession';
 import './investigator-workspace.css';
 
 const DEFAULT_CHAIN_ID = 56;
@@ -293,7 +294,7 @@ export default function InvestigatorWorkspace({
   onBack,
 }) {
   const { postChat, provider: aiProvider } = useAIChat();
-  const { walletAddress } = useWallet() || {};
+  const { walletAddress, signer } = useWallet() || {};
   const dexAuth = useDexAuth() || {};
   const scopeKey = scopeKeyProp || walletAddress || dexAuth?.user?.walletAddress || 'anon';
   const chains = useMemo(() => supportedChainsList(), []);
@@ -478,6 +479,11 @@ export default function InvestigatorWorkspace({
     setProgress({ stage: 'Starting', percent: 2 });
 
     try {
+      if (!walletAddress || !signer) {
+        throw new Error('Connect an EVM wallet before starting an investigation.');
+      }
+      setProgress({ stage: 'Authorizing wallet session', percent: 3 });
+      await ensureOtaWalletForApiIfNeeded(signer, walletAddress);
       setProgress({ stage: 'Saving case', percent: 5 });
       const persistedCase = await createInvestigationCase({
         title: caseTitle.trim() || `Investigation ${subjectInputs[0].slice(0, 12)}`,
@@ -553,7 +559,7 @@ export default function InvestigatorWorkspace({
       setLoading(false);
       abortRef.current = null;
     }
-  }, [caseTitle, chainId, depth, loading, notes, objective, persistCurrent, query, scopeKey, subjectType]);
+  }, [caseTitle, chainId, depth, loading, notes, objective, persistCurrent, query, scopeKey, signer, subjectType, walletAddress]);
 
   const updateLossClaim = useCallback((field, value) => {
     setLossClaim((currentClaim) => ({ ...currentClaim, [field]: value }));

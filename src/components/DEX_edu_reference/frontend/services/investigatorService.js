@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 import { loadRuntimeConfig } from '../../../../config/runtimeConfig';
 import { getBackendUrl } from '../../../../config/apiEndpoints';
 import { TOKEN_LIST } from '../../../../utils/tokenList';
+import { getOtaWalletAuthToken } from '../utils/otaWalletSession';
 
 const SUPPORTED_CHAINS = {
   1: {
@@ -124,10 +125,15 @@ async function requestJson(url, { signal, method = 'GET', body = undefined, time
     else signal.addEventListener('abort', onAbort, { once: true });
   }
   try {
+    const headers = { 'Content-Type': 'application/json', Accept: 'application/json' };
+    const otaWalletToken = getOtaWalletAuthToken();
+    if (otaWalletToken) {
+      headers.Authorization = `Bearer ${otaWalletToken}`;
+    }
     const response = await fetch(url, {
       method,
       credentials: 'include',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      headers,
       body: body == null ? undefined : JSON.stringify(body),
       signal: controller.signal,
     });

@@ -14,6 +14,8 @@ const mockRunPersistedInvestigationCase = jest.fn();
 const mockSaveInvestigatorDraft = jest.fn();
 const mockStoreInvestigatorDraftState = jest.fn();
 const mockExportInvestigationJson = jest.fn();
+const mockEnsureOtaWalletForApiIfNeeded = jest.fn();
+const mockSigner = { signMessage: jest.fn() };
 
 jest.mock('../../../../../../hooks/useAIChat', () => ({
   useAIChat: () => ({
@@ -23,7 +25,14 @@ jest.mock('../../../../../../hooks/useAIChat', () => ({
 }));
 
 jest.mock('../../../hooks/useWallet', () => ({
-  useWallet: () => ({ walletAddress: '0x1111111111111111111111111111111111111111' }),
+  useWallet: () => ({
+    walletAddress: '0x1111111111111111111111111111111111111111',
+    signer: mockSigner,
+  }),
+}));
+
+jest.mock('../../../utils/otaWalletSession', () => ({
+  ensureOtaWalletForApiIfNeeded: (...args) => mockEnsureOtaWalletForApiIfNeeded(...args),
 }));
 
 jest.mock('../../../context/DexAuthContext', () => ({
@@ -62,6 +71,7 @@ jest.mock('../../../services/investigatorService', () => ({
 
 describe('InvestigatorWorkspace', () => {
   beforeEach(() => {
+    mockEnsureOtaWalletForApiIfNeeded.mockReset().mockResolvedValue(undefined);
     mockPostChat.mockReset().mockResolvedValue({ content: 'Grounded answer.' });
     mockCreateInvestigationCase.mockReset().mockResolvedValue({
       investigation: { id: 'server-case-1', subjects: [{ id: 1 }] },
@@ -185,6 +195,12 @@ describe('InvestigatorWorkspace', () => {
     fireEvent.click(screen.getByRole('button', { name: /start investigation/i }));
 
     await waitFor(() => expect(mockRunInvestigation).toHaveBeenCalledTimes(1));
+    expect(mockEnsureOtaWalletForApiIfNeeded).toHaveBeenCalledWith(
+      mockSigner,
+      '0x1111111111111111111111111111111111111111',
+    );
+    expect(mockEnsureOtaWalletForApiIfNeeded.mock.invocationCallOrder[0])
+      .toBeLessThan(mockCreateInvestigationCase.mock.invocationCallOrder[0]);
     expect(mockCreateInvestigationCase).toHaveBeenCalledWith(expect.objectContaining({
       subjects: [expect.objectContaining({
         identifier: '0x1111111111111111111111111111111111111111',

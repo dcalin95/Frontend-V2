@@ -1,5 +1,6 @@
 import {
   assertNonSyntheticInvestigatorPayload,
+  createInvestigationCase,
   deleteInvestigationRecord,
   exportInvestigationJson,
   loadInvestigationRecord,
@@ -10,6 +11,15 @@ import {
   supportedChainsList,
   upsertInvestigationHistory,
 } from '../investigatorService';
+import { setOtaWalletAuthToken } from '../../utils/otaWalletSession';
+
+jest.mock('../../../../../config/runtimeConfig', () => ({
+  loadRuntimeConfig: jest.fn().mockResolvedValue(undefined),
+}));
+
+jest.mock('../../../../../config/apiEndpoints', () => ({
+  getBackendUrl: () => 'https://backend.example.test',
+}));
 
 describe('investigatorService provider integrity', () => {
   it('rejects synthetic backend payloads and identifies the missing credential', () => {
@@ -31,6 +41,42 @@ describe('investigatorService provider integrity', () => {
   it('accepts live and empty provider payloads', () => {
     expect(assertNonSyntheticInvestigatorPayload({ demoMode: false, transfers: [] }))
       .toEqual({ demoMode: false, transfers: [] });
+  });
+});
+
+describe('investigatorService OTA authentication', () => {
+  beforeEach(() => {
+    setOtaWalletAuthToken(
+      'otaw_investigator_test',
+      '0x1111111111111111111111111111111111111111',
+    );
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: jest.fn().mockResolvedValue({ investigation: { id: 'case-1' } }),
+    });
+  });
+
+  afterEach(() => {
+    setOtaWalletAuthToken(null);
+    jest.restoreAllMocks();
+  });
+
+  it('sends the OTA wallet token when creating an investigation case', async () => {
+    await createInvestigationCase({
+      title: 'Case',
+      subjects: [{ identifier: '0x1111111111111111111111111111111111111111', chainId: 56 }],
+    });
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://backend.example.test/api/investigator/cases',
+      expect.objectContaining({
+        method: 'POST',
+        credentials: 'include',
+        headers: expect.objectContaining({
+          Authorization: 'Bearer otaw_investigator_test',
+        }),
+      }),
+    );
   });
 });
 
