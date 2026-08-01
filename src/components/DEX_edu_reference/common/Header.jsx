@@ -748,7 +748,7 @@ const Header = ({
       
       <div className="ai-trading-header-right">
         <Link
-          to="/investigator"
+          to="/dex-edu/investigator"
           className="dex-header-investigator-link"
           aria-label="Open Crypto Investigator"
           title="Crypto Investigator — analyze an EVM address"

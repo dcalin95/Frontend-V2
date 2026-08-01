@@ -44,6 +44,7 @@ const DEX_BASE_PATH = '/dex-edu';
 
 // Lazy load pages din frontend/ (scheletul complet copiat din Proiect)
 const Dashboard = lazy(() => import('./frontend/pages/Dashboard'));
+const InvestigatorPage = lazy(() => import('./frontend/pages/InvestigatorPage'));
 const Swap = lazy(() => import('./frontend/pages/Swap'));
 const Trade = lazy(() =>
   import('./frontend/pages/Trade').catch(err => {
@@ -152,6 +153,7 @@ function DEXRoutes() {
       <Routes>
         <Route index element={<Navigate to={`${DEX_BASE_PATH}/dashboard`} replace />} />
         <Route path="dashboard" element={<Dashboard userId={userId || walletAddress} />} />
+        <Route path="investigator" element={<ErrorBoundary><InvestigatorPage /></ErrorBoundary>} />
         <Route path="swap" element={<Swap />} />
         <Route path="trade" element={<Trade />} />
         <Route path="open-orders" element={<OpenOrdersPage />} />

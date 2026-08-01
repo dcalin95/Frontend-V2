@@ -1780,36 +1780,85 @@
   }
 }
 
-/* Source-order lock: standalone Investigator must keep the Dashboard contract. */
-.investigator-workspace.investigator-workspace--standalone {
-  width: 100%;
-  max-width: 1800px;
-  min-height: 100vh;
-  padding: 16px 24px 56px;
-  gap: 16px;
+/* Source-order lock: standalone Investigator keeps the DEX Dashboard contract. */
+.ai-trading-main-content:has(.investigator-workspace--standalone) {
+  padding: 0;
   background: #000;
+}
+
+.investigator-workspace.investigator-workspace--standalone {
+  --inv-panel: rgba(12, 14, 20, 0.92);
+  --inv-panel-strong: rgba(8, 10, 16, 0.88);
+  --inv-panel-soft: rgba(6, 8, 14, 0.82);
+  --inv-border: rgba(255, 255, 255, 0.06);
+  width: calc(100% - 32px);
+  max-width: 1180px;
+  min-height: 100%;
+  margin: 0 auto;
+  padding: 16px 14px 56px;
+  gap: 12px;
+  background: #000;
+}
+
+.investigator-workspace--standalone .investigator-hero {
+  padding: 12px 0 4px;
+  border-bottom-color: var(--inv-border);
+  background: #000;
+}
+
+.investigator-workspace--standalone .investigator-hero__standalone-title {
+  max-width: 760px;
+  margin-inline: auto;
+}
+
+.investigator-workspace--standalone .investigator-hero h1 {
+  font-size: clamp(1.65rem, 3vw, 2.35rem);
+}
+
+.investigator-workspace--standalone .investigator-hero__actions {
+  gap: 8px;
+  padding-block: 8px 10px;
 }
 
 .investigator-workspace--standalone .investigator-panel,
 .investigator-workspace--standalone .investigator-modal__body {
-  padding: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  background: rgba(12, 14, 20, 0.92);
+  padding: 14px;
+  border: 1px solid var(--inv-border);
+  border-radius: 10px;
+  background: var(--inv-panel);
   box-shadow: none;
 }
 
+.investigator-workspace--standalone .investigator-panel__header {
+  gap: 12px;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+  border-bottom-color: rgba(255, 255, 255, 0.055);
+}
+
+.investigator-workspace--standalone .investigator-panel__header h3 {
+  font-size: 0.95rem;
+}
+
+.investigator-workspace--standalone .investigator-panel__header p {
+  max-width: 72ch;
+  font-size: 0.78rem;
+}
+
 .investigator-workspace--standalone .investigator-back,
-.investigator-workspace--standalone .investigator-btn {
-  width: auto;
-  min-height: 36px;
-  padding: 0 12px;
-  border-radius: 8px;
-  border-color: rgba(255, 255, 255, 0.11);
-  background: rgba(255, 255, 255, 0.035);
+.investigator-workspace--standalone .investigator-btn,
+.investigator-workspace--standalone .investigator-chip--button {
+  width: fit-content;
+  min-width: 0;
+  min-height: 32px;
+  padding: 0 10px;
+  border-radius: 7px;
+  border-color: rgba(255, 255, 255, 0.1);
+  background: var(--inv-panel-strong);
   color: rgba(252, 252, 252, 0.98);
   font-size: 0.8rem;
   box-shadow: none;
+  white-space: nowrap;
 }
 
 .investigator-workspace--standalone .investigator-btn--primary {
@@ -1826,7 +1875,7 @@
 
 .investigator-workspace--standalone .investigator-form {
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 12px;
+  gap: 10px;
   align-items: end;
 }
 
@@ -1836,16 +1885,16 @@
 .investigator-workspace--standalone .investigator-notebook__composer textarea,
 .investigator-workspace--standalone .investigator-loss-form input,
 .investigator-workspace--standalone .investigator-loss-form textarea {
-  min-height: 40px;
-  padding: 9px 11px;
-  border-radius: 8px;
-  border-color: rgba(255, 255, 255, 0.11);
-  background: rgba(4, 5, 8, 0.88);
+  min-height: 36px;
+  padding: 7px 10px;
+  border-radius: 7px;
+  border-color: rgba(255, 255, 255, 0.1);
+  background: var(--inv-panel-strong);
   color: rgba(252, 252, 252, 0.98);
 }
 
 .investigator-workspace--standalone .investigator-form textarea {
-  height: 40px;
+  height: 36px;
 }
 
 .investigator-workspace--standalone .investigator-metric-card,
@@ -1859,11 +1908,18 @@
 .investigator-workspace--standalone .investigator-history-card,
 .investigator-workspace--standalone .investigator-forensic-stage,
 .investigator-workspace--standalone .investigator-view-card,
-.investigator-workspace--standalone .investigator-claim-list article {
-  border-color: rgba(255, 255, 255, 0.075);
+.investigator-workspace--standalone .investigator-claim-list article,
+.investigator-workspace--standalone .investigator-empty {
+  border-color: var(--inv-border);
   border-radius: 8px;
-  background: rgba(4, 6, 10, 0.64);
+  background: var(--inv-panel-soft);
   box-shadow: none;
+}
+
+.investigator-workspace--standalone .investigator-duo,
+.investigator-workspace--standalone .investigator-overview__deck,
+.investigator-workspace--standalone .investigator-loss-form {
+  gap: 12px;
 }
 
 @media (max-width: 1100px) {
@@ -1884,7 +1940,8 @@
 
 @media (max-width: 700px) {
   .investigator-workspace.investigator-workspace--standalone {
-    padding: 10px 12px 40px;
+    width: 100%;
+    padding: 10px 8px 48px;
   }
 
   .investigator-workspace--standalone .investigator-hero {
@@ -1899,7 +1956,7 @@
   }
 
   .investigator-workspace--standalone .investigator-hero__actions > * {
-    width: auto;
+    width: fit-content;
     flex: 0 0 auto;
   }
 
