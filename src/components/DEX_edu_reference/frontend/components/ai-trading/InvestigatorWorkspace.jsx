@@ -798,7 +798,7 @@ export default function InvestigatorWorkspace({
               {onBack ? (
                 <button type="button" className="investigator-back" onClick={onBack}>
                   <ArrowLeft size={17} />
-                  Back to Futures Ops
+                  Back to DEX dashboard
                 </button>
               ) : <span />}
               <div className="investigator-hero__save-state">
@@ -808,7 +808,7 @@ export default function InvestigatorWorkspace({
             </div>
             <div className="investigator-hero__eyebrow">BITS AI / ON-CHAIN INVESTIGATION</div>
             <h1>Bits Investigator</h1>
-            <p className="investigator-hero__intro">Investigate wallets, contracts, transactions and fund flows with explicit evidence and bounded analysis.</p>
+            <p className="investigator-hero__intro">Investigate wallets, contracts, tokens and fund flows with explicit evidence and bounded analysis.</p>
             <div className="investigator-hero__meta-line">
               <span>{activeInvestigation?.chainName || chains.find((chain) => chain.id === chainId)?.name || 'Select a chain'}</span>
               <span>{subjectDisplay(activeInvestigation?.subject) !== '—' ? subjectDisplay(activeInvestigation?.subject) : 'No subject loaded'}</span>
@@ -849,7 +849,7 @@ export default function InvestigatorWorkspace({
             <span className="investigator-hero__chapter">Command center</span>
             <h1>Bits Investigator</h1>
             <p>
-              Analyze wallets, contracts, transactions, fund flows, counterparties, and suspicious patterns in a bounded and auditable way.
+              Analyze wallets, contracts, tokens, fund flows, counterparties, and suspicious patterns in a bounded and auditable way.
             </p>
             <div className="investigator-hero__meta-line">
               <span>{activeInvestigation?.chainName || chains.find((chain) => chain.id === chainId)?.name || 'Select a chain'}</span>
@@ -928,7 +928,7 @@ export default function InvestigatorWorkspace({
       <section id="investigator" className="investigator-grid">
         <Panel
           title="Start a new investigation"
-          subtitle="Enter a wallet address, contract address, or transaction hash. The workspace keeps the analysis bounded and clearly marks source quality."
+          subtitle="Enter a wallet, contract, or token address. Transaction subjects remain explicitly disabled until trace support is available."
           actions={<Pill tone="muted">{chains.length} chains supported</Pill>}
           >
           <form className="investigator-form" onSubmit={handleRun}>
@@ -960,7 +960,7 @@ export default function InvestigatorWorkspace({
               </select>
             </label>
             <label className="investigator-form__field investigator-form__field--wide">
-              <span>Addresses or transaction hashes</span>
+              <span>Wallet, contract, or token addresses</span>
               <textarea
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -1052,6 +1052,23 @@ export default function InvestigatorWorkspace({
           </Panel>
         ) : null}
 
+        {activeTab === 'transactions' ? (
+          <div className="investigator-alert investigator-alert--warn" role="status">
+            <ShieldAlert size={16} />
+            <span>Transfer observations are listed below. Full transaction decoding and internal call tracing are unavailable until a verified ABI and trace-capable RPC adapter are configured.</span>
+          </div>
+        ) : null}
+
+        {activeTab === 'contract-token' && !tokenForensics ? (
+          <Panel title="Contract / Token" subtitle="Run a case with the primary subject type set to Contract or Token.">
+            <CapabilityGapsDrawer gaps={[{
+              capability: 'contract_token_analysis',
+              reason: 'The current case does not contain a loaded contract/token snapshot.',
+              impactOnConclusions: 'Control, proxy, liquidity, and token lifecycle conclusions are unavailable.',
+            }]} />
+          </Panel>
+        ) : null}
+
         {activeTab === 'overview' && overview ? (
           <Panel
             id="investigator-overview"
@@ -1083,9 +1100,23 @@ export default function InvestigatorWorkspace({
                   <MetricCard label="Token holdings" value={Array.isArray(overview.tokenHoldings) && overview.tokenHoldings.length ? `${overview.tokenHoldings.length} tracked assets` : 'Unavailable'} source="Provider" />
                   <MetricCard label="Current labels" value={Array.isArray(overview.labels) && overview.labels.length ? overview.labels.join(', ') : 'None'} source="External label" />
                   <MetricCard label="Verified contract" value={overview.verifiedContractStatus} source="Provider code check" />
-                  <MetricCard label="Deployer / creator" value={overview.deployer || 'Unavailable'} source="External / provider" />
+                  {String(overview.entityType || '').toLowerCase().includes('contract') ? (
+                    <MetricCard label="Deployer / creator" value={overview.deployer || 'Unavailable'} source="Provider observation" />
+                  ) : (
+                    <MetricCard label="Account age" value={overview.firstSeen ? formatDateTime(overview.firstSeen) : 'Unavailable'} source="Bounded first observation" />
+                  )}
                   <MetricCard label="Risk assessment" value={formatRisk(overview.currentRiskAssessment)} source="Heuristic" tone={riskTone} />
                 </div>
+                {findings.length ? (
+                  <div className="investigator-overview__priority-findings">
+                    <h4>Priority findings</h4>
+                    {findings.slice(0, 3).map((finding) => (
+                      <button key={finding.id} type="button" onClick={() => { setSelectedFinding(finding.id); setActiveTab('entities'); }}>
+                        <span>{finding.severity}</span><strong>{finding.title}</strong>
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
               </div>
 
               <aside className="investigator-overview__aside">
