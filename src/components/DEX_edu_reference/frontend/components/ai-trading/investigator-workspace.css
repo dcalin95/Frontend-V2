@@ -18,6 +18,363 @@
   margin: 0 auto;
 }
 
+/* Dashboard visual language: pure black shell, quiet panels, compact operator controls. */
+.investigator-workspace {
+  --inv-bg: #000;
+  --inv-panel: rgba(12, 14, 20, 0.92);
+  --inv-panel-strong: rgba(8, 10, 16, 0.96);
+  --inv-border: rgba(255, 255, 255, 0.08);
+  --inv-border-strong: rgba(96, 165, 250, 0.46);
+  --inv-text: rgba(252, 252, 252, 0.98);
+  --inv-muted: rgba(163, 176, 198, 0.76);
+  --inv-accent: rgba(165, 211, 232, 0.92);
+  --inv-accent-2: rgba(154, 214, 188, 0.9);
+  --inv-warn: rgba(251, 191, 36, 0.88);
+  --inv-danger: rgba(239, 122, 102, 0.94);
+  --inv-ok: rgba(124, 214, 160, 0.92);
+}
+
+.investigator-workspace--standalone {
+  width: 100%;
+  max-width: 1800px;
+  min-height: 100vh;
+  padding: 16px 24px 56px;
+  gap: 16px;
+  background: #000;
+}
+
+.investigator-workspace--standalone .investigator-hero {
+  padding: 4px 0 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.investigator-workspace--standalone .investigator-hero::before,
+.investigator-workspace--standalone .investigator-hero::after {
+  display: none;
+}
+
+.investigator-workspace--standalone .investigator-hero__standalone-title {
+  max-width: none;
+  gap: 8px;
+  align-items: center;
+  text-align: center;
+}
+
+.investigator-workspace--standalone .investigator-hero__topbar {
+  width: 100%;
+  min-height: 40px;
+  margin: 0 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.investigator-workspace--standalone .investigator-hero__eyebrow {
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+}
+
+.investigator-workspace--standalone .investigator-hero h1 {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+}
+
+.investigator-workspace--standalone .investigator-hero__intro {
+  max-width: 66ch !important;
+  margin: 4px auto 0 !important;
+  color: rgba(211, 218, 230, 0.82);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.investigator-workspace--standalone .investigator-hero__meta-line {
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.investigator-workspace--standalone .investigator-hero__meta-line span,
+.investigator-pill,
+.investigator-chip {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.035);
+  color: rgba(211, 218, 230, 0.84);
+}
+
+.investigator-back,
+.investigator-btn {
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border-color: rgba(255, 255, 255, 0.11);
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--inv-text);
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: none;
+}
+
+.investigator-back:hover,
+.investigator-btn:hover {
+  transform: none;
+  border-color: rgba(96, 165, 250, 0.48);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.investigator-btn--primary {
+  color: #f8fafc;
+  border-color: rgba(96, 165, 250, 0.5);
+  background: rgba(37, 99, 235, 0.14);
+}
+
+.investigator-btn--danger {
+  color: rgba(252, 200, 190, 0.96);
+  border-color: rgba(220, 100, 82, 0.28);
+  background: rgba(180, 70, 58, 0.08);
+}
+
+.investigator-workspace--standalone .investigator-hero__actions {
+  justify-content: center;
+  margin-top: 20px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.investigator-panel,
+.investigator-modal__body {
+  border: 1px solid var(--inv-border);
+  border-radius: 12px;
+  background: var(--inv-panel);
+  box-shadow: none;
+}
+
+.investigator-panel {
+  padding: 16px;
+}
+
+.investigator-panel__header {
+  align-items: center;
+  margin: -2px -2px 14px;
+  padding: 0 2px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.investigator-panel__header h3 {
+  font-size: 1rem;
+  letter-spacing: -0.015em;
+}
+
+.investigator-panel__header p {
+  margin-top: 4px;
+  color: var(--inv-muted);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.investigator-form {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 12px;
+  align-items: end;
+}
+
+.investigator-form > label:nth-of-type(1) { grid-column: span 3; }
+.investigator-form > label:nth-of-type(2) { grid-column: span 2; }
+.investigator-form > label:nth-of-type(3) { grid-column: span 3; }
+.investigator-form > label:nth-of-type(4) { grid-column: span 4; }
+.investigator-form > label:nth-of-type(5) { grid-column: span 6; }
+.investigator-form > label:nth-of-type(6) { grid-column: span 2; }
+.investigator-form > .investigator-form__actions { grid-column: span 4; }
+
+.investigator-form label,
+.investigator-notebook__composer {
+  gap: 6px;
+}
+
+.investigator-form label span,
+.investigator-notebook__composer span {
+  color: rgba(203, 213, 225, 0.78);
+  font-size: 0.74rem;
+}
+
+.investigator-form input,
+.investigator-form textarea,
+.investigator-form select,
+.investigator-notebook__composer textarea {
+  min-height: 40px;
+  padding: 9px 11px;
+  border-radius: 8px;
+  border-color: rgba(255, 255, 255, 0.11);
+  background: rgba(4, 5, 8, 0.88);
+  color: var(--inv-text);
+  font-size: 0.82rem;
+}
+
+.investigator-form textarea {
+  height: 40px;
+  min-height: 40px;
+}
+
+.investigator-form input:focus,
+.investigator-form textarea:focus,
+.investigator-form select:focus,
+.investigator-notebook__composer textarea:focus {
+  border-color: rgba(96, 165, 250, 0.62);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.12);
+}
+
+.investigator-form__assist {
+  margin-top: 10px;
+}
+
+.investigator-chip--button {
+  min-height: 32px;
+  border-radius: 7px;
+  font-size: 0.72rem;
+}
+
+.investigator-form__progress {
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.investigator-form__progress-bar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.investigator-form__progress-bar span {
+  background: linear-gradient(90deg, rgba(96, 165, 250, 0.9), rgba(124, 214, 160, 0.88));
+}
+
+.investigator-form__progress p {
+  font-size: 0.75rem;
+}
+
+.investigator-alert {
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+
+.investigator-metric-card,
+.investigator-overview__summary,
+.investigator-overview__side-card,
+.investigator-counterparty,
+.investigator-finding,
+.investigator-timeline__item,
+.investigator-note,
+.investigator-assistant__answer,
+.investigator-history-card,
+.investigator-forensic-stage,
+.investigator-view-card,
+.investigator-claim-list article {
+  border-color: rgba(255, 255, 255, 0.075);
+  border-radius: 8px;
+  background: rgba(4, 6, 10, 0.64);
+  box-shadow: none;
+}
+
+.investigator-metric-card {
+  padding: 13px;
+}
+
+.investigator-metric-card span,
+.investigator-table th,
+.investigator-overview__kicker {
+  color: rgba(165, 211, 232, 0.86);
+}
+
+.investigator-table th,
+.investigator-table td {
+  border-bottom-color: rgba(255, 255, 255, 0.07);
+}
+
+.investigator-empty {
+  min-height: 112px;
+  border-radius: 8px;
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .investigator-workspace--standalone > * {
+    animation: investigator-dashboard-in 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .investigator-workspace--standalone > :nth-child(2) { animation-delay: 0.06s; }
+  .investigator-workspace--standalone > :nth-child(3) { animation-delay: 0.1s; }
+}
+
+@keyframes investigator-dashboard-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 1100px) {
+  .investigator-form > label:nth-of-type(1),
+  .investigator-form > label:nth-of-type(2),
+  .investigator-form > label:nth-of-type(3),
+  .investigator-form > label:nth-of-type(4),
+  .investigator-form > label:nth-of-type(5),
+  .investigator-form > label:nth-of-type(6),
+  .investigator-form > .investigator-form__actions {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 700px) {
+  .investigator-workspace--standalone {
+    padding: 10px 12px 40px;
+  }
+
+  .investigator-workspace--standalone .investigator-hero__topbar {
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+
+  .investigator-hero__save-state {
+    max-width: 52%;
+  }
+
+  .investigator-workspace--standalone .investigator-hero h1 {
+    font-size: 2rem;
+  }
+
+  .investigator-workspace--standalone .investigator-hero__actions {
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: thin;
+  }
+
+  .investigator-workspace--standalone .investigator-hero__actions > * {
+    flex: 0 0 auto;
+  }
+
+  .investigator-form > label:nth-of-type(1),
+  .investigator-form > label:nth-of-type(2),
+  .investigator-form > label:nth-of-type(3),
+  .investigator-form > label:nth-of-type(4),
+  .investigator-form > label:nth-of-type(5),
+  .investigator-form > label:nth-of-type(6),
+  .investigator-form > .investigator-form__actions {
+    grid-column: 1 / -1;
+  }
+
+  .investigator-duo,
+  .investigator-overview__deck,
+  .investigator-overview__metric-grid,
+  .investigator-forensic-stage-grid,
+  .investigator-view-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .investigator-workspace--standalone {
   min-height: 100vh;
   padding: 24px 24px 56px;
@@ -1420,5 +1777,143 @@
   .investigator-hero__meta-line,
   .investigator-form__assist {
     width: 100%;
+  }
+}
+
+/* Source-order lock: standalone Investigator must keep the Dashboard contract. */
+.investigator-workspace.investigator-workspace--standalone {
+  width: 100%;
+  max-width: 1800px;
+  min-height: 100vh;
+  padding: 16px 24px 56px;
+  gap: 16px;
+  background: #000;
+}
+
+.investigator-workspace--standalone .investigator-panel,
+.investigator-workspace--standalone .investigator-modal__body {
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: rgba(12, 14, 20, 0.92);
+  box-shadow: none;
+}
+
+.investigator-workspace--standalone .investigator-back,
+.investigator-workspace--standalone .investigator-btn {
+  width: auto;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border-color: rgba(255, 255, 255, 0.11);
+  background: rgba(255, 255, 255, 0.035);
+  color: rgba(252, 252, 252, 0.98);
+  font-size: 0.8rem;
+  box-shadow: none;
+}
+
+.investigator-workspace--standalone .investigator-btn--primary {
+  border-color: rgba(96, 165, 250, 0.5);
+  background: rgba(37, 99, 235, 0.14);
+  color: #f8fafc;
+}
+
+.investigator-workspace--standalone .investigator-btn--danger {
+  border-color: rgba(220, 100, 82, 0.28);
+  background: rgba(180, 70, 58, 0.08);
+  color: rgba(252, 200, 190, 0.96);
+}
+
+.investigator-workspace--standalone .investigator-form {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 12px;
+  align-items: end;
+}
+
+.investigator-workspace--standalone .investigator-form input,
+.investigator-workspace--standalone .investigator-form textarea,
+.investigator-workspace--standalone .investigator-form select,
+.investigator-workspace--standalone .investigator-notebook__composer textarea,
+.investigator-workspace--standalone .investigator-loss-form input,
+.investigator-workspace--standalone .investigator-loss-form textarea {
+  min-height: 40px;
+  padding: 9px 11px;
+  border-radius: 8px;
+  border-color: rgba(255, 255, 255, 0.11);
+  background: rgba(4, 5, 8, 0.88);
+  color: rgba(252, 252, 252, 0.98);
+}
+
+.investigator-workspace--standalone .investigator-form textarea {
+  height: 40px;
+}
+
+.investigator-workspace--standalone .investigator-metric-card,
+.investigator-workspace--standalone .investigator-overview__summary,
+.investigator-workspace--standalone .investigator-overview__side-card,
+.investigator-workspace--standalone .investigator-counterparty,
+.investigator-workspace--standalone .investigator-finding,
+.investigator-workspace--standalone .investigator-timeline__item,
+.investigator-workspace--standalone .investigator-note,
+.investigator-workspace--standalone .investigator-assistant__answer,
+.investigator-workspace--standalone .investigator-history-card,
+.investigator-workspace--standalone .investigator-forensic-stage,
+.investigator-workspace--standalone .investigator-view-card,
+.investigator-workspace--standalone .investigator-claim-list article {
+  border-color: rgba(255, 255, 255, 0.075);
+  border-radius: 8px;
+  background: rgba(4, 6, 10, 0.64);
+  box-shadow: none;
+}
+
+@media (max-width: 1100px) {
+  .investigator-workspace--standalone .investigator-form {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .investigator-workspace--standalone .investigator-form > label:nth-of-type(1),
+  .investigator-workspace--standalone .investigator-form > label:nth-of-type(2),
+  .investigator-workspace--standalone .investigator-form > label:nth-of-type(3),
+  .investigator-workspace--standalone .investigator-form > label:nth-of-type(4),
+  .investigator-workspace--standalone .investigator-form > label:nth-of-type(5),
+  .investigator-workspace--standalone .investigator-form > label:nth-of-type(6),
+  .investigator-workspace--standalone .investigator-form > .investigator-form__actions {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 700px) {
+  .investigator-workspace.investigator-workspace--standalone {
+    padding: 10px 12px 40px;
+  }
+
+  .investigator-workspace--standalone .investigator-hero {
+    padding: 4px 0 0;
+  }
+
+  .investigator-workspace--standalone .investigator-hero__actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-flow: row nowrap;
+    overflow-x: auto;
+  }
+
+  .investigator-workspace--standalone .investigator-hero__actions > * {
+    width: auto;
+    flex: 0 0 auto;
+  }
+
+  .investigator-workspace--standalone .investigator-form {
+    grid-template-columns: 1fr;
+  }
+
+  .investigator-workspace--standalone .investigator-form > label:nth-of-type(1),
+  .investigator-workspace--standalone .investigator-form > label:nth-of-type(2),
+  .investigator-workspace--standalone .investigator-form > label:nth-of-type(3),
+  .investigator-workspace--standalone .investigator-form > label:nth-of-type(4),
+  .investigator-workspace--standalone .investigator-form > label:nth-of-type(5),
+  .investigator-workspace--standalone .investigator-form > label:nth-of-type(6),
+  .investigator-workspace--standalone .investigator-form > .investigator-form__actions {
+    grid-column: 1;
   }
 }
