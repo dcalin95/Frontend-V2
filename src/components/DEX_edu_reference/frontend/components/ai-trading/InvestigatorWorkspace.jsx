@@ -51,6 +51,7 @@ import CoverageSummaryBar from './investigator/CoverageSummaryBar';
 import GraphPanel from './investigator/GraphPanel';
 import CapabilityGapsDrawer from './investigator/CapabilityGapsDrawer';
 import './investigator-workspace.css';
+import './investigator/investigator-shell.css';
 
 const DEFAULT_CHAIN_ID = 56;
 const DEFAULT_DEPTH = 'bounded';
