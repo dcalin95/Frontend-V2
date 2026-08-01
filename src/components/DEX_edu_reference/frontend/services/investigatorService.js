@@ -109,13 +109,13 @@ function buildBackendUrl(path) {
 
 export function assertNonSyntheticInvestigatorPayload(payload) {
   if (!payload?.demoMode) return payload;
-  const error = new Error('Live blockchain data is unavailable. Configure ETHERSCAN_API_KEY on the backend.');
+  const error = new Error('Live blockchain data is unavailable. Configure the server-side Moralis provider.');
   error.code = 'INVESTIGATOR_PROVIDER_NOT_CONFIGURED';
-  error.missingEnvironmentVariable = 'ETHERSCAN_API_KEY';
+  error.missingEnvironmentVariable = 'MORALIS_API_KEY';
   throw error;
 }
 
-async function requestJson(url, { signal, method = 'GET', body = undefined, timeoutMs = 30_000 } = {}) {
+async function requestJson(url, { signal, method = 'GET', body = undefined, timeoutMs = 30_000, requestHeaders = {} } = {}) {
   await loadRuntimeConfig();
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
@@ -125,7 +125,7 @@ async function requestJson(url, { signal, method = 'GET', body = undefined, time
     else signal.addEventListener('abort', onAbort, { once: true });
   }
   try {
-    const headers = { 'Content-Type': 'application/json', Accept: 'application/json' };
+    const headers = { 'Content-Type': 'application/json', Accept: 'application/json', ...requestHeaders };
     const otaWalletToken = getOtaWalletAuthToken();
     if (otaWalletToken) {
       headers.Authorization = `Bearer ${otaWalletToken}`;
@@ -145,6 +145,31 @@ async function requestJson(url, { signal, method = 'GET', body = undefined, time
       throw err;
     }
     return payload;
+  } finally {
+    clearTimeout(timeout);
+    if (signal) signal.removeEventListener('abort', onAbort);
+  }
+}
+
+async function requestBlob(url, { signal, timeoutMs = 30_000 } = {}) {
+  await loadRuntimeConfig();
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  const onAbort = () => controller.abort();
+  if (signal) {
+    if (signal.aborted) controller.abort();
+    else signal.addEventListener('abort', onAbort, { once: true });
+  }
+  try {
+    const headers = {};
+    const token = getOtaWalletAuthToken();
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const response = await fetch(url, { credentials: 'include', headers, signal: controller.signal });
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({}));
+      throw new Error(payload?.message || `HTTP ${response.status}`);
+    }
+    return response.blob();
   } finally {
     clearTimeout(timeout);
     if (signal) signal.removeEventListener('abort', onAbort);
@@ -725,6 +750,148 @@ export async function runPersistedInvestigationCase(caseId, { signal } = {}) {
     signal,
     timeoutMs: 60_000,
   });
+}
+
+export async function createInvestigationJob(caseId, { depth = 'bounded', cursor = null, signal, idempotencyKey } = {}) {
+  return requestJson(buildBackendUrl(`/api/investigator/cases/${encodeURIComponent(caseId)}/jobs`), {
+    method: 'POST',
+    body: { depth, cursor },
+    requestHeaders: { 'Idempotency-Key': idempotencyKey || `investigator-${caseId}-${Date.now()}` },
+    signal,
+    timeoutMs: 20_000,
+  });
+}
+
+export async function getInvestigationJob(caseId, jobId, { signal } = {}) {
+  return requestJson(buildBackendUrl(`/api/investigator/cases/${encodeURIComponent(caseId)}/jobs/${encodeURIComponent(jobId)}`), { signal, timeoutMs: 20_000 });
+}
+
+export async function cancelInvestigationJob(caseId, jobId, { signal } = {}) {
+  return requestJson(buildBackendUrl(`/api/investigator/cases/${encodeURIComponent(caseId)}/jobs/${encodeURIComponent(jobId)}/cancel`), {
+    method: 'POST', body: {}, signal, timeoutMs: 20_000,
+  });
+}
+
+export async function retryInvestigationJob(caseId, jobId, { signal, idempotencyKey } = {}) {
+  return requestJson(buildBackendUrl(`/api/investigator/cases/${encodeURIComponent(caseId)}/jobs/${encodeURIComponent(jobId)}/retry`), {
+    method: 'POST', body: {}, signal,
+    requestHeaders: { 'Idempotency-Key': idempotencyKey || `investigator-retry-${jobId}-${Date.now()}` },
+    timeoutMs: 20_000,
+  });
+}
+
+export async function getInvestigationSnapshot(caseId, { snapshotId, signal } = {}) {
+  const params = snapshotId ? `?snapshotId=${encodeURIComponent(snapshotId)}` : '';
+  return requestJson(buildBackendUrl(`/api/investigator/cases/${encodeURIComponent(caseId)}/report.json${params}`), { signal, timeoutMs: 30_000 });
+}
+
+export function mapCanonicalSnapshotToWorkspace({ manifest, snapshot }, investigation) {
+  const categories = snapshot?.categories || {};
+  const observations = categories.providerObservations || [];
+  const transfers = observations.map((record) => record.observation || {}).filter(Boolean);
+  const findings = (categories.heuristicFindings || []).map((finding) => ({
+    id: finding.id || finding.findingId || finding.finding_identity,
+    title: finding.title_key || finding.title || finding.detector || 'Observed pattern',
+    description: finding.interpretation || finding.observations?.[0] || 'Bounded heuristic finding.',
+    severity: String(finding.severity || 'info').replace(/^./, (letter) => letter.toUpperCase()),
+    confidence: String(finding.confidence || 'medium').replace(/^./, (letter) => letter.toUpperCase()),
+    category: finding.category || 'pattern',
+    status: finding.status || 'needs_review',
+    method: finding.detector || 'deterministic detector',
+    detectorVersion: `${finding.detector || 'detector'}@${finding.detector_version || 'unknown'}`,
+    supportingEvidence: finding.evidence_ids || [],
+    limitations: finding.limitations || [],
+    alternativeExplanations: finding.alternatives || [],
+  }));
+  const evidence = observations.map((record) => {
+    const item = record.observation || {};
+    return {
+      id: record.evidenceId,
+      evidenceType: 'token_transfer',
+      chainId: snapshot.subject?.chainId,
+      transactionHash: item.txHash,
+      blockNumber: item.blockNumber,
+      logIndex: item.logIndex,
+      source: snapshot.coverage?.provider || 'provider',
+      sourceType: 'observed',
+      explorerUrl: buildExplorerUrl(snapshot.subject?.chainId, 'tx', item.txHash),
+    };
+  });
+  const flow = transfers.map((item, index) => ({
+    id: observations[index]?.evidenceId || `${item.txHash}:${item.logIndex}`,
+    sourceEntity: item.sender,
+    destinationEntity: item.recipient,
+    asset: item.amount?.tokenSymbol || item.tokenSymbol,
+    canonicalAssetId: item.amount?.canonicalAssetId,
+    amount: item.amount?.normalizedValue,
+    rawAmount: item.amount?.rawValue,
+    timestamp: item.timestamp,
+    transactionHash: item.txHash,
+    chainId: snapshot.subject?.chainId,
+    direction: item.sender === snapshot.subject?.identifier ? 'outbound' : 'inbound',
+  }));
+  const timeline = transfers.map((item, index) => ({
+    id: observations[index]?.evidenceId || `${item.txHash}:${item.logIndex}`,
+    type: 'Transfer',
+    ts: item.timestamp,
+    title: `${item.amount?.tokenSymbol || 'Token'} transfer`,
+    description: `${item.sender} to ${item.recipient}`,
+    severity: 'Info',
+    sourceType: 'observed',
+  }));
+  const severityRank = { critical: 4, high: 3, medium: 2, low: 1, info: 0 };
+  const overallRisk = findings.reduce((highest, finding) => {
+    const current = String(finding.severity).toLowerCase();
+    return (severityRank[current] || 0) > (severityRank[highest] || 0) ? current : highest;
+  }, 'low');
+  const firstSeen = transfers.map((item) => item.timestamp).filter(Boolean).sort()[0] || null;
+  const lastSeen = transfers.map((item) => item.timestamp).filter(Boolean).sort().at(-1) || null;
+  const subject = snapshot.subject || {};
+  return {
+    id: snapshot.snapshotId,
+    serverCaseId: manifest.caseId,
+    snapshotId: manifest.snapshotId,
+    reportHash: manifest.reportHash,
+    status: 'Completed',
+    updatedAt: manifest.generatedAt,
+    subjectValue: subject.identifier,
+    subject: { kind: subject.type === 'transaction' ? 'transaction' : 'address', normalized: subject.identifier, display: subject.identifier },
+    chainId: subject.chainId,
+    chainName: resolveChain(subject.chainId)?.name || `Chain ${subject.chainId}`,
+    overallRisk,
+    partial: snapshot.coverage?.status !== 'complete',
+    coverage: snapshot.coverage,
+    sources: { backend: 'canonical-postgresql', provider: snapshot.coverage?.provider || 'provider', walletIntel: null },
+    limitations: [...(snapshot.gaps || []), ...(snapshot.providerFailures || []).map((failure) => failure.code || String(failure))],
+    result: {
+      overview: {
+        executiveSummary: `${transfers.length} provider-observed events and ${findings.length} heuristic findings in snapshot ${manifest.snapshotId}.`,
+        entityType: subject.type || 'unknown', chain: resolveChain(subject.chainId)?.name || subject.chainId,
+        transactionCount: transfers.length, firstSeen, lastSeen,
+        nativeBalance: null, nativeBalanceSource: 'Unavailable', tokenHoldings: [], labels: [],
+        verifiedContractStatus: 'Unavailable', deployer: null, currentRiskAssessment: overallRisk,
+        majorCounterparties: [],
+      },
+      findings, evidence, flow, timeline, transfers,
+      assetInventory: snapshot.assetInventory || null,
+      tokenForensics: investigation?.tokenForensics || null,
+    },
+  };
+}
+
+export async function getInvestigationGraph(caseId, options = {}) {
+  const params = new URLSearchParams();
+  if (options.snapshotId) params.set('snapshotId', options.snapshotId);
+  if (options.direction) params.set('direction', options.direction);
+  if (options.canonicalAssetId) params.set('asset', options.canonicalAssetId);
+  if (options.includeSpam) params.set('includeSpam', 'true');
+  const queryString = params.toString();
+  return requestJson(buildBackendUrl(`/api/investigator/cases/${encodeURIComponent(caseId)}/graph${queryString ? `?${queryString}` : ''}`), { signal: options.signal, timeoutMs: 30_000 });
+}
+
+export async function downloadInvestigationReport(caseId, { snapshotId, format = 'pdf', signal } = {}) {
+  const params = snapshotId ? `?snapshotId=${encodeURIComponent(snapshotId)}` : '';
+  return requestBlob(buildBackendUrl(`/api/investigator/cases/${encodeURIComponent(caseId)}/report.${format}${params}`), { signal, timeoutMs: 30_000 });
 }
 
 export async function createInvestigationLossClaim(caseId, claim, { signal } = {}) {

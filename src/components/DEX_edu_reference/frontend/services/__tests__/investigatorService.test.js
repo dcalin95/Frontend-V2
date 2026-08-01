@@ -26,14 +26,14 @@ describe('investigatorService provider integrity', () => {
     expect(() => assertNonSyntheticInvestigatorPayload({
       demoMode: true,
       transfers: [{ txHash: 'synthetic' }],
-    })).toThrow('Configure ETHERSCAN_API_KEY');
+    })).toThrow('Moralis provider');
 
     try {
       assertNonSyntheticInvestigatorPayload({ demoMode: true });
     } catch (error) {
       expect(error).toMatchObject({
         code: 'INVESTIGATOR_PROVIDER_NOT_CONFIGURED',
-        missingEnvironmentVariable: 'ETHERSCAN_API_KEY',
+        missingEnvironmentVariable: 'MORALIS_API_KEY',
       });
     }
   });

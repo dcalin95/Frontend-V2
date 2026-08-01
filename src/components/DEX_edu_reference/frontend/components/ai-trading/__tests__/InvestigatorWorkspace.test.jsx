@@ -11,6 +11,9 @@ const mockClearInvestigatorDraftState = jest.fn();
 const mockCreateInvestigationCase = jest.fn();
 const mockCreateInvestigationLossClaim = jest.fn();
 const mockRunPersistedInvestigationCase = jest.fn();
+const mockRunJob = jest.fn();
+const mockCancelJob = jest.fn();
+const mockGetInvestigationSnapshot = jest.fn();
 const mockSaveInvestigatorDraft = jest.fn();
 const mockStoreInvestigatorDraftState = jest.fn();
 const mockExportInvestigationJson = jest.fn();
@@ -41,6 +44,14 @@ jest.mock('../../../context/DexAuthContext', () => ({
   }),
 }));
 
+jest.mock('../../../hooks/useInvestigationJob', () => () => ({
+  job: null,
+  error: '',
+  run: (...args) => mockRunJob(...args),
+  cancel: (...args) => mockCancelJob(...args),
+  reset: jest.fn(),
+}));
+
 jest.mock('../../../../config/apiEndpoints', () => ({
   getBackendUrl: () => 'https://backend.example.test',
 }));
@@ -58,6 +69,10 @@ jest.mock('../../../services/investigatorService', () => ({
   loadInvestigatorHistory: jest.fn(),
   runInvestigation: (...args) => mockRunInvestigation(...args),
   runPersistedInvestigationCase: (...args) => mockRunPersistedInvestigationCase(...args),
+  getInvestigationSnapshot: (...args) => mockGetInvestigationSnapshot(...args),
+  mapCanonicalSnapshotToWorkspace: (...args) => mockRunInvestigation(...args),
+  downloadInvestigationReport: jest.fn(),
+  getInvestigationGraph: jest.fn(),
   saveInvestigationRecord: (...args) => mockSaveInvestigationRecord(...args),
   saveInvestigatorDraft: (...args) => mockSaveInvestigatorDraft(...args),
   storeInvestigatorDraftState: (...args) => mockStoreInvestigatorDraftState(...args),
@@ -79,6 +94,16 @@ describe('InvestigatorWorkspace', () => {
     mockRunPersistedInvestigationCase.mockReset().mockResolvedValue({
       evidenceCount: 1,
       analysisVersion: 'investigator-1',
+    });
+    mockRunJob.mockReset().mockResolvedValue({
+      id: 'job-1',
+      status: 'completed',
+      final_result: { snapshotId: 'snapshot-1' },
+    });
+    mockCancelJob.mockReset().mockResolvedValue(undefined);
+    mockGetInvestigationSnapshot.mockReset().mockResolvedValue({
+      manifest: { snapshotId: 'snapshot-1', caseId: 'server-case-1' },
+      snapshot: { categories: {} },
     });
     mockCreateInvestigationLossClaim.mockReset().mockResolvedValue({
       lossClaim: {
@@ -206,23 +231,23 @@ describe('InvestigatorWorkspace', () => {
         identifier: '0x1111111111111111111111111111111111111111',
       })],
     }));
-    expect(mockRunPersistedInvestigationCase).toHaveBeenCalledWith(
-      'server-case-1',
-      expect.objectContaining({ signal: expect.any(AbortSignal) }),
-    );
-    expect(mockRunInvestigation).toHaveBeenCalledWith(expect.objectContaining({
-      input: '0x1111111111111111111111111111111111111111',
-      chainId: 56,
-      scopeKey: 'test-scope',
+    expect(mockRunJob).toHaveBeenCalledWith(expect.objectContaining({
+      caseId: 'server-case-1',
+      depth: 'bounded',
+      signal: expect.any(AbortSignal),
     }));
+    expect(mockGetInvestigationSnapshot).toHaveBeenCalledWith('server-case-1', expect.objectContaining({ snapshotId: 'snapshot-1' }));
 
     expect(await screen.findByText('Investigation overview')).toBeInTheDocument();
     expect(screen.getByText('Wallet')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('tab', { name: 'Entities' }));
     expect(screen.getAllByText('Rapid fund movement').length).toBeGreaterThan(0);
 
+    fireEvent.click(screen.getByRole('tab', { name: 'Notes & Claims' }));
     fireEvent.change(screen.getAllByPlaceholderText('Manual note...')[0], {
       target: { value: 'Manual hypothesis' },
     });
+    fireEvent.click(screen.getByRole('tab', { name: 'AI Assistant' }));
     fireEvent.change(screen.getByPlaceholderText('What should I look at next?'), {
       target: { value: 'What should I verify next?' },
     });
@@ -233,8 +258,11 @@ describe('InvestigatorWorkspace', () => {
   });
 
   it('runs an explicit token case and renders forensic gaps without fabricated proceeds', async () => {
-    mockRunPersistedInvestigationCase.mockResolvedValueOnce({
-      tokenForensics: {
+    mockRunInvestigation.mockResolvedValueOnce({
+      id: 'inv-token', title: 'Token case', status: 'Completed', subjectValue: '0x1111111111111111111111111111111111111111',
+      subject: { kind: 'address', normalized: '0x1111111111111111111111111111111111111111' },
+      chainId: 56, chainName: 'BNB Chain', partial: true, overallRisk: 'low', limitations: [],
+      result: { overview: null, findings: [], evidence: [], flow: [], timeline: [], tokenForensics: {
         status: 'partial',
         lifecycle: {
           deployment: {
@@ -255,7 +283,7 @@ describe('InvestigatorWorkspace', () => {
           { id: 'proceeds-ledger', title: 'Proceeds Ledger', status: 'gap', evidenceCount: 0, note: 'No classified extraction.' },
         ],
         gaps: ['DEX pair decoding is not enabled.'],
-      },
+      } },
     });
 
     render(<InvestigatorWorkspace mode="embedded" scopeKey="test-scope" />);
@@ -268,6 +296,7 @@ describe('InvestigatorWorkspace', () => {
     await waitFor(() => expect(mockCreateInvestigationCase).toHaveBeenCalledWith(expect.objectContaining({
       subjects: [expect.objectContaining({ subjectType: 'token' })],
     })));
+    fireEvent.click(screen.getByRole('tab', { name: 'Contract / Token' }));
     expect(await screen.findByText('Token lifecycle reconstruction')).toBeInTheDocument();
     expect(screen.getAllByText('Proceeds Ledger').length).toBeGreaterThan(0);
     expect(screen.getByText('No extraction event has been classified from the available evidence.')).toBeInTheDocument();

@@ -26,12 +26,9 @@ import {
   clearInvestigatorDraftState,
   deleteInvestigationRecord,
   exportInvestigationJson,
-  fetchAddressInvestigation,
   loadInvestigationRecord,
   loadInvestigatorDraft,
   loadInvestigatorHistory,
-  runInvestigation,
-  runPersistedInvestigationCase,
   saveInvestigationRecord,
   saveInvestigatorDraft,
   storeInvestigatorDraftState,
@@ -40,11 +37,19 @@ import {
   buildExplorerUrl,
   createInvestigationCase,
   createInvestigationLossClaim,
+  downloadInvestigationReport,
+  getInvestigationGraph,
+  getInvestigationSnapshot,
+  mapCanonicalSnapshotToWorkspace,
 } from '../../services/investigatorService';
-import { getBackendUrl } from '../../../../../config/apiEndpoints';
 import { useWallet } from '../../hooks/useWallet';
 import { useDexAuth } from '../../context/DexAuthContext';
 import { ensureOtaWalletForApiIfNeeded } from '../../utils/otaWalletSession';
+import useInvestigationJob from '../../hooks/useInvestigationJob';
+import InvestigatorTabs from './investigator/InvestigatorTabs';
+import CoverageSummaryBar from './investigator/CoverageSummaryBar';
+import GraphPanel from './investigator/GraphPanel';
+import CapabilityGapsDrawer from './investigator/CapabilityGapsDrawer';
 import './investigator-workspace.css';
 
 const DEFAULT_CHAIN_ID = 56;
@@ -296,6 +301,7 @@ export default function InvestigatorWorkspace({
   const { postChat, provider: aiProvider } = useAIChat();
   const { walletAddress, signer } = useWallet() || {};
   const dexAuth = useDexAuth() || {};
+  const investigationJob = useInvestigationJob();
   const scopeKey = scopeKeyProp || walletAddress || dexAuth?.user?.walletAddress || 'anon';
   const chains = useMemo(() => supportedChainsList(), []);
   const initialDraft = useMemo(() => loadInvestigatorDraft(scopeKey), [scopeKey]);
@@ -336,7 +342,12 @@ export default function InvestigatorWorkspace({
   const [lossClaims, setLossClaims] = useState([]);
   const [lossClaimSaving, setLossClaimSaving] = useState(false);
   const [lossClaimError, setLossClaimError] = useState('');
+  const [activeTab, setActiveTab] = useState('overview');
+  const [graph, setGraph] = useState(null);
+  const [graphLoading, setGraphLoading] = useState(false);
+  const [graphError, setGraphError] = useState('');
   const abortRef = useRef(null);
+  const runningCaseIdRef = useRef(null);
   const firstRenderRef = useRef(true);
 
   const activeInvestigation = current;
@@ -377,6 +388,14 @@ export default function InvestigatorWorkspace({
       if (abortRef.current) abortRef.current.abort();
     };
   }, []);
+
+  useEffect(() => {
+    if (!investigationJob.job) return;
+    setProgress({
+      stage: investigationJob.job.current_stage || investigationJob.job.status || 'Running',
+      percent: investigationJob.job.progress || 0,
+    });
+  }, [investigationJob.job]);
 
   const persistCurrent = useCallback((nextInvestigation) => {
     if (!nextInvestigation) return;
@@ -435,9 +454,11 @@ export default function InvestigatorWorkspace({
     setArchivePrompt(false);
   }, [activeInvestigation, notes, scopeKey]);
 
-  const handleExport = useCallback(() => {
+  const handleExport = useCallback(async () => {
     if (!activeInvestigation) return;
-    const blob = new Blob([exportInvestigationJson(activeInvestigation)], { type: 'application/json;charset=utf-8' });
+    const blob = activeInvestigation.serverCaseId
+      ? await downloadInvestigationReport(activeInvestigation.serverCaseId, { snapshotId: activeInvestigation.snapshotId, format: 'json' })
+      : new Blob([exportInvestigationJson(activeInvestigation)], { type: 'application/json;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -446,10 +467,22 @@ export default function InvestigatorWorkspace({
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }, [activeInvestigation]);
 
-  const openBackendPdf = useCallback(() => {
-    if (!activeInvestigation || activeInvestigation.subject?.kind === 'transaction') return;
-    const url = `${getBackendUrl().replace(/\/$/, '')}/api/investigator/report/${activeInvestigation.subjectValue}.pdf?chainId=${activeInvestigation.chainId}`;
-    window.open(url, '_blank', 'noopener,noreferrer');
+  const openBackendPdf = useCallback(async () => {
+    if (!activeInvestigation?.serverCaseId) return;
+    try {
+      const blob = await downloadInvestigationReport(activeInvestigation.serverCaseId, {
+        snapshotId: activeInvestigation.snapshotId,
+        format: 'pdf',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `bits-investigator-${activeInvestigation.serverCaseId}.pdf`;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (reportError) {
+      setError(reportError?.message || 'The immutable PDF report could not be downloaded.');
+    }
   }, [activeInvestigation]);
 
   const handleRun = useCallback(async (event) => {
@@ -497,32 +530,24 @@ export default function InvestigatorWorkspace({
         scope: { depth, subjectCount: subjectInputs.length },
         signal: controller.signal,
       });
-      setProgress({ stage: 'Collecting evidence', percent: 15 });
+      const serverCaseId = persistedCase?.investigation?.id;
+      runningCaseIdRef.current = serverCaseId;
       const isTransactionPrimary = /^0x[a-fA-F0-9]{64}$/.test(subjectInputs[0]);
-      const persistedRun = isTransactionPrimary
-        ? { status: 'not_run', limitation: 'Persistent transaction analysis is not available in the bounded backend run.' }
-        : await runPersistedInvestigationCase(
-          persistedCase?.investigation?.id,
-          { signal: controller.signal },
-        );
-      const investigation = await runInvestigation({
-        input: subjectInputs[0],
-        chainId,
-        objective,
-        depth,
-        scopeKey,
+      if (isTransactionPrimary) {
+        throw new Error('Transaction subjects are disabled until a verified ABI and trace-capable backend provider are configured.');
+      }
+      const completedJob = await investigationJob.run({ caseId: serverCaseId, depth, signal: controller.signal });
+      const finalResult = completedJob.final_result || completedJob.finalResult || {};
+      const canonical = await getInvestigationSnapshot(serverCaseId, {
+        snapshotId: finalResult.snapshotId,
         signal: controller.signal,
-        onProgress: setProgress,
       });
+      const investigation = await mapCanonicalSnapshotToWorkspace(canonical, persistedCase?.investigation);
       const finalized = {
         ...investigation,
-        serverCaseId: persistedCase?.investigation?.id || null,
-        serverAnalysis: persistedRun || null,
+        serverCaseId,
+        serverJobId: completedJob.id,
         subjects: persistedCase?.investigation?.subjects || [],
-        result: {
-          ...investigation.result,
-          tokenForensics: persistedRun?.tokenForensics || null,
-        },
         limitations: [
           ...(investigation.limitations || []),
           ...(subjectInputs.length > 1
@@ -533,7 +558,8 @@ export default function InvestigatorWorkspace({
       };
       setCurrent(finalized);
       setStatus(finalized.status || 'Needs Review');
-      setProgress({ stage: 'Completed', percent: 100 });
+      setProgress({ stage: 'Execution completed', percent: 100 });
+      setActiveTab('overview');
       persistCurrent(finalized);
       storeInvestigatorDraftState(scopeKey, {
         caseTitle,
@@ -558,8 +584,9 @@ export default function InvestigatorWorkspace({
     } finally {
       setLoading(false);
       abortRef.current = null;
+      runningCaseIdRef.current = null;
     }
-  }, [caseTitle, chainId, depth, loading, notes, objective, persistCurrent, query, scopeKey, signer, subjectType, walletAddress]);
+  }, [caseTitle, chainId, depth, investigationJob, loading, notes, objective, persistCurrent, query, scopeKey, signer, subjectType, walletAddress]);
 
   const updateLossClaim = useCallback((field, value) => {
     setLossClaim((currentClaim) => ({ ...currentClaim, [field]: value }));
@@ -602,12 +629,13 @@ export default function InvestigatorWorkspace({
     }
   }, [activeInvestigation, lossClaim]);
 
-  const handleCancel = useCallback(() => {
+  const handleCancel = useCallback(async () => {
+    await investigationJob.cancel(runningCaseIdRef.current);
     if (abortRef.current) abortRef.current.abort();
     setLoading(false);
     setStatus('Draft');
     setProgress((currentProgress) => ({ ...currentProgress, stage: 'Cancelled' }));
-  }, []);
+  }, [investigationJob]);
 
   const addNote = useCallback(() => {
     const text = noteInput.trim();
@@ -679,7 +707,7 @@ export default function InvestigatorWorkspace({
   }, [activeInvestigation, current?.updatedAt]);
 
   const historyItems = history || [];
-  const backendReportAvailable = Boolean(activeInvestigation && activeInvestigation.subject?.kind !== 'transaction');
+  const backendReportAvailable = Boolean(activeInvestigation?.serverCaseId && activeInvestigation?.snapshotId);
   const subjectValue = activeInvestigation?.subjectValue || activeInvestigation?.subject?.normalized || '';
   const subjectExplorerUrl = useMemo(() => {
     if (!activeInvestigation?.subject || !subjectValue) return '';
@@ -745,8 +773,24 @@ export default function InvestigatorWorkspace({
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, []);
 
+  const loadGraph = useCallback(async () => {
+    if (!activeInvestigation?.serverCaseId) return;
+    setGraphLoading(true);
+    setGraphError('');
+    try {
+      const response = await getInvestigationGraph(activeInvestigation.serverCaseId, {
+        snapshotId: activeInvestigation.snapshotId,
+      });
+      setGraph(response.graph);
+    } catch (graphRunError) {
+      setGraphError(graphRunError?.message || 'The bounded evidence graph could not be loaded.');
+    } finally {
+      setGraphLoading(false);
+    }
+  }, [activeInvestigation]);
+
   return (
-    <main className={`investigator-workspace investigator-workspace--${mode}`}>
+    <main className={`investigator-workspace investigator-workspace--${mode}`} data-active-tab={activeTab}>
       <header className="investigator-hero">
         {mode === 'standalone' ? (
           <div className="investigator-hero__standalone-title">
@@ -878,6 +922,9 @@ export default function InvestigatorWorkspace({
         </div>
       </header>
 
+      <CoverageSummaryBar job={investigationJob.job} coverage={activeInvestigation?.coverage} />
+      <InvestigatorTabs activeTab={activeTab} onChange={setActiveTab} />
+
       <section id="investigator" className="investigator-grid">
         <Panel
           title="Start a new investigation"
@@ -934,8 +981,9 @@ export default function InvestigatorWorkspace({
             <label>
               <span>Depth</span>
               <select value={depth} onChange={(e) => setDepth(e.target.value)} aria-label="Depth selector">
+                <option value="quick">Quick</option>
                 <option value="bounded">Bounded</option>
-                <option value="focused">Focused</option>
+                <option value="deep">Deep (background job)</option>
               </select>
             </label>
             <div className="investigator-form__actions">
@@ -986,7 +1034,25 @@ export default function InvestigatorWorkspace({
           ) : null}
         </Panel>
 
-        {overview ? (
+        {activeTab === 'graph' ? (
+          <GraphPanel graph={graph} loading={graphLoading} error={graphError} onLoad={loadGraph} />
+        ) : null}
+
+        {activeTab === 'reports' ? (
+          <Panel title="Immutable reports" subtitle="Exports use the persisted snapshot and never rerun the blockchain provider.">
+            <div className="investigator-report-summary">
+              <div><span>Case ID</span><code title={activeInvestigation?.serverCaseId}>{shortHash(activeInvestigation?.serverCaseId)}</code></div>
+              <div><span>Snapshot ID</span><code title={activeInvestigation?.snapshotId}>{shortHash(activeInvestigation?.snapshotId)}</code></div>
+              <div><span>Report hash</span><code title={activeInvestigation?.reportHash}>{shortHash(activeInvestigation?.reportHash)}</code></div>
+            </div>
+            <div className="investigator-panel__actions">
+              <button type="button" className="investigator-btn investigator-btn--ghost" onClick={handleExport} disabled={!activeInvestigation?.serverCaseId}><Download size={16} />Export JSON</button>
+              <button type="button" className="investigator-btn investigator-btn--ghost" onClick={openBackendPdf} disabled={!activeInvestigation?.serverCaseId}><Download size={16} />Export PDF</button>
+            </div>
+          </Panel>
+        ) : null}
+
+        {activeTab === 'overview' && overview ? (
           <Panel
             id="investigator-overview"
             title="Investigation overview"
@@ -1070,7 +1136,7 @@ export default function InvestigatorWorkspace({
               </aside>
             </div>
           </Panel>
-        ) : (
+        ) : activeTab === 'overview' ? (
           <Panel title="Investigation overview" subtitle="Run an investigation to populate the evidence-backed summary." className="investigator-panel--empty">
             <div className="investigator-empty investigator-empty--hero">
               <FileSearch size={18} />
@@ -1078,9 +1144,9 @@ export default function InvestigatorWorkspace({
               <small>Use a wallet address or transaction hash to unlock the case file.</small>
             </div>
           </Panel>
-        )}
+        ) : null}
 
-        {tokenForensics ? (
+        {activeTab === 'contract-token' && tokenForensics ? (
           <>
             <Panel
               id="investigator-token-lifecycle"
@@ -1153,6 +1219,7 @@ export default function InvestigatorWorkspace({
                 <ul className="investigator-gap-list">
                   {(tokenForensics.gaps || []).map((gap) => <li key={gap}><AlertTriangle size={15} />{gap}</li>)}
                 </ul>
+                <CapabilityGapsDrawer gaps={tokenForensics.capabilityGaps || []} />
               </Panel>
             </div>
 
@@ -1188,6 +1255,7 @@ export default function InvestigatorWorkspace({
         <div className="investigator-duo">
           <Panel
             id="investigator-findings"
+            hidden={activeTab !== 'entities'}
             title="Findings"
             subtitle="Each finding is structured, severity-tagged, and linked to evidence."
             actions={<Pill tone="muted">{findings.length} findings</Pill>}
@@ -1211,6 +1279,7 @@ export default function InvestigatorWorkspace({
 
           <Panel
             id="investigator-flow"
+            hidden={activeTab !== 'fund-flow'}
             title="Fund flow"
             subtitle="Bounded list of transfer edges and transaction links."
             actions={
@@ -1259,7 +1328,7 @@ export default function InvestigatorWorkspace({
         </div>
 
         <div className="investigator-duo">
-          <Panel id="investigator-timeline" title="Timeline" subtitle="A chronological record of observed activity and generated findings.">
+          <Panel hidden={activeTab !== 'timeline'} id="investigator-timeline" title="Timeline" subtitle="A chronological record of observed activity and generated findings.">
             <div className="investigator-timeline__filters">
               {['all', 'Transfer', 'Finding'].map((item) => (
                 <button
@@ -1282,7 +1351,7 @@ export default function InvestigatorWorkspace({
             </ul>
           </Panel>
 
-          <Panel id="investigator-evidence" title="Evidence" subtitle="Evidence rows are explicit and never treated as LLM output.">
+          <Panel hidden={!['evidence', 'transactions'].includes(activeTab)} id="investigator-evidence" title={activeTab === 'transactions' ? 'Transactions' : 'Evidence'} subtitle="Evidence rows are explicit and never treated as LLM output.">
             <div className="investigator-table-wrap">
               <table className="investigator-table">
                 <thead>
@@ -1310,6 +1379,7 @@ export default function InvestigatorWorkspace({
 
         <Panel
           id="investigator-loss-claims"
+          hidden={activeTab !== 'notes-claims'}
           title="Reported victim losses"
           subtitle="Saved as Investigator-provided loss claim until transaction evidence supports or contradicts it."
           actions={<Pill tone="manual">{lossClaims.length} claims</Pill>}
@@ -1342,7 +1412,7 @@ export default function InvestigatorWorkspace({
         </Panel>
 
         <div className="investigator-duo investigator-duo--support">
-          <Panel id="investigator-notebook" title="Notebook" subtitle="Manual notes are clearly marked as investigator-provided.">
+          <Panel hidden={activeTab !== 'notes-claims'} id="investigator-notebook" title="Notebook" subtitle="Manual notes are clearly marked as investigator-provided.">
             <div className="investigator-notebook">
               <label className="investigator-notebook__composer">
                 <span>Add note, hypothesis, bookmark, or finding decision</span>
@@ -1379,6 +1449,7 @@ export default function InvestigatorWorkspace({
 
           <Panel
             id="investigator-assistant"
+            hidden={activeTab !== 'assistant'}
             title="AI assistant"
             subtitle="Grounded responses only. The assistant sees structured evidence and cannot mutate the investigation without an explicit user action."
             actions={<Pill tone={aiProvider === 'ota' ? 'warn' : 'ok'}>{aiProvider || 'AI not selected'}</Pill>}
