@@ -87,7 +87,16 @@ jest.mock('../../../services/investigatorService', () => ({
 describe('InvestigatorWorkspace', () => {
   beforeEach(() => {
     mockEnsureOtaWalletForApiIfNeeded.mockReset().mockResolvedValue(undefined);
-    mockPostChat.mockReset().mockResolvedValue({ content: 'Grounded answer.' });
+    mockPostChat.mockReset().mockResolvedValue({
+      content: JSON.stringify({
+        answer: 'Grounded answer.',
+        evidenceIds: [],
+        findingIds: [],
+        limitations: ['Bounded provider coverage.'],
+        suggestedNextSteps: ['Review the cited evidence.'],
+        unsupportedClaims: [],
+      }),
+    });
     mockCreateInvestigationCase.mockReset().mockResolvedValue({
       investigation: { id: 'server-case-1', subjects: [{ id: 1 }] },
     });

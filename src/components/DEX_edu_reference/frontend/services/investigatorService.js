@@ -847,6 +847,7 @@ export function mapCanonicalSnapshotToWorkspace({ manifest, snapshot }, investig
   const firstSeen = transfers.map((item) => item.timestamp).filter(Boolean).sort()[0] || null;
   const lastSeen = transfers.map((item) => item.timestamp).filter(Boolean).sort().at(-1) || null;
   const subject = snapshot.subject || {};
+  const subjectKind = ['contract', 'token'].includes(subject.type) ? subject.type : subject.type === 'transaction' ? 'transaction' : 'address';
   return {
     id: snapshot.snapshotId,
     serverCaseId: manifest.caseId,
@@ -855,7 +856,7 @@ export function mapCanonicalSnapshotToWorkspace({ manifest, snapshot }, investig
     status: 'Completed',
     updatedAt: manifest.generatedAt,
     subjectValue: subject.identifier,
-    subject: { kind: subject.type === 'transaction' ? 'transaction' : 'address', normalized: subject.identifier, display: subject.identifier },
+    subject: { kind: subjectKind, normalized: subject.identifier, display: subject.identifier },
     chainId: subject.chainId,
     chainName: resolveChain(subject.chainId)?.name || `Chain ${subject.chainId}`,
     overallRisk,
@@ -874,7 +875,7 @@ export function mapCanonicalSnapshotToWorkspace({ manifest, snapshot }, investig
       },
       findings, evidence, flow, timeline, transfers,
       assetInventory: snapshot.assetInventory || null,
-      tokenForensics: investigation?.tokenForensics || null,
+      tokenForensics: snapshot.contractToken || investigation?.tokenForensics || null,
     },
   };
 }

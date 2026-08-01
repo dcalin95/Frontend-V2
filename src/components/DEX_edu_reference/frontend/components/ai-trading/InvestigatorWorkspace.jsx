@@ -50,6 +50,8 @@ import InvestigatorTabs from './investigator/InvestigatorTabs';
 import CoverageSummaryBar from './investigator/CoverageSummaryBar';
 import GraphPanel from './investigator/GraphPanel';
 import CapabilityGapsDrawer from './investigator/CapabilityGapsDrawer';
+import { buildAssistantPrompt, parseAssistantExplanation } from './investigator/assistantContract';
+import useDialogFocusTrap from './investigator/useDialogFocusTrap';
 import './investigator-workspace.css';
 import './investigator/investigator-shell.css';
 
@@ -262,32 +264,6 @@ function FindingCard({ finding, expanded, onToggle }) {
   );
 }
 
-function buildAssistantPrompt(investigation, question) {
-  const summary = {
-    subject: investigation?.subject,
-    overview: investigation?.overview,
-    findings: investigation?.result?.findings?.slice(0, 12) || [],
-    evidence: investigation?.result?.evidence?.slice(0, 16) || [],
-    timeline: investigation?.result?.timeline?.slice(0, 12) || [],
-    limitations: investigation?.limitations || [],
-  };
-  return [
-    'You are BITS Investigator assistant.',
-    'Use only the provided investigation data.',
-    'Never invent identities, labels, transfers, or sources.',
-    'Return a concise answer using these sections exactly:',
-    '1. Observed facts',
-    '2. Interpretation',
-    '3. Confidence',
-    '4. Missing information',
-    '5. Suggested next steps',
-    '6. Evidence references',
-    '',
-    `Question: ${question || 'Summarize this investigation.'}`,
-    `Investigation JSON:\n${JSON.stringify(summary, null, 2)}`,
-  ].join('\n');
-}
-
 function getReportDownloadName(investigation) {
   const slug = safeLabel(investigation?.subjectValue || investigation?.id).replace(/[^a-z0-9-_]+/gi, '_').slice(0, 40);
   return `bits-investigator-${slug || 'report'}.json`;
@@ -328,6 +304,8 @@ export default function InvestigatorWorkspace({
   const [assistantLoading, setAssistantLoading] = useState(false);
   const [assistantAnswer, setAssistantAnswer] = useState(null);
   const [assistantError, setAssistantError] = useState('');
+  const historyDialogRef = useDialogFocusTrap(historyOpen, () => setHistoryOpen(false));
+  const archiveDialogRef = useDialogFocusTrap(archivePrompt, () => setArchivePrompt(false));
   const [lossClaim, setLossClaim] = useState({
     reportedAmount: '',
     reportedCurrency: 'EUR',
@@ -680,10 +658,10 @@ export default function InvestigatorWorkspace({
         ],
         walletAddress: walletAddress || dexAuth?.user?.walletAddress || undefined,
       });
-      const content = String(response?.content || response?.response || '').trim();
+      const explanation = parseAssistantExplanation(response?.content || response?.response, activeInvestigation);
       setAssistantAnswer({
         question,
-        content,
+        ...explanation,
         provider: aiProvider || 'unknown',
         createdAt: new Date().toISOString(),
       });
@@ -1513,7 +1491,10 @@ export default function InvestigatorWorkspace({
                   <strong>{assistantAnswer.question}</strong>
                   <small>{formatDateTime(assistantAnswer.createdAt)}</small>
                 </div>
-                <pre>{assistantAnswer.content || 'No response.'}</pre>
+                <p>{assistantAnswer.answer}</p>
+                {assistantAnswer.evidenceIds.length ? <p><strong>Evidence:</strong> {assistantAnswer.evidenceIds.map(shortHash).join(', ')}</p> : null}
+                {assistantAnswer.findingIds.length ? <p><strong>Findings:</strong> {assistantAnswer.findingIds.map(shortHash).join(', ')}</p> : null}
+                {assistantAnswer.limitations.length ? <p><strong>Limitations:</strong> {assistantAnswer.limitations.join(' ')}</p> : null}
               </article>
             ) : (
               <div className="investigator-empty">
@@ -1527,7 +1508,7 @@ export default function InvestigatorWorkspace({
 
       {historyOpen && (
         <div className="investigator-modal" role="dialog" aria-modal="true" aria-labelledby="investigator-history-title">
-          <div className="investigator-modal__body">
+          <div className="investigator-modal__body" ref={historyDialogRef} tabIndex="-1">
             <div className="investigator-modal__header">
               <div>
                 <h3 id="investigator-history-title">Previous investigations</h3>
@@ -1563,7 +1544,7 @@ export default function InvestigatorWorkspace({
 
       {archivePrompt && (
         <div className="investigator-modal" role="dialog" aria-modal="true" aria-labelledby="investigator-archive-title">
-          <div className="investigator-modal__body investigator-modal__body--compact">
+          <div className="investigator-modal__body investigator-modal__body--compact" ref={archiveDialogRef} tabIndex="-1">
             <h3 id="investigator-archive-title">Archive current investigation?</h3>
             <p>This keeps the snapshot in your local history and marks it as archived.</p>
             <div className="investigator-modal__actions">
