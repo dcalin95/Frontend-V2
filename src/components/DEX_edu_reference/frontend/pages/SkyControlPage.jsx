@@ -18,6 +18,16 @@ const tabs = [
 
 const tabKey = (tab) => tab.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 const TIMESTAMP_FIELDS = new Set(['started_at', 'stopped_at', 'last_crash_at', 'created_at', 'updated_at', 'last_heartbeat', 'next_retry_at', 'revoked_at', 'token_ready_at', 'first_seen', 'last_seen', 'event_time', 'starts_at', 'ends_at', 'last_active_at']);
+const SAFE_VIEW_COLUMNS = {
+  'bot-fleet': ['user_id', 'bot_id', 'bot_username', 'bot_first_name', 'status', 'health', 'pid', 'started_at', 'last_heartbeat', 'heartbeat_age_seconds', 'crash_count', 'last_crash_at', 'registration_source'],
+  'users-subscriptions': ['user_id', 'username', 'first_name', 'last_name', 'language', 'status', 'last_active_at', 'quick_status', 'skycloud_status', 'personal_status', 'halcyon_status', 'personal_bot_status'],
+  'admin-timeline': ['admin_id', 'systems', 'total_actions', 'first_seen', 'last_seen', 'actor_type'],
+  payments: ['system', 'order_id', 'transaction_id', 'verified', 'event_time', 'timestamp_source'],
+  channel: ['id', 'user_id', 'purpose', 'status', 'expires_at', 'created_by_admin_id', 'created_at', 'updated_at', 'invite_present'],
+};
+const SENSITIVE_FIELD = /(token|password|secret|authorization|cookie|key|seed|mnemonic)/i;
+const statusLabel = (value) => String(value || 'none').replaceAll('_', ' ').toUpperCase();
+const systemLabel = (value) => ({ quick: 'Quick', skycloud: 'SkyCloud', personal: 'Personal', halcyon: 'Halcyon' }[String(value).toLowerCase()] || String(value));
 export const formatTimestamp = (value) => { const date = value ? new Date(value) : null; return !date || Number.isNaN(date.getTime()) ? '—' : date.toLocaleString(); };
 export const formatRelativeTime = (value) => { const date = value ? new Date(value) : null; if (!date || Number.isNaN(date.getTime())) return '—'; const seconds = Math.max(0, Math.floor((Date.now() - date.getTime()) / 1000)); return seconds < 60 ? `${seconds} sec ago` : seconds < 3600 ? `${Math.floor(seconds / 60)} min ago` : seconds < 86400 ? `${Math.floor(seconds / 3600)} h ago` : `${Math.floor(seconds / 86400)} d ago`; };
 
@@ -42,6 +52,7 @@ function overviewCards(summary) {
   return [
     { title: 'Database Provider', icon: Radio, detail: health?.database === 'connected' ? 'CONNECTED' : 'Unavailable' },
     { title: 'Gateway Runtime', icon: Waypoints, detail: 'NOT CONNECTED' },
+    { title: 'Bot Manager Runtime', icon: Waypoints, detail: 'NOT CONNECTED' },
     { title: 'Bot Fleet Data', icon: Cloud, detail: fleet ? `CONNECTED — ${fleet.total} bots` : 'Unavailable' },
     { title: 'Subscriptions', icon: UsersRound, detail: quick && sky ? `${quick.active_subscriptions + sky.active_subscriptions} active` : 'Unavailable' },
     { title: 'Payments', icon: CreditCard, detail: payments ? `${payments.quick_payment_proofs + payments.skycloud_payment_proofs} proofs` : 'Unavailable' },
@@ -69,7 +80,10 @@ export default function SkyControlPage() {
   const tabId = useId();
   const [summary, setSummary] = useState({ state: 'loading' });
   const [data, setData] = useState({ state: 'idle', items: [] });
-  const [filters, setFilters] = useState({ search: '', status: '' });
+  const [filters, setFilters] = useState({ search: '', status: '', health: '' });
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(50);
+  const [selectedRecord, setSelectedRecord] = useState(null);
   const requestedTab = searchParams.get('tab');
   const activeTab = tabs.some((tab) => tabKey(tab) === requestedTab) ? requestedTab : 'overview';
 
@@ -95,13 +109,16 @@ export default function SkyControlPage() {
     if (!endpoint || activeTab === 'overview') return undefined;
     const controller = new AbortController();
     setData({ state: 'loading', items: [] });
-    fetchSkyControl(endpoint, { signal: controller.signal, params: { page: 1, limit: 50, ...filters } })
+    const params = activeTab === 'bot-fleet' ? { page, limit, ...filters } : activeTab === 'users-subscriptions' ? { page, limit, search: filters.search } : { page, limit };
+    fetchSkyControl(endpoint, { signal: controller.signal, params })
       .then((response) => setData({ state: 'connected', ...response, refreshedAt: new Date().toISOString() }))
       .catch((error) => !controller.signal.aborted && setData({ state: error?.status === 401 || error?.status === 403 ? 'unauthorized' : 'unavailable', items: [] }));
     return () => controller.abort();
-  }, [activeTab, filters.search, filters.status]);
+  }, [activeTab, page, limit, filters.search, filters.status, filters.health]);
 
   const selectTab = (nextTab) => {
+    setPage(1);
+    setSelectedRecord(null);
     setSearchParams(nextTab === 'overview' ? {} : { tab: nextTab }, { replace: true });
   };
 
@@ -200,10 +217,10 @@ export default function SkyControlPage() {
               <div><span className="sky-control-page__eyebrow">LIVE READ-ONLY</span><h2>{tabs.find((tab) => tabKey(tab) === activeTab)}</h2></div>
               {['bot-fleet', 'users-subscriptions', 'admin-timeline', 'payments'].includes(activeTab) && <button type="button" className="sky-control-page__action" onClick={() => exportCsv(data.items, `sky-control-${activeTab}.csv`)} disabled={!data.items?.length}><Download size={14} aria-hidden />Export current view</button>}
             </div>
-            {['bot-fleet', 'users-subscriptions'].includes(activeTab) && <div className="sky-control-page__filters"><input aria-label="Search" value={filters.search} onChange={(event) => setFilters((value) => ({ ...value, search: event.target.value }))} placeholder="Search user or bot" />{activeTab === 'bot-fleet' && <select aria-label="Status" value={filters.status} onChange={(event) => setFilters((value) => ({ ...value, status: event.target.value }))}><option value="">All statuses</option><option value="ACTIVE">Active</option><option value="STOPPED">Stopped</option><option value="CRASHED">Crashed</option><option value="REVOKED">Revoked</option></select>}</div>}
+            {['bot-fleet', 'users-subscriptions'].includes(activeTab) && <div className="sky-control-page__filters"><input aria-label="Search" value={filters.search} onChange={(event) => { setPage(1); setFilters((value) => ({ ...value, search: event.target.value })); }} placeholder={activeTab === 'bot-fleet' ? 'Search user or bot' : 'Search user'} />{activeTab === 'bot-fleet' && <><select aria-label="Status" value={filters.status} onChange={(event) => { setPage(1); setFilters((value) => ({ ...value, status: event.target.value })); }}><option value="">All statuses</option><option value="ACTIVE">Active</option><option value="STOPPED">Stopped</option><option value="CRASHED">Crashed</option><option value="REVOKED">Revoked</option></select><select aria-label="Health" value={filters.health} onChange={(event) => { setPage(1); setFilters((value) => ({ ...value, health: event.target.value })); }}><option value="">All health states</option><option value="HEALTHY">Healthy</option><option value="DEGRADED">Degraded</option><option value="UNHEALTHY">Unhealthy</option></select></>}</div>}
             {activeTab === 'gateway' && <p className="sky-control-page__notice">SERVICE RUNTIME NOT CONNECTED. Database-derived metadata only. No live service control or runtime connection is configured.</p>}
             {activeTab === 'security' && <div className="sky-control-page__security"><strong>Sky Control DB role: {summary.state === 'connected' ? 'READ ONLY CONFIGURED' : 'UNAVAILABLE'}</strong><span>Sensitive projections: excluded</span><span>Response redaction: enabled</span><span>Telegram: NOT CONNECTED</span><span>SSH: NOT CONNECTED</span><span>Write operations: DISABLED</span></div>}
-            {!['gateway', 'security'].includes(activeTab) && (data.state === 'connected' ? <CompactTable items={data.items} forensic={activeTab === 'forensics'} /> : <div className="sky-control-page__empty"><Cloud size={19} aria-hidden /><p>{data.state === 'unauthorized' ? 'Not authorized for Sky Control.' : data.state === 'loading' ? 'Loading read-only data...' : data.state === 'unavailable' ? 'Data unavailable.' : 'Unable to load read-only data.'}</p></div>)}
+            {!['gateway', 'security'].includes(activeTab) && (data.state === 'connected' ? <><CompactTable items={data.items} view={activeTab} forensic={activeTab === 'forensics'} onSelect={setSelectedRecord} /><Pagination page={page} limit={limit} itemCount={data.items?.length || 0} onPageChange={setPage} onLimitChange={(nextLimit) => { setPage(1); setLimit(nextLimit); }} />{selectedRecord && <RecordDrawer view={activeTab} record={selectedRecord} onClose={() => setSelectedRecord(null)} />}</> : <div className="sky-control-page__empty"><Cloud size={19} aria-hidden /><p>{data.state === 'unauthorized' ? 'Not authorized for Sky Control.' : data.state === 'loading' ? 'Loading read-only data...' : data.state === 'unavailable' ? 'Data unavailable.' : 'Unable to load read-only data.'}</p></div>)}
           </div>
         )}
       </section>
@@ -211,10 +228,27 @@ export default function SkyControlPage() {
   );
 }
 
-function CompactTable({ items, forensic }) {
+function CompactTable({ items, view, forensic, onSelect }) {
   if (!items?.length) return <div className="sky-control-page__empty"><p>{forensic ? 'Forensic correlation not configured yet.' : 'No matching read-only records.'}</p></div>;
-  const columns = Object.keys(items[0]).filter((key) => !/(token|password|secret|authorization|cookie|key|seed|mnemonic)/i.test(key)).slice(0, 10);
+  const columns = (SAFE_VIEW_COLUMNS[view] || []).filter((column) => items.some((item) => Object.prototype.hasOwnProperty.call(item, column)) && !SENSITIVE_FIELD.test(column));
+  if (!columns.length) return <div className="sky-control-page__empty"><p>{forensic ? 'Forensic correlation not configured yet.' : 'No safe records are available for this view.'}</p></div>;
   const label = (column) => column === 'transaction_id' ? 'REFERENCE' : column.replaceAll('_', ' ');
-  const safeValue = (item, column) => TIMESTAMP_FIELDS.has(column) ? (column === 'last_heartbeat' ? `${formatTimestamp(item[column])} (${formatRelativeTime(item[column])})` : formatTimestamp(item[column])) : column === 'transaction_id' ? `${item.reference_type || 'unknown'}: ${item.reference_value || '—'}` : typeof item[column] === 'object' ? '—' : String(item[column] ?? '—');
-  return <div className="sky-control-page__table-wrap"><table><thead><tr>{columns.map((column) => <th key={column}>{label(column)}</th>)}</tr></thead><tbody>{items.map((item, index) => <tr key={item.id || item.bot_id || item.order_id || `${index}-${item.user_id}`}>{columns.map((column) => <td key={column} title={TIMESTAMP_FIELDS.has(column) ? String(item[column] || '') : undefined}>{safeValue(item, column)}</td>)}</tr>)}</tbody></table></div>;
+  const safeValue = (item, column) => {
+    if (TIMESTAMP_FIELDS.has(column)) return column === 'last_heartbeat' ? `${formatTimestamp(item[column])} (${formatRelativeTime(item[column])})` : formatTimestamp(item[column]);
+    if (column === 'transaction_id') return <span className="sky-control-page__reference"><small>{item.reference_type || 'none'}</small>{item.reference_value || '-'}</span>;
+    if (column === 'systems' && Array.isArray(item[column])) return item[column].map(systemLabel).join(' · ');
+    if (/(status|health|verified|actor_type|invite_present)$/.test(column)) return <span className="sky-control-page__status-chip">{statusLabel(item[column])}</span>;
+    if (typeof item[column] === 'object') return '-';
+    return String(item[column] ?? '-');
+  };
+  return <div className="sky-control-page__table-wrap sky-control-page__table-wrap--wide" tabIndex="0" aria-label={`${view} records`}><table><thead><tr>{columns.map((column) => <th key={column} scope="col">{label(column)}</th>)}</tr></thead><tbody>{items.map((item, index) => <tr key={item.id || item.bot_id || item.order_id || `${index}-${item.user_id}`} onClick={() => onSelect(item)} tabIndex="0" onKeyDown={(event) => event.key === 'Enter' && onSelect(item)}>{columns.map((column) => <td key={column} title={TIMESTAMP_FIELDS.has(column) ? String(item[column] || '') : undefined}>{safeValue(item, column)}</td>)}</tr>)}</tbody></table></div>;
+}
+
+function Pagination({ page, limit, itemCount, onPageChange, onLimitChange }) {
+  return <div className="sky-control-page__pagination" aria-label="Table pagination"><button type="button" onClick={() => onPageChange(Math.max(1, page - 1))} disabled={page === 1}>Previous</button><span>Page {page}</span><button type="button" onClick={() => onPageChange(page + 1)} disabled={itemCount < limit}>Next</button><label>Rows per page<select value={limit} onChange={(event) => onLimitChange(Number(event.target.value))}><option value={25}>25</option><option value={50}>50</option><option value={100}>100</option></select></label></div>;
+}
+
+function RecordDrawer({ view, record, onClose }) {
+  const fields = Object.entries(record).filter(([key, value]) => !SENSITIVE_FIELD.test(key) && typeof value !== 'object' && value !== null);
+  return <aside className="sky-control-page__drawer" aria-label={`${view} record details`}><div><span className="sky-control-page__eyebrow">READ-ONLY DETAILS</span><button type="button" onClick={onClose}>Close</button></div><h3>{view === 'bot-fleet' ? 'Bot details' : view === 'users-subscriptions' ? 'User details' : 'Record details'}</h3><dl>{fields.map(([key, value]) => <React.Fragment key={key}><dt>{key.replaceAll('_', ' ')}</dt><dd>{TIMESTAMP_FIELDS.has(key) ? formatTimestamp(value) : String(value)}</dd></React.Fragment>)}</dl></aside>;
 }

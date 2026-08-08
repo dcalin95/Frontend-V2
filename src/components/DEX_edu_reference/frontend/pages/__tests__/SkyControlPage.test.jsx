@@ -73,4 +73,20 @@ describe('SkyControlPage', () => {
     expect(screen.getByText('SCHEMA INCOMPATIBLE')).toBeInTheDocument();
     expect(global.fetch).not.toHaveBeenCalled();
   });
+
+  it('renders Bot Fleet from an explicit safe allowlist with pagination', async () => {
+    fetchSkyControl.mockResolvedValue({ items: [{ user_id: '42', bot_id: 'b-1', bot_username: 'bot_alpha', bot_token: 'must-not-render', status: 'ACTIVE', health: 'HEALTHY', started_at: '2026-08-08T00:00:00.000Z', last_heartbeat: '2026-08-08T00:01:00.000Z', crash_count: 0 }] });
+    render(<MemoryRouter initialEntries={['/?tab=bot-fleet']}><SkyControlPage /></MemoryRouter>);
+    expect(await screen.findByText('bot_alpha')).toBeInTheDocument();
+    expect(screen.queryByText('must-not-render')).not.toBeInTheDocument();
+    expect(screen.getByText('Page 1')).toBeInTheDocument();
+    expect(screen.getByLabelText('Health')).toBeInTheDocument();
+  });
+
+  it('formats admin systems safely instead of rendering JSON', async () => {
+    fetchSkyControl.mockResolvedValue({ items: [{ admin_id: '0', systems: ['quick', 'skycloud'], total_actions: 2, actor_type: 'system' }] });
+    render(<MemoryRouter initialEntries={['/?tab=admin-timeline']}><SkyControlPage /></MemoryRouter>);
+    expect(await screen.findByText('Quick · SkyCloud')).toBeInTheDocument();
+    expect(screen.queryByText('["quick","skycloud"]')).not.toBeInTheDocument();
+  });
 });
