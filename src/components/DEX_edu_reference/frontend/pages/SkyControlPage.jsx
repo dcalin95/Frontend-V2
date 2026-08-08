@@ -17,6 +17,9 @@ const tabs = [
 ];
 
 const tabKey = (tab) => tab.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+const TIMESTAMP_FIELDS = new Set(['started_at', 'stopped_at', 'last_crash_at', 'created_at', 'updated_at', 'last_heartbeat', 'next_retry_at', 'revoked_at', 'token_ready_at', 'first_seen', 'last_seen', 'event_time', 'starts_at', 'ends_at', 'last_active_at']);
+export const formatTimestamp = (value) => { const date = value ? new Date(value) : null; return !date || Number.isNaN(date.getTime()) ? '—' : date.toLocaleString(); };
+export const formatRelativeTime = (value) => { const date = value ? new Date(value) : null; if (!date || Number.isNaN(date.getTime())) return '—'; const seconds = Math.max(0, Math.floor((Date.now() - date.getTime()) / 1000)); return seconds < 60 ? `${seconds} sec ago` : seconds < 3600 ? `${Math.floor(seconds / 60)} min ago` : seconds < 86400 ? `${Math.floor(seconds / 3600)} h ago` : `${Math.floor(seconds / 86400)} d ago`; };
 
 function overviewCards(summary) {
   const { health, overview } = summary || {};
@@ -37,9 +40,9 @@ function overviewCards(summary) {
   const fleet = overview?.bot_fleet?.metrics;
   const payments = overview?.payments?.metrics;
   return [
-    { title: 'Gateway', icon: Radio, detail: health?.database === 'connected' ? 'Connected' : 'Unavailable' },
-    { title: 'Bot Manager', icon: Waypoints, detail: overview?.quick?.status === 'available' ? 'Connected' : 'Unavailable' },
-    { title: 'Bot Fleet', icon: Cloud, detail: fleet ? `${fleet.total} bots` : 'Unavailable' },
+    { title: 'Database Provider', icon: Radio, detail: health?.database === 'connected' ? 'CONNECTED' : 'Unavailable' },
+    { title: 'Gateway Runtime', icon: Waypoints, detail: 'NOT CONNECTED' },
+    { title: 'Bot Fleet Data', icon: Cloud, detail: fleet ? `CONNECTED — ${fleet.total} bots` : 'Unavailable' },
     { title: 'Subscriptions', icon: UsersRound, detail: quick && sky ? `${quick.active_subscriptions + sky.active_subscriptions} active` : 'Unavailable' },
     { title: 'Payments', icon: CreditCard, detail: payments ? `${payments.quick_payment_proofs + payments.skycloud_payment_proofs} proofs` : 'Unavailable' },
     { title: 'Admin Activity', icon: FileSearch, detail: quick && sky ? `${quick.admin_actions_total + sky.admin_actions_total} actions` : 'Unavailable' },
@@ -188,7 +191,7 @@ export default function SkyControlPage() {
                     </li>
                   ))}
                 </ul>
-              ) : <p>Schema diagnostics unavailable.</p>}
+              ) : <p>Diagnostics disabled.</p>}
             </section>
           </>
         ) : (
@@ -198,9 +201,9 @@ export default function SkyControlPage() {
               {['bot-fleet', 'users-subscriptions', 'admin-timeline', 'payments'].includes(activeTab) && <button type="button" className="sky-control-page__action" onClick={() => exportCsv(data.items, `sky-control-${activeTab}.csv`)} disabled={!data.items?.length}><Download size={14} aria-hidden />Export current view</button>}
             </div>
             {['bot-fleet', 'users-subscriptions'].includes(activeTab) && <div className="sky-control-page__filters"><input aria-label="Search" value={filters.search} onChange={(event) => setFilters((value) => ({ ...value, search: event.target.value }))} placeholder="Search user or bot" />{activeTab === 'bot-fleet' && <select aria-label="Status" value={filters.status} onChange={(event) => setFilters((value) => ({ ...value, status: event.target.value }))}><option value="">All statuses</option><option value="ACTIVE">Active</option><option value="STOPPED">Stopped</option><option value="CRASHED">Crashed</option><option value="REVOKED">Revoked</option></select>}</div>}
-            {activeTab === 'gateway' && <p className="sky-control-page__notice">SERVICE RUNTIME NOT CONNECTED. This view contains database-derived metadata only.</p>}
+            {activeTab === 'gateway' && <p className="sky-control-page__notice">SERVICE RUNTIME NOT CONNECTED. Database-derived metadata only. No live service control or runtime connection is configured.</p>}
             {activeTab === 'security' && <div className="sky-control-page__security"><strong>Sky Control DB role: {summary.state === 'connected' ? 'READ ONLY CONFIGURED' : 'UNAVAILABLE'}</strong><span>Sensitive projections: excluded</span><span>Response redaction: enabled</span><span>Telegram: NOT CONNECTED</span><span>SSH: NOT CONNECTED</span><span>Write operations: DISABLED</span></div>}
-            {!['gateway', 'security'].includes(activeTab) && (data.state === 'connected' ? <CompactTable items={data.items} /> : <div className="sky-control-page__empty"><Cloud size={19} aria-hidden /><p>{data.state === 'unauthorized' ? 'Not authorized for Sky Control.' : data.state === 'loading' ? 'Loading read-only data...' : 'Data unavailable or schema incompatible.'}</p></div>)}
+            {!['gateway', 'security'].includes(activeTab) && (data.state === 'connected' ? <CompactTable items={data.items} forensic={activeTab === 'forensics'} /> : <div className="sky-control-page__empty"><Cloud size={19} aria-hidden /><p>{data.state === 'unauthorized' ? 'Not authorized for Sky Control.' : data.state === 'loading' ? 'Loading read-only data...' : data.state === 'unavailable' ? 'Data unavailable.' : 'Unable to load read-only data.'}</p></div>)}
           </div>
         )}
       </section>
@@ -208,8 +211,10 @@ export default function SkyControlPage() {
   );
 }
 
-function CompactTable({ items }) {
-  if (!items?.length) return <div className="sky-control-page__empty"><p>No matching read-only records.</p></div>;
+function CompactTable({ items, forensic }) {
+  if (!items?.length) return <div className="sky-control-page__empty"><p>{forensic ? 'Forensic correlation not configured yet.' : 'No matching read-only records.'}</p></div>;
   const columns = Object.keys(items[0]).filter((key) => !/(token|password|secret|authorization|cookie|key|seed|mnemonic)/i.test(key)).slice(0, 10);
-  return <div className="sky-control-page__table-wrap"><table><thead><tr>{columns.map((column) => <th key={column}>{column.replaceAll('_', ' ')}</th>)}</tr></thead><tbody>{items.map((item, index) => <tr key={item.id || item.bot_id || item.order_id || `${index}-${item.user_id}`}>{columns.map((column) => <td key={column}>{typeof item[column] === 'object' ? JSON.stringify(item[column]) : String(item[column] ?? '-')}</td>)}</tr>)}</tbody></table></div>;
+  const label = (column) => column === 'transaction_id' ? 'REFERENCE' : column.replaceAll('_', ' ');
+  const safeValue = (item, column) => TIMESTAMP_FIELDS.has(column) ? (column === 'last_heartbeat' ? `${formatTimestamp(item[column])} (${formatRelativeTime(item[column])})` : formatTimestamp(item[column])) : column === 'transaction_id' ? `${item.reference_type || 'unknown'}: ${item.reference_value || '—'}` : typeof item[column] === 'object' ? '—' : String(item[column] ?? '—');
+  return <div className="sky-control-page__table-wrap"><table><thead><tr>{columns.map((column) => <th key={column}>{label(column)}</th>)}</tr></thead><tbody>{items.map((item, index) => <tr key={item.id || item.bot_id || item.order_id || `${index}-${item.user_id}`}>{columns.map((column) => <td key={column} title={TIMESTAMP_FIELDS.has(column) ? String(item[column] || '') : undefined}>{safeValue(item, column)}</td>)}</tr>)}</tbody></table></div>;
 }
