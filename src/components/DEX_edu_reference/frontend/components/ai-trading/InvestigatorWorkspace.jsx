@@ -770,7 +770,7 @@ export default function InvestigatorWorkspace({
 
   return (
     <main className={`investigator-workspace investigator-workspace--${mode}`} data-active-tab={activeTab}>
-      <header className="investigator-hero">
+      <header className={`investigator-hero ${mode === 'standalone' ? 'investigator-hero--command' : ''}`}>
         {mode === 'standalone' ? (
           <div className="investigator-hero__standalone-title">
             <div className="investigator-hero__topbar">
@@ -884,11 +884,11 @@ export default function InvestigatorWorkspace({
             <Copy size={16} />
             Copy subject
           </button>
-          <button type="button" className="investigator-btn investigator-btn--ghost" onClick={() => scrollToSection('investigator-overview')} disabled={!activeInvestigation}>
+          <button type="button" className="investigator-btn investigator-btn--ghost investigator-btn--jump" onClick={() => scrollToSection('investigator-overview')} disabled={!activeInvestigation}>
             <Sparkles size={16} />
             Jump overview
           </button>
-          <button type="button" className="investigator-btn investigator-btn--ghost" onClick={() => scrollToSection('investigator-findings')} disabled={!activeInvestigation}>
+          <button type="button" className="investigator-btn investigator-btn--ghost investigator-btn--jump" onClick={() => scrollToSection('investigator-findings')} disabled={!activeInvestigation}>
             <ArrowRight size={16} />
             Jump findings
           </button>
