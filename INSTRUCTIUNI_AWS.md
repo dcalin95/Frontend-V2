@@ -1,47 +1,38 @@
-# 🔑 CREAREA CORECTĂ A AWS ACCESS KEY
+# Creating an AWS access key
 
-## PASUL 1: Șterge cheia existentă (dacă nu ai salvat Secret Key)
+## Step 1: Remove the existing key when its secret was not saved
 
-1. Bifează checkbox-ul lângă `AKIASCBGTJMJ2UNA517U`
-2. Click pe `Actions` → `Delete`
-3. Confirmă ștergerea
-
----
-
-## PASUL 2: Creează cheie nouă
-
-1. Click pe butonul **"Create access key"** (în partea de sus, dreapta)
-2. **Alege use case:** "Command Line Interface (CLI)"
-3. Bifează: ☑ "I understand the above recommendation..."
-4. Click **"Next"**
-5. (Opțional) Pune un tag/descriere: "BitSwap CLI Deploy"
-6. Click **"Create access key"**
+1. Select the existing access key in IAM.
+2. Choose `Actions` then `Delete`.
+3. Confirm the deletion.
 
 ---
 
-## PASUL 3: SALVEAZĂ CREDENȚIALELE! ⚠️
+## Step 2: Create a new key
 
-### Vei vedea un ecran cu:
+1. Select **Create access key**.
+2. Choose the **Command Line Interface (CLI)** use case.
+3. Confirm the AWS recommendation notice.
+4. Select **Next**.
+5. Optionally add a description such as `BitSwap CLI Deploy`.
+6. Select **Create access key**.
 
-```
-✅ Access key created successfully
+---
 
-Access key: AKIA.....................
-Secret access key: wJalr.............................
+## Step 3: Store credentials safely
 
-⚠️ This is the only time you can view or download the secret access key.
+AWS shows the secret access key only once. Store credentials in a secure secret manager and never commit them to source control, documentation, logs, or browser-delivered files.
+
+```text
+AWS_ACCESS_KEY_ID=<REDACTED>
+AWS_SECRET_ACCESS_KEY=<REDACTED>
 ```
 
-### **COPIAZĂ AMBELE:**
-
-1. **Access Key ID** → Salvează într-un notepad
-2. **Secret Access Key** → Salvează într-un notepad
-
-**SAU** click pe **"Download .csv file"** → salvează fișierul în siguranță!
+If a real credential was ever committed or exposed, revoke it and create a replacement before deployment.
 
 ---
 
-## PASUL 4: Configurează AWS CLI
+## Step 4: Configure the AWS CLI
 
 ```bash
 aws configure
@@ -54,22 +45,14 @@ Default output format [None]: json
 
 ---
 
-## ✅ TESTEAZĂ:
+## Test the configured identity
 
 ```bash
 aws sts get-caller-identity
 ```
 
-Ar trebui să vezi:
-```json
-{
-    "UserId": "AIDA...",
-    "Account": "897729121043",
-    "Arn": "arn:aws:iam::897729121043:user/..."
-}
-```
+The response should identify the intended AWS account and IAM user. Do not paste credentials into the response, terminal logs, or project files.
 
 ---
 
-🚀 **GATA! ACUM POȚI RULA:** `deploy-s3.bat`
-
+After the identity check succeeds, use the established deployment workflow such as `deploy-s3.bat`.
