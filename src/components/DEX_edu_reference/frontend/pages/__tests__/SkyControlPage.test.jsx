@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import SkyControlPage, { formatRelativeTime, formatTimestamp } from '../SkyControlPage';
-import { fetchSkyControl, fetchSkyControlSummary } from '../../services/skyControlService';
+import { fetchSkyControl, fetchSkyControlSummary, searchSkyControlForensics, fetchSkyControlForensicEntity, fetchSkyControlForensicGraph, fetchSkyControlForensicTimeline, fetchSkyControlForensicAnomalies, fetchSkyControlForensicExport } from '../../services/skyControlService';
 
 jest.mock('../../services/skyControlService', () => ({
   fetchSkyControlSummary: jest.fn().mockResolvedValue({
@@ -15,6 +15,12 @@ jest.mock('../../services/skyControlService', () => ({
     },
   }),
   fetchSkyControl: jest.fn().mockResolvedValue({ items: [] }),
+  searchSkyControlForensics: jest.fn(),
+  fetchSkyControlForensicEntity: jest.fn(),
+  fetchSkyControlForensicGraph: jest.fn(),
+  fetchSkyControlForensicTimeline: jest.fn(),
+  fetchSkyControlForensicAnomalies: jest.fn(),
+  fetchSkyControlForensicExport: jest.fn(),
 }));
 
 describe('SkyControlPage', () => {
@@ -88,5 +94,21 @@ describe('SkyControlPage', () => {
     render(<MemoryRouter initialEntries={['/?tab=admin-timeline']}><SkyControlPage /></MemoryRouter>);
     expect(await screen.findByText('Quick · SkyCloud')).toBeInTheDocument();
     expect(screen.queryByText('["quick","skycloud"]')).not.toBeInTheDocument();
+  });
+
+  it('loads the bounded forensic workspace without changing other Sky Control tabs', async () => {
+    searchSkyControlForensics.mockResolvedValue({ count: 1, candidates: [{ entity_type: 'user', entity_id: '42', label: 'Safe user' }] });
+    fetchSkyControlForensicGraph.mockResolvedValue({ seed: { label: 'Safe user' }, nodes: [], edges: [], metadata: {} });
+    fetchSkyControlForensicEntity.mockResolvedValue({ entity: { type: 'user', label: 'Safe user' } });
+    fetchSkyControlForensicTimeline.mockResolvedValue({ events: [], pagination: {} });
+    fetchSkyControlForensicAnomalies.mockResolvedValue({ anomalies: [], pagination: {} });
+    render(<MemoryRouter initialEntries={['/?tab=forensics']}><SkyControlPage /></MemoryRouter>);
+    fireEvent.change(screen.getByLabelText('Forensic search'), { target: { value: '42' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Search' }));
+    expect(await screen.findByText('user: Safe user')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'user: Safe user' }));
+    expect(await screen.findByText('Case graph')).toBeInTheDocument();
+    expect(screen.getByText('Investigator prefill unavailable')).toBeInTheDocument();
+    expect(screen.getAllByText('DIRECT').length).toBeGreaterThan(0);
   });
 });
