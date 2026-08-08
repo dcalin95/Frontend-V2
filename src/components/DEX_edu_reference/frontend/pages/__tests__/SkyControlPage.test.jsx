@@ -2,10 +2,24 @@ import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import SkyControlPage from '../SkyControlPage';
+import { fetchSkyControlSummary } from '../../services/skyControlService';
+
+jest.mock('../../services/skyControlService', () => ({
+  fetchSkyControlSummary: jest.fn().mockResolvedValue({
+    health: { database: 'connected' },
+    overview: {
+      quick: { status: 'available', metrics: { active_subscriptions: 1, admin_actions_total: 2 } },
+      skycloud: { status: 'available', metrics: { active_subscriptions: 3, admin_actions_total: 4 } },
+      bot_fleet: { metrics: { total: 5 } },
+      payments: { metrics: { quick_payment_proofs: 6, skycloud_payment_proofs: 7 } },
+    },
+  }),
+}));
 
 describe('SkyControlPage', () => {
   beforeEach(() => {
     global.fetch = jest.fn();
+    fetchSkyControlSummary.mockImplementation(() => new Promise(() => {}));
   });
 
   afterEach(() => {
@@ -18,7 +32,7 @@ describe('SkyControlPage', () => {
     expect(screen.getByRole('heading', { name: 'Sky Control' })).toBeInTheDocument();
     expect(screen.getByText('READ ONLY')).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: 'Overview' })).toHaveAttribute('aria-selected', 'true');
-    expect(screen.getAllByText('Not connected')).toHaveLength(3);
+    expect(screen.getAllByText('Loading')).toHaveLength(6);
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
@@ -30,6 +44,22 @@ describe('SkyControlPage', () => {
 
     expect(screen.getByRole('tab', { name: 'Gateway' })).toHaveAttribute('aria-selected', 'true');
     expect(screen.getByText('Data provider not configured. This Phase 1 view is intentionally read only.')).toBeInTheDocument();
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it('renders only safe overview summaries after the provider connects', async () => {
+    fetchSkyControlSummary.mockResolvedValue({
+      health: { database: 'connected' },
+      overview: {
+        quick: { status: 'available', metrics: { active_subscriptions: 1, admin_actions_total: 2 } },
+        skycloud: { status: 'available', metrics: { active_subscriptions: 3, admin_actions_total: 4 } },
+        bot_fleet: { metrics: { total: 5 } },
+        payments: { metrics: { quick_payment_proofs: 6, skycloud_payment_proofs: 7 } },
+      },
+    });
+    render(<MemoryRouter><SkyControlPage /></MemoryRouter>);
+    expect(await screen.findByText('5 bots')).toBeInTheDocument();
+    expect(screen.getByText('4 active')).toBeInTheDocument();
     expect(global.fetch).not.toHaveBeenCalled();
   });
 });
