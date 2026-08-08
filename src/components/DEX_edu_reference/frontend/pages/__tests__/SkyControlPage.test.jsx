@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import SkyControlPage from '../SkyControlPage';
-import { fetchSkyControlSummary } from '../../services/skyControlService';
+import { fetchSkyControl, fetchSkyControlSummary } from '../../services/skyControlService';
 
 jest.mock('../../services/skyControlService', () => ({
   fetchSkyControlSummary: jest.fn().mockResolvedValue({
@@ -14,12 +14,14 @@ jest.mock('../../services/skyControlService', () => ({
       payments: { metrics: { quick_payment_proofs: 6, skycloud_payment_proofs: 7 } },
     },
   }),
+  fetchSkyControl: jest.fn().mockResolvedValue({ items: [] }),
 }));
 
 describe('SkyControlPage', () => {
   beforeEach(() => {
     global.fetch = jest.fn();
     fetchSkyControlSummary.mockImplementation(() => new Promise(() => {}));
+    fetchSkyControl.mockImplementation(() => new Promise(() => {}));
   });
 
   afterEach(() => {
@@ -43,7 +45,7 @@ describe('SkyControlPage', () => {
     fireEvent.keyDown(overview, { key: 'ArrowRight' });
 
     expect(screen.getByRole('tab', { name: 'Gateway' })).toHaveAttribute('aria-selected', 'true');
-    expect(screen.getByText('Data provider not configured. This Phase 1 view is intentionally read only.')).toBeInTheDocument();
+    expect(screen.getByText('SERVICE RUNTIME NOT CONNECTED. This view contains database-derived metadata only.')).toBeInTheDocument();
     expect(global.fetch).not.toHaveBeenCalled();
   });
 

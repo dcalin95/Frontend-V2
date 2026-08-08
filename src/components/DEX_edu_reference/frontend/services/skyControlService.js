@@ -1,6 +1,6 @@
 import { getBackendUrl } from '../../../../config/apiEndpoints';
 
-async function requestSkyControl(path, signal) {
+export async function requestSkyControl(path, signal) {
   const base = String(getBackendUrl() || '').replace(/\/$/, '');
   const response = await fetch(`${base}/api/sky-control${path}`, {
     method: 'GET',
@@ -15,6 +15,11 @@ async function requestSkyControl(path, signal) {
     throw error;
   }
   return payload;
+}
+
+export function fetchSkyControl(path, { signal, params } = {}) {
+  const query = params ? `?${new URLSearchParams(Object.entries(params).filter(([, value]) => value !== '' && value != null)).toString()}` : '';
+  return requestSkyControl(`${path}${query}`, signal);
 }
 
 export function fetchSkyControlSummary(signal) {

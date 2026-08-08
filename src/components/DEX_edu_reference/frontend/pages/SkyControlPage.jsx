@@ -1,8 +1,8 @@
 import React, { useEffect, useId, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, Cloud, CreditCard, FileSearch, LockKeyhole, Radio, ShieldCheck, UsersRound, Waypoints } from 'lucide-react';
+import { ArrowLeft, Cloud, CreditCard, Download, FileSearch, LockKeyhole, Radio, RefreshCw, ShieldCheck, UsersRound, Waypoints } from 'lucide-react';
 import './sky-control-page.css';
-import { fetchSkyControlSummary } from '../services/skyControlService';
+import { fetchSkyControl, fetchSkyControlSummary } from '../services/skyControlService';
 
 const tabs = [
   'Overview',
@@ -46,25 +46,57 @@ function overviewCards(summary) {
   ];
 }
 
+const endpointByTab = {
+  'bot-fleet': '/bot-fleet', 'users-subscriptions': '/users', 'admin-timeline': '/admins',
+  payments: '/payments', channel: '/channel-invites', gateway: '/overview', security: '/health',
+};
+
+function exportCsv(items, filename) {
+  if (!items?.length) return;
+  const keys = [...new Set(items.flatMap((item) => Object.keys(item)))].filter((key) => !/(token|password|secret|authorization|cookie|key|seed|mnemonic)/i.test(key));
+  const quote = (value) => `"${String(value ?? '').replace(/"/g, '""')}"`;
+  const body = [keys.join(','), ...items.map((item) => keys.map((key) => quote(item[key])).join(','))].join('\n');
+  const url = URL.createObjectURL(new Blob([body], { type: 'text/csv;charset=utf-8' }));
+  const link = document.createElement('a'); link.href = url; link.download = filename; link.click(); URL.revokeObjectURL(url);
+}
+
 export default function SkyControlPage() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const tabId = useId();
   const [summary, setSummary] = useState({ state: 'loading' });
+  const [data, setData] = useState({ state: 'idle', items: [] });
+  const [filters, setFilters] = useState({ search: '', status: '' });
   const requestedTab = searchParams.get('tab');
   const activeTab = tabs.some((tab) => tabKey(tab) === requestedTab) ? requestedTab : 'overview';
 
-  useEffect(() => {
-    const controller = new AbortController();
-    fetchSkyControlSummary(controller.signal)
-      .then(({ health, overview, schema }) => setSummary({ state: 'connected', health, overview, schema }))
+  const refreshSummary = (signal) => {
+    setSummary((current) => ({ ...current, state: 'loading' }));
+    return fetchSkyControlSummary(signal)
+      .then(({ health, overview, schema }) => setSummary({ state: 'connected', health, overview, schema, refreshedAt: new Date().toISOString() }))
       .catch((error) => {
-        if (controller.signal.aborted) return;
+        if (signal?.aborted) return;
         const state = error?.status === 401 || error?.status === 403 ? 'unauthorized' : error?.status === 503 ? 'unavailable' : 'error';
         setSummary({ state });
       });
+  };
+
+  useEffect(() => {
+    const controller = new AbortController();
+    refreshSummary(controller.signal);
     return () => controller.abort();
   }, []);
+
+  useEffect(() => {
+    const endpoint = endpointByTab[activeTab];
+    if (!endpoint || activeTab === 'overview') return undefined;
+    const controller = new AbortController();
+    setData({ state: 'loading', items: [] });
+    fetchSkyControl(endpoint, { signal: controller.signal, params: { page: 1, limit: 50, ...filters } })
+      .then((response) => setData({ state: 'connected', ...response, refreshedAt: new Date().toISOString() }))
+      .catch((error) => !controller.signal.aborted && setData({ state: error?.status === 401 || error?.status === 403 ? 'unauthorized' : 'unavailable', items: [] }));
+    return () => controller.abort();
+  }, [activeTab, filters.search, filters.status]);
 
   const selectTab = (nextTab) => {
     setSearchParams(nextTab === 'overview' ? {} : { tab: nextTab }, { replace: true });
@@ -105,6 +137,7 @@ export default function SkyControlPage() {
             <span>{summary.state === 'connected' ? 'LIVE READ-ONLY PostgreSQL provider.' : 'Read-only provider status is loading.'}</span>
           </div>
         </div>
+        <div className="sky-control-page__utility"><span>Operational controls disabled</span><span>{summary.refreshedAt ? `Last refreshed: ${new Date(summary.refreshedAt).toLocaleTimeString()}` : 'Not refreshed yet'}</span><button type="button" onClick={() => refreshSummary() }><RefreshCw size={14} aria-hidden />Refresh</button></div>
       </header>
 
       <nav className="sky-control-page__tabs" aria-label="Sky Control sections">
@@ -159,13 +192,24 @@ export default function SkyControlPage() {
             </section>
           </>
         ) : (
-          <div className="sky-control-page__empty">
-            <Cloud size={19} aria-hidden />
-            <h2>{tabs.find((tab) => tabKey(tab) === activeTab)}</h2>
-            <p>Data provider not configured. This Phase 1 view is intentionally read only.</p>
+          <div className="sky-control-page__workspace">
+            <div className="sky-control-page__workspace-head">
+              <div><span className="sky-control-page__eyebrow">LIVE READ-ONLY</span><h2>{tabs.find((tab) => tabKey(tab) === activeTab)}</h2></div>
+              {['bot-fleet', 'users-subscriptions', 'admin-timeline', 'payments'].includes(activeTab) && <button type="button" className="sky-control-page__action" onClick={() => exportCsv(data.items, `sky-control-${activeTab}.csv`)} disabled={!data.items?.length}><Download size={14} aria-hidden />Export current view</button>}
+            </div>
+            {['bot-fleet', 'users-subscriptions'].includes(activeTab) && <div className="sky-control-page__filters"><input aria-label="Search" value={filters.search} onChange={(event) => setFilters((value) => ({ ...value, search: event.target.value }))} placeholder="Search user or bot" />{activeTab === 'bot-fleet' && <select aria-label="Status" value={filters.status} onChange={(event) => setFilters((value) => ({ ...value, status: event.target.value }))}><option value="">All statuses</option><option value="ACTIVE">Active</option><option value="STOPPED">Stopped</option><option value="CRASHED">Crashed</option><option value="REVOKED">Revoked</option></select>}</div>}
+            {activeTab === 'gateway' && <p className="sky-control-page__notice">SERVICE RUNTIME NOT CONNECTED. This view contains database-derived metadata only.</p>}
+            {activeTab === 'security' && <div className="sky-control-page__security"><strong>Sky Control DB role: {summary.state === 'connected' ? 'READ ONLY CONFIGURED' : 'UNAVAILABLE'}</strong><span>Sensitive projections: excluded</span><span>Response redaction: enabled</span><span>Telegram: NOT CONNECTED</span><span>SSH: NOT CONNECTED</span><span>Write operations: DISABLED</span></div>}
+            {!['gateway', 'security'].includes(activeTab) && (data.state === 'connected' ? <CompactTable items={data.items} /> : <div className="sky-control-page__empty"><Cloud size={19} aria-hidden /><p>{data.state === 'unauthorized' ? 'Not authorized for Sky Control.' : data.state === 'loading' ? 'Loading read-only data...' : 'Data unavailable or schema incompatible.'}</p></div>)}
           </div>
         )}
       </section>
     </main>
   );
+}
+
+function CompactTable({ items }) {
+  if (!items?.length) return <div className="sky-control-page__empty"><p>No matching read-only records.</p></div>;
+  const columns = Object.keys(items[0]).filter((key) => !/(token|password|secret|authorization|cookie|key|seed|mnemonic)/i.test(key)).slice(0, 10);
+  return <div className="sky-control-page__table-wrap"><table><thead><tr>{columns.map((column) => <th key={column}>{column.replaceAll('_', ' ')}</th>)}</tr></thead><tbody>{items.map((item, index) => <tr key={item.id || item.bot_id || item.order_id || `${index}-${item.user_id}`}>{columns.map((column) => <td key={column}>{typeof item[column] === 'object' ? JSON.stringify(item[column]) : String(item[column] ?? '-')}</td>)}</tr>)}</tbody></table></div>;
 }
