@@ -20,6 +20,6 @@ describe('Sky Control shell integration', () => {
     expect(app).toContain('<DexAuthProvider>');
     expect(app).toContain('<ProtectedRoute requireAuth={true}');
     expect(app).toContain('<Navigate to="/" replace />');
-    expect(dexApp).not.toContain('path="sky-control"');
+    expect(dexApp).toContain('path="sky-control" element={<Navigate to="/sky-control" replace />}');
   });
 });

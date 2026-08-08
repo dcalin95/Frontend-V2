@@ -154,6 +154,7 @@ function DEXRoutes() {
         <Route index element={<Navigate to={`${DEX_BASE_PATH}/dashboard`} replace />} />
         <Route path="dashboard" element={<Dashboard userId={userId || walletAddress} />} />
         <Route path="investigator" element={<ErrorBoundary><InvestigatorPage /></ErrorBoundary>} />
+        <Route path="sky-control" element={<Navigate to="/sky-control" replace />} />
         <Route path="swap" element={<Swap />} />
         <Route path="trade" element={<Trade />} />
         <Route path="open-orders" element={<OpenOrdersPage />} />
