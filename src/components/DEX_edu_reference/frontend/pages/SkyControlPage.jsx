@@ -1344,6 +1344,12 @@ function LimitationsPanel({ capabilities }) {
       {notes.map(([, note]) => (
         <p key={note}>{note}</p>
       ))}
+      <p>Investigator prefill unavailable</p>
+      <p>
+        The current Investigator route has no supported URL, query, or state
+        prefill contract, so Sky Control does not automatically transfer
+        identifiers.
+      </p>
     </section>
   );
 }

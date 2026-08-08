@@ -945,6 +945,13 @@ describe("SkyControlPage", () => {
       "Invoice status timeline unavailable",
       "Invite mismatch rule unavailable",
     ].forEach((note) => expect(limits).toHaveTextContent(note));
+    expect(limits).toHaveTextContent("Investigator prefill unavailable");
+    expect(limits).toHaveTextContent(
+      /does not automatically transfer identifiers/i,
+    );
+    expect(
+      screen.queryByRole("button", { name: /open in investigator/i }),
+    ).not.toBeInTheDocument();
   });
 
   it.each(["INFO", "LOW", "MEDIUM", "HIGH"])(
