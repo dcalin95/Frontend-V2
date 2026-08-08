@@ -759,7 +759,7 @@ const Header = ({
         </Link>
         {ENABLE_SKY_CONTROL ? (
           <Link
-            to="/sky-control"
+            to="/dex-edu/sky-control"
             className="dex-header-investigator-link"
             aria-label="Open Sky Control"
             title="Sky Control - private read-only workspace"
