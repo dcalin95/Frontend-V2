@@ -13,7 +13,7 @@
 
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { Wallet, Settings, Coins, Loader2, Palette, Send, X, BookOpen, LogOut, Activity, Layers, TrendingUp, User, Mail, Fingerprint, ChevronDown, Copy, Check, Menu, Search } from 'lucide-react';
+import { Wallet, Settings, Coins, Loader2, Palette, Send, X, BookOpen, LogOut, Activity, Layers, TrendingUp, User, Mail, Fingerprint, ChevronDown, Copy, Check, Menu, Search, Cloud } from 'lucide-react';
 import PersonalAccountHeaderBadge from '../frontend/components/ai-trading/PersonalAccountHeaderBadge';
 import ChainToggle from './ChainToggle';
 import { useDexAuth } from '../frontend/context/DexAuthContext';
@@ -44,6 +44,7 @@ import { getChainDisplay } from '../frontend/utils/chainDisplayConfig';
 import { tokenIconMap } from '../frontend/assets/icons/tokenIconMap';
 import { toast } from 'react-toastify';
 import ProfileAvatarDisplay from '../frontend/components/profile/ProfileAvatarDisplay';
+import { ENABLE_SKY_CONTROL } from '../utils/DEX/constants';
 
 function useSeiUsdPrice() {
   const [price, setPrice] = React.useState(null);
@@ -756,6 +757,17 @@ const Header = ({
           <Search size={15} aria-hidden />
           <span>Investigator</span>
         </Link>
+        {ENABLE_SKY_CONTROL ? (
+          <Link
+            to="/dex-edu/sky-control"
+            className="dex-header-investigator-link"
+            aria-label="Open Sky Control"
+            title="Sky Control - private read-only workspace"
+          >
+            <Cloud size={15} aria-hidden />
+            <span>Sky Control</span>
+          </Link>
+        ) : null}
         {/* OTA tools slot (Signals Only, BNB, Analyze): portal from OTAPage, next to Social. */}
         <div id="dex-header-ota-tools-slot" className="dex-header-ota-tools-slot" />
         {/* Social / Docs: compact top-right links. */}

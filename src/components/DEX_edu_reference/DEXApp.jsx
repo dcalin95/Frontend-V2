@@ -39,12 +39,14 @@ import './frontend/styles/components/dex-mobile.css';        // 📱 Ecrane mici
 import './frontend/styles/components/responsive-hardening.css'; // 📱 Responsive hardening: no overflow, tap targets, wrap
 
 import { useDexAuth } from './frontend/context/DexAuthContext';
+import { ENABLE_SKY_CONTROL } from './utils/DEX/constants';
 
 const DEX_BASE_PATH = '/dex-edu';
 
 // Lazy load pages din frontend/ (scheletul complet copiat din Proiect)
 const Dashboard = lazy(() => import('./frontend/pages/Dashboard'));
 const InvestigatorPage = lazy(() => import('./frontend/pages/InvestigatorPage'));
+const SkyControlPage = lazy(() => import('./frontend/pages/SkyControlPage'));
 const Swap = lazy(() => import('./frontend/pages/Swap'));
 const Trade = lazy(() =>
   import('./frontend/pages/Trade').catch(err => {
@@ -154,6 +156,14 @@ function DEXRoutes() {
         <Route index element={<Navigate to={`${DEX_BASE_PATH}/dashboard`} replace />} />
         <Route path="dashboard" element={<Dashboard userId={userId || walletAddress} />} />
         <Route path="investigator" element={<ErrorBoundary><InvestigatorPage /></ErrorBoundary>} />
+        <Route
+          path="sky-control"
+          element={ENABLE_SKY_CONTROL ? (
+            <ProtectedRoute requireAuth={true} showLoginModal={true} authVariant="email">
+              <ErrorBoundary><SkyControlPage /></ErrorBoundary>
+            </ProtectedRoute>
+          ) : <Navigate to={`${DEX_BASE_PATH}/dashboard`} replace />}
+        />
         <Route path="swap" element={<Swap />} />
         <Route path="trade" element={<Trade />} />
         <Route path="open-orders" element={<OpenOrdersPage />} />

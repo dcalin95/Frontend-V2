@@ -1,0 +1,32 @@
+.sky-control-page {
+  width: min(calc(100% - 32px), 1120px);
+  min-width: 0;
+  margin: 0 auto;
+  padding: 26px 0 56px;
+  color: var(--ds-text-primary, #f5f7fb);
+}
+
+.sky-control-page *, .sky-control-page *::before, .sky-control-page *::after { box-sizing: border-box; }
+.sky-control-page__header { padding-bottom: 18px; border-bottom: 1px solid var(--ds-border, #20242c); }
+.sky-control-page__topline, .sky-control-page__title-row, .sky-control-page__card-title { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.sky-control-page__back { display: inline-flex; align-items: center; gap: 7px; min-height: 30px; padding: 0; color: var(--ds-text-secondary, #8d98a8); background: transparent; border: 0; font: inherit; font-size: .76rem; cursor: pointer; }
+.sky-control-page__back:hover { color: var(--ds-text-primary, #f5f7fb); }
+.sky-control-page__read-only { display: inline-flex; align-items: center; gap: 6px; padding: 5px 8px; color: #9ac8ff; background: #0c1624; border: 1px solid #294d76; border-radius: 5px; font-size: .66rem; font-weight: 800; letter-spacing: .1em; }
+.sky-control-page__title-row { align-items: end; margin-top: 26px; }
+.sky-control-page__eyebrow { display: block; margin-bottom: 7px; color: var(--ds-accent, #63aaf7); font-size: .68rem; font-weight: 800; letter-spacing: .14em; }
+.sky-control-page h1, .sky-control-page h2, .sky-control-page p { margin: 0; }
+.sky-control-page h1 { font-size: clamp(2.1rem, 4vw, 3.3rem); letter-spacing: -.055em; line-height: .95; }
+.sky-control-page__title-row > div > p { margin-top: 12px; color: var(--ds-text-secondary, #8d98a8); font-size: .9rem; }
+.sky-control-page__boundary { display: flex; align-items: flex-start; gap: 8px; max-width: 320px; padding: 10px 12px; color: var(--ds-text-secondary, #a4b0c0); background: #0b0d11; border: 1px solid var(--ds-border, #20242c); border-radius: 7px; font-size: .74rem; line-height: 1.4; }
+.sky-control-page__boundary svg { flex: 0 0 auto; color: #63aaf7; }
+.sky-control-page__tabs { margin: 18px 0 12px; overflow-x: auto; }
+.sky-control-page__tabs [role="tablist"] { display: flex; width: max-content; gap: 6px; padding-bottom: 9px; border-bottom: 1px solid var(--ds-border, #20242c); }
+.sky-control-page__tabs button { min-height: 30px; padding: 0 9px; color: var(--ds-text-secondary, #8d98a8); background: transparent; border: 1px solid transparent; border-radius: 5px; font: inherit; font-size: .72rem; white-space: nowrap; cursor: pointer; }
+.sky-control-page__tabs button:hover, .sky-control-page__tabs button.is-active { color: var(--ds-text-primary, #f5f7fb); border-color: #2c5684; background: #121a26; }
+.sky-control-page__panel { padding: 16px; background: #0b0d11; border: 1px solid var(--ds-border, #20242c); border-radius: 8px; }
+.sky-control-page__card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.sky-control-page__card { min-height: 132px; padding: 14px; background: #080a0e; border: 1px solid #202a37; border-radius: 7px; }
+.sky-control-page__card-title { justify-content: flex-start; color: var(--ds-text-primary, #f5f7fb); }
+.sky-control-page__card-title svg { color: #69aefa; }.sky-control-page__card h2 { font-size: .88rem; }.sky-control-page__card p { margin-top: 30px; color: var(--ds-text-secondary, #8d98a8); font-size: .7rem; }.sky-control-page__card strong { display: block; margin-top: 5px; color: #c1cbd8; font-size: .8rem; }.sky-control-page__empty { display: grid; min-height: 190px; place-content: center; justify-items: center; gap: 8px; text-align: center; color: var(--ds-text-secondary, #8d98a8); }.sky-control-page__empty svg { color: #69aefa; }.sky-control-page__empty h2 { color: var(--ds-text-primary, #f5f7fb); font-size: 1rem; }.sky-control-page__empty p { max-width: 48ch; font-size: .8rem; line-height: 1.5; }.sky-control-page :is(button, a):focus-visible { outline: 2px solid #8ac7ff; outline-offset: 2px; }
+@media (max-width: 860px) { .sky-control-page__card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }.sky-control-page__title-row { align-items: flex-start; flex-direction: column; }.sky-control-page__boundary { max-width: 520px; } }
+@media (max-width: 560px) { .sky-control-page { width: calc(100% - 16px); padding-top: 14px; }.sky-control-page__title-row { margin-top: 18px; }.sky-control-page h1 { font-size: 2.25rem; }.sky-control-page__card-grid { grid-template-columns: 1fr; }.sky-control-page__panel { padding: 10px; } }
