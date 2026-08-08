@@ -21,5 +21,6 @@ export function fetchSkyControlSummary(signal) {
   return Promise.all([
     requestSkyControl('/health', signal),
     requestSkyControl('/overview', signal),
-  ]).then(([health, overview]) => ({ health, overview }));
+    requestSkyControl('/schema', signal).catch(() => null),
+  ]).then(([health, overview, schema]) => ({ health, overview, schema }));
 }

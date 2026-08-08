@@ -56,10 +56,12 @@ describe('SkyControlPage', () => {
         bot_fleet: { metrics: { total: 5 } },
         payments: { metrics: { quick_payment_proofs: 6, skycloud_payment_proofs: 7 } },
       },
+      schema: { tables: [{ table: 'users', compatible: true }, { table: 'halcyon_user_bots', compatible: false }] },
     });
     render(<MemoryRouter><SkyControlPage /></MemoryRouter>);
     expect(await screen.findByText('5 bots')).toBeInTheDocument();
     expect(screen.getByText('4 active')).toBeInTheDocument();
+    expect(screen.getByText('SCHEMA INCOMPATIBLE')).toBeInTheDocument();
     expect(global.fetch).not.toHaveBeenCalled();
   });
 });

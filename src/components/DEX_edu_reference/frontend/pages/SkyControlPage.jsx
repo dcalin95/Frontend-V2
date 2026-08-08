@@ -57,7 +57,7 @@ export default function SkyControlPage() {
   useEffect(() => {
     const controller = new AbortController();
     fetchSkyControlSummary(controller.signal)
-      .then(({ health, overview }) => setSummary({ state: 'connected', health, overview }))
+      .then(({ health, overview, schema }) => setSummary({ state: 'connected', health, overview, schema }))
       .catch((error) => {
         if (controller.signal.aborted) return;
         const state = error?.status === 401 || error?.status === 403 ? 'unauthorized' : error?.status === 503 ? 'unavailable' : 'error';
@@ -102,7 +102,7 @@ export default function SkyControlPage() {
           </div>
           <div className="sky-control-page__boundary" role="note">
             <ShieldCheck size={17} aria-hidden />
-            <span>{summary.state === 'connected' ? 'Read-only PostgreSQL provider connected.' : 'Read-only provider status is loading.'}</span>
+            <span>{summary.state === 'connected' ? 'LIVE READ-ONLY PostgreSQL provider.' : 'Read-only provider status is loading.'}</span>
           </div>
         </div>
       </header>
@@ -133,15 +133,31 @@ export default function SkyControlPage() {
 
       <section id={`${tabId}-panel`} role="tabpanel" aria-label={`${tabs.find((tab) => tabKey(tab) === activeTab)} section`} className="sky-control-page__panel">
         {activeTab === 'overview' ? (
-          <div className="sky-control-page__card-grid">
-            {overviewCards(summary).map(({ title, icon: Icon, detail }) => (
-              <article key={title} className="sky-control-page__card">
-                <div className="sky-control-page__card-title"><Icon size={17} aria-hidden /><h2>{title}</h2></div>
-                <p>Status</p>
-                <strong>{detail}</strong>
-              </article>
-            ))}
-          </div>
+          <>
+            <div className="sky-control-page__card-grid">
+              {overviewCards(summary).map(({ title, icon: Icon, detail }) => (
+                <article key={title} className="sky-control-page__card">
+                  <div className="sky-control-page__card-title"><Icon size={17} aria-hidden /><h2>{title}</h2></div>
+                  <p>Status</p>
+                  <strong>{detail}</strong>
+                </article>
+              ))}
+            </div>
+            <section className="sky-control-page__schema" aria-label="Database schema compatibility">
+              <div className="sky-control-page__card-title"><ShieldCheck size={17} aria-hidden /><h2>Database schema compatibility</h2></div>
+              <span>LIVE READ-ONLY</span>
+              {summary.schema?.tables?.length ? (
+                <ul>
+                  {summary.schema.tables.map((table) => (
+                    <li key={table.table} className={table.compatible ? 'is-compatible' : 'is-incompatible'}>
+                      <code>{table.table}</code>
+                      <strong>{table.compatible ? (table.adapted ? 'ADAPTED' : 'OK') : 'SCHEMA INCOMPATIBLE'}</strong>
+                    </li>
+                  ))}
+                </ul>
+              ) : <p>Schema diagnostics unavailable.</p>}
+            </section>
+          </>
         ) : (
           <div className="sky-control-page__empty">
             <Cloud size={19} aria-hidden />
