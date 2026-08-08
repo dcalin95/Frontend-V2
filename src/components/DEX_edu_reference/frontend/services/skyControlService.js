@@ -1,7 +1,11 @@
 import { getBackendUrl } from '../../../../config/apiEndpoints';
 
 export async function requestSkyControl(path, signal) {
-  const base = String(getBackendUrl() || '').replace(/\/$/, '');
+  // The production auth cookie belongs to bits-ai.io. Use its existing API proxy
+  // so read-only Sky Control requests carry the same authenticated session.
+  const useFirstPartyApi = typeof window !== 'undefined'
+    && ['bits-ai.io', 'www.bits-ai.io'].includes(window.location?.hostname);
+  const base = String(useFirstPartyApi ? window.location.origin : getBackendUrl() || '').replace(/\/$/, '');
   const response = await fetch(`${base}/api/sky-control${path}`, {
     method: 'GET',
     credentials: 'include',
