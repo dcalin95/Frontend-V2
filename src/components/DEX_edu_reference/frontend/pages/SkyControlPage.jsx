@@ -17,7 +17,7 @@ const tabs = [
 ];
 
 const tabKey = (tab) => tab.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-const TIMESTAMP_FIELDS = new Set(['started_at', 'stopped_at', 'last_crash_at', 'created_at', 'updated_at', 'last_heartbeat', 'next_retry_at', 'revoked_at', 'token_ready_at', 'first_seen', 'last_seen', 'event_time', 'starts_at', 'ends_at', 'last_active_at']);
+const TIMESTAMP_FIELDS = new Set(['started_at', 'stopped_at', 'last_crash_at', 'created_at', 'updated_at', 'last_heartbeat', 'next_retry_at', 'revoked_at', 'token_ready_at', 'first_seen', 'last_seen', 'event_time', 'starts_at', 'ends_at', 'expires_at', 'last_active_at']);
 const SAFE_VIEW_COLUMNS = {
   'bot-fleet': ['user_id', 'bot_id', 'bot_username', 'bot_first_name', 'status', 'health', 'pid', 'started_at', 'last_heartbeat', 'heartbeat_age_seconds', 'crash_count', 'last_crash_at', 'registration_source'],
   'users-subscriptions': ['user_id', 'username', 'first_name', 'last_name', 'language', 'status', 'last_active_at', 'quick_status', 'skycloud_status', 'personal_status', 'halcyon_status', 'personal_bot_status'],
