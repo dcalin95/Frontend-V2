@@ -45,6 +45,7 @@ const DEX_BASE_PATH = '/dex-edu';
 // Lazy load pages din frontend/ (scheletul complet copiat din Proiect)
 const Dashboard = lazy(() => import('./frontend/pages/Dashboard'));
 const InvestigatorPage = lazy(() => import('./frontend/pages/InvestigatorPage'));
+const SkyControlPage = lazy(() => import('./frontend/pages/SkyControlPage'));
 const Swap = lazy(() => import('./frontend/pages/Swap'));
 const Trade = lazy(() =>
   import('./frontend/pages/Trade').catch(err => {
@@ -218,7 +219,7 @@ function DEXRoutes() {
   );
 }
 
-function DEXApp() {
+function DexShell({ children }) {
   const { walletType } = useWallet() || {};
   const navigate = useNavigate();
   const location = useLocation();
@@ -290,7 +291,7 @@ function DEXApp() {
                       <ClobSeiMarketProvider>
                         <HeaderTokenProvider>
                           <Layout selectedChain={selectedChain} onChainChange={handleChainChange}>
-                            <DEXRoutes />
+                            {children}
                           </Layout>
                         </HeaderTokenProvider>
                       </ClobSeiMarketProvider>
@@ -303,6 +304,22 @@ function DEXApp() {
         </ToastProvider>
       </DexAuthProvider>
     </ErrorBoundary>
+  );
+}
+
+function DEXApp() {
+  return <DexShell><DEXRoutes /></DexShell>;
+}
+
+export function SkyControlStandaloneApp() {
+  return (
+    <DexShell>
+      <Suspense fallback={<PageLoader />}>
+        <ProtectedRoute requireAuth={true} showLoginModal={true} authVariant="email">
+          <ErrorBoundary><SkyControlPage /></ErrorBoundary>
+        </ProtectedRoute>
+      </Suspense>
+    </DexShell>
   );
 }
 

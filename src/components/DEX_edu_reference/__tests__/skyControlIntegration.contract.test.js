@@ -21,8 +21,9 @@ describe('Sky Control shell integration', () => {
 
     expect(app).toContain('path="/sky-control"');
     expect(app).toContain('ENABLE_SKY_CONTROL ?');
-    expect(app).toContain('<DexAuthProvider>');
-    expect(app).toContain('<ProtectedRoute requireAuth={true}');
+    expect(app).toContain('<SkyControlStandaloneApp />');
+    expect(dexApp).toContain('export function SkyControlStandaloneApp()');
+    expect(dexApp).toContain('<ProtectedRoute requireAuth={true}');
     expect(app).toContain('<Navigate to="/" replace />');
     expect(dexApp).toContain('path="sky-control" element={<Navigate to="/sky-control" replace />}');
   });

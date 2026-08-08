@@ -19,8 +19,6 @@ import "./styles/DEX/header.css";
 import React, { useState, Suspense, lazy, useEffect } from "react";
 import { HashRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom"; // HashRouter for S3/CloudFront compatibility
 import { ToastContainer } from "react-toastify";
-import { DexAuthProvider } from "./components/DEX_edu_reference/frontend/context/DexAuthContext";
-import ProtectedRoute from "./components/DEX_edu_reference/frontend/components/auth/ProtectedRoute";
 import { ENABLE_SKY_CONTROL } from "./components/DEX_edu_reference/utils/DEX/constants";
 
 // 🧩 Layout & UI
@@ -88,7 +86,7 @@ const STANDALONE_TOOL_COMPONENTS = {
 const GlobalRouteOverlays = () => {
   const location = useLocation();
 
-  if (location.pathname.startsWith('/dex-edu')) {
+  if (location.pathname.startsWith('/dex-edu') || location.pathname === '/sky-control') {
     return <SmartWalletModal />;
   }
 
@@ -199,17 +197,7 @@ const SwapPage = lazyWithRetry(() => import("./components/DEX/SwapPage")); // �
 const SwapPageMobile = lazyWithRetry(() => import("./components/DEX/SwapPageMobile")); // 📱 Import DEX Mobile
 const TradePage = lazyWithRetry(() => import("./components/DEX/Trade")); // 📊 Import TradePage (Oxium-like)
 const DexEduReferencePage = lazyWithRetry(() => import("./components/DEX_edu_reference/DEXApp")); // DEX copied from frontend-edu
-const SkyControlPage = lazyWithRetry(() => import("./components/DEX_edu_reference/frontend/pages/SkyControlPage"));
-
-const SkyControlRoute = () => (
-  <DexAuthProvider>
-    <ProtectedRoute requireAuth={true} showLoginModal={true} authVariant="email">
-      <ErrorBoundary>
-        <SkyControlPage />
-      </ErrorBoundary>
-    </ProtectedRoute>
-  </DexAuthProvider>
-);
+const SkyControlStandaloneApp = lazyWithRetry(() => import("./components/DEX_edu_reference/DEXApp").then((module) => ({ default: module.SkyControlStandaloneApp })));
 
 
 // 🧠 Main Layout Component
@@ -218,10 +206,11 @@ const MainLayout = ({ children, isMobile, menuOpen, setMenuOpen, headerMenuOpen,
   const isDexDemo = location.pathname === '/dex';
   const isTradePage = location.pathname === '/dex/trade';
   const isDexEduReference = location.pathname.startsWith('/dex-edu');
+  const isSkyControl = location.pathname === '/sky-control';
   const isPresalePage = location.pathname === '/presale';
 
   // If it's the DEX Demo page or TradePage, render ONLY the children without the wrapper
-  if (isDexDemo || isTradePage || isDexEduReference) {
+  if (isDexDemo || isTradePage || isDexEduReference || isSkyControl) {
     return (
       <div
         className="content-container-standalone"
@@ -605,7 +594,7 @@ const App = () => {
                       <Route path="/paper-trade/stx" element={<STXPaperTrade />} />
                       <Route path="/paper-trade/:symbol" element={<TokenPaperTrade />} />
                       <Route path="/investigator" element={<Navigate to="/dex-edu/investigator" replace />} />
-                      <Route path="/sky-control" element={ENABLE_SKY_CONTROL ? <SkyControlRoute /> : <Navigate to="/" replace />} />
+                      <Route path="/sky-control" element={ENABLE_SKY_CONTROL ? <SkyControlStandaloneApp /> : <Navigate to="/" replace />} />
                       <Route path="/ai-assistant" element={<Navigate to="/presale" replace />} />
                       <Route path="/presale" element={isMobile ? <PresaleMobile /> : <PresalePage />} />
                       <Route path="/staking" element={isMobile ? <StakingPageMobile /> : <StakingPage />} />
