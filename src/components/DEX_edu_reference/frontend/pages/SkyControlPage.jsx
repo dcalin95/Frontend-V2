@@ -120,9 +120,9 @@ export default function SkyControlPage() {
     <main className="sky-control-page">
       <header className="sky-control-page__header">
         <div className="sky-control-page__topline">
-          <button type="button" className="sky-control-page__back" onClick={() => navigate('/dex-edu/dashboard')}>
+          <button type="button" className="sky-control-page__back" onClick={() => navigate('/')}>
             <ArrowLeft size={16} aria-hidden />
-            Back to dashboard
+            Back to home
           </button>
           <span className="sky-control-page__read-only"><LockKeyhole size={13} aria-hidden />READ ONLY</span>
         </div>
