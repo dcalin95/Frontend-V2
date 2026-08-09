@@ -43,6 +43,22 @@ export const searchSkyControlPaymentCases = (q, options) => fetchSkyControl('/pa
 export const fetchSkyControlPaymentCase = (type, id, options) => fetchSkyControl(`/payment-cases/${encodeURIComponent(type)}/${encodeURIComponent(id)}`, options);
 export const fetchSkyControlWalletHistory = (options) => fetchSkyControl('/wallet-history', options);
 export const fetchSkyControlWalletAnomalies = (options) => fetchSkyControl('/wallet-anomalies', options);
+const walletExportCaseTypes = new Set(['WALLET', 'TRANSACTION', 'PAYMENT_REFERENCE', 'PAYMENT', 'ORDER', 'USER', 'ADMIN']);
+const walletExportChainTypes = new Set(['WALLET', 'TRANSACTION']);
+
+export function buildSkyControlWalletExportParams(selectedCase = {}, csvType = '') {
+  const case_type = String(selectedCase.entity_type || selectedCase.case_type || '').trim().toUpperCase();
+  const case_id = String(selectedCase.entity_id || selectedCase.case_id || '').trim();
+  if (!walletExportCaseTypes.has(case_type) || !case_id) {
+    const error = new Error('wallet_case_seed_required'); error.code = 'wallet_case_seed_required'; throw error;
+  }
+  const chain = String(selectedCase.chain || '').trim().toLowerCase();
+  if (walletExportChainTypes.has(case_type) && !chain) {
+    const error = new Error('wallet_case_chain_required'); error.code = 'wallet_case_chain_required'; throw error;
+  }
+  return { case_type, case_id, ...(walletExportChainTypes.has(case_type) ? { chain } : {}), ...(csvType ? { type: csvType } : {}) };
+}
+
 export async function fetchSkyControlWalletExport(format = 'json', params = {}, { signal } = {}) {
   const base = String(getBackendUrl() || '').replace(/\/$/, '');
   const query = new URLSearchParams({

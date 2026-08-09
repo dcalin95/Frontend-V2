@@ -28,6 +28,7 @@ import {
   fetchSkyControlWallet,
   fetchSkyControlWalletAnomalies,
   fetchSkyControlWalletExport,
+  buildSkyControlWalletExportParams,
   fetchSkyControlWalletHistory,
   searchSkyControlForensics,
   searchSkyControlPaymentCases,
@@ -694,11 +695,12 @@ function WalletExport({ seed }) {
     const action = csvType || format;
     setState({ loading: action, integrityHash: null, error: null });
     try {
-      const result = await fetchSkyControlWalletExport(format, { seed_type: seed.entity_type, seed_id: seed.entity_id, ...(csvType ? { type: csvType } : {}) });
+      const params = buildSkyControlWalletExportParams(seed, csvType);
+      const result = await fetchSkyControlWalletExport(format, params);
       downloadForensicExport(result.blob, filename);
       setState({ loading: "", integrityHash: format === "json" ? validIntegrityHash(result.integrityHash) : null, error: null });
     } catch (error) {
-      const message = error.status === 401 || error.status === 403 ? "Not authorized for this export." : error.status === 400 ? "Requested export is not available." : error.status === 404 ? "Selected case export was not found." : "Export is currently unavailable. Please try again.";
+      const message = error.code === "wallet_case_chain_required" ? "Selected case is missing required chain information." : error.code === "wallet_case_seed_required" ? "Selected case is not available for export." : error.status === 401 || error.status === 403 ? "Not authorized for this export." : error.status === 400 ? "Requested export is not available." : error.status === 404 ? "Selected case export was not found." : "Export is currently unavailable. Please try again.";
       setState({ loading: "", integrityHash: null, error: message });
     }
   };
