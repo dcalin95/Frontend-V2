@@ -2,7 +2,7 @@ import React, { useEffect, useId, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Cloud, CreditCard, Download, FileSearch, LockKeyhole, Radio, RefreshCw, ShieldCheck, UsersRound, Waypoints } from 'lucide-react';
 import './sky-control-page.css';
-import { buildSkyControlWalletExportParams, fetchSkyControl, fetchSkyControlSummary, fetchSkyControlForensicAnomalies, fetchSkyControlForensicEntity, fetchSkyControlForensicExport, fetchSkyControlForensicGraph, fetchSkyControlForensicTimeline, fetchSkyControlPaymentCase, fetchSkyControlMoneyFlow, fetchSkyControlTransaction, fetchSkyControlWallet, fetchSkyControlWalletAnomalies, fetchSkyControlWalletExport, fetchSkyControlWalletHistory, searchSkyControlForensics, searchSkyControlPaymentCases, searchSkyControlWallets } from '../services/skyControlService';
+import { buildSkyControlWalletExportParams, fetchSkyControl, fetchSkyControlSummary, fetchSkyControlForensicAnomalies, fetchSkyControlForensicEntity, fetchSkyControlForensicExport, fetchSkyControlForensicGraph, fetchSkyControlForensicTimeline, fetchSkyControlPaymentCase, fetchSkyControlMoneyFlow, fetchSkyControlTransaction, fetchSkyControlWallet, fetchSkyControlWalletAnomalies, fetchSkyControlWalletDiscovery, fetchSkyControlWalletDiscoveryDetail, fetchSkyControlWalletExport, fetchSkyControlWalletHistory, searchSkyControlForensics, searchSkyControlPaymentCases, searchSkyControlWallets } from '../services/skyControlService';
 
 const tabs = [
   'Overview',
@@ -274,6 +274,84 @@ function StatusList({ title, items, empty }) {
   </section>;
 }
 
+const discoveryErrorMessage = (error) => {
+  if (error?.status === 401 || error?.status === 403) return 'Not authorized for Automatic Discovery.';
+  if (error?.status === 400) return 'Automatic Discovery request was not accepted.';
+  if (error?.status === 404) return 'Automatic Discovery is not available from the current provider.';
+  return 'Automatic Discovery is currently unavailable.';
+};
+
+const discoveryValue = (value) => value == null ? 'Unavailable' : safeDisplay(value);
+
+function WalletDiscovery({ onOpenInvestigation }) {
+  const [filters, setFilters] = useState({ system: 'quickmail', chain: '', status: '', has_admin_activity: '' });
+  const [state, setState] = useState({ status: 'loading', items: [], summary: null, source_status: null, provider_status: null, detail: null, error: null });
+  const load = async (nextFilters = filters, signal) => {
+    setState((current) => ({ ...current, status: 'loading', error: null }));
+    try {
+      const response = await fetchSkyControlWalletDiscovery({ ...nextFilters, limit: 100, offset: 0 }, { signal });
+      setState({ status: 'ready', items: response.items || [], summary: response.summary || {}, source_status: response.source_status || {}, provider_status: response.provider_status || {}, detail: null, error: null });
+    } catch (error) {
+      if (signal?.aborted) return;
+      setState((current) => ({ ...current, status: 'error', items: [], detail: null, error: discoveryErrorMessage(error) }));
+    }
+  };
+  useEffect(() => {
+    const controller = new AbortController();
+    load({ system: 'quickmail', chain: '', status: '', has_admin_activity: '' }, controller.signal);
+    return () => controller.abort();
+  }, []);
+  const updateFilter = (key, value) => {
+    const next = { ...filters, [key]: value };
+    setFilters(next);
+    load(next);
+  };
+  const showDetail = async (item) => {
+    if (!item.chain || !item.address) return;
+    setState((current) => ({ ...current, detail: { status: 'loading', item } }));
+    try {
+      const detail = await fetchSkyControlWalletDiscoveryDetail(item.chain, item.address);
+      setState((current) => ({ ...current, detail: { status: 'ready', item, data: detail } }));
+    } catch (error) {
+      setState((current) => ({ ...current, detail: { status: 'error', item, error: discoveryErrorMessage(error) } }));
+    }
+  };
+  const summaryRows = [
+    ['Total destinations', state.summary?.total_destinations], ['Application-linked destinations', state.summary?.total_destinations],
+    ['Verified on-chain destinations', state.summary?.verified_onchain_destinations], ['Application-only destinations', state.summary?.application_only_destinations],
+    ['Destinations with admin activity', state.summary?.destinations_with_admin_activity], ['Multi-system destinations', state.summary?.multi_system_destinations],
+    ['Destination changes', state.summary?.destination_changes], ['Reused destinations', state.summary?.reused_destinations], ['Known service hits', state.summary?.known_service_hits],
+  ];
+  return <section className="sky-control-page__discovery" aria-label="Automatic Discovery">
+    <div className="sky-control-page__workspace-head"><div><span className="sky-control-page__eyebrow">AUTOMATIC DISCOVERY</span><h3>QuickMail Discovery Summary</h3><p>Configured and application-observed destinations are not evidence of receipt or ownership.</p></div><button type="button" className="sky-control-page__action" onClick={() => load(filters)}>Refresh discovery</button></div>
+    <div className="sky-control-page__timeline-filters" aria-label="Automatic Discovery filters">
+      <label>System<select aria-label="Discovery system filter" value={filters.system} onChange={(event) => updateFilter('system', event.target.value)}><option value="quickmail">QuickMail</option><option value="quick">Quick</option><option value="skycloud">SkyCloud</option><option value="personal">Personal</option><option value="halcyon">Halcyon</option></select></label>
+      <label>Chain<select aria-label="Discovery chain filter" value={filters.chain} onChange={(event) => updateFilter('chain', event.target.value)}><option value="">All chains</option><option value="bsc">BSC</option><option value="ethereum">Ethereum</option></select></label>
+      <label>Status<select aria-label="Discovery status filter" value={filters.status} onChange={(event) => updateFilter('status', event.target.value)}><option value="">All statuses</option><option value="configured">Configured</option><option value="confirmed">On-chain confirmed</option></select></label>
+      <label>Admin-linked activity<select aria-label="Discovery admin activity filter" value={filters.has_admin_activity} onChange={(event) => updateFilter('has_admin_activity', event.target.value)}><option value="">All</option><option value="true">Present</option><option value="false">None</option></select></label>
+    </div>
+    {state.status === 'loading' ? <div className="sky-control-page__empty"><p>Discovering payment destinations...</p></div> : null}
+    {state.error ? <p className="sky-control-page__notice" role="alert">{state.error}</p> : null}
+    {state.status === 'ready' ? <>
+      <div className="sky-control-page__wallet-summary" aria-label="QuickMail Discovery Summary metrics"><div>{summaryRows.map(([label, value]) => <article key={label}><span>{label}</span><strong>{discoveryValue(value)}</strong></article>)}</div></div>
+      {(Object.values(state.provider_status || {}).some((item) => item?.available === false) || Object.values(state.source_status || {}).some((item) => item?.available === false)) ? <p className="sky-control-page__notice">Some provider or application sources are degraded. Available discovery evidence remains visible.</p> : null}
+      {!state.items.length ? <div className="sky-control-page__empty"><p>No QuickMail payment destinations were found in the currently available application evidence.</p></div> : <section className="sky-control-page__discovery-list" aria-labelledby="observed-payment-destinations"><h3 id="observed-payment-destinations">Observed Payment Destinations</h3><div className="sky-control-page__table-wrap sky-control-page__table-wrap--wide"><table><thead><tr><th>Destination</th><th>Chain</th><th>Systems</th><th>Payments</th><th>Orders</th><th>Admin-linked Activity</th><th>First Seen</th><th>Last Seen</th><th>On-chain Status</th><th>Confirmed Receipts</th><th>Destination Changes</th><th>Service Hits</th><th>Evidence</th><th>Action</th></tr></thead><tbody>{state.items.map((item) => <tr key={`${item.chain}:${item.address}`}><td><code title={item.address}>{compactIdentifier(item.address)}</code></td><td>{safeDisplay(item.chain)}</td><td>{(item.systems || []).map(systemLabel).join(', ') || '-'}</td><td>{safeDisplay(item.payment_count)}</td><td>{safeDisplay(item.order_count)}</td><td>{safeDisplay(item.admin_action_count)}</td><td>{timeLabel(item.first_seen)}</td><td>{timeLabel(item.last_seen)}</td><td>{item.onchain_status === 'ONCHAIN_PAYMENT_CONFIRMED' ? 'On-chain confirmed' : 'Configured / Application observed'}</td><td>{safeDisplay(item.confirmed_receipt_count || 0)}</td><td>{item.destination_history?.length || 0}</td><td>{item.service_labels?.length || 0}</td><td>{safeDisplay(item.evidence_type)}</td><td><button type="button" className="sky-control-page__action" onClick={() => showDetail(item)}>View destination</button></td></tr>)}</tbody></table></div></section>}
+      <p className="sky-control-page__wallet-empty">Admin-linked application activity does not prove wallet ownership or control.</p>
+    </> : null}
+    {state.detail ? <DiscoveryDetail detailState={state.detail} onClose={() => setState((current) => ({ ...current, detail: null }))} onOpenInvestigation={onOpenInvestigation} /> : null}
+  </section>;
+}
+
+function DiscoveryDetail({ detailState, onClose, onOpenInvestigation }) {
+  const item = detailState.item;
+  const detail = detailState.data || {};
+  if (detailState.status === 'loading') return <aside className="sky-control-page__drawer" aria-label="Destination details"><button type="button" aria-label="Close destination details" onClick={onClose}>Close</button><p>Loading destination details...</p></aside>;
+  if (detailState.status === 'error') return <aside className="sky-control-page__drawer" aria-label="Destination details"><button type="button" aria-label="Close destination details" onClick={onClose}>Close</button><p role="alert">{detailState.error}</p></aside>;
+  const history = detail.destination_history || [];
+  const references = detail.transaction_references || [];
+  return <aside className="sky-control-page__drawer" aria-label="Destination details"><div><span className="sky-control-page__eyebrow">READ-ONLY DESTINATION</span><button type="button" aria-label="Close destination details" onClick={onClose}>Close</button></div><h3>{compactIdentifier(detail.destination?.address || item.address)}</h3><p>Chain: {safeDisplay(detail.destination?.chain || item.chain)}</p><button type="button" className="sky-control-page__action" onClick={() => onOpenInvestigation({ ...item, address: detail.destination?.address || item.address, chain: detail.destination?.chain || item.chain })}>Open Investigation</button><DetailList title="Application Observations" entries={(detail.application_observations || []).map((entry, index) => [`Observation ${index + 1}`, `${entry.kind || '-'} · ${entry.system || '-'} · ${timeLabel(entry.timestamp)}`])} /><DetailList title="Payment Links" entries={(detail.payment_links || []).map((entry, index) => [`Payment ${index + 1}`, `${entry.system || '-'} · ${entry.order_id || '-'} · ${entry.payment_reference || entry.transaction_id || '-'}`])} /><DetailList title="Order Links" entries={(detail.order_links || []).map((entry, index) => [`Order ${index + 1}`, `${entry.system || '-'} · ${entry.order_id || '-'}`])} /><DetailList title="Admin-linked Activity" entries={(detail.admin_links || []).map((entry, index) => [`Activity ${index + 1}`, `${entry.system || '-'} · ${entry.action || '-'} · ${timeLabel(entry.timestamp)}`])} /><DetailList title="Destination History" entries={history.map((entry, index) => [`History ${index + 1}`, `Previous: ${compactIdentifier(entry.previous_address)} | Current: ${compactIdentifier(entry.address)} | Next: ${compactIdentifier(entry.next_address)} | Reuse: ${safeDisplay(entry.reuse_count)}`])} /><DetailList title="Transaction References" entries={references.map((entry, index) => [`Reference ${index + 1}`, `${entry.classification || entry.transaction_classification || '-'} · ${compactIdentifier(entry.value || entry.transaction_id || entry.reference)}`])} /><DetailList title="Confirmed Receipts" entries={(detail.confirmed_receipts || []).map((entry, index) => [`Receipt ${index + 1}`, `${compactIdentifier(entry.tx_hash)} · ${entry.chain || '-'} · ${entry.asset || 'native'} · ${safeDisplay(entry.amount)}`])} /><DetailList title="Amount Summary" entries={Object.entries(detail.amount_summary || {}).map(([key, value]) => [key.replaceAll('_', ' '), typeof value === 'object' ? JSON.stringify(value) : value])} /><DetailList title="Money Flow Summary" entries={Object.entries(detail.money_flow_summary || {}).map(([key, value]) => [key.replaceAll('_', ' '), typeof value === 'object' ? JSON.stringify(value) : value])} /><DetailList title="Known Service Hits" entries={(detail.service_labels || []).map((entry, index) => [`Service ${index + 1}`, `${entry.label || '-'} · ${entry.category || '-'}`])} /><StatusList title="Provider Status" items={detail.provider_status} empty="Provider status unavailable." /><StatusList title="Source Status" items={detail.source_status} empty="Source status unavailable." /><section className="sky-control-page__wallet-limitations"><h3>Limitations</h3><ul>{(detail.limitations || []).map((entry) => <li key={entry}>{safeDisplay(entry)}</li>)}</ul></section><ForensicProvenance items={detail.provenance} /></aside>;
+}
+
 function WalletIntelligenceWorkspace() {
   const [query, setQuery] = useState("");
   const [state, setState] = useState({ status: "idle", candidates: [], seed: null, caseData: null, wallet: null, transaction: null, flow: null, history: null, anomalies: null, error: null });
@@ -306,8 +384,13 @@ function WalletIntelligenceWorkspace() {
   };
   const summary = state.caseData?.summary || state.wallet || {};
   const metrics = [["Seed", state.seed?.label || state.seed?.entity_id], ["Chains", state.seed?.chain || summary.chain], ["Wallet Count", summary.wallet_count], ["Transaction Count", summary.transaction_count], ["Payment Count", summary.payment_count], ["Order Count", summary.order_count], ["User Count", summary.user_count], ["Admin Activity Count", summary.admin_activity_count], ["Counterparty Count", summary.counterparty_count], ["Service Label Count", summary.service_label_count], ["Graph Nodes", summary.graph_nodes], ["Graph Edges", summary.graph_edges], ["First Event", summary.first_event], ["Last Event", summary.last_event], ["Known Service Hits", summary.known_service_hits], ["Anomaly Count", summary.anomaly_count], ["Depth", summary.depth], ["Read Only", summary.read_only ?? state.caseData?.read_only]];
+  const openDiscovery = (destination) => {
+    setQuery(destination.address);
+    selectSeed({ entity_type: "WALLET", entity_id: destination.address, address: destination.address, chain: destination.chain, label: destination.address });
+  };
   return <div className="sky-control-page__wallet-workspace">
     <div className="sky-control-page__workspace-head"><div><span className="sky-control-page__eyebrow">READ-ONLY CASE WORKSPACE</span><h2>Wallet Intelligence</h2></div></div>
+    <WalletDiscovery onOpenInvestigation={openDiscovery} />
     <form className="sky-control-page__wallet-search" onSubmit={submit}><label htmlFor="wallet-intelligence-search">Exact identifier</label><div><input id="wallet-intelligence-search" aria-label="Wallet Intelligence search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Wallet, transaction, payment reference, order, payment, user, or admin ID" /><button type="submit">Search</button></div></form>
     {state.status === "idle" ? <div className="sky-control-page__empty"><FileSearch size={19} aria-hidden /><p>Search an exact wallet, transaction hash, payment reference, order, payment, user, or admin identifier.</p></div> : null}
     {state.error ? <p className="sky-control-page__notice" role="alert">{state.error}</p> : null}

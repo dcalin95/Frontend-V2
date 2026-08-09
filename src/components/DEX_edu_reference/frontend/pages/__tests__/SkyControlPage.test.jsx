@@ -2,7 +2,7 @@ import React from 'react';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import SkyControlPage, { formatRelativeTime, formatTimestamp } from '../SkyControlPage';
-import { buildSkyControlWalletExportParams, fetchSkyControl, fetchSkyControlSummary, searchSkyControlForensics, fetchSkyControlForensicEntity, fetchSkyControlForensicGraph, fetchSkyControlForensicTimeline, fetchSkyControlForensicAnomalies, fetchSkyControlForensicExport, fetchSkyControlPaymentCase, fetchSkyControlMoneyFlow, fetchSkyControlTransaction, fetchSkyControlWallet, fetchSkyControlWalletAnomalies, fetchSkyControlWalletExport, fetchSkyControlWalletHistory, searchSkyControlPaymentCases, searchSkyControlWallets } from '../../services/skyControlService';
+import { buildSkyControlWalletExportParams, fetchSkyControl, fetchSkyControlSummary, searchSkyControlForensics, fetchSkyControlForensicEntity, fetchSkyControlForensicGraph, fetchSkyControlForensicTimeline, fetchSkyControlForensicAnomalies, fetchSkyControlForensicExport, fetchSkyControlPaymentCase, fetchSkyControlMoneyFlow, fetchSkyControlTransaction, fetchSkyControlWallet, fetchSkyControlWalletAnomalies, fetchSkyControlWalletDiscovery, fetchSkyControlWalletDiscoveryDetail, fetchSkyControlWalletExport, fetchSkyControlWalletHistory, searchSkyControlPaymentCases, searchSkyControlWallets } from '../../services/skyControlService';
 
 jest.mock('../../services/skyControlService', () => ({
   fetchSkyControlSummary: jest.fn().mockResolvedValue({
@@ -29,6 +29,8 @@ jest.mock('../../services/skyControlService', () => ({
   fetchSkyControlMoneyFlow: jest.fn(),
   fetchSkyControlWalletHistory: jest.fn().mockResolvedValue({ items: [] }),
   fetchSkyControlWalletAnomalies: jest.fn().mockResolvedValue({ anomalies: [] }),
+  fetchSkyControlWalletDiscovery: jest.fn().mockResolvedValue({ items: [], summary: {}, source_status: {}, provider_status: {} }),
+  fetchSkyControlWalletDiscoveryDetail: jest.fn(),
   fetchSkyControlWalletExport: jest.fn(),
   buildSkyControlWalletExportParams: jest.fn((selectedCase, csvType = "") => {
     const case_type = String(selectedCase?.entity_type || "").toUpperCase();
@@ -47,6 +49,8 @@ describe('SkyControlPage', () => {
     fetchSkyControlForensicAnomalies.mockResolvedValue({ anomalies: [], pagination: {} });
     fetchSkyControlWalletHistory.mockResolvedValue({ items: [] });
     fetchSkyControlWalletAnomalies.mockResolvedValue({ anomalies: [] });
+    fetchSkyControlWalletDiscovery.mockResolvedValue({ items: [], summary: {}, source_status: {}, provider_status: {} });
+    fetchSkyControlWalletDiscoveryDetail.mockReset();
     buildSkyControlWalletExportParams.mockImplementation((selectedCase, csvType = "") => {
       const case_type = String(selectedCase?.entity_type || "").toUpperCase();
       if (["WALLET", "TRANSACTION"].includes(case_type) && !selectedCase?.chain) { const error = new Error("wallet_case_chain_required"); error.code = "wallet_case_chain_required"; throw error; }
@@ -743,5 +747,26 @@ describe('SkyControlPage', () => {
   it("sanitizes unavailable export responses and clears export state when the Wallet Intelligence seed changes", async () => {
     const hash = `sha256:${"c".repeat(64)}`; searchSkyControlPaymentCases.mockResolvedValueOnce({ candidates: [{ entity_type: "PAYMENT", entity_id: "first", label: "First case" }] }).mockResolvedValueOnce({ candidates: [{ entity_type: "PAYMENT", entity_id: "second", label: "Second case" }] }); searchSkyControlWallets.mockResolvedValue({ candidates: [] }); fetchSkyControlPaymentCase.mockResolvedValue({ case: {} }); fetchSkyControlWalletExport.mockResolvedValueOnce({ blob: new Blob(["{}"], { type: "application/json" }), contentType: "application/json", integrityHash: hash }).mockRejectedValueOnce(Object.assign(new Error("internal provider detail"), { status: 400 })); Object.defineProperty(URL, "createObjectURL", { configurable: true, value: jest.fn().mockReturnValue("blob:wallet") }); Object.defineProperty(URL, "revokeObjectURL", { configurable: true, value: jest.fn() }); jest.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
     render(<MemoryRouter initialEntries={["/?tab=wallet-intelligence"]}><SkyControlPage /></MemoryRouter>); fireEvent.change(screen.getByLabelText("Wallet Intelligence search"), { target: { value: "first" } }); fireEvent.click(screen.getByRole("button", { name: "Search" })); fireEvent.click(await screen.findByRole("button", { name: /First case/ })); const firstExport = await screen.findByRole("region", { name: "Wallet Intelligence Export" }); fireEvent.click(firstExport.querySelector('[aria-label="Export Case JSON"]')); await screen.findByText(hash); fireEvent.change(screen.getByLabelText("Wallet Intelligence search"), { target: { value: "second" } }); fireEvent.click(screen.getByRole("button", { name: "Search" })); fireEvent.click(await screen.findByRole("button", { name: /Second case/ })); const secondExport = await screen.findByRole("region", { name: "Wallet Intelligence Export" }); expect(secondExport).not.toHaveTextContent(hash); fireEvent.click(secondExport.querySelector('[aria-label="Export Case JSON"]')); expect(await screen.findByRole("alert")).toHaveTextContent("Requested export is not available."); expect(buildSkyControlWalletExportParams).toHaveBeenLastCalledWith(expect.objectContaining({ entity_id: "second" }), ""); expect(screen.queryByText(/internal provider detail/i)).not.toBeInTheDocument();
+  });
+
+  it("loads QuickMail Automatic Discovery, distinguishes configured evidence, and opens a destination detail", async () => {
+    const address = "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    fetchSkyControlWalletDiscovery.mockResolvedValue({
+      items: [{ address, chain: "bsc", systems: ["quick"], payment_count: 2, order_count: 2, admin_action_count: 1, first_seen: "2026-01-01T00:00:00Z", last_seen: "2026-01-02T00:00:00Z", onchain_status: "CONFIGURED_OR_APPLICATION_OBSERVED", destination_history: [], service_labels: [], evidence_type: "DIRECT" }],
+      summary: { total_destinations: 1, verified_onchain_destinations: 0, application_only_destinations: 1, destinations_with_admin_activity: 1, multi_system_destinations: 0, destination_changes: 0, reused_destinations: 0, known_service_hits: 0 },
+      source_status: { withdrawals: { available: true }, payments: { available: false, reason: "QUERY_FAILED" } }, provider_status: { bsc: { available: false } },
+    });
+    fetchSkyControlWalletDiscoveryDetail.mockResolvedValue({ destination: { address, chain: "bsc" }, application_observations: [{ kind: "CONFIGURED_DESTINATION", system: "quick", timestamp: "2026-01-01T00:00:00Z" }], payment_links: [{ system: "quick", order_id: "o1", payment_reference: "ref1" }], order_links: [{ system: "quick", order_id: "o1" }], admin_links: [{ system: "quick", action: "review", timestamp: "2026-01-02T00:00:00Z" }], destination_history: [{ previous_address: null, address, next_address: null, reuse_count: 1 }], transaction_references: [{ classification: "APPLICATION_REFERENCE", value: "ref1" }], confirmed_receipts: [], amount_summary: { confirmed_receipt_count: 0 }, money_flow_summary: { graph_available: false }, provider_status: { bsc: { available: false } }, source_status: { withdrawals: { available: true } }, limitations: ["Provider is degraded"], provenance: [{ source_system: "quick", source_table: "withdrawals", source_record_id: "1" }] });
+    render(<MemoryRouter initialEntries={["/?tab=wallet-intelligence"]}><SkyControlPage /></MemoryRouter>);
+    expect(await screen.findByRole("region", { name: "Automatic Discovery" })).toHaveTextContent("QuickMail Discovery Summary");
+    expect(fetchSkyControlWalletDiscovery).toHaveBeenCalledWith(expect.objectContaining({ system: "quickmail" }), expect.any(Object));
+    expect(await screen.findByText("Configured / Application observed")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Observed Payment Destinations" })).toBeInTheDocument();
+    expect(screen.getByText("Admin-linked application activity does not prove wallet ownership or control.")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "View destination" }));
+    expect(fetchSkyControlWalletDiscoveryDetail).toHaveBeenCalledWith("bsc", address);
+    expect(await screen.findByText("Transaction References")).toBeInTheDocument();
+    expect(screen.getByRole("complementary", { name: "Destination details" })).toHaveTextContent("Transaction References");
+    expect(screen.queryByText(/Admin Wallet|Owner Wallet|Scammer Wallet|Criminal Wallet/i)).not.toBeInTheDocument();
   });
 });

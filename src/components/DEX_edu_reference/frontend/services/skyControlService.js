@@ -50,6 +50,8 @@ export const searchSkyControlPaymentCases = (q, options) => fetchSkyControl('/pa
 export const fetchSkyControlPaymentCase = (type, id, options) => fetchSkyControl(`/payment-cases/${encodeURIComponent(type)}/${encodeURIComponent(id)}`, options);
 export const fetchSkyControlWalletHistory = (options) => fetchSkyControl('/wallet-history', options);
 export const fetchSkyControlWalletAnomalies = (options) => fetchSkyControl('/wallet-anomalies', options);
+export const fetchSkyControlWalletDiscovery = (params = {}, options) => fetchSkyControl('/wallet-discovery', { ...options, params });
+export const fetchSkyControlWalletDiscoveryDetail = (chain, address, options) => fetchSkyControl(`/wallet-discovery/${encodeURIComponent(chain)}/${encodeURIComponent(address)}`, options);
 const walletExportCaseTypes = new Set(['WALLET', 'TRANSACTION', 'PAYMENT_REFERENCE', 'PAYMENT', 'ORDER', 'USER', 'ADMIN']);
 const walletExportChainTypes = new Set(['WALLET', 'TRANSACTION']);
 
