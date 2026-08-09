@@ -23,7 +23,11 @@ import {
   fetchSkyControlForensicGraph,
   fetchSkyControlForensicTimeline,
   fetchSkyControlPaymentCase,
+  fetchSkyControlMoneyFlow,
+  fetchSkyControlTransaction,
   fetchSkyControlWallet,
+  fetchSkyControlWalletAnomalies,
+  fetchSkyControlWalletHistory,
   searchSkyControlForensics,
   searchSkyControlPaymentCases,
   searchSkyControlWallets,
@@ -531,26 +535,33 @@ function StatusList({ title, items, empty }) {
 
 function WalletIntelligenceWorkspace() {
   const [query, setQuery] = useState("");
-  const [state, setState] = useState({ status: "idle", candidates: [], seed: null, caseData: null, wallet: null, error: null });
+  const [state, setState] = useState({ status: "idle", candidates: [], seed: null, caseData: null, wallet: null, transaction: null, flow: null, history: null, anomalies: null, error: null });
   const submit = async (event) => {
     event.preventDefault();
     const value = query.trim();
     if (!value) return setState((current) => ({ ...current, status: "error", error: "Enter an exact identifier." }));
-    setState({ status: "searching", candidates: [], seed: null, caseData: null, wallet: null, error: null });
+    setState({ status: "searching", candidates: [], seed: null, caseData: null, wallet: null, transaction: null, flow: null, history: null, anomalies: null, error: null });
     try {
       const [cases, wallets] = await Promise.all([searchSkyControlPaymentCases(value), searchSkyControlWallets(value)]);
       const candidates = [...(cases.candidates || []), ...(wallets.candidates || [])].filter((candidate, index, all) => all.findIndex((item) => `${item.entity_type}:${item.entity_id}:${item.chain || ""}` === `${candidate.entity_type}:${candidate.entity_id}:${candidate.chain || ""}`) === index);
-      setState({ status: "searched", candidates, seed: null, caseData: null, wallet: null, error: null });
-    } catch (error) { setState({ status: "error", candidates: [], seed: null, caseData: null, wallet: null, error: walletErrorMessage(error) }); }
+      setState({ status: "searched", candidates, seed: null, caseData: null, wallet: null, transaction: null, flow: null, history: null, anomalies: null, error: null });
+    } catch (error) { setState({ status: "error", candidates: [], seed: null, caseData: null, wallet: null, transaction: null, flow: null, history: null, anomalies: null, error: walletErrorMessage(error) }); }
   };
   const selectSeed = async (seed) => {
-    setState((current) => ({ ...current, status: "loading", seed, caseData: null, wallet: null, error: null }));
+    setState((current) => ({ ...current, status: "loading", seed, caseData: null, wallet: null, transaction: null, flow: null, history: null, anomalies: null, error: null }));
     try {
-      const caseData = await fetchSkyControlPaymentCase(seed.entity_type, seed.entity_id);
+      const caseData = await fetchSkyControlPaymentCase(seed.entity_type, seed.entity_id).catch(() => null);
       const address = seed.entity_type === "WALLET" ? (seed.address || seed.entity_id) : null;
-      const wallet = address && seed.chain ? await fetchSkyControlWallet(seed.chain, address).catch(() => null) : null;
-      setState((current) => ({ ...current, status: "ready", caseData, wallet, error: null }));
-    } catch (error) { setState((current) => ({ ...current, status: "error", caseData: null, wallet: null, error: walletErrorMessage(error) })); }
+      const chain = seed.chain || "bsc";
+      const [wallet, transaction, flow, history, anomalies] = await Promise.all([
+        address ? Promise.resolve(fetchSkyControlWallet(chain, address)).catch(() => null) : null,
+        seed.entity_type === "TRANSACTION" ? Promise.resolve(fetchSkyControlTransaction(chain, seed.entity_id)).catch(() => null) : null,
+        address ? Promise.resolve(fetchSkyControlMoneyFlow({ chain, address, depth: 2, direction: "BOTH" })).catch(() => null) : null,
+        Promise.resolve(fetchSkyControlWalletHistory()).catch(() => null), Promise.resolve(fetchSkyControlWalletAnomalies()).catch(() => null),
+      ]);
+      if (!caseData && !wallet && !transaction) throw new Error("case unavailable");
+      setState((current) => ({ ...current, status: "ready", caseData, wallet, transaction, flow, history, anomalies, error: null }));
+    } catch (error) { setState((current) => ({ ...current, status: "error", caseData: null, wallet: null, transaction: null, flow: null, history: null, anomalies: null, error: walletErrorMessage(error) })); }
   };
   const summary = state.caseData?.summary || state.wallet || {};
   const metrics = [["Seed", state.seed?.label || state.seed?.entity_id], ["Chains", state.seed?.chain || summary.chain], ["Wallet Count", summary.wallet_count], ["Transaction Count", summary.transaction_count], ["Payment Count", summary.payment_count], ["Order Count", summary.order_count], ["User Count", summary.user_count], ["Admin Activity Count", summary.admin_activity_count], ["Counterparty Count", summary.counterparty_count], ["Service Label Count", summary.service_label_count], ["Graph Nodes", summary.graph_nodes], ["Graph Edges", summary.graph_edges], ["First Event", summary.first_event], ["Last Event", summary.last_event], ["Known Service Hits", summary.known_service_hits], ["Anomaly Count", summary.anomaly_count], ["Depth", summary.depth], ["Read Only", summary.read_only ?? state.caseData?.read_only]];
@@ -561,7 +572,34 @@ function WalletIntelligenceWorkspace() {
     {state.error ? <p className="sky-control-page__notice" role="alert">{state.error}</p> : null}
     {state.status === "searched" ? <section className="sky-control-page__wallet-candidates" aria-label="Wallet Intelligence candidates"><h3>Exact candidates</h3>{state.candidates.length ? <div>{state.candidates.map((candidate) => <button type="button" key={`${candidate.entity_type}:${candidate.entity_id}:${candidate.chain || ""}`} onClick={() => selectSeed(candidate)}><strong>{safeDisplay(candidate.entity_type)}</strong><span>{safeDisplay(candidate.label || candidate.entity_id)}</span><small>{[candidate.system, candidate.chain].filter(Boolean).join(" · ") || "Application reference"}</small></button>)}</div> : <p>No exact candidates found.</p>}</section> : null}
     {state.status === "loading" ? <div className="sky-control-page__empty"><p>Loading selected read-only case...</p></div> : null}
-    {state.status === "ready" ? <><section className="sky-control-page__wallet-summary" aria-label="Wallet case summary"><h3>Case summary</h3><div>{metrics.map(([label, value]) => <article key={label}><span>{label}</span><strong>{safeDisplay(value)}</strong></article>)}</div></section><div className="sky-control-page__wallet-status-grid"><StatusList title="Provider status" items={state.wallet?.provider_status || state.caseData?.provider_status} empty="Provider status unavailable for this selected seed." /><StatusList title="Application source status" items={state.caseData?.source_status || state.wallet?.source_status} empty="Application source status unavailable for this selected seed." /></div><section className="sky-control-page__wallet-limitations" aria-label="Wallet Intelligence limitations"><h3>Limitations</h3><ul>{(state.caseData?.limitations || state.wallet?.limitations || ["Missing activity is not proof of no activity."]).map((item) => <li key={item}>{safeDisplay(item)}</li>)}</ul></section><section className="sky-control-page__legend" aria-label="Wallet evidence legend"><h3>Evidence semantics</h3><div>{walletEvidenceLegend.map(([type, explanation]) => <p key={type}><strong>{type}</strong><span>{explanation}</span></p>)}</div></section></> : null}
+    {state.status === "ready" ? <><section className="sky-control-page__wallet-summary" aria-label="Wallet case summary"><h3>Case summary</h3><div>{metrics.map(([label, value]) => <article key={label}><span>{label}</span><strong>{safeDisplay(value)}</strong></article>)}</div></section><WalletDetailViews wallet={state.wallet} transaction={state.transaction} flow={state.flow} history={state.history} anomalies={state.anomalies} caseData={state.caseData} /><div className="sky-control-page__wallet-status-grid"><StatusList title="Provider status" items={state.wallet?.provider_status || state.transaction?.provider_status || state.caseData?.provider_status} empty="Provider status unavailable for this selected seed." /><StatusList title="Application source status" items={state.caseData?.source_status || state.wallet?.source_status || state.transaction?.source_status} empty="Application source status unavailable for this selected seed." /></div><section className="sky-control-page__wallet-limitations" aria-label="Wallet Intelligence limitations"><h3>Limitations</h3><ul>{(state.caseData?.limitations || state.wallet?.limitations || ["Missing activity is not proof of no activity."]).map((item) => <li key={item}>{safeDisplay(item)}</li>)}</ul></section><section className="sky-control-page__legend" aria-label="Wallet evidence legend"><h3>Evidence semantics</h3><div>{walletEvidenceLegend.map(([type, explanation]) => <p key={type}><strong>{type}</strong><span>{explanation}</span></p>)}</div></section></> : null}
+  </div>;
+}
+
+const compactIdentifier = (value) => {
+  const text = safeDisplay(value);
+  return text.length > 18 ? `${text.slice(0, 10)}...${text.slice(-6)}` : text;
+};
+
+function DetailList({ title, entries, empty = "No data available." }) {
+  return <section className="sky-control-page__wallet-detail" aria-label={title}><h3>{title}</h3>{entries?.length ? <div>{entries.map(([label, value]) => <p key={label}><span>{label}</span><strong>{safeDisplay(value)}</strong></p>)}</div> : <p className="sky-control-page__wallet-empty">{empty}</p>}</section>;
+}
+
+function WalletDetailViews({ wallet, transaction, flow, history, anomalies, caseData }) {
+  const copy = (value) => navigator.clipboard?.writeText(String(value));
+  const profile = wallet && [["Address", wallet.address], ["Chain", wallet.chain], ["Application First Seen", wallet.first_seen_application], ["Application Last Seen", wallet.last_seen_application], ["Chain First Seen", wallet.first_seen_chain], ["Chain Last Seen", wallet.last_seen_chain], ["Native Balance", wallet.native_balance], ["Transaction Count", wallet.transaction_count], ["Total Native Received", wallet.total_native_received], ["Total Native Sent", wallet.total_native_sent], ["Application Systems", wallet.application_systems?.join(", ")], ["Linked Orders", wallet.linked_orders?.length], ["Linked Payments", wallet.linked_payments?.length], ["Linked Users", wallet.linked_users?.length], ["Linked Admin Activity", wallet.linked_admin_actions?.length], ["Service Labels", wallet.service_labels?.length]];
+  const tx = transaction && [["Transaction Hash", transaction.tx_hash], ["Chain", transaction.chain], ["Verification", transaction.verification_status], ["Block", transaction.block_number], ["Timestamp", transaction.timestamp], ["From", transaction.from], ["To", transaction.to], ["Native Value", transaction.native_value], ["Token Transfers", transaction.token_transfers?.length], ["Status", transaction.status], ["Gas Used", transaction.gas_used], ["Application Payment Links", transaction.application_payment_links?.length], ["Application Order Links", transaction.application_order_links?.length]];
+  const edges = flow?.edges || [];
+  const counterparties = flow?.counterparties || wallet?.top_counterparties || {};
+  return <div className="sky-control-page__wallet-views">
+    {profile ? <section className="sky-control-page__wallet-detail" aria-label="Wallet Profile"><div className="sky-control-page__card-title"><h3>Wallet Profile</h3><button type="button" onClick={() => copy(wallet.address)}>Copy address</button></div><p className="sky-control-page__address"><span>{compactIdentifier(wallet.address)}</span><strong>{safeDisplay(wallet.chain)}</strong></p><div>{profile.map(([label, value]) => <p key={label}><span>{label}</span><strong>{safeDisplay(value)}</strong></p>)}</div><p className="sky-control-page__wallet-empty">Application links are evidence links and do not establish wallet ownership.</p></section> : null}
+    {tx ? <DetailList title="Transaction Profile" entries={tx} empty="No transaction profile available." /> : null}
+    {flow ? <section className="sky-control-page__wallet-detail" aria-label="Money Flow"><h3>Money Flow</h3><p className="sky-control-page__wallet-empty">Directional flow is bounded for safety and performance.</p><div className="sky-control-page__flow-bounds"><span>Depth requested: {safeDisplay(flow.depth_requested || flow.requested_depth)}</span><span>Depth reached: {safeDisplay(flow.depth_reached)}</span><span>Nodes: {safeDisplay(flow.nodes?.length)}</span><span>Edges: {safeDisplay(edges.length)}</span></div>{flow.truncated ? <p className="sky-control-page__notice">Partial money-flow graph - bounded for safety/performance.</p> : null}<div className="sky-control-page__flow-graph">{edges.length ? edges.map((edge, index) => <button key={`${edge.tx_hash || index}-${edge.from}-${edge.to}`} type="button"><strong>WALLET</strong><span>{compactIdentifier(edge.from)}</span><b>→</b><strong>{edge.service_label ? "SERVICE" : "WALLET"}</strong><span>{compactIdentifier(edge.to)}</span><small>{[edge.amount, edge.asset, edge.timestamp, edge.hop, edge.direction, edge.evidence_type].filter((value) => value != null).join(" · ")}</small></button>) : <p>No bounded money-flow records are available.</p>}</div></section> : null}
+    <DetailList title="Transaction Paths" entries={(flow?.paths || []).map((path, index) => [`Path ${index + 1}`, `${safeDisplay(path.hop_count)} hops · ${safeDisplay(path.assets?.join(", "))}`])} empty="No bounded transaction paths are available." />
+    <section className="sky-control-page__wallet-detail" aria-label="Counterparty Intelligence"><h3>Counterparty Intelligence</h3><div className="sky-control-page__counterparty-grid">{[["Top Incoming", counterparties.top_incoming], ["Top Outgoing", counterparties.top_outgoing], ["Recurring Counterparties", counterparties.recurring_counterparties]].map(([title, list]) => <article key={title}><h4>{title}</h4>{list?.length ? list.map((item) => <p key={item.address}><strong>{compactIdentifier(item.address)}</strong><span>{[item.chain, item.direction, `${item.tx_count} tx`].filter(Boolean).join(" · ")}</span></p>) : <p>No counterparty data.</p>}</article>)}</div></section>
+    <DetailList title="Wallet Destination History" entries={(history?.items || []).map((item, index) => [`${item.system || "Application"} ${index + 1}`, `${compactIdentifier(item.address)} · ${safeDisplay(item.first_seen)} - ${safeDisplay(item.last_seen)} · observed change window: ${safeDisplay(item.observed_change_window?.start || item.previous_observed_at)} - ${safeDisplay(item.observed_change_window?.end || item.current_observed_at)}`])} empty="No wallet destination history is available." />
+    <DetailList title="Application Links" entries={Object.entries(caseData?.case?.safe_metadata || {}).map(([key, value]) => [key.replace(/_/g, " "), value])} empty="No application-side links are available." />
+    {(anomalies?.anomalies || []).length ? <DetailList title="Observed wallet correlations" entries={anomalies.anomalies.map((item) => [item.rule_id, item.title])} /> : null}
   </div>;
 }
 

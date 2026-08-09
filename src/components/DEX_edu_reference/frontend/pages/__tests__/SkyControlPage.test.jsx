@@ -17,7 +17,11 @@ import {
   fetchSkyControlForensicGraph,
   fetchSkyControlForensicTimeline,
   fetchSkyControlPaymentCase,
+  fetchSkyControlMoneyFlow,
+  fetchSkyControlTransaction,
   fetchSkyControlWallet,
+  fetchSkyControlWalletAnomalies,
+  fetchSkyControlWalletHistory,
   searchSkyControlForensics,
   searchSkyControlPaymentCases,
   searchSkyControlWallets,
@@ -54,6 +58,10 @@ jest.mock("../../services/skyControlService", () => ({
   searchSkyControlWallets: jest.fn(),
   fetchSkyControlPaymentCase: jest.fn(),
   fetchSkyControlWallet: jest.fn(),
+  fetchSkyControlTransaction: jest.fn(),
+  fetchSkyControlMoneyFlow: jest.fn(),
+  fetchSkyControlWalletHistory: jest.fn().mockResolvedValue({ items: [] }),
+  fetchSkyControlWalletAnomalies: jest.fn().mockResolvedValue({ anomalies: [] }),
 }));
 
 describe("SkyControlPage", () => {
@@ -1029,5 +1037,23 @@ describe("SkyControlPage", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent("Wallet Intelligence data is currently unavailable.");
     expect(screen.queryByRole("region", { name: "Wallet case summary" })).not.toBeInTheDocument();
     expect(screen.queryByText(/internal provider URL/i)).not.toBeInTheDocument();
+  });
+
+  it("renders bounded wallet, transaction, flow, and history evidence without ownership claims", async () => {
+    searchSkyControlPaymentCases.mockResolvedValue({ candidates: [] });
+    searchSkyControlWallets.mockResolvedValue({ candidates: [{ entity_type: "WALLET", entity_id: "0xabc123456789012345678901234567890123abcd", address: "0xabc123456789012345678901234567890123abcd", chain: "bsc", label: "Wallet" }] });
+    fetchSkyControlPaymentCase.mockRejectedValue({ status: 404 });
+    fetchSkyControlWallet.mockResolvedValue({ address: "0xabc123456789012345678901234567890123abcd", chain: "bsc", transaction_count: 2, application_systems: ["quick"], linked_orders: ["o1"], linked_payments: ["p1"], source_status: { orders: { available: true } }, provider_status: { bsc: { available: false, reason: "PROVIDER_UNAVAILABLE" } }, limitations: ["Application links do not establish wallet ownership."] });
+    fetchSkyControlMoneyFlow.mockResolvedValue({ depth_requested: 2, depth_reached: 2, nodes: [{ id: "1" }], edges: [{ from: "0xabc123456789012345678901234567890123abcd", to: "0xdef123456789012345678901234567890123abcd", tx_hash: "0xtx", amount: "1", asset: "BNB", hop: 1, direction: "OUTGOING", evidence_type: "DIRECT" }], truncated: true, paths: [] });
+    fetchSkyControlWalletHistory.mockResolvedValue({ items: [{ system: "quick", address: "0xabc123456789012345678901234567890123abcd", first_seen: "2026-01-01", last_seen: "2026-01-02", previous_observed_at: "2026-01-01", current_observed_at: "2026-01-02" }] });
+    fetchSkyControlWalletAnomalies.mockResolvedValue({ anomalies: [] });
+    render(<MemoryRouter initialEntries={["/?tab=wallet-intelligence"]}><SkyControlPage /></MemoryRouter>);
+    fireEvent.change(screen.getByLabelText("Wallet Intelligence search"), { target: { value: "0xabc123456789012345678901234567890123abcd" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    fireEvent.click(await screen.findByRole("button", { name: /Wallet/i }));
+    expect(await screen.findByRole("region", { name: "Wallet Profile" })).toHaveTextContent("Transaction Count");
+    expect(screen.getByRole("region", { name: "Money Flow" })).toHaveTextContent("Partial money-flow graph");
+    expect(screen.getByText("Wallet Destination History")).toBeInTheDocument();
+    expect(screen.queryByText(/owned by admin|owned by user/i)).not.toBeInTheDocument();
   });
 });
