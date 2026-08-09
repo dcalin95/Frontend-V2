@@ -47,7 +47,25 @@ export const searchSkyControlPaymentCases = (q, options) => fetchSkyControl('/pa
 export const fetchSkyControlPaymentCase = (type, id, options) => fetchSkyControl(`/payment-cases/${encodeURIComponent(type)}/${encodeURIComponent(id)}`, options);
 export const fetchSkyControlWalletHistory = (options) => fetchSkyControl('/wallet-history', options);
 export const fetchSkyControlWalletAnomalies = (options) => fetchSkyControl('/wallet-anomalies', options);
-export const fetchSkyControlWalletExport = (options) => fetchSkyControl('/wallet-export', options);
+export async function fetchSkyControlWalletExport(format = 'json', params = {}, { signal } = {}) {
+  const base = String(getBackendUrl() || '').replace(/\/$/, '');
+  const query = new URLSearchParams({
+    ...Object.fromEntries(Object.entries(params).filter(([, value]) => value !== '' && value != null)),
+    format,
+  });
+  const response = await fetch(`${base}/api/sky-control/wallet-export?${query.toString()}`, {
+    method: 'GET', credentials: 'include',
+    headers: { Accept: format === 'csv' ? 'text/csv, application/json' : 'application/json' }, signal,
+  });
+  const contentType = response.headers.get('content-type') || '';
+  const blob = await response.blob();
+  if (!response.ok) {
+    const payload = await blob.text().then((text) => JSON.parse(text)).catch(() => ({}));
+    const error = new Error(payload.error || `HTTP ${response.status}`); error.status = response.status; throw error;
+  }
+  const payload = format === 'json' ? await blob.text().then((text) => JSON.parse(text)).catch(() => null) : null;
+  return { blob, contentType, payload, integrityHash: payload?.integrity_hash || null };
+}
 export async function fetchSkyControlForensicExport(format, params = {}, { signal } = {}) {
   const base = String(getBackendUrl() || '').replace(/\/$/, '');
   const query = new URLSearchParams({ ...Object.fromEntries(Object.entries(params).filter(([, value]) => value !== '' && value != null)), format });

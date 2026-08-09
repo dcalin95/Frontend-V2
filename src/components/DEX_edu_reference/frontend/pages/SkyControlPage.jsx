@@ -2,7 +2,7 @@ import React, { useEffect, useId, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Cloud, CreditCard, Download, FileSearch, LockKeyhole, Radio, RefreshCw, ShieldCheck, UsersRound, Waypoints } from 'lucide-react';
 import './sky-control-page.css';
-import { fetchSkyControl, fetchSkyControlSummary, fetchSkyControlForensicAnomalies, fetchSkyControlForensicEntity, fetchSkyControlForensicExport, fetchSkyControlForensicGraph, fetchSkyControlForensicTimeline, fetchSkyControlPaymentCase, fetchSkyControlMoneyFlow, fetchSkyControlTransaction, fetchSkyControlWallet, fetchSkyControlWalletAnomalies, fetchSkyControlWalletHistory, searchSkyControlForensics, searchSkyControlPaymentCases, searchSkyControlWallets } from '../services/skyControlService';
+import { fetchSkyControl, fetchSkyControlSummary, fetchSkyControlForensicAnomalies, fetchSkyControlForensicEntity, fetchSkyControlForensicExport, fetchSkyControlForensicGraph, fetchSkyControlForensicTimeline, fetchSkyControlPaymentCase, fetchSkyControlMoneyFlow, fetchSkyControlTransaction, fetchSkyControlWallet, fetchSkyControlWalletAnomalies, fetchSkyControlWalletExport, fetchSkyControlWalletHistory, searchSkyControlForensics, searchSkyControlPaymentCases, searchSkyControlWallets } from '../services/skyControlService';
 
 const tabs = [
   'Overview',
@@ -313,7 +313,7 @@ function WalletIntelligenceWorkspace() {
     {state.error ? <p className="sky-control-page__notice" role="alert">{state.error}</p> : null}
     {state.status === "searched" ? <section className="sky-control-page__wallet-candidates" aria-label="Wallet Intelligence candidates"><h3>Exact candidates</h3>{state.candidates.length ? <div>{state.candidates.map((candidate) => <button type="button" key={`${candidate.entity_type}:${candidate.entity_id}:${candidate.chain || ""}`} onClick={() => selectSeed(candidate)}><strong>{safeDisplay(candidate.entity_type)}</strong><span>{safeDisplay(candidate.label || candidate.entity_id)}</span><small>{[candidate.system, candidate.chain].filter(Boolean).join(" · ") || "Application reference"}</small></button>)}</div> : <p>No exact candidates found.</p>}</section> : null}
     {state.status === "loading" ? <div className="sky-control-page__empty"><p>Loading selected read-only case...</p></div> : null}
-    {state.status === "ready" ? <><section className="sky-control-page__wallet-summary" aria-label="Wallet case summary"><h3>Case summary</h3><div>{metrics.map(([label, value]) => <article key={label}><span>{label}</span><strong>{safeDisplay(value)}</strong></article>)}</div></section><WalletDetailViews wallet={state.wallet} transaction={state.transaction} flow={state.flow} history={state.history} anomalies={state.anomalies} caseData={state.caseData} /><div className="sky-control-page__wallet-status-grid"><StatusList title="Provider status" items={state.wallet?.provider_status || state.transaction?.provider_status || state.caseData?.provider_status} empty="Provider status unavailable for this selected seed." /><StatusList title="Application source status" items={state.caseData?.source_status || state.wallet?.source_status || state.transaction?.source_status} empty="Application source status unavailable for this selected seed." /></div><section className="sky-control-page__wallet-limitations" aria-label="Wallet Intelligence limitations"><h3>Limitations</h3><ul>{(state.caseData?.limitations || state.wallet?.limitations || ["Missing activity is not proof of no activity."]).map((item) => <li key={item}>{safeDisplay(item)}</li>)}</ul></section><section className="sky-control-page__legend" aria-label="Wallet evidence legend"><h3>Evidence semantics</h3><div>{walletEvidenceLegend.map(([type, explanation]) => <p key={type}><strong>{type}</strong><span>{explanation}</span></p>)}</div></section></> : null}
+    {state.status === "ready" ? <><section className="sky-control-page__wallet-summary" aria-label="Wallet case summary"><h3>Case summary</h3><div>{metrics.map(([label, value]) => <article key={label}><span>{label}</span><strong>{safeDisplay(value)}</strong></article>)}</div></section><WalletDetailViews seed={state.seed} wallet={state.wallet} transaction={state.transaction} flow={state.flow} history={state.history} anomalies={state.anomalies} caseData={state.caseData} /><div className="sky-control-page__wallet-status-grid"><StatusList title="Provider status" items={state.wallet?.provider_status || state.transaction?.provider_status || state.caseData?.provider_status} empty="Provider status unavailable for this selected seed." /><StatusList title="Application source status" items={state.caseData?.source_status || state.wallet?.source_status || state.transaction?.source_status} empty="Application source status unavailable for this selected seed." /></div><section className="sky-control-page__wallet-limitations" aria-label="Wallet Intelligence limitations"><h3>Limitations</h3><ul>{(state.caseData?.limitations || state.wallet?.limitations || ["Missing activity is not proof of no activity."]).map((item) => <li key={item}>{safeDisplay(item)}</li>)}</ul></section><section className="sky-control-page__legend" aria-label="Wallet evidence legend"><h3>Evidence semantics</h3><div>{walletEvidenceLegend.map(([type, explanation]) => <p key={type}><strong>{type}</strong><span>{explanation}</span></p>)}</div></section></> : null}
   </div>;
 }
 
@@ -326,7 +326,126 @@ function DetailList({ title, entries, empty = "No data available." }) {
   return <section className="sky-control-page__wallet-detail" aria-label={title}><h3>{title}</h3>{entries?.length ? <div>{entries.map(([label, value]) => <p key={label}><span>{label}</span><strong>{safeDisplay(value)}</strong></p>)}</div> : <p className="sky-control-page__wallet-empty">{empty}</p>}</section>;
 }
 
-function WalletDetailViews({ wallet, transaction, flow, history, anomalies, caseData }) {
+const walletTimelineLabels = {
+  ORDER_CREATED: "Order created", PAYMENT_REFERENCE_RECORDED: "Payment reference recorded",
+  WITHDRAW_DESTINATION_OBSERVED: "Withdrawal destination observed", WITHDRAW_DESTINATION_CHANGED: "Withdrawal destination changed",
+  TRANSACTION_CONFIRMED: "Transaction confirmed", NATIVE_TRANSFER: "Native transfer", TOKEN_TRANSFER: "Token transfer",
+  FORWARDING: "Forwarding", SERVICE_REACHED: "Known service reached",
+};
+const validTime = (value) => value && !Number.isNaN(new Date(value).getTime());
+const timeLabel = (value) => validTime(value) ? new Date(value).toLocaleString() : "-";
+
+function CaseTimeline({ events }) {
+  const [filters, setFilters] = useState({ event_type: "", system: "", chain: "", evidence_type: "" });
+  const validEvents = (events || []).filter((event) => validTime(event.timestamp));
+  const filtered = validEvents.filter((event) => Object.entries(filters).every(([key, value]) => !value || String(event[key] || "").toUpperCase() === value));
+  const options = (key) => [...new Set(validEvents.map((event) => event[key]).filter(Boolean))].sort();
+  const copy = (value) => navigator.clipboard?.writeText(String(value));
+  return <section className="sky-control-page__wallet-detail sky-control-page__timeline" aria-label="Case Timeline"><h3>Case Timeline</h3><p className="sky-control-page__wallet-empty">Timeline filters apply only to events already loaded for this selected case.</p>{validEvents.length ? <><div className="sky-control-page__timeline-filters">{[["event_type", "Event Type"], ["system", "System"], ["chain", "Chain"], ["evidence_type", "Evidence Type"]].map(([key, label]) => <label key={key}>{label}<select aria-label={`${label} filter`} value={filters[key]} onChange={(event) => setFilters((current) => ({ ...current, [key]: event.target.value }))}><option value="">All</option>{options(key).map((value) => <option key={value} value={String(value).toUpperCase()}>{key === "event_type" ? walletTimelineLabels[value] || `Unknown event: ${value}` : value}</option>)}</select></label>)}</div><div className="sky-control-page__table-wrap"><table><thead><tr><th>Timestamp</th><th>Event</th><th>System / chain</th><th>Subjects</th><th>Asset / amount</th><th>Evidence</th><th>Provenance</th></tr></thead><tbody>{filtered.map((event, index) => { const window = event.metadata?.observed_change_window; const ids = [event.tx_hash, event.wallet_address, event.payment_reference, event.order_id].filter(Boolean); return <tr key={event.event_id || `${event.event_type}-${index}`}><td>{timeLabel(event.timestamp)}{(event.reason_codes || []).includes("CHANGE_TIME_NOT_EXACT") || window ? <small>Observed change window: {safeDisplay(window?.start)} - {safeDisplay(window?.end)}</small> : null}</td><td>{walletTimelineLabels[event.event_type] || `Unknown event: ${safeDisplay(event.event_type)}`}</td><td>{[event.system, event.chain].filter(Boolean).join(" · ") || "-"}</td><td>{[event.actor, event.subject, event.object].map(safeDisplay).filter((value) => value !== "-").join(" · ") || "-"}{ids.map((id) => <button key={id} type="button" aria-label={`Copy ${compactIdentifier(id)}`} onClick={() => copy(id)}>Copy</button>)}</td><td>{[event.asset, event.amount].filter(Boolean).join(" · ") || "-"}</td><td><strong>{safeDisplay(event.evidence_type)}</strong><small>{(event.reason_codes || []).join(", ") || "-"}</small></td><td>{(event.provenance || []).map((item) => [item.source_system, item.source_table, item.source_record_id].filter(Boolean).join(" · ")).filter(Boolean).join("; ") || "No source provenance available"}</td></tr>; })}</tbody></table></div>{!filtered.length ? <p className="sky-control-page__wallet-empty">No timeline events match the selected filters.</p> : null}</> : <div className="sky-control-page__empty"><p>No timestamped case events are available from current sources.</p><p>Missing timeline activity is not proof that no activity occurred.</p></div>}</section>;
+}
+
+const walletAnomalyRuleLabels = {
+  PAYMENT_REFERENCE_WITHOUT_ONCHAIN_TX: "Payment reference without on-chain transaction",
+  ONCHAIN_TX_WITHOUT_MATCHING_PAYMENT: "On-chain transaction without matching payment",
+  SAME_TRANSACTION_MULTI_PAYMENT: "Same transaction referenced by multiple payments",
+  SAME_PAYMENT_REFERENCE_MULTI_ORDER: "Same payment reference used by multiple orders",
+  SAME_WITHDRAW_DESTINATION_MULTI_SYSTEM: "Withdrawal destination observed across systems",
+  WITHDRAW_DESTINATION_CHANGED_BEFORE_PAYMENT: "Withdrawal destination changed before payment",
+  PAYMENT_NEAR_DESTINATION_CHANGE: "Payment near withdrawal destination change",
+  FIRST_RECEIPT_AFTER_DESTINATION_CHANGE: "First receipt after withdrawal destination change",
+  RAPID_WITHDRAW_DESTINATION_ROTATION: "Rapid withdrawal destination rotation",
+  RAPID_FORWARDING: "Rapid forwarding",
+  FLOW_TO_KNOWN_EXCHANGE: "Flow to known exchange",
+  FLOW_TO_KNOWN_DEX: "Flow to known DEX",
+  FLOW_TO_KNOWN_BRIDGE: "Flow to known bridge",
+};
+
+const anomalyProvenance = (items) => (items || []).map((item) => [item.source_system, item.source_table, item.source_record_id].filter(Boolean).join(" · ")).filter(Boolean);
+const anomalyEntities = (item) => [...new Set([...(item.entity_ids || []), ...(item.record_ids || []), ...(item.user_ids || []), ...(item.admin_ids || []), item.wallet_address, item.address, item.tx_hash, item.payment_reference, item.payment_id, item.order_id, item.user_id, item.admin_id, item.source_entity_id, item.target_entity_id].filter(Boolean))];
+const anomalyTimestamps = (item) => {
+  const values = Array.isArray(item.timestamps) ? item.timestamps : Object.values(item.timestamps || {});
+  return [...new Set([...values, item.timestamp, item.payment_timestamp, item.receipt_timestamp].filter(validTime))];
+};
+const safeMetadataEntries = (metadata) => Object.entries(metadata || {}).filter(([key, value]) => ["matched_value", "systems", "chain", "observed_change_window", "time_delta_seconds", "amount", "asset"].includes(key) && (typeof value === "string" || typeof value === "number" || Array.isArray(value))).map(([key, value]) => [key.replace(/_/g, " "), Array.isArray(value) ? value.filter((item) => typeof item === "string" || typeof item === "number").join(", ") : value]);
+
+function WalletAnomalyDrawer({ anomaly, onClose }) {
+  const entities = anomalyEntities(anomaly);
+  const timestamps = anomalyTimestamps(anomaly);
+  const provenance = anomalyProvenance(anomaly.provenance);
+  return <aside className="sky-control-page__schema sky-control-page__wallet-anomaly-drawer" aria-label="Anomaly Detail"><button type="button" aria-label="Close anomaly detail" onClick={onClose}>Close</button><h3>Anomaly Detail</h3><p>Rule: {walletAnomalyRuleLabels[anomaly.rule_id] || safeDisplay(anomaly.rule_id)}</p><p>Severity: {safeDisplay(anomaly.severity)}</p><p>Title: {safeDisplay(anomaly.title)}</p><p>Reason: {safeDisplay(anomaly.reason)}</p><p>Evidence Type: {safeDisplay(anomaly.evidence_type)}</p><p>Reason Codes: {(anomaly.reason_codes || []).join(", ") || "-"}</p><p>Entities: {entities.map(compactIdentifier).join(" · ") || "-"}</p><p>Timestamps: {timestamps.map(timeLabel).join(" · ") || "-"}</p><p>Provenance: {provenance.join("; ") || "No source provenance available"}</p><h4>Safe Metadata</h4>{safeMetadataEntries(anomaly.metadata).length ? safeMetadataEntries(anomaly.metadata).map(([key, value]) => <p key={key}>{key}: {safeDisplay(value)}</p>) : <p>No safe metadata available</p>}</aside>;
+}
+
+function WalletAnomalies({ anomalies }) {
+  const [filters, setFilters] = useState({ severity: "", rule_id: "", evidence_type: "" });
+  const [selected, setSelected] = useState(null);
+  const items = Array.isArray(anomalies) ? anomalies : [];
+  const filtered = items.filter((item) => Object.entries(filters).every(([key, value]) => !value || String(item[key] || "").toUpperCase() === value));
+  const options = (key) => [...new Set(items.map((item) => item[key]).filter(Boolean))].sort();
+  const copy = (value) => navigator.clipboard?.writeText(String(value));
+  return <section className="sky-control-page__wallet-detail sky-control-page__wallet-anomalies" aria-label="Wallet Intelligence Anomalies"><h3>Anomalies</h3><p className="sky-control-page__wallet-empty">Anomaly signals indicate unusual, repeated, temporal, or cross-system application/blockchain patterns. They are not findings of ownership, fraud, wrongdoing, or identity.</p>{items.length ? <><div className="sky-control-page__timeline-filters">{[["severity", "Severity"], ["rule_id", "Rule"], ["evidence_type", "Evidence Type"]].map(([key, label]) => <label key={key}>{label}<select aria-label={`Anomaly ${label.toLowerCase()} filter`} value={filters[key]} onChange={(event) => setFilters((current) => ({ ...current, [key]: event.target.value }))}><option value="">All</option>{options(key).map((value) => <option key={value} value={String(value).toUpperCase()}>{key === "rule_id" ? walletAnomalyRuleLabels[value] || value : value}</option>)}</select></label>)}</div><div className="sky-control-page__table-wrap"><table><thead><tr><th>Severity</th><th>Rule</th><th>Signal</th><th>Evidence</th><th>Entities</th><th>Provenance</th><th>Action</th></tr></thead><tbody>{filtered.map((item, index) => { const entities = anomalyEntities(item); const provenance = anomalyProvenance(item.provenance); return <tr key={item.anomaly_id || `${item.rule_id}-${index}`}><td><strong>{safeDisplay(item.severity)}</strong></td><td>{walletAnomalyRuleLabels[item.rule_id] || safeDisplay(item.rule_id)}</td><td><strong>{safeDisplay(item.title)}</strong><small>{safeDisplay(item.reason)}</small></td><td>{safeDisplay(item.evidence_type)}<small>{(item.reason_codes || []).join(", ") || "-"}</small></td><td>{entities.length ? entities.map((id) => <button key={id} type="button" aria-label={`Copy ${compactIdentifier(id)}`} onClick={() => copy(id)}>{compactIdentifier(id)}</button>) : "-"}</td><td>{provenance.join("; ") || "No source provenance available"}</td><td><button type="button" onClick={() => setSelected(item)}>Why flagged</button></td></tr>; })}</tbody></table></div>{!filtered.length ? <p className="sky-control-page__wallet-empty">No anomaly signals match the selected filters.</p> : null}</> : <div className="sky-control-page__empty"><p>No anomaly signals are available from the current case data.</p><p>Absence of anomaly signals is not proof that no unusual activity occurred.</p></div>}{selected ? <WalletAnomalyDrawer anomaly={selected} onClose={() => setSelected(null)} /> : null}</section>;
+}
+
+const evidenceTypes = ["DIRECT", "DERIVED", "CORRELATED", "UNPROVEN"];
+const evidenceProvenance = (items) => anomalyProvenance(Array.isArray(items) ? items : items ? [items] : []);
+const evidenceIdentifier = (item) => [item.evidence_type, item.relationship_type || item.rule_id || item.event_type || item.claim, item.tx_hash, item.wallet_address || item.address, item.payment_reference, item.payment_id, item.order_id, item.source_entity_id, item.target_entity_id].filter(Boolean).join("|");
+const toEvidenceItem = (item, source, claim) => item?.evidence_type ? { ...item, source, claim: item.title || item.relationship_type || item.rule_id || item.event_type || claim, evidence_id: evidenceIdentifier(item), provenance: item.provenance || item.metadata?.provenance || [] } : null;
+function walletEvidenceItems({ wallet, transaction, flow, caseData, anomalies }) {
+  const raw = [
+    ...(caseData?.evidence || []).map((item) => toEvidenceItem(item, "Selected case", "Case evidence")),
+    ...(caseData?.timeline || caseData?.events || []).map((item) => toEvidenceItem(item, "Case timeline", "Timeline event")),
+    ...(anomalies?.anomalies || caseData?.anomalies || []).map((item) => toEvidenceItem(item, "Case anomaly", "Anomaly signal")),
+    ...(flow?.edges || []).map((item) => toEvidenceItem(item, "Money flow", "Bounded flow relationship")),
+    ...(flow?.paths || []).map((item) => toEvidenceItem(item, "Transaction path", "Bounded transaction path")),
+    ...(wallet?.service_labels || []).map((item) => toEvidenceItem(item, "Service label", item.label || "Service label")),
+    ...(transaction ? [toEvidenceItem(transaction, "Transaction profile", "Transaction record")] : []),
+  ].filter(Boolean);
+  const merged = new Map();
+  raw.forEach((item) => { const current = merged.get(item.evidence_id); merged.set(item.evidence_id, current ? { ...current, provenance: [...current.provenance, ...item.provenance] } : item); });
+  return [...merged.values()].map((item) => ({ ...item, provenance: [...new Map((item.provenance || []).map((value) => [JSON.stringify(value), value])).values()] })).sort((a, b) => String(a.evidence_type).localeCompare(String(b.evidence_type)) || String(a.claim).localeCompare(String(b.claim)) || String(a.evidence_id).localeCompare(String(b.evidence_id)));
+}
+function EvidenceDrawer({ item, onClose }) {
+  const identifiers = anomalyEntities(item);
+  const timestamps = anomalyTimestamps(item);
+  const provenance = evidenceProvenance(item.provenance);
+  return <aside className="sky-control-page__schema sky-control-page__wallet-evidence-drawer" aria-label="Evidence Detail"><button type="button" aria-label="Close evidence detail" onClick={onClose}>Close</button><h3>Evidence Detail</h3><p>Evidence Type: {safeDisplay(item.evidence_type)}</p><p>Claim / Relationship: {safeDisplay(item.claim)}</p><p>Source: {safeDisplay(item.source)}</p><p>System: {safeDisplay(item.system)}</p><p>Chain: {safeDisplay(item.chain)}</p><p>Timestamps: {timestamps.map(timeLabel).join(" · ") || "-"}</p><p>Reason Codes: {(item.reason_codes || []).join(", ") || "-"}</p><p>Identifiers: {identifiers.map(compactIdentifier).join(" · ") || "-"}</p><p>Provenance: {provenance.join("; ") || "No source provenance available"}</p><h4>Safe Metadata</h4>{safeMetadataEntries(item.metadata).length ? safeMetadataEntries(item.metadata).map(([key, value]) => <p key={key}>{key}: {safeDisplay(value)}</p>) : <p>No safe metadata available</p>}</aside>;
+}
+function WalletEvidence({ wallet, transaction, flow, caseData, anomalies }) {
+  const [type, setType] = useState("");
+  const [selected, setSelected] = useState(null);
+  const items = walletEvidenceItems({ wallet, transaction, flow, caseData, anomalies });
+  const filtered = items.filter((item) => !type || item.evidence_type === type);
+  const counts = evidenceTypes.reduce((all, evidenceType) => ({ ...all, [evidenceType]: items.filter((item) => item.evidence_type === evidenceType).length }), {});
+  const copy = (value) => navigator.clipboard?.writeText(String(value));
+  return <section className="sky-control-page__wallet-detail sky-control-page__wallet-evidence" aria-label="Wallet Intelligence Evidence"><h3>Evidence</h3><p className="sky-control-page__wallet-empty">Evidence records are displayed from the currently loaded case sources only.</p><div className="sky-control-page__evidence-counts">{evidenceTypes.map((evidenceType) => <span key={evidenceType}>{evidenceType}: <strong>{counts[evidenceType]}</strong></span>)}</div><label className="sky-control-page__evidence-filter">Evidence Type<select aria-label="Wallet evidence type filter" value={type} onChange={(event) => setType(event.target.value)}><option value="">ALL</option>{evidenceTypes.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>{items.some((item) => item.evidence_type === "UNPROVEN") ? <p className="sky-control-page__notice">Unproven items are hypotheses or unresolved associations and must not be treated as established identity, ownership, or control.</p> : null}{items.length ? <div className="sky-control-page__table-wrap"><table><thead><tr><th>Evidence Type</th><th>Claim / Relationship</th><th>Source</th><th>System / Chain</th><th>Identifiers</th><th>Provenance</th><th>Action</th></tr></thead><tbody>{filtered.map((item) => { const identifiers = anomalyEntities(item); const provenance = evidenceProvenance(item.provenance); const linkageWarning = ["ADMIN_ACTIVITY_LINKED_TO_PAYMENT_FLOW", "USER_PAYMENT_FLOW_LINK"].includes(item.rule_id || item.relationship_type); return <tr key={item.evidence_id}><td><strong>{item.evidence_type}</strong></td><td><strong>{safeDisplay(item.claim)}</strong>{item.reason_codes?.length ? <small>{item.reason_codes.join(", ")}</small> : null}{linkageWarning ? <small>This application linkage does not prove wallet ownership or control.</small> : null}</td><td>{safeDisplay(item.source)}</td><td>{[item.system, item.chain].filter(Boolean).join(" · ") || "-"}</td><td>{identifiers.length ? identifiers.map((id) => <button key={id} type="button" aria-label={`Copy ${compactIdentifier(id)}`} onClick={() => copy(id)}>{compactIdentifier(id)}</button>) : "-"}</td><td>{provenance.length ? provenance.join("; ") : "No source provenance available"}</td><td><button type="button" onClick={() => setSelected(item)}>View evidence</button></td></tr>; })}</tbody></table></div> : <div className="sky-control-page__empty"><p>No case evidence is available from the currently loaded sources.</p><p>Missing evidence is not proof that an activity or relationship did not occur.</p></div>}{items.length && !filtered.length ? <p className="sky-control-page__wallet-empty">No evidence records match the selected type.</p> : null}{selected ? <EvidenceDrawer item={selected} onClose={() => setSelected(null)} /> : null}</section>;
+}
+
+function WalletExport({ seed }) {
+  const [state, setState] = useState({ loading: "", integrityHash: null, error: null });
+  const shortSeed = safeExportFilenamePart(seed?.entity_id, "record");
+  const type = safeExportFilenamePart(seed?.entity_type, "case").toLowerCase();
+  const exports = [
+    ["json", "", "Export Case JSON", `sky-wallet-case-${type}-${shortSeed}.json`],
+    ["csv", "transactions", "Export Transactions CSV", `sky-wallet-transactions-${shortSeed}.csv`],
+    ["csv", "money_flow", "Export Money Flow CSV", `sky-wallet-money-flow-${shortSeed}.csv`],
+    ["csv", "wallet_history", "Export Wallet History CSV", `sky-wallet-history-${shortSeed}.csv`],
+    ["csv", "counterparties", "Export Counterparties CSV", `sky-wallet-counterparties-${shortSeed}.csv`],
+  ];
+  const run = async (format, csvType, label, filename) => {
+    const action = csvType || format;
+    setState({ loading: action, integrityHash: null, error: null });
+    try {
+      const result = await fetchSkyControlWalletExport(format, { seed_type: seed.entity_type, seed_id: seed.entity_id, ...(csvType ? { type: csvType } : {}) });
+      downloadForensicExport(result.blob, filename);
+      setState({ loading: "", integrityHash: format === "json" ? validIntegrityHash(result.integrityHash) : null, error: null });
+    } catch (error) {
+      const message = error.status === 401 || error.status === 403 ? "Not authorized for this export." : error.status === 400 ? "Requested export is not available." : error.status === 404 ? "Selected case export was not found." : "Export is currently unavailable. Please try again.";
+      setState({ loading: "", integrityHash: null, error: message });
+    }
+  };
+  return <section className="sky-control-page__wallet-detail sky-control-page__wallet-export" aria-label="Wallet Intelligence Export"><h3>Export</h3><p className="sky-control-page__wallet-empty">Downloads are produced directly by the read-only backend export contract.</p><p className="sky-control-page__wallet-empty">Hash verifies exported bundle content, not source database or blockchain immutability.</p><div className="sky-control-page__wallet-export-actions">{exports.map(([format, csvType, label, filename]) => <button key={label} type="button" aria-label={label} disabled={Boolean(state.loading)} onClick={() => run(format, csvType, label, filename)}>{state.loading === (csvType || format) ? "Preparing..." : label}</button>)}</div>{state.loading ? <p role="status">Preparing export...</p> : null}{state.error ? <p role="alert">{state.error}</p> : null}{state.integrityHash ? <div className="sky-control-page__wallet-export-hash"><strong>Export integrity hash</strong><code>{state.integrityHash}</code><button type="button" aria-label="Copy export integrity hash" onClick={() => navigator.clipboard?.writeText(state.integrityHash)}>Copy</button></div> : null}</section>;
+}
+
+function WalletDetailViews({ seed, wallet, transaction, flow, history, anomalies, caseData }) {
   const copy = (value) => navigator.clipboard?.writeText(String(value));
   const profile = wallet && [["Address", wallet.address], ["Chain", wallet.chain], ["Application First Seen", wallet.first_seen_application], ["Application Last Seen", wallet.last_seen_application], ["Chain First Seen", wallet.first_seen_chain], ["Chain Last Seen", wallet.last_seen_chain], ["Native Balance", wallet.native_balance], ["Transaction Count", wallet.transaction_count], ["Total Native Received", wallet.total_native_received], ["Total Native Sent", wallet.total_native_sent], ["Application Systems", wallet.application_systems?.join(", ")], ["Linked Orders", wallet.linked_orders?.length], ["Linked Payments", wallet.linked_payments?.length], ["Linked Users", wallet.linked_users?.length], ["Linked Admin Activity", wallet.linked_admin_actions?.length], ["Service Labels", wallet.service_labels?.length]];
   const tx = transaction && [["Transaction Hash", transaction.tx_hash], ["Chain", transaction.chain], ["Verification", transaction.verification_status], ["Block", transaction.block_number], ["Timestamp", transaction.timestamp], ["From", transaction.from], ["To", transaction.to], ["Native Value", transaction.native_value], ["Token Transfers", transaction.token_transfers?.length], ["Status", transaction.status], ["Gas Used", transaction.gas_used], ["Application Payment Links", transaction.application_payment_links?.length], ["Application Order Links", transaction.application_order_links?.length]];
@@ -336,11 +455,14 @@ function WalletDetailViews({ wallet, transaction, flow, history, anomalies, case
     {profile ? <section className="sky-control-page__wallet-detail" aria-label="Wallet Profile"><div className="sky-control-page__card-title"><h3>Wallet Profile</h3><button type="button" onClick={() => copy(wallet.address)}>Copy address</button></div><p className="sky-control-page__address"><span>{compactIdentifier(wallet.address)}</span><strong>{safeDisplay(wallet.chain)}</strong></p><div>{profile.map(([label, value]) => <p key={label}><span>{label}</span><strong>{safeDisplay(value)}</strong></p>)}</div><p className="sky-control-page__wallet-empty">Application links are evidence links and do not establish wallet ownership.</p></section> : null}
     {tx ? <DetailList title="Transaction Profile" entries={tx} empty="No transaction profile available." /> : null}
     {flow ? <section className="sky-control-page__wallet-detail" aria-label="Money Flow"><h3>Money Flow</h3><p className="sky-control-page__wallet-empty">Directional flow is bounded for safety and performance.</p><div className="sky-control-page__flow-bounds"><span>Depth requested: {safeDisplay(flow.depth_requested || flow.requested_depth)}</span><span>Depth reached: {safeDisplay(flow.depth_reached)}</span><span>Nodes: {safeDisplay(flow.nodes?.length)}</span><span>Edges: {safeDisplay(edges.length)}</span></div>{flow.truncated ? <p className="sky-control-page__notice">Partial money-flow graph - bounded for safety/performance.</p> : null}<div className="sky-control-page__flow-graph">{edges.length ? edges.map((edge, index) => <button key={`${edge.tx_hash || index}-${edge.from}-${edge.to}`} type="button"><strong>WALLET</strong><span>{compactIdentifier(edge.from)}</span><b>→</b><strong>{edge.service_label ? "SERVICE" : "WALLET"}</strong><span>{compactIdentifier(edge.to)}</span><small>{[edge.amount, edge.asset, edge.timestamp, edge.hop, edge.direction, edge.evidence_type].filter((value) => value != null).join(" · ")}</small></button>) : <p>No bounded money-flow records are available.</p>}</div></section> : null}
+    <CaseTimeline events={caseData?.timeline || caseData?.events || []} />
+    <WalletEvidence wallet={wallet} transaction={transaction} flow={flow} caseData={caseData} anomalies={anomalies} />
+    {seed ? <WalletExport key={`${seed.entity_type}:${seed.entity_id}`} seed={seed} /> : null}
     <DetailList title="Transaction Paths" entries={(flow?.paths || []).map((path, index) => [`Path ${index + 1}`, `${safeDisplay(path.hop_count)} hops · ${safeDisplay(path.assets?.join(", "))}`])} empty="No bounded transaction paths are available." />
     <section className="sky-control-page__wallet-detail" aria-label="Counterparty Intelligence"><h3>Counterparty Intelligence</h3><div className="sky-control-page__counterparty-grid">{[["Top Incoming", counterparties.top_incoming], ["Top Outgoing", counterparties.top_outgoing], ["Recurring Counterparties", counterparties.recurring_counterparties]].map(([title, list]) => <article key={title}><h4>{title}</h4>{list?.length ? list.map((item) => <p key={item.address}><strong>{compactIdentifier(item.address)}</strong><span>{[item.chain, item.direction, `${item.tx_count} tx`].filter(Boolean).join(" · ")}</span></p>) : <p>No counterparty data.</p>}</article>)}</div></section>
     <DetailList title="Wallet Destination History" entries={(history?.items || []).map((item, index) => [`${item.system || "Application"} ${index + 1}`, `${compactIdentifier(item.address)} · ${safeDisplay(item.first_seen)} - ${safeDisplay(item.last_seen)} · observed change window: ${safeDisplay(item.observed_change_window?.start || item.previous_observed_at)} - ${safeDisplay(item.observed_change_window?.end || item.current_observed_at)}`])} empty="No wallet destination history is available." />
     <DetailList title="Application Links" entries={Object.entries(caseData?.case?.safe_metadata || {}).map(([key, value]) => [key.replace(/_/g, " "), value])} empty="No application-side links are available." />
-    {(anomalies?.anomalies || []).length ? <DetailList title="Observed wallet correlations" entries={anomalies.anomalies.map((item) => [item.rule_id, item.title])} /> : null}
+    <WalletAnomalies anomalies={anomalies?.anomalies || caseData?.anomalies || []} />
   </div>;
 }
 
