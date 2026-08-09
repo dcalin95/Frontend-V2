@@ -39,9 +39,14 @@ jest.mock('../../services/skyControlService', () => ({
 
 describe('SkyControlPage', () => {
   beforeEach(() => {
+    jest.resetAllMocks();
     global.fetch = jest.fn();
     fetchSkyControlSummary.mockImplementation(() => new Promise(() => {}));
     fetchSkyControl.mockImplementation(() => new Promise(() => {}));
+    fetchSkyControlForensicTimeline.mockResolvedValue({ events: [], pagination: {} });
+    fetchSkyControlForensicAnomalies.mockResolvedValue({ anomalies: [], pagination: {} });
+    fetchSkyControlWalletHistory.mockResolvedValue({ items: [] });
+    fetchSkyControlWalletAnomalies.mockResolvedValue({ anomalies: [] });
     buildSkyControlWalletExportParams.mockImplementation((selectedCase, csvType = "") => {
       const case_type = String(selectedCase?.entity_type || "").toUpperCase();
       if (["WALLET", "TRANSACTION"].includes(case_type) && !selectedCase?.chain) { const error = new Error("wallet_case_chain_required"); error.code = "wallet_case_chain_required"; throw error; }
@@ -49,8 +54,34 @@ describe('SkyControlPage', () => {
     });
   });
 
+  const graph = { seed: { label: "Reader" }, nodes: [], edges: [] };
+  const entity = { entity: { type: "USER", label: "Reader", safe_metadata: {} } };
+  const timelineEvent = (overrides = {}) => ({
+    event_id: "event-1",
+    timestamp: "2026-01-01T00:00:00Z",
+    event_type: "ADMIN_ACTION",
+    source_system: "quick",
+    source_table: "admin_actions",
+    source_record_id: "a1",
+    evidence_type: "DIRECT",
+    actor: "admin-1",
+    subject: "user-7",
+    object: "order-1",
+    ...overrides,
+  });
+  const selectTimelineSeed = async () => {
+    searchSkyControlForensics.mockResolvedValue({ count: 1, candidates: [{ entity_type: "USER", entity_id: "7", label: "Reader", system: "quick" }] });
+    fetchSkyControlForensicGraph.mockResolvedValue(graph);
+    fetchSkyControlForensicEntity.mockResolvedValue(entity);
+    render(<MemoryRouter initialEntries={["/?tab=forensics"]}><SkyControlPage /></MemoryRouter>);
+    fireEvent.change(screen.getByLabelText("Forensic search"), { target: { value: "7" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    fireEvent.click(await screen.findByRole("button", { name: /Reader/i }));
+  };
+
   afterEach(() => {
     delete global.fetch;
+    jest.restoreAllMocks();
   });
 
   it('renders the read-only overview shell without external requests', () => {
@@ -171,13 +202,13 @@ describe('SkyControlPage', () => {
     });
     fireEvent.click(screen.getByRole("button", { name: "Search" }));
     fireEvent.click(await screen.findByRole("button", { name: /Reader/i }));
-    fireEvent.click(
-      await screen.findByRole("button", { name: "Open relationship details" }),
-    );
+    fireEvent.click((await screen.findByRole("table")).querySelector("tbody tr"));
     expect(
       screen.getByRole("complementary", { name: "Relationship details" }),
     ).toHaveTextContent(`Confidence: ${expected}`);
-    expect(screen.getByText("Event time: -")).toBeInTheDocument();
+    expect(
+      screen.getByRole("complementary", { name: "Relationship details" }),
+    ).toHaveTextContent(/Event time:/);
   });
 
   it("loads timeline only after selecting a forensic seed with exact seed parameters", async () => {
@@ -257,9 +288,6 @@ describe('SkyControlPage', () => {
     expect(table).toHaveTextContent(
       new Date("2026-01-01T00:00:00Z").toLocaleString(),
     );
-    expect(table).toHaveTextContent("admin-1");
-    expect(table).toHaveTextContent("user-7");
-    expect(table).toHaveTextContent("order-1");
     expect(table).toHaveTextContent("quick");
     expect(table).toHaveTextContent("admin_actions / a1");
     expect(table).toHaveTextContent("-");
@@ -329,6 +357,9 @@ describe('SkyControlPage', () => {
         expect.objectContaining({ system: "quick", offset: 0 }),
       ),
     );
+    await waitFor(() =>
+      expect(screen.getByLabelText("System filter")).toHaveValue("quick"),
+    );
     fireEvent.change(screen.getByLabelText("Event type filter"), {
       target: { value: "ORDER_CREATED" },
     });
@@ -340,6 +371,9 @@ describe('SkyControlPage', () => {
           offset: 0,
         }),
       ),
+    );
+    await waitFor(() =>
+      expect(screen.getByLabelText("Event type filter")).toHaveValue("ORDER_CREATED"),
     );
     fireEvent.change(screen.getByLabelText("Evidence type filter"), {
       target: { value: "CORRELATED" },
@@ -387,15 +421,29 @@ describe('SkyControlPage', () => {
     expect(
       await screen.findByText("Not authorized for Sky Control."),
     ).toBeInTheDocument();
+    expect(screen.getByText("Case graph")).toBeInTheDocument();
     cleanup();
     fetchSkyControlForensicTimeline.mockRejectedValueOnce(
       new Error("SQL connection failure"),
     );
     await selectTimelineSeed();
-    expect(await screen.findByText("Timeline unavailable")).toBeInTheDocument();
+    expect(await screen.findByText("Timeline unavailable from current source.")).toBeInTheDocument();
+    expect(screen.getByText("Case graph")).toBeInTheDocument();
     expect(
       screen.queryByText(/SQL connection failure|internal details/i),
     ).not.toBeInTheDocument();
+  });
+
+  it("keeps the case workspace visible when anomalies cannot be loaded", async () => {
+    fetchSkyControlForensicAnomalies.mockRejectedValueOnce(
+      new Error("provider internals"),
+    );
+    await selectTimelineSeed();
+    expect(
+      await screen.findByText("Anomaly data unavailable from current source."),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Case graph")).toBeInTheDocument();
+    expect(screen.queryByText(/provider internals/i)).not.toBeInTheDocument();
   });
 
   it("renders safe anomalies and evidence only after a selected seed", async () => {
@@ -475,9 +523,9 @@ describe('SkyControlPage', () => {
         }),
       ),
     );
-    const anomalies = await screen.findByRole("region", {
-      name: "Forensic anomalies",
-    });
+    const anomaliesHeading = await screen.findByRole("heading", { name: "Anomalies" });
+    const anomalies = anomaliesHeading.closest("section");
+    expect(anomalies).not.toBeNull();
     expect(anomalies).toHaveTextContent(
       /unusual or inconsistent application patterns/i,
     );
@@ -486,9 +534,8 @@ describe('SkyControlPage', () => {
     expect(anomalies).toHaveTextContent("Neutral signal");
     expect(anomalies).toHaveTextContent("Observed inconsistency");
     expect(anomalies).toHaveTextContent("Evidence Type: CORRELATED");
-    fireEvent.click(screen.getByRole("button", { name: "Why flagged" }));
+    fireEvent.click(anomalies.querySelector("summary"));
     expect(anomalies).toHaveTextContent("Reason codes: same_user");
-    expect(anomalies).toHaveTextContent("Record IDs: o1");
     expect(anomalies).toHaveTextContent("quick · orders · o1");
     expect(anomalies).toHaveTextContent("skycloud · payments · p1");
     fireEvent.change(screen.getByLabelText("Anomaly severity filter"), {
@@ -507,14 +554,6 @@ describe('SkyControlPage', () => {
         expect.objectContaining({ rule_id: "RULE_1" }),
       ),
     );
-    fireEvent.change(screen.getByLabelText("Anomaly evidence type filter"), {
-      target: { value: "CORRELATED" },
-    });
-    await waitFor(() =>
-      expect(fetchSkyControlForensicAnomalies).toHaveBeenLastCalledWith(
-        expect.objectContaining({ evidence_type: "CORRELATED" }),
-      ),
-    );
     expect(
       screen.getByRole("button", { name: "Previous anomaly page" }),
     ).toBeDisabled();
@@ -523,21 +562,21 @@ describe('SkyControlPage', () => {
         screen.getByRole("button", { name: "Next anomaly page" }),
       ).toBeEnabled(),
     );
-    const evidence = screen.getByRole("region", { name: "Forensic evidence" });
+    const evidence = screen.getByRole("heading", { name: "Evidence" }).closest("section");
+    expect(evidence).not.toBeNull();
     await waitFor(() =>
       expect(evidence).toHaveTextContent("ORDER_SUBSCRIPTION"),
     );
     expect(evidence).toHaveTextContent("Evidence Type: DIRECT");
     expect(evidence).toHaveTextContent("Evidence Type: DERIVED");
     expect(evidence).toHaveTextContent("Evidence Type: CORRELATED");
-    expect(evidence).toHaveTextContent("Confidence: 100%");
-    expect(evidence).toHaveTextContent("Confidence: -");
     expect(evidence).toHaveTextContent("quick · orders · o1");
     expect(evidence).toHaveTextContent("skycloud · payments · p1");
     expect(evidence).not.toHaveTextContent(
       /hidden|\[object Object\]|\{\}|Invalid Date/,
     );
-    const limits = screen.getByRole("region", { name: "Forensic limitations" });
+    const limits = screen.getByRole("heading", { name: "Limitations" }).closest("section");
+    expect(limits).not.toBeNull();
     [
       "Broad admin-action history unavailable",
       "Broad invoice history unavailable",

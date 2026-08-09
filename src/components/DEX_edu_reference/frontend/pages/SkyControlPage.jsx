@@ -419,6 +419,27 @@ function WalletEvidence({ wallet, transaction, flow, caseData, anomalies }) {
   return <section className="sky-control-page__wallet-detail sky-control-page__wallet-evidence" aria-label="Wallet Intelligence Evidence"><h3>Evidence</h3><p className="sky-control-page__wallet-empty">Evidence records are displayed from the currently loaded case sources only.</p><div className="sky-control-page__evidence-counts">{evidenceTypes.map((evidenceType) => <span key={evidenceType}>{evidenceType}: <strong>{counts[evidenceType]}</strong></span>)}</div><label className="sky-control-page__evidence-filter">Evidence Type<select aria-label="Wallet evidence type filter" value={type} onChange={(event) => setType(event.target.value)}><option value="">ALL</option>{evidenceTypes.map((value) => <option key={value} value={value}>{value}</option>)}</select></label>{items.some((item) => item.evidence_type === "UNPROVEN") ? <p className="sky-control-page__notice">Unproven items are hypotheses or unresolved associations and must not be treated as established identity, ownership, or control.</p> : null}{items.length ? <div className="sky-control-page__table-wrap"><table><thead><tr><th>Evidence Type</th><th>Claim / Relationship</th><th>Source</th><th>System / Chain</th><th>Identifiers</th><th>Provenance</th><th>Action</th></tr></thead><tbody>{filtered.map((item) => { const identifiers = anomalyEntities(item); const provenance = evidenceProvenance(item.provenance); const linkageWarning = ["ADMIN_ACTIVITY_LINKED_TO_PAYMENT_FLOW", "USER_PAYMENT_FLOW_LINK"].includes(item.rule_id || item.relationship_type); return <tr key={item.evidence_id}><td><strong>{item.evidence_type}</strong></td><td><strong>{safeDisplay(item.claim)}</strong>{item.reason_codes?.length ? <small>{item.reason_codes.join(", ")}</small> : null}{linkageWarning ? <small>This application linkage does not prove wallet ownership or control.</small> : null}</td><td>{safeDisplay(item.source)}</td><td>{[item.system, item.chain].filter(Boolean).join(" · ") || "-"}</td><td>{identifiers.length ? identifiers.map((id) => <button key={id} type="button" aria-label={`Copy ${compactIdentifier(id)}`} onClick={() => copy(id)}>{compactIdentifier(id)}</button>) : "-"}</td><td>{provenance.length ? provenance.join("; ") : "No source provenance available"}</td><td><button type="button" onClick={() => setSelected(item)}>View evidence</button></td></tr>; })}</tbody></table></div> : <div className="sky-control-page__empty"><p>No case evidence is available from the currently loaded sources.</p><p>Missing evidence is not proof that an activity or relationship did not occur.</p></div>}{items.length && !filtered.length ? <p className="sky-control-page__wallet-empty">No evidence records match the selected type.</p> : null}{selected ? <EvidenceDrawer item={selected} onClose={() => setSelected(null)} /> : null}</section>;
 }
 
+function safeExportFilenamePart(value, fallback) {
+  const safe = String(value || "")
+    .replace(/[^a-z0-9_-]+/gi, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48);
+  if (!safe) return fallback;
+  return safe.length > 20 ? `${safe.slice(0, 10)}-${safe.slice(-6)}` : safe;
+}
+
+const validIntegrityHash = (value) =>
+  /^sha256:[a-f0-9]{64}$/.test(String(value || "")) ? String(value) : null;
+
+function downloadForensicExport(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 function WalletExport({ seed }) {
   const [state, setState] = useState({ loading: "", integrityHash: null, error: null });
   const shortSeed = safeExportFilenamePart(seed?.entity_id, "record");
@@ -494,7 +515,6 @@ function LegacyForensicsWorkspace() {
 
 const forensicValue = (value) => typeof value === 'string' || typeof value === 'number' ? String(value) : '-';
 const forensicTime = (value) => formatTimestamp(value);
-const evidenceTypes = ['DIRECT', 'DERIVED', 'CORRELATED', 'UNPROVEN'];
 const timelineLabels = { ADMIN_ACTION: 'Admin action', ORDER_CREATED: 'Order created', ORDER_UPDATED: 'Order updated', PAYMENT_PROOF: 'Payment proof', SUBSCRIPTION_START: 'Subscription started', SUBSCRIPTION_END: 'Subscription ended', BOT_REGISTERED: 'Bot registered', BOT_STARTED: 'Bot started', BOT_CRASHED: 'Bot crashed', INVITE_CREATED: 'Invite created', INVITE_APPROVED: 'Invite approved', INVITE_REVOKED: 'Invite revoked', WITHDRAW_DESTINATION_UPDATED: 'Withdrawal destination updated' };
 const forensicLabel = (value) => timelineLabels[value] || (typeof value === 'string' && value ? `Unknown event: ${value.replaceAll('_', ' ')}` : 'Unknown event');
 
@@ -508,23 +528,35 @@ function ForensicDrawer({ title, children, onClose, label }) {
 
 function ForensicsWorkspace() {
   const [query, setQuery] = useState('');
-  const [caseState, setCaseState] = useState({ status: 'idle', candidates: [], seed: null, graph: null, entity: null, relationship: null, timeline: [], anomalies: [], limitations: {} });
+  const [caseState, setCaseState] = useState({ status: 'idle', candidates: [], seed: null, graph: null, entity: null, relationship: null, timeline: [], timelineError: null, anomalies: [], anomaliesError: null, limitations: {} });
   const [timelinePage, setTimelinePage] = useState({ offset: 0, hasPrevious: false, hasNext: false, filters: { system: '', event_type: '', evidence_type: '' } });
   const [anomalyPage, setAnomalyPage] = useState({ offset: 0, hasPrevious: false, hasNext: false, filters: { severity: '', rule_id: '', evidence_type: '' } });
   const [exportState, setExportState] = useState({ status: 'idle', integrityHash: null });
   const limit = 25;
   const loadTimeline = async (seed, offset = 0, filters = timelinePage.filters) => {
-    const response = await fetchSkyControlForensicTimeline({ seed_type: seed.entity_type, seed_id: seed.entity_id, limit, offset, ...filters });
-    setCaseState((current) => ({ ...current, timeline: response.events || [], limitations: { ...current.limitations, ...(response.limitations || {}) } }));
-    setTimelinePage((current) => ({ ...current, offset, hasPrevious: Boolean(response.pagination?.has_previous), hasNext: Boolean(response.pagination?.has_next), filters }));
+    try {
+      const response = (await fetchSkyControlForensicTimeline({ seed_type: seed.entity_type, seed_id: seed.entity_id, limit, offset, ...filters })) || {};
+      setCaseState((current) => ({ ...current, timeline: response.events || [], timelineError: null, limitations: { ...current.limitations, ...(response.limitations || {}) } }));
+      setTimelinePage((current) => ({ ...current, offset, hasPrevious: Boolean(response.pagination?.has_previous), hasNext: Boolean(response.pagination?.has_next), filters, error: null }));
+    } catch (error) {
+      const timelineError = error?.status === 401 || error?.status === 403 ? 'Not authorized for Sky Control.' : 'Timeline unavailable from current source.';
+      setCaseState((current) => ({ ...current, timeline: [], timelineError }));
+      setTimelinePage((current) => ({ ...current, offset, hasPrevious: false, hasNext: false, filters, error: timelineError }));
+    }
   };
   const loadAnomalies = async (seed, offset = 0, filters = anomalyPage.filters) => {
-    const response = await fetchSkyControlForensicAnomalies({ seed_type: seed.entity_type, seed_id: seed.entity_id, limit, offset, ...filters });
-    setCaseState((current) => ({ ...current, anomalies: response.anomalies || response.items || [], limitations: { ...current.limitations, ...(response.limitations || {}) } }));
-    setAnomalyPage((current) => ({ ...current, offset, hasPrevious: Boolean(response.pagination?.has_previous), hasNext: Boolean(response.pagination?.has_next), filters }));
+    try {
+      const response = (await fetchSkyControlForensicAnomalies({ seed_type: seed.entity_type, seed_id: seed.entity_id, limit, offset, ...filters })) || {};
+      setCaseState((current) => ({ ...current, anomalies: response.anomalies || response.items || [], anomaliesError: null, limitations: { ...current.limitations, ...(response.limitations || {}) } }));
+      setAnomalyPage((current) => ({ ...current, offset, hasPrevious: Boolean(response.pagination?.has_previous), hasNext: Boolean(response.pagination?.has_next), filters, error: null }));
+    } catch (error) {
+      const anomaliesError = error?.status === 401 || error?.status === 403 ? 'Not authorized for Sky Control.' : 'Anomaly data unavailable from current source.';
+      setCaseState((current) => ({ ...current, anomalies: [], anomaliesError }));
+      setAnomalyPage((current) => ({ ...current, offset, hasPrevious: false, hasNext: false, filters, error: anomaliesError }));
+    }
   };
-  const submit = async (event) => { event.preventDefault(); const q = query.trim(); if (!q) { setCaseState({ status: 'empty', candidates: [], seed: null, graph: null, entity: null, relationship: null, timeline: [], anomalies: [], limitations: {} }); return; } setCaseState((current) => ({ ...current, status: 'searching', candidates: [] })); try { const response = await searchSkyControlForensics(q); setCaseState((current) => ({ ...current, status: response.count ? 'ready' : 'none', candidates: response.candidates || [] })); } catch (error) { setCaseState((current) => ({ ...current, status: error.status === 401 || error.status === 403 ? 'unauthorized' : 'error' })); } };
-  const select = async (seed) => { setTimelinePage({ offset: 0, hasPrevious: false, hasNext: false, filters: { system: '', event_type: '', evidence_type: '' } }); setAnomalyPage({ offset: 0, hasPrevious: false, hasNext: false, filters: { severity: '', rule_id: '', evidence_type: '' } }); setCaseState({ status: 'loading', candidates: [], seed, graph: null, entity: null, relationship: null, timeline: [], anomalies: [], limitations: {} }); try { const [graph, entity] = await Promise.all([fetchSkyControlForensicGraph({ seed_type: seed.entity_type, seed_id: seed.entity_id }), fetchSkyControlForensicEntity(seed.entity_type, seed.entity_id)]); setCaseState((current) => ({ ...current, status: 'ready', graph, entity, limitations: graph.limitations || {} })); await Promise.all([loadTimeline(seed, 0, { system: '', event_type: '', evidence_type: '' }), loadAnomalies(seed, 0, { severity: '', rule_id: '', evidence_type: '' })]); } catch { setCaseState((current) => ({ ...current, status: 'error' })); } };
+  const submit = async (event) => { event.preventDefault(); const q = query.trim(); if (!q) { setCaseState({ status: 'empty', candidates: [], seed: null, graph: null, entity: null, relationship: null, timeline: [], timelineError: null, anomalies: [], anomaliesError: null, limitations: {} }); return; } setCaseState((current) => ({ ...current, status: 'searching', candidates: [] })); try { const response = await searchSkyControlForensics(q); setCaseState((current) => ({ ...current, status: response.count ? 'ready' : 'none', candidates: response.candidates || [] })); } catch (error) { setCaseState((current) => ({ ...current, status: error.status === 401 || error.status === 403 ? 'unauthorized' : 'error' })); } };
+  const select = async (seed) => { setTimelinePage({ offset: 0, hasPrevious: false, hasNext: false, filters: { system: '', event_type: '', evidence_type: '' } }); setAnomalyPage({ offset: 0, hasPrevious: false, hasNext: false, filters: { severity: '', rule_id: '', evidence_type: '' } }); setCaseState({ status: 'loading', candidates: [], seed, graph: null, entity: null, relationship: null, timeline: [], timelineError: null, anomalies: [], anomaliesError: null, limitations: {} }); try { const [graph, entity] = await Promise.all([fetchSkyControlForensicGraph({ seed_type: seed.entity_type, seed_id: seed.entity_id }), fetchSkyControlForensicEntity(seed.entity_type, seed.entity_id)]); setCaseState((current) => ({ ...current, status: 'ready', graph, entity, limitations: graph.limitations || {} })); await Promise.all([loadTimeline(seed, 0, { system: '', event_type: '', evidence_type: '' }), loadAnomalies(seed, 0, { severity: '', rule_id: '', evidence_type: '' })]); } catch { setCaseState((current) => ({ ...current, status: 'error' })); } };
   const exportCase = async (format) => { if (!caseState.seed) return; setExportState({ status: 'loading', integrityHash: null }); try { const result = await fetchSkyControlForensicExport(format, { seed_type: caseState.seed.entity_type, seed_id: caseState.seed.entity_id }); const url = URL.createObjectURL(result.blob); const link = document.createElement('a'); link.href = url; link.download = `sky-control-forensics-${caseState.seed.entity_type}-${caseState.seed.entity_id}.${format === 'csv' ? 'csv' : 'json'}`; link.click(); URL.revokeObjectURL(url); setExportState({ status: 'success', integrityHash: /^sha256:[a-f0-9]{64}$/.test(result.integrityHash || '') ? result.integrityHash : null }); } catch { setExportState({ status: 'error', integrityHash: null }); } };
   const graph = caseState.graph;
   const metadata = graph?.metadata || {};
@@ -533,5 +565,6 @@ function ForensicsWorkspace() {
 }
 
 function ForensicPagination({ page, onPrevious, onNext }) {
-  return <div className="sky-control-page__pagination"><button type="button" aria-label="Previous forensic page" disabled={!page.hasPrevious} onClick={onPrevious}>Previous</button><span>Page {Math.floor(page.offset / 25) + 1}</span><button type="button" aria-label="Next forensic page" disabled={!page.hasNext} onClick={onNext}>Next</button></div>;
+  const resource = Object.prototype.hasOwnProperty.call(page.filters || {}, 'system') ? 'timeline' : 'anomaly';
+  return <div className="sky-control-page__pagination">{page.error ? <p className="sky-control-page__notice" role="alert">{page.error}</p> : null}<button type="button" aria-label={`Previous ${resource} page`} disabled={!page.hasPrevious} onClick={onPrevious}>Previous</button><span>Page {Math.floor(page.offset / 25) + 1}</span><button type="button" aria-label={`Next ${resource} page`} disabled={!page.hasNext} onClick={onNext}>Next</button></div>;
 }
