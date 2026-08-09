@@ -16,7 +16,11 @@ import {
   fetchSkyControlForensicExport,
   fetchSkyControlForensicGraph,
   fetchSkyControlForensicTimeline,
+  fetchSkyControlPaymentCase,
+  fetchSkyControlWallet,
   searchSkyControlForensics,
+  searchSkyControlPaymentCases,
+  searchSkyControlWallets,
 } from "../../services/skyControlService";
 
 jest.mock("../../services/skyControlService", () => ({
@@ -46,6 +50,10 @@ jest.mock("../../services/skyControlService", () => ({
     .fn()
     .mockResolvedValue({ anomalies: [] }),
   fetchSkyControlForensicExport: jest.fn(),
+  searchSkyControlPaymentCases: jest.fn(),
+  searchSkyControlWallets: jest.fn(),
+  fetchSkyControlPaymentCase: jest.fn(),
+  fetchSkyControlWallet: jest.fn(),
 }));
 
 describe("SkyControlPage", () => {
@@ -977,4 +985,49 @@ describe("SkyControlPage", () => {
       ).toBeInTheDocument();
     },
   );
+
+  it("renders Wallet Intelligence with exact search, explicit seed selection, and safe case data", async () => {
+    searchSkyControlPaymentCases.mockResolvedValue({ candidates: [
+      { entity_type: "PAYMENT", entity_id: "42", label: "Payment 42", system: "quick" },
+      { entity_type: "ORDER", entity_id: "42", label: "Order 42", system: "quick" },
+    ] });
+    searchSkyControlWallets.mockResolvedValue({ candidates: [] });
+    fetchSkyControlPaymentCase.mockResolvedValue({
+      case: { entity_id: "42" },
+      read_only: true,
+      summary: { payment_count: 1, order_count: 1, graph_nodes: 2, graph_edges: 1, depth: 3 },
+      source_status: { orders: { available: true }, payments: { available: false, reason: "QUERY_FAILED" } },
+      limitations: ["Admin wallet ownership unproven", "Missing activity is not proof of no activity."],
+    });
+    render(<MemoryRouter initialEntries={["/?tab=wallet-intelligence"]}><SkyControlPage /></MemoryRouter>);
+    expect(screen.getByRole("tab", { name: "Wallet Intelligence" })).toBeInTheDocument();
+    expect(screen.getByText(/Search an exact wallet/i)).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Wallet Intelligence search"), { target: { value: "42" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    await waitFor(() => expect(searchSkyControlPaymentCases).toHaveBeenCalledWith("42"));
+    expect(await screen.findByText("Payment 42")).toBeInTheDocument();
+    expect(fetchSkyControlPaymentCase).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: /Payment 42/i }));
+    await waitFor(() => expect(fetchSkyControlPaymentCase).toHaveBeenCalledWith("PAYMENT", "42"));
+    const summary = await screen.findByRole("region", { name: "Wallet case summary" });
+    expect(summary).toHaveTextContent("Payment Count");
+    expect(summary).toHaveTextContent("1");
+    expect(screen.getByRole("region", { name: "Application source status" })).toHaveTextContent("QUERY_FAILED");
+    expect(screen.getByRole("region", { name: "Wallet Intelligence limitations" })).toHaveTextContent("Admin wallet ownership unproven");
+    const legend = screen.getByRole("region", { name: "Wallet evidence legend" });
+    ["DIRECT", "DERIVED", "CORRELATED", "UNPROVEN"].forEach((label) => expect(legend).toHaveTextContent(label));
+  });
+
+  it("clears stale Wallet Intelligence case data and sanitizes errors on seed switch", async () => {
+    searchSkyControlPaymentCases.mockResolvedValue({ candidates: [{ entity_type: "PAYMENT", entity_id: "1", label: "Payment 1" }] });
+    searchSkyControlWallets.mockResolvedValue({ candidates: [] });
+    fetchSkyControlPaymentCase.mockRejectedValue(Object.assign(new Error("internal provider URL"), { status: 503 }));
+    render(<MemoryRouter initialEntries={["/?tab=wallet-intelligence"]}><SkyControlPage /></MemoryRouter>);
+    fireEvent.change(screen.getByLabelText("Wallet Intelligence search"), { target: { value: "1" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    fireEvent.click(await screen.findByRole("button", { name: /Payment 1/i }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Wallet Intelligence data is currently unavailable.");
+    expect(screen.queryByRole("region", { name: "Wallet case summary" })).not.toBeInTheDocument();
+    expect(screen.queryByText(/internal provider URL/i)).not.toBeInTheDocument();
+  });
 });

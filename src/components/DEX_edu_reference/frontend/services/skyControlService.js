@@ -35,6 +35,15 @@ export const fetchSkyControlForensicGraph = (params, options) => fetchSkyControl
 export const fetchSkyControlForensicEntity = (type, id, options) => fetchSkyControl(`/forensics/entity/${encodeURIComponent(type)}/${encodeURIComponent(id)}`, options);
 export const fetchSkyControlForensicTimeline = (params, options) => fetchSkyControl('/forensics/timeline', { ...options, params });
 export const fetchSkyControlForensicAnomalies = (params, options) => fetchSkyControl('/forensics/anomalies', { ...options, params });
+export const searchSkyControlWallets = (q, options) => fetchSkyControl('/wallets/search', { ...options, params: { ...(options?.params || {}), q } });
+export const fetchSkyControlWallet = (chain, address, options) => fetchSkyControl(`/wallets/${encodeURIComponent(chain)}/${encodeURIComponent(address)}`, options);
+export const fetchSkyControlTransaction = (chain, txHash, options) => fetchSkyControl(`/transactions/${encodeURIComponent(chain)}/${encodeURIComponent(txHash)}`, options);
+export const fetchSkyControlMoneyFlow = (params, options) => fetchSkyControl('/money-flow', { ...options, params });
+export const searchSkyControlPaymentCases = (q, options) => fetchSkyControl('/payment-cases/search', { ...options, params: { ...(options?.params || {}), q } });
+export const fetchSkyControlPaymentCase = (type, id, options) => fetchSkyControl(`/payment-cases/${encodeURIComponent(type)}/${encodeURIComponent(id)}`, options);
+export const fetchSkyControlWalletHistory = (options) => fetchSkyControl('/wallet-history', options);
+export const fetchSkyControlWalletAnomalies = (options) => fetchSkyControl('/wallet-anomalies', options);
+export const fetchSkyControlWalletExport = (options) => fetchSkyControl('/wallet-export', options);
 export async function fetchSkyControlForensicExport(format, params = {}, { signal } = {}) {
   const base = String(getBackendUrl() || '').replace(/\/$/, '');
   const query = new URLSearchParams({

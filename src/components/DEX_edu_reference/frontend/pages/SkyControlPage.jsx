@@ -22,7 +22,11 @@ import {
   fetchSkyControlForensicExport,
   fetchSkyControlForensicGraph,
   fetchSkyControlForensicTimeline,
+  fetchSkyControlPaymentCase,
+  fetchSkyControlWallet,
   searchSkyControlForensics,
+  searchSkyControlPaymentCases,
+  searchSkyControlWallets,
 } from "../services/skyControlService";
 
 const tabs = [
@@ -34,6 +38,7 @@ const tabs = [
   "Payments",
   "Channel",
   "Forensics",
+  "Wallet Intelligence",
   "Security",
 ];
 
@@ -389,6 +394,8 @@ export default function SkyControlPage() {
           </>
         ) : activeTab === "forensics" ? (
           <ForensicsWorkspace />
+        ) : activeTab === "wallet-intelligence" ? (
+          <WalletIntelligenceWorkspace />
         ) : (
           <div className="sky-control-page__workspace">
             <div className="sky-control-page__workspace-head">
@@ -491,6 +498,71 @@ export default function SkyControlPage() {
       </section>
     </main>
   );
+}
+
+const walletEvidenceLegend = [
+  ["DIRECT", "Directly observed application or on-chain data."],
+  ["DERIVED", "Calculated from observed records using explicit rules."],
+  ["CORRELATED", "Related records; this does not establish identity or ownership."],
+  ["UNPROVEN", "Reported or incomplete information requiring more evidence."],
+];
+
+const safeDisplay = (value) =>
+  value == null || value === "" || typeof value === "object" ? "-" : String(value);
+
+function walletErrorMessage(error) {
+  if ([401, 403].includes(error?.status)) return "Not authorized for Wallet Intelligence.";
+  if (error?.status === 404) return "No exact case was found for this selection.";
+  if (/invalid|empty/i.test(error?.message || "")) return "Enter a valid exact identifier.";
+  return "Wallet Intelligence data is currently unavailable.";
+}
+
+function StatusList({ title, items, empty }) {
+  const entries = Object.entries(items || {});
+  return <section className="sky-control-page__wallet-status" aria-label={title}>
+    <h3>{title}</h3>
+    {entries.length ? entries.map(([name, value]) => {
+      const state = String(value?.status || value?.state || (value?.available === false ? "UNAVAILABLE" : value?.available === true ? "AVAILABLE" : value) || "UNAVAILABLE").toUpperCase();
+      const reason = typeof value === "object" ? value?.reason || value?.reason_code : null;
+      return <div key={name}><span>{name.replace(/[_-]+/g, " ")}</span><strong className={`is-${state.toLowerCase()}`}>{state}</strong>{reason ? <small>{safeDisplay(reason)}</small> : null}</div>;
+    }) : <p>{empty}</p>}
+  </section>;
+}
+
+function WalletIntelligenceWorkspace() {
+  const [query, setQuery] = useState("");
+  const [state, setState] = useState({ status: "idle", candidates: [], seed: null, caseData: null, wallet: null, error: null });
+  const submit = async (event) => {
+    event.preventDefault();
+    const value = query.trim();
+    if (!value) return setState((current) => ({ ...current, status: "error", error: "Enter an exact identifier." }));
+    setState({ status: "searching", candidates: [], seed: null, caseData: null, wallet: null, error: null });
+    try {
+      const [cases, wallets] = await Promise.all([searchSkyControlPaymentCases(value), searchSkyControlWallets(value)]);
+      const candidates = [...(cases.candidates || []), ...(wallets.candidates || [])].filter((candidate, index, all) => all.findIndex((item) => `${item.entity_type}:${item.entity_id}:${item.chain || ""}` === `${candidate.entity_type}:${candidate.entity_id}:${candidate.chain || ""}`) === index);
+      setState({ status: "searched", candidates, seed: null, caseData: null, wallet: null, error: null });
+    } catch (error) { setState({ status: "error", candidates: [], seed: null, caseData: null, wallet: null, error: walletErrorMessage(error) }); }
+  };
+  const selectSeed = async (seed) => {
+    setState((current) => ({ ...current, status: "loading", seed, caseData: null, wallet: null, error: null }));
+    try {
+      const caseData = await fetchSkyControlPaymentCase(seed.entity_type, seed.entity_id);
+      const address = seed.entity_type === "WALLET" ? (seed.address || seed.entity_id) : null;
+      const wallet = address && seed.chain ? await fetchSkyControlWallet(seed.chain, address).catch(() => null) : null;
+      setState((current) => ({ ...current, status: "ready", caseData, wallet, error: null }));
+    } catch (error) { setState((current) => ({ ...current, status: "error", caseData: null, wallet: null, error: walletErrorMessage(error) })); }
+  };
+  const summary = state.caseData?.summary || state.wallet || {};
+  const metrics = [["Seed", state.seed?.label || state.seed?.entity_id], ["Chains", state.seed?.chain || summary.chain], ["Wallet Count", summary.wallet_count], ["Transaction Count", summary.transaction_count], ["Payment Count", summary.payment_count], ["Order Count", summary.order_count], ["User Count", summary.user_count], ["Admin Activity Count", summary.admin_activity_count], ["Counterparty Count", summary.counterparty_count], ["Service Label Count", summary.service_label_count], ["Graph Nodes", summary.graph_nodes], ["Graph Edges", summary.graph_edges], ["First Event", summary.first_event], ["Last Event", summary.last_event], ["Known Service Hits", summary.known_service_hits], ["Anomaly Count", summary.anomaly_count], ["Depth", summary.depth], ["Read Only", summary.read_only ?? state.caseData?.read_only]];
+  return <div className="sky-control-page__wallet-workspace">
+    <div className="sky-control-page__workspace-head"><div><span className="sky-control-page__eyebrow">READ-ONLY CASE WORKSPACE</span><h2>Wallet Intelligence</h2></div></div>
+    <form className="sky-control-page__wallet-search" onSubmit={submit}><label htmlFor="wallet-intelligence-search">Exact identifier</label><div><input id="wallet-intelligence-search" aria-label="Wallet Intelligence search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Wallet, transaction, payment reference, order, payment, user, or admin ID" /><button type="submit">Search</button></div></form>
+    {state.status === "idle" ? <div className="sky-control-page__empty"><FileSearch size={19} aria-hidden /><p>Search an exact wallet, transaction hash, payment reference, order, payment, user, or admin identifier.</p></div> : null}
+    {state.error ? <p className="sky-control-page__notice" role="alert">{state.error}</p> : null}
+    {state.status === "searched" ? <section className="sky-control-page__wallet-candidates" aria-label="Wallet Intelligence candidates"><h3>Exact candidates</h3>{state.candidates.length ? <div>{state.candidates.map((candidate) => <button type="button" key={`${candidate.entity_type}:${candidate.entity_id}:${candidate.chain || ""}`} onClick={() => selectSeed(candidate)}><strong>{safeDisplay(candidate.entity_type)}</strong><span>{safeDisplay(candidate.label || candidate.entity_id)}</span><small>{[candidate.system, candidate.chain].filter(Boolean).join(" · ") || "Application reference"}</small></button>)}</div> : <p>No exact candidates found.</p>}</section> : null}
+    {state.status === "loading" ? <div className="sky-control-page__empty"><p>Loading selected read-only case...</p></div> : null}
+    {state.status === "ready" ? <><section className="sky-control-page__wallet-summary" aria-label="Wallet case summary"><h3>Case summary</h3><div>{metrics.map(([label, value]) => <article key={label}><span>{label}</span><strong>{safeDisplay(value)}</strong></article>)}</div></section><div className="sky-control-page__wallet-status-grid"><StatusList title="Provider status" items={state.wallet?.provider_status || state.caseData?.provider_status} empty="Provider status unavailable for this selected seed." /><StatusList title="Application source status" items={state.caseData?.source_status || state.wallet?.source_status} empty="Application source status unavailable for this selected seed." /></div><section className="sky-control-page__wallet-limitations" aria-label="Wallet Intelligence limitations"><h3>Limitations</h3><ul>{(state.caseData?.limitations || state.wallet?.limitations || ["Missing activity is not proof of no activity."]).map((item) => <li key={item}>{safeDisplay(item)}</li>)}</ul></section><section className="sky-control-page__legend" aria-label="Wallet evidence legend"><h3>Evidence semantics</h3><div>{walletEvidenceLegend.map(([type, explanation]) => <p key={type}><strong>{type}</strong><span>{explanation}</span></p>)}</div></section></> : null}
+  </div>;
 }
 
 function ForensicsWorkspace() {
