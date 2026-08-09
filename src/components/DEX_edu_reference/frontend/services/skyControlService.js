@@ -1,11 +1,14 @@
 import { getBackendUrl } from '../../../../config/apiEndpoints';
 
+function getSkyControlBackendUrl() {
+  // Sky Control shares the DEX backend session. The Render session cookie cannot
+  // be forwarded through the unrelated bits-ai.io origin, so use the DEX runtime
+  // backend resolver consistently for every read-only Sky Control request.
+  return String(getBackendUrl() || '').replace(/\/$/, '');
+}
+
 export async function requestSkyControl(path, signal) {
-  // The production auth cookie belongs to bits-ai.io. Use its existing API proxy
-  // so read-only Sky Control requests carry the same authenticated session.
-  const useFirstPartyApi = typeof window !== 'undefined'
-    && ['bits-ai.io', 'www.bits-ai.io'].includes(window.location?.hostname);
-  const base = String(useFirstPartyApi ? window.location.origin : getBackendUrl() || '').replace(/\/$/, '');
+  const base = getSkyControlBackendUrl();
   const response = await fetch(`${base}/api/sky-control${path}`, {
     method: 'GET',
     credentials: 'include',
@@ -64,7 +67,7 @@ export function buildSkyControlWalletExportParams(selectedCase = {}, csvType = '
 }
 
 export async function fetchSkyControlWalletExport(format = 'json', params = {}, { signal } = {}) {
-  const base = String(getBackendUrl() || '').replace(/\/$/, '');
+  const base = getSkyControlBackendUrl();
   const query = new URLSearchParams({
     ...Object.fromEntries(Object.entries(params).filter(([, value]) => value !== '' && value != null)),
     format,
@@ -83,7 +86,7 @@ export async function fetchSkyControlWalletExport(format = 'json', params = {}, 
   return { blob, contentType, payload, integrityHash: payload?.integrity_hash || null };
 }
 export async function fetchSkyControlForensicExport(format, params = {}, { signal } = {}) {
-  const base = String(getBackendUrl() || '').replace(/\/$/, '');
+  const base = getSkyControlBackendUrl();
   const query = new URLSearchParams({ ...Object.fromEntries(Object.entries(params).filter(([, value]) => value !== '' && value != null)), format });
   const response = await fetch(`${base}/api/sky-control/forensics/export?${query.toString()}`, { method: 'GET', credentials: 'include', headers: { Accept: format === 'csv' ? 'text/csv, application/json' : 'application/json' }, signal });
   const blob = await response.blob();

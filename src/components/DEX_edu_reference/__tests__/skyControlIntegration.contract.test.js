@@ -27,11 +27,12 @@ describe('Sky Control shell integration', () => {
     expect(dexApp).toContain('ENABLE_SKY_CONTROL ?');
   });
 
-  it('uses the first-party API proxy for the production session cookie', () => {
+  it('uses the DEX runtime backend for every authenticated Sky Control request', () => {
     const service = readSource('src', 'components', 'DEX_edu_reference', 'frontend', 'services', 'skyControlService.js');
 
-    expect(service).toContain("['bits-ai.io', 'www.bits-ai.io']");
-    expect(service).toContain('window.location.origin');
+    expect(service).toContain('function getSkyControlBackendUrl()');
+    expect(service).toContain('return String(getBackendUrl() || \'\').replace(/\\/$/, \'\');');
+    expect(service).not.toContain('window.location.origin');
     expect(service).toContain("credentials: 'include'");
   });
 });
