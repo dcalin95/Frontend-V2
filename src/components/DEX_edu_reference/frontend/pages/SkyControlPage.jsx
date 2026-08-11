@@ -5,7 +5,6 @@ import './sky-control-page.css';
 import { buildSkyControlWalletExportParams, fetchSkyControl, fetchSkyControlSummary, fetchSkyControlForensicAnomalies, fetchSkyControlForensicEntity, fetchSkyControlForensicExport, fetchSkyControlForensicGraph, fetchSkyControlForensicTimeline, fetchSkyControlPaymentCase, fetchSkyControlMoneyFlow, fetchSkyControlProviderHealth, fetchSkyControlTransaction, fetchSkyControlWallet, fetchSkyControlWalletAnomalies, fetchSkyControlWalletDiscovery, fetchSkyControlWalletDiscoveryDetail, fetchSkyControlWalletExport, fetchSkyControlWalletHistory, searchSkyControlForensics, searchSkyControlPaymentCases, searchSkyControlWallets } from '../services/skyControlService';
 
 const tabs = [
-  'Overview',
   'Gateway',
   'Bot Fleet',
   'Users & Subscriptions',
@@ -121,7 +120,7 @@ export default function SkyControlPage() {
   const selectTab = (nextTab) => {
     setPage(1);
     setSelectedRecord(null);
-    setSearchParams(nextTab === DEFAULT_TAB ? {} : { tab: nextTab }, { replace: true });
+    setSearchParams(nextTab === DEFAULT_TAB || nextTab === 'overview' ? {} : { tab: nextTab }, { replace: true });
   };
 
   const handleTabKeyDown = (event) => {

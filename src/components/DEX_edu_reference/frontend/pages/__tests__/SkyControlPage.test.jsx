@@ -90,13 +90,13 @@ describe('SkyControlPage', () => {
     jest.restoreAllMocks();
   });
 
-  it('renders the read-only overview shell without external requests', () => {
-    render(<MemoryRouter initialEntries={["/?tab=overview"]}><SkyControlPage /></MemoryRouter>);
+  it('keeps the read-only shell on the default Wallet Intelligence route', () => {
+    render(<MemoryRouter><SkyControlPage /></MemoryRouter>);
 
     expect(screen.getByRole('heading', { name: 'Sky Control' })).toBeInTheDocument();
     expect(screen.getByText('READ ONLY')).toBeInTheDocument();
-    expect(screen.getByRole('tab', { name: 'Overview' })).toHaveAttribute('aria-selected', 'true');
-    expect(screen.getAllByText('Loading')).toHaveLength(6);
+    expect(screen.queryByRole('tab', { name: 'Overview' })).not.toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Wallet Intelligence' })).toHaveAttribute('aria-selected', 'true');
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
@@ -109,14 +109,24 @@ describe('SkyControlPage', () => {
     expect(await screen.findByText('QuickMailChecker Configured Payment Destinations')).toBeInTheDocument();
   });
 
-  it('changes tabs with a keyboard and keeps the view read only', () => {
+  it('routes legacy overview links to Wallet Intelligence instead of the unauthorized overview cards', async () => {
+    fetchSkyControl.mockResolvedValue({ items: [] });
     render(<MemoryRouter initialEntries={["/?tab=overview"]}><SkyControlPage /></MemoryRouter>);
 
-    const overview = screen.getByRole('tab', { name: 'Overview' });
-    fireEvent.keyDown(overview, { key: 'ArrowRight' });
+    expect(screen.queryByRole('tab', { name: 'Overview' })).not.toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Wallet Intelligence' })).toHaveAttribute('aria-selected', 'true');
+    expect(await screen.findByRole('heading', { name: 'Wallet Intelligence' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Gateway' })).not.toBeInTheDocument();
+  });
 
-    expect(screen.getByRole('tab', { name: 'Gateway' })).toHaveAttribute('aria-selected', 'true');
-    expect(screen.getByText(/SERVICE RUNTIME NOT CONNECTED/)).toBeInTheDocument();
+  it('changes tabs with a keyboard and keeps the view read only', () => {
+    render(<MemoryRouter><SkyControlPage /></MemoryRouter>);
+
+    const walletIntelligence = screen.getByRole('tab', { name: 'Wallet Intelligence' });
+    fireEvent.keyDown(walletIntelligence, { key: 'ArrowRight' });
+
+    expect(screen.getByRole('tab', { name: 'Security' })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByText(/Write operations: DISABLED/)).toBeInTheDocument();
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
@@ -127,21 +137,11 @@ describe('SkyControlPage', () => {
     expect(formatRelativeTime(null)).toBe('—');
   });
 
-  it('renders only safe overview summaries after the provider connects', async () => {
-    fetchSkyControlSummary.mockResolvedValue({
-      health: { database: 'connected' },
-      overview: {
-        quick: { status: 'available', metrics: { active_subscriptions: 1, admin_actions_total: 2 } },
-        skycloud: { status: 'available', metrics: { active_subscriptions: 3, admin_actions_total: 4 } },
-        bot_fleet: { metrics: { total: 5 } },
-        payments: { metrics: { quick_payment_proofs: 6, skycloud_payment_proofs: 7 } },
-      },
-      schema: { tables: [{ table: 'users', compatible: true }, { table: 'halcyon_user_bots', compatible: false }] },
-    });
-    render(<MemoryRouter initialEntries={["/?tab=overview"]}><SkyControlPage /></MemoryRouter>);
-    expect(await screen.findByText('CONNECTED — 5 bots')).toBeInTheDocument();
-    expect(screen.getByText('4 active')).toBeInTheDocument();
-    expect(screen.getByText('SCHEMA INCOMPATIBLE')).toBeInTheDocument();
+  it('keeps runtime-only gateway status on the explicit gateway tab', () => {
+    render(<MemoryRouter initialEntries={["/?tab=gateway"]}><SkyControlPage /></MemoryRouter>);
+
+    expect(screen.getByRole('tab', { name: 'Gateway' })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByText(/SERVICE RUNTIME NOT CONNECTED/)).toBeInTheDocument();
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
