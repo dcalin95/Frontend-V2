@@ -91,7 +91,7 @@ describe('SkyControlPage', () => {
   });
 
   it('renders the read-only overview shell without external requests', () => {
-    render(<MemoryRouter><SkyControlPage /></MemoryRouter>);
+    render(<MemoryRouter initialEntries={["/?tab=overview"]}><SkyControlPage /></MemoryRouter>);
 
     expect(screen.getByRole('heading', { name: 'Sky Control' })).toBeInTheDocument();
     expect(screen.getByText('READ ONLY')).toBeInTheDocument();
@@ -100,8 +100,17 @@ describe('SkyControlPage', () => {
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
-  it('changes tabs with a keyboard and keeps the view read only', () => {
+  it('opens Wallet Intelligence by default to avoid the unauthorized overview landing state', async () => {
+    fetchSkyControl.mockResolvedValue({ items: [] });
     render(<MemoryRouter><SkyControlPage /></MemoryRouter>);
+
+    expect(screen.getByRole('tab', { name: 'Wallet Intelligence' })).toHaveAttribute('aria-selected', 'true');
+    expect(await screen.findByRole('heading', { name: 'Wallet Intelligence' })).toBeInTheDocument();
+    expect(await screen.findByText('QuickMailChecker Configured Payment Destinations')).toBeInTheDocument();
+  });
+
+  it('changes tabs with a keyboard and keeps the view read only', () => {
+    render(<MemoryRouter initialEntries={["/?tab=overview"]}><SkyControlPage /></MemoryRouter>);
 
     const overview = screen.getByRole('tab', { name: 'Overview' });
     fireEvent.keyDown(overview, { key: 'ArrowRight' });
@@ -129,7 +138,7 @@ describe('SkyControlPage', () => {
       },
       schema: { tables: [{ table: 'users', compatible: true }, { table: 'halcyon_user_bots', compatible: false }] },
     });
-    render(<MemoryRouter><SkyControlPage /></MemoryRouter>);
+    render(<MemoryRouter initialEntries={["/?tab=overview"]}><SkyControlPage /></MemoryRouter>);
     expect(await screen.findByText('CONNECTED — 5 bots')).toBeInTheDocument();
     expect(screen.getByText('4 active')).toBeInTheDocument();
     expect(screen.getByText('SCHEMA INCOMPATIBLE')).toBeInTheDocument();

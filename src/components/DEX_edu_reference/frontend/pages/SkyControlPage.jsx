@@ -18,6 +18,7 @@ const tabs = [
 ];
 
 const tabKey = (tab) => tab.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+const DEFAULT_TAB = 'wallet-intelligence';
 const TIMESTAMP_FIELDS = new Set(['started_at', 'stopped_at', 'last_crash_at', 'created_at', 'updated_at', 'last_heartbeat', 'next_retry_at', 'revoked_at', 'token_ready_at', 'first_seen', 'last_seen', 'event_time', 'starts_at', 'ends_at', 'expires_at', 'last_active_at']);
 const SAFE_VIEW_COLUMNS = {
   'bot-fleet': ['user_id', 'bot_id', 'bot_username', 'bot_first_name', 'status', 'health', 'pid', 'started_at', 'last_heartbeat', 'heartbeat_age_seconds', 'crash_count', 'last_crash_at', 'registration_source'],
@@ -86,7 +87,7 @@ export default function SkyControlPage() {
   const [limit, setLimit] = useState(50);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const requestedTab = searchParams.get('tab');
-  const activeTab = tabs.some((tab) => tabKey(tab) === requestedTab) ? requestedTab : 'overview';
+  const activeTab = tabs.some((tab) => tabKey(tab) === requestedTab) ? requestedTab : DEFAULT_TAB;
 
   const refreshSummary = (signal) => {
     setSummary((current) => ({ ...current, state: 'loading' }));
@@ -120,7 +121,7 @@ export default function SkyControlPage() {
   const selectTab = (nextTab) => {
     setPage(1);
     setSelectedRecord(null);
-    setSearchParams(nextTab === 'overview' ? {} : { tab: nextTab }, { replace: true });
+    setSearchParams(nextTab === DEFAULT_TAB ? {} : { tab: nextTab }, { replace: true });
   };
 
   const handleTabKeyDown = (event) => {
