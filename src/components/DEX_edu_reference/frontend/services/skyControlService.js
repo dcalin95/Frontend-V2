@@ -1,7 +1,14 @@
 import { getBackendUrl } from '../../../../config/apiEndpoints';
 
-export async function requestSkyControl(path, signal) {
+function getSkyControlBaseUrl() {
   const base = String(getBackendUrl() || '').replace(/\/$/, '');
+  const isFirstPartyProductionApi = typeof window !== 'undefined'
+    && ['bits-ai.io', 'www.bits-ai.io'].includes(window.location?.hostname);
+  return isFirstPartyProductionApi ? window.location.origin : base;
+}
+
+export async function requestSkyControl(path, signal) {
+  const base = getSkyControlBaseUrl();
   const response = await fetch(`${base}/api/sky-control${path}`, {
     method: 'GET',
     credentials: 'include',
@@ -23,11 +30,23 @@ export function fetchSkyControl(path, { signal, params } = {}) {
 }
 
 export function fetchSkyControlSummary(signal) {
-  return Promise.all([
+  return Promise.allSettled([
     requestSkyControl('/health', signal),
     requestSkyControl('/overview', signal),
-    requestSkyControl('/schema', signal).catch(() => null),
-  ]).then(([health, overview, schema]) => ({ health, overview, schema }));
+    requestSkyControl('/schema', signal),
+  ]).then(([healthResult, overviewResult, schemaResult]) => {
+    const health = healthResult.status === 'fulfilled' ? healthResult.value : null;
+    const overview = overviewResult.status === 'fulfilled' ? overviewResult.value : null;
+    const schema = schemaResult.status === 'fulfilled' ? schemaResult.value : null;
+    if (health || overview) return { health, overview, schema };
+
+    const failures = [healthResult, overviewResult].filter((result) => result.status === 'rejected');
+    const authFailure = failures.find((result) => result.reason?.status === 401 || result.reason?.status === 403);
+    if (authFailure) throw authFailure.reason;
+    const unavailableFailure = failures.find((result) => result.reason?.status === 503);
+    if (unavailableFailure) throw unavailableFailure.reason;
+    throw failures[0]?.reason || new Error('sky_control_summary_unavailable');
+  });
 }
 
 export const searchSkyControlForensics = (q, options) => fetchSkyControl('/forensics/search', { ...options, params: { ...(options?.params || {}), q } });
@@ -41,6 +60,7 @@ export const fetchSkyControlTransaction = (chain, txHash, options) => fetchSkyCo
 export const fetchSkyControlMoneyFlow = (params, options) => fetchSkyControl('/money-flow', { ...options, params });
 export const searchSkyControlPaymentCases = (q, options) => fetchSkyControl('/payment-cases/search', { ...options, params: { ...(options?.params || {}), q } });
 export const fetchSkyControlPaymentCase = (type, id, options) => fetchSkyControl(`/payment-cases/${encodeURIComponent(type)}/${encodeURIComponent(id)}`, options);
+export const fetchSkyControlProviderHealth = (options) => fetchSkyControl('/provider-health', options);
 export const fetchSkyControlWalletHistory = (options) => fetchSkyControl('/wallet-history', options);
 export const fetchSkyControlWalletAnomalies = (options) => fetchSkyControl('/wallet-anomalies', options);
 const walletExportCaseTypes = new Set(['WALLET', 'TRANSACTION', 'PAYMENT_REFERENCE', 'PAYMENT', 'ORDER', 'USER', 'ADMIN']);
@@ -60,7 +80,7 @@ export function buildSkyControlWalletExportParams(selectedCase = {}, csvType = '
 }
 
 export async function fetchSkyControlWalletExport(format = 'json', params = {}, { signal } = {}) {
-  const base = String(getBackendUrl() || '').replace(/\/$/, '');
+  const base = getSkyControlBaseUrl();
   const query = new URLSearchParams({
     ...Object.fromEntries(Object.entries(params).filter(([, value]) => value !== '' && value != null)),
     format,
@@ -79,7 +99,7 @@ export async function fetchSkyControlWalletExport(format = 'json', params = {}, 
   return { blob, contentType, payload, integrityHash: payload?.integrity_hash || null };
 }
 export async function fetchSkyControlForensicExport(format, params = {}, { signal } = {}) {
-  const base = String(getBackendUrl() || '').replace(/\/$/, '');
+  const base = getSkyControlBaseUrl();
   const query = new URLSearchParams({
     ...Object.fromEntries(Object.entries(params).filter(([, value]) => value !== '' && value != null)),
     format,

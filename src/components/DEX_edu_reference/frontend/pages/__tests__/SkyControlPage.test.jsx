@@ -4,6 +4,7 @@ import {
   fireEvent,
   render,
   screen,
+  within,
   waitFor,
 } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
@@ -18,6 +19,7 @@ import {
   fetchSkyControlForensicTimeline,
   fetchSkyControlPaymentCase,
   fetchSkyControlMoneyFlow,
+  fetchSkyControlProviderHealth,
   fetchSkyControlTransaction,
   fetchSkyControlWallet,
   fetchSkyControlWalletAnomalies,
@@ -62,6 +64,7 @@ jest.mock("../../services/skyControlService", () => ({
   fetchSkyControlWallet: jest.fn(),
   fetchSkyControlTransaction: jest.fn(),
   fetchSkyControlMoneyFlow: jest.fn(),
+  fetchSkyControlProviderHealth: jest.fn().mockResolvedValue({ providers: { ethereum: { status: "AVAILABLE", provider: "moralis" }, bsc: { status: "AVAILABLE", provider: "moralis" }, bitcoin: { status: "NOT_CONFIGURED" } } }),
   fetchSkyControlWalletHistory: jest.fn().mockResolvedValue({ items: [] }),
   fetchSkyControlWalletAnomalies: jest.fn().mockResolvedValue({ anomalies: [] }),
   fetchSkyControlWalletExport: jest.fn(),
@@ -77,6 +80,9 @@ describe("SkyControlPage", () => {
     global.fetch = jest.fn();
     fetchSkyControlSummary.mockImplementation(() => new Promise(() => {}));
     fetchSkyControl.mockImplementation(() => new Promise(() => {}));
+    fetchSkyControlProviderHealth.mockResolvedValue({ providers: { ethereum: { status: "AVAILABLE", provider: "moralis" }, bsc: { status: "AVAILABLE", provider: "moralis" }, bitcoin: { status: "NOT_CONFIGURED" } } });
+    fetchSkyControlWalletHistory.mockResolvedValue({ items: [] });
+    fetchSkyControlWalletAnomalies.mockResolvedValue({ anomalies: [] });
     buildSkyControlWalletExportParams.mockImplementation((selectedCase, csvType = "") => {
       const case_type = String(selectedCase?.entity_type || "").toUpperCase();
       if (["WALLET", "TRANSACTION"].includes(case_type) && !selectedCase?.chain) { const error = new Error("wallet_case_chain_required"); error.code = "wallet_case_chain_required"; throw error; }
@@ -828,6 +834,23 @@ describe("SkyControlPage", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("shows an explicit unauthorized provider banner when the summary endpoint returns 401", async () => {
+    fetchSkyControlSummary.mockRejectedValueOnce(
+      Object.assign(new Error("session required"), { status: 401 }),
+    );
+    render(
+      <MemoryRouter initialEntries={["/dex-edu/sky-control"]}>
+        <SkyControlPage />
+      </MemoryRouter>,
+    );
+    expect(
+      await screen.findByText("Not authorized for Sky Control."),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText("Read-only provider status is loading."),
+    ).not.toBeInTheDocument();
+  });
+
   it("renders safe anomalies and evidence only after a selected seed", async () => {
     const provenance = [
       {
@@ -1007,6 +1030,21 @@ describe("SkyControlPage", () => {
     },
   );
 
+  it("renders the Wallet Intelligence default dashboard without requiring search", async () => {
+    fetchSkyControlProviderHealth.mockResolvedValueOnce({ providers: { ethereum: { status: "AVAILABLE", provider: "moralis" }, bsc: { status: "AVAILABLE", provider: "moralis" }, bitcoin: { status: "NOT_CONFIGURED" }, litecoin: { status: "NOT_CONFIGURED" }, solana: { status: "NOT_CONFIGURED" }, tron: { status: "NOT_CONFIGURED" } } });
+    fetchSkyControlWalletHistory.mockResolvedValueOnce({ items: [{ system: "quickmailchecker", address: "0x1111111111111111111111111111111111111111", chain: "bsc", first_seen: "2026-01-01T00:00:00Z", last_seen: "2026-01-02T00:00:00Z", previous_address: "0x2222222222222222222222222222222222222222", observed_change_window: { start: "2026-01-01T00:00:00Z", end: "2026-01-02T00:00:00Z" } }] });
+    fetchSkyControlWalletAnomalies.mockResolvedValueOnce({ anomalies: [{ rule_id: "SAME_WITHDRAW_DESTINATION_MULTI_SYSTEM", address: "0x1111111111111111111111111111111111111111", reason_codes: ["exact_address_match"] }] });
+    fetchSkyControl.mockImplementation((path) => Promise.resolve(path === "/payments" ? { items: [{ system: "quickmailchecker", order_id: "8202095923", reference_value: "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", status: "recorded" }] } : path === "/admins" ? { items: [{ admin_id: "8202095923", system: "quickmailchecker", last_seen: "2026-01-03T00:00:00Z" }] } : { items: [] }));
+    render(<MemoryRouter initialEntries={["/?tab=wallet-intelligence"]}><SkyControlPage /></MemoryRouter>);
+    expect(await screen.findByRole("region", { name: "Provider Coverage" })).toHaveTextContent("AVAILABLE");
+    expect(screen.getByRole("region", { name: "QuickMailChecker Configured Payment Destinations" })).toHaveTextContent("0xcd45dab8");
+    expect(screen.getByRole("region", { name: "Observed Application Payment Destinations" })).toHaveTextContent("quickmailchecker");
+    expect(screen.getByRole("region", { name: "Recent Wallet Configuration Changes" })).toHaveTextContent("changes");
+    expect(screen.getByRole("region", { name: "Cross-System Wallet Reuse" })).toHaveTextContent("SAME_WITHDRAW_DESTINATION_MULTI_SYSTEM");
+    expect(screen.getByRole("region", { name: "Recent Payment Transaction References" })).toHaveTextContent("8202095923");
+    expect(screen.getByRole("region", { name: "Admin Wallet Activity summary" })).toHaveTextContent("8202095923");
+  });
+
   it("renders Wallet Intelligence with exact search, explicit seed selection, and safe case data", async () => {
     searchSkyControlPaymentCases.mockResolvedValue({ candidates: [
       { entity_type: "PAYMENT", entity_id: "42", label: "Payment 42", system: "quick" },
@@ -1020,9 +1058,21 @@ describe("SkyControlPage", () => {
       source_status: { orders: { available: true }, payments: { available: false, reason: "QUERY_FAILED" } },
       limitations: ["Admin wallet ownership unproven", "Missing activity is not proof of no activity."],
     });
+    fetchSkyControlWalletHistory.mockResolvedValue({
+      items: [
+        {
+          system: "quickmail",
+          address: "0xabc123456789012345678901234567890123abcd",
+          first_seen: "2026-01-01T00:00:00Z",
+          last_seen: "2026-01-02T00:00:00Z",
+          reuse_count: 2,
+          observed_change_window: { start: "2026-01-01T00:00:00Z", end: "2026-01-02T00:00:00Z" },
+        },
+      ],
+    });
     render(<MemoryRouter initialEntries={["/?tab=wallet-intelligence"]}><SkyControlPage /></MemoryRouter>);
     expect(screen.getByRole("tab", { name: "Wallet Intelligence" })).toBeInTheDocument();
-    expect(screen.getByText(/Search an exact wallet/i)).toBeInTheDocument();
+    expect(screen.getByLabelText("Wallet Intelligence search")).toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("Wallet Intelligence search"), { target: { value: "42" } });
     fireEvent.click(screen.getByRole("button", { name: "Search" }));
     await waitFor(() => expect(searchSkyControlPaymentCases).toHaveBeenCalledWith("42"));
@@ -1034,9 +1084,28 @@ describe("SkyControlPage", () => {
     expect(summary).toHaveTextContent("Payment Count");
     expect(summary).toHaveTextContent("1");
     expect(screen.getByRole("region", { name: "Application source status" })).toHaveTextContent("QUERY_FAILED");
+    expect(screen.getByRole("region", { name: "Observed Payment Destinations" })).toHaveTextContent("Observed Payment Destinations");
     expect(screen.getByRole("region", { name: "Wallet Intelligence limitations" })).toHaveTextContent("Admin wallet ownership unproven");
     const legend = screen.getByRole("region", { name: "Wallet evidence legend" });
     ["DIRECT", "DERIVED", "CORRELATED", "UNPROVEN"].forEach((label) => expect(legend).toHaveTextContent(label));
+  });
+
+  it("opens a read-only Admin Activity Profile from an exact admin candidate", async () => {
+    searchSkyControlPaymentCases.mockResolvedValue({ candidates: [{ entity_type: "ADMIN", entity_id: "8202095923", label: "Admin 8202095923", system: "quickmailchecker" }] });
+    searchSkyControlWallets.mockResolvedValue({ candidates: [] });
+    fetchSkyControlPaymentCase.mockRejectedValue({ status: 404 });
+    fetchSkyControl.mockImplementation((path) => Promise.resolve(path === "/admins/8202095923" ? { items: [{ admin_id: "8202095923", system: "quickmailchecker", action_type: "ORDER_REVIEW", target_user_id: "1", target_order_id: "order-1", created_at: "2026-01-03T00:00:00Z" }] } : { items: [] }));
+    render(<MemoryRouter initialEntries={["/?tab=wallet-intelligence"]}><SkyControlPage /></MemoryRouter>);
+    fireEvent.change(screen.getByLabelText("Wallet Intelligence search"), { target: { value: "8202095923" } });
+    fireEvent.click(screen.getByRole("button", { name: "Search" }));
+    fireEvent.click(await screen.findByRole("button", { name: /Admin 8202095923/i }));
+    const profile = await screen.findByRole("region", { name: "Admin Activity Profile" });
+    expect(profile).toHaveTextContent("8202095923");
+    expect(profile).toHaveTextContent("ORDER_REVIEW");
+    expect(profile).toHaveTextContent("DIRECTLY EVIDENCED");
+    expect(profile).toHaveTextContent("CORRELATED");
+    expect(profile).toHaveTextContent("UNPROVEN");
+    expect(profile).not.toHaveTextContent(/owned by admin|admin controls wallet/i);
   });
 
   it("clears stale Wallet Intelligence case data and sanitizes errors on seed switch", async () => {
@@ -1056,8 +1125,8 @@ describe("SkyControlPage", () => {
     searchSkyControlPaymentCases.mockResolvedValue({ candidates: [] });
     searchSkyControlWallets.mockResolvedValue({ candidates: [{ entity_type: "WALLET", entity_id: "0xabc123456789012345678901234567890123abcd", address: "0xabc123456789012345678901234567890123abcd", chain: "bsc", label: "Wallet" }] });
     fetchSkyControlPaymentCase.mockRejectedValue({ status: 404 });
-    fetchSkyControlWallet.mockResolvedValue({ address: "0xabc123456789012345678901234567890123abcd", chain: "bsc", transaction_count: 2, application_systems: ["quick"], linked_orders: ["o1"], linked_payments: ["p1"], source_status: { orders: { available: true } }, provider_status: { bsc: { available: false, reason: "PROVIDER_UNAVAILABLE" } }, limitations: ["Application links do not establish wallet ownership."] });
-    fetchSkyControlMoneyFlow.mockResolvedValue({ depth_requested: 2, depth_reached: 2, nodes: [{ id: "1" }], edges: [{ from: "0xabc123456789012345678901234567890123abcd", to: "0xdef123456789012345678901234567890123abcd", tx_hash: "0xtx", amount: "1", asset: "BNB", hop: 1, direction: "OUTGOING", evidence_type: "DIRECT" }], truncated: true, paths: [] });
+    fetchSkyControlWallet.mockResolvedValue({ address: "0xabc123456789012345678901234567890123abcd", chain: "bsc", transaction_count: 2, application_systems: ["quick"], linked_orders: ["o1"], linked_payments: ["p1"], top_counterparties: { top_incoming: [{ address: "0xfeedfeedfeedfeedfeedfeedfeedfeedfeedfeed", chain: "bsc", direction: "INCOMING", tx_count: 2, first_seen: "2026-01-01T00:00:00Z", last_seen: "2026-01-02T00:00:00Z", native_transfer_count: 1, token_transfer_count: 1, assets: ["BNB", "USDT"], evidence_type: "CORRELATED" }] }, source_status: { orders: { available: true } }, provider_status: { bsc: { available: false, reason: "PROVIDER_UNAVAILABLE" } }, limitations: ["Application links do not establish wallet ownership."] });
+    fetchSkyControlMoneyFlow.mockResolvedValue({ depth_requested: 2, depth_reached: 2, nodes: [{ id: "1" }], edges: [{ from: "0xabc123456789012345678901234567890123abcd", to: "0xdef123456789012345678901234567890123abcd", tx_hash: "0xtx", amount: "1", asset: "BNB", hop: 1, direction: "OUTGOING", evidence_type: "DIRECT", service_label: "Known DEX", service_category: "DEX", provenance: [{ source_system: "moralis", source_table: "transfers", source_record_id: "0xtx" }] }], truncated: true, paths: [] });
     fetchSkyControlWalletHistory.mockResolvedValue({ items: [{ system: "quick", address: "0xabc123456789012345678901234567890123abcd", first_seen: "2026-01-01", last_seen: "2026-01-02", previous_observed_at: "2026-01-01", current_observed_at: "2026-01-02" }] });
     fetchSkyControlWalletAnomalies.mockResolvedValue({ anomalies: [] });
     render(<MemoryRouter initialEntries={["/?tab=wallet-intelligence"]}><SkyControlPage /></MemoryRouter>);
@@ -1065,7 +1134,24 @@ describe("SkyControlPage", () => {
     fireEvent.click(screen.getByRole("button", { name: "Search" }));
     fireEvent.click(await screen.findByRole("button", { name: /Wallet/i }));
     expect(await screen.findByRole("region", { name: "Wallet Profile" })).toHaveTextContent("Transaction Count");
+    const filters = screen.getByRole("region", { name: "Money Flow filters" });
+    expect(filters).toHaveTextContent("Service type");
+    expect(filters).toHaveTextContent("Depth");
+    expect(filters).toHaveTextContent("1 of 1 loaded edges");
     expect(screen.getByRole("region", { name: "Money Flow" })).toHaveTextContent("Partial money-flow graph");
+    fireEvent.change(within(filters).getByLabelText("Service type"), { target: { value: "EXCHANGE" } });
+    expect(screen.getByRole("region", { name: "Money Flow" })).toHaveTextContent("No loaded money-flow records match the current filters.");
+    fireEvent.change(within(filters).getByLabelText("Service type"), { target: { value: "DEX" } });
+    expect(screen.getByRole("region", { name: "Money Flow" })).toHaveTextContent("Known DEX");
+    fireEvent.click(screen.getByRole("button", { name: /Transaction Drawer/i }));
+    expect(screen.getByRole("complementary", { name: "Transaction Drawer" })).toHaveTextContent("0xtx");
+    fireEvent.click(screen.getByRole("button", { name: "Close transaction drawer" }));
+    fireEvent.click(screen.getByText("Known DEX").closest("button"));
+    expect(screen.getByRole("complementary", { name: "Service Drawer" })).toHaveTextContent("Known DEX");
+    fireEvent.click(screen.getByRole("button", { name: "Close service drawer" }));
+    fireEvent.click(screen.getByText(/0xfeed/i).closest("button"));
+    expect(screen.getByRole("complementary", { name: "Wallet Drawer" })).toHaveTextContent("CORRELATED");
+    fireEvent.click(screen.getByRole("button", { name: "Close wallet drawer" }));
     expect(screen.getByText("Wallet Destination History")).toBeInTheDocument();
     expect(screen.queryByText(/owned by admin|owned by user/i)).not.toBeInTheDocument();
   });
