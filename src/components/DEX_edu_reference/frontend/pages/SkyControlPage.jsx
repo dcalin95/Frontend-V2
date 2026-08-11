@@ -85,10 +85,8 @@ export default function SkyControlPage() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(50);
   const [selectedRecord, setSelectedRecord] = useState(null);
-  const [allowRuntimeGatewayTab, setAllowRuntimeGatewayTab] = useState(false);
   const requestedTab = searchParams.get('tab');
-  const isLegacyRuntimeLanding = requestedTab === 'overview' || (requestedTab === 'gateway' && !allowRuntimeGatewayTab);
-  const activeTab = !isLegacyRuntimeLanding && tabs.some((tab) => tabKey(tab) === requestedTab) ? requestedTab : DEFAULT_TAB;
+  const activeTab = tabs.some((tab) => tabKey(tab) === requestedTab) ? requestedTab : DEFAULT_TAB;
 
   const refreshSummary = (signal) => {
     setSummary((current) => ({ ...current, state: 'loading' }));
@@ -117,10 +115,6 @@ export default function SkyControlPage() {
       .then((response) => setData({ state: 'connected', ...response, refreshedAt: new Date().toISOString() }))
       .catch((error) => {
         if (controller.signal.aborted) return;
-        if ((error?.status === 401 || error?.status === 403) && activeTab !== DEFAULT_TAB) {
-          setSearchParams({}, { replace: true });
-          return;
-        }
         setData({ state: error?.status === 401 || error?.status === 403 ? 'unauthorized' : 'unavailable', items: [] });
       });
     return () => controller.abort();
@@ -129,7 +123,6 @@ export default function SkyControlPage() {
   const selectTab = (nextTab) => {
     setPage(1);
     setSelectedRecord(null);
-    setAllowRuntimeGatewayTab(nextTab === 'gateway');
     setSearchParams(nextTab === DEFAULT_TAB || nextTab === 'overview' ? {} : { tab: nextTab }, { replace: true });
   };
 
