@@ -115,7 +115,14 @@ export default function SkyControlPage() {
     const params = activeTab === 'bot-fleet' ? { page, limit, ...filters } : activeTab === 'users-subscriptions' ? { page, limit, search: filters.search } : { page, limit };
     fetchSkyControl(endpoint, { signal: controller.signal, params })
       .then((response) => setData({ state: 'connected', ...response, refreshedAt: new Date().toISOString() }))
-      .catch((error) => !controller.signal.aborted && setData({ state: error?.status === 401 || error?.status === 403 ? 'unauthorized' : 'unavailable', items: [] }));
+      .catch((error) => {
+        if (controller.signal.aborted) return;
+        if ((error?.status === 401 || error?.status === 403) && activeTab !== DEFAULT_TAB) {
+          setSearchParams({}, { replace: true });
+          return;
+        }
+        setData({ state: error?.status === 401 || error?.status === 403 ? 'unauthorized' : 'unavailable', items: [] });
+      });
     return () => controller.abort();
   }, [activeTab, page, limit, filters.search, filters.status, filters.health]);
 

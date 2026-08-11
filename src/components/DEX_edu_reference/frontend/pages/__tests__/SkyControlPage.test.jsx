@@ -119,7 +119,7 @@ describe('SkyControlPage', () => {
     expect(screen.queryByRole('heading', { name: 'Gateway' })).not.toBeInTheDocument();
   });
 
-  it('routes stale gateway landing links to Wallet Intelligence while keeping the tab available by click', async () => {
+  it('routes stale gateway landing links to Wallet Intelligence while keeping Gateway available by click', async () => {
     fetchSkyControl.mockResolvedValue({ items: [] });
     render(<MemoryRouter initialEntries={["/?tab=gateway"]}><SkyControlPage /></MemoryRouter>);
 
@@ -129,7 +129,17 @@ describe('SkyControlPage', () => {
 
     fireEvent.click(screen.getByRole('tab', { name: 'Gateway' }));
     expect(screen.getByRole('tab', { name: 'Gateway' })).toHaveAttribute('aria-selected', 'true');
-    expect(screen.getByText(/SERVICE RUNTIME NOT CONNECTED/)).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Gateway' })).toBeInTheDocument();
+  });
+
+  it('returns unauthorized operational tabs to Wallet Intelligence instead of holding the error screen', async () => {
+    fetchSkyControl.mockRejectedValueOnce(Object.assign(new Error('not authorized'), { status: 401 }));
+    render(<MemoryRouter initialEntries={["/?tab=admin-timeline"]}><SkyControlPage /></MemoryRouter>);
+
+    expect(screen.getByRole('tab', { name: 'Admin Timeline' })).toHaveAttribute('aria-selected', 'true');
+    await waitFor(() => expect(screen.getByRole('tab', { name: 'Wallet Intelligence' })).toHaveAttribute('aria-selected', 'true'));
+    expect(await screen.findByRole('heading', { name: 'Wallet Intelligence' })).toBeInTheDocument();
+    expect(screen.queryByText('Not authorized for Sky Control.')).not.toBeInTheDocument();
   });
 
   it('changes tabs with a keyboard and keeps the view read only', () => {
