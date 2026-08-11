@@ -119,6 +119,19 @@ describe('SkyControlPage', () => {
     expect(screen.queryByRole('heading', { name: 'Gateway' })).not.toBeInTheDocument();
   });
 
+  it('routes stale gateway landing links to Wallet Intelligence while keeping the tab available by click', async () => {
+    fetchSkyControl.mockResolvedValue({ items: [] });
+    render(<MemoryRouter initialEntries={["/?tab=gateway"]}><SkyControlPage /></MemoryRouter>);
+
+    expect(screen.getByRole('tab', { name: 'Wallet Intelligence' })).toHaveAttribute('aria-selected', 'true');
+    expect(await screen.findByRole('heading', { name: 'Wallet Intelligence' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Gateway' })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('tab', { name: 'Gateway' }));
+    expect(screen.getByRole('tab', { name: 'Gateway' })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByText(/SERVICE RUNTIME NOT CONNECTED/)).toBeInTheDocument();
+  });
+
   it('changes tabs with a keyboard and keeps the view read only', () => {
     render(<MemoryRouter><SkyControlPage /></MemoryRouter>);
 
@@ -138,7 +151,8 @@ describe('SkyControlPage', () => {
   });
 
   it('keeps runtime-only gateway status on the explicit gateway tab', () => {
-    render(<MemoryRouter initialEntries={["/?tab=gateway"]}><SkyControlPage /></MemoryRouter>);
+    render(<MemoryRouter><SkyControlPage /></MemoryRouter>);
+    fireEvent.click(screen.getByRole('tab', { name: 'Gateway' }));
 
     expect(screen.getByRole('tab', { name: 'Gateway' })).toHaveAttribute('aria-selected', 'true');
     expect(screen.getByText(/SERVICE RUNTIME NOT CONNECTED/)).toBeInTheDocument();
