@@ -222,7 +222,7 @@ export default function SkyControlPage() {
               {['bot-fleet', 'users-subscriptions', 'admin-timeline', 'payments'].includes(activeTab) && <button type="button" className="sky-control-page__action" onClick={() => exportCsv(data.items, `sky-control-${activeTab}.csv`)} disabled={!data.items?.length}><Download size={14} aria-hidden />Export current view</button>}
             </div>
             {['bot-fleet', 'users-subscriptions'].includes(activeTab) && <div className="sky-control-page__filters"><input aria-label="Search" value={filters.search} onChange={(event) => { setPage(1); setFilters((value) => ({ ...value, search: event.target.value })); }} placeholder={activeTab === 'bot-fleet' ? 'Search user or bot' : 'Search user'} />{activeTab === 'bot-fleet' && <><select aria-label="Status" value={filters.status} onChange={(event) => { setPage(1); setFilters((value) => ({ ...value, status: event.target.value })); }}><option value="">All statuses</option><option value="ACTIVE">Active</option><option value="STOPPED">Stopped</option><option value="CRASHED">Crashed</option><option value="REVOKED">Revoked</option></select><select aria-label="Health" value={filters.health} onChange={(event) => { setPage(1); setFilters((value) => ({ ...value, health: event.target.value })); }}><option value="">All health states</option><option value="HEALTHY">Healthy</option><option value="DEGRADED">Degraded</option><option value="UNHEALTHY">Unhealthy</option></select></>}</div>}
-            {activeTab === 'gateway' && <p className="sky-control-page__notice">SERVICE RUNTIME NOT CONNECTED. Database-derived metadata only. No live service control or runtime connection is configured.</p>}
+            {activeTab === 'gateway' && <GatewayWorkspace summary={summary} />}
             {activeTab === 'security' && <div className="sky-control-page__security"><strong>Sky Control DB role: {summary.state === 'connected' ? 'READ ONLY CONFIGURED' : 'UNAVAILABLE'}</strong><span>Sensitive projections: excluded</span><span>Response redaction: enabled</span><span>Telegram: NOT CONNECTED</span><span>SSH: NOT CONNECTED</span><span>Write operations: DISABLED</span></div>}
             {!['gateway', 'security'].includes(activeTab) && (data.state === 'connected' ? <><CompactTable items={data.items} view={activeTab} forensic={activeTab === 'forensics'} onSelect={setSelectedRecord} /><Pagination page={page} limit={limit} itemCount={data.items?.length || 0} onPageChange={setPage} onLimitChange={(nextLimit) => { setPage(1); setLimit(nextLimit); }} />{selectedRecord && <RecordDrawer view={activeTab} record={selectedRecord} onClose={() => setSelectedRecord(null)} />}</> : <div className="sky-control-page__empty"><Cloud size={19} aria-hidden /><p>{data.state === 'unauthorized' ? 'Not authorized for Sky Control.' : data.state === 'loading' ? 'Loading read-only data...' : data.state === 'unavailable' ? 'Data unavailable.' : 'Unable to load read-only data.'}</p></div>)}
           </div>
@@ -230,6 +230,31 @@ export default function SkyControlPage() {
       </section>
     </main>
   );
+}
+
+function GatewayWorkspace({ summary }) {
+  return <>
+    <p className="sky-control-page__notice">SERVICE RUNTIME NOT CONNECTED. Database-derived metadata only. No live service control or runtime connection is configured.</p>
+    <div className="sky-control-page__card-grid" aria-label="Gateway read-only overview">
+      {overviewCards(summary).map(({ title, icon: Icon, detail }) => (
+        <article key={title} className="sky-control-page__card">
+          <div className="sky-control-page__card-title"><Icon size={17} aria-hidden /><h2>{title}</h2></div>
+          <p>Status</p>
+          <strong>{detail}</strong>
+        </article>
+      ))}
+    </div>
+    <section className="sky-control-page__schema" aria-label="Database schema compatibility">
+      <div className="sky-control-page__card-title"><ShieldCheck size={17} aria-hidden /><h2>Database schema compatibility</h2></div>
+      <span>LIVE READ-ONLY</span>
+      {summary.schema?.tables?.length ? <ul>{summary.schema.tables.map((table) => (
+        <li key={table.table} className={table.compatible ? 'is-compatible' : 'is-incompatible'}>
+          <code>{table.table}</code>
+          <strong>{table.compatible ? (table.adapted ? 'ADAPTED' : 'OK') : 'SCHEMA INCOMPATIBLE'}</strong>
+        </li>
+      ))}</ul> : <p>{summary.state === 'connected' ? 'Diagnostics disabled.' : 'Provider data is not available yet.'}</p>}
+    </section>
+  </>;
 }
 
 function CompactTable({ items, view, forensic, onSelect }) {
