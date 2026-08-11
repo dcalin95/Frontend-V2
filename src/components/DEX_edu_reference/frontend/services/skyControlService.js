@@ -48,6 +48,7 @@ export const fetchSkyControlTransaction = (chain, txHash, options) => fetchSkyCo
 export const fetchSkyControlMoneyFlow = (params, options) => fetchSkyControl('/money-flow', { ...options, params });
 export const searchSkyControlPaymentCases = (q, options) => fetchSkyControl('/payment-cases/search', { ...options, params: { ...(options?.params || {}), q } });
 export const fetchSkyControlPaymentCase = (type, id, options) => fetchSkyControl(`/payment-cases/${encodeURIComponent(type)}/${encodeURIComponent(id)}`, options);
+export const fetchSkyControlProviderHealth = (options) => fetchSkyControl('/provider-health', options);
 export const fetchSkyControlWalletHistory = (options) => fetchSkyControl('/wallet-history', options);
 export const fetchSkyControlWalletAnomalies = (options) => fetchSkyControl('/wallet-anomalies', options);
 export const fetchSkyControlWalletDiscovery = (params = {}, options) => fetchSkyControl('/wallet-discovery', { ...options, params });

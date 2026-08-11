@@ -2,7 +2,7 @@ import React, { useEffect, useId, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Cloud, CreditCard, Download, FileSearch, LockKeyhole, Radio, RefreshCw, ShieldCheck, UsersRound, Waypoints } from 'lucide-react';
 import './sky-control-page.css';
-import { buildSkyControlWalletExportParams, fetchSkyControl, fetchSkyControlSummary, fetchSkyControlForensicAnomalies, fetchSkyControlForensicEntity, fetchSkyControlForensicExport, fetchSkyControlForensicGraph, fetchSkyControlForensicTimeline, fetchSkyControlPaymentCase, fetchSkyControlMoneyFlow, fetchSkyControlTransaction, fetchSkyControlWallet, fetchSkyControlWalletAnomalies, fetchSkyControlWalletDiscovery, fetchSkyControlWalletDiscoveryDetail, fetchSkyControlWalletExport, fetchSkyControlWalletHistory, searchSkyControlForensics, searchSkyControlPaymentCases, searchSkyControlWallets } from '../services/skyControlService';
+import { buildSkyControlWalletExportParams, fetchSkyControl, fetchSkyControlSummary, fetchSkyControlForensicAnomalies, fetchSkyControlForensicEntity, fetchSkyControlForensicExport, fetchSkyControlForensicGraph, fetchSkyControlForensicTimeline, fetchSkyControlPaymentCase, fetchSkyControlMoneyFlow, fetchSkyControlProviderHealth, fetchSkyControlTransaction, fetchSkyControlWallet, fetchSkyControlWalletAnomalies, fetchSkyControlWalletDiscovery, fetchSkyControlWalletDiscoveryDetail, fetchSkyControlWalletExport, fetchSkyControlWalletHistory, searchSkyControlForensics, searchSkyControlPaymentCases, searchSkyControlWallets } from '../services/skyControlService';
 
 const tabs = [
   'Overview',
@@ -274,6 +274,69 @@ function StatusList({ title, items, empty }) {
   </section>;
 }
 
+const quickMailConfiguredDestinations = [
+  { asset: 'BTC', network: 'Bitcoin', chain: 'bitcoin', address: '12HTqXH3uZN4mLfYM5FJsBqvuFN4UHEm4X' },
+  { asset: 'ETH / USDT ERC20', network: 'Ethereum', chain: 'ethereum', address: '0xcd45dab8c93e7ef2b622ca1bb912372d319400a2' },
+  { asset: 'LTC', network: 'Litecoin', chain: 'litecoin', address: 'LQ2GDsKabeY1zNMYEiT5Zv54Fw1sPMBn4D' },
+  { asset: 'SOL', network: 'Solana', chain: 'solana', address: 'GWv6za4FvTXczpyX5y9zmhiCNbfRaqnWVv6NbjuwAL4G' },
+  { asset: 'USDT TRC20', network: 'TRON', chain: 'tron', address: 'TLGPCqkDjup1muQETYht71jnrriLHVVfC7' },
+].map((item) => ({
+  ...item,
+  classification: 'CONFIGURED_PAYMENT_DESTINATION',
+  ownership: 'UNPROVEN',
+  source: 'QuickMailChecker source evidence',
+}));
+
+const providerStatusText = (providers, chain) => providers?.[chain]?.status || 'NOT_CONFIGURED';
+
+function WalletIntelligenceDefaultDashboard({ dashboard, onSelectSeed }) {
+  const providers = dashboard.providerHealth?.providers || {};
+  const historyItems = dashboard.history?.items || [];
+  const anomalies = dashboard.anomalies?.anomalies || [];
+  const payments = dashboard.payments?.items || [];
+  const admins = dashboard.admins?.items || [];
+  const changed = historyItems.filter((item) => item.previous_address || item.next_address || item.observed_change_window).slice(0, 8);
+  const recentReferences = payments.filter((item) => item.reference_value || item.transaction_id || item.payment_reference || item.tx_hash).slice(0, 8);
+  const crossSystem = anomalies.filter((item) => item.rule_id === 'SAME_WITHDRAW_DESTINATION_MULTI_SYSTEM').slice(0, 8);
+  const adminRows = admins.slice(0, 8);
+  const selectConfiguredWallet = (item) => onSelectSeed({
+    entity_type: 'WALLET',
+    entity_id: item.address,
+    label: `${item.asset} configured destination`,
+    chain: item.chain,
+    address: item.address,
+    safe_metadata: { classification: item.classification, ownership: item.ownership, source: item.source },
+  });
+  return <div className="sky-control-page__wallet-dashboard" aria-label="Wallet Intelligence default dashboard">
+    <StatusList title="Provider Coverage" items={providers} empty="Provider coverage unavailable." />
+    <section className="sky-control-page__wallet-panel" aria-label="QuickMailChecker Configured Payment Destinations">
+      <div className="sky-control-page__card-title"><div><span className="sky-control-page__eyebrow">SOURCE-CONFIGURED</span><h3>QuickMailChecker Configured Payment Destinations</h3></div><span className="sky-control-page__badge">ownership: UNPROVEN</span></div>
+      <p className="sky-control-page__wallet-empty">Configured destinations are investigative pivots. They are not authenticated user wallets and do not prove receipt or ownership.</p>
+      <div className="sky-control-page__table-wrap"><table><thead><tr><th>Asset</th><th>Network</th><th>Address</th><th>Classification</th><th>Ownership</th><th>Provider</th><th>Actions</th></tr></thead><tbody>{quickMailConfiguredDestinations.map((item) => <tr key={item.address}><td>{item.asset}</td><td>{item.network}</td><td><button type="button" onClick={() => selectConfiguredWallet(item)}>{compactIdentifier(item.address)}</button></td><td>{item.classification}</td><td>{item.ownership}</td><td>{providerStatusText(providers, item.chain)}</td><td><button type="button" onClick={() => selectConfiguredWallet(item)}>Open Wallet Profile</button></td></tr>)}</tbody></table></div>
+    </section>
+    <section className="sky-control-page__wallet-panel" aria-label="Observed Application Payment Destinations">
+      <div className="sky-control-page__card-title"><div><span className="sky-control-page__eyebrow">APPLICATION-OBSERVED</span><h3>Observed Application Payment Destinations</h3></div><span className="sky-control-page__badge">{historyItems.length} observed</span></div>
+      {historyItems.length ? <div className="sky-control-page__table-wrap"><table><thead><tr><th>System</th><th>Address</th><th>First seen</th><th>Last seen</th><th>Evidence</th></tr></thead><tbody>{historyItems.slice(0, 12).map((item, index) => <tr key={`${item.system}-${item.address}-${index}`}><td>{safeDisplay(item.system)}</td><td><button type="button" onClick={() => onSelectSeed({ entity_type: 'WALLET', entity_id: item.address, address: item.address, chain: item.chain || 'bsc', label: item.address })}>{compactIdentifier(item.address)}</button></td><td>{timeLabel(item.first_seen)}</td><td>{timeLabel(item.last_seen)}</td><td>DIRECT</td></tr>)}</tbody></table></div> : <p className="sky-control-page__wallet-empty">No application-observed payment destinations are currently available from approved sources.</p>}
+    </section>
+    <section className="sky-control-page__wallet-panel" aria-label="Recent Wallet Configuration Changes">
+      <div className="sky-control-page__card-title"><div><span className="sky-control-page__eyebrow">CHANGE HISTORY</span><h3>Recent Wallet Configuration Changes</h3></div><span className="sky-control-page__badge">{changed.length} changes</span></div>
+      {changed.length ? <div className="sky-control-page__mini-grid">{changed.map((item, index) => <article key={`${item.address}-${index}`}><strong>{compactIdentifier(item.address)}</strong><span>{safeDisplay(item.system)}</span><small>{compactIdentifier(item.previous_address)} -&gt; {compactIdentifier(item.address)}</small><small>{timeLabel(item.observed_change_window?.end || item.last_seen)}</small></article>)}</div> : <p className="sky-control-page__wallet-empty">No wallet destination change records are visible in the current approved inventory.</p>}
+    </section>
+    <section className="sky-control-page__wallet-panel" aria-label="Cross-System Wallet Reuse">
+      <div className="sky-control-page__card-title"><div><span className="sky-control-page__eyebrow">CORRELATED</span><h3>Cross-System Wallet Reuse</h3></div><span className="sky-control-page__badge">{crossSystem.length} signals</span></div>
+      {crossSystem.length ? <div className="sky-control-page__mini-grid">{crossSystem.map((item, index) => <article key={`${item.address}-${index}`}><strong>{compactIdentifier(item.address)}</strong><span>{safeDisplay(item.rule_id)}</span><small>{(item.reason_codes || []).join(', ')}</small></article>)}</div> : <p className="sky-control-page__wallet-empty">No exact cross-system destination reuse is visible from current sources.</p>}
+    </section>
+    <section className="sky-control-page__wallet-panel" aria-label="Recent Payment Transaction References">
+      <div className="sky-control-page__card-title"><div><span className="sky-control-page__eyebrow">REFERENCES</span><h3>Recent Payment / Transaction References</h3></div><span className="sky-control-page__badge">{recentReferences.length} references</span></div>
+      {recentReferences.length ? <div className="sky-control-page__table-wrap"><table><thead><tr><th>System</th><th>Order</th><th>Reference</th><th>Status</th><th>Action</th></tr></thead><tbody>{recentReferences.map((item, index) => { const reference = item.reference_value || item.transaction_id || item.payment_reference || item.tx_hash; return <tr key={`${item.system}-${item.order_id}-${index}`}><td>{safeDisplay(item.system)}</td><td>{safeDisplay(item.order_id)}</td><td>{compactIdentifier(reference)}</td><td>{safeDisplay(item.status || item.payment_status)}</td><td><button type="button" onClick={() => onSelectSeed({ entity_type: 'PAYMENT_REFERENCE', entity_id: reference, label: reference, system: item.system })}>Open case</button></td></tr>; })}</tbody></table></div> : <p className="sky-control-page__wallet-empty">No recent payment or transaction references are available from the current payment provider response.</p>}
+    </section>
+    <section className="sky-control-page__wallet-panel" aria-label="Admin Wallet Activity summary">
+      <div className="sky-control-page__card-title"><div><span className="sky-control-page__eyebrow">ADMIN ACTIVITY</span><h3>Admin Wallet Activity summary</h3></div><span className="sky-control-page__badge">read-only</span></div>
+      {adminRows.length ? <div className="sky-control-page__mini-grid">{adminRows.map((item, index) => <article key={`${item.admin_id || item.id}-${index}`}><strong>{safeDisplay(item.admin_id || item.id)}</strong><span>{safeDisplay(item.system || item.source_system)}</span><small>{timeLabel(item.last_seen || item.created_at || item.event_time)}</small></article>)}</div> : <p className="sky-control-page__wallet-empty">Broad admin-action history is not available unless explicitly provided by approved read-only sources.</p>}
+    </section>
+  </div>;
+}
+
 const discoveryErrorMessage = (error) => {
   if (error?.status === 401 || error?.status === 403) return 'Not authorized for Automatic Discovery.';
   if (error?.status === 400) return 'Automatic Discovery request was not accepted.';
@@ -355,6 +418,30 @@ function DiscoveryDetail({ detailState, onClose, onOpenInvestigation }) {
 function WalletIntelligenceWorkspace() {
   const [query, setQuery] = useState("");
   const [state, setState] = useState({ status: "idle", candidates: [], seed: null, caseData: null, wallet: null, transaction: null, flow: null, history: null, anomalies: null, error: null });
+  const [dashboard, setDashboard] = useState({ status: 'loading', providerHealth: null, history: null, anomalies: null, payments: null, admins: null, error: null });
+  useEffect(() => {
+    let active = true;
+    Promise.allSettled([
+      fetchSkyControlProviderHealth(),
+      fetchSkyControlWalletHistory(),
+      fetchSkyControlWalletAnomalies(),
+      fetchSkyControl('/payments', { params: { limit: 25 } }),
+      fetchSkyControl('/admins', { params: { limit: 25 } }),
+    ]).then(([providerHealth, history, anomalies, payments, admins]) => {
+      if (!active) return;
+      const results = [providerHealth, history, anomalies, payments, admins];
+      setDashboard({
+        status: results.some((result) => result.status === 'fulfilled') ? 'ready' : 'unavailable',
+        providerHealth: providerHealth.status === 'fulfilled' ? providerHealth.value : null,
+        history: history.status === 'fulfilled' ? history.value : null,
+        anomalies: anomalies.status === 'fulfilled' ? anomalies.value : null,
+        payments: payments.status === 'fulfilled' ? payments.value : null,
+        admins: admins.status === 'fulfilled' ? admins.value : null,
+        error: null,
+      });
+    });
+    return () => { active = false; };
+  }, []);
   const submit = async (event) => {
     event.preventDefault();
     const value = query.trim();
@@ -372,14 +459,17 @@ function WalletIntelligenceWorkspace() {
       const caseData = await fetchSkyControlPaymentCase(seed.entity_type, seed.entity_id).catch(() => null);
       const address = seed.entity_type === "WALLET" ? (seed.address || seed.entity_id) : null;
       const chain = seed.chain || "bsc";
+      const configuredSeed = seed.safe_metadata?.classification === 'CONFIGURED_PAYMENT_DESTINATION';
+      const supportedProfileChain = ['ethereum', 'bsc', 'base'].includes(String(chain).toLowerCase());
       const [wallet, transaction, flow, history, anomalies] = await Promise.all([
-        address ? Promise.resolve(fetchSkyControlWallet(chain, address)).catch(() => null) : null,
+        address && (!configuredSeed || supportedProfileChain) ? Promise.resolve(fetchSkyControlWallet(chain, address)).catch(() => null) : null,
         seed.entity_type === "TRANSACTION" ? Promise.resolve(fetchSkyControlTransaction(chain, seed.entity_id)).catch(() => null) : null,
-        address ? Promise.resolve(fetchSkyControlMoneyFlow({ chain, address, depth: 2, direction: "BOTH" })).catch(() => null) : null,
+        address && (!configuredSeed || supportedProfileChain) ? Promise.resolve(fetchSkyControlMoneyFlow({ chain, address, depth: 2, direction: "BOTH" })).catch(() => null) : null,
         Promise.resolve(fetchSkyControlWalletHistory()).catch(() => null), Promise.resolve(fetchSkyControlWalletAnomalies()).catch(() => null),
       ]);
-      if (!caseData && !wallet && !transaction) throw new Error("case unavailable");
-      setState((current) => ({ ...current, status: "ready", caseData, wallet, transaction, flow, history, anomalies, error: null }));
+      const staticWallet = configuredSeed ? { address, chain, classification: seed.safe_metadata?.classification, ownership_status: seed.safe_metadata?.ownership, application_systems: ['QuickMailChecker'], linked_orders: [], linked_payments: [], linked_users: [], linked_admin_actions: [], service_labels: [], withdrawal_destination_history: [], provider_status: dashboard.providerHealth?.providers, limitations: ['Configured payment destination is a source-configured investigative seed. It does not prove wallet ownership or receipt.', supportedProfileChain ? 'Provider data may be limited for this configured destination.' : 'On-chain provider lookup is not configured for this network.'], read_only: true } : null;
+      if (!caseData && !wallet && !transaction && !staticWallet) throw new Error("case unavailable");
+      setState((current) => ({ ...current, status: "ready", caseData, wallet: wallet || staticWallet, transaction, flow, history, anomalies, error: null }));
     } catch (error) { setState((current) => ({ ...current, status: "error", caseData: null, wallet: null, transaction: null, flow: null, history: null, anomalies: null, error: walletErrorMessage(error) })); }
   };
   const summary = state.caseData?.summary || state.wallet || {};
@@ -391,6 +481,7 @@ function WalletIntelligenceWorkspace() {
   return <div className="sky-control-page__wallet-workspace">
     <div className="sky-control-page__workspace-head"><div><span className="sky-control-page__eyebrow">READ-ONLY CASE WORKSPACE</span><h2>Wallet Intelligence</h2></div></div>
     <WalletDiscovery onOpenInvestigation={openDiscovery} />
+    {dashboard.status === 'loading' ? <div className="sky-control-page__empty"><FileSearch size={19} aria-hidden /><p>Loading read-only Wallet Intelligence dashboard...</p></div> : <WalletIntelligenceDefaultDashboard dashboard={dashboard} onSelectSeed={selectSeed} />}
     <form className="sky-control-page__wallet-search" onSubmit={submit}><label htmlFor="wallet-intelligence-search">Exact identifier</label><div><input id="wallet-intelligence-search" aria-label="Wallet Intelligence search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Wallet, transaction, payment reference, order, payment, user, or admin ID" /><button type="submit">Search</button></div></form>
     {state.status === "idle" ? <div className="sky-control-page__empty"><FileSearch size={19} aria-hidden /><p>Search an exact wallet, transaction hash, payment reference, order, payment, user, or admin identifier.</p></div> : null}
     {state.error ? <p className="sky-control-page__notice" role="alert">{state.error}</p> : null}

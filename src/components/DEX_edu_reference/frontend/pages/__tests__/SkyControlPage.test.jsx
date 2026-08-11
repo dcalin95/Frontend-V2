@@ -2,7 +2,7 @@ import React from 'react';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import SkyControlPage, { formatRelativeTime, formatTimestamp } from '../SkyControlPage';
-import { buildSkyControlWalletExportParams, fetchSkyControl, fetchSkyControlSummary, searchSkyControlForensics, fetchSkyControlForensicEntity, fetchSkyControlForensicGraph, fetchSkyControlForensicTimeline, fetchSkyControlForensicAnomalies, fetchSkyControlForensicExport, fetchSkyControlPaymentCase, fetchSkyControlMoneyFlow, fetchSkyControlTransaction, fetchSkyControlWallet, fetchSkyControlWalletAnomalies, fetchSkyControlWalletDiscovery, fetchSkyControlWalletDiscoveryDetail, fetchSkyControlWalletExport, fetchSkyControlWalletHistory, searchSkyControlPaymentCases, searchSkyControlWallets } from '../../services/skyControlService';
+import { buildSkyControlWalletExportParams, fetchSkyControl, fetchSkyControlSummary, searchSkyControlForensics, fetchSkyControlForensicEntity, fetchSkyControlForensicGraph, fetchSkyControlForensicTimeline, fetchSkyControlForensicAnomalies, fetchSkyControlForensicExport, fetchSkyControlPaymentCase, fetchSkyControlMoneyFlow, fetchSkyControlProviderHealth, fetchSkyControlTransaction, fetchSkyControlWallet, fetchSkyControlWalletAnomalies, fetchSkyControlWalletDiscovery, fetchSkyControlWalletDiscoveryDetail, fetchSkyControlWalletExport, fetchSkyControlWalletHistory, searchSkyControlPaymentCases, searchSkyControlWallets } from '../../services/skyControlService';
 
 jest.mock('../../services/skyControlService', () => ({
   fetchSkyControlSummary: jest.fn().mockResolvedValue({
@@ -27,6 +27,7 @@ jest.mock('../../services/skyControlService', () => ({
   fetchSkyControlWallet: jest.fn(),
   fetchSkyControlTransaction: jest.fn(),
   fetchSkyControlMoneyFlow: jest.fn(),
+  fetchSkyControlProviderHealth: jest.fn().mockResolvedValue({ providers: {} }),
   fetchSkyControlWalletHistory: jest.fn().mockResolvedValue({ items: [] }),
   fetchSkyControlWalletAnomalies: jest.fn().mockResolvedValue({ anomalies: [] }),
   fetchSkyControlWalletDiscovery: jest.fn().mockResolvedValue({ items: [], summary: {}, source_status: {}, provider_status: {} }),
@@ -47,6 +48,7 @@ describe('SkyControlPage', () => {
     fetchSkyControl.mockImplementation(() => new Promise(() => {}));
     fetchSkyControlForensicTimeline.mockResolvedValue({ events: [], pagination: {} });
     fetchSkyControlForensicAnomalies.mockResolvedValue({ anomalies: [], pagination: {} });
+    fetchSkyControlProviderHealth.mockResolvedValue({ providers: {} });
     fetchSkyControlWalletHistory.mockResolvedValue({ items: [] });
     fetchSkyControlWalletAnomalies.mockResolvedValue({ anomalies: [] });
     fetchSkyControlWalletDiscovery.mockResolvedValue({ items: [], summary: {}, source_status: {}, provider_status: {} });
