@@ -1,4 +1,50 @@
-import { buildSkyControlWalletExportParams } from '../skyControlService';
+import {
+  buildSkyControlWalletExportParams,
+  fetchSkyControlSummary,
+  requestSkyControl,
+} from '../skyControlService';
+
+describe('Sky Control runtime API contract', () => {
+  beforeEach(() => {
+    global.fetch = jest.fn();
+  });
+
+  afterEach(() => {
+    delete global.fetch;
+    jest.restoreAllMocks();
+  });
+
+  it('uses the DEX runtime backend instead of the unrelated frontend origin', async () => {
+    global.fetch.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: () => Promise.resolve({ ok: true }),
+    });
+
+    await expect(requestSkyControl('/health')).resolves.toEqual({ ok: true });
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://backend-server-eu.onrender.com/api/sky-control/health',
+      expect.objectContaining({ credentials: 'include', method: 'GET' }),
+    );
+  });
+
+  it('keeps the provider summary usable when optional schema diagnostics fail', async () => {
+    global.fetch.mockImplementation((url) => Promise.resolve({
+      ok: !String(url).includes('/schema'),
+      status: String(url).includes('/schema') ? 503 : 200,
+      json: () => Promise.resolve(String(url).includes('/schema')
+        ? { error: 'query_failed' }
+        : { ok: true, route: url }),
+    }));
+
+    await expect(fetchSkyControlSummary()).resolves.toMatchObject({
+      health: { ok: true },
+      overview: { ok: true },
+      schema: null,
+    });
+  });
+});
 
 describe('Wallet Intelligence export request contract', () => {
   it('preserves the raw selected identifier and requires a chain for wallet and transaction cases', () => {

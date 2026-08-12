@@ -1,5 +1,7 @@
 import { getBackendUrl } from '../../../../config/apiEndpoints';
 
+const SKY_CONTROL_REQUEST_TIMEOUT_MS = 12000;
+
 function getSkyControlBackendUrl() {
   // Sky Control shares the DEX backend session. The Render session cookie cannot
   // be forwarded through the unrelated bits-ai.io origin, so use the DEX runtime
@@ -9,19 +11,36 @@ function getSkyControlBackendUrl() {
 
 export async function requestSkyControl(path, signal) {
   const base = getSkyControlBackendUrl();
-  const response = await fetch(`${base}/api/sky-control${path}`, {
-    method: 'GET',
-    credentials: 'include',
-    headers: { Accept: 'application/json' },
-    signal,
+  let timeoutId;
+  const timeout = new Promise((_, reject) => {
+    timeoutId = setTimeout(() => {
+      const error = new Error('sky_control_request_timeout');
+      error.status = 504;
+      error.code = 'SKY_CONTROL_REQUEST_TIMEOUT';
+      reject(error);
+    }, SKY_CONTROL_REQUEST_TIMEOUT_MS);
   });
-  const payload = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    const error = new Error(payload.error || `HTTP ${response.status}`);
-    error.status = response.status;
-    throw error;
+
+  try {
+    const response = await Promise.race([
+      fetch(`${base}/api/sky-control${path}`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: { Accept: 'application/json' },
+        signal,
+      }),
+      timeout,
+    ]);
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const error = new Error(payload.error || `HTTP ${response.status}`);
+      error.status = response.status;
+      throw error;
+    }
+    return payload;
+  } finally {
+    clearTimeout(timeoutId);
   }
-  return payload;
 }
 
 export function fetchSkyControl(path, { signal, params } = {}) {
@@ -30,11 +49,22 @@ export function fetchSkyControl(path, { signal, params } = {}) {
 }
 
 export function fetchSkyControlSummary(signal) {
-  return Promise.all([
+  return Promise.allSettled([
     requestSkyControl('/health', signal),
     requestSkyControl('/overview', signal),
-    requestSkyControl('/schema', signal).catch(() => null),
-  ]).then(([health, overview, schema]) => ({ health, overview, schema }));
+    requestSkyControl('/schema', signal),
+  ]).then(([healthResult, overviewResult, schemaResult]) => {
+    const health = healthResult.status === 'fulfilled' ? healthResult.value : null;
+    const overview = overviewResult.status === 'fulfilled' ? overviewResult.value : null;
+    const schema = schemaResult.status === 'fulfilled' ? schemaResult.value : null;
+
+    if (health || overview) {
+      return { health, overview, schema };
+    }
+
+    const reason = healthResult.reason || overviewResult.reason || schemaResult.reason;
+    throw reason || new Error('sky_control_summary_unavailable');
+  });
 }
 
 export const searchSkyControlForensics = (q, options) => fetchSkyControl('/forensics/search', { ...options, params: { ...(options?.params || {}), q } });
