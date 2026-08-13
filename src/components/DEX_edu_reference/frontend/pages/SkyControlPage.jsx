@@ -38,16 +38,20 @@ import {
 } from "../services/skyControlService";
 
 const tabs = [
-  "Overview",
+  "Command Center",
+  "Global Search",
   "Gateway",
   "Bot Fleet",
-  "Users & Subscriptions",
-  "Admin Timeline",
-  "Payments",
-  "Channel",
+  "Users",
+  "Targets & Checks",
+  "Keywords",
+  "Orders / Payments",
+  "Admin / Support",
+  "Runtime & Events",
   "Forensics",
   "Wallet Intelligence",
-  "Security",
+  "Response Console",
+  "Data Sources / Security",
 ];
 
 const tabKey = (tab) =>
@@ -55,6 +59,15 @@ const tabKey = (tab) =>
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
+
+const tabAliases = {
+  overview: "command-center",
+  "users-subscriptions": "users",
+  "admin-timeline": "admin-support",
+  payments: "orders-payments",
+  channel: "runtime-events",
+  security: "data-sources-security",
+};
 
 function runtimeProviderState(summary) {
   return String(summary?.runtime?.provider?.status || "").toUpperCase();
@@ -137,13 +150,18 @@ function overviewCards(summary) {
 }
 
 const endpointByTab = {
-  "bot-fleet": "/bot-fleet",
-  "users-subscriptions": "/users",
-  "admin-timeline": "/admins",
-  payments: "/payments",
-  channel: "/channel-invites",
+  "command-center": "/command-center",
+  "global-search": "/global-search",
   gateway: "/overview",
-  security: "/health",
+  "bot-fleet": "/bot-fleet",
+  users: "/users",
+  "targets-checks": "/targets",
+  keywords: "/keywords",
+  "orders-payments": "/orders-payments",
+  "admin-support": "/admin-support",
+  "runtime-events": "/runtime/events",
+  "response-console": "/response-console",
+  "data-sources-security": "/data-sources",
 };
 
 function exportCsv(items, filename) {
@@ -483,9 +501,10 @@ export default function SkyControlPage() {
   const [filters, setFilters] = useState({ search: "", status: "" });
   const [selectedBot, setSelectedBot] = useState(null);
   const requestedTab = searchParams.get("tab");
-  const activeTab = tabs.some((tab) => tabKey(tab) === requestedTab)
-    ? requestedTab
-    : "overview";
+  const normalizedRequestedTab = tabAliases[requestedTab] || requestedTab;
+  const activeTab = tabs.some((tab) => tabKey(tab) === normalizedRequestedTab)
+    ? normalizedRequestedTab
+    : "command-center";
 
   const refreshSummary = (signal) => {
     setSummary((current) => ({ ...current, state: "loading" }));
@@ -530,7 +549,7 @@ export default function SkyControlPage() {
 
   useEffect(() => {
     const endpoint = endpointByTab[activeTab];
-    if (!endpoint || activeTab === "overview") return undefined;
+    if (!endpoint || ["forensics", "wallet-intelligence"].includes(activeTab)) return undefined;
     const controller = new AbortController();
     setData({ state: "loading", items: [] });
     fetchSkyControl(endpoint, {
@@ -560,7 +579,7 @@ export default function SkyControlPage() {
 
   const selectTab = (nextTab) => {
     if (nextTab !== "bot-fleet") setSelectedBot(null);
-    setSearchParams(nextTab === "overview" ? {} : { tab: nextTab }, {
+    setSearchParams(nextTab === "command-center" ? {} : { tab: nextTab }, {
       replace: true,
     });
   };
@@ -657,7 +676,7 @@ export default function SkyControlPage() {
         aria-label={`${tabs.find((tab) => tabKey(tab) === activeTab)} section`}
         className="sky-control-page__panel"
       >
-        {activeTab === "overview" ? (
+        {activeTab === "command-center" ? (
           <>
             <div className="sky-control-page__card-grid">
               {overviewCards(summary).map(({ title, icon: Icon, detail }) => (
@@ -704,6 +723,7 @@ export default function SkyControlPage() {
                 <p>Schema diagnostics unavailable.</p>
               )}
             </section>
+            <CommandCenterWorkspace data={data} />
           </>
         ) : activeTab === "forensics" ? (
           <ForensicsWorkspace />
@@ -718,12 +738,7 @@ export default function SkyControlPage() {
                 </span>
                 <h2>{tabs.find((tab) => tabKey(tab) === activeTab)}</h2>
               </div>
-              {[
-                "bot-fleet",
-                "users-subscriptions",
-                "admin-timeline",
-                "payments",
-              ].includes(activeTab) && (
+              {["bot-fleet", "users", "admin-support", "orders-payments"].includes(activeTab) && (
                 <button
                   type="button"
                   className="sky-control-page__action"
@@ -737,7 +752,7 @@ export default function SkyControlPage() {
                 </button>
               )}
             </div>
-            {["bot-fleet", "users-subscriptions"].includes(activeTab) && (
+            {["bot-fleet", "users", "global-search"].includes(activeTab) && (
               <div className="sky-control-page__filters">
                 <input
                   aria-label="Search"
@@ -773,6 +788,9 @@ export default function SkyControlPage() {
             {activeTab === "gateway" && (
               <GatewayRuntimePanel summary={summary} />
             )}
+            {activeTab === "global-search" && (
+              <GlobalSearchWorkspace data={data} query={filters.search} />
+            )}
             {activeTab === "bot-fleet" && (
               <BotRuntimeControls summary={summary} onRefresh={refreshSummary} />
             )}
@@ -796,22 +814,33 @@ export default function SkyControlPage() {
                   </p>
                 </div>
               ))}
-            {activeTab === "security" && (
-              <div className="sky-control-page__security">
-                <strong>
-                  Sky Control DB role:{" "}
-                  {summary.state === "connected"
-                    ? "READ ONLY CONFIGURED"
-                    : "UNAVAILABLE"}
-                </strong>
-                <span>Sensitive projections: excluded</span>
-                <span>Response redaction: enabled</span>
-                <span>Telegram: NOT CONNECTED</span>
-                <span>SSH: NOT CONNECTED</span>
-                <span>Write operations: DISABLED</span>
-              </div>
+            {activeTab === "response-console" && (
+              <ResponseConsoleWorkspace data={data} />
             )}
-            {!["gateway", "bot-fleet", "security"].includes(activeTab) &&
+            {activeTab === "data-sources-security" && (
+              <DataSourcesWorkspace summary={summary} data={data} />
+            )}
+            {[
+              "targets-checks",
+              "keywords",
+              "orders-payments",
+              "admin-support",
+              "runtime-events",
+            ].includes(activeTab) && (
+              <QmcRecordsWorkspace data={data} />
+            )}
+            {![
+              "gateway",
+              "global-search",
+              "bot-fleet",
+              "response-console",
+              "data-sources-security",
+              "targets-checks",
+              "keywords",
+              "orders-payments",
+              "admin-support",
+              "runtime-events",
+            ].includes(activeTab) &&
               (data.state === "connected" ? (
                 <CompactTable items={data.items} />
               ) : (
@@ -830,6 +859,174 @@ export default function SkyControlPage() {
         )}
       </section>
     </main>
+  );
+}
+
+function sourceStatusList(sourceStatus) {
+  return Object.entries(sourceStatus || {}).map(([source, status]) => ({
+    source,
+    status: status?.available ? "available" : status?.reason || "unavailable",
+  }));
+}
+
+function CommandCenterWorkspace({ data }) {
+  if (data.state === "loading" || data.state === "idle") {
+    return (
+      <div className="sky-control-page__empty">
+        <Cloud size={19} aria-hidden />
+        <p>Loading QMC command center...</p>
+      </div>
+    );
+  }
+  if (data.state !== "connected") {
+    return (
+      <div className="sky-control-page__notice">
+        Command Center data is temporarily unavailable. Existing read-only
+        sections remain accessible.
+      </div>
+    );
+  }
+  return (
+    <section className="sky-control-page__qmc-stack" aria-label="QMC command center">
+      <div className="sky-control-page__metric-grid">
+        {(data.cards || []).map((card) => (
+          <article key={card.title}>
+            <span>{card.title}</span>
+            <strong>{safeDisplay(card.value)}</strong>
+            <p>{card.detail}</p>
+          </article>
+        ))}
+      </div>
+      <SourceStatusPanel sourceStatus={data.source_status} />
+      {Object.entries(data.recent || {}).map(([label, items]) => (
+        <section key={label} className="sky-control-page__qmc-section">
+          <h3>{label.replaceAll("_", " ")}</h3>
+          <CompactTable items={items} />
+        </section>
+      ))}
+    </section>
+  );
+}
+
+function GlobalSearchWorkspace({ data, query }) {
+  if (!query) {
+    return (
+      <div className="sky-control-page__empty">
+        <FileSearch size={19} aria-hidden />
+        <p>Search users, bots, orders, payments, targets, checks, keywords, or support records by exact text.</p>
+      </div>
+    );
+  }
+  if (data.state !== "connected") {
+    return (
+      <div className="sky-control-page__empty">
+        <FileSearch size={19} aria-hidden />
+        <p>{data.state === "loading" ? "Searching read-only sources..." : "Search data unavailable."}</p>
+      </div>
+    );
+  }
+  return (
+    <section className="sky-control-page__qmc-stack" aria-label="Global search results">
+      <SourceStatusPanel sourceStatus={data.source_status} />
+      <CompactTable items={data.items} />
+    </section>
+  );
+}
+
+function QmcRecordsWorkspace({ data }) {
+  if (data.state !== "connected") {
+    return (
+      <div className="sky-control-page__empty">
+        <Cloud size={19} aria-hidden />
+        <p>{data.state === "loading" ? "Loading read-only QMC data..." : "QMC data unavailable."}</p>
+      </div>
+    );
+  }
+  return (
+    <section className="sky-control-page__qmc-stack" aria-label="QMC records">
+      <SourceStatusPanel sourceStatus={data.source_status} />
+      {data.records ? (
+        Object.entries(data.records).map(([label, payload]) => (
+          <section key={label} className="sky-control-page__qmc-section">
+            <h3>{label.replaceAll("_", " ")}</h3>
+            <CompactTable items={payload?.items || []} />
+          </section>
+        ))
+      ) : (
+        <CompactTable items={data.items} />
+      )}
+    </section>
+  );
+}
+
+function ResponseConsoleWorkspace({ data }) {
+  if (data.state !== "connected") {
+    return (
+      <div className="sky-control-page__empty">
+        <ShieldCheck size={19} aria-hidden />
+        <p>{data.state === "loading" ? "Loading read-only response console..." : "Response console unavailable."}</p>
+      </div>
+    );
+  }
+  return (
+    <section className="sky-control-page__qmc-stack" aria-label="Read-only response console">
+      <div className="sky-control-page__notice">
+        Response Console is read-only. Operational controls remain disabled.
+      </div>
+      <CompactTable items={data.actions || []} />
+      <ul className="sky-control-page__plain-list">
+        {(data.limitations || []).map((limitation) => (
+          <li key={limitation}>{limitation}</li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function DataSourcesWorkspace({ summary, data }) {
+  return (
+    <section className="sky-control-page__qmc-stack" aria-label="Data sources and security">
+      <div className="sky-control-page__security">
+        <strong>
+          Sky Control DB role:{" "}
+          {summary.state === "connected" ? "READ ONLY CONFIGURED" : "UNAVAILABLE"}
+        </strong>
+        <span>Sensitive projections: excluded</span>
+        <span>Response redaction: enabled</span>
+        <span>Telegram: NOT CONNECTED</span>
+        <span>SSH: NOT CONNECTED</span>
+        <span>Write operations: DISABLED</span>
+      </div>
+      {data.state === "connected" ? (
+        <>
+          <SourceStatusPanel sourceStatus={data.source_status} />
+          <CompactTable items={data.tables || []} />
+        </>
+      ) : (
+        <div className="sky-control-page__empty">
+          <ShieldCheck size={19} aria-hidden />
+          <p>{data.state === "loading" ? "Loading source inventory..." : "Provider data is not available yet."}</p>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function SourceStatusPanel({ sourceStatus }) {
+  const statuses = sourceStatusList(sourceStatus);
+  if (!statuses.length) return null;
+  return (
+    <section className="sky-control-page__source-status" aria-label="Source status">
+      <h3>Source status</h3>
+      <div>
+        {statuses.map(({ source, status }) => (
+          <span key={source}>
+            <strong>{source.replaceAll("_", " ")}</strong>
+            {status}
+          </span>
+        ))}
+      </div>
+    </section>
   );
 }
 

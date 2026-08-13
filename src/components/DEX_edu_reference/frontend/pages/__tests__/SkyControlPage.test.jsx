@@ -148,6 +148,56 @@ describe("SkyControlPage", () => {
     jest.restoreAllMocks();
   });
 
+  it("keeps legacy gateway URLs on the Gateway workspace instead of falling through to another tab", async () => {
+    fetchSkyControlSummary.mockResolvedValue({
+      health: { database: "connected" },
+      overview: null,
+      schema: null,
+      runtime: { provider: { status: "NOT_CONFIGURED" } },
+    });
+    fetchSkyControl.mockResolvedValue({ items: [] });
+
+    render(
+      <MemoryRouter initialEntries={["/?tab=gateway"]}>
+        <SkyControlPage />
+      </MemoryRouter>,
+    );
+
+    expect(await screen.findByRole("heading", { name: "Gateway" })).toBeInTheDocument();
+    await waitFor(() => expect(fetchSkyControl).toHaveBeenCalledWith(
+      "/overview",
+      expect.objectContaining({ params: expect.objectContaining({ limit: 50 }) }),
+    ));
+    expect(screen.queryByRole("heading", { name: "Wallet Intelligence" })).not.toBeInTheDocument();
+  });
+
+  it("routes QMC Targets & Checks to the approved read-only backend endpoint", async () => {
+    fetchSkyControlSummary.mockResolvedValue({
+      health: { database: "connected" },
+      overview: null,
+      schema: null,
+      runtime: { provider: { status: "NOT_CONFIGURED" } },
+    });
+    fetchSkyControl.mockResolvedValue({
+      state: "connected",
+      records: { jobs: { items: [{ id: 1, target: "inbox@example.test" }] } },
+      source_status: { jobs: { available: true } },
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/?tab=targets-checks"]}>
+        <SkyControlPage />
+      </MemoryRouter>,
+    );
+
+    expect(await screen.findByRole("heading", { name: "Targets & Checks" })).toBeInTheDocument();
+    await waitFor(() => expect(fetchSkyControl).toHaveBeenCalledWith(
+      "/targets",
+      expect.objectContaining({ params: expect.objectContaining({ limit: 50 }) }),
+    ));
+    expect(await screen.findByText("inbox@example.test")).toBeInTheDocument();
+  });
+
   it("exports backend-canonical JSON and CSV only after a seed, with safe filenames and a readable integrity hash", async () => {
     const integrityHash = `sha256:${"a".repeat(64)}`;
     Object.defineProperty(URL, "createObjectURL", {
@@ -268,7 +318,7 @@ describe("SkyControlPage", () => {
     ).toBeEnabled();
   });
 
-  it("renders the read-only overview shell without external requests", () => {
+  it("renders the read-only command center shell without external requests", () => {
     render(
       <MemoryRouter>
         <SkyControlPage />
@@ -279,7 +329,7 @@ describe("SkyControlPage", () => {
       screen.getByRole("heading", { name: "Sky Control" }),
     ).toBeInTheDocument();
     expect(screen.getByText("READ ONLY")).toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: "Overview" })).toHaveAttribute(
+    expect(screen.getByRole("tab", { name: "Command Center" })).toHaveAttribute(
       "aria-selected",
       "true",
     );
@@ -294,16 +344,14 @@ describe("SkyControlPage", () => {
       </MemoryRouter>,
     );
 
-    const overview = screen.getByRole("tab", { name: "Overview" });
-    fireEvent.keyDown(overview, { key: "ArrowRight" });
+    const commandCenter = screen.getByRole("tab", { name: "Command Center" });
+    fireEvent.keyDown(commandCenter, { key: "ArrowRight" });
 
-    expect(screen.getByRole("tab", { name: "Gateway" })).toHaveAttribute(
+    expect(screen.getByRole("tab", { name: "Global Search" })).toHaveAttribute(
       "aria-selected",
       "true",
     );
-    expect(screen.getByText("Database Provider")).toBeInTheDocument();
-    expect(screen.getByText("Gateway Runtime")).toBeInTheDocument();
-    expect(screen.getByText("Bot Manager Runtime")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Global Search" })).toBeInTheDocument();
     expect(global.fetch).not.toHaveBeenCalled();
   });
 

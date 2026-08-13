@@ -3,6 +3,9 @@ import { buildSkyControlWalletExportParams, controlSkyControlBot, fetchSkyContro
 jest.mock('../../../../../config/apiEndpoints', () => ({
   getBackendUrl: () => 'https://backend.example.test',
 }));
+jest.mock('../../../config/runtimeConfig', () => ({
+  getBackendUrl: () => 'https://backend-server-eu.onrender.com',
+}));
 
 const jsonResponse = (status, payload) => ({
   ok: status >= 200 && status < 300,
@@ -15,7 +18,7 @@ describe('Sky Control summary request contract', () => {
     global.fetch = jest.fn();
   });
 
-  it('uses the first-party API route on bits-ai.io so browser session cookies are sent consistently', async () => {
+  it('uses the DEX runtime backend instead of an unproven same-origin production API route', async () => {
     const originalLocation = window.location;
     delete window.location;
     window.location = new URL('https://bits-ai.io/#/dex-edu/sky-control');
@@ -24,7 +27,7 @@ describe('Sky Control summary request contract', () => {
     await expect(requestSkyControl('/health')).resolves.toEqual({ ok: true });
 
     expect(global.fetch).toHaveBeenCalledWith(
-      'https://bits-ai.io/api/sky-control/health',
+      'https://backend-server-eu.onrender.com/api/sky-control/health',
       expect.objectContaining({ credentials: 'include' }),
     );
     delete window.location;
@@ -71,7 +74,7 @@ describe('Sky Control summary request contract', () => {
     await expect(fetchSkyControlSummary()).rejects.toMatchObject({ status: 401 });
   });
 
-  it('posts bounded bot runtime controls through the first-party Sky Control API', async () => {
+  it('posts bounded bot runtime controls through the DEX runtime Sky Control API', async () => {
     const originalLocation = window.location;
     delete window.location;
     window.location = new URL('https://bits-ai.io/#/dex-edu/sky-control?tab=bot-fleet');
@@ -80,7 +83,7 @@ describe('Sky Control summary request contract', () => {
     await expect(controlSkyControlBot(' 7 ', 'restart')).resolves.toMatchObject({ status: 'ACCEPTED' });
 
     expect(global.fetch).toHaveBeenCalledWith(
-      'https://bits-ai.io/api/sky-control/runtime/bots/7/restart',
+      'https://backend-server-eu.onrender.com/api/sky-control/runtime/bots/7/restart',
       expect.objectContaining({ method: 'POST', credentials: 'include', body: '{}' }),
     );
     delete window.location;

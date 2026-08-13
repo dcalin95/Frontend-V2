@@ -1,10 +1,7 @@
-import { getBackendUrl } from '../../../../config/apiEndpoints';
+import { getBackendUrl } from '../../config/runtimeConfig';
 
 function getSkyControlBaseUrl() {
-  const base = String(getBackendUrl() || '').replace(/\/$/, '');
-  const isFirstPartyProductionApi = typeof window !== 'undefined'
-    && ['bits-ai.io', 'www.bits-ai.io'].includes(window.location?.hostname);
-  return isFirstPartyProductionApi ? window.location.origin : base;
+  return String(getBackendUrl() || '').replace(/\/$/, '');
 }
 
 export async function requestSkyControl(path, signal) {
