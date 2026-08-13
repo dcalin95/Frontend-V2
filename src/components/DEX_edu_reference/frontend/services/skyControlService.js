@@ -24,6 +24,26 @@ export async function requestSkyControl(path, signal) {
   return payload;
 }
 
+export async function controlSkyControlBot(userId, action, { signal } = {}) {
+  const safeUserId = encodeURIComponent(String(userId || '').trim());
+  const safeAction = encodeURIComponent(String(action || '').trim().toLowerCase());
+  const base = getSkyControlBaseUrl();
+  const response = await fetch(`${base}/api/sky-control/runtime/bots/${safeUserId}/${safeAction}`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+    body: '{}',
+    signal,
+  });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(payload.error || `HTTP ${response.status}`);
+    error.status = response.status;
+    throw error;
+  }
+  return payload;
+}
+
 export function fetchSkyControl(path, { signal, params } = {}) {
   const query = params ? `?${new URLSearchParams(Object.entries(params).filter(([, value]) => value !== '' && value != null)).toString()}` : '';
   return requestSkyControl(`${path}${query}`, signal);
@@ -34,13 +54,15 @@ export function fetchSkyControlSummary(signal) {
     requestSkyControl('/health', signal),
     requestSkyControl('/overview', signal),
     requestSkyControl('/schema', signal),
-  ]).then(([healthResult, overviewResult, schemaResult]) => {
+    requestSkyControl('/runtime/health', signal),
+  ]).then(([healthResult, overviewResult, schemaResult, runtimeResult]) => {
     const health = healthResult.status === 'fulfilled' ? healthResult.value : null;
     const overview = overviewResult.status === 'fulfilled' ? overviewResult.value : null;
     const schema = schemaResult.status === 'fulfilled' ? schemaResult.value : null;
-    if (health || overview) return { health, overview, schema };
+    const runtime = runtimeResult.status === 'fulfilled' ? runtimeResult.value : null;
+    if (health || overview || runtime) return { health, overview, schema, runtime };
 
-    const failures = [healthResult, overviewResult].filter((result) => result.status === 'rejected');
+    const failures = [healthResult, overviewResult, runtimeResult].filter((result) => result.status === 'rejected');
     const authFailure = failures.find((result) => result.reason?.status === 401 || result.reason?.status === 403);
     if (authFailure) throw authFailure.reason;
     const unavailableFailure = failures.find((result) => result.reason?.status === 503);

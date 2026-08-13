@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import "./sky-control-page.css";
 import {
+  controlSkyControlBot,
   fetchSkyControl,
   fetchSkyControlSummary,
   fetchSkyControlForensicAnomalies,
@@ -55,8 +56,18 @@ const tabKey = (tab) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
+function runtimeProviderState(summary) {
+  return String(summary?.runtime?.provider?.status || "").toUpperCase();
+}
+
+function runtimeDetail(value, fallback = "Not configured") {
+  const status = String(value?.status || "").toUpperCase();
+  if (status && status !== "UNKNOWN") return status;
+  return value?.reason || fallback;
+}
+
 function overviewCards(summary) {
-  const { health, overview } = summary || {};
+  const { health, overview, runtime } = summary || {};
   const state = summary?.state || "loading";
   const unavailable =
     state === "unauthorized"
@@ -84,18 +95,20 @@ function overviewCards(summary) {
     {
       title: "Gateway",
       icon: Radio,
-      detail: health?.database === "connected" ? "Connected" : "Unavailable",
+      detail: runtimeDetail(runtime?.gateway, health?.database === "connected" ? "DB connected" : "Unavailable"),
     },
     {
       title: "Bot Manager",
       icon: Waypoints,
       detail:
-        overview?.quick?.status === "available" ? "Connected" : "Unavailable",
+        runtimeDetail(runtime?.manager, overview?.quick?.status === "available" ? "DB metadata available" : "Unavailable"),
     },
     {
       title: "Bot Fleet",
       icon: Cloud,
-      detail: fleet ? `${fleet.total} bots` : "Unavailable",
+      detail: runtime?.fleet?.running != null || runtime?.fleet?.total != null
+        ? `${runtime?.fleet?.running ?? "-"} / ${runtime?.fleet?.total ?? "-"} running`
+        : fleet ? `${fleet.total} bots` : "Unavailable",
     },
     {
       title: "Subscriptions",
@@ -168,8 +181,14 @@ function safeExportFilenamePart(value, fallback) {
 const validIntegrityHash = (value) =>
   /^sha256:[a-f0-9]{64}$/.test(String(value || "")) ? String(value) : null;
 
-function providerStatusMessage(state) {
-  switch (state) {
+function providerStatusMessage(summary) {
+  const runtimeState = runtimeProviderState(summary);
+  if (runtimeState === "AVAILABLE") return "LIVE READ-ONLY PostgreSQL provider + QMC Runtime Bridge.";
+  if (runtimeState === "DEGRADED") return "PostgreSQL provider available. QMC Runtime Bridge degraded.";
+  if (runtimeState === "NOT_CONFIGURED") return "PostgreSQL provider available. QMC Runtime Bridge not configured.";
+  if (runtimeState === "AUTH_FAILED") return "QMC Runtime Bridge authentication failed.";
+  if (runtimeState === "UNAVAILABLE") return "QMC Runtime Bridge unavailable.";
+  switch (summary?.state) {
     case "connected":
       return "LIVE READ-ONLY PostgreSQL provider.";
     case "unauthorized":
@@ -181,6 +200,269 @@ function providerStatusMessage(state) {
     default:
       return "Read-only provider status is loading.";
   }
+}
+
+function runtimeUtilityText(summary) {
+  const control = summary?.runtime?.control || {};
+  const runtimeState = runtimeProviderState(summary);
+  if (control.enabled && control.operator_allowed) return "Runtime connected · Controls enabled";
+  if (control.enabled) return "Runtime connected · Controls read-only";
+  if (runtimeState === "AVAILABLE") return "Runtime connected · Controls unavailable";
+  if (runtimeState === "NOT_CONFIGURED") return "Runtime not configured · Controls disabled";
+  if (runtimeState === "DEGRADED") return "Runtime degraded · Controls disabled";
+  if (runtimeState === "AUTH_FAILED") return "Runtime auth failed · Controls disabled";
+  if (runtimeState === "UNAVAILABLE") return "Runtime unavailable · Controls disabled";
+  return "Runtime status loading · Controls disabled";
+}
+
+function GatewayRuntimePanel({ summary }) {
+  const runtime = summary?.runtime || {};
+  const provider = runtime.provider || {};
+  const cards = [
+    {
+      title: "Database Provider",
+      detail: summary?.health?.database === "connected" ? "CONNECTED" : summary?.state === "connected" ? "AVAILABLE" : runtimeDetail({ status: summary?.state }),
+      rows: {
+        Provider: summary?.health?.provider || "postgresql",
+        Mode: summary?.health?.mode || "read-only",
+        Latency: summary?.health?.latency_ms != null ? `${summary.health.latency_ms} ms` : "-",
+      },
+    },
+    {
+      title: "Gateway Runtime",
+      detail: runtimeDetail(runtime.gateway),
+      rows: runtime.gateway || {},
+    },
+    {
+      title: "Bot Manager Runtime",
+      detail: runtimeDetail(runtime.manager),
+      rows: runtime.manager || {},
+    },
+    {
+      title: "Bot Fleet",
+      detail: runtime?.fleet?.status || "UNKNOWN",
+      rows: runtime.fleet || {},
+    },
+  ];
+  return (
+    <>
+      {provider.reason ? (
+        <p className="sky-control-page__notice">
+          QMC Runtime Bridge: {provider.status || "UNKNOWN"} · {provider.reason}
+        </p>
+      ) : null}
+      <div className="sky-control-page__card-grid">
+        {cards.map((card) => (
+          <article key={card.title} className="sky-control-page__card">
+            <div className="sky-control-page__card-title">
+              <ShieldCheck size={17} aria-hidden />
+              <h3>{card.title}</h3>
+            </div>
+            <p>Status</p>
+            <strong>{card.detail}</strong>
+            {Object.entries(card.rows || {})
+              .filter(([key]) => !/(token|password|secret|authorization|cookie|key|seed|mnemonic)/i.test(key))
+              .slice(0, 6)
+              .map(([key, value]) => (
+                <small key={key}>
+                  {key.replaceAll("_", " ")}: {safeDisplay(value)}
+                </small>
+              ))}
+          </article>
+        ))}
+      </div>
+    </>
+  );
+}
+
+function BotRuntimeControls({ summary, onRefresh }) {
+  const [targetUserId, setTargetUserId] = useState("");
+  const [controlState, setControlState] = useState({ state: "idle" });
+  const control = summary?.runtime?.control || {};
+  const runtimeReady = Boolean(control.runtime_available);
+  const operatorAllowed = Boolean(control.operator_allowed);
+  const enabled = Boolean(control.enabled && runtimeReady && operatorAllowed);
+
+  const performAction = (action) => {
+    const userId = targetUserId.trim();
+    if (!userId) {
+      setControlState({ state: "error", message: "Enter a target user ID." });
+      return;
+    }
+    if (["stop", "restart"].includes(action)) {
+      const confirmed = window.confirm(`${action === "restart" ? "Restart" : "Stop"} bot for user ${userId}?`);
+      if (!confirmed) return;
+    }
+    setControlState({ state: "loading", message: `${action.toUpperCase()} requested...` });
+    controlSkyControlBot(userId, action)
+      .then((result) => {
+        setControlState({
+          state: "success",
+          message: result?.status || result?.result || `${action.toUpperCase()} accepted`,
+        });
+        onRefresh?.();
+      })
+      .catch((error) => {
+        setControlState({
+          state: "error",
+          message: error?.message || `${action.toUpperCase()} failed`,
+        });
+      });
+  };
+
+  return (
+    <section className="sky-control-page__runtime-controls" aria-label="Bot runtime controls">
+      <div>
+        <span className="sky-control-page__eyebrow">RUNTIME CONTROL</span>
+        <h3>Personal bot controls</h3>
+        <p>
+          {enabled
+            ? "Controls are routed through the authenticated QMC Runtime Bridge."
+            : operatorAllowed
+              ? "Runtime controls are not available until the bridge is configured and reachable."
+              : "Runtime controls are hidden for read-only operators."}
+        </p>
+      </div>
+      {operatorAllowed ? (
+        <div className="sky-control-page__runtime-control-form">
+          <input
+            aria-label="Target user ID"
+            value={targetUserId}
+            onChange={(event) => setTargetUserId(event.target.value)}
+            placeholder="Target user ID"
+            disabled={!enabled || controlState.state === "loading"}
+          />
+          {["start", "stop", "restart"].map((action) => (
+            <button
+              key={action}
+              type="button"
+              className="sky-control-page__action"
+              disabled={!enabled || controlState.state === "loading"}
+              onClick={() => performAction(action)}
+            >
+              {action.toUpperCase()}
+            </button>
+          ))}
+        </div>
+      ) : null}
+      {controlState.message ? (
+        <p className={`sky-control-page__control-result is-${controlState.state}`}>
+          {controlState.message}
+        </p>
+      ) : null}
+    </section>
+  );
+}
+
+function botProfileLabel(bot) {
+  return (
+    bot?.bot_username ||
+    bot?.username ||
+    bot?.telegram_username ||
+    bot?.bot_id ||
+    bot?.user_id ||
+    "Selected bot"
+  );
+}
+
+function safeBotProfileRows(bot) {
+  if (!bot) return [];
+  return Object.entries(bot)
+    .filter(([key]) => !/(token|password|secret|authorization|cookie|key|seed|mnemonic)/i.test(key))
+    .filter(([, value]) => value !== undefined && value !== null && value !== "")
+    .slice(0, 18);
+}
+
+function BotFleetRuntimeTable({ items, selectedBot, onSelectBot, onCloseProfile }) {
+  if (!items?.length)
+    return (
+      <div className="sky-control-page__empty">
+        <p>No matching read-only bot records.</p>
+      </div>
+    );
+
+  const selectedKey =
+    selectedBot?.bot_id || selectedBot?.user_id || selectedBot?.id || botProfileLabel(selectedBot);
+  const columns = [
+    ["bot_username", "Bot"],
+    ["user_id", "User ID"],
+    ["bot_id", "Bot ID"],
+    ["subscription_status", "Subscription"],
+    ["status", "DB status"],
+    ["runtime_status", "Runtime"],
+    ["pid", "PID"],
+    ["heartbeat_age", "Heartbeat age"],
+    ["last_error", "Last error"],
+  ];
+
+  return (
+    <>
+      <div className="sky-control-page__table-wrap">
+        <table>
+          <thead>
+            <tr>
+              {columns.map(([, label]) => (
+                <th key={label}>{label}</th>
+              ))}
+              <th>Profile</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((bot, index) => {
+              const rowKey = bot.bot_id || bot.user_id || bot.id || `${index}-${botProfileLabel(bot)}`;
+              return (
+                <tr key={rowKey} className={rowKey === selectedKey ? "is-selected" : ""}>
+                  {columns.map(([key]) => (
+                    <td key={key}>{safeDisplay(bot[key])}</td>
+                  ))}
+                  <td>
+                    <button
+                      type="button"
+                      className="sky-control-page__action"
+                      onClick={() => onSelectBot(bot)}
+                      aria-label={`Open bot profile ${botProfileLabel(bot)}`}
+                    >
+                      Open profile
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {selectedBot ? (
+        <aside className="sky-control-page__bot-profile" aria-label="Bot profile">
+          <div className="sky-control-page__bot-profile-head">
+            <div>
+              <span className="sky-control-page__eyebrow">BOT PROFILE</span>
+              <h3>{botProfileLabel(selectedBot)}</h3>
+              <p>
+                Runtime: {safeDisplay(selectedBot.runtime_status || selectedBot.status)} · Owner:{" "}
+                {safeDisplay(selectedBot.user_id)}
+              </p>
+            </div>
+            <button type="button" className="sky-control-page__action" onClick={onCloseProfile}>
+              Close profile
+            </button>
+          </div>
+          <div className="sky-control-page__bot-profile-grid">
+            {safeBotProfileRows(selectedBot).map(([key, value]) => (
+              <div key={key}>
+                <span>{key.replaceAll("_", " ")}</span>
+                <strong>{safeDisplay(value)}</strong>
+              </div>
+            ))}
+          </div>
+          <p className="sky-control-page__bot-profile-note">
+            Controls use only the selected user ID through the QMC Runtime Bridge. No Telegram token,
+            process secret, or arbitrary PID is accepted by this UI.
+          </p>
+        </aside>
+      ) : null}
+    </>
+  );
 }
 
 function downloadForensicExport(blob, filename) {
@@ -199,6 +481,7 @@ export default function SkyControlPage() {
   const [summary, setSummary] = useState({ state: "loading" });
   const [data, setData] = useState({ state: "idle", items: [] });
   const [filters, setFilters] = useState({ search: "", status: "" });
+  const [selectedBot, setSelectedBot] = useState(null);
   const requestedTab = searchParams.get("tab");
   const activeTab = tabs.some((tab) => tabKey(tab) === requestedTab)
     ? requestedTab
@@ -207,12 +490,13 @@ export default function SkyControlPage() {
   const refreshSummary = (signal) => {
     setSummary((current) => ({ ...current, state: "loading" }));
     return fetchSkyControlSummary(signal)
-      .then(({ health, overview, schema }) =>
+      .then(({ health, overview, schema, runtime }) =>
         setSummary({
           state: "connected",
           health,
           overview,
           schema,
+          runtime,
           refreshedAt: new Date().toISOString(),
         }),
       )
@@ -233,6 +517,16 @@ export default function SkyControlPage() {
     refreshSummary(controller.signal);
     return () => controller.abort();
   }, []);
+
+  useEffect(() => {
+    if (!summary.refreshedAt) return undefined;
+    const runtimeState = runtimeProviderState(summary);
+    const delay = runtimeState === "UNAVAILABLE" || runtimeState === "AUTH_FAILED"
+      ? 45000
+      : Number(summary.runtime?.poll_ms) || 25000;
+    const timer = setTimeout(() => refreshSummary(), Math.min(Math.max(delay, 10000), 120000));
+    return () => clearTimeout(timer);
+  }, [summary.refreshedAt, summary.runtime?.provider?.status]);
 
   useEffect(() => {
     const endpoint = endpointByTab[activeTab];
@@ -265,6 +559,7 @@ export default function SkyControlPage() {
   }, [activeTab, filters.search, filters.status]);
 
   const selectTab = (nextTab) => {
+    if (nextTab !== "bot-fleet") setSelectedBot(null);
     setSearchParams(nextTab === "overview" ? {} : { tab: nextTab }, {
       replace: true,
     });
@@ -311,11 +606,11 @@ export default function SkyControlPage() {
           </div>
           <div className="sky-control-page__boundary" role="note">
             <ShieldCheck size={17} aria-hidden />
-            <span>{providerStatusMessage(summary.state)}</span>
+            <span>{providerStatusMessage(summary)}</span>
           </div>
         </div>
         <div className="sky-control-page__utility">
-          <span>Operational controls disabled</span>
+          <span>{runtimeUtilityText(summary)}</span>
           <span>
             {summary.refreshedAt
               ? `Last refreshed: ${new Date(summary.refreshedAt).toLocaleTimeString()}`
@@ -476,11 +771,31 @@ export default function SkyControlPage() {
               </div>
             )}
             {activeTab === "gateway" && (
-              <p className="sky-control-page__notice">
-                SERVICE RUNTIME NOT CONNECTED. This view contains
-                database-derived metadata only.
-              </p>
+              <GatewayRuntimePanel summary={summary} />
             )}
+            {activeTab === "bot-fleet" && (
+              <BotRuntimeControls summary={summary} onRefresh={refreshSummary} />
+            )}
+            {activeTab === "bot-fleet" &&
+              (data.state === "connected" ? (
+                <BotFleetRuntimeTable
+                  items={data.items}
+                  selectedBot={selectedBot}
+                  onSelectBot={setSelectedBot}
+                  onCloseProfile={() => setSelectedBot(null)}
+                />
+              ) : (
+                <div className="sky-control-page__empty">
+                  <Cloud size={19} aria-hidden />
+                  <p>
+                    {data.state === "unauthorized"
+                      ? "Not authorized for Sky Control."
+                      : data.state === "loading"
+                        ? "Loading read-only bot data..."
+                        : "Bot runtime data unavailable or schema incompatible."}
+                  </p>
+                </div>
+              ))}
             {activeTab === "security" && (
               <div className="sky-control-page__security">
                 <strong>
@@ -496,7 +811,7 @@ export default function SkyControlPage() {
                 <span>Write operations: DISABLED</span>
               </div>
             )}
-            {!["gateway", "security"].includes(activeTab) &&
+            {!["gateway", "bot-fleet", "security"].includes(activeTab) &&
               (data.state === "connected" ? (
                 <CompactTable items={data.items} />
               ) : (

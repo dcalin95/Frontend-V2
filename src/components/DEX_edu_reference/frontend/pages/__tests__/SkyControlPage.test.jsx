@@ -10,6 +10,7 @@ import {
 import { MemoryRouter } from "react-router-dom";
 import SkyControlPage from "../SkyControlPage";
 import {
+  controlSkyControlBot,
   fetchSkyControl,
   fetchSkyControlSummary,
   fetchSkyControlForensicAnomalies,
@@ -32,8 +33,17 @@ import {
 } from "../../services/skyControlService";
 
 jest.mock("../../services/skyControlService", () => ({
+  controlSkyControlBot: jest.fn(),
   fetchSkyControlSummary: jest.fn().mockResolvedValue({
     health: { database: "connected" },
+    runtime: {
+      provider: { status: "NOT_CONFIGURED", reason: "QMC_RUNTIME_NOT_CONFIGURED" },
+      gateway: { status: "UNKNOWN", reason: "QMC_RUNTIME_NOT_CONFIGURED" },
+      manager: { status: "UNKNOWN", reason: "QMC_RUNTIME_NOT_CONFIGURED" },
+      fleet: { status: "UNKNOWN", total: null, running: null, stopped: null, failed: null },
+      control: { enabled: false, operator_allowed: false },
+      poll_ms: 25000,
+    },
     overview: {
       quick: {
         status: "available",
@@ -291,17 +301,23 @@ describe("SkyControlPage", () => {
       "aria-selected",
       "true",
     );
-    expect(
-      screen.getByText(
-        "SERVICE RUNTIME NOT CONNECTED. This view contains database-derived metadata only.",
-      ),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Database Provider")).toBeInTheDocument();
+    expect(screen.getByText("Gateway Runtime")).toBeInTheDocument();
+    expect(screen.getByText("Bot Manager Runtime")).toBeInTheDocument();
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
   it("renders only safe overview summaries after the provider connects", async () => {
     fetchSkyControlSummary.mockResolvedValue({
       health: { database: "connected" },
+      runtime: {
+        provider: { status: "AVAILABLE" },
+        gateway: { status: "RUNNING", service: "quickmailbot.service" },
+        manager: { status: "RUNNING", service: "qmc-manager.service" },
+        fleet: { status: "RUNNING", total: 5, running: 4, stopped: 1, failed: 0 },
+        control: { enabled: true, operator_allowed: false },
+        poll_ms: 25000,
+      },
       overview: {
         quick: {
           status: "available",
@@ -328,10 +344,47 @@ describe("SkyControlPage", () => {
         <SkyControlPage />
       </MemoryRouter>,
     );
-    expect(await screen.findByText("5 bots")).toBeInTheDocument();
+    expect(await screen.findByText("4 / 5 running")).toBeInTheDocument();
     expect(screen.getByText("4 active")).toBeInTheDocument();
     expect(screen.getByText("SCHEMA INCOMPATIBLE")).toBeInTheDocument();
     expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  it("shows bot runtime controls only for operators with bot-control permission", async () => {
+    const confirmSpy = jest.spyOn(window, "confirm").mockReturnValue(true);
+    fetchSkyControlSummary.mockResolvedValue({
+      health: { database: "connected" },
+      runtime: {
+        provider: { status: "AVAILABLE" },
+        gateway: { status: "RUNNING" },
+        manager: { status: "RUNNING" },
+        fleet: { status: "RUNNING", total: 1, running: 1 },
+        control: { enabled: true, runtime_available: true, operator_allowed: true },
+        poll_ms: 25000,
+      },
+      overview: {
+        quick: { status: "available", metrics: { active_subscriptions: 0, admin_actions_total: 0 } },
+        skycloud: { status: "available", metrics: { active_subscriptions: 0, admin_actions_total: 0 } },
+        bot_fleet: { metrics: { total: 1 } },
+        payments: { metrics: { quick_payment_proofs: 0, skycloud_payment_proofs: 0 } },
+      },
+    });
+    fetchSkyControl.mockResolvedValue({ items: [] });
+    controlSkyControlBot.mockResolvedValue({ status: "ACCEPTED" });
+
+    render(
+      <MemoryRouter initialEntries={["/dex-edu/sky-control?tab=bot-fleet"]}>
+        <SkyControlPage />
+      </MemoryRouter>,
+    );
+
+    expect(await screen.findByRole("region", { name: "Bot runtime controls" })).toHaveTextContent("Personal bot controls");
+    fireEvent.change(screen.getByLabelText("Target user ID"), { target: { value: "7" } });
+    fireEvent.click(screen.getByRole("button", { name: "RESTART" }));
+
+    await waitFor(() => expect(controlSkyControlBot).toHaveBeenCalledWith("7", "restart"));
+    expect(confirmSpy).toHaveBeenCalled();
+    confirmSpy.mockRestore();
   });
 
   it("opens and safely closes the selected forensic entity drawer", async () => {
