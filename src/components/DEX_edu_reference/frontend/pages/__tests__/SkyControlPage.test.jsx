@@ -2,7 +2,7 @@ import React from 'react';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import SkyControlPage, { formatRelativeTime, formatTimestamp } from '../SkyControlPage';
-import { buildSkyControlWalletExportParams, fetchSkyControl, fetchSkyControlSummary, searchSkyControlForensics, fetchSkyControlForensicEntity, fetchSkyControlForensicGraph, fetchSkyControlForensicTimeline, fetchSkyControlForensicAnomalies, fetchSkyControlForensicExport, fetchSkyControlPaymentCase, fetchSkyControlMoneyFlow, fetchSkyControlProviderHealth, fetchSkyControlTransaction, fetchSkyControlWallet, fetchSkyControlWalletAnomalies, fetchSkyControlWalletDiscovery, fetchSkyControlWalletDiscoveryDetail, fetchSkyControlWalletExport, fetchSkyControlWalletHistory, searchSkyControlPaymentCases, searchSkyControlWallets } from '../../services/skyControlService';
+import { buildSkyControlWalletExportParams, fetchSkyControl, fetchSkyControlSummary, fetchSkyControlCentralAdminOverview, fetchSkyControlCentralAdminUsers, fetchSkyControlCentralAdminUser, searchSkyControlForensics, fetchSkyControlForensicEntity, fetchSkyControlForensicGraph, fetchSkyControlForensicTimeline, fetchSkyControlForensicAnomalies, fetchSkyControlForensicExport, fetchSkyControlPaymentCase, fetchSkyControlMoneyFlow, fetchSkyControlProviderHealth, fetchSkyControlTransaction, fetchSkyControlWallet, fetchSkyControlWalletAnomalies, fetchSkyControlWalletDiscovery, fetchSkyControlWalletDiscoveryDetail, fetchSkyControlWalletExport, fetchSkyControlWalletHistory, searchSkyControlPaymentCases, searchSkyControlWallets } from '../../services/skyControlService';
 
 jest.mock('../../services/skyControlService', () => ({
   fetchSkyControlSummary: jest.fn().mockResolvedValue({
@@ -15,6 +15,9 @@ jest.mock('../../services/skyControlService', () => ({
     },
   }),
   fetchSkyControl: jest.fn().mockResolvedValue({ items: [] }),
+  fetchSkyControlCentralAdminOverview: jest.fn(),
+  fetchSkyControlCentralAdminUsers: jest.fn(),
+  fetchSkyControlCentralAdminUser: jest.fn(),
   searchSkyControlForensics: jest.fn(),
   fetchSkyControlForensicEntity: jest.fn(),
   fetchSkyControlForensicGraph: jest.fn(),
@@ -46,6 +49,9 @@ describe('SkyControlPage', () => {
     global.fetch = jest.fn();
     fetchSkyControlSummary.mockImplementation(() => new Promise(() => {}));
     fetchSkyControl.mockImplementation(() => new Promise(() => {}));
+    fetchSkyControlCentralAdminOverview.mockResolvedValue({ dashboard: { pending_orders: 2, active_subs: 3, expired_subs: 1, total_revenue: 45, total_users: 6 }, capabilities: { users: 'AVAILABLE' } });
+    fetchSkyControlCentralAdminUsers.mockResolvedValue({ items: [] });
+    fetchSkyControlCentralAdminUser.mockResolvedValue({});
     fetchSkyControlForensicTimeline.mockResolvedValue({ events: [], pagination: {} });
     fetchSkyControlForensicAnomalies.mockResolvedValue({ anomalies: [], pagination: {} });
     fetchSkyControlProviderHealth.mockResolvedValue({ providers: {} });
@@ -124,7 +130,19 @@ describe('SkyControlPage', () => {
     render(<MemoryRouter initialEntries={["/?tab=gateway"]}><SkyControlPage /></MemoryRouter>);
 
     expect(screen.getByRole('tab', { name: 'Gateway' })).toHaveAttribute('aria-selected', 'true');
-    expect(await screen.findByRole('heading', { name: 'Gateway' })).toBeInTheDocument();
+    expect((await screen.findAllByRole('heading', { name: 'Gateway' })).length).toBeGreaterThan(0);
+  });
+
+  it('renders the Central Admin live database mirror with read-only sections', async () => {
+    render(<MemoryRouter initialEntries={['/?tab=central-admin']}><SkyControlPage /></MemoryRouter>);
+    const workspace = await screen.findByRole('region', { name: 'Central Admin' });
+    expect(workspace).toHaveTextContent('LIVE QMC DATABASE');
+    expect(workspace).toHaveTextContent('Total users');
+    expect(workspace).toHaveTextContent('Checking Results');
+    expect(workspace).toHaveTextContent('Broadcast and key generation are intentionally unavailable');
+    fireEvent.change(screen.getByLabelText('Central Admin user search'), { target: { value: '@reader' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Search users' }));
+    await waitFor(() => expect(fetchSkyControlCentralAdminUsers).toHaveBeenCalledWith({ params: { q: '@reader', limit: 50 } }));
   });
 
   it('keeps an unauthorized operational tab selected so the user can choose another tab', async () => {

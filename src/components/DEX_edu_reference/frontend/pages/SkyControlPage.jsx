@@ -2,12 +2,13 @@ import React, { useEffect, useId, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Cloud, CreditCard, Download, FileSearch, LockKeyhole, Radio, RefreshCw, ShieldCheck, UsersRound, Waypoints } from 'lucide-react';
 import './sky-control-page.css';
-import { buildSkyControlWalletExportParams, fetchSkyControl, fetchSkyControlSummary, fetchSkyControlForensicAnomalies, fetchSkyControlForensicEntity, fetchSkyControlForensicExport, fetchSkyControlForensicGraph, fetchSkyControlForensicTimeline, fetchSkyControlPaymentCase, fetchSkyControlMoneyFlow, fetchSkyControlProviderHealth, fetchSkyControlTransaction, fetchSkyControlWallet, fetchSkyControlWalletAnomalies, fetchSkyControlWalletDiscovery, fetchSkyControlWalletDiscoveryDetail, fetchSkyControlWalletExport, fetchSkyControlWalletHistory, searchSkyControlForensics, searchSkyControlPaymentCases, searchSkyControlWallets } from '../services/skyControlService';
+import { buildSkyControlWalletExportParams, fetchSkyControl, fetchSkyControlSummary, fetchSkyControlCentralAdminOverview, fetchSkyControlCentralAdminUser, fetchSkyControlCentralAdminUsers, fetchSkyControlForensicAnomalies, fetchSkyControlForensicEntity, fetchSkyControlForensicExport, fetchSkyControlForensicGraph, fetchSkyControlForensicTimeline, fetchSkyControlPaymentCase, fetchSkyControlMoneyFlow, fetchSkyControlProviderHealth, fetchSkyControlTransaction, fetchSkyControlWallet, fetchSkyControlWalletAnomalies, fetchSkyControlWalletDiscovery, fetchSkyControlWalletDiscoveryDetail, fetchSkyControlWalletExport, fetchSkyControlWalletHistory, searchSkyControlForensics, searchSkyControlPaymentCases, searchSkyControlWallets } from '../services/skyControlService';
 
 const tabs = [
   'Gateway',
   'Bot Fleet',
   'Users & Subscriptions',
+  'Central Admin',
   'Admin Timeline',
   'Payments',
   'Channel',
@@ -107,7 +108,7 @@ export default function SkyControlPage() {
 
   useEffect(() => {
     const endpoint = endpointByTab[activeTab];
-    if (!endpoint || activeTab === 'overview') return undefined;
+    if (!endpoint || ['overview', 'central-admin'].includes(activeTab)) return undefined;
     const controller = new AbortController();
     setData({ state: 'loading', items: [] });
     const params = activeTab === 'bot-fleet' ? { page, limit, ...filters } : activeTab === 'users-subscriptions' ? { page, limit, search: filters.search } : { page, limit };
@@ -215,7 +216,7 @@ export default function SkyControlPage() {
               ) : <p>Diagnostics disabled.</p>}
             </section>
           </>
-        ) : activeTab === 'forensics' ? <ForensicsWorkspace /> : activeTab === 'wallet-intelligence' ? <WalletIntelligenceWorkspace /> : (
+        ) : activeTab === 'forensics' ? <ForensicsWorkspace /> : activeTab === 'wallet-intelligence' ? <WalletIntelligenceWorkspace /> : activeTab === 'central-admin' ? <CentralAdminWorkspace /> : (
           <div className="sky-control-page__workspace">
             <div className="sky-control-page__workspace-head">
               <div><span className="sky-control-page__eyebrow">LIVE READ-ONLY</span><h2>{tabs.find((tab) => tabKey(tab) === activeTab)}</h2></div>
@@ -255,6 +256,53 @@ function GatewayWorkspace({ summary }) {
       ))}</ul> : <p>{summary.state === 'connected' ? 'Diagnostics disabled.' : 'Provider data is not available yet.'}</p>}
     </section>
   </>;
+}
+
+function CentralAdminWorkspace() {
+  const [overview, setOverview] = useState({ state: 'loading', value: null });
+  const [users, setUsers] = useState({ state: 'idle', items: [] });
+  const [query, setQuery] = useState('');
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchSkyControlCentralAdminOverview({ signal: controller.signal })
+      .then((value) => setOverview({ state: 'connected', value }))
+      .catch(() => setOverview({ state: 'unavailable', value: null }));
+    return () => controller.abort();
+  }, []);
+
+  const loadUsers = () => {
+    setUsers({ state: 'loading', items: [] });
+    fetchSkyControlCentralAdminUsers({ params: { q: query, limit: 50 } })
+      .then((value) => setUsers({ state: 'connected', items: value.items || [] }))
+      .catch(() => setUsers({ state: 'unavailable', items: [] }));
+  };
+  const openUser = (userId) => fetchSkyControlCentralAdminUser(userId)
+    .then((value) => setSelectedUser(value))
+    .catch(() => setSelectedUser({ unavailable: true }));
+  const dashboard = overview.value?.dashboard || {};
+  const metrics = [['Pending orders', dashboard.pending_orders], ['Active subscriptions', dashboard.active_subs], ['Expired subscriptions', dashboard.expired_subs], ['Total revenue', dashboard.total_revenue], ['Total users', dashboard.total_users]];
+  const sections = [
+    ['Dashboard', null], ['Users', 'users'], ['Active Subs', 'active_subscriptions'], ['Expired Subs', 'expired_subscriptions'],
+    ['Orders', 'orders'], ['Pending Payments', 'pending_payments'], ['Support', 'support'], ['Audit', 'audit'],
+    ['All Keywords', 'keywords'], ['Bots', 'bots'], ['Checking Jobs', 'checking_jobs'], ['Checking Results', 'checking_results'], ['System / DB summary', 'system'],
+  ];
+  const profileSections = Object.entries(selectedUser?.profile || {}).filter(([, records]) => Array.isArray(records) && records.length);
+
+  return <section className="sky-control-page__workspace" aria-label="Central Admin">
+    <div className="sky-control-page__workspace-head"><div><span className="sky-control-page__eyebrow">CENTRAL ADMIN MIRROR</span><h2>Central Admin</h2><p>Read-only mirror of approved QuickMail Checker application records.</p></div></div>
+    {overview.state === 'connected' && <><div className="sky-control-page__metric-grid">{metrics.map(([label, value]) => <article key={label} className="sky-control-page__metric"><span>{label}</span><strong>{value == null ? 'NOT AVAILABLE' : safeDisplay(value)}</strong></article>)}</div><div className="sky-control-page__metric-grid" aria-label="Central Admin sections">{sections.map(([label, capability]) => <article key={label} className="sky-control-page__metric"><span>{label}</span><strong>{capability == null ? 'LIVE QMC DATABASE' : (overview.value?.capabilities?.[capability] || 'NOT_AVAILABLE')}</strong></article>)}</div></>}
+    {overview.state === 'loading' && <div className="sky-control-page__empty"><p>Loading Central Admin aggregates...</p></div>}
+    {overview.state === 'unavailable' && <p className="sky-control-page__notice">Central Admin data is unavailable.</p>}
+    <p className="sky-control-page__notice">Broadcast and key generation are intentionally unavailable in this read-only workspace.</p>
+    <form className="sky-control-page__filters" onSubmit={(event) => { event.preventDefault(); loadUsers(); }}><input aria-label="Central Admin user search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Exact user ID, @username, or subscription key" /><button type="submit" className="sky-control-page__action">Search users</button></form>
+    {users.state === 'idle' && <div className="sky-control-page__empty"><p>Search an exact user ID, username, or subscription key.</p></div>}
+    {users.state === 'loading' && <div className="sky-control-page__empty"><p>Loading matching users...</p></div>}
+    {users.state === 'unavailable' && <p className="sky-control-page__notice">User records are unavailable.</p>}
+    {users.state === 'connected' && <div className="sky-control-page__plain-list">{users.items.map((user) => <button key={user.user_id || user.id} type="button" className="sky-control-page__action" onClick={() => openUser(user.user_id || user.id)}>Open profile {safeDisplay(user.username || user.user_id || user.id)}</button>)}</div>}
+    {selectedUser && <aside className="sky-control-page__schema" aria-label="Central Admin user profile"><button type="button" className="sky-control-page__action" onClick={() => setSelectedUser(null)}>Close profile</button>{selectedUser.unavailable ? <p>Profile is unavailable.</p> : <><h3>{safeDisplay(selectedUser.user?.username || selectedUser.user?.user_id || 'User profile')}</h3><p>Profile data is read-only and sensitive fields are excluded.</p>{profileSections.length ? <ul className="sky-control-page__plain-list">{profileSections.map(([name, records]) => <li key={name}>{name.replaceAll('_', ' ')}: {records.length} safe record{records.length === 1 ? '' : 's'}</li>)}</ul> : <p>No approved profile records are available.</p>}</>}</aside>}
+  </section>;
 }
 
 function CompactTable({ items, view, forensic, onSelect }) {
