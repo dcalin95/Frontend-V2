@@ -22,8 +22,13 @@ export const ENABLE_STRATEGIES = process.env.REACT_APP_ENABLE_STRATEGIES !== 'fa
 export const ENABLE_SIGNALS = process.env.REACT_APP_ENABLE_SIGNALS !== 'false';
 export const ENABLE_PERFORMANCE = process.env.REACT_APP_ENABLE_PERFORMANCE !== 'false';
 export const ENABLE_EXECUTION = process.env.REACT_APP_ENABLE_EXECUTION !== 'false';
-// Private UI shell only. Keep disabled until a server-authorized backend phase exists.
-export const ENABLE_SKY_CONTROL = process.env.REACT_APP_SKY_CONTROL_ENABLED === 'true';
+// Keep local/test builds fail-closed while ensuring the approved production shell
+// cannot disappear when a machine-local .env file is absent during deployment.
+export const isSkyControlEnabled = (environment = process.env) => (
+  environment.REACT_APP_SKY_CONTROL_ENABLED === 'true'
+  || environment.NODE_ENV === 'production'
+);
+export const ENABLE_SKY_CONTROL = isSkyControlEnabled();
 
 // AI Trading Status
 export const BOT_STATUS = {
@@ -194,4 +199,3 @@ export {
   getBestBitcoinTokenForTrade,
   formatBitcoinTokenForDisplay
 } from './bitcoinTokens';
-

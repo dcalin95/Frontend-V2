@@ -1,7 +1,7 @@
 describe('Sky Control feature flag', () => {
-  const loadFlag = () => {
+  const loadConstants = () => {
     jest.resetModules();
-    return require('../constants').ENABLE_SKY_CONTROL;
+    return require('../constants');
   };
 
   afterEach(() => {
@@ -9,15 +9,19 @@ describe('Sky Control feature flag', () => {
   });
 
   it('is disabled by default', () => {
-    delete process.env.REACT_APP_SKY_CONTROL_ENABLED;
-    expect(loadFlag()).toBe(false);
+    const { isSkyControlEnabled } = loadConstants();
+    expect(isSkyControlEnabled({ NODE_ENV: 'test' })).toBe(false);
   });
 
   it('is enabled only by the explicit public build flag', () => {
-    process.env.REACT_APP_SKY_CONTROL_ENABLED = 'true';
-    expect(loadFlag()).toBe(true);
+    const { isSkyControlEnabled } = loadConstants();
+    expect(isSkyControlEnabled({ NODE_ENV: 'test', REACT_APP_SKY_CONTROL_ENABLED: 'true' })).toBe(true);
 
-    process.env.REACT_APP_SKY_CONTROL_ENABLED = 'TRUE';
-    expect(loadFlag()).toBe(false);
+    expect(isSkyControlEnabled({ NODE_ENV: 'test', REACT_APP_SKY_CONTROL_ENABLED: 'TRUE' })).toBe(false);
+  });
+
+  it('keeps the approved private shell enabled in production builds without a local env file', () => {
+    const { isSkyControlEnabled } = loadConstants();
+    expect(isSkyControlEnabled({ NODE_ENV: 'production' })).toBe(true);
   });
 });

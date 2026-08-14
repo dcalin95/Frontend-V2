@@ -68,6 +68,13 @@ export function fetchSkyControlSummary(signal) {
   });
 }
 
+export const fetchSkyControlCentralAdminOverview = (options) =>
+  fetchSkyControl('/central-admin/overview', options);
+export const fetchSkyControlCentralAdminUsers = (options) =>
+  fetchSkyControl('/central-admin/users', options);
+export const fetchSkyControlCentralAdminUser = (userId, options) =>
+  fetchSkyControl(`/central-admin/users/${encodeURIComponent(userId)}`, options);
+
 export const searchSkyControlForensics = (q, options) => fetchSkyControl('/forensics/search', { ...options, params: { ...(options?.params || {}), q } });
 export const fetchSkyControlForensicGraph = (params, options) => fetchSkyControl('/forensics/graph', { ...options, params });
 export const fetchSkyControlForensicEntity = (type, id, options) => fetchSkyControl(`/forensics/entity/${encodeURIComponent(type)}/${encodeURIComponent(id)}`, options);

@@ -19,6 +19,7 @@ import "./styles/DEX/header.css";
 import React, { useState, Suspense, lazy, useEffect } from "react";
 import { HashRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom"; // HashRouter for S3/CloudFront compatibility
 import { ToastContainer } from "react-toastify";
+import { ENABLE_SKY_CONTROL } from "./components/DEX_edu_reference/utils/DEX/constants";
 
 // 🧩 Layout & UI
 import Header from "./components/Header";
@@ -85,7 +86,7 @@ const STANDALONE_TOOL_COMPONENTS = {
 const GlobalRouteOverlays = () => {
   const location = useLocation();
 
-  if (location.pathname.startsWith('/dex-edu')) {
+  if (location.pathname.startsWith('/dex-edu') || location.pathname === '/sky-control') {
     return <SmartWalletModal />;
   }
 
@@ -591,6 +592,7 @@ const App = () => {
                       <Route path="/paper-trade/stx" element={<STXPaperTrade />} />
                       <Route path="/paper-trade/:symbol" element={<TokenPaperTrade />} />
                       <Route path="/investigator" element={<Navigate to="/dex-edu/investigator" replace />} />
+                      <Route path="/sky-control" element={ENABLE_SKY_CONTROL ? <Navigate to="/dex-edu/sky-control" replace /> : <Navigate to="/" replace />} />
                       <Route path="/ai-assistant" element={<Navigate to="/presale" replace />} />
                       <Route path="/presale" element={isMobile ? <PresaleMobile /> : <PresalePage />} />
                       <Route path="/staking" element={isMobile ? <StakingPageMobile /> : <StakingPage />} />

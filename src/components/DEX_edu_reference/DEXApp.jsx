@@ -156,14 +156,7 @@ function DEXRoutes() {
         <Route index element={<Navigate to={`${DEX_BASE_PATH}/dashboard`} replace />} />
         <Route path="dashboard" element={<Dashboard userId={userId || walletAddress} />} />
         <Route path="investigator" element={<ErrorBoundary><InvestigatorPage /></ErrorBoundary>} />
-        <Route
-          path="sky-control"
-          element={ENABLE_SKY_CONTROL ? (
-            <ProtectedRoute requireAuth={true} showLoginModal={true} authVariant="email">
-              <ErrorBoundary><SkyControlPage /></ErrorBoundary>
-            </ProtectedRoute>
-          ) : <Navigate to={`${DEX_BASE_PATH}/dashboard`} replace />}
-        />
+        <Route path="sky-control" element={ENABLE_SKY_CONTROL ? <ProtectedRoute requireAuth={true} showLoginModal={true} authVariant="email"><ErrorBoundary><SkyControlPage /></ErrorBoundary></ProtectedRoute> : <Navigate to={`${DEX_BASE_PATH}/dashboard`} replace />} />
         <Route path="swap" element={<Swap />} />
         <Route path="trade" element={<Trade />} />
         <Route path="open-orders" element={<OpenOrdersPage />} />
@@ -227,7 +220,7 @@ function DEXRoutes() {
   );
 }
 
-function DEXApp() {
+function DexShell({ children }) {
   const { walletType } = useWallet() || {};
   const navigate = useNavigate();
   const location = useLocation();
@@ -299,7 +292,7 @@ function DEXApp() {
                       <ClobSeiMarketProvider>
                         <HeaderTokenProvider>
                           <Layout selectedChain={selectedChain} onChainChange={handleChainChange}>
-                            <DEXRoutes />
+                            {children}
                           </Layout>
                         </HeaderTokenProvider>
                       </ClobSeiMarketProvider>
@@ -312,6 +305,22 @@ function DEXApp() {
         </ToastProvider>
       </DexAuthProvider>
     </ErrorBoundary>
+  );
+}
+
+function DEXApp() {
+  return <DexShell><DEXRoutes /></DexShell>;
+}
+
+export function SkyControlStandaloneApp() {
+  return (
+    <DexShell>
+      <Suspense fallback={<PageLoader />}>
+        <ProtectedRoute requireAuth={true} showLoginModal={true} authVariant="email">
+          <ErrorBoundary><SkyControlPage /></ErrorBoundary>
+        </ProtectedRoute>
+      </Suspense>
+    </DexShell>
   );
 }
 
