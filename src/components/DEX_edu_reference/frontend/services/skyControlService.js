@@ -1,7 +1,15 @@
 import { getBackendUrl } from '../../config/runtimeConfig';
 
 function getSkyControlBaseUrl() {
-  return String(getBackendUrl() || '').replace(/\/$/, '');
+  const runtimeBaseUrl = String(getBackendUrl() || '').replace(/\/$/, '');
+  const hostname = typeof window !== 'undefined' ? window.location?.hostname : '';
+  const isFirstPartyProduction = ['bits-ai.io', 'www.bits-ai.io'].includes(hostname);
+
+  // Production authentication is established on bits-ai.io, so Sky Control must
+  // use the same-origin API proxy to send the existing host-scoped session cookie.
+  return isFirstPartyProduction
+    ? String(window.location.origin || '').replace(/\/$/, '')
+    : runtimeBaseUrl;
 }
 
 export async function requestSkyControl(path, signal) {

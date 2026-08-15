@@ -18,10 +18,26 @@ describe('Sky Control summary request contract', () => {
     global.fetch = jest.fn();
   });
 
-  it('uses the DEX runtime backend instead of an unproven same-origin production API route', async () => {
+  it('uses the authenticated first-party API route in production', async () => {
     const originalLocation = window.location;
     delete window.location;
     window.location = new URL('https://bits-ai.io/#/dex-edu/sky-control');
+    global.fetch.mockResolvedValueOnce(jsonResponse(200, { ok: true }));
+
+    await expect(requestSkyControl('/health')).resolves.toEqual({ ok: true });
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://bits-ai.io/api/sky-control/health',
+      expect.objectContaining({ credentials: 'include' }),
+    );
+    delete window.location;
+    window.location = originalLocation;
+  });
+
+  it('keeps the DEX runtime backend outside first-party production', async () => {
+    const originalLocation = window.location;
+    delete window.location;
+    window.location = new URL('http://localhost:3000/#/dex-edu/sky-control');
     global.fetch.mockResolvedValueOnce(jsonResponse(200, { ok: true }));
 
     await expect(requestSkyControl('/health')).resolves.toEqual({ ok: true });
@@ -74,7 +90,7 @@ describe('Sky Control summary request contract', () => {
     await expect(fetchSkyControlSummary()).rejects.toMatchObject({ status: 401 });
   });
 
-  it('posts bounded bot runtime controls through the DEX runtime Sky Control API', async () => {
+  it('posts bounded bot runtime controls through the first-party Sky Control API', async () => {
     const originalLocation = window.location;
     delete window.location;
     window.location = new URL('https://bits-ai.io/#/dex-edu/sky-control?tab=bot-fleet');
@@ -83,7 +99,7 @@ describe('Sky Control summary request contract', () => {
     await expect(controlSkyControlBot(' 7 ', 'restart')).resolves.toMatchObject({ status: 'ACCEPTED' });
 
     expect(global.fetch).toHaveBeenCalledWith(
-      'https://backend-server-eu.onrender.com/api/sky-control/runtime/bots/7/restart',
+      'https://bits-ai.io/api/sky-control/runtime/bots/7/restart',
       expect.objectContaining({ method: 'POST', credentials: 'include', body: '{}' }),
     );
     delete window.location;
