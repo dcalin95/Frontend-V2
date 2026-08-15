@@ -75,3 +75,32 @@ ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
 .Trash-*
+
+# Backups and temporary files
+*.bak
+*.backup
+*.tmp
+*.temp
+temp.txt
+temp_*.txt
+*_old.*
+*_backup.*
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# Debug / local only
+force-reload.html
+open-fresh.bat
